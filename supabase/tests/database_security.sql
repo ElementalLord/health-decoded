@@ -69,6 +69,13 @@ begin
     raise exception 'Confidence check-ins must be unique per lesson-progress context';
   end if;
 
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'lesson_progress_last_viewed_block_minimum'
+  ) then
+    raise exception 'Lesson progress must retain a bounded resume position';
+  end if;
+
   if has_function_privilege('anon', 'public.initialize_current_user_journey()', 'execute')
     or not has_function_privilege(
       'authenticated',
@@ -89,6 +96,30 @@ begin
   ) then
     raise exception 'Confidence check-in privileges are not restricted correctly';
   end if;
+
+  if has_function_privilege(
+    'anon',
+    'public.begin_or_resume_current_lesson(integer)',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.begin_or_resume_current_lesson(integer)',
+    'execute'
+  ) then
+    raise exception 'Lesson begin-or-resume privileges are not restricted correctly';
+  end if;
+
+  if has_function_privilege(
+    'anon',
+    'public.save_lesson_block_position(uuid,integer)',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.save_lesson_block_position(uuid,integer)',
+    'execute'
+  ) then
+    raise exception 'Lesson position-save privileges are not restricted correctly';
+  end if;
 end;
 $$;
 
@@ -101,5 +132,8 @@ $$;
 -- 6. Journey initialization selects only the stable published prototype journey.
 -- 7. Confidence upsert rejects invalid values and another user's lesson progress.
 -- 8. Repeated confidence submissions update one row while direct writes remain denied.
+-- 9. Lesson begin-or-resume rejects unauthenticated and future-lesson access.
+-- 10. Lesson position saving rejects out-of-range and cross-user progress IDs.
+-- 11. Repeated position saves remain idempotent without completing a lesson.
 
 rollback;

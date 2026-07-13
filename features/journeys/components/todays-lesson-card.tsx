@@ -1,7 +1,8 @@
 import { Clock3 } from "lucide-react";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { CurrentLessonSummary } from "@/features/journeys/types/journey-home";
 
@@ -9,6 +10,12 @@ const statusLabels = {
   not_started: "Ready to start",
   in_progress: "In progress",
   completed: "Completed",
+} as const;
+
+const actionLabels = {
+  not_started: "Start today’s lesson",
+  in_progress: "Continue today’s lesson",
+  completed: "Review completed lesson",
 } as const;
 
 export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
@@ -42,11 +49,11 @@ export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
         </div>
 
         <div className="space-y-2 lg:w-64">
-          <Button disabled size="lg">
-            Lesson experience coming next
-          </Button>
+          <Link className={buttonVariants({ size: "lg" })} href={`/lessons/${lesson.dayNumber}`}>
+            {actionLabels[lesson.status]}
+          </Link>
           <p className="text-center text-xs leading-5 text-muted-foreground">
-            Your lesson will open when the lesson experience is ready.
+            Take this lesson at your own pace.
           </p>
         </div>
       </div>
