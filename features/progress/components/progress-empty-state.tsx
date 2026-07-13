@@ -12,6 +12,7 @@ export function ProgressEmptyState() {
         </Link>
       }
       description="We could not load your progress right now. Please try again."
+      headingLevel="h1"
       title="Your progress is unavailable"
     />
   );

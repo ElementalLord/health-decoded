@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { buttonVariants } from "@/components/ui/button";
 import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
-import { JourneyProgressSummaryCard } from "@/features/journeys/components/journey-progress-summary";
+import { JourneyProgressSummary } from "@/features/journeys/components/journey-progress-summary";
 import { JourneyUnavailableState } from "@/features/journeys/components/journey-unavailable-state";
 import { TodaysLessonCard } from "@/features/journeys/components/todays-lesson-card";
 import { getJourneyHomeData } from "@/features/journeys/services/journey-home.server";
@@ -46,7 +48,7 @@ export default async function JourneyPage() {
 
           <section aria-labelledby="why-this-matters" className="max-w-3xl space-y-2">
             <h2
-              className="text-[length:var(--text-section-title)] font-semibold tracking-tight"
+              className="text-[length:var(--text-section-title)] font-medium tracking-tight"
               id="why-this-matters"
             >
               Why this matters today
@@ -56,7 +58,7 @@ export default async function JourneyPage() {
             </p>
           </section>
 
-          <JourneyProgressSummaryCard
+          <JourneyProgressSummary
             journeyTitle={journey.data.journeyTitle}
             progress={journey.data.progress}
           />
@@ -67,6 +69,34 @@ export default async function JourneyPage() {
               lessonProgressId={journey.data.currentLesson.lessonProgressId}
             />
           ) : null}
+
+          <section aria-labelledby="journey-support" className="space-y-3">
+            <div className="space-y-1">
+              <h2
+                className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+                id="journey-support"
+              >
+                More support
+              </h2>
+              <p className="text-sm leading-6 text-muted-foreground">
+                Explore guidance when it feels useful to you.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              <Link
+                className={buttonVariants({ fullWidth: false, variant: "text" })}
+                href="/caregiver"
+              >
+                Caregiver guidance
+              </Link>
+              <Link
+                className={buttonVariants({ fullWidth: false, variant: "text" })}
+                href="/stories"
+              >
+                Read patient stories
+              </Link>
+            </div>
+          </section>
         </>
       )}
     </section>

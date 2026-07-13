@@ -10,7 +10,7 @@ export const spacing = {
 } as const;
 
 export const typography = {
-  caption: "0.75rem",
+  caption: "0.8125rem",
   supporting: "0.875rem",
   body: "1rem",
   lessonHeading: "1.125rem",
@@ -32,7 +32,6 @@ export const colors = {
 
 export const elevation = {
   card: "var(--shadow-card)",
-  cardHover: "var(--shadow-card-hover)",
   modal: "var(--shadow-modal)",
 } as const;
 

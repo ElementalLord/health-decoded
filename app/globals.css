@@ -29,7 +29,6 @@
   --radius-lg: var(--radius);
   --radius-xl: var(--radius-xl);
   --shadow-card: var(--shadow-card);
-  --shadow-card-hover: var(--shadow-card-hover);
   --shadow-modal: var(--shadow-modal);
 }
 
@@ -53,24 +52,46 @@
   --border: oklch(0.89 0.012 210);
   --input: oklch(0.89 0.012 210);
   --ring: oklch(0.47 0.09 190);
-  --radius: 1rem;
-  --radius-xl: 1.25rem;
-  --shadow-card: 0 2px 10px rgb(32 55 64 / 0.06);
-  --shadow-card-hover: 0 8px 24px rgb(32 55 64 / 0.1);
+  --radius: 0.75rem;
+  --radius-xl: 1rem;
+  --shadow-card: 0 1px 3px rgb(32 55 64 / 0.08);
   --shadow-modal: 0 20px 50px rgb(32 55 64 / 0.18);
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --text-caption: 0.75rem;
+  --text-caption: 0.8125rem;
   --text-supporting: 0.875rem;
   --text-body: 1rem;
   --text-lesson-heading: 1.125rem;
   --text-card-title: 1.25rem;
   --text-section-title: 1.5rem;
   --text-page-title: 2rem;
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-progress: 400ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
-[data-text-scale="large"] { --text-body: 1.125rem; --text-supporting: 1rem; --text-card-title: 1.375rem; --text-section-title: 1.625rem; --text-page-title: 2.125rem; }
-[data-text-scale="extra_large"] { --text-body: 1.25rem; --text-supporting: 1.125rem; --text-card-title: 1.5rem; --text-section-title: 1.75rem; --text-page-title: 2.25rem; }
-[data-reduced-motion="true"] *, [data-reduced-motion="true"] *::before, [data-reduced-motion="true"] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+[data-text-scale="large"] {
+  --text-body: 1.125rem;
+  --text-supporting: 1rem;
+  --text-card-title: 1.375rem;
+  --text-section-title: 1.625rem;
+  --text-page-title: 2.125rem;
+}
+[data-text-scale="extra_large"] {
+  --text-body: 1.25rem;
+  --text-supporting: 1.125rem;
+  --text-card-title: 1.5rem;
+  --text-section-title: 1.75rem;
+  --text-page-title: 2.25rem;
+}
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+}
 
 @layer base {
   * {

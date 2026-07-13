@@ -25,9 +25,17 @@ function mapStory(value: unknown, status: "development" | "published"): StoryVie
 
 export async function listStories(): Promise<Result<StoryViewModel[]>> {
   noStore();
-  if (isDevelopment) return ok(developmentCompositeStories.map((story) => mapStory(story, "development")!).filter(Boolean));
+  if (isDevelopment)
+    return ok(
+      developmentCompositeStories.map((story) => mapStory(story, "development")!).filter(Boolean),
+    );
   const database = await getServerDatabaseClient();
-  const response = await database.from("patient_stories").select(fields).eq("status", "published").not("published_at", "is", null).order("published_at", { ascending: false });
+  const response = await database
+    .from("patient_stories")
+    .select(fields)
+    .eq("status", "published")
+    .not("published_at", "is", null)
+    .order("published_at", { ascending: false });
   if (response.error) return err(unexpectedError());
   const stories = (response.data ?? []).map((story) => mapStory(story, "published"));
   return stories.every((story) => story) ? ok(stories as StoryViewModel[]) : err(unexpectedError());
@@ -41,7 +49,13 @@ export async function getStory(slug: string): Promise<Result<StoryViewModel>> {
     return mapped ? ok(mapped) : err(notFoundError());
   }
   const database = await getServerDatabaseClient();
-  const response = await database.from("patient_stories").select(fields).eq("slug", slug).eq("status", "published").not("published_at", "is", null).maybeSingle();
+  const response = await database
+    .from("patient_stories")
+    .select(fields)
+    .eq("slug", slug)
+    .eq("status", "published")
+    .not("published_at", "is", null)
+    .maybeSingle();
   if (response.error) return err(unexpectedError());
   if (!response.data) return err(notFoundError());
   const story = mapStory(response.data, "published");

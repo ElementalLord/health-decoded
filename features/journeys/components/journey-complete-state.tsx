@@ -8,7 +8,7 @@ export function JourneyCompleteState({ journey }: { journey: JourneyHomeComplete
   return (
     <Card className="mx-auto max-w-2xl text-center">
       <CheckCircle2 aria-hidden="true" className="mx-auto size-10 text-success" />
-      <h2 className="mt-5 text-[length:var(--text-section-title)] font-semibold">
+      <h2 className="mt-5 text-[length:var(--text-section-title)] font-medium">
         Your journey is complete
       </h2>
       <p className="mx-auto mt-2 max-w-lg leading-7 text-muted-foreground">

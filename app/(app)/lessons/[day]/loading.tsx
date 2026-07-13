@@ -1,12 +1,9 @@
+import { PageLoadingState } from "@/components/shared/page-loading-state";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LessonLoading() {
   return (
-    <section
-      aria-busy="true"
-      aria-label="Loading lesson"
-      className="mx-auto max-w-[760px] space-y-8 py-8"
-    >
+    <PageLoadingState className="mx-auto max-w-[760px] space-y-8 py-8" label="Loading lesson">
       <div className="space-y-3 border-b border-border pb-5">
         <Skeleton className="h-5 w-16" />
         <Skeleton className="h-10 w-3/4" />
@@ -21,6 +18,6 @@ export default function LessonLoading() {
         <Skeleton className="h-12 w-28" />
         <Skeleton className="h-12 w-28" />
       </div>
-    </section>
+    </PageLoadingState>
   );
 }

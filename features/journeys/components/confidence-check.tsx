@@ -3,7 +3,6 @@
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   saveConfidenceCheckInAction,
   type ConfidenceActionState,
@@ -32,10 +31,13 @@ export function ConfidenceCheck({
   const [state, action, pending] = useActionState(saveConfidenceCheckInAction, initialState);
 
   return (
-    <Card>
+    <section aria-labelledby="confidence-check-title" className="border-b border-border pb-8">
       <div className="max-w-3xl space-y-5">
         <div className="space-y-1">
-          <h2 className="text-[length:var(--text-section-title)] font-semibold tracking-tight">
+          <h2
+            className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+            id="confidence-check-title"
+          >
             How confident do you feel today?
           </h2>
           <p className="text-sm leading-6 text-muted-foreground">
@@ -47,7 +49,7 @@ export function ConfidenceCheck({
           <input name="lessonProgressId" type="hidden" value={lessonProgressId} />
           <fieldset disabled={pending}>
             <legend className="sr-only">Choose your confidence level</legend>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-2 sm:grid-cols-3">
               {options.map((option) => {
                 const selected = state.savedValue === option.value;
 
@@ -55,7 +57,7 @@ export function ConfidenceCheck({
                   <Button
                     aria-pressed={selected}
                     className={cn(
-                      "min-h-14 whitespace-normal",
+                      "min-h-11 justify-between whitespace-normal text-left",
                       selected &&
                         "border-primary bg-secondary text-foreground ring-2 ring-primary/20",
                     )}
@@ -67,7 +69,11 @@ export function ConfidenceCheck({
                     variant="secondary"
                   >
                     <span>{option.label}</span>
-                    {selected ? <span className="text-xs">Selected</span> : null}
+                    {selected ? (
+                      <span className="text-[length:var(--text-caption)] font-medium">
+                        Selected
+                      </span>
+                    ) : null}
                   </Button>
                 );
               })}
@@ -85,6 +91,6 @@ export function ConfidenceCheck({
           {pending ? "Saving your check-in…" : state.message}
         </p>
       </div>
-    </Card>
+    </section>
   );
 }

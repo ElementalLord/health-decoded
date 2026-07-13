@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import type { ConfidenceHistoryEntry } from "@/features/progress/types/progress";
 
 function formatDate(value: string) {
@@ -11,9 +10,12 @@ function formatDate(value: string) {
 
 export function ConfidenceHistoryList({ entries }: { entries: ConfidenceHistoryEntry[] }) {
   return (
-    <Card className="space-y-5">
+    <section aria-labelledby="confidence-history-title" className="space-y-5">
       <div className="space-y-1">
-        <h2 className="text-[length:var(--text-section-title)] font-semibold tracking-tight">
+        <h2
+          className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+          id="confidence-history-title"
+        >
           Recent confidence check-ins
         </h2>
         <p className="text-sm leading-6 text-muted-foreground">
@@ -42,6 +44,6 @@ export function ConfidenceHistoryList({ entries }: { entries: ConfidenceHistoryE
           You have not recorded a confidence check-in yet.
         </p>
       )}
-    </Card>
+    </section>
   );
 }

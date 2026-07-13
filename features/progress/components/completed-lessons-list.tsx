@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Card } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
 import type { CompletedLessonHistoryEntry } from "@/features/progress/types/progress";
 
 function formatDate(value: string) {
@@ -13,9 +13,12 @@ function formatDate(value: string) {
 
 export function CompletedLessonsList({ entries }: { entries: CompletedLessonHistoryEntry[] }) {
   return (
-    <Card className="space-y-5">
+    <section aria-labelledby="completed-lessons-title" className="space-y-5">
       <div className="space-y-1">
-        <h2 className="text-[length:var(--text-section-title)] font-semibold tracking-tight">
+        <h2
+          className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+          id="completed-lessons-title"
+        >
           Completed lessons
         </h2>
         <p className="text-sm leading-6 text-muted-foreground">
@@ -40,7 +43,7 @@ export function CompletedLessonsList({ entries }: { entries: CompletedLessonHist
                 </p>
               </div>
               <Link
-                className="min-h-11 self-start rounded-lg px-3 py-2 text-sm font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring sm:self-auto"
+                className={buttonVariants({ fullWidth: false, variant: "text" })}
                 href={`/lessons/${entry.dayNumber}`}
               >
                 Review lesson
@@ -53,6 +56,6 @@ export function CompletedLessonsList({ entries }: { entries: CompletedLessonHist
           Your progress will appear here after you complete your first lesson.
         </p>
       )}
-    </Card>
+    </section>
   );
 }

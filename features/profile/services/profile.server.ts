@@ -1,22 +1,26 @@
+import "server-only";
+
+import { cache } from "react";
+
+import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { authorizationError } from "@/lib/errors/application-error";
 import { type Profile } from "@/lib/database/models";
 import { toResult } from "@/lib/database/query";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { err, type Result } from "@/lib/result/result";
 
-export async function getCurrentProfile(): Promise<Result<Profile>> {
+export const getCurrentProfile = cache(async function getCurrentProfile(): Promise<
+  Result<Profile>
+> {
+  const user = await getAuthenticatedUser();
+  if (!user.ok) return err(authorizationError());
+
   const database = await getServerDatabaseClient();
-  const { data: userData, error: userError } = await database.auth.getUser();
-
-  if (userError || !userData.user) {
-    return err(authorizationError());
-  }
-
   const response = await database
     .from("profiles")
     .select("id, display_name, onboarding_completed_at")
-    .eq("id", userData.user.id)
+    .eq("id", user.data.id)
     .maybeSingle();
 
   return toResult(response as unknown as { data: Profile | null; error: null });
-}
+});

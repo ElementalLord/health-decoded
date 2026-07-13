@@ -1,1 +1,9 @@
-export type ProfileSettings = { displayName: string; email: string; onboardingComplete: boolean; reducedMotion: boolean; preferredTextScale: "default" | "large" | "extra_large"; locale: "en"; timezone: string };
+export type ProfileSettings = {
+  displayName: string;
+  email: string;
+  onboardingComplete: boolean;
+  reducedMotion: boolean;
+  preferredTextScale: "default" | "large" | "extra_large";
+  locale: "en";
+  timezone: string;
+};

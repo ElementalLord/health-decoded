@@ -1,29 +1,26 @@
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { CaregiverArticleViewModel } from "@/features/caregiver/types/caregiver";
 
 export function CaregiverArticleList({ articles }: { articles: CaregiverArticleViewModel[] }) {
   return (
-    <ul className="grid gap-4 sm:grid-cols-2">
+    <ul className="divide-y divide-border border-y border-border">
       {articles.map((article) => (
-        <li key={article.id}>
-          <Card className="flex h-full flex-col">
-            <CardHeader>
-              <CardTitle>{article.title}</CardTitle>
-            </CardHeader>
-            {article.support_tip ? <CardContent>{article.support_tip}</CardContent> : null}
-            <CardFooter className="mt-auto">
-              <Link
-                aria-label={`Read caregiver guidance: ${article.title}`}
-                className={buttonVariants({ fullWidth: false, variant: "secondary" })}
-                href={`/caregiver/${article.slug}`}
-              >
-                Read guidance
-              </Link>
-            </CardFooter>
-          </Card>
+        <li className="py-6 first:pt-5" key={article.id}>
+          <article className="max-w-2xl space-y-3">
+            <h2 className="text-[length:var(--text-card-title)] font-medium">{article.title}</h2>
+            {article.support_tip ? (
+              <p className="leading-7 text-muted-foreground">{article.support_tip}</p>
+            ) : null}
+            <Link
+              aria-label={`Read caregiver guidance: ${article.title}`}
+              className={buttonVariants({ fullWidth: false, variant: "text" })}
+              href={`/caregiver/${article.slug}`}
+            >
+              Read guidance
+            </Link>
+          </article>
         </li>
       ))}
     </ul>

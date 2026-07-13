@@ -7,7 +7,11 @@ import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-export default async function CaregiverArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CaregiverArticlePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   if (!slugPattern.test(slug)) notFound();
 

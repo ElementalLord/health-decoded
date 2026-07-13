@@ -99,20 +99,15 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
     <section className="mx-auto flex min-h-[calc(100dvh-11rem)] max-w-[760px] flex-col py-2 sm:py-6">
       <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
         <div className="space-y-1">
-          <p className="text-sm font-semibold text-primary">Day {lesson.dayNumber}</p>
-          <h1 className="text-[length:var(--text-page-title)] font-semibold tracking-tight">
+          <p className="text-sm font-medium text-primary">Day {lesson.dayNumber}</p>
+          <h1 className="text-[length:var(--text-page-title)] font-medium tracking-tight">
             {lesson.title}
           </h1>
           <p className="text-sm text-muted-foreground">About {lesson.estimatedMinutes} minutes</p>
         </div>
-        <div className="flex items-center gap-1">
-          <Link className={buttonVariants({ fullWidth: false, variant: "text" })} href="/caregiver">
-            Caregiver guidance
-          </Link>
-          <Button fullWidth={false} onClick={() => setExitOpen(true)} variant="text">
-            Exit lesson
-          </Button>
-        </div>
+        <Button fullWidth={false} onClick={() => setExitOpen(true)} variant="text">
+          Exit lesson
+        </Button>
       </header>
 
       <div className="space-y-3 py-6">
@@ -126,12 +121,12 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
         />
       </div>
 
-      <article aria-live="polite" className="flex flex-1 items-center py-6 sm:py-10">
+      <article className="flex flex-1 items-center py-6 sm:py-10">
         <div className="w-full">
           {isIntroduction ? (
             <div className="space-y-6">
               <h2
-                className="text-2xl font-semibold tracking-tight sm:text-3xl"
+                className="text-2xl font-medium tracking-tight sm:text-3xl"
                 ref={blockHeadingRef}
                 tabIndex={-1}
               >
@@ -168,7 +163,6 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Button
             disabled={isIntroduction || isSaving}
-            fullWidth={false}
             onClick={() => moveTo(blockIndex - 1)}
             variant="secondary"
           >
@@ -177,7 +171,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
 
           {lesson.accessMode === "review" ? (
             <div className="space-y-2 sm:text-right">
-              <Button disabled>Lesson complete</Button>
+              <p className="font-medium text-foreground">Lesson complete</p>
               <p className="text-sm text-muted-foreground">
                 Reviewing this lesson does not change your progress.
               </p>
@@ -218,6 +212,9 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
         >
           {saveMessage ?? ""}
         </p>
+        <Link className={buttonVariants({ fullWidth: false, variant: "text" })} href="/caregiver">
+          Caregiver guidance for this journey
+        </Link>
       </footer>
 
       <Modal

@@ -29,10 +29,8 @@ export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">
-              Today&apos;s Journey
-            </p>
-            <h2 className="max-w-3xl text-2xl font-semibold tracking-tight sm:text-3xl">
+            <p className="text-sm font-medium text-primary">Today&apos;s Journey</p>
+            <h2 className="max-w-3xl text-2xl font-medium tracking-tight sm:text-3xl">
               {lesson.title}
             </h2>
             {lesson.subtitle ? (
@@ -52,7 +50,7 @@ export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
           <Link className={buttonVariants({ size: "lg" })} href={`/lessons/${lesson.dayNumber}`}>
             {actionLabels[lesson.status]}
           </Link>
-          <p className="text-center text-xs leading-5 text-muted-foreground">
+          <p className="text-center text-[length:var(--text-caption)] leading-5 text-muted-foreground">
             Take this lesson at your own pace.
           </p>
         </div>

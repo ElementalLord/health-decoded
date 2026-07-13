@@ -9,7 +9,7 @@ export function LessonContentBlockView({ block }: { block: LessonContentBlock })
       return (
         <div className="space-y-5">
           {block.heading ? (
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">{block.heading}</h2>
+            <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">{block.heading}</h2>
           ) : null}
           <p className="text-lg leading-8 text-foreground/90">{block.body}</p>
         </div>
@@ -17,14 +17,14 @@ export function LessonContentBlockView({ block }: { block: LessonContentBlock })
     case "callout":
       return (
         <Card tone="info" className="space-y-3">
-          <h2 className="text-2xl font-semibold tracking-tight">{block.title}</h2>
+          <h2 className="text-2xl font-medium tracking-tight">{block.title}</h2>
           <p className="text-lg leading-8 text-foreground/90">{block.body}</p>
         </Card>
       );
     case "summary":
       return (
         <div className="space-y-5">
-          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">
             {block.title ?? "Key points"}
           </h2>
           <ul className="space-y-3 text-lg leading-8 text-foreground/90">
@@ -42,7 +42,7 @@ export function LessonContentBlockView({ block }: { block: LessonContentBlock })
         <figure className="space-y-3">
           <Image
             alt={block.alt}
-            className="w-full rounded-xl border border-border bg-muted object-cover"
+            className="w-full rounded-lg border border-border bg-muted object-cover"
             height={block.height}
             sizes="(min-width: 768px) 720px, 100vw"
             src={block.src}

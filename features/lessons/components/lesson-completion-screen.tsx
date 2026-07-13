@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import type { LessonCompletionResult } from "@/features/lessons/types/lesson-completion";
 
 export function LessonCompletionScreen({
@@ -25,14 +24,14 @@ export function LessonCompletionScreen({
 
   return (
     <section aria-labelledby="lesson-complete-heading" className="mx-auto max-w-xl py-6 sm:py-10">
-      <Card className="space-y-6 p-6 sm:p-10">
-        <CheckCircle2 aria-hidden="true" className="size-11 text-success" />
+      <div className="space-y-6 border-y border-border py-8 sm:py-10">
+        <CheckCircle2 aria-hidden="true" className="size-10 text-primary" />
         <div className="space-y-2">
-          <p aria-live="polite" className="text-sm font-semibold text-success">
+          <p aria-live="polite" className="text-sm font-medium text-primary">
             Your progress was saved
           </p>
           <h1
-            className="text-[length:var(--text-page-title)] font-semibold tracking-tight"
+            className="text-[length:var(--text-page-title)] font-medium tracking-tight"
             id="lesson-complete-heading"
             ref={headingRef}
             tabIndex={-1}
@@ -48,7 +47,7 @@ export function LessonCompletionScreen({
           aria-labelledby="lesson-takeaway"
           className="space-y-2 border-y border-border py-5"
         >
-          <h2 className="text-sm font-semibold" id="lesson-takeaway">
+          <h2 className="text-sm font-medium" id="lesson-takeaway">
             Today&apos;s takeaway
           </h2>
           <p className="leading-7 text-foreground">{keyTakeaway}</p>
@@ -76,19 +75,22 @@ export function LessonCompletionScreen({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link className={buttonVariants()} href="/journey">
-            Return to Today&apos;s Journey
-          </Link>
           {completion.nextRoute ? (
-            <Link className={buttonVariants({ variant: "secondary" })} href={completion.nextRoute}>
+            <Link className={buttonVariants()} href={completion.nextRoute}>
               Continue to next lesson
             </Link>
           ) : null}
+          <Link
+            className={buttonVariants({ variant: completion.nextRoute ? "secondary" : "primary" })}
+            href="/journey"
+          >
+            Return to Today&apos;s Journey
+          </Link>
           <Link className={buttonVariants({ variant: "text" })} href="/stories">
             Read a story
           </Link>
         </div>
-      </Card>
+      </div>
     </section>
   );
 }

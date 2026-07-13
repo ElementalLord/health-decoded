@@ -6,18 +6,23 @@ type EmptyStateProps = {
   action?: ReactNode;
   className?: string;
   description: string;
+  headingLevel?: "h1" | "h2";
   icon?: ReactNode;
   title: string;
 };
 
-function EmptyState({ action, className, description, icon, title }: EmptyStateProps) {
+function EmptyState({
+  action,
+  className,
+  description,
+  headingLevel = "h2",
+  icon,
+  title,
+}: EmptyStateProps) {
+  const Heading = headingLevel;
+
   return (
-    <section
-      className={cn(
-        "rounded-xl border border-dashed border-border bg-card px-6 py-10 text-center shadow-card transition duration-200 hover:shadow-card-hover sm:px-10",
-        className,
-      )}
-    >
+    <section className={cn("px-4 py-10 text-center sm:px-8", className)}>
       <div className="mx-auto flex max-w-md flex-col items-center gap-4">
         {icon ? (
           <div className="text-primary" aria-hidden="true">
@@ -25,7 +30,7 @@ function EmptyState({ action, className, description, icon, title }: EmptyStateP
           </div>
         ) : null}
         <div className="space-y-2">
-          <h2 className="text-[length:var(--text-card-title)] font-semibold">{title}</h2>
+          <Heading className="text-[length:var(--text-card-title)] font-medium">{title}</Heading>
           <p className="text-[length:var(--text-supporting)] leading-6 text-muted-foreground">
             {description}
           </p>

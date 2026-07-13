@@ -1,7 +1,7 @@
 export type ApplicationRoute = {
   href: string;
   label: string;
-  icon: "home" | "user";
+  icon: "home" | "journey" | "profile" | "progress" | "resources" | "stories";
 };
 
 export const applicationRoutes = [
@@ -16,10 +16,10 @@ export const protectedApplicationRoutes = [
   {
     href: "/journey",
     label: "Journey",
-    icon: "home",
+    icon: "journey",
   },
-  { href: "/progress", label: "Progress", icon: "home" },
-  { href: "/stories", label: "Stories", icon: "home" },
-  { href: "/resources", label: "Resources", icon: "home" },
-  { href: "/profile", label: "Profile", icon: "user" },
+  { href: "/progress", label: "Progress", icon: "progress" },
+  { href: "/stories", label: "Stories", icon: "stories" },
+  { href: "/resources", label: "Resources", icon: "resources" },
+  { href: "/profile", label: "Profile", icon: "profile" },
 ] as const satisfies readonly ApplicationRoute[];

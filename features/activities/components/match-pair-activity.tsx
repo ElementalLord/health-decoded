@@ -58,9 +58,9 @@ export function MatchPairActivityView({
   return (
     <section aria-labelledby={`activity-${activity.id}`} className="space-y-6">
       <div className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Practice</p>
+        <p className="text-sm font-medium text-primary">Practice</p>
         <h2
-          className="text-2xl font-semibold tracking-tight sm:text-3xl"
+          className="text-2xl font-medium tracking-tight sm:text-3xl"
           id={`activity-${activity.id}`}
           ref={headingRef}
           tabIndex={-1}
@@ -78,7 +78,7 @@ export function MatchPairActivityView({
 
       <div className="grid gap-6 sm:grid-cols-2">
         <fieldset className="space-y-3">
-          <legend className="text-sm font-semibold">Choose a label</legend>
+          <legend className="text-sm font-medium">Choose a label</legend>
           {activity.configuration.leftItems.map((item) => {
             const paired = pairs[item.id];
             const selected = selectedLeftId === item.id;
@@ -97,14 +97,14 @@ export function MatchPairActivityView({
                 variant="secondary"
               >
                 <span>{item.label}</span>
-                {paired ? <span className="text-xs">Matched</span> : null}
+                {paired ? <span className="text-[length:var(--text-caption)]">Matched</span> : null}
               </Button>
             );
           })}
         </fieldset>
 
         <fieldset className="space-y-3">
-          <legend className="text-sm font-semibold">Choose its description</legend>
+          <legend className="text-sm font-medium">Choose its description</legend>
           {activity.configuration.rightItems.map((item) => {
             const unavailable = usedRightIds.has(item.id);
 
@@ -117,7 +117,9 @@ export function MatchPairActivityView({
                 variant="secondary"
               >
                 <span>{item.label}</span>
-                {unavailable ? <span className="text-xs">Matched</span> : null}
+                {unavailable ? (
+                  <span className="text-[length:var(--text-caption)]">Matched</span>
+                ) : null}
               </Button>
             );
           })}

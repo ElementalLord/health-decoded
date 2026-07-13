@@ -3,7 +3,13 @@ import { err, ok, type Result } from "@/lib/result/result";
 import { unexpectedError } from "@/lib/errors/application-error";
 import { getServerDatabaseClient } from "@/lib/database/server";
 
-type OnboardingValues = { displayName: string; locale: "en"; preferredTextScale: "default" | "large"; reducedMotion: boolean; timezone: string };
+type OnboardingValues = {
+  displayName: string;
+  locale: "en";
+  preferredTextScale: "default" | "large";
+  reducedMotion: boolean;
+  timezone: string;
+};
 
 export async function completeOnboarding(values: OnboardingValues): Promise<Result<true>> {
   const user = await getAuthenticatedUser();

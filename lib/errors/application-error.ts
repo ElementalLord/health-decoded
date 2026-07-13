@@ -1,10 +1,5 @@
 export type ApplicationErrorCode =
-  | "authorization"
-  | "conflict"
-  | "forbidden"
-  | "not_found"
-  | "unexpected"
-  | "validation";
+  "authorization" | "conflict" | "forbidden" | "not_found" | "unexpected" | "validation";
 
 type ApplicationErrorOptions = {
   code: ApplicationErrorCode;

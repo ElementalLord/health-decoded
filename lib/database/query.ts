@@ -1,10 +1,6 @@
 import type { PostgrestError } from "@supabase/supabase-js";
 
-import {
-  conflictError,
-  notFoundError,
-  unexpectedError,
-} from "@/lib/errors/application-error";
+import { conflictError, notFoundError, unexpectedError } from "@/lib/errors/application-error";
 import { err, ok, type Result } from "@/lib/result/result";
 
 type QueryResponse<T> = {

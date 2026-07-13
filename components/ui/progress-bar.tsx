@@ -17,15 +17,14 @@ function ProgressBar({ value, label, className, disabled = false }: ProgressBarP
       aria-valuemin={0}
       aria-valuenow={normalizedValue}
       className={cn(
-        "h-3 w-full overflow-hidden rounded-full bg-muted transition duration-[400ms] hover:bg-muted/70 focus-visible:ring-2 focus-visible:ring-ring data-[disabled=true]:opacity-50",
+        "h-3 w-full overflow-hidden rounded-full bg-muted data-[disabled=true]:opacity-50",
         className,
       )}
       role="progressbar"
       data-disabled={disabled}
-      tabIndex={0}
     >
       <div
-        className="h-full rounded-full bg-primary transition-[width] duration-[400ms] ease-out"
+        className="h-full rounded-full bg-primary transition-[width] duration-[var(--duration-progress)] ease-[var(--ease-standard)]"
         style={{ width: `${normalizedValue}%` }}
       />
     </div>

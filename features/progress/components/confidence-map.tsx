@@ -1,6 +1,5 @@
 import { CheckCircle2, Circle, LockKeyhole, MapPin } from "lucide-react";
 
-import { Card } from "@/components/ui/card";
 import type { ProgressMilestone, ProgressMilestoneState } from "@/features/progress/types/progress";
 import { cn } from "@/lib/utils";
 
@@ -13,9 +12,12 @@ const stateDetails: Record<ProgressMilestoneState, { label: string; icon: typeof
 
 export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] }) {
   return (
-    <Card className="space-y-5">
+    <section aria-labelledby="confidence-map-title" className="space-y-5">
       <div className="space-y-1">
-        <h2 className="text-[length:var(--text-section-title)] font-semibold tracking-tight">
+        <h2
+          className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+          id="confidence-map-title"
+        >
           Confidence Map
         </h2>
         <p className="text-sm leading-6 text-muted-foreground">
@@ -23,7 +25,7 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
         </p>
       </div>
 
-      <ol aria-label="Journey milestones" className="space-y-3">
+      <ol aria-label="Journey milestones" className="divide-y divide-border border-y border-border">
         {milestones.map((milestone) => {
           const details = stateDetails[milestone.state];
           const Icon = details.icon;
@@ -32,9 +34,9 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
           return (
             <li
               className={cn(
-                "flex items-start gap-3 rounded-xl border border-border p-4",
-                milestone.state === "current" && "border-primary/30 bg-secondary/40",
-                milestone.state === "locked" && "bg-muted/40 text-muted-foreground",
+                "flex items-start gap-3 px-1 py-4 sm:px-3",
+                milestone.state === "current" && "bg-secondary/40",
+                milestone.state === "locked" && "text-muted-foreground",
               )}
               key={milestone.dayNumber}
             >
@@ -48,7 +50,7 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
               />
               <div className="min-w-0 flex-1 space-y-1">
                 <p className="text-sm font-medium">Day {milestone.dayNumber}</p>
-                <p className="font-semibold text-foreground">{title}</p>
+                <p className="font-medium text-foreground">{title}</p>
                 <p className="text-sm text-muted-foreground">
                   {details.label}
                   {milestone.confidenceLabel ? ` · ${milestone.confidenceLabel}` : ""}
@@ -58,6 +60,6 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
           );
         })}
       </ol>
-    </Card>
+    </section>
   );
 }

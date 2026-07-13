@@ -6,7 +6,12 @@ import { redirect } from "next/navigation";
 import { getSafeRedirectPath, DEFAULT_AUTHENTICATED_DESTINATION } from "@/lib/auth/redirects";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
-import { forgotPasswordSchema, loginSchema, resetPasswordSchema, signupSchema } from "@/features/auth/schemas/auth.schemas";
+import {
+  forgotPasswordSchema,
+  loginSchema,
+  resetPasswordSchema,
+  signupSchema,
+} from "@/features/auth/schemas/auth.schemas";
 import type { AuthFormState } from "@/features/auth/types/auth-form";
 
 const logger = createServerLogger();
@@ -47,14 +52,21 @@ export async function loginAction(_: AuthFormState, formData: FormData): Promise
 
   const database = await getServerDatabaseClient();
   const { error } = await database.auth.signInWithPassword(parsed.data);
-  if (error) return failure("We could not sign you in with those details. Check your information and try again.");
+  if (error)
+    return failure(
+      "We could not sign you in with those details. Check your information and try again.",
+    );
 
   redirect(getSafeRedirectPath(formData.get("next")?.toString()));
 }
 
-export async function forgotPasswordAction(_: AuthFormState, formData: FormData): Promise<AuthFormState> {
+export async function forgotPasswordAction(
+  _: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
   const parsed = forgotPasswordSchema.safeParse(values(formData));
-  if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? "Enter a valid email address.");
+  if (!parsed.success)
+    return failure(parsed.error.issues[0]?.message ?? "Enter a valid email address.");
 
   const database = await getServerDatabaseClient();
   const { error } = await database.auth.resetPasswordForEmail(parsed.data.email, {
@@ -68,7 +80,10 @@ export async function forgotPasswordAction(_: AuthFormState, formData: FormData)
   };
 }
 
-export async function resetPasswordAction(_: AuthFormState, formData: FormData): Promise<AuthFormState> {
+export async function resetPasswordAction(
+  _: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
   const parsed = resetPasswordSchema.safeParse(values(formData));
   if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? "Check your information.");
 

@@ -14,7 +14,8 @@ export function CaregiverUnavailableState({ action }: { action?: ReactNode }) {
           </Link>
         )
       }
-      description="We couldn&apos;t load caregiver guidance right now. Please try again in a moment."
+      description="We couldn't load caregiver guidance right now. Please try again in a moment."
+      headingLevel="h1"
       title="Caregiver guidance is unavailable"
     />
   );

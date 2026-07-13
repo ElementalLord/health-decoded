@@ -12,6 +12,7 @@ export function LessonUnavailableState() {
         </Link>
       }
       description="We could not load today’s lesson. Please try again in a moment."
+      headingLevel="h1"
       title="Your lesson is unavailable"
     />
   );

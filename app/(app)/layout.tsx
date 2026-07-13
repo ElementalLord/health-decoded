@@ -11,7 +11,9 @@ export default async function ProtectedLayout({ children }: { children: ReactNod
   if (!user.ok) redirect("/login?next=/journey");
   const settings = await getProfileSettings();
   return settings.ok ? (
-    <AppShell preferences={settings.data} routes={protectedApplicationRoutes}>{children}</AppShell>
+    <AppShell preferences={settings.data} routes={protectedApplicationRoutes}>
+      {children}
+    </AppShell>
   ) : (
     <AppShell routes={protectedApplicationRoutes}>{children}</AppShell>
   );

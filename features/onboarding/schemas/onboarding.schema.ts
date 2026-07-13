@@ -7,5 +7,8 @@ export const onboardingSchema = z.object({
   locale: z.literal("en"),
   preferredTextScale: z.enum(["default", "large"]),
   reducedMotion: z.enum(["true", "false"]).transform((value) => value === "true"),
-  timezone: z.string().max(64).refine((value) => supportedTimezones.has(value), "Choose a valid timezone."),
+  timezone: z
+    .string()
+    .max(64)
+    .refine((value) => supportedTimezones.has(value), "Choose a valid timezone."),
 });

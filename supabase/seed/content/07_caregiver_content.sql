@@ -10,10 +10,10 @@ insert into public.caregiver_content (
   'Use only for schema verification.',
   'No production language is included in this seed.',
   'How can we verify the schema together?',
-  'published',
-  'Development seed',
-  '2026-01-01T00:00:00Z',
-  '2026-01-01T00:00:00Z'
+  'draft',
+  null,
+  null,
+  null
 )
 on conflict (id) do update set
   journey_lesson_id = excluded.journey_lesson_id,

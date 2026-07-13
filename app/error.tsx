@@ -12,7 +12,8 @@ export default function GlobalErrorPage({
   return (
     <EmptyState
       action={<Button onClick={reset}>Try again</Button>}
-      description="Something interrupted this page. Your information is safe, and you can try loading it again."
+      description="Something interrupted this page. Try loading it again."
+      headingLevel="h1"
       title="We couldn't load this page"
     />
   );
