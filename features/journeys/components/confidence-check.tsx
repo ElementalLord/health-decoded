@@ -49,7 +49,7 @@ export function ConfidenceCheck({
           <input name="lessonProgressId" type="hidden" value={lessonProgressId} />
           <fieldset disabled={pending}>
             <legend className="sr-only">Choose your confidence level</legend>
-            <div className="grid gap-2 sm:grid-cols-3">
+            <div className="divide-y divide-border border-y border-border">
               {options.map((option) => {
                 const selected = state.savedValue === option.value;
 
@@ -57,9 +57,8 @@ export function ConfidenceCheck({
                   <Button
                     aria-pressed={selected}
                     className={cn(
-                      "min-h-11 justify-between whitespace-normal text-left",
-                      selected &&
-                        "border-primary bg-secondary text-foreground ring-2 ring-primary/20",
+                      "min-h-12 justify-between rounded-none border-0 bg-transparent px-1 text-left text-foreground shadow-none hover:bg-muted/50",
+                      selected && "bg-muted text-foreground",
                     )}
                     disabled={pending}
                     key={option.value}

@@ -104,24 +104,26 @@ export function OnboardingFlow() {
         {step === 2 ? (
           <fieldset className="space-y-3">
             <legend className="mb-2 font-medium">Choose what feels comfortable</legend>
-            <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border px-3 py-2">
-              <input
-                checked={textScale === "large"}
-                className="size-5 shrink-0 accent-primary"
-                onChange={(event) => setTextScale(event.target.checked ? "large" : "default")}
-                type="checkbox"
-              />
-              <span>Use larger text</span>
-            </label>
-            <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border px-3 py-2">
-              <input
-                checked={reducedMotion}
-                className="size-5 shrink-0 accent-primary"
-                onChange={(event) => setReducedMotion(event.target.checked)}
-                type="checkbox"
-              />
-              <span>Reduce motion</span>
-            </label>
+            <div className="divide-y divide-border border-y border-border">
+              <label className="flex min-h-12 cursor-pointer items-center gap-3 py-3">
+                <input
+                  checked={textScale === "large"}
+                  className="size-5 shrink-0 accent-primary"
+                  onChange={(event) => setTextScale(event.target.checked ? "large" : "default")}
+                  type="checkbox"
+                />
+                <span>Use larger text</span>
+              </label>
+              <label className="flex min-h-12 cursor-pointer items-center gap-3 py-3">
+                <input
+                  checked={reducedMotion}
+                  className="size-5 shrink-0 accent-primary"
+                  onChange={(event) => setReducedMotion(event.target.checked)}
+                  type="checkbox"
+                />
+                <span>Reduce motion</span>
+              </label>
+            </div>
           </fieldset>
         ) : null}
 
@@ -153,15 +155,16 @@ export function OnboardingFlow() {
           </p>
         ) : null}
 
-        <div className="flex flex-col gap-3 border-t border-border pt-5 sm:flex-row sm:justify-between">
+        <div className="flex flex-col items-start gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
           {step > 0 ? (
             <Button
+              fullWidth={false}
               onClick={() => {
                 setStepError(null);
                 setStep((currentStep) => currentStep - 1);
               }}
               type="button"
-              variant="secondary"
+              variant="text"
             >
               Back
             </Button>

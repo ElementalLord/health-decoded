@@ -52,7 +52,7 @@ function BottomNavigation({
                   href={route.href}
                 >
                   <Icon aria-hidden="true" className="size-5" />
-                  <span className="max-w-full">{route.label}</span>
+                  <span className="block w-full truncate px-0.5 text-center">{route.label}</span>
                 </Link>
               </li>
             );

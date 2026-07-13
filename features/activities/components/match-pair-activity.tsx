@@ -79,50 +79,57 @@ export function MatchPairActivityView({
       <div className="grid gap-6 sm:grid-cols-2">
         <fieldset className="space-y-3">
           <legend className="text-sm font-medium">Choose a label</legend>
-          {activity.configuration.leftItems.map((item) => {
-            const paired = pairs[item.id];
-            const selected = selectedLeftId === item.id;
+          <div className="divide-y divide-border border-y border-border">
+            {activity.configuration.leftItems.map((item) => {
+              const paired = pairs[item.id];
+              const selected = selectedLeftId === item.id;
 
-            return (
-              <Button
-                aria-pressed={selected}
-                className={cn(
-                  "min-h-14 whitespace-normal text-left",
-                  selected && "border-primary bg-secondary text-foreground ring-2 ring-primary/20",
-                )}
-                disabled={Boolean(paired) || isSaving || isComplete}
-                key={item.id}
-                onClick={() => setSelectedLeftId(item.id)}
-                type="button"
-                variant="secondary"
-              >
-                <span>{item.label}</span>
-                {paired ? <span className="text-[length:var(--text-caption)]">Matched</span> : null}
-              </Button>
-            );
-          })}
+              return (
+                <Button
+                  aria-pressed={selected}
+                  className={cn(
+                    "min-h-14 justify-between rounded-none border-0 bg-transparent px-1 text-left text-foreground shadow-none hover:bg-muted/50",
+                    selected && "bg-muted text-foreground",
+                  )}
+                  disabled={Boolean(paired) || isSaving || isComplete}
+                  key={item.id}
+                  onClick={() => setSelectedLeftId(item.id)}
+                  type="button"
+                  variant="secondary"
+                >
+                  <span>{item.label}</span>
+                  {paired ? (
+                    <span className="text-[length:var(--text-caption)]">Matched</span>
+                  ) : null}
+                </Button>
+              );
+            })}
+          </div>
         </fieldset>
 
         <fieldset className="space-y-3">
           <legend className="text-sm font-medium">Choose its description</legend>
-          {activity.configuration.rightItems.map((item) => {
-            const unavailable = usedRightIds.has(item.id);
+          <div className="divide-y divide-border border-y border-border">
+            {activity.configuration.rightItems.map((item) => {
+              const unavailable = usedRightIds.has(item.id);
 
-            return (
-              <Button
-                disabled={!selectedLeftId || unavailable || isSaving || isComplete}
-                key={item.id}
-                onClick={() => selectRight(item.id)}
-                type="button"
-                variant="secondary"
-              >
-                <span>{item.label}</span>
-                {unavailable ? (
-                  <span className="text-[length:var(--text-caption)]">Matched</span>
-                ) : null}
-              </Button>
-            );
-          })}
+              return (
+                <Button
+                  className="min-h-14 justify-between rounded-none border-0 bg-transparent px-1 text-left text-foreground shadow-none hover:bg-muted/50"
+                  disabled={!selectedLeftId || unavailable || isSaving || isComplete}
+                  key={item.id}
+                  onClick={() => selectRight(item.id)}
+                  type="button"
+                  variant="secondary"
+                >
+                  <span>{item.label}</span>
+                  {unavailable ? (
+                    <span className="text-[length:var(--text-caption)]">Matched</span>
+                  ) : null}
+                </Button>
+              );
+            })}
+          </div>
         </fieldset>
       </div>
 

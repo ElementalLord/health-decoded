@@ -74,19 +74,22 @@ export function LessonCompletionScreen({
           ) : null}
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
           {completion.nextRoute ? (
             <Link className={buttonVariants()} href={completion.nextRoute}>
               Continue to next lesson
             </Link>
           ) : null}
           <Link
-            className={buttonVariants({ variant: completion.nextRoute ? "secondary" : "primary" })}
+            className={buttonVariants({
+              fullWidth: completion.nextRoute ? false : true,
+              variant: completion.nextRoute ? "secondary" : "primary",
+            })}
             href="/journey"
           >
             Return to Today&apos;s Journey
           </Link>
-          <Link className={buttonVariants({ variant: "text" })} href="/stories">
+          <Link className={buttonVariants({ fullWidth: false, variant: "text" })} href="/stories">
             Read a story
           </Link>
         </div>

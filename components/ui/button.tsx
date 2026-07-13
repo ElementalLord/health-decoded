@@ -10,7 +10,7 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
         secondary: "border border-primary bg-card text-primary hover:bg-secondary",
-        text: "text-primary hover:bg-primary/10 hover:underline",
+        text: "px-2 text-primary underline-offset-4 hover:underline active:scale-100",
       },
       size: {
         default: "w-full",

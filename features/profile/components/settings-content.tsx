@@ -35,68 +35,70 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
           Accessibility and language
         </h2>
 
-        <form action={action} className="max-w-xl space-y-5">
+        <form action={action} className="max-w-xl">
           <input name="reducedMotion" type="hidden" value="false" />
           <input name="locale" type="hidden" value="en" />
 
-          <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border px-3 py-2">
-            <input
-              className="size-5 shrink-0 accent-primary"
-              defaultChecked={data.reducedMotion}
-              name="reducedMotion"
-              type="checkbox"
-              value="true"
-            />
-            <span>Reduce motion</span>
-          </label>
+          <div className="divide-y divide-border border-y border-border">
+            <label className="flex min-h-12 cursor-pointer items-center justify-between gap-4 py-4">
+              <span className="font-medium">Reduce motion</span>
+              <input
+                className="size-5 shrink-0 accent-primary"
+                defaultChecked={data.reducedMotion}
+                name="reducedMotion"
+                type="checkbox"
+                value="true"
+              />
+            </label>
 
-          <label className="grid gap-2 text-sm font-medium" htmlFor="preferred-text-scale">
-            Text size
-            <Select
-              aria-describedby={state.message ? messageId : undefined}
-              aria-invalid={hasError || undefined}
-              defaultValue={data.preferredTextScale}
-              id="preferred-text-scale"
-              name="preferredTextScale"
-            >
-              <option value="default">Standard</option>
-              <option value="large">Large</option>
-              <option value="extra_large">Extra large</option>
-            </Select>
-          </label>
+            <label className="grid gap-2 py-4 text-sm font-medium" htmlFor="preferred-text-scale">
+              Text size
+              <Select
+                aria-describedby={state.message ? messageId : undefined}
+                aria-invalid={hasError || undefined}
+                defaultValue={data.preferredTextScale}
+                id="preferred-text-scale"
+                name="preferredTextScale"
+              >
+                <option value="default">Standard</option>
+                <option value="large">Large</option>
+                <option value="extra_large">Extra large</option>
+              </Select>
+            </label>
 
-          <label className="grid gap-2 text-sm font-medium" htmlFor="preferred-language">
-            Language
-            <Select defaultValue={data.locale} disabled id="preferred-language">
-              <option value="en">English</option>
-            </Select>
-          </label>
+            <div className="grid gap-1 py-4">
+              <p className="text-sm font-medium">Language</p>
+              <p className="text-sm text-muted-foreground">English</p>
+            </div>
 
-          <label className="grid gap-2 text-sm font-medium" htmlFor="preferred-timezone">
-            Timezone
-            <Input
-              aria-describedby={state.message ? messageId : undefined}
-              aria-invalid={hasError || undefined}
-              defaultValue={data.timezone}
-              id="preferred-timezone"
-              name="timezone"
-              required
-            />
-          </label>
+            <label className="grid gap-2 py-4 text-sm font-medium" htmlFor="preferred-timezone">
+              Timezone
+              <Input
+                aria-describedby={state.message ? messageId : undefined}
+                aria-invalid={hasError || undefined}
+                defaultValue={data.timezone}
+                id="preferred-timezone"
+                name="timezone"
+                required
+              />
+            </label>
+          </div>
 
-          <Button disabled={pending} fullWidth={false}>
-            {pending ? "Saving…" : "Save settings"}
-          </Button>
-          {state.message ? (
-            <p
-              aria-live="polite"
-              className={hasError ? "text-sm text-destructive" : "text-sm text-success"}
-              id={messageId}
-              role={hasError ? "alert" : "status"}
-            >
-              {state.message}
-            </p>
-          ) : null}
+          <div className="mt-5 space-y-3">
+            <Button disabled={pending} fullWidth={false}>
+              {pending ? "Saving…" : "Save settings"}
+            </Button>
+            {state.message ? (
+              <p
+                aria-live="polite"
+                className={hasError ? "text-sm text-destructive" : "text-sm text-success"}
+                id={messageId}
+                role={hasError ? "alert" : "status"}
+              >
+                {state.message}
+              </p>
+            ) : null}
+          </div>
         </form>
       </section>
 

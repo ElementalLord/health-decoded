@@ -109,9 +109,7 @@ export function ProfileContent({ data }: { data: ProfileSettings }) {
             Account deletion is not available in this prototype. No data will be deleted from this
             screen.
           </p>
-          <Button disabled fullWidth={false} variant="secondary">
-            Deletion unavailable
-          </Button>
+          <p className="text-sm font-medium text-muted-foreground">Unavailable in this prototype</p>
         </div>
       </section>
     </section>
