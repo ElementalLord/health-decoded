@@ -26,12 +26,20 @@ export function JourneyProgressSummaryCard({
       <ProgressBar label={progressLabel} value={progress.percentage} />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">{progressLabel}</p>
-        <Link
-          className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
-          href="/progress"
-        >
-          View your progress
-        </Link>
+        <div className="flex flex-wrap items-center gap-1">
+          <Link
+            className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+            href="/progress"
+          >
+            View your progress
+          </Link>
+          <Link
+            className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+            href="/caregiver"
+          >
+            Caregiver guidance
+          </Link>
+        </div>
       </div>
     </Card>
   );

@@ -105,9 +105,14 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
           </h1>
           <p className="text-sm text-muted-foreground">About {lesson.estimatedMinutes} minutes</p>
         </div>
-        <Button fullWidth={false} onClick={() => setExitOpen(true)} variant="text">
-          Exit lesson
-        </Button>
+        <div className="flex items-center gap-1">
+          <Link className={buttonVariants({ fullWidth: false, variant: "text" })} href="/caregiver">
+            Caregiver guidance
+          </Link>
+          <Button fullWidth={false} onClick={() => setExitOpen(true)} variant="text">
+            Exit lesson
+          </Button>
+        </div>
       </header>
 
       <div className="space-y-3 py-6">
