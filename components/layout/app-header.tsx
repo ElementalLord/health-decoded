@@ -5,12 +5,14 @@ import { DesktopLayout } from "@/components/layout/desktop-layout";
 import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
 
 function AppHeader({ routes = applicationRoutes }: { routes?: readonly ApplicationRoute[] }) {
+  const brandDestination = routes[0]?.href ?? "/";
+
   return (
     <header className="safe-area-top sticky top-0 z-40 border-b border-border/80 bg-card/95 backdrop-blur-sm">
       <div className="mx-auto flex min-h-16 w-full max-w-[1100px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link
           className="inline-flex min-h-11 items-center gap-2 rounded-lg text-base font-semibold tracking-tight transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
-          href="/"
+          href={brandDestination}
         >
           <span
             aria-hidden="true"

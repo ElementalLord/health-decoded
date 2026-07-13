@@ -1,4 +1,4 @@
-const DEFAULT_AUTHENTICATED_DESTINATION = "/account";
+const DEFAULT_AUTHENTICATED_DESTINATION = "/journey";
 
 export function getSafeRedirectPath(value: string | null | undefined): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {

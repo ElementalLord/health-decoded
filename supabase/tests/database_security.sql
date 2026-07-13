@@ -61,6 +61,34 @@ begin
   ) then
     raise exception 'Reflections must enforce the approved 300-character limit';
   end if;
+
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'confidence_check_ins_unique_lesson_progress'
+  ) then
+    raise exception 'Confidence check-ins must be unique per lesson-progress context';
+  end if;
+
+  if has_function_privilege('anon', 'public.initialize_current_user_journey()', 'execute')
+    or not has_function_privilege(
+      'authenticated',
+      'public.initialize_current_user_journey()',
+      'execute'
+    ) then
+    raise exception 'Journey initialization privileges are not restricted correctly';
+  end if;
+
+  if has_function_privilege(
+    'anon',
+    'public.upsert_confidence_check_in(uuid,text)',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.upsert_confidence_check_in(uuid,text)',
+    'execute'
+  ) then
+    raise exception 'Confidence check-in privileges are not restricted correctly';
+  end if;
 end;
 $$;
 
@@ -69,5 +97,9 @@ $$;
 -- 2. Authenticated users can read published content but not draft content.
 -- 3. Deleting auth.users rows cascades user-owned records only.
 -- 4. A 90-day journey is accepted and a >300-character reflection is rejected.
+-- 5. Journey initialization rejects unauthenticated callers and is idempotent.
+-- 6. Journey initialization selects only the stable published prototype journey.
+-- 7. Confidence upsert rejects invalid values and another user's lesson progress.
+-- 8. Repeated confidence submissions update one row while direct writes remain denied.
 
 rollback;
