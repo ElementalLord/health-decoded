@@ -1,0 +1,51 @@
+{
+  "slug": "semaglutide-injection",
+  "generic_name": "Semaglutide injection",
+  "brand_names": ["Ozempic"],
+  "medication_class": "GLP-1 receptor agonist",
+  "content": {
+    "short_summary": "This draft covers semaglutide injection as used for Type 2 diabetes; product-specific uses and risks must be reviewed with a qualified clinician.",
+    "why_it_is_used": [
+      "Semaglutide injection may be prescribed to help manage blood glucose in adults with Type 2 diabetes.",
+      "This record focuses on Type 2 diabetes use and does not describe semaglutide products marketed for other purposes."
+    ],
+    "how_it_works": [
+      "Semaglutide is a GLP-1 receptor agonist that affects hormone signals involved in blood glucose regulation.",
+      "It can slow stomach emptying and may reduce appetite; these effects do not guarantee weight change for any individual."
+    ],
+    "common_benefits": [
+      "May help lower blood glucose when prescribed as part of a Type 2 diabetes care plan.",
+      "A healthcare team can explain the approved purpose of the specific product they prescribe."
+    ],
+    "common_side_effects": [
+      "Stomach-related effects such as nausea, vomiting, diarrhea, constipation, or stomach pain can occur.",
+      "Side effects and how they are managed are individual and should be discussed with a healthcare professional."
+    ],
+    "important_considerations": [
+      "Research-backed editorial draft. Not yet reviewed by a qualified clinician. Must not be published.",
+      "Important warnings and medical history can affect whether a semaglutide product is suitable for someone.",
+      "Different semaglutide products have different approved uses; do not assume products are interchangeable.",
+      "Medication choices are individual. This is general education, not a reason to start, stop, or change a medicine based on this app. Urgent or severe symptoms need professional care."
+    ],
+    "questions_for_healthcare_team": [
+      "Which semaglutide product and approved use are relevant to my care plan?",
+      "What side effects or warning signs should I discuss with my healthcare team?",
+      "How do my health history and other medicines affect this option?"
+    ],
+    "key_takeaway": "Semaglutide injection is a GLP-1 receptor agonist used in Type 2 diabetes care, but product choice and suitability require individual clinical review."
+  },
+  "status": "draft",
+  "version": 1,
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "published_at": null,
+  "source_references": [
+    {
+      "publisher": "U.S. National Library of Medicine",
+      "title": "Semaglutide Injection: MedlinePlus Drug Information",
+      "url": "https://medlineplus.gov/druginfo/meds/a618008.html",
+      "accessed_at": "2026-07-13T00:00:00Z"
+    }
+  ],
+  "updated_at": "2026-07-13T00:00:00Z"
+}

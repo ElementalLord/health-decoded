@@ -1,0 +1,51 @@
+{
+  "slug": "sitagliptin",
+  "generic_name": "Sitagliptin",
+  "brand_names": ["Januvia"],
+  "medication_class": "DPP-4 inhibitor",
+  "content": {
+    "short_summary": "Sitagliptin is a DPP-4 inhibitor that may be used to help manage Type 2 diabetes as part of an individual care plan.",
+    "why_it_is_used": [
+      "Sitagliptin may be prescribed alone or with other medicines to help manage Type 2 diabetes.",
+      "A healthcare team considers a person’s medical history and treatment goals when discussing this option."
+    ],
+    "how_it_works": [
+      "Sitagliptin helps increase the activity of incretin hormones in the body.",
+      "When blood glucose is elevated, those hormone signals can support insulin release and reduce glucagon release."
+    ],
+    "common_benefits": [
+      "May help lower blood glucose when it is prescribed for Type 2 diabetes.",
+      "It may be used with other diabetes medicines when a clinician determines that combination is appropriate."
+    ],
+    "common_side_effects": [
+      "Side effects can occur and should be reviewed with a pharmacist or healthcare professional.",
+      "Serious warnings and an individual’s medical history are important parts of a prescribing discussion."
+    ],
+    "important_considerations": [
+      "Research-backed editorial draft. Not yet reviewed by a qualified clinician. Must not be published.",
+      "Sitagliptin is not inherently better or worse than other options; treatment choice is individual.",
+      "Important warnings, other medicines, and health conditions should be reviewed with a qualified healthcare professional.",
+      "Medication choices are individual. This is general education, not a reason to start, stop, or change a medicine based on this app. Urgent or severe symptoms need professional care."
+    ],
+    "questions_for_healthcare_team": [
+      "What is sitagliptin intended to help with in my care plan?",
+      "Which side effects or warnings should I understand before discussing this option?",
+      "How do my other medicines and health conditions affect this choice?"
+    ],
+    "key_takeaway": "Sitagliptin is a DPP-4 inhibitor used in Type 2 diabetes care; a healthcare team can explain whether it fits an individual plan."
+  },
+  "status": "draft",
+  "version": 1,
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "published_at": null,
+  "source_references": [
+    {
+      "publisher": "U.S. National Library of Medicine",
+      "title": "Sitagliptin: MedlinePlus Drug Information",
+      "url": "https://medlineplus.gov/druginfo/meds/a606023.html",
+      "accessed_at": "2026-07-13T00:00:00Z"
+    }
+  ],
+  "updated_at": "2026-07-13T00:00:00Z"
+}

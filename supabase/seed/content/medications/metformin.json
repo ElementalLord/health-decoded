@@ -1,0 +1,51 @@
+{
+  "slug": "metformin",
+  "generic_name": "Metformin",
+  "brand_names": ["Fortamet", "Glucophage", "Glumetza", "Riomet"],
+  "medication_class": "Biguanide",
+  "content": {
+    "short_summary": "Metformin is a biguanide medicine used to help manage Type 2 diabetes as part of an individual care plan.",
+    "why_it_is_used": [
+      "Metformin may be used alone or with other medicines to help manage Type 2 diabetes.",
+      "It is one of several treatment options a healthcare team may consider based on a person’s needs."
+    ],
+    "how_it_works": [
+      "Metformin lowers the amount of glucose made by the liver and helps the body respond better to insulin.",
+      "It is an educational description, not a prediction of an individual response."
+    ],
+    "common_benefits": [
+      "May help lower blood glucose when it is prescribed as part of a Type 2 diabetes care plan.",
+      "May be used with other diabetes medicines when a clinician determines that combination is appropriate."
+    ],
+    "common_side_effects": [
+      "Stomach-related effects such as diarrhea, nausea, stomach discomfort, gas, indigestion, or constipation can occur.",
+      "Side effects and their severity vary; a pharmacist or healthcare professional can help with questions."
+    ],
+    "important_considerations": [
+      "Research-backed editorial draft. Not yet reviewed by a qualified clinician. Must not be published.",
+      "Kidney health and other medical factors can matter when a healthcare team considers metformin.",
+      "Rare but serious lactic acidosis is an important safety warning; urgent or severe symptoms need professional care.",
+      "Medication choices are individual. This is general education, not a reason to start, stop, or change a medicine based on this app."
+    ],
+    "questions_for_healthcare_team": [
+      "What is metformin intended to help with in my care plan?",
+      "Which side effects should I discuss with my pharmacist or healthcare team?",
+      "What health conditions, procedures, or other medicines should my team know about?"
+    ],
+    "key_takeaway": "Metformin is a common Type 2 diabetes medicine, but whether it is suitable and how it is used are decisions for an individual and their healthcare team."
+  },
+  "status": "draft",
+  "version": 1,
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "published_at": null,
+  "source_references": [
+    {
+      "publisher": "U.S. National Library of Medicine",
+      "title": "Metformin: MedlinePlus Drug Information",
+      "url": "https://medlineplus.gov/druginfo/meds/a696005.html",
+      "accessed_at": "2026-07-13T00:00:00Z"
+    }
+  ],
+  "updated_at": "2026-07-13T00:00:00Z"
+}

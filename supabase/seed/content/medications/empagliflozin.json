@@ -1,0 +1,51 @@
+{
+  "slug": "empagliflozin",
+  "generic_name": "Empagliflozin",
+  "brand_names": ["Jardiance"],
+  "medication_class": "SGLT2 inhibitor",
+  "content": {
+    "short_summary": "Empagliflozin is an SGLT2 inhibitor that may be used in Type 2 diabetes and, for some people, in certain heart or kidney conditions.",
+    "why_it_is_used": [
+      "Empagliflozin may be prescribed to help lower blood glucose in Type 2 diabetes.",
+      "Depending on the approved use and a person’s health history, it may also be considered for certain heart failure or kidney disease outcomes."
+    ],
+    "how_it_works": [
+      "Empagliflozin helps the kidneys remove more glucose from the body in urine.",
+      "A healthcare professional can explain what this mechanism means in an individual care plan."
+    ],
+    "common_benefits": [
+      "May help lower blood glucose when it is prescribed for Type 2 diabetes.",
+      "For specific approved uses, it may be part of a plan addressing heart failure or kidney disease risk."
+    ],
+    "common_side_effects": [
+      "More frequent urination and increased thirst can occur.",
+      "Genital or urinary infections and dehydration are important concerns to discuss with a healthcare professional."
+    ],
+    "important_considerations": [
+      "Research-backed editorial draft. Not yet reviewed by a qualified clinician. Must not be published.",
+      "Ketoacidosis is a serious safety concern associated with this medicine; urgent or severe symptoms need professional care.",
+      "Medical history, other medicines, and individual risks can affect whether empagliflozin is appropriate.",
+      "Medication choices are individual. This is general education, not a reason to start, stop, or change a medicine based on this app."
+    ],
+    "questions_for_healthcare_team": [
+      "What is empagliflozin intended to help with in my care plan?",
+      "Which symptoms or side effects should I contact my healthcare team about?",
+      "How do my medical history and other medicines affect this option?"
+    ],
+    "key_takeaway": "Empagliflozin is an SGLT2 inhibitor with uses that depend on an individual’s diagnosis, health history, and clinician-guided plan."
+  },
+  "status": "draft",
+  "version": 1,
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "published_at": null,
+  "source_references": [
+    {
+      "publisher": "U.S. National Library of Medicine",
+      "title": "Empagliflozin: MedlinePlus Drug Information",
+      "url": "https://medlineplus.gov/druginfo/meds/a614043.html",
+      "accessed_at": "2026-07-13T00:00:00Z"
+    }
+  ],
+  "updated_at": "2026-07-13T00:00:00Z"
+}
