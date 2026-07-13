@@ -68,6 +68,10 @@
   --text-page-title: 2rem;
 }
 
+[data-text-scale="large"] { --text-body: 1.125rem; --text-supporting: 1rem; --text-card-title: 1.375rem; --text-section-title: 1.625rem; --text-page-title: 2.125rem; }
+[data-text-scale="extra_large"] { --text-body: 1.25rem; --text-supporting: 1.125rem; --text-card-title: 1.5rem; --text-section-title: 1.75rem; --text-page-title: 2.25rem; }
+[data-reduced-motion="true"] *, [data-reduced-motion="true"] *::before, [data-reduced-motion="true"] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

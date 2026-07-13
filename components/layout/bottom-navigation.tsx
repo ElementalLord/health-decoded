@@ -1,6 +1,6 @@
 "use client";
 
-import { Home } from "lucide-react";
+import { Home, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,7 +8,7 @@ import { MobileLayout } from "@/components/layout/mobile-layout";
 import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
-const icons = { home: Home } as const;
+const icons = { home: Home, user: User } as const;
 
 function isActiveRoute(pathname: string, route: ApplicationRoute) {
   return route.href === "/" ? pathname === route.href : pathname.startsWith(route.href);
