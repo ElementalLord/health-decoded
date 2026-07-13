@@ -1,0 +1,56 @@
+import { NextResponse } from "next/server";
+
+import { AI_MAX_REQUEST_BYTES } from "@/features/ai/constants/ai-limits";
+import { aiChatRequestSchema } from "@/features/ai/schemas/ai-chat.schema";
+import { requestAiChat } from "@/features/ai/services/ai-chat.server";
+import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
+
+const unavailableBody = {
+  error: {
+    code: "AI_NOT_AVAILABLE",
+    message: "The AI assistant is not available yet.",
+  },
+} as const;
+
+function errorResponse(status: number, code: string, message: string) {
+  return NextResponse.json({ error: { code, message } }, { status });
+}
+
+function exceedsRequestSize(request: Request) {
+  const contentLength = request.headers.get("content-length");
+  if (!contentLength) return false;
+
+  const parsedLength = Number(contentLength);
+  return Number.isFinite(parsedLength) && parsedLength > AI_MAX_REQUEST_BYTES;
+}
+
+export async function POST(request: Request) {
+  const user = await getAuthenticatedUser();
+  if (!user.ok) {
+    return errorResponse(401, "UNAUTHORIZED", "You need to sign in to continue.");
+  }
+
+  if (exceedsRequestSize(request)) {
+    return errorResponse(413, "REQUEST_TOO_LARGE", "Please shorten your request and try again.");
+  }
+
+  const body = await request.text();
+  if (new TextEncoder().encode(body).byteLength > AI_MAX_REQUEST_BYTES) {
+    return errorResponse(413, "REQUEST_TOO_LARGE", "Please shorten your request and try again.");
+  }
+
+  let input: unknown;
+  try {
+    input = JSON.parse(body);
+  } catch {
+    return errorResponse(400, "INVALID_AI_REQUEST", "Please check your request and try again.");
+  }
+
+  const parsed = aiChatRequestSchema.safeParse(input);
+  if (!parsed.success) {
+    return errorResponse(400, "INVALID_AI_REQUEST", "Please check your request and try again.");
+  }
+
+  const response = await requestAiChat(parsed.data);
+  return NextResponse.json(response ?? unavailableBody, { status: 501 });
+}
