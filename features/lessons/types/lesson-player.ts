@@ -1,3 +1,5 @@
+import type { LessonActivity } from "@/features/activities/types/activity";
+
 export type LessonProgressStatus = "not_started" | "in_progress" | "completed";
 
 export type TextContentBlock = {
@@ -32,6 +34,7 @@ export type LessonContentBlock =
 
 export type LessonPlayerViewModel = {
   accessMode: "active" | "review";
+  activities: LessonActivity[];
   blocks: LessonContentBlock[];
   dayNumber: number;
   estimatedMinutes: number;

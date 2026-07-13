@@ -1,3 +1,4 @@
+import type { LessonActivity } from "@/features/activities/types/activity";
 import type {
   LessonContentBlock,
   LessonPlayerViewModel,
@@ -5,6 +6,7 @@ import type {
 } from "@/features/lessons/types/lesson-player";
 
 type LessonPlayerMapperInput = {
+  activities: LessonActivity[];
   blocks: LessonContentBlock[];
   dayNumber: number;
   estimatedMinutes: number;
@@ -17,6 +19,7 @@ type LessonPlayerMapperInput = {
 };
 
 export function mapLessonPlayer({
+  activities,
   blocks,
   dayNumber,
   estimatedMinutes,
@@ -35,6 +38,7 @@ export function mapLessonPlayer({
 
   return {
     accessMode,
+    activities,
     blocks,
     dayNumber,
     estimatedMinutes,

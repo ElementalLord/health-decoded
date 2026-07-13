@@ -120,6 +120,28 @@ begin
   ) then
     raise exception 'Lesson position-save privileges are not restricted correctly';
   end if;
+
+  if has_function_privilege(
+    'anon',
+    'public.evaluate_match_pair_activity(uuid,uuid,jsonb)',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.evaluate_match_pair_activity(uuid,uuid,jsonb)',
+    'execute'
+  ) then
+    raise exception 'Activity evaluation privileges are not restricted correctly';
+  end if;
+
+  if exists (
+    select 1
+    from pg_policies
+    where schemaname = 'public'
+      and tablename = 'activity_progress'
+      and cmd in ('INSERT', 'UPDATE', 'DELETE', 'ALL')
+  ) then
+    raise exception 'Activity progress writes must remain limited to trusted evaluation operations';
+  end if;
 end;
 $$;
 
@@ -135,5 +157,8 @@ $$;
 -- 9. Lesson begin-or-resume rejects unauthenticated and future-lesson access.
 -- 10. Lesson position saving rejects out-of-range and cross-user progress IDs.
 -- 11. Repeated position saves remain idempotent without completing a lesson.
+-- 12. Match-pair evaluation rejects cross-user, unpublished, and future-lesson activity attempts.
+-- 13. Match-pair evaluation never exposes answer-key data and only stores aggregate completion.
+-- 14. Incorrect match-pair retries remain incomplete; correct retries complete one progress row.
 
 rollback;

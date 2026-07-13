@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { ProgressBar } from "@/components/ui/progress-bar";
+import { ActivityRenderer } from "@/features/activities/components/activity-renderer";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import { LessonContentBlockView } from "@/features/lessons/components/lesson-content-block";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
@@ -15,14 +16,25 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   const [blockIndex, setBlockIndex] = useState(lesson.initialBlockIndex);
   const [exitOpen, setExitOpen] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [completedActivityIds, setCompletedActivityIds] = useState(
+    () =>
+      new Set(
+        lesson.activities.filter((activity) => activity.isComplete).map((activity) => activity.id),
+      ),
+  );
   const [isSaving, startTransition] = useTransition();
   const blockHeadingRef = useRef<HTMLHeadingElement>(null);
   const shouldMoveFocus = useRef(false);
   const isIntroduction = blockIndex === -1;
-  const totalSteps = lesson.blocks.length + 1;
+  const hasActivities = lesson.activities.length > 0;
+  const isActivityStep = blockIndex === lesson.blocks.length;
+  const totalSteps = lesson.blocks.length + 1 + (hasActivities ? 1 : 0);
   const currentStep = blockIndex + 2;
   const progress = (currentStep / totalSteps) * 100;
   const isFinalBlock = blockIndex === lesson.blocks.length - 1;
+  const activitiesComplete = lesson.activities.every((activity) =>
+    completedActivityIds.has(activity.id),
+  );
 
   useEffect(() => {
     if (!shouldMoveFocus.current) return;
@@ -89,6 +101,20 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
               </h2>
               <p className="text-lg leading-8 text-foreground/90">{lesson.learningObjective}</p>
             </div>
+          ) : isActivityStep ? (
+            <div className="space-y-8">
+              {lesson.activities.map((activity) => (
+                <ActivityRenderer
+                  activity={{ ...activity, isComplete: completedActivityIds.has(activity.id) }}
+                  headingRef={blockHeadingRef}
+                  key={activity.id}
+                  lessonProgressId={lesson.lessonProgressId}
+                  onComplete={() =>
+                    setCompletedActivityIds((currentIds) => new Set([...currentIds, activity.id]))
+                  }
+                />
+              ))}
+            </div>
           ) : (
             <div>
               <h2 className="sr-only" ref={blockHeadingRef} tabIndex={-1}>
@@ -111,7 +137,20 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
             Previous
           </Button>
 
-          {isFinalBlock ? (
+          {isActivityStep ? (
+            <div className="space-y-2 sm:text-right">
+              <Button disabled>Ready for your check-in</Button>
+              <p className="text-sm text-muted-foreground">
+                {activitiesComplete
+                  ? "The learning activity is complete. The next step will be available soon."
+                  : "Complete the activity to continue."}
+              </p>
+            </div>
+          ) : isFinalBlock && hasActivities ? (
+            <Button disabled={isSaving} onClick={() => moveTo(blockIndex + 1)}>
+              Continue to activity
+            </Button>
+          ) : isFinalBlock ? (
             <div className="space-y-2 sm:text-right">
               <Button disabled>Ready for your check-in</Button>
               <p className="text-sm text-muted-foreground">

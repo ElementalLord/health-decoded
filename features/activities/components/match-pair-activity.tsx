@@ -1,0 +1,164 @@
+"use client";
+
+import { type RefObject, useState, useTransition } from "react";
+
+import { Button } from "@/components/ui/button";
+import { evaluateMatchPairAction } from "@/features/activities/actions/activity.actions";
+import type { MatchPairActivity } from "@/features/activities/types/activity";
+import { cn } from "@/lib/utils";
+
+export function MatchPairActivityView({
+  activity,
+  headingRef,
+  lessonProgressId,
+  onComplete,
+}: {
+  activity: MatchPairActivity;
+  headingRef?: RefObject<HTMLHeadingElement | null> | undefined;
+  lessonProgressId: string;
+  onComplete: () => void;
+}) {
+  const [selectedLeftId, setSelectedLeftId] = useState<string | null>(null);
+  const [pairs, setPairs] = useState<Record<string, string>>({});
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [canRetry, setCanRetry] = useState(false);
+  const [isSaving, startTransition] = useTransition();
+  const isComplete = activity.isComplete;
+  const pairCount = Object.keys(pairs).length;
+  const usedRightIds = new Set(Object.values(pairs));
+
+  function selectRight(rightId: string) {
+    if (!selectedLeftId || usedRightIds.has(rightId) || isComplete) return;
+
+    setPairs((currentPairs) => ({ ...currentPairs, [selectedLeftId]: rightId }));
+    setSelectedLeftId(null);
+    setFeedback(null);
+    setCanRetry(false);
+  }
+
+  function checkResponse() {
+    startTransition(async () => {
+      const result = await evaluateMatchPairAction({
+        activityId: activity.id,
+        lessonProgressId,
+        pairs,
+      });
+
+      if (!result.ok) {
+        setFeedback(result.message);
+        return;
+      }
+
+      setFeedback(result.feedback);
+      setCanRetry(!result.isCorrect);
+      if (result.isComplete) onComplete();
+    });
+  }
+
+  return (
+    <section aria-labelledby={`activity-${activity.id}`} className="space-y-6">
+      <div className="space-y-2">
+        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Practice</p>
+        <h2
+          className="text-2xl font-semibold tracking-tight sm:text-3xl"
+          id={`activity-${activity.id}`}
+          ref={headingRef}
+          tabIndex={-1}
+        >
+          {activity.title}
+        </h2>
+        <p className="text-base leading-7 text-muted-foreground">{activity.instructions}</p>
+        <p className="text-lg leading-8 text-foreground/90">{activity.configuration.prompt}</p>
+        {activity.configuration.helperText ? (
+          <p className="text-sm leading-6 text-muted-foreground">
+            {activity.configuration.helperText}
+          </p>
+        ) : null}
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <fieldset className="space-y-3">
+          <legend className="text-sm font-semibold">Choose a label</legend>
+          {activity.configuration.leftItems.map((item) => {
+            const paired = pairs[item.id];
+            const selected = selectedLeftId === item.id;
+
+            return (
+              <Button
+                aria-pressed={selected}
+                className={cn(
+                  "min-h-14 whitespace-normal text-left",
+                  selected && "border-primary bg-secondary text-foreground ring-2 ring-primary/20",
+                )}
+                disabled={Boolean(paired) || isSaving || isComplete}
+                key={item.id}
+                onClick={() => setSelectedLeftId(item.id)}
+                type="button"
+                variant="secondary"
+              >
+                <span>{item.label}</span>
+                {paired ? <span className="text-xs">Matched</span> : null}
+              </Button>
+            );
+          })}
+        </fieldset>
+
+        <fieldset className="space-y-3">
+          <legend className="text-sm font-semibold">Choose its description</legend>
+          {activity.configuration.rightItems.map((item) => {
+            const unavailable = usedRightIds.has(item.id);
+
+            return (
+              <Button
+                disabled={!selectedLeftId || unavailable || isSaving || isComplete}
+                key={item.id}
+                onClick={() => selectRight(item.id)}
+                type="button"
+                variant="secondary"
+              >
+                <span>{item.label}</span>
+                {unavailable ? <span className="text-xs">Matched</span> : null}
+              </Button>
+            );
+          })}
+        </fieldset>
+      </div>
+
+      {isComplete ? (
+        <p aria-live="polite" className="text-sm text-success">
+          This activity is complete.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">
+            {pairCount} of {activity.configuration.leftItems.length} pairs selected
+          </p>
+          <Button
+            disabled={pairCount !== activity.configuration.leftItems.length || isSaving}
+            onClick={checkResponse}
+          >
+            {isSaving ? "Checking…" : "Check response"}
+          </Button>
+        </div>
+      )}
+
+      <p aria-live="polite" className="min-h-6 text-sm leading-6 text-muted-foreground">
+        {feedback}
+      </p>
+      {!isComplete && canRetry ? (
+        <Button
+          fullWidth={false}
+          onClick={() => {
+            setPairs({});
+            setSelectedLeftId(null);
+            setFeedback(null);
+            setCanRetry(false);
+          }}
+          variant="text"
+        >
+          Try again
+        </Button>
+      ) : null}
+    </section>
+  );
+}
