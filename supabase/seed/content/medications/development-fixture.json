@@ -1,0 +1,29 @@
+{
+  "slug": "development-medication-fixture",
+  "generic_name": "Development fixture only",
+  "brand_names": [],
+  "medication_class": "Development fixture only",
+  "content": {
+    "short_summary": "Development fixture only. Not medically reviewed. Must not be published.",
+    "why_it_is_used": ["Development fixture only. Not medically reviewed. Must not be published."],
+    "how_it_works": ["Development fixture only. Not medically reviewed. Must not be published."],
+    "common_benefits": ["Development fixture only. Not medically reviewed. Must not be published."],
+    "common_side_effects": [
+      "Development fixture only. Not medically reviewed. Must not be published."
+    ],
+    "important_considerations": [
+      "Development fixture only. Not medically reviewed. Must not be published."
+    ],
+    "questions_for_healthcare_team": [
+      "Development fixture only. Not medically reviewed. Must not be published."
+    ],
+    "key_takeaway": "Development fixture only. Not medically reviewed. Must not be published."
+  },
+  "status": "draft",
+  "version": 1,
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "published_at": null,
+  "source_references": [],
+  "updated_at": "2026-07-13T00:00:00Z"
+}

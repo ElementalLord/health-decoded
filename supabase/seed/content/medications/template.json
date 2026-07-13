@@ -1,0 +1,23 @@
+{
+  "slug": "replace-with-approved-slug",
+  "generic_name": "Replace with approved generic name",
+  "brand_names": [],
+  "medication_class": "Replace with approved class",
+  "content": {
+    "short_summary": "Replace with reviewed educational summary.",
+    "why_it_is_used": ["Replace with reviewed educational content."],
+    "how_it_works": ["Replace with reviewed educational content."],
+    "common_benefits": ["Replace with reviewed educational content."],
+    "common_side_effects": ["Replace with reviewed educational content."],
+    "important_considerations": ["Replace with reviewed educational content."],
+    "questions_for_healthcare_team": ["Replace with reviewed educational content."],
+    "key_takeaway": "Replace with a reviewed educational takeaway."
+  },
+  "status": "draft",
+  "version": 1,
+  "reviewed_by": null,
+  "reviewed_at": null,
+  "published_at": null,
+  "source_references": [],
+  "updated_at": "2026-07-13T00:00:00Z"
+}
