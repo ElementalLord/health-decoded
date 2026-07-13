@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+import { AppShell } from "@/components/layout/app-shell";
 
 import "./globals.css";
 
@@ -7,10 +9,19 @@ export const metadata: Metadata = {
   description: "Educational support for the first 90 days after a Type 2 diabetes diagnosis.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#f8f9f7",
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

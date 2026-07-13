@@ -43,3 +43,9 @@ export const animation = {
   progress: "400ms",
   easing: "cubic-bezier(0.2, 0, 0, 1)",
 } as const;
+
+export const breakpoints = {
+  mobile: "0rem",
+  tablet: "40rem",
+  desktop: "64rem",
+} as const;
