@@ -1,45 +1,32 @@
 # Health Decoded
 
-Health Decoded is an educational platform that helps people navigate the first 90 days after a Type 2 diabetes diagnosis.
+Health Decoded is an educational web application for adults during the first 14 days after a new Type 2 diabetes diagnosis. The future product scope supports a 90-day journey.
 
-## Foundation
+## Requirements
 
-- Next.js 15 with the App Router and TypeScript
-- Tailwind CSS and shadcn/ui
-- Supabase browser and server clients
-- React Hook Form, Zod, Lucide React, and Framer Motion
-- ESLint and Prettier
+- Node.js 20 or later
+- npm
 
-## Getting started
-
-1. Install dependencies: `npm install`
-2. Copy `.env.example` to `.env.local` and provide the Supabase values.
-3. Start the development server: `npm run dev`
-
-## Quality checks
+## Installation
 
 ```bash
+npm install
+```
+
+## Environment setup
+
+Copy `.env.example` to `.env.local`, then provide the required local values. Do not commit `.env.local`.
+
+## Development commands
+
+```bash
+npm run dev
 npm run lint
 npm run typecheck
 npm run format:check
 npm run build
 ```
 
-## Project structure
+## Documentation
 
-```text
-app/                 Routes and route layouts only
-components/ui/       shadcn/ui primitives
-components/layout/   Reusable application layout components
-components/shared/   Reusable non-feature components
-features/            Feature-owned components, hooks, services, and types
-hooks/               Shared hooks
-lib/                 Shared utilities and Supabase configuration
-services/            External-system integrations
-types/               Shared TypeScript types
-styles/              Shared style resources
-public/              Static assets
-supabase/            Supabase configuration and migrations
-```
-
-No product pages or features are included in this foundation.
+Project documentation is in [Documentation](./Documentation/README.md).
