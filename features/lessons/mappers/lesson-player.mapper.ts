@@ -10,6 +10,7 @@ type LessonPlayerMapperInput = {
   blocks: LessonContentBlock[];
   dayNumber: number;
   estimatedMinutes: number;
+  keyTakeaway: string | null;
   lastViewedBlock: number;
   learningObjective: string;
   lessonProgressId: string;
@@ -23,6 +24,7 @@ export function mapLessonPlayer({
   blocks,
   dayNumber,
   estimatedMinutes,
+  keyTakeaway,
   lastViewedBlock,
   learningObjective,
   lessonProgressId,
@@ -43,6 +45,7 @@ export function mapLessonPlayer({
     dayNumber,
     estimatedMinutes,
     initialBlockIndex,
+    keyTakeaway: keyTakeaway ?? learningObjective,
     learningObjective,
     lessonProgressId,
     subtitle,

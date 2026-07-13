@@ -133,6 +133,18 @@ begin
     raise exception 'Activity evaluation privileges are not restricted correctly';
   end if;
 
+  if has_function_privilege(
+    'anon',
+    'public.complete_current_lesson(uuid)',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.complete_current_lesson(uuid)',
+    'execute'
+  ) then
+    raise exception 'Lesson completion privileges are not restricted correctly';
+  end if;
+
   if exists (
     select 1
     from pg_policies
@@ -160,5 +172,10 @@ $$;
 -- 12. Match-pair evaluation rejects cross-user, unpublished, and future-lesson activity attempts.
 -- 13. Match-pair evaluation never exposes answer-key data and only stores aggregate completion.
 -- 14. Incorrect match-pair retries remain incomplete; correct retries complete one progress row.
+-- 15. Completion rejects unauthenticated, cross-user, unpublished, future, and incomplete lessons.
+-- 16. Completion requires every published activity while ignoring unpublished activity definitions.
+-- 17. First completion stores exactly 75 XP; repeated and concurrent completion requests add no XP.
+-- 18. Completion advances only to the immediate published assignment after prerequisite validation.
+-- 19. The final assignment marks the journey complete only after every published assignment is complete.
 
 rollback;

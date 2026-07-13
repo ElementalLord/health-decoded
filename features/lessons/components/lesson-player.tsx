@@ -7,8 +7,11 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { ActivityRenderer } from "@/features/activities/components/activity-renderer";
+import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
+import { LessonCompletionScreen } from "@/features/lessons/components/lesson-completion-screen";
 import { LessonContentBlockView } from "@/features/lessons/components/lesson-content-block";
+import type { LessonCompletionResult } from "@/features/lessons/types/lesson-completion";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +19,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   const [blockIndex, setBlockIndex] = useState(lesson.initialBlockIndex);
   const [exitOpen, setExitOpen] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [completion, setCompletion] = useState<LessonCompletionResult | null>(null);
   const [completedActivityIds, setCompletedActivityIds] = useState(
     () =>
       new Set(
@@ -44,7 +48,13 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   }, [blockIndex]);
 
   function savePosition(nextBlockIndex: number) {
-    if (lesson.accessMode === "review" || nextBlockIndex < 0) return;
+    if (
+      lesson.accessMode === "review" ||
+      nextBlockIndex < 0 ||
+      nextBlockIndex >= lesson.blocks.length
+    ) {
+      return;
+    }
 
     startTransition(async () => {
       const result = await saveLessonPositionAction({
@@ -60,6 +70,29 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
     shouldMoveFocus.current = true;
     setBlockIndex(nextBlockIndex);
     savePosition(nextBlockIndex);
+  }
+
+  function completeLesson() {
+    startTransition(async () => {
+      const result = await completeLessonAction({ lessonProgressId: lesson.lessonProgressId });
+      if (!result.ok) {
+        setSaveMessage(result.message);
+        return;
+      }
+
+      setSaveMessage(null);
+      setCompletion(result.data);
+    });
+  }
+
+  if (completion) {
+    return (
+      <LessonCompletionScreen
+        completion={completion}
+        keyTakeaway={lesson.keyTakeaway}
+        lessonTitle={lesson.title}
+      />
+    );
   }
 
   return (
@@ -137,12 +170,21 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
             Previous
           </Button>
 
-          {isActivityStep ? (
+          {lesson.accessMode === "review" ? (
             <div className="space-y-2 sm:text-right">
-              <Button disabled>Ready for your check-in</Button>
+              <Button disabled>Lesson complete</Button>
+              <p className="text-sm text-muted-foreground">
+                Reviewing this lesson does not change your progress.
+              </p>
+            </div>
+          ) : isActivityStep ? (
+            <div className="space-y-2 sm:text-right">
+              <Button disabled={!activitiesComplete || isSaving} onClick={completeLesson}>
+                {isSaving ? "Saving…" : "Complete today’s lesson"}
+              </Button>
               <p className="text-sm text-muted-foreground">
                 {activitiesComplete
-                  ? "The learning activity is complete. The next step will be available soon."
+                  ? "Your progress will be saved when you complete this lesson."
                   : "Complete the activity to continue."}
               </p>
             </div>
@@ -152,9 +194,11 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
             </Button>
           ) : isFinalBlock ? (
             <div className="space-y-2 sm:text-right">
-              <Button disabled>Ready for your check-in</Button>
+              <Button disabled={isSaving} onClick={completeLesson}>
+                {isSaving ? "Saving…" : "Complete today’s lesson"}
+              </Button>
               <p className="text-sm text-muted-foreground">
-                The learning activity will be available in the next step.
+                Your progress will be saved when you complete this lesson.
               </p>
             </div>
           ) : (

@@ -20,6 +20,7 @@ type AuthorizedLessonRow = {
       content_blocks: unknown;
       estimated_minutes: number;
       id: string;
+      key_takeaway: string | null;
       learning_objective: string;
       subtitle: string | null;
       title: string;
@@ -45,7 +46,7 @@ export async function getAuthorizedLesson(day: number): Promise<AuthorizedLesson
   const lessonResponse = await database
     .from("lesson_progress")
     .select(
-      "last_viewed_block, journey_lessons!inner(day_number, lessons!inner(id, title, subtitle, learning_objective, estimated_minutes, content_blocks))",
+      "last_viewed_block, journey_lessons!inner(day_number, lessons!inner(id, title, subtitle, learning_objective, estimated_minutes, key_takeaway, content_blocks))",
     )
     .eq("id", begun.authorized_lesson_progress_id)
     .eq("journey_lessons.day_number", day)
@@ -82,6 +83,7 @@ export async function getAuthorizedLesson(day: number): Promise<AuthorizedLesson
     blocks: parsedBlocks.data,
     dayNumber: lesson.journey_lessons.day_number,
     estimatedMinutes: lesson.journey_lessons.lessons.estimated_minutes,
+    keyTakeaway: lesson.journey_lessons.lessons.key_takeaway,
     lastViewedBlock: begun.authorized_last_viewed_block,
     learningObjective: lesson.journey_lessons.lessons.learning_objective,
     lessonProgressId: begun.authorized_lesson_progress_id,

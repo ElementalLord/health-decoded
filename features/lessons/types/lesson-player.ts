@@ -39,6 +39,7 @@ export type LessonPlayerViewModel = {
   dayNumber: number;
   estimatedMinutes: number;
   initialBlockIndex: number;
+  keyTakeaway: string;
   learningObjective: string;
   lessonProgressId: string;
   subtitle: string | null;
