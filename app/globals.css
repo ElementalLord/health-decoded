@@ -7,11 +7,18 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-destructive: var(--destructive);
@@ -20,22 +27,45 @@
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
+  --radius-xl: var(--radius-xl);
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+  --shadow-modal: var(--shadow-modal);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
+  --background: oklch(0.985 0.003 100);
+  --foreground: oklch(0.24 0.02 210);
+  --card: oklch(1 0 0);
+  --primary: oklch(0.47 0.09 190);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.93 0.025 235);
+  --secondary-foreground: oklch(0.3 0.05 235);
+  --success: oklch(0.5 0.1 150);
+  --success-foreground: oklch(0.99 0 0);
+  --warning: oklch(0.72 0.13 75);
+  --warning-foreground: oklch(0.28 0.04 75);
+  --info: oklch(0.92 0.035 235);
+  --info-foreground: oklch(0.31 0.055 235);
+  --muted: oklch(0.955 0.008 210);
+  --muted-foreground: oklch(0.48 0.025 210);
+  --destructive: oklch(0.5 0.11 25);
+  --border: oklch(0.89 0.012 210);
+  --input: oklch(0.89 0.012 210);
+  --ring: oklch(0.47 0.09 190);
+  --radius: 1rem;
+  --radius-xl: 1.25rem;
+  --shadow-card: 0 2px 10px rgb(32 55 64 / 0.06);
+  --shadow-card-hover: 0 8px 24px rgb(32 55 64 / 0.1);
+  --shadow-modal: 0 20px 50px rgb(32 55 64 / 0.18);
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --text-caption: 0.75rem;
+  --text-supporting: 0.875rem;
+  --text-body: 1rem;
+  --text-lesson-heading: 1.125rem;
+  --text-card-title: 1.25rem;
+  --text-section-title: 1.5rem;
+  --text-page-title: 2rem;
 }
 
 @layer base {
@@ -44,6 +74,21 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
