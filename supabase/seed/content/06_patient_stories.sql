@@ -4,15 +4,15 @@ insert into public.patient_stories (
 ) values (
   '60000000-0000-0000-0000-000000000001',
   'development-story',
-  'Development story',
-  'Schema seed only.',
+  'Development schema record',
+  'Development-only schema fixture. Not a patient story.',
   '[{"type":"text","heading":"Development seed","body":"Not a patient story or medical guidance."}]'::jsonb,
-  'Minimal seeded content verifies the table relationship.',
+  'This development-only record must not be published.',
   1,
-  'published',
-  'Development seed',
-  '2026-01-01T00:00:00Z',
-  '2026-01-01T00:00:00Z'
+  'draft',
+  null,
+  null,
+  null
 )
 on conflict (id) do update set
   title = excluded.title,

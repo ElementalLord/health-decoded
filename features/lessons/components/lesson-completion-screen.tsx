@@ -84,6 +84,9 @@ export function LessonCompletionScreen({
               Continue to next lesson
             </Link>
           ) : null}
+          <Link className={buttonVariants({ variant: "text" })} href="/stories">
+            Read a story
+          </Link>
         </div>
       </Card>
     </section>

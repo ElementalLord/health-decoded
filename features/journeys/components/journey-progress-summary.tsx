@@ -39,6 +39,12 @@ export function JourneyProgressSummaryCard({
           >
             Caregiver guidance
           </Link>
+          <Link
+            className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+            href="/stories"
+          >
+            Read stories
+          </Link>
         </div>
       </div>
     </Card>

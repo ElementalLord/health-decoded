@@ -8,6 +8,7 @@ import { ProgressEmptyState } from "@/features/progress/components/progress-empt
 import { getProgressData } from "@/features/progress/services/progress.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 import { JourneyProgressSummaryCard } from "@/features/journeys/components/journey-progress-summary";
+import Link from "next/link";
 
 export default async function ProgressPage() {
   const profile = await getCurrentProfile();
@@ -47,6 +48,12 @@ export default async function ProgressPage() {
       <ConfidenceXpSummary total={data.totalConfidenceXp} />
       <ConfidenceHistoryList entries={data.confidenceHistory} />
       <CompletedLessonsList entries={data.completedLessonsHistory} />
+      <Link
+        className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+        href="/stories"
+      >
+        Read patient stories
+      </Link>
     </section>
   );
 }
