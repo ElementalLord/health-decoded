@@ -3,8 +3,9 @@ import type { ReactNode } from "react";
 import { AppHeader } from "@/components/layout/app-header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { PageContainer } from "@/components/layout/page-container";
+import { type ApplicationRoute } from "@/lib/routes";
 
-function AppShell({ children }: { children: ReactNode }) {
+function AppShell({ children, routes }: { children: ReactNode; routes?: readonly ApplicationRoute[] }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <a
@@ -13,11 +14,11 @@ function AppShell({ children }: { children: ReactNode }) {
       >
         Skip to main content
       </a>
-      <AppHeader />
+      {routes ? <AppHeader routes={routes} /> : <AppHeader />}
       <PageContainer className="shell-mobile-offset flex-1" id="main-content" tabIndex={-1}>
         {children}
       </PageContainer>
-      <BottomNavigation />
+      {routes ? <BottomNavigation routes={routes} /> : <BottomNavigation />}
     </div>
   );
 }

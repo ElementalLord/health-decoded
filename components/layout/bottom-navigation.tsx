@@ -14,7 +14,7 @@ function isActiveRoute(pathname: string, route: ApplicationRoute) {
   return route.href === "/" ? pathname === route.href : pathname.startsWith(route.href);
 }
 
-function BottomNavigation() {
+function BottomNavigation({ routes = applicationRoutes }: { routes?: readonly ApplicationRoute[] }) {
   const pathname = usePathname();
 
   return (
@@ -24,7 +24,7 @@ function BottomNavigation() {
         className="safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-card/95 px-3 pt-2 backdrop-blur-sm"
       >
         <ul className="mx-auto flex max-w-md items-center justify-around">
-          {applicationRoutes.map((route) => {
+          {routes.map((route) => {
             const Icon = icons[route.icon];
             const active = isActiveRoute(pathname, route);
 

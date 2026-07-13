@@ -11,3 +11,11 @@ export const applicationRoutes = [
     icon: "home",
   },
 ] as const satisfies readonly ApplicationRoute[];
+
+export const protectedApplicationRoutes = [
+  {
+    href: "/account",
+    label: "Account",
+    icon: "home",
+  },
+] as const satisfies readonly ApplicationRoute[];

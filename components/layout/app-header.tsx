@@ -2,9 +2,9 @@ import { Heart } from "lucide-react";
 import Link from "next/link";
 
 import { DesktopLayout } from "@/components/layout/desktop-layout";
-import { applicationRoutes } from "@/lib/routes";
+import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
 
-function AppHeader() {
+function AppHeader({ routes = applicationRoutes }: { routes?: readonly ApplicationRoute[] }) {
   return (
     <header className="safe-area-top sticky top-0 z-40 border-b border-border/80 bg-card/95 backdrop-blur-sm">
       <div className="mx-auto flex min-h-16 w-full max-w-[1100px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -24,7 +24,7 @@ function AppHeader() {
         <DesktopLayout>
           <nav aria-label="Primary navigation">
             <ul className="flex items-center gap-1">
-              {applicationRoutes.map((route) => (
+              {routes.map((route) => (
                 <li key={route.href}>
                   <Link
                     className="inline-flex min-h-11 items-center rounded-lg px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
