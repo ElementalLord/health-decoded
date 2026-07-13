@@ -17,6 +17,13 @@ npm install
 
 Copy `.env.example` to `.env.local`, then provide the required local values. Do not commit `.env.local`.
 
+Current public values:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+Server-only values are added only by the milestone that requires them.
+
 ## Development commands
 
 ```bash

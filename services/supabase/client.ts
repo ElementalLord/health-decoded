@@ -2,9 +2,17 @@
 
 import { createBrowserClient } from "@supabase/ssr";
 
+import { getPublicEnv } from "@/lib/env/public";
+
 export function createClient() {
+  if (typeof window === "undefined") {
+    throw new Error("The Supabase browser client can only be created in the browser.");
+  }
+
+  const env = getPublicEnv();
+
   return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   );
 }
