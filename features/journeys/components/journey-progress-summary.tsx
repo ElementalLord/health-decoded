@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { JourneyProgressSummary } from "@/features/journeys/types/journey-home";
+import Link from "next/link";
 
 export function JourneyProgressSummaryCard({
   journeyTitle,
@@ -23,7 +24,15 @@ export function JourneyProgressSummaryCard({
         <p className="text-sm font-medium text-foreground">Day {progress.currentDay}</p>
       </div>
       <ProgressBar label={progressLabel} value={progress.percentage} />
-      <p className="text-sm text-muted-foreground">{progressLabel}</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground">{progressLabel}</p>
+        <Link
+          className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+          href="/progress"
+        >
+          View your progress
+        </Link>
+      </div>
     </Card>
   );
 }
