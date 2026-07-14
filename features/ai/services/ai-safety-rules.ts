@@ -1,0 +1,109 @@
+export const aiRequestCategories = [
+  "Lesson Question",
+  "Medication Education",
+  "Nutrition Education",
+  "Exercise Education",
+  "General Type 2 Diabetes Education",
+  "Caregiver Guidance",
+  "Lifestyle Support",
+  "Emotional Support",
+  "Medical Advice Request",
+  "Emergency / Crisis",
+  "Prompt Injection / Abuse",
+  "Unknown",
+] as const;
+
+export type AiRequestCategory = (typeof aiRequestCategories)[number];
+
+export type AiRefusalType =
+  | "diagnosis"
+  | "emergency"
+  | "hidden_prompt"
+  | "medication_adjustment"
+  | "prompt_injection"
+  | "unsupported_medical";
+
+export type AiSafetyResult =
+  | { readonly category: AiRequestCategory; readonly kind: "allow" }
+  | {
+      readonly category: AiRequestCategory;
+      readonly kind: "refuse";
+      readonly message: string;
+      readonly refusalType: AiRefusalType;
+    };
+
+const emergencyPattern =
+  /\b(chest pain|trouble breathing|difficulty breathing|can't breathe|cannot breathe|passed out|loss of consciousness|severe allergic reaction|severe confusion|suicid(?:al|e)|want to die|kill myself|face droop(?:ing)?|arm weakness|slurred speech|signs? of (?:a )?(?:stroke|heart attack))\b/i;
+const hiddenPromptPattern =
+  /\b(reveal|show|output|print|repeat|tell me)\b.{0,80}\b(hidden|system|developer|internal|initial)\b.{0,40}\b(prompt|instruction|message|rule)s?\b/i;
+const injectionPattern =
+  /\b(ignore|forget|disregard|override|bypass|replace)\b.{0,80}\b(previous|prior|system|developer|health decoded|instruction|rule)s?\b|\bpretend (?:that )?you(?:'re| are)\b.{0,60}\b(?:doctor|clinician)\b|\bjailbreak\b/i;
+const medicationAdjustmentPattern =
+  /\b(?:start|stop|skip|change|increase|decrease|adjust|double|halve|miss(?:ed)?|take)\b(?:\s+\w+){0,6}\s+(?:my\s+)?(?:medication|medicine|metformin|insulin|dose|dosage|prescription)\b|\b(?:how much|how many units|what dose|what dosage)\b.{0,60}\b(?:insulin|medication|medicine|metformin|prescription)\b/i;
+const diagnosisPattern =
+  /\b(do i have|is this diabetes\b(?!\s+(?:medication|medicine))|diagnose me|what does my (?:a1c|lab|test result)|are my (?:a1c|labs?|test results?) (?:good|bad|normal)|interpret my (?:a1c|labs?|test results?))\b/i;
+const specializedMedicalPattern =
+  /\b(?:pregnan(?:t|cy)|trying to conceive|surgery|operation|anesthesia)\b.{0,100}\b(?:should|safe|medication|medicine|insulin|diabetes|take|stop|start)\b|\b(?:is|are)\b.{0,60}\b(?:right|safe|best)\b.{0,60}\bfor me\b/i;
+const lessonPattern = /\b(today(?:'s)?|lesson|activity|learned|yesterday|next lesson)\b/i;
+const medicationPattern =
+  /\b(medication|medicine|metformin|insulin|semaglutide|empagliflozin|sitagliptin)\b/i;
+const nutritionPattern = /\b(food|eat|meal|carb|carbohydrate|nutrition|fruit|bread|plate)\b/i;
+const exercisePattern = /\b(exercise|walk(?:ing)?|movement|workout|active)\b/i;
+const caregiverPattern = /\b(caregiver|spouse|partner|family|support(?:ing|er)?)\b/i;
+const lifestylePattern = /\b(sleep|stress|habit|routine|lifestyle)\b/i;
+const emotionalPattern =
+  /\b(scared|afraid|overwhelmed|embarrassed|ashamed|worried|anxious|sad|upset)\b/i;
+const typeTwoPattern = /\b(type 2|diabetes|a1c|blood sugar|insulin resistance|glucose)\b/i;
+
+const refusalMessages: Record<AiRefusalType, string> = {
+  diagnosis:
+    "I can’t diagnose you or interpret personal test results for your care. A clinician who knows your health history can help. I can explain what a term or test generally means.",
+  emergency:
+    "I can’t assess urgent symptoms. If you may be having a medical emergency, contact local emergency services now or seek urgent medical help immediately. If it is not an emergency, contact your healthcare team.",
+  hidden_prompt:
+    "I can’t share internal instructions. I can still help explain Type 2 diabetes topics in clear, everyday language.",
+  medication_adjustment:
+    "I can’t tell you whether to start, stop, or change a prescribed medication or dose. Please contact the clinician or pharmacist who manages it. I can explain what a medication generally does or help you prepare questions.",
+  prompt_injection:
+    "I can’t change my safety instructions or act as a clinician. I can help with clear, educational questions about Type 2 diabetes.",
+  unsupported_medical:
+    "I can’t give individualized medical advice about that. A qualified healthcare professional can guide decisions based on your health history. I can explain the general educational concept if that would help.",
+};
+
+function refusal(refusalType: AiRefusalType, category: AiRequestCategory): AiSafetyResult {
+  return { category, kind: "refuse", message: refusalMessages[refusalType], refusalType };
+}
+
+export function classifyAiRequest(message: string): AiRequestCategory {
+  if (emergencyPattern.test(message)) return "Emergency / Crisis";
+  if (hiddenPromptPattern.test(message) || injectionPattern.test(message)) {
+    return "Prompt Injection / Abuse";
+  }
+  if (
+    medicationAdjustmentPattern.test(message) ||
+    diagnosisPattern.test(message) ||
+    specializedMedicalPattern.test(message)
+  ) {
+    return "Medical Advice Request";
+  }
+  if (lessonPattern.test(message)) return "Lesson Question";
+  if (medicationPattern.test(message)) return "Medication Education";
+  if (nutritionPattern.test(message)) return "Nutrition Education";
+  if (exercisePattern.test(message)) return "Exercise Education";
+  if (caregiverPattern.test(message)) return "Caregiver Guidance";
+  if (lifestylePattern.test(message)) return "Lifestyle Support";
+  if (emotionalPattern.test(message)) return "Emotional Support";
+  if (typeTwoPattern.test(message)) return "General Type 2 Diabetes Education";
+  return "Unknown";
+}
+
+export function assessAiSafety(message: string): AiSafetyResult {
+  const category = classifyAiRequest(message);
+  if (category === "Emergency / Crisis") return refusal("emergency", category);
+  if (hiddenPromptPattern.test(message)) return refusal("hidden_prompt", category);
+  if (injectionPattern.test(message)) return refusal("prompt_injection", category);
+  if (medicationAdjustmentPattern.test(message)) return refusal("medication_adjustment", category);
+  if (diagnosisPattern.test(message)) return refusal("diagnosis", category);
+  if (specializedMedicalPattern.test(message)) return refusal("unsupported_medical", category);
+  return { category, kind: "allow" };
+}

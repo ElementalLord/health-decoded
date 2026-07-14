@@ -3,7 +3,7 @@ import "server-only";
 import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
-import { assessAiSafety } from "@/features/ai/services/ai-safety.server";
+import { assessAiSafety, type AiSafetyResult } from "@/features/ai/services/ai-safety.server";
 import type {
   AiChatFailureCategory,
   AiChatRequest,
@@ -46,17 +46,28 @@ export async function createAiChatStream(
   const startedAt = Date.now();
   const correlationId = crypto.randomUUID();
   const inputCount = 1 + (input.messages?.length ?? 0);
+  const safetyCandidates = [
+    assessAiSafety(input.message),
+    ...(input.messages ?? [])
+      .filter((entry) => entry.role === "user")
+      .map((entry) => assessAiSafety(entry.content)),
+  ];
+  const safety = safetyCandidates.find(
+    (candidate): candidate is Extract<AiSafetyResult, { readonly kind: "refuse" }> =>
+      candidate.kind === "refuse",
+  );
+  const requestCategory = safety?.category ?? safetyCandidates[0]!.category;
   const loggingContext = {
     operation: "chat_request" as const,
     duration_bucket: durationBucket(Date.now() - startedAt),
     request_size_bucket: requestSizeBucket(input.message.length),
     input_count_bucket: inputCountBucket(inputCount),
     correlation_id: correlationId,
+    request_category: requestCategory,
   };
-  const safety = assessAiSafety(input.message);
 
-  if (safety.kind === "redirect") {
-    logAiOperation({ ...loggingContext, outcome: "refused" });
+  if (safety) {
+    logAiOperation({ ...loggingContext, outcome: "refused", refusal_type: safety.refusalType });
     return {
       ok: true,
       data: (async function* () {
