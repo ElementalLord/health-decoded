@@ -1,6 +1,14 @@
 "use client";
 
-import { BookOpen, House, Library, ListChecks, Map, UserRound } from "lucide-react";
+import {
+  BookOpen,
+  House,
+  Library,
+  ListChecks,
+  Map,
+  MessageCircleQuestion,
+  UserRound,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -9,6 +17,7 @@ import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 const icons = {
+  ai: MessageCircleQuestion,
   home: House,
   journey: Map,
   profile: UserRound,
@@ -34,7 +43,12 @@ function BottomNavigation({
         aria-label="Mobile navigation"
         className="safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-card px-1 pt-1.5"
       >
-        <ul className="mx-auto grid max-w-md grid-cols-5 items-center">
+        <ul
+          className={cn(
+            "mx-auto grid max-w-md items-center",
+            routes.length === 6 ? "grid-cols-6" : "grid-cols-5",
+          )}
+        >
           {routes.map((route) => {
             const Icon = icons[route.icon];
             const active = isActiveRoute(pathname, route);

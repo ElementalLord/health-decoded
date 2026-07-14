@@ -2,8 +2,11 @@ import { NextResponse } from "next/server";
 
 import { AI_MAX_REQUEST_BYTES } from "@/features/ai/constants/ai-limits";
 import { aiChatRequestSchema } from "@/features/ai/schemas/ai-chat.schema";
-import { requestAiChat } from "@/features/ai/services/ai-chat.server";
+import { createAiChatStream } from "@/features/ai/services/ai-chat.server";
+import type { AiChatFailureCategory, AiChatStreamEvent } from "@/features/ai/types/ai";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
+
+const encoder = new TextEncoder();
 
 function errorResponse(status: number, code: string, message: string) {
   return NextResponse.json(
@@ -18,6 +21,28 @@ function exceedsRequestSize(request: Request) {
 
   const parsedLength = Number(contentLength);
   return Number.isFinite(parsedLength) && parsedLength > AI_MAX_REQUEST_BYTES;
+}
+
+function streamEvent(event: AiChatStreamEvent) {
+  return encoder.encode(`data: ${JSON.stringify(event)}\n\n`);
+}
+
+function serviceErrorResponse(category: AiChatFailureCategory) {
+  if (category === "rate_limited") {
+    return errorResponse(429, "AI_RATE_LIMITED", "Please wait before trying again.");
+  }
+  if (category === "timeout") {
+    return errorResponse(504, "AI_TIMEOUT", "The AI assistant took too long to respond.");
+  }
+  if (category === "context") {
+    return errorResponse(
+      400,
+      "INVALID_AI_CONTEXT",
+      "The requested educational context is unavailable.",
+    );
+  }
+
+  return errorResponse(503, "AI_UNAVAILABLE", "The AI assistant is temporarily unavailable.");
 }
 
 export async function POST(request: Request) {
@@ -52,24 +77,28 @@ export async function POST(request: Request) {
     return errorResponse(400, "INVALID_AI_REQUEST", "Please check your request and try again.");
   }
 
-  const response = await requestAiChat({ ...parsed.data, userId: user.data.id });
-  if (response.ok) {
-    return NextResponse.json(response.data, { headers: { "Cache-Control": "no-store" } });
-  }
+  const result = await createAiChatStream({ ...parsed.data, userId: user.data.id }, request.signal);
+  if (!result.ok) return serviceErrorResponse(result.category);
 
-  if (response.category === "rate_limited") {
-    return errorResponse(429, "AI_RATE_LIMITED", "Please wait before trying again.");
-  }
-  if (response.category === "timeout") {
-    return errorResponse(504, "AI_TIMEOUT", "The AI assistant took too long to respond.");
-  }
-  if (response.category === "context") {
-    return errorResponse(
-      400,
-      "INVALID_AI_CONTEXT",
-      "The requested educational context is unavailable.",
-    );
-  }
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      try {
+        for await (const event of result.data) {
+          if (request.signal.aborted) break;
+          controller.enqueue(streamEvent(event));
+        }
+      } finally {
+        controller.close();
+      }
+    },
+  });
 
-  return errorResponse(503, "AI_UNAVAILABLE", "The AI assistant is temporarily unavailable.");
+  return new Response(stream, {
+    headers: {
+      "Cache-Control": "no-store",
+      Connection: "keep-alive",
+      "Content-Type": "text/event-stream; charset=utf-8",
+      "X-Accel-Buffering": "no",
+    },
+  });
 }

@@ -1,7 +1,7 @@
 export type ApplicationRoute = {
   href: string;
   label: string;
-  icon: "home" | "journey" | "profile" | "progress" | "resources" | "stories";
+  icon: "ai" | "home" | "journey" | "profile" | "progress" | "resources" | "stories";
 };
 
 export const applicationRoutes = [
@@ -18,6 +18,7 @@ export const protectedApplicationRoutes = [
     label: "Journey",
     icon: "journey",
   },
+  { href: "/ai", label: "Ask AI", icon: "ai" },
   { href: "/progress", label: "Progress", icon: "progress" },
   { href: "/stories", label: "Stories", icon: "stories" },
   { href: "/resources", label: "Resources", icon: "resources" },

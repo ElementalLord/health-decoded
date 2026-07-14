@@ -9,12 +9,16 @@ export type NormalizedAiProviderResult =
   | { readonly ok: true; readonly text: string }
   | { readonly ok: false; readonly category: AiProviderFailureCategory };
 
+export function isPermittedAiTextPrefix(value: string) {
+  return (
+    value.length <= AI_MAX_OUTPUT_CHARACTERS &&
+    !/<\/?[a-z][^>]*>|```|https?:\/\/|www\.|!\[|^\s*\|.*\|\s*$|^\s*(?:body|html)\s*\{/im.test(value)
+  );
+}
+
 function isPlainText(value: string) {
   const text = value.trim();
-  const containsDisallowedFormat =
-    /<\/?[a-z][^>]*>|```|https?:\/\/|www\.|!\[|^\s*\|.*\|\s*$|^\s*(?:body|html)\s*\{/im.test(text);
-
-  return text.length > 0 && text.length <= AI_MAX_OUTPUT_CHARACTERS && !containsDisallowedFormat;
+  return text.length > 0 && isPermittedAiTextPrefix(text);
 }
 
 export function parseAiProviderText(value: unknown): NormalizedAiProviderResult {

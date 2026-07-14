@@ -6,8 +6,10 @@ import { AI_PROVIDER_TIMEOUT_MS } from "@/features/ai/constants/ai-limits";
 import { DEFAULT_AI_MODEL } from "@/features/ai/constants/ai-models";
 import { getGeminiServerEnv } from "@/lib/env/server";
 import {
+  isPermittedAiTextPrefix,
   normalizeAiProviderFailure,
   parseAiProviderText,
+  type AiProviderFailureCategory,
   type NormalizedAiProviderResult,
 } from "@/services/ai/response-parser";
 
@@ -25,8 +27,18 @@ export type AiProviderRequest = {
   readonly systemInstruction: string;
 };
 
+export type AiProviderStreamEvent =
+  | { readonly kind: "text"; readonly text: string }
+  | {
+      readonly category: "configuration" | "rate_limited" | "timeout" | "unexpected";
+      readonly kind: "error";
+    };
+
 export type AiProvider = {
-  generateResponse(request: AiProviderRequest): Promise<NormalizedAiProviderResult>;
+  generateResponseStream(
+    request: AiProviderRequest,
+    signal?: AbortSignal,
+  ): AsyncGenerator<AiProviderStreamEvent>;
 };
 
 export function getGeminiConfiguration():
@@ -58,18 +70,25 @@ function canRetry(response: NormalizedAiProviderResult) {
   return !response.ok && (response.category === "timeout" || response.category === "unexpected");
 }
 
+function streamFailureCategory(category: AiProviderFailureCategory) {
+  return category === "refused" ? "unexpected" : category;
+}
+
 export const aiProvider: AiProvider = {
-  async generateResponse({ prompt, systemInstruction }) {
+  async *generateResponseStream({ prompt, systemInstruction }, signal) {
     const configuration = getGeminiConfiguration();
-    if (!configuration.ok) return normalizeAiProviderFailure("configuration");
+    if (!configuration.ok) {
+      yield { category: "configuration", kind: "error" };
+      return;
+    }
 
     const client = new GoogleGenAI({ apiKey: configuration.data.apiKey });
 
     for (let attempt = 0; attempt < 2; attempt += 1) {
-      let result: NormalizedAiProviderResult;
+      let emittedText = false;
 
       try {
-        const response = await client.models.generateContent({
+        const response = await client.models.generateContentStream({
           model: DEFAULT_AI_MODEL,
           contents: prompt,
           config: {
@@ -82,14 +101,41 @@ export const aiProvider: AiProvider = {
           },
         });
 
-        result = parseAiProviderText(response.text);
+        let completeText = "";
+        for await (const chunk of response) {
+          if (signal?.aborted) return;
+
+          const text = chunk.text ?? "";
+          if (!text) continue;
+
+          completeText += text;
+          if (!isPermittedAiTextPrefix(completeText)) {
+            yield { category: "unexpected", kind: "error" };
+            return;
+          }
+
+          emittedText = true;
+          yield { kind: "text", text };
+        }
+
+        const parsed = parseAiProviderText(completeText);
+        if (!parsed.ok) {
+          yield { category: streamFailureCategory(parsed.category), kind: "error" };
+          return;
+        }
+
+        return;
       } catch (error) {
-        result = providerFailure(error);
+        const result = providerFailure(error);
+
+        if (result.ok) {
+          yield { category: "unexpected", kind: "error" };
+          return;
+        }
+        if (!emittedText && canRetry(result) && attempt === 0) continue;
+        yield { category: streamFailureCategory(result.category), kind: "error" };
+        return;
       }
-
-      if (!canRetry(result) || attempt === 1) return result;
     }
-
-    return normalizeAiProviderFailure("unexpected");
   },
 };

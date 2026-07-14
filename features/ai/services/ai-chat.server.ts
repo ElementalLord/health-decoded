@@ -4,8 +4,16 @@ import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
 import { assessAiSafety } from "@/features/ai/services/ai-safety.server";
-import type { AiChatRequest, AiChatServiceResult } from "@/features/ai/types/ai";
+import type {
+  AiChatFailureCategory,
+  AiChatRequest,
+  AiChatStreamEvent,
+} from "@/features/ai/types/ai";
 import { aiProvider } from "@/services/ai/provider";
+
+type AiChatStreamResult =
+  | { readonly ok: true; readonly data: AsyncGenerator<AiChatStreamEvent> }
+  | { readonly ok: false; readonly category: AiChatFailureCategory };
 
 function durationBucket(duration: number) {
   if (duration < 100) return "under_100ms" as const;
@@ -25,60 +33,92 @@ function inputCountBucket(count: number) {
   return "many" as const;
 }
 
-export async function requestAiChat(input: AiChatRequest): Promise<AiChatServiceResult> {
+function providerErrorCode(category: AiChatFailureCategory) {
+  if (category === "rate_limited") return "AI_RATE_LIMITED" as const;
+  if (category === "timeout") return "AI_TIMEOUT" as const;
+  return "AI_UNAVAILABLE" as const;
+}
+
+export async function createAiChatStream(
+  input: AiChatRequest,
+  signal?: AbortSignal,
+): Promise<AiChatStreamResult> {
   const startedAt = Date.now();
   const correlationId = crypto.randomUUID();
   const inputCount = 1 + (input.messages?.length ?? 0);
-  const safety = assessAiSafety(input.message);
-
-  if (safety.kind === "redirect") {
-    logAiOperation({
-      operation: "chat_request",
-      outcome: "refused",
-      duration_bucket: durationBucket(Date.now() - startedAt),
-      request_size_bucket: requestSizeBucket(input.message.length),
-      input_count_bucket: inputCountBucket(inputCount),
-      correlation_id: correlationId,
-    });
-    return { ok: true, data: { assistantMessage: safety.message } };
-  }
-
-  const context = await loadTrustedAiContext({
-    lessonId: input.lessonId,
-    medicationId: input.medicationId,
-    userId: input.userId,
-  });
-
-  if (!context.ok) {
-    logAiOperation({
-      operation: "chat_request",
-      outcome: "context",
-      duration_bucket: durationBucket(Date.now() - startedAt),
-      request_size_bucket: requestSizeBucket(input.message.length),
-      input_count_bucket: inputCountBucket(inputCount),
-      correlation_id: correlationId,
-    });
-    return { ok: false, category: "context" };
-  }
-
-  const prompt = buildAiPrompt({
-    context: context.data,
-    message: input.message,
-    ...(input.messages ? { messages: input.messages } : {}),
-  });
-  const response = await aiProvider.generateResponse(prompt);
-  const outcome = response.ok ? "success" : response.category;
-
-  logAiOperation({
-    operation: "chat_request",
-    outcome,
+  const loggingContext = {
+    operation: "chat_request" as const,
     duration_bucket: durationBucket(Date.now() - startedAt),
     request_size_bucket: requestSizeBucket(input.message.length),
     input_count_bucket: inputCountBucket(inputCount),
     correlation_id: correlationId,
+  };
+  const safety = assessAiSafety(input.message);
+
+  if (safety.kind === "redirect") {
+    logAiOperation({ ...loggingContext, outcome: "refused" });
+    return {
+      ok: true,
+      data: (async function* () {
+        yield { text: safety.message, type: "delta" };
+        yield { type: "done" };
+      })(),
+    };
+  }
+
+  const context = await loadTrustedAiContext({
+    message: input.message,
+    userId: input.userId,
   });
 
-  return response.ok
-    ? { ok: true, data: { assistantMessage: response.text } }
-    : { ok: false, category: response.category };
+  if (!context.ok) {
+    logAiOperation({ ...loggingContext, outcome: "context" });
+    return { ok: false, category: "context" };
+  }
+
+  const prompt = buildAiPrompt({
+    context: context.data.promptContext,
+    message: input.message,
+    ...(input.messages ? { messages: input.messages } : {}),
+  });
+
+  return {
+    ok: true,
+    data: (async function* () {
+      let outcome: "configuration" | "rate_limited" | "success" | "timeout" | "unexpected" =
+        "success";
+
+      yield {
+        lessonUsed: Boolean(context.data.promptContext.lesson),
+        relatedContent: context.data.metadata.relatedContent,
+        suggestedQuestions: context.data.metadata.suggestedQuestions,
+        type: "context",
+      };
+
+      for await (const event of aiProvider.generateResponseStream(prompt, signal)) {
+        if (signal?.aborted) return;
+
+        if (event.kind === "text") {
+          yield { text: event.text, type: "delta" };
+          continue;
+        }
+
+        outcome = event.category;
+        logAiOperation({
+          ...loggingContext,
+          duration_bucket: durationBucket(Date.now() - startedAt),
+          outcome,
+        });
+        yield { code: providerErrorCode(event.category), type: "error" };
+        return;
+      }
+
+      yield { type: "done" };
+      logAiOperation({
+        ...loggingContext,
+        duration_bucket: durationBucket(Date.now() - startedAt),
+        outcome,
+      });
+    })(),
+  };
 }
