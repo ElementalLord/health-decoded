@@ -31,7 +31,7 @@ Storage
 Edge Functions
 
 AI
-Claude API
+Google Gemini API
 Streaming Responses
 Server-side prompts only
 
@@ -226,7 +226,7 @@ Services communicate with external systems.
 Examples
 supabase.ts
 
-claude.ts
+gemini.ts
 
 stripe.ts
 No React code belongs here.
@@ -330,7 +330,7 @@ Build Prompt
 
 ↓
 
-Claude API
+Google Gemini API
 
 ↓
 
@@ -411,7 +411,7 @@ SUPABASE_URL
 
 SUPABASE_KEY
 
-CLAUDE_API_KEY
+GEMINI_API_KEY
 
 STRIPE_SECRET_KEY
 Never expose private keys to the client.

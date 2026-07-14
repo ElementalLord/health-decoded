@@ -1,9 +1,10 @@
 /**
- * Input boundaries only. Durable request and spending limits will be selected
- * before provider access is enabled.
+ * Input boundaries are enforced now. Durable request and spending controls remain
+ * interfaces until the dedicated production-abuse-prevention milestone.
  */
 export const AI_MAX_REQUEST_BYTES = 16_000;
 export const AI_MAX_MESSAGE_CHARACTERS = 2_000;
+export const AI_MAX_CONVERSATION_MESSAGES = 6;
 export const AI_MAX_OUTPUT_CHARACTERS = 8_000;
 export const AI_PROVIDER_TIMEOUT_MS = 30_000;
 

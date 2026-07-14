@@ -5,7 +5,10 @@ import { z } from "zod";
 import { getPublicEnv } from "@/lib/env/public";
 
 const geminiServerEnvSchema = z.object({
-  GEMINI_API_KEY: z.string().trim().min(1),
+  GEMINI_API_KEY: z
+    .string()
+    .trim()
+    .regex(/^AIza[\w-]{20,}$/, "Invalid Gemini API key format."),
 });
 
 export type GeminiServerEnv = z.infer<typeof geminiServerEnvSchema>;
@@ -21,11 +24,8 @@ export function getServerEnv() {
   return getPublicEnv();
 }
 
-/**
- * AI is intentionally optional until a provider request is enabled. Call this only
- * from server-side provider execution code, never during general app startup.
- */
-export function getOptionalGeminiServerEnv(): GeminiServerEnvResult {
+/** Call only from server-side Gemini provider code, never during general app startup. */
+export function getGeminiServerEnv(): GeminiServerEnvResult {
   const parsed = geminiServerEnvSchema.safeParse({
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   });

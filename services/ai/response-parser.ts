@@ -11,9 +11,10 @@ export type NormalizedAiProviderResult =
 
 function isPlainText(value: string) {
   const text = value.trim();
-  return (
-    text.length > 0 && text.length <= AI_MAX_OUTPUT_CHARACTERS && !/<\/?[a-z][^>]*>/i.test(text)
-  );
+  const containsDisallowedFormat =
+    /<\/?[a-z][^>]*>|```|https?:\/\/|www\.|!\[|^\s*\|.*\|\s*$|^\s*(?:body|html)\s*\{/im.test(text);
+
+  return text.length > 0 && text.length <= AI_MAX_OUTPUT_CHARACTERS && !containsDisallowedFormat;
 }
 
 export function parseAiProviderText(value: unknown): NormalizedAiProviderResult {

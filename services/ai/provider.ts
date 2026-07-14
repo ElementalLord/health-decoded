@@ -4,7 +4,7 @@ import { ApiError, GoogleGenAI } from "@google/genai";
 
 import { AI_PROVIDER_TIMEOUT_MS } from "@/features/ai/constants/ai-limits";
 import { DEFAULT_AI_MODEL } from "@/features/ai/constants/ai-models";
-import { getOptionalGeminiServerEnv } from "@/lib/env/server";
+import { getGeminiServerEnv } from "@/lib/env/server";
 import {
   normalizeAiProviderFailure,
   parseAiProviderText,
@@ -32,7 +32,7 @@ export type AiProvider = {
 export function getGeminiConfiguration():
   | { readonly ok: true; readonly data: AiProviderConfiguration }
   | { readonly ok: false; readonly error: AiProviderConfigurationError } {
-  const env = getOptionalGeminiServerEnv();
+  const env = getGeminiServerEnv();
 
   return env.ok
     ? { ok: true, data: { provider: "gemini", apiKey: env.data.GEMINI_API_KEY } }
@@ -40,6 +40,9 @@ export function getGeminiConfiguration():
 }
 
 function providerFailure(error: unknown): NormalizedAiProviderResult {
+  if (error instanceof Error && error.name === "AbortError") {
+    return normalizeAiProviderFailure("timeout");
+  }
   if (!(error instanceof ApiError)) return normalizeAiProviderFailure("unexpected");
   if (error.status === 401 || error.status === 403) {
     return normalizeAiProviderFailure("configuration");
@@ -51,6 +54,10 @@ function providerFailure(error: unknown): NormalizedAiProviderResult {
   return normalizeAiProviderFailure("unexpected");
 }
 
+function canRetry(response: NormalizedAiProviderResult) {
+  return !response.ok && (response.category === "timeout" || response.category === "unexpected");
+}
+
 export const aiProvider: AiProvider = {
   async generateResponse({ prompt, systemInstruction }) {
     const configuration = getGeminiConfiguration();
@@ -58,23 +65,31 @@ export const aiProvider: AiProvider = {
 
     const client = new GoogleGenAI({ apiKey: configuration.data.apiKey });
 
-    try {
-      const response = await client.models.generateContent({
-        model: DEFAULT_AI_MODEL,
-        contents: prompt,
-        config: {
-          candidateCount: 1,
-          httpOptions: { timeout: AI_PROVIDER_TIMEOUT_MS },
-          maxOutputTokens: 700,
-          responseMimeType: "text/plain",
-          systemInstruction,
-          temperature: 0.2,
-        },
-      });
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      let result: NormalizedAiProviderResult;
 
-      return parseAiProviderText(response.text);
-    } catch (error) {
-      return providerFailure(error);
+      try {
+        const response = await client.models.generateContent({
+          model: DEFAULT_AI_MODEL,
+          contents: prompt,
+          config: {
+            candidateCount: 1,
+            httpOptions: { timeout: AI_PROVIDER_TIMEOUT_MS },
+            maxOutputTokens: 700,
+            responseMimeType: "text/plain",
+            systemInstruction,
+            temperature: 0.2,
+          },
+        });
+
+        result = parseAiProviderText(response.text);
+      } catch (error) {
+        result = providerFailure(error);
+      }
+
+      if (!canRetry(result) || attempt === 1) return result;
     }
+
+    return normalizeAiProviderFailure("unexpected");
   },
 };

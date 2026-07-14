@@ -6,7 +6,10 @@ import { requestAiChat } from "@/features/ai/services/ai-chat.server";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 
 function errorResponse(status: number, code: string, message: string) {
-  return NextResponse.json({ error: { code, message } }, { status });
+  return NextResponse.json(
+    { error: { code, message } },
+    { headers: { "Cache-Control": "no-store" }, status },
+  );
 }
 
 function exceedsRequestSize(request: Request) {
@@ -49,8 +52,10 @@ export async function POST(request: Request) {
     return errorResponse(400, "INVALID_AI_REQUEST", "Please check your request and try again.");
   }
 
-  const response = await requestAiChat(parsed.data);
-  if (response.ok) return NextResponse.json(response.data);
+  const response = await requestAiChat({ ...parsed.data, userId: user.data.id });
+  if (response.ok) {
+    return NextResponse.json(response.data, { headers: { "Cache-Control": "no-store" } });
+  }
 
   if (response.category === "rate_limited") {
     return errorResponse(429, "AI_RATE_LIMITED", "Please wait before trying again.");

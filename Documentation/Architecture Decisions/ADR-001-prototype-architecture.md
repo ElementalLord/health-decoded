@@ -24,7 +24,7 @@ The specifications contain differences in prototype duration, content storage, c
 
 ## Security and Privacy Impact
 
-- Secrets remain server-only. The future AI provider variable is `ANTHROPIC_API_KEY`.
+- Secrets remain server-only. The AI provider is Google Gemini and its server-only variable is `GEMINI_API_KEY`.
 - Supabase content and user data require server-side authorization and Row Level Security before implementation.
 - Durable AI rate limiting, quotas, and deletion controls are mandatory before the AI milestone; no provider is selected yet.
 - Users must eventually be able to delete their own reflections, AI conversations, and associated account data.

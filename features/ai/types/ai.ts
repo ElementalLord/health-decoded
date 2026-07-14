@@ -1,7 +1,7 @@
-export type AiChatRequest = {
-  readonly message: string;
-  readonly lessonId?: string | undefined;
-  readonly medicationId?: string | undefined;
+import type { AiChatRequestInput } from "@/features/ai/schemas/ai-chat.schema";
+
+export type AiChatRequest = AiChatRequestInput & {
+  readonly userId: string;
 };
 
 export type AiChatResponse = {
