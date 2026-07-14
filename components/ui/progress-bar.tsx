@@ -17,7 +17,7 @@ function ProgressBar({ value, label, className, disabled = false }: ProgressBarP
       aria-valuemin={0}
       aria-valuenow={normalizedValue}
       className={cn(
-        "h-3 w-full overflow-hidden rounded-full bg-muted data-[disabled=true]:opacity-50",
+        "h-2 w-full overflow-hidden rounded-full bg-muted data-[disabled=true]:opacity-50",
         className,
       )}
       role="progressbar"

@@ -60,7 +60,7 @@ export function MatchPairActivityView({
       <div className="space-y-2">
         <p className="text-sm font-medium text-primary">Practice</p>
         <h2
-          className="text-2xl font-medium tracking-tight sm:text-3xl"
+          className="text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]"
           id={`activity-${activity.id}`}
           ref={headingRef}
           tabIndex={-1}

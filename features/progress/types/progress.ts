@@ -55,12 +55,12 @@ export type ProgressLessonRow = {
   completed_at: string | null;
   id: string;
   journey_lesson_id: string;
-  status: "not_started" | "in_progress" | "completed";
+  status: string;
   xp_awarded: number;
 };
 
 export type ProgressConfidenceRow = {
-  confidence_level: ConfidenceLevel;
+  confidence_level: string;
   created_at: string;
   lesson_progress_id: string;
 };

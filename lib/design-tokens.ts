@@ -16,7 +16,8 @@ export const typography = {
   lessonHeading: "1.125rem",
   cardTitle: "1.25rem",
   sectionTitle: "1.5rem",
-  pageTitle: "2rem",
+  featureTitle: "1.75rem",
+  pageTitle: "2.25rem",
 } as const;
 
 export const colors = {
@@ -27,6 +28,7 @@ export const colors = {
   success: "var(--success)",
   warning: "var(--warning)",
   info: "var(--info)",
+  accentWarm: "var(--accent-warm)",
   error: "var(--destructive)",
 } as const;
 

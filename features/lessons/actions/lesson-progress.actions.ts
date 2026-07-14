@@ -2,7 +2,6 @@
 
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { lessonPositionSchema } from "@/features/lessons/schemas/lesson-progress.schema";
-import type { SaveLessonPositionRpcRow } from "@/features/lessons/types/lesson-player";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
 
@@ -26,7 +25,7 @@ export async function saveLessonPositionAction(input: unknown): Promise<SaveLess
     p_block_index: parsed.data.blockIndex,
     p_lesson_progress_id: parsed.data.lessonProgressId,
   });
-  const saved = (response.data as unknown as SaveLessonPositionRpcRow[] | null)?.[0];
+  const saved = response.data?.[0];
 
   if (response.error || !saved || saved.saved_last_viewed_block !== parsed.data.blockIndex) {
     logger.error("lesson_reader.position_save_failed");

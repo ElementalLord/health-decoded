@@ -14,5 +14,5 @@ export async function getPublishedLessonBySlug(slug: string): Promise<Result<Les
     .eq("status", "published")
     .maybeSingle();
 
-  return toResult(response as unknown as { data: Lesson | null; error: null });
+  return toResult(response);
 }

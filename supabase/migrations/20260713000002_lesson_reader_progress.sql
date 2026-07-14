@@ -4,12 +4,12 @@ alter table public.lesson_progress
     check (last_viewed_block >= -1);
 
 create function public.begin_or_resume_current_lesson(
-  p_day pg_catalog.integer
+  p_day pg_catalog.int4
 )
 returns table (
   authorized_lesson_progress_id pg_catalog.uuid,
   authorized_lesson_status pg_catalog.text,
-  authorized_last_viewed_block pg_catalog.integer
+  authorized_last_viewed_block pg_catalog.int4
 )
 language plpgsql
 security definer
@@ -107,20 +107,20 @@ begin
 end;
 $$;
 
-comment on function public.begin_or_resume_current_lesson(pg_catalog.integer) is
+comment on function public.begin_or_resume_current_lesson(pg_catalog.int4) is
   'SECURITY DEFINER is required because direct lesson-progress writes are denied. The function derives auth.uid(), validates the published active journey lesson by day, and begins or resumes only an authorized lesson without completing or unlocking content.';
 
-revoke all on function public.begin_or_resume_current_lesson(pg_catalog.integer) from public;
-revoke all on function public.begin_or_resume_current_lesson(pg_catalog.integer) from anon;
-grant execute on function public.begin_or_resume_current_lesson(pg_catalog.integer) to authenticated;
+revoke all on function public.begin_or_resume_current_lesson(pg_catalog.int4) from public;
+revoke all on function public.begin_or_resume_current_lesson(pg_catalog.int4) from anon;
+grant execute on function public.begin_or_resume_current_lesson(pg_catalog.int4) to authenticated;
 
 create function public.save_lesson_block_position(
   p_lesson_progress_id pg_catalog.uuid,
-  p_block_index pg_catalog.integer
+  p_block_index pg_catalog.int4
 )
 returns table (
   saved_lesson_progress_id pg_catalog.uuid,
-  saved_last_viewed_block pg_catalog.integer
+  saved_last_viewed_block pg_catalog.int4
 )
 language plpgsql
 security definer
@@ -128,7 +128,7 @@ set search_path = ''
 as $$
 declare
   v_user_id pg_catalog.uuid := auth.uid();
-  v_block_count pg_catalog.integer;
+  v_block_count pg_catalog.int4;
 begin
   if v_user_id is null then
     raise exception using errcode = '42501', message = 'Not authorized.';
@@ -172,9 +172,9 @@ begin
 end;
 $$;
 
-comment on function public.save_lesson_block_position(pg_catalog.uuid, pg_catalog.integer) is
+comment on function public.save_lesson_block_position(pg_catalog.uuid, pg_catalog.int4) is
   'SECURITY DEFINER is required because direct lesson-progress writes are denied. The function derives auth.uid(), verifies active-journey ownership and publication state, and saves only an in-range non-completed block position.';
 
-revoke all on function public.save_lesson_block_position(pg_catalog.uuid, pg_catalog.integer) from public;
-revoke all on function public.save_lesson_block_position(pg_catalog.uuid, pg_catalog.integer) from anon;
-grant execute on function public.save_lesson_block_position(pg_catalog.uuid, pg_catalog.integer) to authenticated;
+revoke all on function public.save_lesson_block_position(pg_catalog.uuid, pg_catalog.int4) from public;
+revoke all on function public.save_lesson_block_position(pg_catalog.uuid, pg_catalog.int4) from anon;
+grant execute on function public.save_lesson_block_position(pg_catalog.uuid, pg_catalog.int4) to authenticated;

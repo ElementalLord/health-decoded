@@ -9,19 +9,6 @@ import { err, ok, type Result } from "@/lib/result/result";
 
 const logger = createServerLogger();
 
-type ActivityRow = {
-  activity_type: string;
-  configuration: unknown;
-  id: string;
-  instructions: string;
-  title: string;
-};
-
-type ActivityProgressRow = {
-  activity_id: string;
-  status: "not_started" | "in_progress" | "completed";
-};
-
 export async function getPublishedLessonActivities(
   lessonId: string,
   lessonProgressId: string,
@@ -39,8 +26,8 @@ export async function getPublishedLessonActivities(
       .select("activity_id, status")
       .eq("lesson_progress_id", lessonProgressId),
   ]);
-  const activities = activitiesResponse.data as ActivityRow[] | null;
-  const progressRows = progressResponse.data as ActivityProgressRow[] | null;
+  const activities = activitiesResponse.data;
+  const progressRows = progressResponse.data;
 
   if (activitiesResponse.error || progressResponse.error || !activities || !progressRows) {
     logger.error("activities.load_failed");

@@ -4,8 +4,8 @@ create function public.evaluate_match_pair_activity(
   p_response pg_catalog.jsonb
 )
 returns table (
-  is_correct pg_catalog.boolean,
-  is_complete pg_catalog.boolean,
+  is_correct pg_catalog.bool,
+  is_complete pg_catalog.bool,
   feedback_message pg_catalog.text
 )
 language plpgsql
@@ -17,7 +17,7 @@ declare
   v_configuration pg_catalog.jsonb;
   v_answer_config pg_catalog.jsonb;
   v_explanation pg_catalog.text;
-  v_is_correct pg_catalog.boolean;
+  v_is_correct pg_catalog.bool;
 begin
   if v_user_id is null then
     raise exception using errcode = '42501', message = 'Not authorized.';

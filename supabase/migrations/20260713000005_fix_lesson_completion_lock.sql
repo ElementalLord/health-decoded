@@ -1,4 +1,5 @@
-create function public.complete_current_lesson(
+-- Correct the relation names used by the lesson-completion row lock.
+create or replace function public.complete_current_lesson(
   p_lesson_progress_id pg_catalog.uuid
 )
 returns table (

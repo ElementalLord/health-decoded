@@ -2,7 +2,6 @@
 
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { matchPairResponseSchema } from "@/features/activities/schemas/activity-response.schema";
-import type { EvaluateMatchPairRpcRow } from "@/features/activities/types/activity";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
 
@@ -29,7 +28,7 @@ export async function evaluateMatchPairAction(input: unknown): Promise<ActivityE
     p_lesson_progress_id: parsed.data.lessonProgressId,
     p_response: { pairs: parsed.data.pairs },
   });
-  const evaluated = (response.data as unknown as EvaluateMatchPairRpcRow[] | null)?.[0];
+  const evaluated = response.data?.[0];
 
   if (response.error || !evaluated || !evaluated.feedback_message) {
     logger.error("activities.evaluation_failed");

@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "react";
 
 import { cn } from "@/lib/utils";
 
-const cardVariants = cva("rounded-lg border border-border bg-card p-6 sm:p-8", {
+const cardVariants = cva("rounded-[14px] border border-border/90 bg-card p-5 sm:p-6", {
   variants: { tone: { default: "", info: "border-info bg-info/35", muted: "bg-muted/50" } },
   defaultVariants: { tone: "default" },
 });
@@ -22,7 +22,10 @@ function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 
 function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("text-[length:var(--text-card-title)] font-medium", className)} {...props} />
+    <h3
+      className={cn("text-[length:var(--text-card-title)] font-semibold", className)}
+      {...props}
+    />
   );
 }
 

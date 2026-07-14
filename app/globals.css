@@ -19,6 +19,7 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
+  --color-accent-warm: var(--accent-warm);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-destructive: var(--destructive);
@@ -33,37 +34,39 @@
 }
 
 :root {
-  --background: oklch(0.985 0.003 100);
-  --foreground: oklch(0.24 0.02 210);
+  --background: oklch(0.976 0.004 85);
+  --foreground: oklch(0.225 0.016 220);
   --card: oklch(1 0 0);
-  --primary: oklch(0.47 0.09 190);
+  --primary: oklch(0.425 0.075 190);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.93 0.025 235);
-  --secondary-foreground: oklch(0.3 0.05 235);
+  --secondary: oklch(0.942 0.012 225);
+  --secondary-foreground: oklch(0.31 0.035 220);
+  --accent-warm: oklch(0.665 0.13 32);
   --success: oklch(0.5 0.1 150);
   --success-foreground: oklch(0.99 0 0);
   --warning: oklch(0.72 0.13 75);
   --warning-foreground: oklch(0.28 0.04 75);
   --info: oklch(0.92 0.035 235);
   --info-foreground: oklch(0.31 0.055 235);
-  --muted: oklch(0.955 0.008 210);
-  --muted-foreground: oklch(0.48 0.025 210);
+  --muted: oklch(0.953 0.006 90);
+  --muted-foreground: oklch(0.47 0.02 220);
   --destructive: oklch(0.5 0.11 25);
-  --border: oklch(0.89 0.012 210);
-  --input: oklch(0.89 0.012 210);
-  --ring: oklch(0.47 0.09 190);
-  --radius: 0.75rem;
-  --radius-xl: 1rem;
-  --shadow-card: 0 1px 3px rgb(32 55 64 / 0.08);
-  --shadow-modal: 0 20px 50px rgb(32 55 64 / 0.18);
+  --border: oklch(0.89 0.008 90);
+  --input: oklch(0.86 0.01 215);
+  --ring: oklch(0.425 0.075 190);
+  --radius: 0.625rem;
+  --radius-xl: 0.875rem;
+  --shadow-card: 0 1px 2px rgb(26 42 48 / 0.05);
+  --shadow-modal: 0 20px 50px rgb(26 42 48 / 0.16);
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
   --text-caption: 0.8125rem;
-  --text-supporting: 0.875rem;
+  --text-supporting: 0.9375rem;
   --text-body: 1rem;
   --text-lesson-heading: 1.125rem;
   --text-card-title: 1.25rem;
-  --text-section-title: 1.5rem;
-  --text-page-title: 2rem;
+  --text-feature-title: 1.5rem;
+  --text-section-title: 1.375rem;
+  --text-page-title: 1.875rem;
   --duration-fast: 120ms;
   --duration-normal: 200ms;
   --duration-progress: 400ms;
@@ -75,8 +78,9 @@
   --text-supporting: 1rem;
   --text-card-title: 1.375rem;
   --text-section-title: 1.625rem;
-  --text-page-title: 2.125rem;
+  --text-page-title: 2rem;
 }
+
 [data-text-scale="extra_large"] {
   --text-body: 1.25rem;
   --text-supporting: 1.125rem;
@@ -84,6 +88,23 @@
   --text-section-title: 1.75rem;
   --text-page-title: 2.25rem;
 }
+
+@media (min-width: 40rem) {
+  :root {
+    --text-feature-title: 1.75rem;
+    --text-section-title: 1.5rem;
+    --text-page-title: 2.25rem;
+  }
+
+  [data-text-scale="large"] {
+    --text-page-title: 2.375rem;
+  }
+
+  [data-text-scale="extra_large"] {
+    --text-page-title: 2.5rem;
+  }
+}
+
 [data-reduced-motion="true"] *,
 [data-reduced-motion="true"] *::before,
 [data-reduced-motion="true"] *::after {
@@ -100,6 +121,7 @@
 
   body {
     @apply min-h-dvh bg-background font-sans text-foreground antialiased;
+    line-height: 1.5;
   }
 
   :focus-visible {

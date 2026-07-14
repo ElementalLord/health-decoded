@@ -1,8 +1,8 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { useActionState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   saveConfidenceCheckInAction,
   type ConfidenceActionState,
@@ -31,11 +31,14 @@ export function ConfidenceCheck({
   const [state, action, pending] = useActionState(saveConfidenceCheckInAction, initialState);
 
   return (
-    <section aria-labelledby="confidence-check-title" className="border-b border-border pb-8">
-      <div className="max-w-3xl space-y-5">
+    <section
+      aria-labelledby="confidence-check-title"
+      className="rounded-[14px] border border-border bg-card p-5 sm:p-6"
+    >
+      <div className="space-y-5">
         <div className="space-y-1">
           <h2
-            className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+            className="text-[length:var(--text-card-title)] font-semibold tracking-tight"
             id="confidence-check-title"
           >
             How confident do you feel today?
@@ -49,31 +52,28 @@ export function ConfidenceCheck({
           <input name="lessonProgressId" type="hidden" value={lessonProgressId} />
           <fieldset disabled={pending}>
             <legend className="sr-only">Choose your confidence level</legend>
-            <div className="divide-y divide-border border-y border-border">
+            <div className="grid gap-2 sm:grid-cols-3" role="group">
               {options.map((option) => {
                 const selected = state.savedValue === option.value;
 
                 return (
-                  <Button
+                  <button
                     aria-pressed={selected}
                     className={cn(
-                      "min-h-12 justify-between rounded-none border-0 bg-transparent px-1 text-left text-foreground shadow-none hover:bg-muted/50",
-                      selected && "bg-muted text-foreground",
+                      "flex min-h-12 items-center justify-between gap-3 rounded-[10px] border border-border bg-card px-4 py-3 text-left text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+                      selected && "border-primary/45 bg-secondary/60 text-primary",
                     )}
                     disabled={pending}
                     key={option.value}
                     name="confidenceLevel"
                     type="submit"
                     value={option.value}
-                    variant="secondary"
                   >
                     <span>{option.label}</span>
                     {selected ? (
-                      <span className="text-[length:var(--text-caption)] font-medium">
-                        Selected
-                      </span>
+                      <Check aria-hidden="true" className="size-4 shrink-0" strokeWidth={2.5} />
                     ) : null}
-                  </Button>
+                  </button>
                 );
               })}
             </div>

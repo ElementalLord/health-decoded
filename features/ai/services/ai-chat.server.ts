@@ -1,42 +1,57 @@
 import "server-only";
 
+import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
+import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
-import type { AiChatRequest, AiUnavailableResponse } from "@/features/ai/types/ai";
+import type { AiChatRequest, AiChatServiceResult } from "@/features/ai/types/ai";
+import { aiProvider } from "@/services/ai/provider";
 
-const unavailableResponse: AiUnavailableResponse = {
-  error: {
-    code: "AI_NOT_AVAILABLE",
-    message: "The AI assistant is not available yet.",
-  },
-};
+function durationBucket(duration: number) {
+  if (duration < 100) return "under_100ms" as const;
+  if (duration < 1_000) return "under_1s" as const;
+  return "over_1s" as const;
+}
 
-function getRequestSizeBucket(messageCount: number) {
-  if (messageCount === 1) return "small" as const;
-  if (messageCount <= 4) return "medium" as const;
+function requestSizeBucket(length: number) {
+  if (length <= 300) return "small" as const;
+  if (length <= 1_000) return "medium" as const;
   return "large" as const;
 }
 
-function getInputCountBucket(messageCount: number) {
-  if (messageCount === 1) return "one" as const;
-  if (messageCount <= 4) return "few" as const;
-  return "many" as const;
-}
-
-/**
- * The AI domain boundary. Provider execution, prompt construction, retrieval,
- * quotas, and conversation persistence are intentionally deferred.
- */
-export async function requestAiChat(input: AiChatRequest): Promise<AiUnavailableResponse> {
+export async function requestAiChat(input: AiChatRequest): Promise<AiChatServiceResult> {
   const startedAt = Date.now();
+  const correlationId = crypto.randomUUID();
+  const context = await loadTrustedAiContext({
+    lessonId: input.lessonId,
+    medicationId: input.medicationId,
+  });
+
+  if (!context.ok) {
+    logAiOperation({
+      operation: "chat_request",
+      outcome: "context",
+      duration_bucket: durationBucket(Date.now() - startedAt),
+      request_size_bucket: requestSizeBucket(input.message.length),
+      input_count_bucket: "one",
+      correlation_id: correlationId,
+    });
+    return { ok: false, category: "context" };
+  }
+
+  const prompt = buildAiPrompt({ context: context.data, message: input.message });
+  const response = await aiProvider.generateResponse(prompt);
+  const outcome = response.ok ? "success" : response.category;
 
   logAiOperation({
     operation: "chat_request",
-    outcome: "not_available",
-    duration_bucket: Date.now() - startedAt < 100 ? "under_100ms" : "under_1s",
-    request_size_bucket: getRequestSizeBucket(input.messages.length),
-    input_count_bucket: getInputCountBucket(input.messages.length),
-    correlation_id: crypto.randomUUID(),
+    outcome,
+    duration_bucket: durationBucket(Date.now() - startedAt),
+    request_size_bucket: requestSizeBucket(input.message.length),
+    input_count_bucket: "one",
+    correlation_id: correlationId,
   });
 
-  return unavailableResponse;
+  return response.ok
+    ? { ok: true, data: { assistantMessage: response.text } }
+    : { ok: false, category: response.category };
 }

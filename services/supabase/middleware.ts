@@ -2,15 +2,18 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { CURRENT_PATH_HEADER } from "@/lib/auth/redirects";
+import { getPublicEnv } from "@/lib/env/public";
+import type { Database } from "@/types/database";
 
 export async function refreshSession(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(CURRENT_PATH_HEADER, request.nextUrl.pathname);
   const nextResponse = () => NextResponse.next({ request: { headers: requestHeaders } });
   let response = nextResponse();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "",
+  const env = getPublicEnv();
+  const supabase = createServerClient<Database>(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
       cookies: {
         getAll: () => request.cookies.getAll(),

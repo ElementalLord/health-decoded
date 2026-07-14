@@ -1,6 +1,6 @@
-import { buttonVariants } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { JourneyProgressSummary } from "@/features/journeys/types/journey-home";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export function JourneyProgressSummary({
@@ -15,25 +15,31 @@ export function JourneyProgressSummary({
   return (
     <section
       aria-labelledby="journey-progress-title"
-      className="space-y-5 border-y border-border py-6"
+      className="space-y-4 rounded-[14px] border border-border bg-card p-5"
     >
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col items-start justify-between gap-1 sm:flex-row sm:gap-4">
         <div>
           <h2
-            className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+            className="break-words text-[length:var(--text-card-title)] font-semibold tracking-tight"
             id="journey-progress-title"
           >
-            Your journey
+            Your {progress.totalDays}-day journey
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">{journeyTitle}</p>
         </div>
-        <p className="text-sm font-medium text-foreground">Day {progress.currentDay}</p>
+        <p className="shrink-0 text-sm font-semibold text-foreground">
+          Day {progress.currentDay} of {progress.totalDays}
+        </p>
       </div>
       <ProgressBar label={progressLabel} value={progress.percentage} />
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">{progressLabel}</p>
-        <Link className={buttonVariants({ fullWidth: false, variant: "text" })} href="/progress">
-          View your progress
+        <Link
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-[10px] text-sm font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+          href="/progress"
+        >
+          View progress
+          <ArrowRight aria-hidden="true" className="size-4" />
         </Link>
       </div>
     </section>

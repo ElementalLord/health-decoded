@@ -24,10 +24,3 @@ export type MatchPairActivity = {
 };
 
 export type LessonActivity = MatchPairActivity;
-
-// TODO: Replace after Supabase types can be generated locally.
-export type EvaluateMatchPairRpcRow = {
-  feedback_message: string | null;
-  is_complete: boolean;
-  is_correct: boolean;
-};

@@ -4,6 +4,7 @@ import type {
   JourneyHomeViewModel,
   LessonProgressRow,
 } from "@/features/journeys/types/journey-home";
+import { isDevelopmentLesson } from "@/lib/content/development";
 
 type JourneyHomeMapperInput = {
   assignments: JourneyAssignmentRow[];
@@ -22,7 +23,15 @@ export function mapJourneyHome({
   journeyTitle,
   progressRows,
 }: JourneyHomeMapperInput): JourneyHomeViewModel | null {
-  if (durationDays <= 0 || assignments.length === 0) return null;
+  if (
+    durationDays <= 0 ||
+    assignments.length === 0 ||
+    progressRows.some(
+      (progress) => !["not_started", "in_progress", "completed"].includes(progress.status),
+    )
+  ) {
+    return null;
+  }
 
   const progressByAssignment = new Map(
     progressRows.map((progress) => [progress.journey_lesson_id, progress]),
@@ -57,6 +66,7 @@ export function mapJourneyHome({
     kind: "ready",
     journeyTitle,
     currentLesson: {
+      lessonId: currentAssignment.lessons.id,
       journeyLessonId: currentAssignment.id,
       lessonProgressId: currentProgress?.id ?? null,
       dayNumber: currentAssignment.day_number,
@@ -64,7 +74,11 @@ export function mapJourneyHome({
       subtitle: currentAssignment.lessons.subtitle,
       whyItMatters: currentAssignment.lessons.learning_objective,
       estimatedMinutes: currentAssignment.lessons.estimated_minutes,
-      status: currentProgress?.status ?? "not_started",
+      isDevelopmentContent: isDevelopmentLesson(currentAssignment.lessons.id),
+      status:
+        currentProgress?.status === "in_progress" || currentProgress?.status === "completed"
+          ? currentProgress.status
+          : "not_started",
     },
     progress: {
       ...baseProgress,

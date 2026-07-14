@@ -39,21 +39,10 @@ export type LessonPlayerViewModel = {
   dayNumber: number;
   estimatedMinutes: number;
   initialBlockIndex: number;
+  isDevelopmentContent: boolean;
   keyTakeaway: string;
   learningObjective: string;
   lessonProgressId: string;
   subtitle: string | null;
   title: string;
-};
-
-// TODO: Replace these temporary interfaces after Supabase types can be generated locally.
-export type BeginOrResumeLessonRpcRow = {
-  authorized_lesson_progress_id: string;
-  authorized_lesson_status: LessonProgressStatus;
-  authorized_last_viewed_block: number;
-};
-
-export type SaveLessonPositionRpcRow = {
-  saved_last_viewed_block: number;
-  saved_lesson_progress_id: string;
 };

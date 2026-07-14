@@ -14,6 +14,12 @@ export default function AuthErrorPage() {
         <Link className="text-sm font-medium text-primary underline" href="/login">
           Return to sign in
         </Link>
+        <span aria-hidden="true" className="px-1 text-muted-foreground">
+          ·
+        </span>
+        <Link className="text-sm font-medium text-primary underline" href="/verify-email">
+          Request a new link
+        </Link>
       </CardContent>
     </Card>
   );

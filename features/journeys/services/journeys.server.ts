@@ -16,5 +16,5 @@ export async function listPublishedJourneys(
     .order("published_at", { ascending: false })
     .range(from, to);
 
-  return toResult(response as unknown as { data: Journey[] | null; error: null });
+  return toResult(response);
 }

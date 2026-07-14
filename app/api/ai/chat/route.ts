@@ -5,13 +5,6 @@ import { aiChatRequestSchema } from "@/features/ai/schemas/ai-chat.schema";
 import { requestAiChat } from "@/features/ai/services/ai-chat.server";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 
-const unavailableBody = {
-  error: {
-    code: "AI_NOT_AVAILABLE",
-    message: "The AI assistant is not available yet.",
-  },
-} as const;
-
 function errorResponse(status: number, code: string, message: string) {
   return NextResponse.json({ error: { code, message } }, { status });
 }
@@ -28,6 +21,11 @@ export async function POST(request: Request) {
   const user = await getAuthenticatedUser();
   if (!user.ok) {
     return errorResponse(401, "UNAUTHORIZED", "You need to sign in to continue.");
+  }
+
+  const origin = request.headers.get("origin");
+  if (origin && origin !== new URL(request.url).origin) {
+    return errorResponse(403, "FORBIDDEN", "The request could not be accepted.");
   }
 
   if (exceedsRequestSize(request)) {
@@ -52,5 +50,21 @@ export async function POST(request: Request) {
   }
 
   const response = await requestAiChat(parsed.data);
-  return NextResponse.json(response ?? unavailableBody, { status: 501 });
+  if (response.ok) return NextResponse.json(response.data);
+
+  if (response.category === "rate_limited") {
+    return errorResponse(429, "AI_RATE_LIMITED", "Please wait before trying again.");
+  }
+  if (response.category === "timeout") {
+    return errorResponse(504, "AI_TIMEOUT", "The AI assistant took too long to respond.");
+  }
+  if (response.category === "context") {
+    return errorResponse(
+      400,
+      "INVALID_AI_CONTEXT",
+      "The requested educational context is unavailable.",
+    );
+  }
+
+  return errorResponse(503, "AI_UNAVAILABLE", "The AI assistant is temporarily unavailable.");
 }

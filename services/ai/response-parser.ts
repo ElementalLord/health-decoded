@@ -1,6 +1,8 @@
 import "server-only";
 
-type AiProviderFailureCategory =
+import { AI_MAX_OUTPUT_CHARACTERS } from "@/features/ai/constants/ai-limits";
+
+export type AiProviderFailureCategory =
   "configuration" | "rate_limited" | "refused" | "timeout" | "unexpected";
 
 export type NormalizedAiProviderResult =
@@ -8,13 +10,12 @@ export type NormalizedAiProviderResult =
   | { readonly ok: false; readonly category: AiProviderFailureCategory };
 
 function isPlainText(value: string) {
-  return value.trim().length > 0 && !/<\/?[a-z][^>]*>/i.test(value);
+  const text = value.trim();
+  return (
+    text.length > 0 && text.length <= AI_MAX_OUTPUT_CHARACTERS && !/<\/?[a-z][^>]*>/i.test(text)
+  );
 }
 
-/**
- * Converts future provider output into the application's narrow plain-text
- * contract. Raw provider payloads must never leave services/ai.
- */
 export function parseAiProviderText(value: unknown): NormalizedAiProviderResult {
   if (typeof value !== "string" || !isPlainText(value)) {
     return { ok: false, category: "unexpected" };

@@ -16,5 +16,5 @@ export async function listPublishedMedications(
     .order("generic_name", { ascending: true })
     .range(from, to);
 
-  return toResult(response as unknown as { data: Medication[] | null; error: null });
+  return toResult(response);
 }

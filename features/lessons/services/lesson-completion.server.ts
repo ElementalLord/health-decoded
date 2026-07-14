@@ -1,14 +1,15 @@
 import "server-only";
 
-import type {
-  CompleteCurrentLessonRpcRow,
-  LessonCompletionResult,
-} from "@/features/lessons/types/lesson-completion";
+import type { LessonCompletionResult } from "@/features/lessons/types/lesson-completion";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
 import { err, ok, type Result } from "@/lib/result/result";
+import type { Database } from "@/types/database";
 
 const logger = createServerLogger();
+
+type CompleteCurrentLessonRpcRow =
+  Database["public"]["Functions"]["complete_current_lesson"]["Returns"][number];
 
 export type CompleteLessonServiceError = "requirements_incomplete" | "unavailable";
 
@@ -52,7 +53,7 @@ export async function completeLesson(
   const response = await database.rpc("complete_current_lesson", {
     p_lesson_progress_id: lessonProgressId,
   });
-  const row = (response.data as unknown as CompleteCurrentLessonRpcRow[] | null)?.[0];
+  const row = response.data?.[0];
 
   if (response.error) {
     if (response.error.code === "P0001") return err("requirements_incomplete");

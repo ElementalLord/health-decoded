@@ -22,7 +22,7 @@ function PageHeader({
       {eyebrow ? <p className="text-sm font-medium text-primary">{eyebrow}</p> : null}
       <h1
         className={cn(
-          "font-medium tracking-tight",
+          "font-semibold tracking-[-0.02em]",
           compact ? "text-[length:var(--text-card-title)]" : "text-[length:var(--text-page-title)]",
         )}
       >

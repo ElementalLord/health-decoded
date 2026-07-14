@@ -32,7 +32,7 @@ function BottomNavigation({
     <MobileLayout>
       <nav
         aria-label="Mobile navigation"
-        className="safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-card/95 px-1 pt-2 backdrop-blur-sm"
+        className="safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-card px-1 pt-1.5"
       >
         <ul className="mx-auto grid max-w-md grid-cols-5 items-center">
           {routes.map((route) => {
@@ -44,10 +44,8 @@ function BottomNavigation({
                 <Link
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "mx-auto flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-md px-0.5 text-[length:var(--text-caption)] font-medium leading-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
-                    active
-                      ? "bg-secondary/60 text-primary"
-                      : "text-muted-foreground hover:text-foreground",
+                    "mx-auto flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-[10px] px-0.5 text-[length:var(--text-caption)] font-medium leading-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+                    active ? "text-primary" : "text-muted-foreground hover:text-foreground",
                   )}
                   href={route.href}
                 >

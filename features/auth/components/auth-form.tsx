@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import type { AuthFormState } from "@/features/auth/types/auth-form";
 
 type AuthAction = (state: AuthFormState, formData: FormData) => Promise<AuthFormState>;
-type Mode = "forgot-password" | "login" | "reset-password" | "signup";
+type Mode = "forgot-password" | "login" | "resend-verification" | "reset-password" | "signup";
 
 export function AuthForm({
   action,
@@ -20,7 +20,11 @@ export function AuthForm({
   next?: string;
 }) {
   const [state, formAction, pending] = useActionState(action, { status: "idle", message: null });
-  const needsEmail = mode === "login" || mode === "signup" || mode === "forgot-password";
+  const needsEmail =
+    mode === "login" ||
+    mode === "signup" ||
+    mode === "forgot-password" ||
+    mode === "resend-verification";
   const needsPassword = mode === "login" || mode === "signup" || mode === "reset-password";
   const needsConfirmation = mode === "signup" || mode === "reset-password";
   const submitLabel =
@@ -30,7 +34,9 @@ export function AuthForm({
         ? "Create account"
         : mode === "forgot-password"
           ? "Send reset instructions"
-          : "Set new password";
+          : mode === "resend-verification"
+            ? "Send a new verification link"
+            : "Set new password";
   const messageId = `${mode}-form-message`;
   const hasError = state.status === "error";
 

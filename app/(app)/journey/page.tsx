@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { buttonVariants } from "@/components/ui/button";
+import { ActionRow } from "@/components/shared/action-row";
+import { DevelopmentNotice } from "@/components/shared/development-notice";
 import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
@@ -37,31 +37,50 @@ export default async function JourneyPage() {
   }
 
   return (
-    <section className="space-y-8 py-6 sm:space-y-10 sm:py-10">
+    <section className="space-y-7 py-5 sm:space-y-8 sm:py-8">
       <JourneyGreeting displayName={profile.data.display_name} />
 
       {journey.data.kind === "complete" ? (
         <JourneyCompleteState journey={journey.data} />
       ) : (
         <>
+          {journey.data.currentLesson.isDevelopmentContent ? <DevelopmentNotice /> : null}
+
           <TodaysLessonCard lesson={journey.data.currentLesson} />
 
-          <section aria-labelledby="why-this-matters" className="max-w-3xl space-y-2">
-            <h2
-              className="text-[length:var(--text-section-title)] font-medium tracking-tight"
-              id="why-this-matters"
-            >
-              Why this matters today
-            </h2>
-            <p className="text-base leading-7 text-muted-foreground">
-              {journey.data.currentLesson.whyItMatters}
-            </p>
-          </section>
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,680px)_minmax(280px,320px)] lg:justify-between">
+            {journey.data.currentLesson.isDevelopmentContent ? (
+              <section aria-labelledby="lesson-context" className="space-y-2 py-1">
+                <h2
+                  className="text-[length:var(--text-section-title)] font-semibold tracking-tight"
+                  id="lesson-context"
+                >
+                  About this preview
+                </h2>
+                <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+                  You can use it to check navigation, reading flow, activities, and progress while
+                  reviewed lesson content is prepared.
+                </p>
+              </section>
+            ) : (
+              <section aria-labelledby="why-this-matters" className="space-y-2 py-1">
+                <h2
+                  className="text-[length:var(--text-section-title)] font-semibold tracking-tight"
+                  id="why-this-matters"
+                >
+                  Why this matters today
+                </h2>
+                <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+                  {journey.data.currentLesson.whyItMatters}
+                </p>
+              </section>
+            )}
 
-          <JourneyProgressSummary
-            journeyTitle={journey.data.journeyTitle}
-            progress={journey.data.progress}
-          />
+            <JourneyProgressSummary
+              journeyTitle={journey.data.journeyTitle}
+              progress={journey.data.progress}
+            />
+          </div>
 
           {journey.data.currentLesson.lessonProgressId ? (
             <ConfidenceCheck
@@ -70,31 +89,29 @@ export default async function JourneyPage() {
             />
           ) : null}
 
-          <section aria-labelledby="journey-support" className="space-y-3">
+          <section aria-labelledby="journey-support" className="space-y-4">
             <div className="space-y-1">
               <h2
-                className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+                className="text-[length:var(--text-section-title)] font-semibold tracking-tight"
                 id="journey-support"
               >
-                More support
+                Need more support?
               </h2>
               <p className="text-sm leading-6 text-muted-foreground">
-                Explore guidance when it feels useful to you.
+                Read practical support information and lived-experience stories.
               </p>
             </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-              <Link
-                className={buttonVariants({ fullWidth: false, variant: "text" })}
+            <div className="overflow-hidden rounded-[14px] border border-border bg-card divide-y divide-border">
+              <ActionRow
+                description="Practical ways for family and friends to offer support."
                 href="/caregiver"
-              >
-                Caregiver guidance
-              </Link>
-              <Link
-                className={buttonVariants({ fullWidth: false, variant: "text" })}
+                title="Caregiver guidance"
+              />
+              <ActionRow
+                description="Fictional composite stories about living with Type 2 diabetes."
                 href="/stories"
-              >
-                Read patient stories
-              </Link>
+                title="Read patient stories"
+              />
             </div>
           </section>
         </>

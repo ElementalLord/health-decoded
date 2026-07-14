@@ -9,6 +9,7 @@ import { createServerLogger } from "@/lib/logging/server";
 import {
   forgotPasswordSchema,
   loginSchema,
+  resendVerificationSchema,
   resetPasswordSchema,
   signupSchema,
 } from "@/features/auth/schemas/auth.schemas";
@@ -77,6 +78,29 @@ export async function forgotPasswordAction(
   return {
     status: "success",
     message: "If an account exists for that email, password reset instructions will be sent.",
+  };
+}
+
+export async function resendVerificationAction(
+  _: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const parsed = resendVerificationSchema.safeParse(values(formData));
+  if (!parsed.success) {
+    return failure(parsed.error.issues[0]?.message ?? "Enter a valid email address.");
+  }
+
+  const database = await getServerDatabaseClient();
+  const { error } = await database.auth.resend({
+    type: "signup",
+    email: parsed.data.email,
+    options: { emailRedirectTo: await callbackUrl("/auth/callback") },
+  });
+  if (error) logger.error("auth.verification_resend_failed");
+
+  return {
+    status: "success",
+    message: "If that account is waiting for verification, a new link will be sent.",
   };
 }
 

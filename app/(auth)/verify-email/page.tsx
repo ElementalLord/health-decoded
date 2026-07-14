@@ -1,7 +1,7 @@
-import Link from "next/link";
-
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { resendVerificationAction } from "@/features/auth/actions/auth.actions";
+import { AuthForm } from "@/features/auth/components/auth-form";
 
 export default function VerifyEmailPage() {
   return (
@@ -14,9 +14,7 @@ export default function VerifyEmailPage() {
           We may have sent a verification link. It can take a moment to arrive, so please check your
           spam or junk folder too.
         </p>
-        <Link className="text-sm font-medium text-primary underline" href="/login">
-          Return to sign in
-        </Link>
+        <AuthForm action={resendVerificationAction} mode="resend-verification" />
       </CardContent>
     </Card>
   );

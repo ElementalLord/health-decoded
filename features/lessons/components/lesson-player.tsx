@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
+import { DevelopmentNotice } from "@/components/shared/development-notice";
 import { Modal } from "@/components/ui/modal";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { ActivityRenderer } from "@/features/activities/components/activity-renderer";
@@ -96,11 +97,13 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   }
 
   return (
-    <section className="mx-auto flex min-h-[calc(100dvh-11rem)] max-w-[760px] flex-col py-2 sm:py-6">
+    <section className="mx-auto flex min-h-[calc(100dvh-11rem)] max-w-[680px] flex-col py-2 sm:py-6">
+      {lesson.isDevelopmentContent ? <DevelopmentNotice className="mb-5" /> : null}
+
       <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
         <div className="space-y-1">
           <p className="text-sm font-medium text-primary">Day {lesson.dayNumber}</p>
-          <h1 className="text-[length:var(--text-page-title)] font-medium tracking-tight">
+          <h1 className="text-[length:var(--text-page-title)] font-semibold tracking-[-0.02em]">
             {lesson.title}
           </h1>
           <p className="text-sm text-muted-foreground">About {lesson.estimatedMinutes} minutes</p>
@@ -126,7 +129,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
           {isIntroduction ? (
             <div className="space-y-6">
               <h2
-                className="text-2xl font-medium tracking-tight sm:text-3xl"
+                className="text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]"
                 ref={blockHeadingRef}
                 tabIndex={-1}
               >

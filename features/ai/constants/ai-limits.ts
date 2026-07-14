@@ -3,9 +3,9 @@
  * before provider access is enabled.
  */
 export const AI_MAX_REQUEST_BYTES = 16_000;
-export const AI_MAX_MESSAGE_COUNT = 12;
 export const AI_MAX_MESSAGE_CHARACTERS = 2_000;
-export const AI_MAX_TOTAL_MESSAGE_CHARACTERS = 8_000;
+export const AI_MAX_OUTPUT_CHARACTERS = 8_000;
+export const AI_PROVIDER_TIMEOUT_MS = 30_000;
 
 export type AiLimitContracts = {
   readonly maximumInputBytes: number;
@@ -19,7 +19,7 @@ export type AiLimitContracts = {
 
 export const aiLimitContracts: AiLimitContracts = {
   maximumInputBytes: AI_MAX_REQUEST_BYTES,
-  maximumOutputBytes: 16_000,
+  maximumOutputBytes: AI_MAX_OUTPUT_CHARACTERS,
   perUserRequestLimit: "future",
   perIpRequestLimit: "future",
   dailyUserQuota: "future",

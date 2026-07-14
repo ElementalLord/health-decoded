@@ -1,62 +1,55 @@
-// TODO: Replace these temporary interfaces with generated Supabase types after local generation.
+import type { Database } from "@/types/database";
 
 export type ContentStatus = "approved" | "archived" | "draft" | "in_review" | "published";
 
-export type Journey = {
-  id: string;
-  slug: string;
-  title: string;
-  description: string | null;
-  duration_days: number;
-  version: number;
-  published_at: string | null;
-};
+export type Journey = Pick<
+  Database["public"]["Tables"]["journeys"]["Row"],
+  "id" | "slug" | "title" | "description" | "duration_days" | "version" | "published_at"
+>;
 
-export type Lesson = {
-  id: string;
-  slug: string;
-  title: string;
-  subtitle: string | null;
-  primary_topic: string;
-  learning_objective: string;
-  estimated_minutes: number;
-  content_blocks: unknown[];
-  key_takeaway: string | null;
-};
+export type Lesson = Pick<
+  Database["public"]["Tables"]["lessons"]["Row"],
+  | "id"
+  | "slug"
+  | "title"
+  | "subtitle"
+  | "primary_topic"
+  | "learning_objective"
+  | "estimated_minutes"
+  | "content_blocks"
+  | "key_takeaway"
+>;
 
-export type Activity = {
-  id: string;
-  lesson_id: string;
-  display_order: number;
-  activity_type: string;
-  title: string;
-  instructions: string;
-  configuration: Record<string, unknown>;
-  explanation: string | null;
-};
+export type Activity = Pick<
+  Database["public"]["Tables"]["activities"]["Row"],
+  | "id"
+  | "lesson_id"
+  | "display_order"
+  | "activity_type"
+  | "title"
+  | "instructions"
+  | "configuration"
+  | "explanation"
+>;
 
-export type Medication = {
-  id: string;
-  slug: string;
-  generic_name: string;
-  brand_names: string[];
-  category: string;
-  content_blocks: unknown[];
-};
+export type Medication = Pick<
+  Database["public"]["Tables"]["medications"]["Row"],
+  "id" | "slug" | "generic_name" | "brand_names" | "category" | "content_blocks"
+>;
 
-export type CaregiverContent = {
-  id: string;
-  slug: string;
-  journey_lesson_id: string | null;
-  title: string;
-  content_blocks: unknown[];
-  support_tip: string | null;
-  what_not_to_say: string | null;
-  conversation_prompt: string | null;
-};
+export type CaregiverContent = Pick<
+  Database["public"]["Tables"]["caregiver_content"]["Row"],
+  | "id"
+  | "slug"
+  | "journey_lesson_id"
+  | "title"
+  | "content_blocks"
+  | "support_tip"
+  | "what_not_to_say"
+  | "conversation_prompt"
+>;
 
-export type Profile = {
-  id: string;
-  display_name: string | null;
-  onboarding_completed_at: string | null;
-};
+export type Profile = Pick<
+  Database["public"]["Tables"]["profiles"]["Row"],
+  "id" | "display_name" | "onboarding_completed_at"
+>;

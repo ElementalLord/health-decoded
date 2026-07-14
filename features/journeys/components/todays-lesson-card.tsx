@@ -19,24 +19,28 @@ const actionLabels = {
 } as const;
 
 export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
+  const title = lesson.isDevelopmentContent ? "Lesson preview" : lesson.title;
+  const subtitle = lesson.isDevelopmentContent ? null : lesson.subtitle;
+  const actionLabel = lesson.isDevelopmentContent
+    ? "Open lesson preview"
+    : actionLabels[lesson.status];
+
   return (
-    <Card className="border-primary/25 bg-card p-6 shadow-card sm:p-8 lg:p-10">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-        <div className="space-y-5">
+    <Card className="rounded-2xl p-5 sm:p-7 lg:p-8">
+      <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(220px,0.36fr)] lg:items-end">
+        <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             <Badge tone="info">Day {lesson.dayNumber}</Badge>
             <Badge>{statusLabels[lesson.status]}</Badge>
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm font-medium text-primary">Today&apos;s Journey</p>
-            <h2 className="max-w-3xl text-2xl font-medium tracking-tight sm:text-3xl">
-              {lesson.title}
+            <p className="text-sm font-semibold text-primary">Today&apos;s lesson</p>
+            <h2 className="max-w-3xl break-words text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]">
+              {title}
             </h2>
-            {lesson.subtitle ? (
-              <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                {lesson.subtitle}
-              </p>
+            {subtitle ? (
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground">{subtitle}</p>
             ) : null}
           </div>
 
@@ -46,9 +50,9 @@ export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
           </p>
         </div>
 
-        <div className="space-y-2 lg:w-64">
+        <div className="space-y-2">
           <Link className={buttonVariants({ size: "lg" })} href={`/lessons/${lesson.dayNumber}`}>
-            {actionLabels[lesson.status]}
+            {actionLabel}
           </Link>
           <p className="text-center text-[length:var(--text-caption)] leading-5 text-muted-foreground">
             Take this lesson at your own pace.

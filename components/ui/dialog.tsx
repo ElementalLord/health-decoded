@@ -21,7 +21,7 @@ function DialogContent({
       <DialogPrimitive.Viewport className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
         <DialogPrimitive.Popup
           className={cn(
-            "relative w-full max-w-lg rounded-lg border border-border bg-card p-6 shadow-modal transition duration-[var(--duration-normal)] data-[ending-style]:translate-y-2 data-[ending-style]:opacity-0 data-[starting-style]:translate-y-2 data-[starting-style]:opacity-0 sm:p-8",
+            "relative w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-modal transition duration-[var(--duration-normal)] data-[ending-style]:translate-y-2 data-[ending-style]:opacity-0 data-[starting-style]:translate-y-2 data-[starting-style]:opacity-0 sm:p-8",
             className,
           )}
           {...props}
@@ -40,7 +40,7 @@ function DialogHeader({ children, className }: { children: ReactNode; className?
 function DialogTitle({ className, ...props }: ComponentProps<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
-      className={cn("text-[length:var(--text-section-title)] font-medium", className)}
+      className={cn("text-[length:var(--text-section-title)] font-semibold", className)}
       {...props}
     />
   );

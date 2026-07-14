@@ -5,6 +5,7 @@ export type ConfidenceLevel = (typeof confidenceLevels)[number];
 export type LessonProgressStatus = "not_started" | "in_progress" | "completed";
 
 export type CurrentLessonSummary = {
+  lessonId: string;
   journeyLessonId: string;
   lessonProgressId: string | null;
   dayNumber: number;
@@ -12,6 +13,7 @@ export type CurrentLessonSummary = {
   subtitle: string | null;
   whyItMatters: string;
   estimatedMinutes: number;
+  isDevelopmentContent: boolean;
   status: LessonProgressStatus;
 };
 
@@ -38,18 +40,6 @@ export type JourneyHomeComplete = {
 
 export type JourneyHomeViewModel = JourneyHomeReady | JourneyHomeComplete;
 
-// TODO: Replace these RPC result types after Supabase types can be generated locally.
-export type InitializeJourneyRpcRow = {
-  initialized_user_journey_id: string;
-  initialized_lesson_progress_id: string;
-  initialized_journey_lesson_id: string;
-};
-
-export type ConfidenceRpcRow = {
-  confidence_check_in_id: string;
-  saved_confidence_level: ConfidenceLevel;
-};
-
 export type JourneyAssignmentRow = {
   id: string;
   day_number: number;
@@ -66,5 +56,5 @@ export type JourneyAssignmentRow = {
 export type LessonProgressRow = {
   id: string;
   journey_lesson_id: string;
-  status: LessonProgressStatus;
+  status: string;
 };

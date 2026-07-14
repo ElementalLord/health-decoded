@@ -22,5 +22,5 @@ export const getCurrentProfile = cache(async function getCurrentProfile(): Promi
     .eq("id", user.data.id)
     .maybeSingle();
 
-  return toResult(response as unknown as { data: Profile | null; error: null });
+  return toResult(response);
 });

@@ -34,7 +34,14 @@ export function mapProgress({
   journeyTitle,
   progressRows,
 }: ProgressMapperInput): ProgressViewModel | null {
-  if (assignments.length === 0) return null;
+  if (
+    assignments.length === 0 ||
+    progressRows.some(
+      (progress) => !["not_started", "in_progress", "completed"].includes(progress.status),
+    )
+  ) {
+    return null;
+  }
 
   const progressByAssignment = new Map(
     progressRows.map((progress) => [progress.journey_lesson_id, progress]),

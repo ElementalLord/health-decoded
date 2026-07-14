@@ -1,19 +1,16 @@
-export type AiMessageRole = "assistant" | "user";
-
-export type AiMessage = {
-  readonly role: AiMessageRole;
-  readonly content: string;
-};
-
 export type AiChatRequest = {
-  readonly messages: readonly AiMessage[];
+  readonly message: string;
+  readonly lessonId?: string | undefined;
+  readonly medicationId?: string | undefined;
 };
 
-export type AiUnavailableResponse = {
-  readonly error: {
-    readonly code: "AI_NOT_AVAILABLE";
-    readonly message: "The AI assistant is not available yet.";
-  };
+export type AiChatResponse = {
+  readonly assistantMessage: string;
 };
 
-export type AiRequestOutcome = "not_available";
+export type AiChatFailureCategory =
+  "configuration" | "context" | "rate_limited" | "refused" | "timeout" | "unexpected";
+
+export type AiChatServiceResult =
+  | { readonly ok: true; readonly data: AiChatResponse }
+  | { readonly ok: false; readonly category: AiChatFailureCategory };
