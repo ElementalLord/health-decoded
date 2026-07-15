@@ -7,10 +7,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { AiResponseContent } from "@/features/ai/components/ai-response-content";
-import {
-  AI_MAX_CONVERSATION_MESSAGES,
-  AI_MAX_MESSAGE_CHARACTERS,
-} from "@/features/ai/constants/ai-limits";
+import { AI_MAX_MESSAGE_CHARACTERS } from "@/features/ai/constants/ai-limits";
 import { aiChatStreamEventSchema } from "@/features/ai/schemas/ai-chat.schema";
 import type { AiRelatedContent } from "@/features/ai/types/ai";
 import { cn } from "@/lib/utils";
@@ -24,6 +21,12 @@ type ChatMessage = {
   readonly relatedContent: readonly AiRelatedContent[];
   readonly role: MessageRole;
   readonly suggestedQuestions: readonly string[];
+};
+
+type ConversationSummary = {
+  readonly id: string;
+  readonly title: string;
+  readonly updatedAt: string;
 };
 
 const suggestedPrompts = [
@@ -75,6 +78,8 @@ function readStreamEvents(chunk: string, onEvent: (event: unknown) => void) {
 
 export function AiChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [message, setMessage] = useState("");
   const [lastQuestion, setLastQuestion] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -91,6 +96,39 @@ export function AiChat() {
     },
     [],
   );
+
+  useEffect(() => {
+    let active = true;
+    async function restoreConversation() {
+      const response = await fetch("/api/ai/conversations", { cache: "no-store" });
+      if (!response.ok || !active) return;
+      const data = (await response.json()) as { conversations?: ConversationSummary[] };
+      const recent = data.conversations ?? [];
+      setConversations(recent);
+      const latest = recent[0];
+      if (!latest) return;
+      const history = await fetch(`/api/ai/conversations/${latest.id}`, { cache: "no-store" });
+      if (!history.ok || !active) return;
+      const restored = (await history.json()) as {
+        messages?: { content: string; id: string; role: MessageRole }[];
+      };
+      setConversationId(latest.id);
+      setMessages(
+        (restored.messages ?? []).map((entry) => ({
+          content: entry.content,
+          id: entry.id,
+          lessonContextUsed: false,
+          relatedContent: [],
+          role: entry.role,
+          suggestedQuestions: [],
+        })),
+      );
+    }
+    void restoreConversation();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!messages.length) return;
@@ -124,6 +162,7 @@ export function AiChat() {
   function setAssistantContext(
     assistantId: string,
     context: {
+      readonly conversationId?: string | undefined;
       readonly lessonUsed: boolean;
       readonly relatedContent: readonly AiRelatedContent[];
       readonly suggestedQuestions: readonly string[];
@@ -141,6 +180,7 @@ export function AiChat() {
           : entry,
       ),
     );
+    if (context.conversationId) setConversationId(context.conversationId);
   }
 
   async function ask(question: string, regenerate = false) {
@@ -151,10 +191,6 @@ export function AiChat() {
     setError(null);
     setLastQuestion(question);
 
-    const history = messages
-      .filter((entry) => entry.content.trim())
-      .slice(-AI_MAX_CONVERSATION_MESSAGES)
-      .map(({ content, role }) => ({ content, role }));
     const assistantMessage = createMessage("assistant");
 
     if (regenerate) {
@@ -169,7 +205,7 @@ export function AiChat() {
       const response = await fetch("/api/ai/chat", {
         body: JSON.stringify({
           message: question,
-          ...(history.length ? { messages: history } : {}),
+          ...(conversationId ? { conversationId } : {}),
         }),
         headers: { accept: "text/event-stream", "content-type": "application/json" },
         method: "POST",
@@ -248,8 +284,96 @@ export function AiChat() {
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
+  function startNewConversation() {
+    if (isStreaming) return;
+    setConversationId(null);
+    setMessages([]);
+    setError(null);
+    setLastQuestion(null);
+    requestAnimationFrame(() => inputRef.current?.focus());
+  }
+
+  function exportConversation() {
+    if (!messages.length) return;
+    const text = messages
+      .filter((entry) => entry.content.trim())
+      .map(
+        (entry) =>
+          `## ${entry.role === "assistant" ? "Health Decoded AI" : "You"}\n\n${entry.content}`,
+      )
+      .join("\n\n");
+    const download = document.createElement("a");
+    download.href = URL.createObjectURL(new Blob([text], { type: "text/markdown;charset=utf-8" }));
+    download.download = "health-decoded-conversation.md";
+    document.body.append(download);
+    download.click();
+    download.remove();
+    URL.revokeObjectURL(download.href);
+  }
+
   return (
     <div className="mt-7 flex min-h-0 flex-1 flex-col sm:mt-8">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <details className="min-w-0 text-sm">
+          <summary className="cursor-pointer font-semibold text-foreground">
+            Recent conversations
+          </summary>
+          <div className="mt-2 max-h-40 w-64 overflow-y-auto rounded-md border border-border bg-card p-2">
+            {conversations.length ? (
+              conversations.map((conversation) => (
+                <button
+                  className="w-full rounded-sm px-2 py-2 text-left text-sm hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  key={conversation.id}
+                  onClick={() => {
+                    if (conversation.id === conversationId) return;
+                    void fetch(`/api/ai/conversations/${conversation.id}`, { cache: "no-store" })
+                      .then(async (response) => (response.ok ? response.json() : null))
+                      .then((data: { messages?: ChatMessage[] } | null) => {
+                        if (!data) return;
+                        setConversationId(conversation.id);
+                        setMessages(
+                          (data.messages ?? []).map((entry) => ({
+                            ...entry,
+                            lessonContextUsed: false,
+                            relatedContent: [],
+                            suggestedQuestions: [],
+                          })),
+                        );
+                      });
+                  }}
+                  type="button"
+                >
+                  {conversation.title}
+                </button>
+              ))
+            ) : (
+              <p className="px-2 py-2 text-muted-foreground">No saved conversations yet.</p>
+            )}
+          </div>
+        </details>
+        <div className="flex items-center gap-2">
+          {messages.length ? (
+            <Button
+              fullWidth={false}
+              onClick={exportConversation}
+              size="sm"
+              type="button"
+              variant="text"
+            >
+              Export
+            </Button>
+          ) : null}
+          <Button
+            fullWidth={false}
+            onClick={startNewConversation}
+            size="sm"
+            type="button"
+            variant="secondary"
+          >
+            New conversation
+          </Button>
+        </div>
+      </div>
       <section
         aria-label="AI tutor conversation"
         className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-6 sm:space-y-6"
