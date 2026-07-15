@@ -11,23 +11,23 @@ function formatDate(value: string) {
 export function ConfidenceHistoryList({ entries }: { entries: ConfidenceHistoryEntry[] }) {
   return (
     <section aria-labelledby="confidence-history-title" className="space-y-5">
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <h2
-          className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+          className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
           id="confidence-history-title"
         >
           Recent confidence check-ins
         </h2>
-        <p className="text-sm leading-6 text-muted-foreground">
+        <p className="max-w-2xl text-pretty text-sm leading-6 text-muted-foreground">
           Confidence can change as you learn. There is no right answer.
         </p>
       </div>
 
       {entries.length ? (
-        <ul className="divide-y divide-border">
+        <ul className="overflow-hidden rounded-[var(--radius-xl)] border border-border/50 bg-card divide-y divide-border">
           {entries.map((entry) => (
             <li
-              className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3"
+              className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-4 sm:px-6"
               key={`${entry.dayNumber}-${entry.recordedAt}`}
             >
               <p className="font-medium">
@@ -40,7 +40,7 @@ export function ConfidenceHistoryList({ entries }: { entries: ConfidenceHistoryE
           ))}
         </ul>
       ) : (
-        <p className="text-sm leading-6 text-muted-foreground">
+        <p className="rounded-[var(--radius-xl)] border border-border/50 bg-card px-5 py-6 text-sm leading-7 text-muted-foreground sm:px-6">
           You have not recorded a confidence check-in yet.
         </p>
       )}

@@ -12,6 +12,7 @@ import {
   type ProfileActionState,
 } from "@/features/profile/actions/profile-settings.actions";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
+import { cn } from "@/lib/utils";
 
 const initialState: ProfileActionState = { status: "idle", message: "" };
 
@@ -20,18 +21,18 @@ export function ProfileContent({ data }: { data: ProfileSettings }) {
   const hasError = state.status === "error";
 
   return (
-    <section className="mx-auto max-w-3xl space-y-10 py-6 sm:py-10">
+    <section className="mx-auto max-w-3xl space-y-12 py-6 sm:py-10">
       <PageHeader description="Your account details and privacy at a glance." title="Profile" />
 
-      <section aria-labelledby="profile-information" className="space-y-5">
-        <div className="space-y-1">
+      <section aria-labelledby="profile-information" className="space-y-6">
+        <div className="space-y-1.5">
           <h2
-            className="text-[length:var(--text-section-title)] font-medium"
+            className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
             id="profile-information"
           >
             Your information
           </h2>
-          <p className="text-sm leading-6 text-muted-foreground">
+          <p className="text-pretty text-sm leading-6 text-muted-foreground">
             Your email is verified through your account and cannot be changed here.
           </p>
         </div>
@@ -64,35 +65,44 @@ export function ProfileContent({ data }: { data: ProfileSettings }) {
         </form>
 
         <dl className="max-w-xl divide-y divide-border border-y border-border">
-          <div className="grid gap-1 py-3 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-4">
+          <div className="grid gap-1 py-3.5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-4">
             <dt className="text-sm text-muted-foreground">Email</dt>
             <dd className="break-words">{data.email}</dd>
           </div>
-          <div className="grid gap-1 py-3 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-4">
+          <div className="grid gap-1 py-3.5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-4">
             <dt className="text-sm text-muted-foreground">Onboarding</dt>
             <dd>{data.onboardingComplete ? "Complete" : "Not complete"}</dd>
           </div>
         </dl>
       </section>
 
-      <section aria-labelledby="profile-privacy" className="space-y-3 border-t border-border pt-8">
-        <h2 className="text-[length:var(--text-section-title)] font-medium" id="profile-privacy">
+      <section aria-labelledby="profile-privacy" className="space-y-4 border-t border-border pt-10">
+        <h2
+          className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
+          id="profile-privacy"
+        >
           Privacy
         </h2>
-        <p className="max-w-2xl leading-7 text-muted-foreground">
+        <p className="max-w-2xl text-pretty leading-7 text-muted-foreground">
           Health Decoded stores your profile and private educational progress. Reflections and
           future AI conversations are private. Your information is not public and is not shared with
           caregivers.
         </p>
       </section>
 
-      <section aria-labelledby="account-actions" className="space-y-5 border-t border-border pt-8">
-        <h2 className="text-[length:var(--text-section-title)] font-medium" id="account-actions">
+      <section aria-labelledby="account-actions" className="space-y-6 border-t border-border pt-10">
+        <h2
+          className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
+          id="account-actions"
+        >
           Account
         </h2>
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <Link
-            className={buttonVariants({ fullWidth: false, variant: "secondary" })}
+            className={cn(
+              buttonVariants({ fullWidth: false, variant: "secondary" }),
+              "min-h-12 px-6",
+            )}
             href="/settings"
           >
             Open settings

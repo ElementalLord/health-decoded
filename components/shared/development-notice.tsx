@@ -6,12 +6,17 @@ export function DevelopmentNotice({ className }: { className?: string }) {
   return (
     <aside
       className={cn(
-        "flex gap-3 rounded-[14px] border border-border bg-card px-4 py-3 sm:px-5",
+        "flex gap-3 rounded-[var(--radius-xl)] border border-info/40 bg-info/20 px-4 py-3.5 sm:px-5",
         className,
       )}
       role="note"
     >
-      <FlaskConical aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+      <span
+        aria-hidden="true"
+        className="inline-flex size-7 shrink-0 items-center justify-center rounded-[6px] bg-info/50 text-info-foreground"
+      >
+        <FlaskConical className="size-4" />
+      </span>
       <div className="space-y-0.5">
         <p className="text-sm font-semibold text-foreground">Development content</p>
         <p className="text-sm leading-6 text-muted-foreground">

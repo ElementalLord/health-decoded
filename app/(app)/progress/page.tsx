@@ -21,27 +21,28 @@ export default async function ProgressPage() {
   const data = progress.data;
 
   return (
-    <section className="mx-auto max-w-4xl space-y-8 py-6 sm:space-y-10 sm:py-10">
+    <section className="mx-auto max-w-4xl space-y-10 py-6 sm:py-10">
       <PageHeader
         description="This is a record of your learning. Confidence can change from day to day, and lower confidence is not failure."
+        eyebrow="Your learning journey"
         title="Your progress"
       />
 
       <section
         aria-labelledby="progress-overview"
-        className="space-y-4 border-y border-border py-6"
+        className="space-y-5 rounded-[var(--radius-xl)] border border-border/50 bg-card p-6 sm:p-8"
       >
         <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-          <div>
+          <div className="space-y-1">
             <h2
-              className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+              className="font-serif-display text-[length:var(--text-section-title)] font-semibold tracking-tight"
               id="progress-overview"
             >
               Journey overview
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">{data.journeyTitle}</p>
+            <p className="text-sm text-muted-foreground">{data.journeyTitle}</p>
           </div>
-          <p className="text-sm font-medium">
+          <p className="shrink-0 text-sm font-semibold text-foreground">
             {data.completedLessons} of {data.totalLessons} lessons complete
           </p>
         </div>

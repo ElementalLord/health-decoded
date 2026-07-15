@@ -22,16 +22,21 @@ function EmptyState({
   const Heading = headingLevel;
 
   return (
-    <section className={cn("px-4 py-10 text-center sm:px-8", className)}>
-      <div className="mx-auto flex max-w-md flex-col items-center gap-4">
+    <section className={cn("px-4 py-16 text-center sm:px-8", className)}>
+      <div className="mx-auto flex max-w-md flex-col items-center gap-5">
         {icon ? (
-          <div className="text-primary" aria-hidden="true">
+          <div
+            aria-hidden="true"
+            className="inline-flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary"
+          >
             {icon}
           </div>
         ) : null}
-        <div className="space-y-2">
-          <Heading className="text-[length:var(--text-card-title)] font-medium">{title}</Heading>
-          <p className="text-[length:var(--text-supporting)] leading-6 text-muted-foreground">
+        <div className="space-y-2.5">
+          <Heading className="font-serif-display text-[length:var(--text-section-title)] font-semibold text-balance">
+            {title}
+          </Heading>
+          <p className="text-pretty text-[length:var(--text-supporting)] leading-7 text-muted-foreground">
             {description}
           </p>
         </div>
