@@ -1,5 +1,5 @@
 import { ProgressBar } from "@/components/ui/progress-bar";
-import type { JourneyProgressSummary } from "@/features/journeys/types/journey-home";
+import type { JourneyProgressSummary as ProgressData } from "@/features/journeys/types/journey-home";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -8,19 +8,19 @@ export function JourneyProgressSummary({
   progress,
 }: {
   journeyTitle: string;
-  progress: JourneyProgressSummary;
+  progress: ProgressData;
 }) {
   const progressLabel = `${progress.completedLessons} of ${progress.totalDays} lessons complete`;
 
   return (
     <section
       aria-labelledby="journey-progress-title"
-      className="space-y-4 rounded-[14px] border border-border bg-card p-5"
+      className="space-y-4 rounded-[14px] border border-border/70 bg-card p-5 shadow-[var(--shadow-card)] sm:p-6"
     >
       <div className="flex flex-col items-start justify-between gap-1 sm:flex-row sm:gap-4">
         <div>
           <h2
-            className="break-words text-[length:var(--text-card-title)] font-semibold tracking-tight"
+            className="break-words font-serif-display text-[length:var(--text-card-title)] font-semibold tracking-tight"
             id="journey-progress-title"
           >
             Your {progress.totalDays}-day journey
