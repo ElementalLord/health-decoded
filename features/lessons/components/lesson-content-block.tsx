@@ -18,7 +18,7 @@ export function LessonContentBlockView({ block }: { block: LessonContentBlock })
       );
     case "callout":
       return (
-        <Card tone="info" className="space-y-3 rounded-[16px] p-6 sm:p-7">
+        <Card tone="info" className="space-y-3 rounded-[var(--radius-xl)] p-6 sm:p-7">
           <h2 className="font-serif-display text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]">
             {block.title}
           </h2>
@@ -49,7 +49,7 @@ export function LessonContentBlockView({ block }: { block: LessonContentBlock })
         <figure className="space-y-3">
           <Image
             alt={block.alt}
-            className="w-full rounded-[14px] border border-border/60 bg-muted object-cover"
+            className="w-full rounded-[var(--radius-xl)] border border-border/50 bg-muted object-cover"
             height={block.height}
             sizes="(min-width: 768px) 720px, 100vw"
             src={block.src}

@@ -1,7 +1,8 @@
-import { ProgressBar } from "@/components/ui/progress-bar";
-import type { JourneyProgressSummary as ProgressData } from "@/features/journeys/types/journey-home";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+
+import { ProgressBar } from "@/components/ui/progress-bar";
+import type { JourneyProgressSummary as ProgressData } from "@/features/journeys/types/journey-home";
 
 export function JourneyProgressSummary({
   journeyTitle,
@@ -15,7 +16,7 @@ export function JourneyProgressSummary({
   return (
     <section
       aria-labelledby="journey-progress-title"
-      className="space-y-4 rounded-[14px] border border-border/70 bg-card p-5 shadow-[var(--shadow-card)] sm:p-6"
+      className="space-y-4 rounded-[var(--radius-xl)] border border-border/50 bg-card p-5 sm:p-6"
     >
       <div className="flex flex-col items-start justify-between gap-1 sm:flex-row sm:gap-4">
         <div>
@@ -35,7 +36,7 @@ export function JourneyProgressSummary({
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">{progressLabel}</p>
         <Link
-          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-[10px] text-sm font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-[8px] text-sm font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring"
           href="/progress"
         >
           View progress

@@ -19,7 +19,7 @@ export default function GlobalError({
       }
       description="Please try again. If the problem continues, refresh the page."
       headingLevel="h1"
-      icon={<AlertCircle className="size-7" />}
+      icon={<AlertCircle className="size-6" />}
       title="We couldn't load this page"
     />
   );

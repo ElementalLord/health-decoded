@@ -2,11 +2,11 @@ import { Sparkles } from "lucide-react";
 
 export function ConfidenceXpSummary({ total }: { total: number }) {
   return (
-    <section className="space-y-3 rounded-[16px] border border-border/70 bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
+    <section className="space-y-3 rounded-[var(--radius-xl)] border border-border/50 bg-card p-6 sm:p-8">
       <div className="flex items-center gap-3">
         <span
           aria-hidden="true"
-          className="inline-flex size-11 items-center justify-center rounded-[12px] bg-primary/10 text-primary"
+          className="inline-flex size-10 items-center justify-center rounded-[8px] bg-primary/10 text-primary"
         >
           <Sparkles className="size-5" />
         </span>

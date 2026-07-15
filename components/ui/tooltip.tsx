@@ -19,7 +19,7 @@ function Tooltip({ children, content, disabled = false }: TooltipProps) {
         <TooltipPrimitive.Positioner sideOffset={8}>
           <TooltipPrimitive.Popup
             className={cn(
-              "z-50 max-w-60 rounded-md bg-foreground px-3 py-2 text-[length:var(--text-caption)] leading-4 text-background shadow-modal transition duration-[var(--duration-fast)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
+              "z-50 max-w-60 rounded-[6px] bg-foreground px-3 py-2 text-[length:var(--text-caption)] leading-4 text-background shadow-modal transition duration-[var(--duration-fast)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
             )}
           >
             {content}

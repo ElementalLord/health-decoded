@@ -7,7 +7,7 @@ export function JourneyGreeting({ displayName }: JourneyGreetingProps) {
 
   return (
     <header className="space-y-3">
-      <p className="text-[length:var(--text-supporting)] font-semibold uppercase tracking-[0.08em] text-primary">
+      <p className="text-[length:var(--text-supporting)] font-semibold uppercase tracking-[0.1em] text-primary">
         Today&apos;s Journey
       </p>
       <h1 className="break-words font-serif-display text-[length:var(--text-page-title)] font-semibold tracking-[-0.02em] text-balance">

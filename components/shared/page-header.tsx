@@ -20,7 +20,7 @@ function PageHeader({
   return (
     <header className={cn("max-w-2xl space-y-3", className)} {...props}>
       {eyebrow ? (
-        <p className="text-[length:var(--text-supporting)] font-semibold uppercase tracking-[0.08em] text-primary">
+        <p className="text-[length:var(--text-supporting)] font-semibold uppercase tracking-[0.1em] text-primary">
           {eyebrow}
         </p>
       ) : null}

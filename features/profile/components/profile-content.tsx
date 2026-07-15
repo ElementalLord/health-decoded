@@ -99,7 +99,10 @@ export function ProfileContent({ data }: { data: ProfileSettings }) {
         </h2>
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <Link
-            className={cn(buttonVariants({ fullWidth: false, variant: "secondary" }), "min-h-12 px-6")}
+            className={cn(
+              buttonVariants({ fullWidth: false, variant: "secondary" }),
+              "min-h-12 px-6",
+            )}
             href="/settings"
           >
             Open settings

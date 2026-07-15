@@ -9,9 +9,9 @@ export function JourneyCompleteState({ journey }: { journey: JourneyHomeComplete
     <Card className="mx-auto max-w-2xl space-y-6 p-8 text-center sm:p-10">
       <span
         aria-hidden="true"
-        className="inline-flex size-16 items-center justify-center rounded-full bg-success/12 text-success"
+        className="inline-flex size-14 items-center justify-center rounded-full bg-success/12 text-success"
       >
-        <CheckCircle2 className="size-8" strokeWidth={2} />
+        <CheckCircle2 className="size-7" strokeWidth={2} />
       </span>
       <div className="space-y-3">
         <h2 className="font-serif-display text-[length:var(--text-section-title)] font-semibold text-balance">

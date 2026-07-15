@@ -27,7 +27,7 @@ export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
     : actionLabels[lesson.status];
 
   return (
-    <Card className="overflow-hidden rounded-[16px] p-6 sm:p-8 lg:p-10">
+    <Card className="rounded-[var(--radius-xl)] p-6 sm:p-8 lg:p-10">
       <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(220px,0.36fr)] lg:items-end">
         <div className="space-y-5">
           <div className="flex flex-wrap items-center gap-2.5">

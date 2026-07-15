@@ -4,14 +4,14 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex min-h-6 items-center gap-1.5 rounded-full px-3 py-1 text-[length:var(--text-caption)] font-medium tracking-wide transition duration-[var(--duration-fast)] aria-disabled:opacity-50",
+  "inline-flex min-h-6 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[length:var(--text-caption)] font-medium tracking-wide transition duration-[var(--duration-fast)] aria-disabled:opacity-50",
   {
     variants: {
       tone: {
         default: "bg-muted text-muted-foreground",
         success: "bg-success/12 text-success",
-        warning: "bg-warning/20 text-warning-foreground",
-        info: "bg-info/70 text-info-foreground",
+        warning: "bg-warning/15 text-warning-foreground",
+        info: "bg-info/60 text-info-foreground",
       },
     },
     defaultVariants: { tone: "default" },

@@ -27,7 +27,7 @@ function EmptyState({
         {icon ? (
           <div
             aria-hidden="true"
-            className="inline-flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary"
+            className="inline-flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary"
           >
             {icon}
           </div>

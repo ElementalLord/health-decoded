@@ -12,6 +12,7 @@ import {
   type ProfileActionState,
 } from "@/features/profile/actions/profile-settings.actions";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
+import { cn } from "@/lib/utils";
 
 const initialState: ProfileActionState = { status: "idle", message: "" };
 
@@ -29,7 +30,7 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
 
       <section aria-labelledby="accessibility-language" className="space-y-5">
         <h2
-          className="text-[length:var(--text-section-title)] font-medium"
+          className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
           id="accessibility-language"
         >
           Accessibility and language
@@ -102,7 +103,10 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
         </form>
       </section>
 
-      <Link className={buttonVariants({ fullWidth: false, variant: "text" })} href="/profile">
+      <Link
+        className={cn(buttonVariants({ fullWidth: false, variant: "text" }), "min-h-11 px-0")}
+        href="/profile"
+      >
         Back to profile
       </Link>
     </section>

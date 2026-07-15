@@ -30,7 +30,7 @@ export default async function ProgressPage() {
 
       <section
         aria-labelledby="progress-overview"
-        className="space-y-5 rounded-[16px] border border-border/70 bg-card p-6 shadow-[var(--shadow-card)] sm:p-8"
+        className="space-y-5 rounded-[var(--radius-xl)] border border-border/50 bg-card p-6 sm:p-8"
       >
         <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
