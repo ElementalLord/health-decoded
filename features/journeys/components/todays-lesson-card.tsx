@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { CurrentLessonSummary } from "@/features/journeys/types/journey-home";
+import { cn } from "@/lib/utils";
 
 const statusLabels = {
   not_started: "Ready to start",
@@ -13,8 +14,8 @@ const statusLabels = {
 } as const;
 
 const actionLabels = {
-  not_started: "Start today’s lesson",
-  in_progress: "Continue today’s lesson",
+  not_started: "Start today's lesson",
+  in_progress: "Continue today's lesson",
   completed: "Review completed lesson",
 } as const;
 
@@ -26,21 +27,23 @@ export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
     : actionLabels[lesson.status];
 
   return (
-    <Card className="rounded-2xl p-5 sm:p-7 lg:p-8">
+    <Card className="rounded-[var(--radius-xl)] p-6 sm:p-8 lg:p-10">
       <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(220px,0.36fr)] lg:items-end">
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="space-y-5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <Badge tone="info">Day {lesson.dayNumber}</Badge>
             <Badge>{statusLabels[lesson.status]}</Badge>
           </div>
 
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-primary">Today&apos;s lesson</p>
-            <h2 className="max-w-3xl break-words text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]">
+          <div className="space-y-2.5">
+            <p className="text-sm font-semibold text-primary">Today's lesson</p>
+            <h2 className="break-words font-serif-display text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em] text-balance">
               {title}
             </h2>
             {subtitle ? (
-              <p className="max-w-2xl text-base leading-7 text-muted-foreground">{subtitle}</p>
+              <p className="max-w-2xl text-pretty text-base leading-7 text-muted-foreground">
+                {subtitle}
+              </p>
             ) : null}
           </div>
 
@@ -50,8 +53,11 @@ export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
           </p>
         </div>
 
-        <div className="space-y-2">
-          <Link className={buttonVariants({ size: "lg" })} href={`/lessons/${lesson.dayNumber}`}>
+        <div className="space-y-2.5">
+          <Link
+            className={cn(buttonVariants({ size: "lg" }), "min-h-12")}
+            href={`/lessons/${lesson.dayNumber}`}
+          >
             {actionLabel}
           </Link>
           <p className="text-center text-[length:var(--text-caption)] leading-5 text-muted-foreground">

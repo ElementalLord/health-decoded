@@ -3,10 +3,19 @@ import type { HTMLAttributes } from "react";
 
 import { cn } from "@/lib/utils";
 
-const cardVariants = cva("rounded-[14px] border border-border/90 bg-card p-5 sm:p-6", {
-  variants: { tone: { default: "", info: "border-info bg-info/35", muted: "bg-muted/50" } },
-  defaultVariants: { tone: "default" },
-});
+const cardVariants = cva(
+  "rounded-[var(--radius-xl)] border border-border/70 bg-card p-5 sm:p-6",
+  {
+    variants: {
+      tone: {
+        default: "",
+        info: "border-info/50 bg-info/30",
+        muted: "bg-muted/30 border-border/50",
+      },
+    },
+    defaultVariants: { tone: "default" },
+  },
+);
 
 function Card({
   className,
@@ -17,20 +26,20 @@ function Card({
 }
 
 function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("mb-4 space-y-1", className)} {...props} />;
+  return <div className={cn("mb-4 space-y-1.5", className)} {...props} />;
 }
 
 function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-[length:var(--text-card-title)] font-semibold", className)}
+      className={cn("font-serif-display text-[length:var(--text-card-title)] font-semibold", className)}
       {...props}
     />
   );
 }
 
 function CardContent({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("text-[length:var(--text-body)] leading-6", className)} {...props} />;
+  return <div className={cn("text-[length:var(--text-body)] leading-7", className)} {...props} />;
 }
 
 function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {

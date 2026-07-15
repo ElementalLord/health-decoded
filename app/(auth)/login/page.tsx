@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AuthForm } from "@/features/auth/components/auth-form";
 import { loginAction } from "@/features/auth/actions/auth.actions";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
@@ -19,13 +18,14 @@ export default async function LoginPage({
   if (user.ok) redirect(next);
 
   return (
-    <Card className="mx-auto max-w-md">
-      <CardHeader>
-        <PageHeader compact title="Welcome back" />
-      </CardHeader>
-      <CardContent>
-        <AuthForm action={loginAction} mode="login" next={next} />
-      </CardContent>
-    </Card>
+    <div className="space-y-8">
+      <PageHeader
+        compact
+        description="Pick up where you left off."
+        eyebrow="Sign in"
+        title="Welcome back"
+      />
+      <AuthForm action={loginAction} mode="login" next={next} />
+    </div>
   );
 }

@@ -501,25 +501,21 @@ export function AiChat() {
             );
           })
         ) : (
-          <div className="space-y-6 py-4 sm:py-8">
-            <div className="max-w-xl space-y-2">
-              <h2 className="text-[length:var(--text-section-title)] font-semibold tracking-tight">
+          <div className="space-y-7 py-4 sm:py-8">
+            <div className="max-w-xl space-y-3">
+              <h2 className="font-serif-display text-[length:var(--text-section-title)] font-semibold tracking-tight">
                 How can I help today?
               </h2>
-              <p className="leading-7 text-muted-foreground">You can ask about:</p>
-              <ul className="list-disc space-y-1.5 pl-5 leading-7 text-muted-foreground">
-                <li>today&apos;s lesson</li>
-                <li>medications</li>
-                <li>Type 2 diabetes concepts</li>
-                <li>healthy habits</li>
-                <li>terms you don&apos;t understand</li>
-              </ul>
+              <p className="text-pretty leading-7 text-muted-foreground">
+                You can ask about today&apos;s lesson, medications, Type 2 diabetes concepts, healthy
+                habits, or any terms you don&apos;t understand.
+              </p>
             </div>
 
-            <div aria-label="Suggested questions" className="grid gap-2 sm:grid-cols-2">
+            <div aria-label="Suggested questions" className="grid gap-2.5 sm:grid-cols-2">
               {suggestedPrompts.map((prompt) => (
                 <Button
-                  className="min-h-12 justify-start whitespace-normal px-4 py-3 text-left font-medium"
+                  className="min-h-14 justify-start whitespace-normal rounded-[12px] px-5 py-3.5 text-left font-medium"
                   fullWidth
                   key={prompt}
                   onClick={() => void ask(prompt)}

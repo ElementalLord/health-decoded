@@ -1,9 +1,10 @@
 "use client";
 
-import { EmptyState } from "@/components/shared/empty-state";
+import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/shared/empty-state";
 
-export default function GlobalErrorPage({
+export default function GlobalError({
   reset,
 }: {
   error: Error & { digest?: string };
@@ -11,9 +12,14 @@ export default function GlobalErrorPage({
 }) {
   return (
     <EmptyState
-      action={<Button onClick={reset}>Try again</Button>}
-      description="Something interrupted this page. Try loading it again."
+      action={
+        <Button fullWidth={false} onClick={reset}>
+          Try again
+        </Button>
+      }
+      description="Please try again. If the problem continues, refresh the page."
       headingLevel="h1"
+      icon={<AlertCircle className="size-6" />}
       title="We couldn't load this page"
     />
   );

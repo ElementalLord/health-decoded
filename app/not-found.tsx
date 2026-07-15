@@ -1,9 +1,10 @@
+import { Compass } from "lucide-react";
 import Link from "next/link";
 
 import { EmptyState } from "@/components/shared/empty-state";
 import { buttonVariants } from "@/components/ui/button";
 
-export default function NotFoundPage() {
+export default function NotFound() {
   return (
     <EmptyState
       action={
@@ -11,8 +12,9 @@ export default function NotFoundPage() {
           Return home
         </Link>
       }
-      description="The page you were looking for may have moved or is no longer available."
+      description="The page you are looking for may have moved or no longer exists."
       headingLevel="h1"
+      icon={<Compass className="size-6" />}
       title="We couldn't find that page"
     />
   );

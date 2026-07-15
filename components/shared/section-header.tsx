@@ -14,12 +14,12 @@ function SectionHeader({ action, className, description, title, ...props }: Sect
       className={cn("flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between", className)}
       {...props}
     >
-      <div className="space-y-1">
-        <h2 className="text-[length:var(--text-section-title)] font-medium tracking-tight">
+      <div className="space-y-1.5">
+        <h2 className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight">
           {title}
         </h2>
         {description ? (
-          <p className="max-w-2xl text-[length:var(--text-supporting)] leading-6 text-muted-foreground">
+          <p className="max-w-2xl text-pretty text-[length:var(--text-supporting)] leading-6 text-muted-foreground">
             {description}
           </p>
         ) : null}

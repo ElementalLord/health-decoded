@@ -9,16 +9,17 @@ import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
 export default async function CaregiverPage() {
   const profile = await getCurrentProfile();
-  if (!profile.ok) return <CaregiverUnavailableState />;
+  if (!profile.ok) redirect("/journey");
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
   const articles = await listPublishedCaregiverContent();
+
   if (!articles.ok) return <CaregiverUnavailableState />;
 
   return (
-    <section className="mx-auto max-w-4xl space-y-8 py-6 sm:py-10">
+    <section className="mx-auto max-w-4xl space-y-10 py-6 sm:py-10">
       <PageHeader
-        description="You don’t need to have all the answers. Small acts of support often matter the most."
+        description="Practical, compassionate guidance for people supporting someone with Type 2 diabetes."
         eyebrow="Caregiver companion"
         title="Supporting someone with Type 2 diabetes"
       />
