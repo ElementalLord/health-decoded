@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { ActionRow } from "@/components/shared/action-row";
 import { DevelopmentNotice } from "@/components/shared/development-notice";
+import { SectionHeader } from "@/components/shared/section-header";
 import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
@@ -37,7 +38,7 @@ export default async function JourneyPage() {
   }
 
   return (
-    <section className="space-y-7 py-5 sm:space-y-8 sm:py-8">
+    <section className="space-y-8 py-5 sm:space-y-10 sm:py-8">
       <JourneyGreeting displayName={profile.data.display_name} />
 
       {journey.data.kind === "complete" ? (
@@ -50,29 +51,18 @@ export default async function JourneyPage() {
 
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,680px)_minmax(280px,320px)] lg:justify-between">
             {journey.data.currentLesson.isDevelopmentContent ? (
-              <section aria-labelledby="lesson-context" className="space-y-2 py-1">
-                <h2
-                  className="text-[length:var(--text-section-title)] font-semibold tracking-tight"
-                  id="lesson-context"
-                >
-                  About this preview
-                </h2>
-                <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                  You can use it to check navigation, reading flow, activities, and progress while
-                  reviewed lesson content is prepared.
-                </p>
+              <section aria-labelledby="lesson-context" className="space-y-3 py-1">
+                <SectionHeader
+                  description="You can use it to check navigation, reading flow, activities, and progress while reviewed lesson content is prepared."
+                  title="About this preview"
+                />
               </section>
             ) : (
-              <section aria-labelledby="why-this-matters" className="space-y-2 py-1">
-                <h2
-                  className="text-[length:var(--text-section-title)] font-semibold tracking-tight"
-                  id="why-this-matters"
-                >
-                  Why this matters today
-                </h2>
-                <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                  {journey.data.currentLesson.whyItMatters}
-                </p>
+              <section aria-labelledby="why-this-matters" className="space-y-3 py-1">
+                <SectionHeader
+                  description={journey.data.currentLesson.whyItMatters}
+                  title="Why this matters today"
+                />
               </section>
             )}
 
@@ -90,17 +80,10 @@ export default async function JourneyPage() {
           ) : null}
 
           <section aria-labelledby="journey-support" className="space-y-4">
-            <div className="space-y-1">
-              <h2
-                className="text-[length:var(--text-section-title)] font-semibold tracking-tight"
-                id="journey-support"
-              >
-                Need more support?
-              </h2>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Read practical support information and lived-experience stories.
-              </p>
-            </div>
+            <SectionHeader
+              description="Read practical support information and lived-experience stories."
+              title="Need more support?"
+            />
             <div className="overflow-hidden rounded-[14px] border border-border bg-card divide-y divide-border">
               <ActionRow
                 description="Practical ways for family and friends to offer support."

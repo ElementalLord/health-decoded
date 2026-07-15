@@ -6,16 +6,23 @@ import type { JourneyHomeComplete } from "@/features/journeys/types/journey-home
 
 export function JourneyCompleteState({ journey }: { journey: JourneyHomeComplete }) {
   return (
-    <Card className="mx-auto max-w-2xl text-center">
-      <CheckCircle2 aria-hidden="true" className="mx-auto size-10 text-success" />
-      <h2 className="mt-5 text-[length:var(--text-section-title)] font-semibold">
-        Your journey is complete
-      </h2>
-      <p className="mx-auto mt-2 max-w-lg leading-7 text-muted-foreground">
-        You can return whenever you would like to review what you have learned.
-      </p>
+    <Card className="mx-auto max-w-2xl space-y-6 p-8 text-center sm:p-10">
+      <span
+        aria-hidden="true"
+        className="inline-flex size-16 items-center justify-center rounded-full bg-success/12 text-success"
+      >
+        <CheckCircle2 className="size-8" strokeWidth={2} />
+      </span>
+      <div className="space-y-3">
+        <h2 className="font-serif-display text-[length:var(--text-section-title)] font-semibold text-balance">
+          Your journey is complete
+        </h2>
+        <p className="mx-auto max-w-md text-pretty leading-7 text-muted-foreground">
+          You can return whenever you would like to review what you have learned.
+        </p>
+      </div>
       <ProgressBar
-        className="mt-6"
+        className="mx-auto max-w-sm"
         label={`${journey.progress.totalDays} of ${journey.progress.totalDays} lessons complete`}
         value={100}
       />

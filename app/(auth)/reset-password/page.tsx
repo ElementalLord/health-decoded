@@ -1,17 +1,17 @@
 import { PageHeader } from "@/components/shared/page-header";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { resetPasswordAction } from "@/features/auth/actions/auth.actions";
 import { AuthForm } from "@/features/auth/components/auth-form";
+import { resetPasswordAction } from "@/features/auth/actions/auth.actions";
 
 export default function ResetPasswordPage() {
   return (
-    <Card className="mx-auto max-w-md">
-      <CardHeader>
-        <PageHeader compact title="Choose a new password" />
-      </CardHeader>
-      <CardContent>
-        <AuthForm action={resetPasswordAction} mode="reset-password" />
-      </CardContent>
-    </Card>
+    <div className="space-y-8">
+      <PageHeader
+        compact
+        description="Choose a password you'll remember easily."
+        eyebrow="New password"
+        title="Choose a new password"
+      />
+      <AuthForm action={resetPasswordAction} mode="reset-password" />
+    </div>
   );
 }

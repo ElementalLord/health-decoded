@@ -13,19 +13,22 @@ const stateDetails: Record<ProgressMilestoneState, { label: string; icon: typeof
 export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] }) {
   return (
     <section aria-labelledby="confidence-map-title" className="space-y-5">
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <h2
-          className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+          className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
           id="confidence-map-title"
         >
           Confidence Map
         </h2>
-        <p className="text-sm leading-6 text-muted-foreground">
+        <p className="max-w-2xl text-pretty text-sm leading-6 text-muted-foreground">
           A record of the ideas you have explored, one step at a time.
         </p>
       </div>
 
-      <ol aria-label="Journey milestones" className="divide-y divide-border border-y border-border">
+      <ol
+        aria-label="Journey milestones"
+        className="overflow-hidden rounded-[14px] border border-border/70 bg-card shadow-[var(--shadow-card)] divide-y divide-border"
+      >
         {milestones.map((milestone) => {
           const details = stateDetails[milestone.state];
           const Icon = details.icon;
@@ -34,8 +37,8 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
           return (
             <li
               className={cn(
-                "flex items-start gap-3 px-1 py-4 sm:px-3",
-                milestone.state === "current" && "bg-secondary/40",
+                "flex items-start gap-3.5 px-4 py-4 transition duration-[var(--duration-fast)] sm:px-6",
+                milestone.state === "current" && "bg-primary/5",
                 milestone.state === "locked" && "text-muted-foreground",
               )}
               key={milestone.dayNumber}

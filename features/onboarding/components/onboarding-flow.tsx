@@ -54,7 +54,7 @@ export function OnboardingFlow() {
   return (
     <section className="mx-auto max-w-lg py-4 sm:py-8">
       <header className="space-y-4">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm font-medium text-muted-foreground">
           Step {step + 1} of {stepLabels.length}: {stepLabels[step]}
         </p>
         <ProgressBar
@@ -62,7 +62,7 @@ export function OnboardingFlow() {
           value={((step + 1) / stepLabels.length) * 100}
         />
         <h1
-          className="pt-2 text-[length:var(--text-card-title)] font-medium tracking-tight"
+          className="pt-2 font-serif-display text-[length:var(--text-card-title)] font-semibold tracking-tight text-balance"
           ref={headingRef}
           tabIndex={-1}
         >
@@ -78,7 +78,7 @@ export function OnboardingFlow() {
         <input name="timezone" type="hidden" value={timezone} />
 
         {step === 0 ? (
-          <p className="leading-7">
+          <p className="text-pretty leading-7 text-muted-foreground">
             Setup takes just a minute. We will guide you gradually, one small step at a time.
           </p>
         ) : null}
@@ -105,7 +105,7 @@ export function OnboardingFlow() {
           <fieldset className="space-y-3">
             <legend className="mb-2 font-medium">Choose what feels comfortable</legend>
             <div className="divide-y divide-border border-y border-border">
-              <label className="flex min-h-12 cursor-pointer items-center gap-3 py-3">
+              <label className="flex min-h-14 cursor-pointer items-center gap-3 py-3.5">
                 <input
                   checked={textScale === "large"}
                   className="size-5 shrink-0 accent-primary"
@@ -114,7 +114,7 @@ export function OnboardingFlow() {
                 />
                 <span>Use larger text</span>
               </label>
-              <label className="flex min-h-12 cursor-pointer items-center gap-3 py-3">
+              <label className="flex min-h-14 cursor-pointer items-center gap-3 py-3.5">
                 <input
                   checked={reducedMotion}
                   className="size-5 shrink-0 accent-primary"
@@ -129,15 +129,15 @@ export function OnboardingFlow() {
 
         {step === 3 ? (
           <dl className="divide-y divide-border border-y border-border">
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3.5">
               <dt className="text-sm text-muted-foreground">Name</dt>
               <dd>{displayName || "Not provided"}</dd>
             </div>
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3.5">
               <dt className="text-sm text-muted-foreground">Text</dt>
               <dd>{textScale === "large" ? "Larger" : "Standard"}</dd>
             </div>
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3.5">
               <dt className="text-sm text-muted-foreground">Motion</dt>
               <dd>{reducedMotion ? "Reduced" : "Standard"}</dd>
             </div>
