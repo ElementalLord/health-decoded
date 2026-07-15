@@ -4,13 +4,13 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "rounded-[14px] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)] transition duration-[var(--duration-normal)] sm:p-6",
+  "rounded-[var(--radius-xl)] border border-border/70 bg-card p-5 sm:p-6",
   {
     variants: {
       tone: {
         default: "",
-        info: "border-info/60 bg-info/40",
-        muted: "bg-muted/40 border-border/60",
+        info: "border-info/50 bg-info/30",
+        muted: "bg-muted/30 border-border/50",
       },
     },
     defaultVariants: { tone: "default" },
@@ -32,7 +32,7 @@ function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-[length:var(--text-card-title)] font-semibold tracking-tight", className)}
+      className={cn("font-serif-display text-[length:var(--text-card-title)] font-semibold", className)}
       {...props}
     />
   );

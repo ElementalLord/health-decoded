@@ -24,7 +24,7 @@ export function ConfidenceHistoryList({ entries }: { entries: ConfidenceHistoryE
       </div>
 
       {entries.length ? (
-        <ul className="overflow-hidden rounded-[14px] border border-border/70 bg-card shadow-[var(--shadow-card)] divide-y divide-border">
+        <ul className="overflow-hidden rounded-[var(--radius-xl)] border border-border/50 bg-card divide-y divide-border">
           {entries.map((entry) => (
             <li
               className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-4 sm:px-6"
@@ -40,7 +40,7 @@ export function ConfidenceHistoryList({ entries }: { entries: ConfidenceHistoryE
           ))}
         </ul>
       ) : (
-        <p className="rounded-[14px] border border-border/70 bg-card px-5 py-6 text-sm leading-7 text-muted-foreground sm:px-6">
+        <p className="rounded-[var(--radius-xl)] border border-border/50 bg-card px-5 py-6 text-sm leading-7 text-muted-foreground sm:px-6">
           You have not recorded a confidence check-in yet.
         </p>
       )}

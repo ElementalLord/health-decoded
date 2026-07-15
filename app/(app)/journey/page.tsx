@@ -84,7 +84,7 @@ export default async function JourneyPage() {
               description="Read practical support information and lived-experience stories."
               title="Need more support?"
             />
-            <div className="overflow-hidden rounded-[14px] border border-border bg-card divide-y divide-border">
+            <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border/50 divide-y divide-border">
               <ActionRow
                 description="Practical ways for family and friends to offer support."
                 href="/caregiver"

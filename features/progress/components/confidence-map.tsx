@@ -27,7 +27,7 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
 
       <ol
         aria-label="Journey milestones"
-        className="overflow-hidden rounded-[14px] border border-border/70 bg-card shadow-[var(--shadow-card)] divide-y divide-border"
+        className="overflow-hidden rounded-[var(--radius-xl)] border border-border/50 bg-card divide-y divide-border"
       >
         {milestones.map((milestone) => {
           const details = stateDetails[milestone.state];

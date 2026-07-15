@@ -10,9 +10,9 @@ export default function AuthErrorPage() {
     <div className="space-y-8">
       <span
         aria-hidden="true"
-        className="inline-flex size-16 items-center justify-center rounded-full bg-destructive/10 text-destructive"
+        className="inline-flex size-14 items-center justify-center rounded-full bg-destructive/10 text-destructive"
       >
-        <AlertCircle className="size-7" />
+        <AlertCircle className="size-6" />
       </span>
       <PageHeader
         compact
@@ -28,7 +28,10 @@ export default function AuthErrorPage() {
           Return to sign in
         </Link>
         <Link
-          className={cn(buttonVariants({ fullWidth: false, variant: "secondary" }), "min-h-12 px-6")}
+          className={cn(
+            buttonVariants({ fullWidth: false, variant: "secondary" }),
+            "min-h-12 px-6",
+          )}
           href="/verify-email"
         >
           Request a new link

@@ -28,12 +28,15 @@ export function LessonCompletionScreen({
       <div className="space-y-7 border-y border-border py-8 sm:py-12">
         <span
           aria-hidden="true"
-          className="inline-flex size-16 items-center justify-center rounded-full bg-success/12 text-success"
+          className="inline-flex size-14 items-center justify-center rounded-full bg-success/12 text-success"
         >
-          <CheckCircle2 className="size-8" strokeWidth={2} />
+          <CheckCircle2 className="size-7" strokeWidth={2} />
         </span>
         <div className="space-y-3">
-          <p aria-live="polite" className="text-sm font-semibold uppercase tracking-[0.08em] text-primary">
+          <p
+            aria-live="polite"
+            className="text-sm font-semibold uppercase tracking-[0.1em] text-primary"
+          >
             Your progress was saved
           </p>
           <h1
@@ -51,9 +54,12 @@ export function LessonCompletionScreen({
 
         <section
           aria-labelledby="lesson-takeaway"
-          className="space-y-2.5 rounded-[14px] border border-border/70 bg-card p-5 shadow-[var(--shadow-card)] sm:p-6"
+          className="space-y-2.5 rounded-[var(--radius-xl)] border border-border/50 bg-card p-5 sm:p-6"
         >
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground" id="lesson-takeaway">
+          <h2
+            className="text-sm font-semibold uppercase tracking-wide text-muted-foreground"
+            id="lesson-takeaway"
+          >
             Today&apos;s takeaway
           </h2>
           <p className="text-pretty leading-7 text-foreground">{keyTakeaway}</p>

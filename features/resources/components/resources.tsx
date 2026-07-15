@@ -29,9 +29,9 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               >
                 {category}
               </h2>
-              <ul className="overflow-hidden rounded-[14px] border border-border/70 bg-card shadow-[var(--shadow-card)] divide-y divide-border">
+              <ul className="divide-y divide-border border-y border-border">
                 {items?.map((resource) => (
-                  <li className="px-5 py-6 sm:px-7" key={resource.id}>
+                  <li className="py-6" key={resource.id}>
                     <article className="max-w-2xl space-y-2.5">
                       <div>
                         <h3 className="font-serif-display text-[length:var(--text-card-title)] font-semibold tracking-tight">

@@ -14,7 +14,7 @@ export default function NotFound() {
       }
       description="The page you are looking for may have moved or no longer exists."
       headingLevel="h1"
-      icon={<Compass className="size-7" />}
+      icon={<Compass className="size-6" />}
       title="We couldn't find that page"
     />
   );

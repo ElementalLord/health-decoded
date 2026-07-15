@@ -1,5 +1,4 @@
-import { Activity } from "lucide-react";
-import Link from "next/link";
+import { Sprout } from "lucide-react";
 import type { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
@@ -7,18 +6,15 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <aside className="relative hidden overflow-hidden bg-primary lg:block">
         <div className="flex h-full flex-col justify-between p-12 text-primary-foreground">
-          <Link
-            className="inline-flex items-center gap-2.5 text-base font-semibold tracking-tight"
-            href="/"
-          >
+          <div className="flex items-center gap-2.5 text-base font-semibold tracking-tight">
             <span
               aria-hidden="true"
-              className="inline-flex size-9 items-center justify-center rounded-lg bg-primary-foreground/15"
+              className="inline-flex size-9 items-center justify-center rounded-[8px] bg-primary-foreground/15"
             >
-              <Activity className="size-4" strokeWidth={2.5} />
+              <Sprout className="size-4" strokeWidth={2} />
             </span>
             <span className="font-serif-display text-xl">Health Decoded</span>
-          </Link>
+          </div>
 
           <div className="max-w-md space-y-6">
             <h2 className="font-serif-display text-3xl font-semibold leading-tight text-balance">

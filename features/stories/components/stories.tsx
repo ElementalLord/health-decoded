@@ -8,7 +8,10 @@ import { cn } from "@/lib/utils";
 
 export function DevelopmentStoryBanner() {
   return (
-    <aside className="flex gap-3 rounded-[12px] border border-info/50 bg-info/30 px-5 py-4" role="note">
+    <aside
+      className="flex gap-3 rounded-[var(--radius-xl)] border border-info/40 bg-info/20 px-5 py-4"
+      role="note"
+    >
       <div className="space-y-0.5">
         <p className="text-sm font-semibold text-foreground">Development story content</p>
         <p className="text-sm leading-6 text-muted-foreground">
@@ -64,7 +67,7 @@ export function StoryDetail({ story }: { story: StoryViewModel }) {
           </section>
         ))}
       </div>
-      <Card tone="info" className="rounded-[16px]">
+      <Card tone="info" className="rounded-[var(--radius-xl)]">
         <CardHeader>
           <CardTitle>Key takeaway</CardTitle>
         </CardHeader>

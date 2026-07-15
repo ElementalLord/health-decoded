@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import type { CompletedLessonHistoryEntry } from "@/features/progress/types/progress";
+import { cn } from "@/lib/utils";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, {
@@ -14,9 +15,9 @@ function formatDate(value: string) {
 export function CompletedLessonsList({ entries }: { entries: CompletedLessonHistoryEntry[] }) {
   return (
     <section aria-labelledby="completed-lessons-title" className="space-y-5">
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <h2
-          className="text-[length:var(--text-section-title)] font-medium tracking-tight"
+          className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
           id="completed-lessons-title"
         >
           Completed lessons
@@ -27,7 +28,7 @@ export function CompletedLessonsList({ entries }: { entries: CompletedLessonHist
       </div>
 
       {entries.length ? (
-        <ul className="divide-y divide-border">
+        <ul className="divide-y divide-border border-y border-border">
           {entries.map((entry) => (
             <li
               className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between"
@@ -43,7 +44,7 @@ export function CompletedLessonsList({ entries }: { entries: CompletedLessonHist
                 </p>
               </div>
               <Link
-                className={buttonVariants({ fullWidth: false, variant: "text" })}
+                className={cn(buttonVariants({ fullWidth: false, variant: "text" }), "min-h-11")}
                 href={`/lessons/${entry.dayNumber}`}
               >
                 Review lesson

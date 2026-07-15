@@ -14,7 +14,7 @@ export function ActionRow({ className, description, href, title }: ActionRowProp
   return (
     <Link
       className={cn(
-        "group flex min-h-16 items-center justify-between gap-4 rounded-[12px] border border-border/60 bg-card px-5 py-4 shadow-[var(--shadow-card)] transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:border-primary/30 hover:shadow-[0_2px_8px_rgb(20_35_40/0.08)] focus-visible:ring-2 focus-visible:ring-ring",
+        "group flex min-h-16 items-center justify-between gap-4 px-5 py-4 transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
       href={href}
@@ -27,7 +27,7 @@ export function ActionRow({ className, description, href, title }: ActionRowProp
       </span>
       <span
         aria-hidden="true"
-        className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition duration-[var(--duration-fast)] group-hover:bg-primary/10 group-hover:text-primary"
+        className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition duration-[var(--duration-fast)] group-hover:bg-primary/10 group-hover:text-primary"
       >
         <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
       </span>
