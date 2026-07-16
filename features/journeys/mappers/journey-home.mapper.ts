@@ -5,6 +5,12 @@ import type {
   LessonProgressRow,
 } from "@/features/journeys/types/journey-home";
 
+const reviewStageDefinitions = [
+  { dayRange: "Days 1–30", maximumDay: 30, minimumDay: 1, stageNumber: 1, title: "Understanding" },
+  { dayRange: "Days 31–60", maximumDay: 60, minimumDay: 31, stageNumber: 2, title: "Adjusting" },
+  { dayRange: "Days 61–90", maximumDay: 90, minimumDay: 61, stageNumber: 3, title: "Living" },
+] as const;
+
 type JourneyHomeMapperInput = {
   assignments: JourneyAssignmentRow[];
   completedAt: string | null;
@@ -37,6 +43,29 @@ export function mapJourneyHome({
   ).length;
   const totalDays = assignments.length;
   const percentage = Math.min(100, Math.round((completedLessons / totalDays) * 100));
+  const completedAssignmentIds = new Set(
+    progressRows
+      .filter((progress) => progress.status === "completed")
+      .map((progress) => progress.journey_lesson_id),
+  );
+  const reviewStages = reviewStageDefinitions.map((stageDefinition) => ({
+    dayRange: stageDefinition.dayRange,
+    lessons: assignments
+      .filter(
+        (assignment) =>
+          completedAssignmentIds.has(assignment.id) &&
+          assignment.day_number >= stageDefinition.minimumDay &&
+          assignment.day_number <= stageDefinition.maximumDay,
+      )
+      .map((assignment) => ({
+        dayNumber: assignment.day_number,
+        estimatedMinutes: assignment.lessons.estimated_minutes,
+        subtitle: assignment.lessons.subtitle,
+        title: assignment.lessons.title,
+      })),
+    stageNumber: stageDefinition.stageNumber,
+    title: stageDefinition.title,
+  }));
   const baseProgress = {
     completedLessons,
     currentDay: Math.min(totalDays, completedLessons + 1),
@@ -49,6 +78,7 @@ export function mapJourneyHome({
       kind: "complete",
       journeyTitle,
       progress: { ...baseProgress, currentDay: totalDays, percentage: 100 },
+      reviewStages,
     };
   }
 
@@ -81,5 +111,6 @@ export function mapJourneyHome({
       currentDay: currentAssignment.day_number,
     },
     confidenceLevel,
+    reviewStages,
   };
 }

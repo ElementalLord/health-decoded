@@ -22,7 +22,7 @@ function EmptyState({
   const Heading = headingLevel;
 
   return (
-    <section className={cn("px-4 py-16 text-center sm:px-8", className)}>
+    <section className={cn("motion-empty px-4 py-16 text-center sm:px-8", className)}>
       <div className="animate-empty-state mx-auto flex max-w-md flex-col items-center gap-5">
         {icon ? (
           <div

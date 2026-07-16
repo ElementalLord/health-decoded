@@ -30,7 +30,7 @@ export default async function StoriesPage() {
         <PageHeader
           description="Thoughtful perspectives for moments that can feel unfamiliar."
           eyebrow="Lived experience"
-          title="Stories that help you back up"
+          title="Stories that help you get back up"
         />
         <SteadyingHandIllustration className="mx-auto max-w-sm" />
       </div>

@@ -205,32 +205,58 @@ function AnswerChoice({
 
 function BloodstreamDiagram({
   entered = 0,
+  enteredParticles,
+  insulinSignals = 0,
   resistant = false,
 }: {
   entered?: number;
+  enteredParticles?: ReadonlySet<number>;
+  insulinSignals?: number;
   resistant?: boolean;
 }) {
+  const particles = [0, 1, 2] as const;
+  const insidePositions = [
+    { left: "calc(100% - 6rem)", top: "34%" },
+    { left: "calc(100% - 3.4rem)", top: "39%" },
+    { left: "calc(100% - 4.8rem)", top: "64%" },
+  ] as const;
+
   return (
     <div
-      aria-label={`${entered} glucose particles have moved into the muscle cell. ${resistant ? "The cell is responding less effectively to insulin." : "Glucose particles are shown moving through the bloodstream."}`}
+      aria-label={`${enteredParticles?.size ?? entered} of ${particles.length} glucose particles have moved into the muscle cell. ${resistant ? "The cell is responding less effectively to insulin, so more glucose remains in the bloodstream." : "Glucose particles are shown moving through the bloodstream."}`}
       className="relative min-h-56 overflow-hidden rounded-[1rem] border border-accent-warm/25 bg-[#efe7de] p-5"
       role="img"
     >
       <div className="absolute inset-x-4 top-1/2 h-20 -translate-y-1/2 rounded-full border border-accent-warm/25 bg-[#ead0c3]" />
-      <div className="absolute right-5 top-1/2 flex size-24 -translate-y-1/2 items-center justify-center rounded-full border-2 border-success/50 bg-info text-center text-xs font-semibold text-info-foreground">
-        Muscle cell
+      <div className="absolute right-5 top-1/2 z-10 size-24 -translate-y-1/2 rounded-full border-2 border-success/50 bg-info" />
+      <div className="pointer-events-none absolute right-5 top-1/2 z-30 flex size-24 -translate-y-1/2 items-center justify-center text-center text-xs font-semibold text-info-foreground">
+        <span className="rounded-full bg-info/90 px-2 py-1">Muscle cell</span>
       </div>
-      {[0, 1, 2, 3].map((particle) => {
-        const inside = particle < entered;
+      {Array.from({ length: insulinSignals }, (_, signal) => (
+        <span
+          aria-hidden="true"
+          className="absolute z-[15] h-4 w-8 rounded-full border border-success/60 bg-success/55"
+          key={`signal-${signal}`}
+          style={{ left: `${29 + signal * 13}%`, top: `${32 + (signal % 2) * 27}%` }}
+        />
+      ))}
+      {particles.map((particle) => {
+        const inside = enteredParticles ? enteredParticles.has(particle) : particle < entered;
+        const restingLeft = resistant && !inside ? 52 + particle * 9 : 18 + particle * 14;
+        const restingTop = 38 + (particle % 2) * 20;
+        const position = inside
+          ? insidePositions[particle]
+          : { left: `${restingLeft}%`, top: `${restingTop}%` };
+
         return (
           <span
             aria-hidden="true"
-            className={cn(
-              "absolute top-[48%] size-4 rounded-full bg-[#d99a2b] shadow-sm transition-all duration-500",
-              inside ? "right-12" : resistant && particle > 0 ? "left-[58%]" : "left-[18%]",
-            )}
+            className="absolute z-20 size-4 rounded-full bg-[#d99a2b] shadow-sm transition-[left,top,transform,opacity] duration-700 ease-[var(--ease-standard)]"
             key={particle}
-            style={!inside && !resistant ? { left: `${18 + particle * 13}%` } : undefined}
+            style={{
+              ...position,
+              transitionDelay: `${particle * 90}ms`,
+            }}
           />
         );
       })}
@@ -251,6 +277,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
   const [systemPreview, setSystemPreview] = useState<PreviewId | null>(null);
   const [movedGlucose, setMovedGlucose] = useState<Set<number>>(() => new Set());
   const [signalSent, setSignalSent] = useState(false);
+  const [signalArrived, setSignalArrived] = useState(false);
   const [signalReplay, setSignalReplay] = useState(0);
   const [normalStep, setNormalStep] = useState(1);
   const [resistanceLevel, setResistanceLevel] = useState(0);
@@ -272,6 +299,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const stageRef = useRef<HTMLDivElement>(null);
+  const signalTimerRef = useRef<number | null>(null);
   const storageKey = `health-decoded:day-two:${experience.lessonProgressId}`;
 
   useEffect(() => {
@@ -283,6 +311,13 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
   useEffect(() => {
     if (stage > 0) stageRef.current?.focus();
   }, [stage]);
+
+  useEffect(
+    () => () => {
+      if (signalTimerRef.current) window.clearTimeout(signalTimerRef.current);
+    },
+    [],
+  );
 
   function saveStage(nextStage: number) {
     if (experience.accessMode === "review") return;
@@ -317,9 +352,22 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
   }
 
   function playSignal() {
+    if (signalTimerRef.current) window.clearTimeout(signalTimerRef.current);
     setSignalSent(false);
+    setSignalArrived(false);
     setSignalReplay((value) => value + 1);
-    window.requestAnimationFrame(() => setSignalSent(true));
+    const reducedMotion =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      document.querySelector('[data-reduced-motion="true"]') !== null;
+
+    window.requestAnimationFrame(() => {
+      setSignalSent(true);
+      if (reducedMotion) {
+        setSignalArrived(true);
+        return;
+      }
+      signalTimerRef.current = window.setTimeout(() => setSignalArrived(true), 900);
+    });
   }
 
   function selectOrgan(id: OrganId) {
@@ -361,8 +409,12 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
 
   async function evaluateCause(answer: "too_simple" | "more_accurate") {
     const result = await evaluateDayTwoAction({ answer, stage: "cause", statement: causeIndex });
-    if (result.ok) setCauseFeedback(result.data);
-    else setMessage(result.message);
+    if (result.ok) {
+      setCauseFeedback(result.data);
+      if (causeIndex === causeStatements.length - 1) {
+        setCauseCompleted(causeStatements.length);
+      }
+    } else setMessage(result.message);
   }
 
   function nextCauseStatement() {
@@ -393,7 +445,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
     if (stage === 0) return Boolean(evaluations.connection);
     if (stage === 1) return systemPreview !== null;
     if (stage === 2) return movedGlucose.size === 3 && Boolean(evaluations.glucose);
-    if (stage === 3) return signalSent;
+    if (stage === 3) return signalArrived;
     if (stage === 4) return normalStep === 5;
     if (stage === 5) return Boolean(evaluations.resistance);
     if (stage === 6) return resistanceLevel === 2;
@@ -425,6 +477,26 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
     ];
 
     return requirements[stage];
+  }
+
+  function continueLabel() {
+    const labels = [
+      "Follow the glucose",
+      "See where glucose travels",
+      "Meet insulin",
+      "See the full response",
+      "Compare the insulin signal",
+      "See how the pancreas responds",
+      "Look at the whole balance",
+      "Explore the body system",
+      "Put the process together",
+      "Challenge a common myth",
+      "Explain it in your own words",
+      "Compare the two systems",
+      "Reflect on what changed",
+    ] as const;
+
+    return labels[stage] ?? "Continue";
   }
 
   function renderStage() {
@@ -554,7 +626,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
                   setMovedGlucose((current) => new Set([...current, particle]));
               }}
             >
-              <BloodstreamDiagram entered={movedGlucose.size} />
+              <BloodstreamDiagram enteredParticles={movedGlucose} />
             </div>
             <div className="flex flex-wrap gap-3">
               {[0, 1, 2].map((particle) => (
@@ -611,23 +683,30 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
               </p>
             </div>
             <div className="relative" key={signalReplay}>
-              <BloodstreamDiagram entered={signalSent ? 3 : 0} />
-              {signalSent ? (
-                <span
-                  aria-hidden="true"
-                  className="animate-slide-in-right absolute left-[42%] top-[42%] h-8 w-16 rounded-full border-2 border-accent-warm/50 bg-accent-warm/15"
-                />
-              ) : null}
+              <BloodstreamDiagram entered={signalArrived ? 3 : 0} />
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "absolute top-1/2 z-40 inline-flex h-8 w-20 -translate-y-1/2 items-center justify-center rounded-full border-2 border-success/50 bg-info text-[0.65rem] font-bold uppercase tracking-[0.1em] text-info-foreground shadow-sm transition-[left,opacity] duration-[900ms] ease-[var(--ease-standard)]",
+                  signalSent ? "left-[72%] opacity-100" : "left-[12%] opacity-0",
+                )}
+              >
+                Insulin
+              </span>
             </div>
             <p className="border-l-2 border-success bg-info p-5 text-sm leading-6">
               This is a simplified picture. Insulin does not literally carry glucose or unlock a
               physical door. It sends signals that help cells take in and use glucose.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button fullWidth={false} onClick={playSignal}>
-                Send the insulin signal
+              <Button
+                disabled={signalSent && !signalArrived}
+                fullWidth={false}
+                onClick={playSignal}
+              >
+                {signalSent && !signalArrived ? "Signal traveling…" : "Send the insulin signal"}
               </Button>
-              {signalSent ? (
+              {signalArrived ? (
                 <Button fullWidth={false} onClick={playSignal} variant="secondary">
                   <RotateCcw className="size-4" /> See it again
                 </Button>
@@ -646,34 +725,53 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-8">
             <DayTwoHeading>When the system responds well</DayTwoHeading>
+            <p className="text-lg leading-8 text-muted-foreground">
+              Reveal the response in order. Each step prepares the next one.
+            </p>
             <div className="grid gap-3 sm:grid-cols-5">
-              {steps.map((step, index) => (
-                <button
-                  className={cn(
-                    "min-h-32 rounded-2xl border p-4 text-left text-sm leading-6 transition",
-                    index < normalStep ? "border-success/25 bg-success/8" : "bg-card opacity-45",
-                  )}
-                  disabled={index > normalStep}
-                  key={step}
-                  onClick={() => setNormalStep(Math.max(normalStep, Math.min(5, index + 2)))}
-                  type="button"
-                >
-                  <span className="mb-3 block text-xs font-semibold text-success">
-                    Step {index + 1}
-                  </span>
-                  {step}
-                </button>
-              ))}
+              {steps.map((step, index) => {
+                const revealed = index < normalStep;
+                const isNext = index === normalStep;
+
+                return (
+                  <button
+                    aria-label={
+                      revealed
+                        ? `Step ${index + 1}: ${step}`
+                        : isNext
+                          ? `Reveal step ${index + 1}`
+                          : `Step ${index + 1} is waiting for the previous step`
+                    }
+                    className={cn(
+                      "min-h-32 rounded-2xl border p-4 text-left text-sm leading-6 transition",
+                      revealed && "border-success/25 bg-success/8",
+                      isNext &&
+                        "border-accent-warm/40 bg-card shadow-[0_2px_0_rgb(61_47_41/0.08)] hover:-translate-y-0.5",
+                      !revealed && !isNext && "bg-card opacity-45",
+                    )}
+                    disabled={!isNext}
+                    key={step}
+                    onClick={() => setNormalStep(index + 1)}
+                    type="button"
+                  >
+                    <span className="mb-3 block text-xs font-semibold text-success">
+                      Step {index + 1}
+                    </span>
+                    {revealed ? (
+                      step
+                    ) : isNext ? (
+                      <span className="font-semibold text-accent-warm">Reveal this step</span>
+                    ) : (
+                      <span className="text-muted-foreground">Waiting</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
             <ProgressBar
               label={`Normal glucose response: ${normalStep} of 5 steps`}
               value={(normalStep / 5) * 100}
             />
-            {normalStep < 5 ? (
-              <Button onClick={() => setNormalStep((value) => Math.min(5, value + 1))}>
-                Reveal the next step
-              </Button>
-            ) : null}
             {normalStep === 5 ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 leading-7">
                 Blood glucose naturally rises and falls. Insulin helps keep those changes within a
@@ -703,14 +801,20 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
               <Card className="rounded-[1rem] border-success/20 bg-success/7">
                 <h2 className="font-serif-display text-xl font-semibold">More responsive</h2>
                 <div className="mt-4">
-                  <BloodstreamDiagram entered={3} />
+                  <BloodstreamDiagram entered={3} insulinSignals={1} />
                 </div>
+                <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                  One clear insulin signal helps all three glucose particles enter the cell.
+                </p>
               </Card>
               <Card className="rounded-[1rem] border-accent-warm/20 bg-accent-warm/7">
                 <h2 className="font-serif-display text-xl font-semibold">Less responsive</h2>
                 <div className="mt-4">
-                  <BloodstreamDiagram entered={1} resistant />
+                  <BloodstreamDiagram entered={1} insulinSignals={3} resistant />
                 </div>
+                <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                  More insulin is present, but two glucose particles still remain in the blood.
+                </p>
               </Card>
             </div>
             <p className="font-semibold">What could the pancreas do next?</p>
@@ -740,20 +844,26 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-8">
             <DayTwoHeading>The pancreas often tries to compensate</DayTwoHeading>
-            <div className="space-y-3 leading-7 text-foreground/80">
-              <p>
-                When cells become less responsive to insulin, the pancreas may make more insulin to
-                help keep blood glucose in range.
-              </p>
-              <p>
-                This can work for some time. But the amount of insulin the body needs may continue
-                to rise, and the pancreas may eventually be unable to make enough insulin to meet
-                that need.
-              </p>
-              <p>
-                When insulin resistance and reduced insulin supply occur together, more glucose
-                remains in the blood.
-              </p>
+            <p className="max-w-3xl text-lg leading-8 text-foreground/80">
+              When cells become less responsive to insulin, the pancreas may make more insulin to
+              help keep blood glucose in range.
+            </p>
+            <div className="grid border-y border-border md:grid-cols-2">
+              <section className="space-y-3 py-6 md:pr-8">
+                <p className="editorial-eyebrow text-success">For a time</p>
+                <p className="leading-7 text-foreground/80">This can work for some time.</p>
+              </section>
+              <section className="space-y-3 border-t border-border py-6 md:border-l md:border-t-0 md:pl-8">
+                <p className="editorial-eyebrow text-accent-warm">As demand keeps rising</p>
+                <p className="leading-7 text-foreground/80">
+                  But the amount of insulin the body needs may continue to rise, and the pancreas
+                  may eventually be unable to make enough insulin to meet that need.
+                </p>
+                <p className="leading-7 text-foreground/80">
+                  When insulin resistance and reduced insulin supply occur together, more glucose
+                  remains in the blood.
+                </p>
+              </section>
             </div>
             <Card className="space-y-6 rounded-[1rem] bg-[#f3e7df] p-6 sm:p-8">
               <h2 className="font-semibold">How much insulin support the body needs</h2>
@@ -1092,11 +1202,9 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
             {causeFeedback ? (
               <div className="space-y-4">
                 <ConceptFeedback feedback={causeFeedback} />
-                <Button onClick={nextCauseStatement}>
-                  {causeIndex === causeStatements.length - 1
-                    ? "Finish the series"
-                    : "Next statement"}
-                </Button>
+                {causeIndex < causeStatements.length - 1 ? (
+                  <Button onClick={nextCauseStatement}>Try the next statement</Button>
+                ) : null}
               </div>
             ) : null}
             <p className="text-sm text-muted-foreground">
@@ -1294,7 +1402,11 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
                   </p>
                 </div>
                 <Button disabled={isPending} onClick={finishExperience} size="lg">
-                  {isPending ? "Saving…" : "Continue tomorrow"}
+                  {isPending
+                    ? "Saving…"
+                    : experience.accessMode === "review"
+                      ? "Return to lesson library"
+                      : "Complete Day 2"}
                 </Button>
                 <div className="flex flex-wrap justify-center gap-3">
                   <Button fullWidth={false} onClick={() => goToStage(8)} variant="text">
@@ -1381,11 +1493,13 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
               Previous
             </Button>
             <Button disabled={!canContinue() || isPending} onClick={() => goToStage(stage + 1)}>
-              Continue
+              {continueLabel()}
             </Button>
           </div>
           {!canContinue() ? (
-            <p className="mt-3 text-sm text-muted-foreground">To continue: {stageRequirement()}</p>
+            <p aria-live="polite" className="mt-3 text-sm text-muted-foreground" role="status">
+              To continue: {stageRequirement()}
+            </p>
           ) : null}
         </footer>
       ) : null}

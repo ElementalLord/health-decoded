@@ -16,7 +16,7 @@ function getResourceSectionId(category: string) {
 
 export function ResourcesList({ resources }: { resources: Resource[] }) {
   return (
-    <div className="space-y-10">
+    <div className="motion-reveal-list space-y-10">
       {Object.entries(Object.groupBy(resources, ({ category }) => category)).map(
         ([category, items], sectionIndex) => {
           const sectionId = getResourceSectionId(category);
@@ -38,7 +38,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
                   {category}
                 </h2>
               </div>
-              <ul className="stagger-children divide-y divide-border border-y border-border">
+              <ul className="motion-reveal-list stagger-children divide-y divide-border border-y border-border">
                 {items?.map((resource) => (
                   <li className="py-6" key={resource.id}>
                     <article className="max-w-2xl space-y-2.5">

@@ -22,19 +22,21 @@ export default async function ProgressPage() {
 
   return (
     <section className="mx-auto max-w-5xl space-y-14 py-6 sm:py-10">
-      <PageHeader
-        description="This is a record of your learning. Confidence can change from day to day, and lower confidence is not failure."
-        eyebrow="Your learning journey"
-        title="Your progress"
-      />
+      <div className="motion-reveal">
+        <PageHeader
+          description="This is a record of your learning. Confidence can change from day to day, and lower confidence is not failure."
+          eyebrow="Your learning journey"
+          title="Your progress"
+        />
+      </div>
 
       <section
         aria-labelledby="progress-overview"
-        className="grid gap-8 border-y border-border py-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-12 sm:py-10"
+        className="motion-reveal grid gap-8 border-y border-border py-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-12 sm:py-10"
       >
         <div>
           <p className="font-serif-display text-8xl font-light leading-none text-accent-warm sm:text-9xl">
-            {Math.round(data.percentage)}
+            {Math.round(data.percentage)}%
           </p>
           <p className="mt-2 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
             percent explored
@@ -62,10 +64,18 @@ export default async function ProgressPage() {
         </div>
       </section>
 
-      <ConfidenceMap milestones={data.milestones} />
-      <ConfidenceXpSummary total={data.totalConfidenceXp} />
-      <ConfidenceHistoryList entries={data.confidenceHistory} />
-      <CompletedLessonsList entries={data.completedLessonsHistory} />
+      <div className="motion-reveal">
+        <ConfidenceMap milestones={data.milestones} />
+      </div>
+      <div className="motion-reveal">
+        <ConfidenceXpSummary total={data.totalConfidenceXp} />
+      </div>
+      <div className="motion-reveal">
+        <ConfidenceHistoryList entries={data.confidenceHistory} />
+      </div>
+      <div className="motion-reveal">
+        <CompletedLessonsList entries={data.completedLessonsHistory} />
+      </div>
     </section>
   );
 }

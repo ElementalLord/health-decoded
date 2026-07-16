@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { completeOnboardingAction } from "@/features/onboarding/actions/onboarding.actions";
 import { initialOnboardingFormState } from "@/features/onboarding/types/onboarding";
+import { cn } from "@/lib/utils";
 
 const stepLabels = ["Welcome", "Your name", "Preferences", "Finish"];
 const stepTitles = [
@@ -16,6 +17,7 @@ const stepTitles = [
   "Reading and motion preferences",
   "Review your setup",
 ];
+const continueLabels = ["Start setup", "Save my name", "Review my choices"] as const;
 
 export function OnboardingFlow() {
   const [step, setStep] = useState(0);
@@ -79,7 +81,7 @@ export function OnboardingFlow() {
         <input name="timezone" type="hidden" value={timezone} />
 
         {step === 0 ? (
-          <div className="grid gap-6 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
+          <div className="animate-slide-up grid gap-6 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
             <CompanionIllustration />
             <div>
               <p className="text-pretty text-lg leading-8 text-muted-foreground">
@@ -93,7 +95,10 @@ export function OnboardingFlow() {
         ) : null}
 
         {step === 1 ? (
-          <label className="grid gap-2 text-sm font-medium" htmlFor="onboarding-name">
+          <label
+            className="animate-slide-up grid gap-2 text-sm font-medium"
+            htmlFor="onboarding-name"
+          >
             Preferred name
             <Input
               aria-describedby={stepError ? "onboarding-name-error" : undefined}
@@ -111,33 +116,57 @@ export function OnboardingFlow() {
         ) : null}
 
         {step === 2 ? (
-          <fieldset className="space-y-3">
+          <fieldset className="animate-slide-up space-y-3">
             <legend className="mb-2 font-medium">Choose what feels comfortable</legend>
             <div className="grid gap-3 sm:grid-cols-2">
-              <label className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[9px] border border-border bg-card px-4 py-3.5 shadow-[0_2px_0_rgb(61_47_41/0.08)]">
+              <label
+                className={cn(
+                  "flex min-h-20 cursor-pointer items-center gap-3 rounded-[9px] border bg-card px-4 py-3.5 shadow-[0_2px_0_rgb(61_47_41/0.08)] transition-colors",
+                  textScale === "large"
+                    ? "border-accent-warm bg-accent-warm/5"
+                    : "border-border hover:border-foreground/25",
+                )}
+              >
                 <input
                   checked={textScale === "large"}
                   className="size-5 shrink-0 accent-primary"
                   onChange={(event) => setTextScale(event.target.checked ? "large" : "default")}
                   type="checkbox"
                 />
-                <span>Use larger text</span>
+                <span>
+                  <span className="block font-medium">Use larger text</span>
+                  <span className="mt-1 block text-sm leading-5 text-muted-foreground">
+                    Increase the reading size throughout the app.
+                  </span>
+                </span>
               </label>
-              <label className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[9px] border border-border bg-card px-4 py-3.5 shadow-[0_2px_0_rgb(61_47_41/0.08)]">
+              <label
+                className={cn(
+                  "flex min-h-20 cursor-pointer items-center gap-3 rounded-[9px] border bg-card px-4 py-3.5 shadow-[0_2px_0_rgb(61_47_41/0.08)] transition-colors",
+                  reducedMotion
+                    ? "border-accent-warm bg-accent-warm/5"
+                    : "border-border hover:border-foreground/25",
+                )}
+              >
                 <input
                   checked={reducedMotion}
                   className="size-5 shrink-0 accent-primary"
                   onChange={(event) => setReducedMotion(event.target.checked)}
                   type="checkbox"
                 />
-                <span>Reduce motion</span>
+                <span>
+                  <span className="block font-medium">Reduce motion</span>
+                  <span className="mt-1 block text-sm leading-5 text-muted-foreground">
+                    Keep learning animations calm and still.
+                  </span>
+                </span>
               </label>
             </div>
           </fieldset>
         ) : null}
 
         {step === 3 ? (
-          <dl className="divide-y divide-border border-y border-border">
+          <dl className="animate-slide-up divide-y divide-border border-y border-border">
             <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3.5">
               <dt className="text-sm text-muted-foreground">Name</dt>
               <dd>{displayName || "Not provided"}</dd>
@@ -154,12 +183,16 @@ export function OnboardingFlow() {
         ) : null}
 
         {stepError ? (
-          <p className="text-sm text-destructive" id="onboarding-name-error" role="alert">
+          <p
+            className="motion-status text-sm text-destructive"
+            id="onboarding-name-error"
+            role="alert"
+          >
             {stepError}
           </p>
         ) : null}
         {state.message ? (
-          <p aria-live="polite" className="text-sm text-destructive" role="alert">
+          <p aria-live="polite" className="motion-status text-sm text-destructive" role="alert">
             {state.message}
           </p>
         ) : null}
@@ -184,7 +217,7 @@ export function OnboardingFlow() {
               onClick={continueToNextStep}
               type="button"
             >
-              Continue
+              {continueLabels[step]}
             </Button>
           ) : (
             <Button disabled={pending} type="submit">

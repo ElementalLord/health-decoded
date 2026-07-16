@@ -19,7 +19,7 @@ export function JourneyProgressSummary({
   return (
     <section
       aria-labelledby="journey-progress-title"
-      className="space-y-7 border-y border-border py-10"
+      className="motion-reveal space-y-7 border-y border-border py-10"
     >
       <div className="flex items-end justify-between gap-5">
         <div className="space-y-2">
@@ -33,7 +33,7 @@ export function JourneyProgressSummary({
         </p>
       </div>
       <ol
-        className="grid gap-3"
+        className="motion-cascade grid gap-3"
         style={{ gridTemplateColumns: `repeat(${weekDays.length}, minmax(0, 1fr))` }}
       >
         {weekDays.map((day) => {

@@ -34,7 +34,7 @@ export function ProfileContent({
 
   return (
     <section className="mx-auto max-w-5xl space-y-14 py-6 sm:py-10">
-      <div className="grid gap-8 border-b border-border pb-9 sm:grid-cols-[1fr_auto] sm:items-end">
+      <div className="motion-reveal grid gap-8 border-b border-border pb-9 sm:grid-cols-[1fr_auto] sm:items-end">
         <PageHeader
           description="Your account details and privacy at a glance."
           eyebrow="Your private space"
@@ -51,20 +51,14 @@ export function ProfileContent({
       {journeyStats ? (
         <section
           aria-label="Your journey at a glance"
-          className="grid grid-cols-3 border-y border-border py-8 sm:py-10"
+          className="motion-cascade motion-reveal grid divide-y divide-border border-y border-border py-3 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:py-10"
         >
           {[
             [String(journeyStats.currentDay).padStart(2, "0"), "Day in"],
             [String(journeyStats.completedLessons).padStart(2, "0"), "Lessons done"],
             [String(journeyStats.totalConfidenceXp), "Confidence XP"],
           ].map(([value, label], index) => (
-            <div
-              className={cn(
-                "min-w-0 px-4 first:pl-0 sm:px-8",
-                index > 0 && "border-l border-border",
-              )}
-              key={label}
-            >
+            <div className="min-w-0 px-1 py-5 sm:px-8 sm:py-0 sm:first:pl-0" key={label}>
               <p
                 className={cn(
                   "font-serif-display text-5xl font-light leading-none sm:text-7xl",
@@ -87,7 +81,7 @@ export function ProfileContent({
 
       <section
         aria-labelledby="profile-information"
-        className="grid gap-8 md:grid-cols-[0.65fr_1.35fr] md:gap-14"
+        className="motion-reveal grid gap-8 md:grid-cols-[0.65fr_1.35fr] md:gap-14"
       >
         <div className="space-y-1.5">
           <h2
@@ -120,7 +114,10 @@ export function ProfileContent({
             {state.message ? (
               <p
                 aria-live="polite"
-                className={hasError ? "text-sm text-destructive" : "text-sm text-success"}
+                className={cn(
+                  "motion-status text-sm",
+                  hasError ? "text-destructive" : "text-success",
+                )}
                 id="profile-form-message"
                 role={hasError ? "alert" : "status"}
               >
@@ -142,7 +139,10 @@ export function ProfileContent({
         </div>
       </section>
 
-      <section aria-labelledby="profile-privacy" className="space-y-4 border-t border-border pt-10">
+      <section
+        aria-labelledby="profile-privacy"
+        className="motion-reveal space-y-4 border-t border-border pt-10"
+      >
         <h2
           className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
           id="profile-privacy"
@@ -156,7 +156,10 @@ export function ProfileContent({
         </p>
       </section>
 
-      <section aria-labelledby="account-actions" className="space-y-6 border-t border-border pt-10">
+      <section
+        aria-labelledby="account-actions"
+        className="motion-reveal space-y-6 border-t border-border pt-10"
+      >
         <h2
           className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
           id="account-actions"

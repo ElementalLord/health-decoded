@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { CompanionIllustration } from "@/components/illustrations/editorial-illustrations";
+import { RouteMotion } from "@/components/motion/route-motion";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
@@ -34,7 +35,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       </aside>
 
       <main className="flex flex-1 items-center justify-center px-5 py-10 sm:px-10 sm:py-16">
-        <div className="w-full max-w-md">{children}</div>
+        <RouteMotion className="w-full max-w-md">{children}</RouteMotion>
       </main>
     </div>
   );

@@ -66,7 +66,7 @@
   position: absolute;
   z-index: 4;
   top: 50%;
-  right: 7.9%;
+  right: calc(3% + 5.7rem);
   width: 1rem;
   height: 2.7rem;
   translate: 0 -50%;
@@ -98,17 +98,11 @@
 }
 
 .glucoseTwo {
-  top: 22%;
-  left: 30%;
-  opacity: 0.72;
-  animation: glucose-drift-upper 4s ease-in-out infinite alternate both;
+  animation: glucose-enter-upper 7s cubic-bezier(0.42, 0, 0.2, 1) infinite both;
 }
 
 .glucoseThree {
-  top: 65%;
-  left: 48%;
-  opacity: 0.64;
-  animation: glucose-drift-lower 4.8s 0.5s ease-in-out infinite alternate both;
+  animation: glucose-enter-lower 7s cubic-bezier(0.42, 0, 0.2, 1) infinite both;
 }
 
 .insulin {
@@ -205,21 +199,73 @@
   }
 }
 
-@keyframes glucose-drift-upper {
+@keyframes glucose-enter-upper {
   0% {
-    transform: translate(0, 0) rotate(-8deg);
+    top: 19%;
+    left: 18%;
+    opacity: 0;
+    transform: rotate(-8deg) scale(0.9);
   }
+  10% {
+    opacity: 0.78;
+  }
+  34% {
+    top: 25%;
+    left: 42%;
+    transform: rotate(75deg) scale(1);
+  }
+  61% {
+    top: 18%;
+    left: 69%;
+    transform: rotate(180deg) scale(1);
+  }
+  79% {
+    top: 39%;
+    left: 85%;
+    opacity: 0.9;
+    transform: rotate(280deg) scale(0.92);
+  }
+  90%,
   100% {
-    transform: translate(16px, 9px) rotate(20deg);
+    top: 42%;
+    left: 92%;
+    opacity: 0;
+    transform: rotate(340deg) scale(0.45);
   }
 }
 
-@keyframes glucose-drift-lower {
+@keyframes glucose-enter-lower {
   0% {
-    transform: translate(0, 0) rotate(12deg);
+    top: 66%;
+    left: 36%;
+    opacity: 0;
+    transform: rotate(12deg) scale(0.9);
   }
+  13% {
+    opacity: 0.72;
+  }
+  39% {
+    top: 60%;
+    left: 52%;
+    transform: rotate(-55deg) scale(1);
+  }
+  64% {
+    top: 69%;
+    left: 72%;
+    transform: rotate(-145deg) scale(0.95);
+  }
+  81% {
+    top: 49%;
+    left: 86%;
+    opacity: 0.86;
+    transform: rotate(-245deg) scale(0.88);
+  }
+  92%,
   100% {
-    transform: translate(-13px, -10px) rotate(-18deg);
+    top: 43%;
+    left: 92%;
+    opacity: 0;
+    transform: rotate(-330deg) scale(0.42);
   }
 }
 
@@ -310,7 +356,7 @@
     height: 5rem;
   }
   .cellDoor {
-    right: 8.5%;
+    right: calc(1% + 4.5rem);
   }
 }
 

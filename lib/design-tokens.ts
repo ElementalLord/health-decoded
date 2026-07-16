@@ -38,11 +38,11 @@ export const elevation = {
 } as const;
 
 export const animation = {
-  buttonPress: "120ms",
-  cardAppearance: "200ms",
-  navigation: "200ms",
-  progress: "400ms",
-  easing: "cubic-bezier(0.2, 0, 0, 1)",
+  buttonPress: "180ms",
+  cardAppearance: "280ms",
+  navigation: "320ms",
+  progress: "520ms",
+  easing: "cubic-bezier(0.22, 1, 0.36, 1)",
 } as const;
 
 export const breakpoints = {
