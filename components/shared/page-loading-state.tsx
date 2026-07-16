@@ -9,7 +9,12 @@ type PageLoadingStateProps = HTMLAttributes<HTMLElement> & {
 
 function PageLoadingState({ children, className, label, ...props }: PageLoadingStateProps) {
   return (
-    <section aria-busy="true" className={cn("animate-page-in space-y-6", className)} role="status" {...props}>
+    <section
+      aria-busy="true"
+      className={cn("animate-page-in motion-cascade space-y-6", className)}
+      role="status"
+      {...props}
+    >
       <span className="sr-only">{label}</span>
       <div aria-hidden="true" className="contents">
         {children}

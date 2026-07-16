@@ -18,11 +18,11 @@ export function Modal({ children, description, onOpenChange, open, title, classN
   return (
     <DialogPrimitive.Root onOpenChange={onOpenChange} open={open}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-foreground/35 transition duration-[var(--duration-normal)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
+        <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-foreground/35 transition-opacity duration-[var(--duration-normal)] ease-[var(--ease-standard)] data-[ending-style]:duration-[var(--duration-fast)] data-[ending-style]:opacity-0 data-[ending-style]:ease-[var(--ease-exit)] data-[starting-style]:opacity-0" />
         <DialogPrimitive.Viewport className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
           <DialogPrimitive.Popup
             className={cn(
-              "relative w-full max-w-lg rounded-[var(--radius-xl)] border border-border bg-card p-6 shadow-modal transition duration-[var(--duration-normal)] data-[ending-style]:translate-y-2 data-[ending-style]:opacity-0 data-[starting-style]:translate-y-2 data-[starting-style]:opacity-0 sm:p-8",
+              "relative w-full max-w-lg rounded-[var(--radius-xl)] border border-border bg-card p-6 shadow-modal transition duration-[var(--duration-normal)] ease-[var(--ease-standard)] data-[ending-style]:translate-y-1.5 data-[ending-style]:opacity-0 data-[ending-style]:duration-[var(--duration-fast)] data-[ending-style]:ease-[var(--ease-exit)] data-[starting-style]:translate-y-1.5 data-[starting-style]:opacity-0 sm:p-8",
               className,
             )}
           >

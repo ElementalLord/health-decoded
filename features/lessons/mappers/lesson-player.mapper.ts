@@ -1,4 +1,5 @@
 import type { LessonActivity } from "@/features/activities/types/activity";
+import { buildLessonComposition } from "@/features/lessons/mappers/lesson-composition.mapper";
 import type {
   LessonContentBlock,
   LessonPlayerViewModel,
@@ -38,11 +39,14 @@ export function mapLessonPlayer({
   const accessMode = status === "completed" ? "review" : "active";
   const initialBlockIndex =
     accessMode === "review" ? -1 : Math.min(Math.max(lastViewedBlock, -1), blocks.length - 1);
+  const composition = buildLessonComposition(blocks, activities);
+  if (!composition) return null;
 
   return {
     accessMode,
     activities,
     blocks,
+    composition,
     dayNumber,
     estimatedMinutes,
     initialBlockIndex,

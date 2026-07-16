@@ -23,18 +23,34 @@ export type JourneyProgressSummary = {
   totalDays: number;
 };
 
+export type CompletedLessonReviewItem = {
+  dayNumber: number;
+  estimatedMinutes: number;
+  subtitle: string | null;
+  title: string;
+};
+
+export type JourneyReviewStage = {
+  dayRange: string;
+  lessons: CompletedLessonReviewItem[];
+  stageNumber: 1 | 2 | 3;
+  title: string;
+};
+
 export type JourneyHomeReady = {
   kind: "ready";
   journeyTitle: string;
   currentLesson: CurrentLessonSummary;
   progress: JourneyProgressSummary;
   confidenceLevel: ConfidenceLevel | null;
+  reviewStages: JourneyReviewStage[];
 };
 
 export type JourneyHomeComplete = {
   kind: "complete";
   journeyTitle: string;
   progress: JourneyProgressSummary;
+  reviewStages: JourneyReviewStage[];
 };
 
 export type JourneyHomeViewModel = JourneyHomeReady | JourneyHomeComplete;

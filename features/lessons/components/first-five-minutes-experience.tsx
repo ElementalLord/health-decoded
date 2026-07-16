@@ -380,6 +380,9 @@ export function FirstFiveMinutesExperience({
   const [symptomReveal, setSymptomReveal] = useState<PredictionReveal | null>(null);
   const [manageabilityRevealed, setManageabilityRevealed] = useState(false);
   const [safetyPanel, setSafetyPanel] = useState<"planned" | "urgent" | null>(null);
+  const [viewedSafetyPanels, setViewedSafetyPanels] = useState<Set<"planned" | "urgent">>(
+    () => new Set(),
+  );
   const [packedTodayItems, setPackedTodayItems] = useState<Set<FirstDayBagItemId>>(() => new Set());
   const [bagMessage, setBagMessage] = useState<string | null>(null);
   const [openedSupport, setOpenedSupport] = useState<Set<SupportOptionId>>(() => new Set());
@@ -388,6 +391,7 @@ export function FirstFiveMinutesExperience({
   >(null);
   const [surprise, setSurprise] = useState<(typeof surpriseChoices)[number] | null>(null);
   const [tinyAction, setTinyAction] = useState<(typeof tinyActions)[number] | null>(null);
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);
   const [completedActivityIds, setCompletedActivityIds] = useState(
     () =>
       new Set(
@@ -481,6 +485,21 @@ export function FirstFiveMinutesExperience({
     setOpenedSupport((current) => new Set([...current, id]));
   }
 
+  function openSafetyPanel(panel: "planned" | "urgent") {
+    setViewedSafetyPanels((current) => new Set([...current, panel]));
+    setSafetyPanel((current) => (current === panel ? null : panel));
+  }
+
+  async function copyTinyAction() {
+    if (!tinyAction) return;
+    try {
+      await navigator.clipboard.writeText(tinyAction);
+      setCopyMessage("Copied. Your next step is ready to paste somewhere useful.");
+    } catch {
+      setCopyMessage("Copy did not work. You can select the text above and copy it manually.");
+    }
+  }
+
   function finishExperience() {
     if (incompleteActivities.length > 0) {
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -492,7 +511,7 @@ export function FirstFiveMinutesExperience({
       return;
     }
     if (experience.accessMode === "review") {
-      router.push("/lessons/2");
+      router.push("/journey");
       return;
     }
     startTransition(async () => {
@@ -517,7 +536,7 @@ export function FirstFiveMinutesExperience({
     if (screen === 5) return selfBlameReveal !== null;
     if (screen === 6) return symptomReveal !== null;
     if (screen === 7) return manageabilityRevealed;
-    if (screen === 8) return safetyPanel !== null;
+    if (screen === 8) return viewedSafetyPanels.size === 2;
     if (screen === 9) return packedTodayItems.size === 3;
     if (screen === 10) return openedSupport.size === supportOptions.length;
     if (screen === 11) return appointmentQuestion !== null;
@@ -529,12 +548,35 @@ export function FirstFiveMinutesExperience({
   function continueRequirement() {
     if (screen === 3) return "Reveal each part of the idea before continuing.";
     if (screen === 4) return "Tap through all four cards before continuing.";
+    if (screen === 8) return "Open both cards to compare what can wait with what cannot.";
     if (screen === 9) return "Place the three useful first-day ideas in your bag.";
     if (screen === 10) return "Open all three sources of support.";
     if (screen === 11) return "Choose one question for your next healthcare conversation.";
     if (screen === 12) return "Choose one reflection to continue.";
     if (screen === 13) return "Choose one small next step to continue.";
     return "Choose or reveal one response to continue.";
+  }
+
+  function continueLabel() {
+    const labels = [
+      "Begin with one thought",
+      "Name what worries me",
+      "Hear the most important idea",
+      "Show me what it means",
+      "Check a common belief",
+      "Learn about symptoms",
+      "See what manageable means",
+      "Know what should not wait",
+      "Pack what matters today",
+      "See where support can come from",
+      "Save one question",
+      "Pause and reflect",
+      "Choose one small next step",
+      "Review the three truths",
+      "See today’s takeaway",
+    ] as const;
+
+    return labels[screen] ?? "Continue";
   }
 
   function renderScreen() {
@@ -613,6 +655,15 @@ export function FirstFiveMinutesExperience({
                 </SoftChoice>
               ))}
             </div>
+            {selectedWorry ? (
+              <div
+                aria-live="polite"
+                className="animate-slide-up mx-auto max-w-2xl border-l-2 border-success bg-info p-6"
+              >
+                <p className="font-serif-display text-2xl font-semibold">“{selectedWorry.label}”</p>
+                <p className="mt-3 leading-7 text-foreground/80">{selectedWorry.response}</p>
+              </div>
+            ) : null}
             <p className="text-center text-sm text-muted-foreground">
               Your choice is private and is not saved.
             </p>
@@ -621,11 +672,6 @@ export function FirstFiveMinutesExperience({
       case 3:
         return (
           <div className="space-y-8">
-            {selectedWorry ? (
-              <p className="animate-fade-in max-w-2xl text-lg leading-8 text-primary">
-                {selectedWorry.response}
-              </p>
-            ) : null}
             <ExperienceHeading>Here&apos;s the most important thing to know.</ExperienceHeading>
             <Card className="rounded-[2rem] p-7 sm:p-10">
               <div className="space-y-6 text-center font-serif-display text-2xl font-semibold leading-9 sm:text-3xl sm:leading-10">
@@ -651,7 +697,7 @@ export function FirstFiveMinutesExperience({
                   onClick={() => setImportantReveal((value) => value + 1)}
                   variant="secondary"
                 >
-                  Keep going
+                  Reveal the next idea
                 </Button>
               ) : null}
             </Card>
@@ -855,7 +901,7 @@ export function FirstFiveMinutesExperience({
           <div className="space-y-8">
             <ExperienceHeading>What can wait—and what cannot?</ExperienceHeading>
             <p className="text-lg leading-8 text-muted-foreground">
-              Tap each card to reveal the difference.
+              Open both cards. The difference is the useful part.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <button
@@ -865,9 +911,7 @@ export function FirstFiveMinutesExperience({
                   safetyPanel && safetyPanel !== "planned" && "opacity-40",
                   safetyPanel === "planned" && "border-primary/30 bg-primary/7",
                 )}
-                onClick={() =>
-                  setSafetyPanel((current) => (current === "planned" ? null : "planned"))
-                }
+                onClick={() => openSafetyPanel("planned")}
                 type="button"
               >
                 <CalendarDays className="size-7 text-primary" />
@@ -888,9 +932,7 @@ export function FirstFiveMinutesExperience({
                   safetyPanel && safetyPanel !== "urgent" && "opacity-40",
                   safetyPanel === "urgent" && "border-warning/50 bg-warning/12",
                 )}
-                onClick={() =>
-                  setSafetyPanel((current) => (current === "urgent" ? null : "urgent"))
-                }
+                onClick={() => openSafetyPanel("urgent")}
                 type="button"
               >
                 <ShieldAlert className="size-7 text-warning-foreground" />
@@ -905,6 +947,11 @@ export function FirstFiveMinutesExperience({
                 ) : null}
               </button>
             </div>
+            <p aria-live="polite" className="text-sm text-muted-foreground">
+              {viewedSafetyPanels.size === 2
+                ? "You have compared both paths: most questions can wait; serious symptoms should not."
+                : `${viewedSafetyPanels.size} of 2 cards opened.`}
+            </p>
             <Button fullWidth={false} onClick={() => setSafetyOpen(true)} variant="text">
               View the full urgent-warning reference
             </Button>
@@ -1104,7 +1151,10 @@ export function FirstFiveMinutesExperience({
                 <SoftChoice
                   dimmed={tinyAction !== null && tinyAction !== action}
                   key={action}
-                  onClick={() => setTinyAction(action)}
+                  onClick={() => {
+                    setTinyAction(action);
+                    setCopyMessage(null);
+                  }}
                   selected={tinyAction === action}
                 >
                   {action}
@@ -1121,15 +1171,19 @@ export function FirstFiveMinutesExperience({
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Button
                     fullWidth={false}
-                    onClick={() => void navigator.clipboard.writeText(tinyAction)}
+                    onClick={() => void copyTinyAction()}
                     variant="secondary"
                   >
-                    <Copy className="size-4" /> Copy
+                    <Copy className="size-4" />{" "}
+                    {copyMessage?.startsWith("Copied") ? "Copied" : "Copy"}
                   </Button>
                   <Button fullWidth={false} onClick={() => window.print()} variant="secondary">
                     <Printer className="size-4" /> Print
                   </Button>
                 </div>
+                <p aria-live="polite" className="mt-3 min-h-5 text-sm text-muted-foreground">
+                  {copyMessage ?? "Your choice stays private unless you copy or print it."}
+                </p>
               </div>
             ) : null}
           </div>
@@ -1218,7 +1272,9 @@ export function FirstFiveMinutesExperience({
                 ? "Saving…"
                 : incompleteActivities.length
                   ? `Go to “${incompleteActivities[0]!.title}” ↑`
-                  : "Continue →"}
+                  : experience.accessMode === "review"
+                    ? "Return to lesson library"
+                    : "Complete Day 1"}
             </Button>
           </div>
         );
@@ -1276,10 +1332,14 @@ export function FirstFiveMinutesExperience({
             onClick={() => goToScreen(screen + 1)}
             size="lg"
           >
-            {screen === 0 ? "I’m ready" : screen === 3 ? "Show me what it means" : "Continue"}
+            {continueLabel()}
           </Button>
           {!canContinue() ? (
-            <p className="mt-3 text-center text-sm text-muted-foreground">
+            <p
+              aria-live="polite"
+              className="mt-3 text-center text-sm text-muted-foreground"
+              role="status"
+            >
               {continueRequirement()}
             </p>
           ) : null}

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { AppHeader } from "@/components/layout/app-header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { PageContainer } from "@/components/layout/page-container";
+import { RouteMotion } from "@/components/motion/route-motion";
 import { type ApplicationRoute } from "@/lib/routes";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
 import { cn } from "@/lib/utils";
@@ -34,7 +35,7 @@ function AppShell({
         id="main-content"
         tabIndex={-1}
       >
-        {children}
+        <RouteMotion>{children}</RouteMotion>
       </PageContainer>
       {routes ? <BottomNavigation routes={routes} /> : null}
     </div>

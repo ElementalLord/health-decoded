@@ -26,7 +26,7 @@ export default async function LoginPage({
         title="Welcome back"
       />
       {passwordReset === "1" ? (
-        <p aria-live="polite" className="text-sm text-success" role="status">
+        <p aria-live="polite" className="motion-status text-sm text-success" role="status">
           Your password was updated. Sign in with your new password.
         </p>
       ) : null}

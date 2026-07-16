@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export function CaregiverArticleList({ articles }: { articles: CaregiverArticleViewModel[] }) {
   return (
-    <ul className="stagger-children divide-y divide-border border-y border-border">
+    <ul className="motion-reveal-list stagger-children divide-y divide-border border-y border-border">
       {articles.map((article, index) => (
         <li className="py-6" key={article.id}>
           <article className="grid max-w-3xl gap-4 sm:grid-cols-[4rem_1fr]">

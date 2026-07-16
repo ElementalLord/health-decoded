@@ -20,7 +20,7 @@ export default function HomePage() {
     <>
       <section className="border-b border-[#e5ddd2]" id="home">
         <div className="mx-auto grid min-h-[calc(100dvh-4.75rem)] max-w-[1440px] gap-10 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-14">
-          <div className="animate-slide-up">
+          <div className="motion-cascade">
             <p className="editorial-eyebrow">A companion for the first 90 days</p>
             <h1 className="mt-7 max-w-3xl font-serif-display text-[clamp(3.8rem,7vw,7.25rem)] font-normal leading-[0.83] tracking-[-0.055em] text-balance">
               You&apos;re not
@@ -49,7 +49,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <figure className="mx-auto w-full max-w-[36rem] animate-fade-in lg:translate-y-8">
+          <figure className="mx-auto w-full max-w-[36rem] animate-fade-in [animation-delay:160ms] lg:translate-y-8">
             <CompanionIllustration />
             <figcaption className="mt-4 text-center text-xs font-bold uppercase tracking-[0.22em] text-[#8d7b70]">
               The guardian&apos;s embrace
@@ -59,7 +59,7 @@ export default function HomePage() {
       </section>
 
       <section
-        className="border-b border-[#e5ddd2] px-5 py-28 text-center sm:py-36"
+        className="home-scroll-fade border-b border-[#e5ddd2] px-5 py-28 text-center sm:py-36"
         aria-labelledby="first-ninety-days"
       >
         <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#8d7b70]">Your first</p>
@@ -74,7 +74,7 @@ export default function HomePage() {
         </p>
       </section>
 
-      <section className="border-b border-[#e5ddd2] px-5 py-24 text-center sm:py-32">
+      <section className="home-scroll-fade border-b border-[#e5ddd2] px-5 py-24 text-center sm:py-32">
         <blockquote className="mx-auto max-w-4xl font-serif-display text-3xl italic leading-tight text-[#493a32] sm:text-5xl">
           “A diagnosis isn&apos;t the end of your story.
           <br />
@@ -86,7 +86,7 @@ export default function HomePage() {
       </section>
 
       <section className="border-b border-[#e5ddd2]" id="journey">
-        <div className="mx-auto grid max-w-[1260px] gap-12 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:gap-20">
+        <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-12 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:gap-20">
           <div>
             <p className="editorial-eyebrow">Chapter one</p>
             <h2 className="mt-5 font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
@@ -110,12 +110,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1260px] px-5 py-20 md:px-10 md:py-28">
+      <section className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-20 md:px-10 md:py-28">
         <GlucoseInsulinAnimation />
       </section>
 
       <section className="border-y border-[#e5ddd2]" id="ask">
-        <div className="mx-auto max-w-[1120px] px-5 py-20 md:px-10 md:py-28">
+        <div className="home-scroll-fade mx-auto max-w-[1120px] px-5 py-20 md:px-10 md:py-28">
           <div className="border-l-2 border-[#c97860] pl-7 sm:pl-14">
             <p className="editorial-eyebrow">Chapter two</p>
             <h2 className="mt-5 font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
@@ -138,7 +138,7 @@ export default function HomePage() {
       </section>
 
       <section className="border-b border-[#e5ddd2]" id="stories">
-        <div className="mx-auto grid max-w-[1260px] gap-12 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-24">
+        <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-12 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-24">
           <figure>
             <SteadyingHandIllustration />
             <figcaption className="mt-3 text-center text-xs font-bold uppercase tracking-[0.24em] text-[#8d7b70]">
@@ -162,12 +162,12 @@ export default function HomePage() {
       </section>
 
       <section className="border-b border-[#e5ddd2]">
-        <div className="mx-auto max-w-[1120px] px-5 py-20 md:px-10 md:py-28">
+        <div className="home-scroll-fade mx-auto max-w-[1120px] px-5 py-20 md:px-10 md:py-28">
           <p className="editorial-eyebrow">Your journey ahead</p>
           <h2 className="mt-5 font-serif-display text-4xl font-normal sm:text-5xl">
             Ninety days, three gentle phases.
           </h2>
-          <ol className="mt-14">
+          <ol className="home-scroll-fade-list mt-14">
             {phases.map(([number, title, body, days]) => (
               <li
                 className="grid gap-3 border-b border-[#ded5ca] py-8 sm:grid-cols-[4rem_1fr_auto] sm:items-start sm:gap-5"
@@ -189,7 +189,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-[#e5ddd2] px-5 py-28 text-center sm:py-36">
+      <section className="home-scroll-fade border-b border-[#e5ddd2] px-5 py-28 text-center sm:py-36">
         <h2 className="font-serif-display text-5xl font-normal sm:text-7xl">
           Your fighter is ready.
         </h2>

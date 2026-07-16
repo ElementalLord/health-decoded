@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { ActionRow } from "@/components/shared/action-row";
+import { CompletedLessonReview } from "@/features/journeys/components/completed-lesson-review";
 import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
@@ -37,17 +38,23 @@ export default async function JourneyPage() {
 
   return (
     <section className="space-y-12 py-3 sm:space-y-16 sm:py-6">
-      <JourneyGreeting displayName={profile.data.display_name} />
+      <JourneyGreeting
+        displayName={profile.data.display_name}
+        journeyComplete={journey.data.kind === "complete"}
+      />
 
       {journey.data.kind === "complete" ? (
-        <JourneyCompleteState journey={journey.data} />
+        <>
+          <JourneyCompleteState journey={journey.data} />
+          <CompletedLessonReview stages={journey.data.reviewStages} />
+        </>
       ) : (
         <>
           <TodaysLessonCard lesson={journey.data.currentLesson} />
 
           <section
             aria-labelledby="why-this-matters"
-            className="grid gap-5 border-l-2 border-accent-warm py-3 pl-6 sm:grid-cols-[0.55fr_1.45fr] sm:pl-9"
+            className="motion-reveal grid gap-5 border-l-2 border-accent-warm py-3 pl-6 sm:grid-cols-[0.55fr_1.45fr] sm:pl-9"
           >
             <h2 className="editorial-eyebrow" id="why-this-matters">
               Why this matters today
@@ -62,6 +69,8 @@ export default async function JourneyPage() {
             progress={journey.data.progress}
           />
 
+          <CompletedLessonReview stages={journey.data.reviewStages} />
+
           {journey.data.currentLesson.lessonProgressId ? (
             <ConfidenceCheck
               initialValue={journey.data.confidenceLevel}
@@ -71,7 +80,7 @@ export default async function JourneyPage() {
 
           <section
             aria-labelledby="journey-support"
-            className="space-y-5 border-t border-border pt-9"
+            className="motion-reveal space-y-5 border-t border-border pt-9"
           >
             <div className="space-y-3">
               <h2 className="editorial-eyebrow" id="journey-support">
@@ -81,7 +90,7 @@ export default async function JourneyPage() {
                 Choose the kind of support that feels useful right now.
               </p>
             </div>
-            <div className="divide-y divide-border border-y border-border">
+            <div className="motion-cascade divide-y divide-border border-y border-border">
               <ActionRow
                 description="Practical ways for family and friends to offer support."
                 href="/caregiver"

@@ -14,7 +14,7 @@ export function ActionRow({ className, description, href, title }: ActionRowProp
   return (
     <Link
       className={cn(
-        "group flex min-h-24 items-center justify-between gap-6 px-0 py-7 transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:px-3 hover:bg-muted/35 focus-visible:ring-2 focus-visible:ring-ring",
+        "group flex min-h-24 items-center justify-between gap-6 px-0 py-7 transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:bg-muted/35 focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
       href={href}

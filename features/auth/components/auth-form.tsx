@@ -37,7 +37,18 @@ export function AuthForm({
           : mode === "resend-verification"
             ? "Send a new verification link"
             : "Set new password";
+  const pendingLabel =
+    mode === "login"
+      ? "Signing in…"
+      : mode === "signup"
+        ? "Creating account…"
+        : mode === "forgot-password"
+          ? "Sending instructions…"
+          : mode === "resend-verification"
+            ? "Sending verification link…"
+            : "Updating password…";
   const messageId = `${mode}-form-message`;
+  const passwordHelpId = `${mode}-password-help`;
   const hasError = state.status === "error";
 
   return (
@@ -61,7 +72,13 @@ export function AuthForm({
         <label className="grid gap-2 text-sm font-medium" htmlFor={`${mode}-password`}>
           {mode === "reset-password" ? "New password" : "Password"}
           <Input
-            aria-describedby={state.message ? messageId : undefined}
+            aria-describedby={
+              mode === "signup" || mode === "reset-password"
+                ? `${passwordHelpId}${state.message ? ` ${messageId}` : ""}`
+                : state.message
+                  ? messageId
+                  : undefined
+            }
             aria-invalid={hasError || undefined}
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             id={`${mode}-password`}
@@ -69,6 +86,14 @@ export function AuthForm({
             required
             type="password"
           />
+          {mode === "signup" || mode === "reset-password" ? (
+            <span
+              className="text-xs font-normal leading-5 text-muted-foreground"
+              id={passwordHelpId}
+            >
+              Use at least 12 characters.
+            </span>
+          ) : null}
         </label>
       ) : null}
       {needsConfirmation ? (
@@ -88,7 +113,11 @@ export function AuthForm({
       {state.message ? (
         <p
           aria-live="polite"
-          className={hasError ? "text-sm text-destructive" : "text-sm text-success"}
+          className={
+            hasError
+              ? "motion-status text-sm text-destructive"
+              : "motion-status text-sm text-success"
+          }
           id={messageId}
           role={hasError ? "alert" : "status"}
         >
@@ -96,7 +125,7 @@ export function AuthForm({
         </p>
       ) : null}
       <Button disabled={pending} type="submit">
-        {pending ? "Please wait…" : submitLabel}
+        {pending ? pendingLabel : submitLabel}
       </Button>
       {mode === "login" ? (
         <p className="text-sm text-muted-foreground">
@@ -114,6 +143,30 @@ export function AuthForm({
           Already have an account?{" "}
           <Link className="text-primary underline" href="/login">
             Sign in
+          </Link>
+        </p>
+      ) : null}
+      {mode === "forgot-password" ? (
+        <p className="text-sm text-muted-foreground">
+          Remembered your password?{" "}
+          <Link className="text-primary underline" href="/login">
+            Return to sign in
+          </Link>
+        </p>
+      ) : null}
+      {mode === "resend-verification" ? (
+        <p className="text-sm text-muted-foreground">
+          Already verified your email?{" "}
+          <Link className="text-primary underline" href="/login">
+            Sign in
+          </Link>
+        </p>
+      ) : null}
+      {mode === "reset-password" ? (
+        <p className="text-sm text-muted-foreground">
+          Is this reset link no longer working?{" "}
+          <Link className="text-primary underline" href="/forgot-password">
+            Request another link
           </Link>
         </p>
       ) : null}

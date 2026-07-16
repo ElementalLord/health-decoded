@@ -25,7 +25,10 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
         </p>
       </div>
 
-      <ol aria-label="Journey milestones" className="stagger-children border-y border-border">
+      <ol
+        aria-label="Journey milestones"
+        className="motion-reveal-list stagger-children border-y border-border"
+      >
         {milestones.map((milestone) => {
           const details = stateDetails[milestone.state];
           const Icon = details.icon;

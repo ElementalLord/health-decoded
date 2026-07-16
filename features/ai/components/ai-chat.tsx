@@ -118,6 +118,7 @@ export function AiChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
   const [lastQuestion, setLastQuestion] = useState<string | null>(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -291,9 +292,10 @@ export function AiChat() {
     void ask(message.trim());
   }
 
-  async function copyResponse(content: string) {
+  async function copyResponse(messageId: string, content: string) {
     try {
       await navigator.clipboard.writeText(content);
+      setCopiedMessageId(messageId);
     } catch {
       setError("We could not copy that response. Please select the text and try again.");
     }
@@ -309,6 +311,7 @@ export function AiChat() {
     setMessages([]);
     setError(null);
     setLastQuestion(null);
+    setCopiedMessageId(null);
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
@@ -332,7 +335,7 @@ export function AiChat() {
       </aside>
       <div className="mb-4 flex items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">This conversation clears when you leave.</p>
-        <div className="flex items-center gap-2">
+        {messages.length ? (
           <Button
             fullWidth={false}
             onClick={startNewConversation}
@@ -342,7 +345,7 @@ export function AiChat() {
           >
             New conversation
           </Button>
-        </div>
+        ) : null}
       </div>
       <section
         aria-label="AI tutor conversation"
@@ -401,13 +404,13 @@ export function AiChat() {
                           <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-3">
                             <Button
                               fullWidth={false}
-                              onClick={() => void copyResponse(entry.content)}
+                              onClick={() => void copyResponse(entry.id, entry.content)}
                               size="sm"
                               type="button"
                               variant="text"
                             >
                               <Copy aria-hidden="true" className="size-4" />
-                              Copy
+                              {copiedMessageId === entry.id ? "Copied" : "Copy"}
                             </Button>
                             <Button
                               fullWidth={false}
@@ -436,7 +439,7 @@ export function AiChat() {
                             <div className="mt-3 divide-y divide-border border-y border-border">
                               {entry.suggestedQuestions.map((suggestion) => (
                                 <button
-                                  className="group flex min-h-16 w-full items-center justify-between gap-5 py-4 text-left leading-6 transition hover:px-2 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+                                  className="group flex min-h-16 w-full items-center justify-between gap-5 py-4 text-left leading-6 transition hover:bg-muted/30 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
                                   key={suggestion}
                                   onClick={() => void ask(suggestion)}
                                   type="button"
@@ -498,7 +501,7 @@ export function AiChat() {
                 {suggestedPrompts.map((prompt, index) => (
                   <li key={prompt.question}>
                     <button
-                      className="group grid min-h-24 w-full items-center gap-3 py-6 text-left transition hover:px-3 hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:gap-7"
+                      className="group grid min-h-24 w-full items-center gap-3 py-6 text-left transition hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:gap-7"
                       onClick={() => void ask(prompt.question)}
                       type="button"
                     >
@@ -529,7 +532,7 @@ export function AiChat() {
         <label className="grid gap-2 text-sm font-semibold" htmlFor="ai-question">
           Your question
           <Textarea
-            aria-describedby={error ? "ai-request-error" : "ai-safety-notice"}
+            aria-describedby={`ai-safety-notice${error ? " ai-request-error" : ""}`}
             aria-invalid={Boolean(error) || undefined}
             className="max-h-40 min-h-12 resize-none"
             disabled={isStreaming}
@@ -560,7 +563,7 @@ export function AiChat() {
 
         {error ? (
           <div
-            className="mt-3 flex flex-wrap items-center gap-3"
+            className="motion-status mt-3 flex flex-wrap items-center gap-3"
             id="ai-request-error"
             role="alert"
           >

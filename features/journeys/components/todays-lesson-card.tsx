@@ -27,7 +27,7 @@ export function TodaysLessonCard({ lesson }: { lesson: CurrentLessonSummary }) {
     : actionLabels[lesson.status];
 
   return (
-    <article className="border-b border-border pb-12 sm:pb-16">
+    <article className="motion-reveal border-b border-border pb-12 sm:pb-16">
       <div className="mx-auto max-w-6xl">
         <SunCupIllustration className="mx-auto max-h-[31rem] max-w-5xl" />
         <div className="mx-auto -mt-6 max-w-4xl px-1 sm:-mt-10">
