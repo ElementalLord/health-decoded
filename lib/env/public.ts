@@ -26,7 +26,13 @@ const supabaseProjectUrl = z
 
 const publicEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: supabaseProjectUrl,
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z
+    .string()
+    .trim()
+    .regex(
+      /^(?:sb_publishable_[A-Za-z0-9_-]{20,}|eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/,
+      "Invalid Supabase publishable key format.",
+    ),
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;

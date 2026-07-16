@@ -20,7 +20,9 @@ export type AiRefusalType =
   | "emergency"
   | "hidden_prompt"
   | "medication_adjustment"
+  | "personal_interpretation"
   | "prompt_injection"
+  | "treatment_plan"
   | "unsupported_medical";
 
 export type AiSafetyResult =
@@ -39,11 +41,15 @@ const hiddenPromptPattern =
 const injectionPattern =
   /\b(ignore|forget|disregard|override|bypass|replace)\b.{0,80}\b(previous|prior|system|developer|health decoded|instruction|rule)s?\b|\bpretend (?:that )?you(?:'re| are)\b.{0,60}\b(?:doctor|clinician)\b|\bjailbreak\b/i;
 const medicationAdjustmentPattern =
-  /\b(?:start|stop|skip|change|increase|decrease|adjust|double|halve|miss(?:ed)?|take)\b(?:\s+\w+){0,6}\s+(?:my\s+)?(?:medication|medicine|metformin|insulin|dose|dosage|prescription)\b|\b(?:how much|how many units|what dose|what dosage)\b.{0,60}\b(?:insulin|medication|medicine|metformin|prescription)\b/i;
+  /\b(?:should\s+i\s+)?(?:start|stop|skip|change|increase|decrease|adjust|double|halve|miss(?:ed)?|take)\b(?:\s+\w+){0,6}\s+(?:my\s+)?(?:medication|medicine|metformin|insulin|dose|dosage|prescription)\b|\b(?:how much|how many units|what dose|what dosage)\b.{0,60}\b(?:insulin|medication|medicine|metformin|prescription)\b/i;
 const diagnosisPattern =
   /\b(do i have|is this diabetes\b(?!\s+(?:medication|medicine))|diagnose me|what does my (?:a1c|lab|test result)|are my (?:a1c|labs?|test results?) (?:good|bad|normal)|interpret my (?:a1c|labs?|test results?))\b/i;
+const personalInterpretationPattern =
+  /\b(?:my\s+)?(?:blood\s+sugar|glucose|a1c)\s+(?:is|was|reads?|came back|result(?:ed)?\s+(?:at|as))\s*(?:at\s*)?\d+(?:\.\d+)?\b|\b\d+(?:\.\d+)?\s*(?:mg\/?dl|mmol\/?l|percent|%)\b.{0,60}\b(?:blood\s+sugar|glucose|a1c|for me|normal|safe|high|low)\b/i;
+const treatmentPlanPattern =
+  /\b(?:what|which)\s+(?:treatment|treatment plan|therapy|diet|exercise plan)\s+(?:should|would)\s+i\b|\b(?:make|create|give)(?:\s+me)?\s+(?:a\s+)?(?:treatment|medication|insulin|diet)\s+plan(?:\s+for\s+me)?\b/i;
 const specializedMedicalPattern =
-  /\b(?:pregnan(?:t|cy)|trying to conceive|surgery|operation|anesthesia)\b.{0,100}\b(?:should|safe|medication|medicine|insulin|diabetes|take|stop|start)\b|\b(?:is|are)\b.{0,60}\b(?:right|safe|best)\b.{0,60}\bfor me\b/i;
+  /\b(?:pregnan(?:t|cy)|trying to conceive|breastfeed(?:ing)?|surgery|operation|anesthesia)\b.{0,100}\b(?:should|safe|medication|medicine|insulin|diabetes|take|stop|start|recommend)\b|\b(?:is|are)\b.{0,60}\b(?:right|safe|best)\b.{0,60}\bfor me\b/i;
 const lessonPattern = /\b(today(?:'s)?|lesson|activity|learned|yesterday|next lesson)\b/i;
 const medicationPattern =
   /\b(medication|medicine|metformin|insulin|semaglutide|empagliflozin|sitagliptin)\b/i;
@@ -54,7 +60,6 @@ const lifestylePattern = /\b(sleep|stress|habit|routine|lifestyle)\b/i;
 const emotionalPattern =
   /\b(scared|afraid|overwhelmed|embarrassed|ashamed|worried|anxious|sad|upset)\b/i;
 const typeTwoPattern = /\b(type 2|diabetes|a1c|blood sugar|insulin resistance|glucose)\b/i;
-
 const refusalMessages: Record<AiRefusalType, string> = {
   diagnosis:
     "I can’t diagnose you or interpret personal test results for your care. A clinician who knows your health history can help. I can explain what a term or test generally means.",
@@ -64,8 +69,12 @@ const refusalMessages: Record<AiRefusalType, string> = {
     "I can’t share internal instructions. I can still help explain Type 2 diabetes topics in clear, everyday language.",
   medication_adjustment:
     "I can’t tell you whether to start, stop, or change a prescribed medication or dose. Please contact the clinician or pharmacist who manages it. I can explain what a medication generally does or help you prepare questions.",
+  personal_interpretation:
+    "I can’t interpret a personal glucose or A1C result or tell you what it means for your care. Please contact your healthcare team for guidance based on your health history. I can explain what glucose or A1C measures in general.",
   prompt_injection:
     "I can’t change my safety instructions or act as a clinician. I can help with clear, educational questions about Type 2 diabetes.",
+  treatment_plan:
+    "I can’t create an individualized treatment plan. A qualified healthcare professional can recommend care based on your health history. I can explain general Type 2 diabetes education or help you prepare questions for an appointment.",
   unsupported_medical:
     "I can’t give individualized medical advice about that. A qualified healthcare professional can guide decisions based on your health history. I can explain the general educational concept if that would help.",
 };
@@ -82,6 +91,8 @@ export function classifyAiRequest(message: string): AiRequestCategory {
   if (
     medicationAdjustmentPattern.test(message) ||
     diagnosisPattern.test(message) ||
+    personalInterpretationPattern.test(message) ||
+    treatmentPlanPattern.test(message) ||
     specializedMedicalPattern.test(message)
   ) {
     return "Medical Advice Request";
@@ -104,6 +115,10 @@ export function assessAiSafety(message: string): AiSafetyResult {
   if (injectionPattern.test(message)) return refusal("prompt_injection", category);
   if (medicationAdjustmentPattern.test(message)) return refusal("medication_adjustment", category);
   if (diagnosisPattern.test(message)) return refusal("diagnosis", category);
+  if (personalInterpretationPattern.test(message)) {
+    return refusal("personal_interpretation", category);
+  }
+  if (treatmentPlanPattern.test(message)) return refusal("treatment_plan", category);
   if (specializedMedicalPattern.test(message)) return refusal("unsupported_medical", category);
   return { category, kind: "allow" };
 }

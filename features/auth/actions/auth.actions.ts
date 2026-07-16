@@ -1,5 +1,6 @@
 "use server";
 
+import type { AuthError } from "@supabase/supabase-js";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -25,11 +26,55 @@ function values(formData: FormData) {
   return Object.fromEntries(formData.entries());
 }
 
+function validHttpOrigin(value: string | null): string | null {
+  if (!value) return null;
+
+  try {
+    const url = new URL(value);
+    return (url.protocol === "http:" || url.protocol === "https:") &&
+      !url.username &&
+      !url.password &&
+      url.pathname === "/" &&
+      !url.search &&
+      !url.hash
+      ? url.origin
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function logAuthError(event: string, error: AuthError) {
+  logger.error(event, { error_code: error.code ?? "unknown", status: error.status });
+}
+
+function authFailureMessage(error: AuthError, fallback: string) {
+  if (error.status === 429) return "Too many attempts. Please wait a moment and try again.";
+  if (typeof error.status === "number" && error.status >= 500) {
+    return "The account service is temporarily unavailable. Please try again in a moment.";
+  }
+  return fallback;
+}
+
 async function callbackUrl(path: string): Promise<string> {
   const requestHeaders = await headers();
-  const origin = requestHeaders.get("origin") ?? "http://localhost:3000";
+  const requestOrigin = validHttpOrigin(requestHeaders.get("origin"));
+  if (requestOrigin) return new URL(path, requestOrigin).toString();
 
-  return new URL(path, origin).toString();
+  const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",")[0]?.trim();
+  const host = forwardedHost ?? requestHeaders.get("host");
+  const forwardedProtocol = requestHeaders.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  const protocol =
+    forwardedProtocol === "http" || forwardedProtocol === "https"
+      ? forwardedProtocol
+      : process.env.NODE_ENV === "production"
+        ? "https"
+        : "http";
+  const forwardedOrigin = validHttpOrigin(host ? `${protocol}://${host}` : null);
+  if (forwardedOrigin) return new URL(path, forwardedOrigin).toString();
+
+  logger.error("auth.callback_origin_unavailable");
+  return new URL(path, "http://localhost:3000").toString();
 }
 
 export async function signupAction(_: AuthFormState, formData: FormData): Promise<AuthFormState> {
@@ -43,7 +88,12 @@ export async function signupAction(_: AuthFormState, formData: FormData): Promis
     options: { emailRedirectTo: await callbackUrl("/auth/callback") },
   });
 
-  if (error) return failure("We could not create your account. Please try again.");
+  if (error) {
+    logAuthError("auth.signup_failed", error);
+    return failure(
+      authFailureMessage(error, "We could not create your account. Please try again."),
+    );
+  }
   redirect(data.session ? DEFAULT_AUTHENTICATED_DESTINATION : "/verify-email");
 }
 
@@ -53,10 +103,15 @@ export async function loginAction(_: AuthFormState, formData: FormData): Promise
 
   const database = await getServerDatabaseClient();
   const { error } = await database.auth.signInWithPassword(parsed.data);
-  if (error)
+  if (error) {
+    logAuthError("auth.login_failed", error);
     return failure(
-      "We could not sign you in with those details. Check your information and try again.",
+      authFailureMessage(
+        error,
+        "We could not sign you in with those details. Check your information and try again.",
+      ),
     );
+  }
 
   redirect(getSafeRedirectPath(formData.get("next")?.toString()));
 }
@@ -73,7 +128,7 @@ export async function forgotPasswordAction(
   const { error } = await database.auth.resetPasswordForEmail(parsed.data.email, {
     redirectTo: await callbackUrl("/auth/callback?next=/reset-password"),
   });
-  if (error) logger.error("auth.password_reset_request_failed");
+  if (error) logAuthError("auth.password_reset_request_failed", error);
 
   return {
     status: "success",
@@ -96,7 +151,7 @@ export async function resendVerificationAction(
     email: parsed.data.email,
     options: { emailRedirectTo: await callbackUrl("/auth/callback") },
   });
-  if (error) logger.error("auth.verification_resend_failed");
+  if (error) logAuthError("auth.verification_resend_failed", error);
 
   return {
     status: "success",
@@ -113,14 +168,24 @@ export async function resetPasswordAction(
 
   const database = await getServerDatabaseClient();
   const { error } = await database.auth.updateUser({ password: parsed.data.password });
-  if (error) return failure("Your reset link may be invalid or expired. Please request a new one.");
+  if (error) {
+    logAuthError("auth.password_reset_failed", error);
+    return failure(
+      authFailureMessage(
+        error,
+        "Your reset link may be invalid or expired. Please request a new one.",
+      ),
+    );
+  }
 
-  redirect("/login");
+  const signOutResult = await database.auth.signOut({ scope: "local" });
+  if (signOutResult.error) logAuthError("auth.password_reset_signout_failed", signOutResult.error);
+  redirect("/login?passwordReset=1");
 }
 
 export async function logoutAction(): Promise<void> {
   const database = await getServerDatabaseClient();
-  const { error } = await database.auth.signOut();
-  if (error) logger.error("auth.logout_failed");
+  const { error } = await database.auth.signOut({ scope: "local" });
+  if (error) logAuthError("auth.logout_failed", error);
   redirect("/login");
 }

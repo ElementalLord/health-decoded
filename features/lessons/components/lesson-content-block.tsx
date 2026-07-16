@@ -13,12 +13,15 @@ export function LessonContentBlockView({ block }: { block: LessonContentBlock })
               {block.heading}
             </h2>
           ) : null}
-          <p className="text-pretty text-lg leading-8 text-foreground/90">{block.body}</p>
+          <p className="text-pretty text-lg leading-9 text-foreground/90">{block.body}</p>
         </div>
       );
     case "callout":
       return (
-        <Card tone="info" className="space-y-3 rounded-[var(--radius-xl)] p-6 sm:p-7">
+        <Card
+          tone="info"
+          className="space-y-3 rounded-none border-x-0 border-y border-success/35 p-6 shadow-none sm:p-8"
+        >
           <h2 className="font-serif-display text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]">
             {block.title}
           </h2>
@@ -31,13 +34,12 @@ export function LessonContentBlockView({ block }: { block: LessonContentBlock })
           <h2 className="font-serif-display text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]">
             {block.title ?? "Key points"}
           </h2>
-          <ul className="space-y-3.5 text-lg leading-8 text-foreground/90">
-            {block.points.map((point) => (
-              <li className="flex gap-3.5" key={point}>
-                <span
-                  aria-hidden="true"
-                  className="mt-3 size-2 shrink-0 rounded-full bg-primary"
-                />
+          <ul className="border-y border-border text-lg leading-8 text-foreground/90">
+            {block.points.map((point, index) => (
+              <li className="flex gap-4 border-b border-border py-4 last:border-b-0" key={point}>
+                <span className="font-serif-display text-2xl text-accent-warm">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <span>{point}</span>
               </li>
             ))}

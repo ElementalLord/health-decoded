@@ -8,7 +8,9 @@ const geminiServerEnvSchema = z.object({
   GEMINI_API_KEY: z
     .string()
     .trim()
-    .regex(/^AIza[\w-]{20,}$/, "Invalid Gemini API key format."),
+    // Gemini API keys are transitioning from legacy traffic keys (`AIza…`)
+    // to Auth keys (`AQ.…`). Both are valid server-side credentials.
+    .regex(/^(?:AIza[\w-]{20,}|AQ\.[\w-]{20,})$/, "Invalid Gemini API key format."),
 });
 
 export type GeminiServerEnv = z.infer<typeof geminiServerEnvSchema>;

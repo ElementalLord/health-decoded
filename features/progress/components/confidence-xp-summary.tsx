@@ -1,15 +1,10 @@
-import { Sparkles } from "lucide-react";
-
 export function ConfidenceXpSummary({ total }: { total: number }) {
   return (
-    <section className="space-y-3 rounded-[var(--radius-xl)] border border-border/50 bg-card p-6 sm:p-8">
-      <div className="flex items-center gap-3">
-        <span
-          aria-hidden="true"
-          className="inline-flex size-10 items-center justify-center rounded-[8px] bg-primary/10 text-primary"
-        >
-          <Sparkles className="size-5" />
-        </span>
+    <section className="grid gap-5 border-l-2 border-success bg-info px-6 py-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-8 sm:px-10">
+      <p className="font-serif-display text-7xl font-light leading-none text-success sm:text-8xl">
+        {total}
+      </p>
+      <div>
         <div className="space-y-1">
           <h2 className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight">
             Confidence XP
@@ -19,9 +14,6 @@ export function ConfidenceXpSummary({ total }: { total: number }) {
           </p>
         </div>
       </div>
-      <p className="font-serif-display text-3xl font-semibold tracking-tight text-primary">
-        {total} earned
-      </p>
     </section>
   );
 }

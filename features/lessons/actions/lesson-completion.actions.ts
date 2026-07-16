@@ -33,7 +33,7 @@ export async function completeLessonAction(input: unknown): Promise<CompleteLess
       ok: false,
       message:
         completed.error === "requirements_incomplete"
-          ? "There is still one step to finish before completing this lesson."
+          ? "A required lesson step is still unfinished. Return to the highlighted step and complete it before continuing."
           : "We could not save your lesson completion right now. Please try again.",
     };
   }

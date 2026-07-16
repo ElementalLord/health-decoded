@@ -4,13 +4,11 @@ import type {
   JourneyHomeViewModel,
   LessonProgressRow,
 } from "@/features/journeys/types/journey-home";
-import { isDevelopmentLesson } from "@/lib/content/development";
 
 type JourneyHomeMapperInput = {
   assignments: JourneyAssignmentRow[];
   completedAt: string | null;
   confidenceLevel: ConfidenceLevel | null;
-  durationDays: number;
   journeyTitle: string;
   progressRows: LessonProgressRow[];
 };
@@ -19,12 +17,10 @@ export function mapJourneyHome({
   assignments,
   completedAt,
   confidenceLevel,
-  durationDays,
   journeyTitle,
   progressRows,
 }: JourneyHomeMapperInput): JourneyHomeViewModel | null {
   if (
-    durationDays <= 0 ||
     assignments.length === 0 ||
     progressRows.some(
       (progress) => !["not_started", "in_progress", "completed"].includes(progress.status),
@@ -39,19 +35,20 @@ export function mapJourneyHome({
   const completedLessons = progressRows.filter(
     (progress) => progress.status === "completed",
   ).length;
-  const percentage = Math.min(100, Math.round((completedLessons / durationDays) * 100));
+  const totalDays = assignments.length;
+  const percentage = Math.min(100, Math.round((completedLessons / totalDays) * 100));
   const baseProgress = {
     completedLessons,
-    currentDay: Math.min(durationDays, completedLessons + 1),
+    currentDay: Math.min(totalDays, completedLessons + 1),
     percentage,
-    totalDays: durationDays,
+    totalDays,
   };
 
-  if (completedAt || completedLessons >= durationDays) {
+  if (completedAt || completedLessons >= totalDays) {
     return {
       kind: "complete",
       journeyTitle,
-      progress: { ...baseProgress, currentDay: durationDays, percentage: 100 },
+      progress: { ...baseProgress, currentDay: totalDays, percentage: 100 },
     };
   }
 
@@ -74,7 +71,6 @@ export function mapJourneyHome({
       subtitle: currentAssignment.lessons.subtitle,
       whyItMatters: currentAssignment.lessons.learning_objective,
       estimatedMinutes: currentAssignment.lessons.estimated_minutes,
-      isDevelopmentContent: isDevelopmentLesson(currentAssignment.lessons.id),
       status:
         currentProgress?.status === "in_progress" || currentProgress?.status === "completed"
           ? currentProgress.status

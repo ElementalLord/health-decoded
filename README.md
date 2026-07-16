@@ -22,7 +22,9 @@ Current public values:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
-Server-only values are added only by the milestone that requires them.
+Current server-only values:
+
+- `GEMINI_API_KEY`
 
 ## Development commands
 

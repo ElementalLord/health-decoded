@@ -16,8 +16,6 @@ const blockSchema = z
 export const storySchema = z
   .object({
     content_blocks: z.array(blockSchema).min(1).max(8),
-    content_status: z.enum(["development", "published"]),
-    development_notice: plainText(400).nullable(),
     estimated_reading_minutes: z.number().int().min(1).max(10),
     introduction: plainText(600),
     journey_week: z.number().int().positive().nullable(),

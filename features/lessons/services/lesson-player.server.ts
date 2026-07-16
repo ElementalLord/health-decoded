@@ -68,7 +68,6 @@ export async function getAuthorizedLesson(day: number): Promise<AuthorizedLesson
     lastViewedBlock: begun.authorized_last_viewed_block,
     learningObjective: lesson.journey_lessons.lessons.learning_objective,
     lessonProgressId: begun.authorized_lesson_progress_id,
-    lessonId: lesson.journey_lessons.lessons.id,
     status: begun.authorized_lesson_status,
     subtitle: lesson.journey_lessons.lessons.subtitle,
     title: lesson.journey_lessons.lessons.title,

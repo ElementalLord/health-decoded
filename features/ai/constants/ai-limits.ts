@@ -1,29 +1,9 @@
-/**
- * Input boundaries are enforced now. Durable request and spending controls remain
- * interfaces until the dedicated production-abuse-prevention milestone.
- */
 export const AI_MAX_REQUEST_BYTES = 16_000;
 export const AI_MAX_MESSAGE_CHARACTERS = 2_000;
 export const AI_MAX_CONVERSATION_MESSAGES = 6;
+export const AI_MAX_SESSION_HISTORY_BYTES = 10_000;
 export const AI_MAX_OUTPUT_CHARACTERS = 8_000;
 export const AI_PROVIDER_TIMEOUT_MS = 30_000;
-
-export type AiLimitContracts = {
-  readonly maximumInputBytes: number;
-  readonly maximumOutputBytes: number;
-  readonly perUserRequestLimit: "future";
-  readonly perIpRequestLimit: "future";
-  readonly dailyUserQuota: "future";
-  readonly monthlyUsageQuota: "future";
-  readonly circuitBreaker: "future";
-};
-
-export const aiLimitContracts: AiLimitContracts = {
-  maximumInputBytes: AI_MAX_REQUEST_BYTES,
-  maximumOutputBytes: AI_MAX_OUTPUT_CHARACTERS,
-  perUserRequestLimit: "future",
-  perIpRequestLimit: "future",
-  dailyUserQuota: "future",
-  monthlyUsageQuota: "future",
-  circuitBreaker: "future",
-};
+export const AI_RATE_LIMIT_WINDOW_MS = 60_000;
+export const AI_REQUESTS_PER_WINDOW = 10;
+export const AI_RAPID_REQUEST_INTERVAL_MS = 750;

@@ -22,7 +22,3 @@ Each JSON record is validated by `npm run validate:medications`. The record maps
 Published records must include a reviewer, review timestamp, publication timestamp, and at least one HTTPS source reference. Prompt 17 must load only published database records.
 
 `development-fixture.json` is a structural test fixture only. It is not medical guidance and must never be published.
-
-## Development-only draft use
-
-Prompt 17 may expose draft medication records only through a development-only fixture adapter. That adapter must display an internal development banner and must never be enabled for a production build. Production medication queries continue to request published records only; this rule does not change database queries or Row Level Security.

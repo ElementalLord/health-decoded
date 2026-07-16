@@ -21,10 +21,7 @@ export default function AuthErrorPage() {
         title="We could not complete that request"
       />
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Link
-          className={cn(buttonVariants({ fullWidth: false }), "min-h-12 px-6")}
-          href="/login"
-        >
+        <Link className={cn(buttonVariants({ fullWidth: false }), "min-h-12 px-6")} href="/login">
           Return to sign in
         </Link>
         <Link

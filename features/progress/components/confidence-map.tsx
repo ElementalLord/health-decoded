@@ -25,10 +25,7 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
         </p>
       </div>
 
-      <ol
-        aria-label="Journey milestones"
-        className="overflow-hidden rounded-[var(--radius-xl)] border border-border/50 bg-card divide-y divide-border"
-      >
+      <ol aria-label="Journey milestones" className="border-y border-border">
         {milestones.map((milestone) => {
           const details = stateDetails[milestone.state];
           const Icon = details.icon;
@@ -37,12 +34,16 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
           return (
             <li
               className={cn(
-                "flex items-start gap-3.5 px-4 py-4 transition duration-[var(--duration-fast)] sm:px-6",
-                milestone.state === "current" && "bg-primary/5",
+                "grid grid-cols-[3rem_1.5rem_1fr] items-start gap-3 border-b border-border px-1 py-5 transition duration-[var(--duration-fast)] last:border-b-0 sm:grid-cols-[4rem_1.5rem_1fr] sm:py-6",
+                milestone.state === "current" &&
+                  "border-l-2 border-l-accent-warm bg-accent-warm/5 pl-4",
                 milestone.state === "locked" && "text-muted-foreground",
               )}
               key={milestone.dayNumber}
             >
+              <span className="font-serif-display text-2xl text-[#c9bdb1]">
+                {String(milestone.dayNumber).padStart(2, "0")}
+              </span>
               <Icon
                 aria-hidden="true"
                 className={cn(
@@ -52,7 +53,6 @@ export function ConfidenceMap({ milestones }: { milestones: ProgressMilestone[] 
                 )}
               />
               <div className="min-w-0 flex-1 space-y-1">
-                <p className="text-sm font-medium">Day {milestone.dayNumber}</p>
                 <p className="font-medium text-foreground">{title}</p>
                 <p className="text-sm text-muted-foreground">
                   {details.label}

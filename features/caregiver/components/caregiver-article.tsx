@@ -43,35 +43,49 @@ export function CaregiverArticle({ article }: { article: CaregiverArticleViewMod
         title={article.title}
       />
 
-      <div className="space-y-8">
+      <div className="space-y-10 border-t border-border pt-10">
         {article.content_blocks.map((block, index) => (
-          <ArticleBlock block={block} key={`${block.type}-${index}`} />
+          <div
+            className={index % 2 === 1 ? "border-l-2 border-accent-warm pl-6" : undefined}
+            key={`${block.type}-${index}`}
+          >
+            <ArticleBlock block={block} />
+          </div>
         ))}
       </div>
 
       <div className="grid gap-8 border-y border-border py-7 sm:grid-cols-2">
         {article.support_tip ? (
           <section className="space-y-2">
-            <h2 className="font-serif-display text-[length:var(--text-card-title)] font-medium">Ways to support</h2>
+            <h2 className="font-serif-display text-[length:var(--text-card-title)] font-medium">
+              Ways to support
+            </h2>
             <p className="leading-7">{article.support_tip}</p>
           </section>
         ) : null}
         {article.what_not_to_say ? (
           <section className="space-y-2">
-            <h2 className="font-serif-display text-[length:var(--text-card-title)] font-medium">What not to say</h2>
+            <h2 className="font-serif-display text-[length:var(--text-card-title)] font-medium">
+              What not to say
+            </h2>
             <p className="leading-7">{article.what_not_to_say}</p>
           </section>
         ) : null}
       </div>
 
       {article.conversation_prompt ? (
-        <section className="space-y-2 border-b border-border pb-7">
-          <h2 className="font-serif-display text-[length:var(--text-card-title)] font-medium">Conversation starter</h2>
+        <section className="space-y-2 border-l-2 border-success bg-info px-6 py-7">
+          <h2 className="font-serif-display text-[length:var(--text-card-title)] font-medium">
+            Conversation starter
+          </h2>
           <p className="leading-7">{article.conversation_prompt}</p>
         </section>
       ) : null}
 
-      <Link className={cn(buttonVariants({ fullWidth: false, variant: "text" }), "min-h-11 px-0")} href="/caregiver">
+      <Link
+        className={cn(buttonVariants({ fullWidth: false, variant: "text" }), "min-h-11 px-0")}
+        href="/caregiver"
+      >
         Back to caregiver guidance
       </Link>
     </article>

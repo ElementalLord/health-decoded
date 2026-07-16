@@ -13,7 +13,6 @@ export type CurrentLessonSummary = {
   subtitle: string | null;
   whyItMatters: string;
   estimatedMinutes: number;
-  isDevelopmentContent: boolean;
   status: LessonProgressStatus;
 };
 

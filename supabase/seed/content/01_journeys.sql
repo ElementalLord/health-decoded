@@ -4,10 +4,10 @@ insert into public.journeys (
   '10000000-0000-0000-0000-000000000001',
   'type-2-first-14-days',
   'Your first 14 days',
-  'Development seed journey for schema verification only.',
+  'A calm, practical introduction to Type 2 diabetes during the first two weeks after diagnosis.',
   14,
   'published',
-  'Development seed',
+  'Health Decoded curriculum',
   '2026-01-01T00:00:00Z',
   '2026-01-01T00:00:00Z'
 )

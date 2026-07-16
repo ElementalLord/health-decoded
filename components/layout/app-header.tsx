@@ -1,6 +1,5 @@
 "use client";
 
-import { Sprout } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,26 +16,23 @@ function AppHeader({ routes = applicationRoutes }: { routes?: readonly Applicati
   const pathname = usePathname();
 
   return (
-    <header className="safe-area-top sticky top-0 z-40 border-b border-border/50 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex min-h-16 w-full max-w-[1152px] items-center justify-between gap-4 px-5 md:px-6 lg:px-8">
+    <header className="safe-area-top sticky top-0 z-40 border-b border-border bg-background">
+      <div className="mx-auto flex min-h-[4.5rem] w-full max-w-[1240px] items-center justify-between gap-4 px-5 md:px-8 lg:px-10">
         <Link
-          className="inline-flex min-h-11 items-center gap-2.5 rounded-[8px] text-base font-semibold tracking-tight transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex min-h-11 items-baseline gap-2 rounded-[8px] text-base font-semibold tracking-tight transition-colors hover:text-accent-warm focus-visible:ring-2 focus-visible:ring-ring"
           href={brandDestination}
         >
-          <span
-            aria-hidden="true"
-            className="inline-flex size-8 items-center justify-center rounded-[8px] bg-primary text-primary-foreground"
-          >
-            <Sprout className="size-4" strokeWidth={2} />
-          </span>
-          <span className="font-serif-display text-[length:var(--text-card-title)]">
+          <span className="font-serif-display text-[length:var(--text-card-title)] font-semibold">
             Health Decoded
+          </span>
+          <span className="hidden text-[0.65rem] font-bold uppercase tracking-[0.24em] text-muted-foreground sm:inline">
+            EDU
           </span>
         </Link>
 
         <DesktopLayout>
           <nav aria-label="Primary navigation">
-            <ul className="flex items-center gap-1">
+            <ul className="flex items-center gap-6">
               {routes.map((route) => {
                 const active = isActiveRoute(pathname, route);
 
@@ -45,10 +41,10 @@ function AppHeader({ routes = applicationRoutes }: { routes?: readonly Applicati
                     <Link
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "inline-flex min-h-11 items-center rounded-[8px] px-3.5 text-sm font-medium transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:ring-2 focus-visible:ring-ring",
+                        "relative inline-flex min-h-11 items-center px-0 text-sm font-medium transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-left after:bg-accent-warm after:transition-transform focus-visible:ring-2 focus-visible:ring-ring",
                         active
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                          ? "text-foreground after:scale-x-100"
+                          : "text-muted-foreground after:scale-x-0 hover:text-foreground hover:after:scale-x-100",
                       )}
                       href={route.href}
                     >

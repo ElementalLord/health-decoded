@@ -1,0 +1,216 @@
+.companionLeft,
+.companionRight,
+.embraceArm,
+.steadyPerson,
+.risingPerson,
+.helpingHands,
+.completionScene,
+.sunScene,
+.cupScene,
+.steamOne,
+.steamTwo {
+  transform-box: fill-box;
+}
+
+.companionLeft {
+  transform-origin: bottom center;
+  animation: lean-in-left 7s ease-in-out infinite;
+}
+
+.companionRight {
+  transform-origin: bottom center;
+  animation: lean-in-right 7s ease-in-out infinite;
+}
+
+.embraceArm {
+  transform-origin: 274px 207px;
+  animation: close-embrace 7s ease-in-out infinite;
+}
+
+.steadyPerson {
+  transform-origin: bottom center;
+  animation: steady-support 8s ease-in-out infinite;
+}
+
+.risingPerson {
+  transform-origin: bottom center;
+  animation: rise-with-help 8s ease-in-out infinite;
+}
+
+.helpingHands {
+  transform-origin: center;
+  animation: hands-connect 8s ease-in-out infinite;
+}
+
+.completionScene {
+  transform-origin: center bottom;
+  animation: completion-settle 6s ease-in-out infinite;
+}
+
+.sunScene {
+  transform-origin: center bottom;
+  animation: sun-breathe 7s ease-in-out infinite;
+}
+
+.cupScene {
+  transform-origin: center bottom;
+  animation: cup-settle 6s ease-in-out infinite;
+}
+
+.steamOne,
+.steamTwo {
+  transform-origin: center bottom;
+  animation: steam-rise 3.8s ease-in-out infinite;
+}
+
+.steamTwo {
+  animation-delay: 0.8s;
+}
+
+@keyframes lean-in-left {
+  0%,
+  18%,
+  100% {
+    transform: rotate(0deg) translateX(0);
+  }
+  34%,
+  78% {
+    transform: rotate(1.6deg) translateX(4px);
+  }
+}
+
+@keyframes lean-in-right {
+  0%,
+  18%,
+  100% {
+    transform: rotate(0deg) translateX(0);
+  }
+  34%,
+  78% {
+    transform: rotate(-2deg) translateX(-5px);
+  }
+}
+
+@keyframes close-embrace {
+  0%,
+  18%,
+  100% {
+    transform: rotate(-7deg) translate(-8px, 2px);
+  }
+  36%,
+  78% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+}
+
+@keyframes steady-support {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  20%,
+  44% {
+    transform: translateY(5px) rotate(1deg);
+  }
+  68% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes rise-with-help {
+  0%,
+  18% {
+    transform: translateY(18px) rotate(3deg);
+  }
+  60%,
+  88%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes hands-connect {
+  0%,
+  15% {
+    opacity: 0.65;
+    transform: scale(0.94);
+  }
+  32%,
+  88%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes completion-settle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes sun-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.015);
+  }
+}
+
+@keyframes cup-settle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes steam-rise {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(4px) scaleY(0.85);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateY(-5px) scaleY(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .companionLeft,
+  .companionRight,
+  .embraceArm,
+  .steadyPerson,
+  .risingPerson,
+  .helpingHands,
+  .completionScene,
+  .sunScene,
+  .cupScene,
+  .steamOne,
+  .steamTwo {
+    animation: none;
+  }
+}
+
+:global([data-reduced-motion="true"]) .companionLeft,
+:global([data-reduced-motion="true"]) .companionRight,
+:global([data-reduced-motion="true"]) .embraceArm,
+:global([data-reduced-motion="true"]) .steadyPerson,
+:global([data-reduced-motion="true"]) .risingPerson,
+:global([data-reduced-motion="true"]) .helpingHands,
+:global([data-reduced-motion="true"]) .completionScene,
+:global([data-reduced-motion="true"]) .sunScene,
+:global([data-reduced-motion="true"]) .cupScene,
+:global([data-reduced-motion="true"]) .steamOne,
+:global([data-reduced-motion="true"]) .steamTwo {
+  animation: none;
+}

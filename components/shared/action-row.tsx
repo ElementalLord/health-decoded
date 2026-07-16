@@ -14,22 +14,24 @@ export function ActionRow({ className, description, href, title }: ActionRowProp
   return (
     <Link
       className={cn(
-        "group flex min-h-16 items-center justify-between gap-4 px-5 py-4 transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring",
+        "group flex min-h-24 items-center justify-between gap-6 px-0 py-7 transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:px-3 hover:bg-muted/35 focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
       href={href}
     >
-      <span className="min-w-0 space-y-1">
-        <span className="block font-semibold text-foreground">{title}</span>
-        <span className="block text-pretty text-sm leading-5 text-muted-foreground">
+      <span className="min-w-0 space-y-1.5">
+        <span className="block font-serif-display text-2xl font-normal leading-tight text-foreground">
+          {title}
+        </span>
+        <span className="block text-pretty text-base leading-6 text-muted-foreground">
           {description}
         </span>
       </span>
       <span
         aria-hidden="true"
-        className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition duration-[var(--duration-fast)] group-hover:bg-primary/10 group-hover:text-primary"
+        className="inline-flex size-11 shrink-0 items-center justify-center text-muted-foreground transition duration-[var(--duration-fast)] group-hover:text-primary"
       >
-        <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+        <ArrowRight className="size-6 transition-transform group-hover:translate-x-1" />
       </span>
     </Link>
   );

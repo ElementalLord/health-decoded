@@ -58,9 +58,9 @@ export function MatchPairActivityView({
   return (
     <section aria-labelledby={`activity-${activity.id}`} className="space-y-6">
       <div className="space-y-2">
-        <p className="text-sm font-medium text-primary">Practice</p>
+        <p className="editorial-eyebrow">Practice</p>
         <h2
-          className="text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]"
+          className="font-serif-display text-[length:var(--text-feature-title)] font-normal leading-tight"
           id={`activity-${activity.id}`}
           ref={headingRef}
           tabIndex={-1}

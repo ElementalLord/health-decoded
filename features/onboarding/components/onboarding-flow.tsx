@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 
+import { CompanionIllustration } from "@/components/illustrations/editorial-illustrations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProgressBar } from "@/components/ui/progress-bar";
@@ -52,7 +53,7 @@ export function OnboardingFlow() {
   }
 
   return (
-    <section className="mx-auto max-w-lg py-4 sm:py-8">
+    <section className="mx-auto max-w-2xl py-4 sm:py-8">
       <header className="space-y-4">
         <p className="text-sm font-medium text-muted-foreground">
           Step {step + 1} of {stepLabels.length}: {stepLabels[step]}
@@ -62,7 +63,7 @@ export function OnboardingFlow() {
           value={((step + 1) / stepLabels.length) * 100}
         />
         <h1
-          className="pt-2 font-serif-display text-[length:var(--text-card-title)] font-semibold tracking-tight text-balance"
+          className="pt-3 font-serif-display text-3xl font-normal leading-tight text-balance sm:text-5xl"
           ref={headingRef}
           tabIndex={-1}
         >
@@ -78,9 +79,17 @@ export function OnboardingFlow() {
         <input name="timezone" type="hidden" value={timezone} />
 
         {step === 0 ? (
-          <p className="text-pretty leading-7 text-muted-foreground">
-            Setup takes just a minute. We will guide you gradually, one small step at a time.
-          </p>
+          <div className="grid gap-6 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
+            <CompanionIllustration />
+            <div>
+              <p className="text-pretty text-lg leading-8 text-muted-foreground">
+                Setup takes just a minute. We will guide you gradually, one small step at a time.
+              </p>
+              <p className="mt-5 border-l-2 border-accent-warm pl-4 font-serif-display text-xl italic leading-8">
+                No streaks. No pressure. Just gentle, daily understanding.
+              </p>
+            </div>
+          </div>
         ) : null}
 
         {step === 1 ? (
@@ -104,8 +113,8 @@ export function OnboardingFlow() {
         {step === 2 ? (
           <fieldset className="space-y-3">
             <legend className="mb-2 font-medium">Choose what feels comfortable</legend>
-            <div className="divide-y divide-border border-y border-border">
-              <label className="flex min-h-14 cursor-pointer items-center gap-3 py-3.5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[9px] border border-border bg-card px-4 py-3.5 shadow-[0_2px_0_rgb(61_47_41/0.08)]">
                 <input
                   checked={textScale === "large"}
                   className="size-5 shrink-0 accent-primary"
@@ -114,7 +123,7 @@ export function OnboardingFlow() {
                 />
                 <span>Use larger text</span>
               </label>
-              <label className="flex min-h-14 cursor-pointer items-center gap-3 py-3.5">
+              <label className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[9px] border border-border bg-card px-4 py-3.5 shadow-[0_2px_0_rgb(61_47_41/0.08)]">
                 <input
                   checked={reducedMotion}
                   className="size-5 shrink-0 accent-primary"

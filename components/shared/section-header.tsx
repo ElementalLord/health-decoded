@@ -15,7 +15,7 @@ function SectionHeader({ action, className, description, title, ...props }: Sect
       {...props}
     >
       <div className="space-y-1.5">
-        <h2 className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight">
+        <h2 className="font-serif-display text-[length:var(--text-section-title)] font-medium leading-tight tracking-[-0.025em]">
           {title}
         </h2>
         {description ? (

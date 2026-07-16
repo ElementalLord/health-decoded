@@ -21,7 +21,7 @@ export default async function ProgressPage() {
   const data = progress.data;
 
   return (
-    <section className="mx-auto max-w-4xl space-y-10 py-6 sm:py-10">
+    <section className="mx-auto max-w-5xl space-y-14 py-6 sm:py-10">
       <PageHeader
         description="This is a record of your learning. Confidence can change from day to day, and lower confidence is not failure."
         eyebrow="Your learning journey"
@@ -30,26 +30,36 @@ export default async function ProgressPage() {
 
       <section
         aria-labelledby="progress-overview"
-        className="space-y-5 rounded-[var(--radius-xl)] border border-border/50 bg-card p-6 sm:p-8"
+        className="grid gap-8 border-y border-border py-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-12 sm:py-10"
       >
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-1">
-            <h2
-              className="font-serif-display text-[length:var(--text-section-title)] font-semibold tracking-tight"
-              id="progress-overview"
-            >
-              Journey overview
-            </h2>
-            <p className="text-sm text-muted-foreground">{data.journeyTitle}</p>
-          </div>
-          <p className="shrink-0 text-sm font-semibold text-foreground">
-            {data.completedLessons} of {data.totalLessons} lessons complete
+        <div>
+          <p className="font-serif-display text-8xl font-light leading-none text-accent-warm sm:text-9xl">
+            {Math.round(data.percentage)}
+          </p>
+          <p className="mt-2 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
+            percent explored
           </p>
         </div>
-        <ProgressBar
-          label={`${data.completedLessons} of ${data.totalLessons} lessons complete`}
-          value={data.percentage}
-        />
+        <div className="space-y-5">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-1">
+              <h2
+                className="font-serif-display text-[length:var(--text-section-title)] font-semibold tracking-tight"
+                id="progress-overview"
+              >
+                Journey overview
+              </h2>
+              <p className="text-sm text-muted-foreground">{data.journeyTitle}</p>
+            </div>
+            <p className="shrink-0 text-sm font-semibold text-foreground">
+              {data.completedLessons} of {data.totalLessons} lessons complete
+            </p>
+          </div>
+          <ProgressBar
+            label={`${data.completedLessons} of ${data.totalLessons} lessons complete`}
+            value={data.percentage}
+          />
+        </div>
       </section>
 
       <ConfidenceMap milestones={data.milestones} />

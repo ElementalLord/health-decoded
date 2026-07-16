@@ -33,12 +33,12 @@ export function ConfidenceCheck({
   return (
     <section
       aria-labelledby="confidence-check-title"
-      className="rounded-[14px] border border-border bg-card p-5 sm:p-6"
+      className="border-y border-border bg-[#f0ebe3] px-5 py-8 sm:px-8 sm:py-10"
     >
       <div className="space-y-5">
         <div className="space-y-1">
           <h2
-            className="text-[length:var(--text-card-title)] font-semibold tracking-tight"
+            className="font-serif-display text-[length:var(--text-feature-title)] font-medium leading-tight"
             id="confidence-check-title"
           >
             How confident do you feel today?
@@ -60,8 +60,8 @@ export function ConfidenceCheck({
                   <button
                     aria-pressed={selected}
                     className={cn(
-                      "flex min-h-12 items-center justify-between gap-3 rounded-[10px] border border-border bg-card px-4 py-3 text-left text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-                      selected && "border-primary/45 bg-secondary/60 text-primary",
+                      "flex min-h-14 items-center justify-between gap-3 rounded-[9px] border border-border bg-card px-4 py-3 text-left text-sm font-semibold text-foreground shadow-[0_2px_0_rgb(61_47_41/0.08)] transition hover:-translate-y-0.5 hover:border-accent-warm focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+                      selected && "border-accent-warm bg-[#f6e7df] text-primary",
                     )}
                     disabled={pending}
                     key={option.value}

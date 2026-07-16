@@ -1,0 +1,339 @@
+.scene {
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid #d7cbbd;
+  border-radius: 1.15rem;
+  background: #eee6db;
+  box-shadow:
+    0 3px 0 rgb(56 44 38 / 0.08),
+    0 18px 40px rgb(56 44 38 / 0.07);
+}
+
+.animationStage {
+  position: relative;
+  height: 13rem;
+  margin-top: 0.75rem;
+}
+
+.bloodstream {
+  position: absolute;
+  inset: 1rem 1.25rem;
+  overflow: hidden;
+  border: 1px solid #c88772;
+  border-radius: 999px;
+  background: #ead0c3;
+}
+
+.bloodstream::before,
+.bloodstream::after {
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  content: "";
+  background: #d9a38f;
+}
+
+.bloodstream::before {
+  top: 12%;
+}
+
+.bloodstream::after {
+  bottom: 12%;
+}
+
+.cell {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: 3%;
+  display: grid;
+  width: 6.2rem;
+  height: 6.2rem;
+  translate: 0 -50%;
+  place-items: center;
+  border: 2px solid #587761;
+  border-radius: 50%;
+  background: #78947b;
+  color: #fffaf3;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 0 0 0 9px rgb(120 148 123 / 0.13);
+}
+
+.cellDoor {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  right: 7.9%;
+  width: 1rem;
+  height: 2.7rem;
+  translate: 0 -50%;
+  border-radius: 999px;
+  background: #f0d19d;
+  box-shadow: 0 0 0 3px rgb(89 73 62 / 0.12);
+  animation: open-door 7s ease-in-out infinite both;
+}
+
+.glucose {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid #9b603e;
+  border-radius: 42% 58% 51% 49%;
+  background: #e5ad64;
+  color: #382c26;
+  font-size: 0.68rem;
+  font-weight: 800;
+  box-shadow: 0 3px 0 rgb(88 53 36 / 0.18);
+  will-change: left, opacity, top, transform;
+}
+
+.glucoseOne {
+  animation: glucose-run 7s cubic-bezier(0.42, 0, 0.2, 1) infinite both;
+}
+
+.glucoseTwo {
+  top: 22%;
+  left: 30%;
+  opacity: 0.72;
+  animation: glucose-drift-upper 4s ease-in-out infinite alternate both;
+}
+
+.glucoseThree {
+  top: 65%;
+  left: 48%;
+  opacity: 0.64;
+  animation: glucose-drift-lower 4.8s 0.5s ease-in-out infinite alternate both;
+}
+
+.insulin {
+  position: absolute;
+  z-index: 5;
+  width: 2.6rem;
+  height: 1.25rem;
+  border-radius: 999px 0.4rem 0.4rem 999px;
+  background: #78947b;
+  box-shadow: 0 3px 0 rgb(47 75 57 / 0.2);
+  animation: insulin-chase 7s cubic-bezier(0.4, 0, 0.15, 1) infinite both;
+  will-change: left, opacity, top, transform;
+}
+
+.insulin::before {
+  position: absolute;
+  top: 50%;
+  left: -0.48rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  translate: 0 -50%;
+  border: 0.24rem solid #78947b;
+  border-radius: 50%;
+  content: "";
+}
+
+.insulin::after {
+  position: absolute;
+  top: 0.28rem;
+  right: -0.52rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-right: 0.2rem solid #587761;
+  border-bottom: 0.2rem solid #587761;
+  content: "";
+}
+
+.signal {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: 6.5%;
+  width: 4rem;
+  height: 4rem;
+  translate: 50% -50%;
+  border: 1px solid #587761;
+  border-radius: 50%;
+  opacity: 0;
+  animation: signal-pulse 7s ease-out infinite both;
+}
+
+@keyframes glucose-run {
+  0% {
+    top: 42%;
+    left: 3%;
+    transform: rotate(0deg);
+    opacity: 0;
+  }
+  7% {
+    opacity: 1;
+  }
+  22% {
+    top: 19%;
+    left: 25%;
+    transform: rotate(90deg);
+  }
+  43% {
+    top: 62%;
+    left: 46%;
+    transform: rotate(190deg);
+  }
+  63% {
+    top: 27%;
+    left: 66%;
+    transform: rotate(270deg);
+  }
+  78% {
+    top: 42%;
+    left: 84%;
+    transform: rotate(345deg) scale(1);
+    opacity: 1;
+  }
+  88% {
+    top: 42%;
+    left: 91%;
+    transform: rotate(390deg) scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    top: 42%;
+    left: 91%;
+    transform: rotate(390deg) scale(0.7);
+    opacity: 0;
+  }
+}
+
+@keyframes glucose-drift-upper {
+  0% {
+    transform: translate(0, 0) rotate(-8deg);
+  }
+  100% {
+    transform: translate(16px, 9px) rotate(20deg);
+  }
+}
+
+@keyframes glucose-drift-lower {
+  0% {
+    transform: translate(0, 0) rotate(12deg);
+  }
+  100% {
+    transform: translate(-13px, -10px) rotate(-18deg);
+  }
+}
+
+@keyframes insulin-chase {
+  0%,
+  5% {
+    top: 68%;
+    left: -5%;
+    transform: rotate(-12deg);
+    opacity: 0;
+  }
+  11% {
+    opacity: 1;
+  }
+  30% {
+    top: 49%;
+    left: 24%;
+    transform: rotate(-8deg);
+  }
+  51% {
+    top: 31%;
+    left: 47%;
+    transform: rotate(9deg);
+  }
+  69% {
+    top: 54%;
+    left: 68%;
+    transform: rotate(-6deg);
+  }
+  80% {
+    top: 46%;
+    left: 80%;
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  90%,
+  100% {
+    top: 46%;
+    left: 80%;
+    transform: rotate(0deg);
+    opacity: 0;
+  }
+}
+
+@keyframes open-door {
+  0%,
+  69% {
+    transform: rotate(0deg);
+  }
+  78%,
+  89% {
+    transform: rotate(68deg);
+    transform-origin: bottom;
+  }
+  94%,
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes signal-pulse {
+  0%,
+  69% {
+    scale: 0.5;
+    opacity: 0;
+  }
+  79% {
+    scale: 0.7;
+    opacity: 0.8;
+  }
+  90%,
+  100% {
+    scale: 1.8;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 40rem) {
+  .animationStage {
+    height: 12rem;
+  }
+  .bloodstream {
+    inset: 1rem 0.85rem;
+  }
+  .cell {
+    right: 1%;
+    width: 5rem;
+    height: 5rem;
+  }
+  .cellDoor {
+    right: 8.5%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glucose,
+  .insulin,
+  .signal,
+  .cellDoor {
+    animation-play-state: paused;
+  }
+
+  .glucose {
+    top: 40%;
+    left: 45%;
+    opacity: 1;
+  }
+  .glucoseTwo,
+  .glucoseThree {
+    display: none;
+  }
+  .insulin {
+    top: 58%;
+    left: 62%;
+    opacity: 1;
+  }
+}

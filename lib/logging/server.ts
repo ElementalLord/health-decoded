@@ -1,9 +1,14 @@
+import "server-only";
+
 type LogValue = boolean | number | string | null | undefined;
+
+type ServerLogLevel = "error" | "info";
 
 export type ServerLogContext = Record<string, LogValue>;
 
 export type ServerLogEvent = {
   event: string;
+  level: ServerLogLevel;
   context?: ServerLogContext;
 };
 
@@ -25,19 +30,23 @@ function redactContext(context: ServerLogContext | undefined): ServerLogContext 
   );
 }
 
-export function createServerLogger(sink: ServerLogSink = () => undefined) {
-  function emit(event: string, context?: ServerLogContext) {
+function defaultServerLogSink(event: ServerLogEvent) {
+  process.stderr.write(`${JSON.stringify({ ...event, timestamp: new Date().toISOString() })}\n`);
+}
+
+export function createServerLogger(sink: ServerLogSink = defaultServerLogSink) {
+  function emit(level: ServerLogLevel, event: string, context?: ServerLogContext) {
     const redactedContext = redactContext(context);
 
-    sink(redactedContext ? { event, context: redactedContext } : { event });
+    sink(redactedContext ? { event, level, context: redactedContext } : { event, level });
   }
 
   return {
     error(event: string, context?: ServerLogContext) {
-      emit(event, context);
+      emit("error", event, context);
     },
     info(event: string, context?: ServerLogContext) {
-      emit(event, context);
+      emit("info", event, context);
     },
   };
 }

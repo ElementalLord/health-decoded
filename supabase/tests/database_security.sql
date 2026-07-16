@@ -87,6 +87,36 @@ begin
 
   if has_function_privilege(
     'anon',
+    'public.complete_onboarding(text,text,text,boolean,text)',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.complete_onboarding(text,text,text,boolean,text)',
+    'execute'
+  ) then
+    raise exception 'Onboarding completion privileges are not restricted correctly';
+  end if;
+
+  if has_column_privilege(
+    'authenticated',
+    'public.profiles',
+    'onboarding_completed_at',
+    'update'
+  ) or not has_column_privilege(
+    'authenticated',
+    'public.profiles',
+    'display_name',
+    'update'
+  ) then
+    raise exception 'Profile update privileges are not restricted to display_name';
+  end if;
+
+  if has_table_privilege('authenticated', 'public.user_settings', 'delete') then
+    raise exception 'User settings deletion must not break the one-row-per-user invariant';
+  end if;
+
+  if has_function_privilege(
+    'anon',
     'public.upsert_confidence_check_in(uuid,text)',
     'execute'
   ) or not has_function_privilege(
@@ -163,7 +193,7 @@ $$;
 -- 3. Deleting auth.users rows cascades user-owned records only.
 -- 4. A 90-day journey is accepted and a >300-character reflection is rejected.
 -- 5. Journey initialization rejects unauthenticated callers and is idempotent.
--- 6. Journey initialization selects only the stable published prototype journey.
+-- 6. Journey initialization selects and reconciles only the stable published journey.
 -- 7. Confidence upsert rejects invalid values and another user's lesson progress.
 -- 8. Repeated confidence submissions update one row while direct writes remain denied.
 -- 9. Lesson begin-or-resume rejects unauthenticated and future-lesson access.

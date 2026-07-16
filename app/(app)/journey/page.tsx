@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { ActionRow } from "@/components/shared/action-row";
-import { DevelopmentNotice } from "@/components/shared/development-notice";
-import { SectionHeader } from "@/components/shared/section-header";
 import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
@@ -38,39 +36,31 @@ export default async function JourneyPage() {
   }
 
   return (
-    <section className="space-y-8 py-5 sm:space-y-10 sm:py-8">
+    <section className="space-y-12 py-3 sm:space-y-16 sm:py-6">
       <JourneyGreeting displayName={profile.data.display_name} />
 
       {journey.data.kind === "complete" ? (
         <JourneyCompleteState journey={journey.data} />
       ) : (
         <>
-          {journey.data.currentLesson.isDevelopmentContent ? <DevelopmentNotice /> : null}
-
           <TodaysLessonCard lesson={journey.data.currentLesson} />
 
-          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,680px)_minmax(280px,320px)] lg:justify-between">
-            {journey.data.currentLesson.isDevelopmentContent ? (
-              <section aria-labelledby="lesson-context" className="space-y-3 py-1">
-                <SectionHeader
-                  description="You can use it to check navigation, reading flow, activities, and progress while reviewed lesson content is prepared."
-                  title="About this preview"
-                />
-              </section>
-            ) : (
-              <section aria-labelledby="why-this-matters" className="space-y-3 py-1">
-                <SectionHeader
-                  description={journey.data.currentLesson.whyItMatters}
-                  title="Why this matters today"
-                />
-              </section>
-            )}
+          <section
+            aria-labelledby="why-this-matters"
+            className="grid gap-5 border-l-2 border-accent-warm py-3 pl-6 sm:grid-cols-[0.55fr_1.45fr] sm:pl-9"
+          >
+            <h2 className="editorial-eyebrow" id="why-this-matters">
+              Why this matters today
+            </h2>
+            <p className="max-w-3xl text-pretty font-serif-display text-2xl font-normal leading-9 text-foreground sm:text-3xl">
+              {journey.data.currentLesson.whyItMatters}
+            </p>
+          </section>
 
-            <JourneyProgressSummary
-              journeyTitle={journey.data.journeyTitle}
-              progress={journey.data.progress}
-            />
-          </div>
+          <JourneyProgressSummary
+            journeyTitle={journey.data.journeyTitle}
+            progress={journey.data.progress}
+          />
 
           {journey.data.currentLesson.lessonProgressId ? (
             <ConfidenceCheck
@@ -79,12 +69,19 @@ export default async function JourneyPage() {
             />
           ) : null}
 
-          <section aria-labelledby="journey-support" className="space-y-4">
-            <SectionHeader
-              description="Read practical support information and lived-experience stories."
-              title="Need more support?"
-            />
-            <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border/50 divide-y divide-border">
+          <section
+            aria-labelledby="journey-support"
+            className="space-y-5 border-t border-border pt-9"
+          >
+            <div className="space-y-3">
+              <h2 className="editorial-eyebrow" id="journey-support">
+                Need more support?
+              </h2>
+              <p className="max-w-2xl text-pretty leading-7 text-muted-foreground">
+                Choose the kind of support that feels useful right now.
+              </p>
+            </div>
+            <div className="divide-y divide-border border-y border-border">
               <ActionRow
                 description="Practical ways for family and friends to offer support."
                 href="/caregiver"
@@ -94,6 +91,11 @@ export default async function JourneyPage() {
                 description="Fictional composite stories about living with Type 2 diabetes."
                 href="/stories"
                 title="Read patient stories"
+              />
+              <ActionRow
+                description="Get calm, plain-language educational answers to your questions."
+                href="/ai"
+                title="Ask your AI guide"
               />
             </div>
           </section>
