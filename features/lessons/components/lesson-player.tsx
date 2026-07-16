@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 
+import { SunCupIllustration } from "@/components/illustrations/editorial-illustrations";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { DevelopmentNotice } from "@/components/shared/development-notice";
 import { Modal } from "@/components/ui/modal";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { ActivityRenderer } from "@/features/activities/components/activity-renderer";
@@ -12,11 +12,19 @@ import { completeLessonAction } from "@/features/lessons/actions/lesson-completi
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import { LessonCompletionScreen } from "@/features/lessons/components/lesson-completion-screen";
 import { LessonContentBlockView } from "@/features/lessons/components/lesson-content-block";
+import { FirstFiveMinutesExperience } from "@/features/lessons/components/first-five-minutes-experience";
+import { DayTwoExperience } from "@/features/lessons/components/day-two-experience";
 import type { LessonCompletionResult } from "@/features/lessons/types/lesson-completion";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
 export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
+  if (lesson.dayNumber === 1) return <FirstFiveMinutesExperience lesson={lesson} />;
+  if (lesson.dayNumber === 2) return <DayTwoExperience lesson={lesson} />;
+  return <StandardLessonPlayer lesson={lesson} />;
+}
+
+function StandardLessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   const [blockIndex, setBlockIndex] = useState(lesson.initialBlockIndex);
   const [exitOpen, setExitOpen] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -40,6 +48,9 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   const activitiesComplete = lesson.activities.every((activity) =>
     completedActivityIds.has(activity.id),
   );
+  const incompleteActivityTitles = lesson.activities
+    .filter((activity) => !completedActivityIds.has(activity.id))
+    .map((activity) => activity.title);
 
   useEffect(() => {
     if (!shouldMoveFocus.current) return;
@@ -90,6 +101,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
     return (
       <LessonCompletionScreen
         completion={completion}
+        dayNumber={lesson.dayNumber}
         keyTakeaway={lesson.keyTakeaway}
         lessonTitle={lesson.title}
       />
@@ -97,20 +109,31 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   }
 
   return (
-    <section className="mx-auto flex min-h-[calc(100dvh-11rem)] max-w-[680px] flex-col py-2 sm:py-6">
-      {lesson.isDevelopmentContent ? <DevelopmentNotice className="mb-5" /> : null}
-
-      <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-primary">Day {lesson.dayNumber}</p>
-          <h1 className="text-[length:var(--text-page-title)] font-semibold tracking-[-0.02em]">
-            {lesson.title}
-          </h1>
-          <p className="text-sm text-muted-foreground">About {lesson.estimatedMinutes} minutes</p>
-        </div>
-        <Button fullWidth={false} onClick={() => setExitOpen(true)} variant="text">
+    <section className="mx-auto flex min-h-[calc(100dvh-11rem)] max-w-[920px] flex-col py-2 sm:py-6">
+      <header className="relative border-b border-border pb-8">
+        <Button
+          className="absolute right-0 top-0 z-10"
+          fullWidth={false}
+          onClick={() => setExitOpen(true)}
+          variant="text"
+        >
           Exit lesson
         </Button>
+        {isIntroduction ? <SunCupIllustration className="mx-auto max-h-[27rem] max-w-4xl" /> : null}
+        <div className={cn("max-w-3xl", isIntroduction && "mx-auto -mt-8 sm:-mt-12")}>
+          <p className="editorial-eyebrow">
+            Day {String(lesson.dayNumber).padStart(2, "0")} ·{" "}
+            {String(lesson.estimatedMinutes).padStart(2, "0")} min read
+          </p>
+          <h1 className="mt-5 font-serif-display text-[length:var(--text-page-title)] font-normal leading-[0.98]">
+            {lesson.title}
+          </h1>
+          {lesson.subtitle ? (
+            <p className="mt-5 max-w-2xl text-pretty text-lg leading-8 text-muted-foreground">
+              {lesson.subtitle}
+            </p>
+          ) : null}
+        </div>
       </header>
 
       <div className="space-y-3 py-6">
@@ -128,14 +151,17 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
         <div className="w-full">
           {isIntroduction ? (
             <div className="space-y-6">
+              <p className="editorial-eyebrow">What you&apos;ll understand</p>
               <h2
-                className="text-[length:var(--text-feature-title)] font-semibold tracking-[-0.02em]"
+                className="max-w-3xl font-serif-display text-[length:var(--text-feature-title)] font-normal leading-tight"
                 ref={blockHeadingRef}
                 tabIndex={-1}
               >
-                {lesson.subtitle ?? "A small idea for today"}
+                {lesson.learningObjective}
               </h2>
-              <p className="text-lg leading-8 text-foreground/90">{lesson.learningObjective}</p>
+              <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+                One idea at a time, with room to pause and return.
+              </p>
             </div>
           ) : isActivityStep ? (
             <div className="space-y-8">
@@ -187,7 +213,9 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
               <p className="text-sm text-muted-foreground">
                 {activitiesComplete
                   ? "Your progress will be saved when you complete this lesson."
-                  : "Complete the activity to continue."}
+                  : incompleteActivityTitles.length === 1
+                    ? `Complete “${incompleteActivityTitles[0]}” to continue.`
+                    : `Complete these activities to continue: ${incompleteActivityTitles.join(", ")}.`}
               </p>
             </div>
           ) : isFinalBlock && hasActivities ? (
@@ -205,7 +233,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
             </div>
           ) : (
             <Button disabled={isSaving} onClick={() => moveTo(blockIndex + 1)}>
-              Continue
+              {isIntroduction ? "Begin today’s lesson" : "Continue"}
             </Button>
           )}
         </div>

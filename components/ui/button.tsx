@@ -5,15 +5,15 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] px-5 py-3 text-sm font-medium transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:w-auto",
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-[9px] px-5 py-3 text-sm font-semibold transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:translate-y-px active:shadow-none disabled:pointer-events-none disabled:opacity-50 sm:w-auto",
   {
     variants: {
       variant: {
         primary:
-          "bg-primary text-primary-foreground hover:bg-[oklch(0.34_0.04_160)]",
+          "border border-primary bg-primary text-primary-foreground shadow-[0_3px_0_#211814] hover:-translate-y-0.5 hover:bg-[#4b3931] hover:shadow-[0_5px_0_#211814]",
         secondary:
-          "border border-border bg-card text-foreground hover:border-foreground/20 hover:bg-muted/40",
-        text: "px-0 text-primary underline-offset-4 hover:underline active:scale-100",
+          "border border-border bg-card text-foreground shadow-[0_2px_0_rgb(61_47_41/0.12)] hover:-translate-y-0.5 hover:border-foreground/25 hover:bg-[#fffdf8]",
+        text: "rounded-none px-0 text-primary underline decoration-accent-warm/40 decoration-2 underline-offset-[6px] hover:decoration-accent-warm active:translate-y-0",
       },
       size: {
         default: "w-full",

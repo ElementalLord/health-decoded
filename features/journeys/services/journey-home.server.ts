@@ -34,7 +34,7 @@ export async function getJourneyHomeData(): Promise<Result<JourneyHomeViewModel>
   const [journeyResponse, assignmentsResponse, progressResponse] = await Promise.all([
     database
       .from("journeys")
-      .select("id, title, duration_days")
+      .select("id, title")
       .eq("id", userJourney.journey_id)
       .eq("status", "published")
       .maybeSingle(),
@@ -100,7 +100,6 @@ export async function getJourneyHomeData(): Promise<Result<JourneyHomeViewModel>
     assignments,
     completedAt: userJourney.completed_at,
     confidenceLevel,
-    durationDays: journey.duration_days,
     journeyTitle: journey.title,
     progressRows,
   });

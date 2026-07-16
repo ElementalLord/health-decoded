@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/shared/page-header";
+import { SteadyingHandIllustration } from "@/components/illustrations/editorial-illustrations";
 import { EmptyState } from "@/components/shared/empty-state";
-import { DevelopmentStoryBanner, StoryList } from "@/features/stories/components/stories";
+import { StoryList } from "@/features/stories/components/stories";
 import { listStories } from "@/features/stories/services/stories.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
@@ -24,13 +25,15 @@ export default async function StoriesPage() {
   }
 
   return (
-    <section className="mx-auto max-w-4xl space-y-10 py-6 sm:py-10">
-      <PageHeader
-        description="Thoughtful perspectives for moments that can feel unfamiliar."
-        eyebrow="Lived experience"
-        title="Patient stories"
-      />
-      {stories.data[0]?.content_status === "development" ? <DevelopmentStoryBanner /> : null}
+    <section className="mx-auto max-w-5xl space-y-12 py-6 sm:py-10">
+      <div className="grid gap-8 border-b border-border pb-10 md:grid-cols-[1.15fr_0.85fr] md:items-center">
+        <PageHeader
+          description="Thoughtful perspectives for moments that can feel unfamiliar."
+          eyebrow="Lived experience"
+          title="Stories that help you back up"
+        />
+        <SteadyingHandIllustration className="mx-auto max-w-sm" />
+      </div>
       {stories.data.length ? (
         <StoryList stories={stories.data} />
       ) : (

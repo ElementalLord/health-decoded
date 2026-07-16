@@ -41,7 +41,7 @@ function BottomNavigation({
     <MobileLayout>
       <nav
         aria-label="Mobile navigation"
-        className="safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border/50 bg-card/90 backdrop-blur-md px-1 pt-1.5"
+        className="safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card px-1 pt-1.5"
       >
         <ul
           className={cn(
@@ -58,10 +58,10 @@ function BottomNavigation({
                 <Link
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "mx-auto flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-[8px] px-0.5 text-[length:var(--text-caption)] font-medium leading-none transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:ring-2 focus-visible:ring-ring",
+                    "relative mx-auto flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-[8px] px-0.5 text-[length:var(--text-caption)] font-medium leading-none transition duration-[var(--duration-fast)] ease-[var(--ease-standard)] before:absolute before:top-0 before:h-0.5 before:w-8 before:rounded-full before:bg-accent-warm before:transition-opacity focus-visible:ring-2 focus-visible:ring-ring",
                     active
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground",
+                      ? "text-primary before:opacity-100"
+                      : "text-muted-foreground before:opacity-0 hover:text-foreground",
                   )}
                   href={route.href}
                 >

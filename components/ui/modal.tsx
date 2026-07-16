@@ -14,18 +14,11 @@ type ModalProps = {
   className?: string;
 };
 
-export function Modal({
-  children,
-  description,
-  onOpenChange,
-  open,
-  title,
-  className,
-}: ModalProps) {
+export function Modal({ children, description, onOpenChange, open, title, className }: ModalProps) {
   return (
     <DialogPrimitive.Root onOpenChange={onOpenChange} open={open}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-foreground/30 backdrop-blur-[2px] transition duration-[var(--duration-normal)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
+        <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-foreground/35 transition duration-[var(--duration-normal)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
         <DialogPrimitive.Viewport className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
           <DialogPrimitive.Popup
             className={cn(

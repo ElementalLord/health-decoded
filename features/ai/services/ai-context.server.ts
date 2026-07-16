@@ -1,8 +1,10 @@
 import "server-only";
 
+import { dayTwoGlossary } from "@/features/glossary/data/day-two-glossary";
 import type { TrustedAiPromptContext } from "@/features/ai/prompts/prompt-builder";
 import type { AiContextMetadata, AiRelatedContent } from "@/features/ai/types/ai";
 import { getServerDatabaseClient } from "@/lib/database/server";
+import { createServerLogger } from "@/lib/logging/server";
 
 type ContextRequest = {
   readonly message: string;
@@ -26,6 +28,13 @@ type ContentCandidate = {
   readonly kind: AiRelatedContent["kind"];
   readonly title: string;
 };
+
+const logger = createServerLogger();
+
+function contextFailure(operation: string, errorCode: string) {
+  logger.error("ai_context.load_failed", { error_code: errorCode, operation });
+  return { ok: false as const };
+}
 
 const contentTextKeys = new Set([
   "body",
@@ -113,6 +122,15 @@ function questionTerms(message: string) {
   ];
 }
 
+function reviewedGlossary(message: string, currentDay?: number) {
+  if (currentDay === 2) return dayTwoGlossary;
+
+  const normalizedMessage = message.toLocaleLowerCase();
+  return dayTwoGlossary.filter((entry) =>
+    normalizedMessage.includes(entry.term.toLocaleLowerCase()),
+  );
+}
+
 function relevanceScore(candidate: ContentCandidate, terms: readonly string[]) {
   const title = candidate.title.toLocaleLowerCase();
   const body = candidate.body.toLocaleLowerCase();
@@ -155,6 +173,9 @@ function contextualSuggestions(context: TrustedAiPromptContext): readonly string
       "What should a caregiver avoid saying?",
     ];
   }
+  if (context.glossary?.length) {
+    return context.glossary.slice(0, 3).map((entry) => `What exactly is ${entry.term}?`);
+  }
   if (context.lesson) {
     return [
       `Can you explain ${context.lesson.title.toLocaleLowerCase()} more simply?`,
@@ -183,7 +204,9 @@ export async function loadTrustedAiContext({
     .limit(1)
     .maybeSingle();
 
-  if (userJourneyResponse.error) return { ok: false };
+  if (userJourneyResponse.error) {
+    return contextFailure("user_journey", userJourneyResponse.error.code);
+  }
 
   const userJourney = userJourneyResponse.data;
   const [medicationsResponse, caregiverResponse, storiesResponse] = await Promise.all([
@@ -208,7 +231,13 @@ export async function loadTrustedAiContext({
   ]);
 
   if (medicationsResponse.error || caregiverResponse.error || storiesResponse.error) {
-    return { ok: false };
+    return contextFailure(
+      "reviewed_content",
+      medicationsResponse.error?.code ??
+        caregiverResponse.error?.code ??
+        storiesResponse.error?.code ??
+        "unknown",
+    );
   }
 
   const medicationCandidates: ContentCandidate[] = (medicationsResponse.data ?? []).map(
@@ -235,10 +264,12 @@ export async function loadTrustedAiContext({
 
   if (!userJourney) {
     const terms = questionTerms(message);
+    const glossary = reviewedGlossary(message);
     const medication = selectRelevantCandidate(medicationCandidates, terms);
     const caregiver = selectRelevantCandidate(caregiverCandidates, terms);
     const story = selectRelevantCandidate(storyCandidates, terms, 2);
     const promptContext: TrustedAiPromptContext = {
+      ...(glossary.length ? { glossary } : {}),
       ...(medication
         ? {
             medication: {
@@ -300,7 +331,13 @@ export async function loadTrustedAiContext({
   ]);
 
   if (journeyResponse.error || assignmentsResponse.error || progressResponse.error) {
-    return { ok: false };
+    return contextFailure(
+      "journey_progress",
+      journeyResponse.error?.code ??
+        assignmentsResponse.error?.code ??
+        progressResponse.error?.code ??
+        "unknown",
+    );
   }
 
   const assignments = assignmentsResponse.data ?? [];
@@ -341,7 +378,12 @@ export async function loadTrustedAiContext({
       : Promise.resolve({ data: null, error: null }),
   ]);
 
-  if (lessonsResponse.error || activityResponse.error) return { ok: false };
+  if (lessonsResponse.error || activityResponse.error) {
+    return contextFailure(
+      "lesson_content",
+      lessonsResponse.error?.code ?? activityResponse.error?.code ?? "unknown",
+    );
+  }
 
   const lessonsById = new Map((lessonsResponse.data ?? []).map((lesson) => [lesson.id, lesson]));
   const currentLesson = currentAssignment
@@ -381,24 +423,18 @@ export async function loadTrustedAiContext({
       currentLesson.subtitle ||
       currentLesson.learning_objective
     : null;
-  const totalLessons = assignments.length;
-  const completedCount = progressRows.filter((progress) => progress.status === "completed").length;
   const promptContext: TrustedAiPromptContext = {
+    ...(currentAssignment
+      ? {
+          glossary: reviewedGlossary(message, currentAssignment.day_number),
+        }
+      : {}),
     ...(journeyResponse.data && currentAssignment
       ? {
           journey: {
             currentDay: currentAssignment.day_number,
             title: journeyResponse.data.title,
             totalDays: journeyResponse.data.duration_days,
-          },
-        }
-      : {}),
-    ...(totalLessons
-      ? {
-          progress: {
-            completedLessons: completedCount,
-            percentage: Math.round((completedCount / totalLessons) * 100),
-            totalLessons,
           },
         }
       : {}),

@@ -15,18 +15,22 @@ const plainTextMessage = z
   .max(AI_MAX_MESSAGE_CHARACTERS)
   .refine((value) => !markupPattern.test(value), "Messages must be plain text.");
 
+const assistantHistoryText = z
+  .string()
+  .trim()
+  .min(1)
+  .max(AI_MAX_OUTPUT_CHARACTERS)
+  .refine((value) => !markupPattern.test(value), "Messages must be plain text.");
+
 export const aiChatRequestSchema = z
   .object({
-    conversationId: z.string().uuid().optional(),
     message: plainTextMessage,
     messages: z
       .array(
-        z
-          .object({
-            content: plainTextMessage,
-            role: z.enum(["assistant", "user"]),
-          })
-          .strict(),
+        z.discriminatedUnion("role", [
+          z.object({ content: assistantHistoryText, role: z.literal("assistant") }).strict(),
+          z.object({ content: plainTextMessage, role: z.literal("user") }).strict(),
+        ]),
       )
       .max(AI_MAX_CONVERSATION_MESSAGES)
       .optional(),
@@ -63,7 +67,7 @@ export const aiChatStreamEventSchema = z.discriminatedUnion("type", [
     .strict(),
   z
     .object({
-      code: z.enum(["AI_RATE_LIMITED", "AI_TIMEOUT", "AI_UNAVAILABLE"]),
+      code: z.enum(["AI_CONFIGURATION_ERROR", "AI_RATE_LIMITED", "AI_TIMEOUT", "AI_UNAVAILABLE"]),
       type: z.literal("error"),
     })
     .strict(),

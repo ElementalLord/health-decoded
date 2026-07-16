@@ -17,7 +17,7 @@ function DialogContent({
 }: ComponentProps<typeof DialogPrimitive.Popup>) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-foreground/30 backdrop-blur-[2px] transition duration-[var(--duration-normal)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
+      <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-foreground/35 transition duration-[var(--duration-normal)] data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
       <DialogPrimitive.Viewport className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
         <DialogPrimitive.Popup
           className={cn(
@@ -40,7 +40,10 @@ function DialogHeader({ children, className }: { children: ReactNode; className?
 function DialogTitle({ className, ...props }: ComponentProps<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
-      className={cn("font-serif-display text-[length:var(--text-section-title)] font-semibold", className)}
+      className={cn(
+        "font-serif-display text-[length:var(--text-section-title)] font-semibold",
+        className,
+      )}
       {...props}
     />
   );
@@ -52,7 +55,10 @@ function DialogDescription({
 }: ComponentProps<typeof DialogPrimitive.Description>) {
   return (
     <DialogPrimitive.Description
-      className={cn("text-[length:var(--text-supporting)] leading-6 text-muted-foreground", className)}
+      className={cn(
+        "text-[length:var(--text-supporting)] leading-6 text-muted-foreground",
+        className,
+      )}
       {...props}
     />
   );

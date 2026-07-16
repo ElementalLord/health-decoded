@@ -3,7 +3,9 @@ import "server-only";
 import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
-import { assessAiSafety, type AiSafetyResult } from "@/features/ai/services/ai-safety.server";
+import { consumeAiRequestSlot } from "@/features/ai/services/ai-rate-limit.server";
+import { AiResponseStreamNormalizer } from "@/features/ai/services/ai-response-normalizer";
+import { assessAiSafety } from "@/features/ai/services/ai-safety.server";
 import type {
   AiChatFailureCategory,
   AiChatRequest,
@@ -34,9 +36,20 @@ function inputCountBucket(count: number) {
 }
 
 function providerErrorCode(category: AiChatFailureCategory) {
+  if (category === "configuration") return "AI_CONFIGURATION_ERROR" as const;
   if (category === "rate_limited") return "AI_RATE_LIMITED" as const;
   if (category === "timeout") return "AI_TIMEOUT" as const;
   return "AI_UNAVAILABLE" as const;
+}
+
+function refusalStream(message: string): AiChatStreamResult {
+  return {
+    ok: true,
+    data: (async function* () {
+      yield { text: message, type: "delta" };
+      yield { type: "done" };
+    })(),
+  };
 }
 
 export async function createAiChatStream(
@@ -46,17 +59,8 @@ export async function createAiChatStream(
   const startedAt = Date.now();
   const correlationId = crypto.randomUUID();
   const inputCount = 1 + (input.messages?.length ?? 0);
-  const safetyCandidates = [
-    assessAiSafety(input.message),
-    ...(input.messages ?? [])
-      .filter((entry) => entry.role === "user")
-      .map((entry) => assessAiSafety(entry.content)),
-  ];
-  const safety = safetyCandidates.find(
-    (candidate): candidate is Extract<AiSafetyResult, { readonly kind: "refuse" }> =>
-      candidate.kind === "refuse",
-  );
-  const requestCategory = safety?.category ?? safetyCandidates[0]!.category;
+  const safety = assessAiSafety(input.message);
+  const requestCategory = safety.category;
   const loggingContext = {
     operation: "chat_request" as const,
     duration_bucket: durationBucket(Date.now() - startedAt),
@@ -66,15 +70,19 @@ export async function createAiChatStream(
     request_category: requestCategory,
   };
 
-  if (safety) {
+  if (safety.kind === "refuse" && safety.refusalType === "emergency") {
     logAiOperation({ ...loggingContext, outcome: "refused", refusal_type: safety.refusalType });
-    return {
-      ok: true,
-      data: (async function* () {
-        yield { text: safety.message, type: "delta" };
-        yield { type: "done" };
-      })(),
-    };
+    return refusalStream(safety.message);
+  }
+
+  if (!consumeAiRequestSlot(input.userId)) {
+    logAiOperation({ ...loggingContext, outcome: "rate_limited" });
+    return { ok: false, category: "rate_limited" };
+  }
+
+  if (safety.kind === "refuse") {
+    logAiOperation({ ...loggingContext, outcome: "refused", refusal_type: safety.refusalType });
+    return refusalStream(safety.message);
   }
 
   const context = await loadTrustedAiContext({
@@ -90,7 +98,13 @@ export async function createAiChatStream(
   const prompt = buildAiPrompt({
     context: context.data.promptContext,
     message: input.message,
-    ...(input.messages ? { messages: input.messages } : {}),
+    ...(input.messages?.length
+      ? {
+          messages: input.messages.filter(
+            (entry) => entry.role === "assistant" || assessAiSafety(entry.content).kind === "allow",
+          ),
+        }
+      : {}),
   });
 
   return {
@@ -98,6 +112,7 @@ export async function createAiChatStream(
     data: (async function* () {
       let outcome: "configuration" | "rate_limited" | "success" | "timeout" | "unexpected" =
         "success";
+      const normalizer = new AiResponseStreamNormalizer();
 
       yield {
         lessonUsed: Boolean(context.data.promptContext.lesson),
@@ -110,7 +125,8 @@ export async function createAiChatStream(
         if (signal?.aborted) return;
 
         if (event.kind === "text") {
-          yield { text: event.text, type: "delta" };
+          const normalizedText = normalizer.append(event.text);
+          if (normalizedText) yield { text: normalizedText, type: "delta" };
           continue;
         }
 
@@ -124,6 +140,17 @@ export async function createAiChatStream(
         return;
       }
 
+      const finalText = normalizer.finish();
+      if (!finalText) {
+        logAiOperation({
+          ...loggingContext,
+          duration_bucket: durationBucket(Date.now() - startedAt),
+          outcome: "unexpected",
+        });
+        yield { code: "AI_UNAVAILABLE", type: "error" };
+        return;
+      }
+      yield { text: finalText, type: "delta" };
       yield { type: "done" };
       logAiOperation({
         ...loggingContext,

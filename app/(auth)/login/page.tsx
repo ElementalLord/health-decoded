@@ -9,10 +9,10 @@ import { getSafeRedirectPath } from "@/lib/auth/redirects";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; passwordReset?: string }>;
 }) {
   const user = await getAuthenticatedUser();
-  const { next: requestedPath } = await searchParams;
+  const { next: requestedPath, passwordReset } = await searchParams;
   const next = getSafeRedirectPath(requestedPath);
 
   if (user.ok) redirect(next);
@@ -25,6 +25,11 @@ export default async function LoginPage({
         eyebrow="Sign in"
         title="Welcome back"
       />
+      {passwordReset === "1" ? (
+        <p aria-live="polite" className="text-sm text-success" role="status">
+          Your password was updated. Sign in with your new password.
+        </p>
+      ) : null}
       <AuthForm action={loginAction} mode="login" next={next} />
     </div>
   );

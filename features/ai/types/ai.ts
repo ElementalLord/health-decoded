@@ -38,7 +38,10 @@ export type AiContextMetadata = {
 export type AiChatStreamEvent =
   | { readonly type: "delta"; readonly text: string }
   | (AiContextMetadata & { readonly lessonUsed: boolean; readonly type: "context" })
-  | { readonly code: "AI_RATE_LIMITED" | "AI_TIMEOUT" | "AI_UNAVAILABLE"; readonly type: "error" }
+  | {
+      readonly code: "AI_CONFIGURATION_ERROR" | "AI_RATE_LIMITED" | "AI_TIMEOUT" | "AI_UNAVAILABLE";
+      readonly type: "error";
+    }
   | { readonly type: "done" };
 
 export type AiChatFailureCategory =

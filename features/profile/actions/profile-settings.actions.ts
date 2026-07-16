@@ -1,4 +1,5 @@
 "use server";
+
 import { revalidatePath } from "next/cache";
 
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
@@ -7,6 +8,9 @@ import {
   settingsUpdateSchema,
 } from "@/features/profile/schemas/profile-settings.schema";
 import { getServerDatabaseClient } from "@/lib/database/server";
+import { createServerLogger } from "@/lib/logging/server";
+
+const logger = createServerLogger();
 
 export type ProfileActionState = { message: string; status: "error" | "idle" | "success" };
 export async function updateDisplayNameAction(
@@ -25,9 +29,15 @@ export async function updateDisplayNameAction(
   const result = await database
     .from("profiles")
     .update({ display_name: parsed.data.displayName })
-    .eq("id", user.data.id);
-  if (result.error)
+    .eq("id", user.data.id)
+    .select("id")
+    .maybeSingle();
+  if (result.error || !result.data) {
+    logger.error("profile.update_failed", {
+      error_code: result.error?.code ?? "missing_profile",
+    });
     return { status: "error", message: "We couldn’t save your name. Please try again." };
+  }
   revalidatePath("/profile");
   revalidatePath("/journey");
   return { status: "success", message: "Your display name was saved." };
@@ -42,15 +52,23 @@ export async function updateSettingsAction(
   const user = await getAuthenticatedUser();
   if (!user.ok) return { status: "error", message: "Please sign in again." };
   const database = await getServerDatabaseClient();
-  const result = await database.from("user_settings").upsert({
-    user_id: user.data.id,
-    reduced_motion: parsed.data.reducedMotion,
-    preferred_text_scale: parsed.data.preferredTextScale,
-    locale: parsed.data.locale,
-    timezone: parsed.data.timezone,
-  });
-  if (result.error)
+  const result = await database
+    .from("user_settings")
+    .upsert({
+      user_id: user.data.id,
+      reduced_motion: parsed.data.reducedMotion,
+      preferred_text_scale: parsed.data.preferredTextScale,
+      locale: parsed.data.locale,
+      timezone: parsed.data.timezone,
+    })
+    .select("user_id")
+    .maybeSingle();
+  if (result.error || !result.data) {
+    logger.error("profile_settings.update_failed", {
+      error_code: result.error?.code ?? "missing_settings",
+    });
     return { status: "error", message: "We couldn’t save your settings. Please try again." };
+  }
   revalidatePath("/", "layout");
   return { status: "success", message: "Your settings were saved." };
 }

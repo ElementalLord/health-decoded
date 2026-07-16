@@ -34,32 +34,32 @@
 }
 
 :root {
-  --background: oklch(0.965 0.004 120);
-  --foreground: oklch(0.21 0.012 160);
-  --card: oklch(0.995 0.001 120);
-  --primary: oklch(0.38 0.04 160);
-  --primary-foreground: oklch(0.97 0.004 120);
-  --secondary: oklch(0.93 0.008 140);
-  --secondary-foreground: oklch(0.28 0.02 160);
-  --accent-warm: oklch(0.62 0.1 35);
-  --accent-warm-foreground: oklch(0.99 0 0);
-  --success: oklch(0.5 0.09 150);
-  --success-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.7 0.1 75);
-  --warning-foreground: oklch(0.25 0.03 75);
-  --info: oklch(0.9 0.02 200);
-  --info-foreground: oklch(0.28 0.03 200);
-  --muted: oklch(0.94 0.004 120);
-  --muted-foreground: oklch(0.46 0.01 160);
-  --destructive: oklch(0.5 0.1 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.87 0.005 130);
-  --input: oklch(0.84 0.006 130);
-  --ring: oklch(0.38 0.04 160);
-  --radius: 0.5rem;
-  --radius-xl: 0.75rem;
-  --shadow-card: 0 1px 2px rgb(15 30 25 / 0.04);
-  --shadow-modal: 0 20px 50px rgb(15 30 25 / 0.12), 0 6px 16px rgb(15 30 25 / 0.06);
+  --background: #f7f2ea;
+  --foreground: #342923;
+  --card: #fffaf3;
+  --primary: #3d2f29;
+  --primary-foreground: #fffaf3;
+  --secondary: #eee7dc;
+  --secondary-foreground: #3d2f29;
+  --accent-warm: #b96c55;
+  --accent-warm-foreground: #fffaf3;
+  --success: #6f947a;
+  --success-foreground: #fffaf3;
+  --warning: #c28a49;
+  --warning-foreground: #342923;
+  --info: #e5ece4;
+  --info-foreground: #31473a;
+  --muted: #efe9df;
+  --muted-foreground: #786b62;
+  --destructive: #a94f44;
+  --destructive-foreground: #fffaf3;
+  --border: #dcd2c5;
+  --input: #cfc2b3;
+  --ring: #b96c55;
+  --radius: 0.625rem;
+  --radius-xl: 1rem;
+  --shadow-card: 0 2px 0 rgb(61 47 41 / 0.06), 0 14px 30px rgb(61 47 41 / 0.05);
+  --shadow-modal: 0 24px 70px rgb(61 47 41 / 0.16), 0 5px 18px rgb(61 47 41 / 0.08);
   --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --text-caption: 0.8125rem;
@@ -67,9 +67,9 @@
   --text-body: 1rem;
   --text-lesson-heading: 1.125rem;
   --text-card-title: 1.25rem;
-  --text-feature-title: 1.5rem;
+  --text-feature-title: 1.75rem;
   --text-section-title: 1.375rem;
-  --text-page-title: 1.875rem;
+  --text-page-title: clamp(2.5rem, 7vw, 4.75rem);
   --duration-fast: 120ms;
   --duration-normal: 200ms;
   --duration-progress: 400ms;
@@ -81,7 +81,7 @@
   --text-supporting: 1rem;
   --text-card-title: 1.375rem;
   --text-section-title: 1.625rem;
-  --text-page-title: 2rem;
+  --text-page-title: clamp(2.75rem, 8vw, 5.25rem);
 }
 
 [data-text-scale="extra_large"] {
@@ -89,22 +89,21 @@
   --text-supporting: 1.125rem;
   --text-card-title: 1.5rem;
   --text-section-title: 1.75rem;
-  --text-page-title: 2.25rem;
+  --text-page-title: clamp(3rem, 9vw, 5.75rem);
 }
 
 @media (min-width: 40rem) {
   :root {
-    --text-feature-title: 1.75rem;
-    --text-section-title: 1.5rem;
-    --text-page-title: 2.25rem;
+    --text-feature-title: 2rem;
+    --text-section-title: 1.75rem;
   }
 
   [data-text-scale="large"] {
-    --text-page-title: 2.375rem;
+    --text-page-title: clamp(2.75rem, 8vw, 5.25rem);
   }
 
   [data-text-scale="extra_large"] {
-    --text-page-title: 2.5rem;
+    --text-page-title: clamp(3rem, 9vw, 5.75rem);
   }
 }
 
@@ -154,8 +153,34 @@
   .font-serif-display {
     font-family: var(--font-serif);
     font-optical-sizing: auto;
-    font-variation-settings: "opsz" 24, "SOFT" 50;
-    letter-spacing: -0.02em;
+    font-variation-settings:
+      "opsz" 24,
+      "SOFT" 65;
+    letter-spacing: -0.035em;
+  }
+
+  .editorial-eyebrow {
+    color: var(--accent-warm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .editorial-rule {
+    border-top: 1px solid var(--border);
+  }
+
+  .editorial-number {
+    color: color-mix(in srgb, var(--accent-warm) 72%, var(--background));
+    font-family: var(--font-serif);
+    font-size: clamp(4rem, 11vw, 8.5rem);
+    font-variation-settings:
+      "opsz" 72,
+      "SOFT" 50;
+    font-weight: 350;
+    letter-spacing: -0.07em;
+    line-height: 0.82;
   }
 
   .text-balance {

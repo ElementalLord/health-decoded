@@ -24,7 +24,7 @@ function ProgressBar({ value, label, className, disabled = false }: ProgressBarP
       data-disabled={disabled}
     >
       <div
-        className="h-full rounded-full bg-primary transition-[width] duration-[var(--duration-progress)] ease-[var(--ease-standard)]"
+        className="h-full rounded-full bg-accent-warm transition-[width] duration-[var(--duration-progress)] ease-[var(--ease-standard)]"
         style={{ width: `${normalizedValue}%` }}
       />
     </div>

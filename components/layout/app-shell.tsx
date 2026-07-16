@@ -18,12 +18,12 @@ function AppShell({
 }) {
   return (
     <div
-      className="flex min-h-dvh flex-col"
+      className="flex min-h-dvh flex-col bg-background"
       data-reduced-motion={preferences?.reducedMotion}
       data-text-scale={preferences?.preferredTextScale}
     >
       <a
-        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-[8px] bg-primary px-4 py-3 font-semibold text-primary-foreground shadow-modal transition-transform focus:translate-y-0"
+        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-[9px] bg-primary px-4 py-3 font-semibold text-primary-foreground shadow-modal transition-transform focus:translate-y-0"
         href="#main-content"
       >
         Skip to main content

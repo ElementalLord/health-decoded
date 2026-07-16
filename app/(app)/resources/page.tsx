@@ -13,11 +13,11 @@ export default async function ResourcesPage() {
   const resources = listReviewedResources();
 
   return (
-    <section className="mx-auto max-w-4xl space-y-10 py-6 sm:py-10">
+    <section className="mx-auto max-w-5xl space-y-12 py-6 sm:py-10">
       <PageHeader
         description="Trusted external information to explore at your own pace."
         eyebrow="Learn more"
-        title="Learning resources"
+        title="A library for the questions that linger"
       />
       <ResourcesList resources={resources} />
     </section>

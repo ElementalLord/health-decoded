@@ -7,11 +7,25 @@ import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
 export default async function SettingsPage() {
   const profile = await getCurrentProfile();
-  if (!profile.ok) return <EmptyState title="Settings unavailable" description="We could not load your settings right now." headingLevel="h1" />;
+  if (!profile.ok)
+    return (
+      <EmptyState
+        title="Settings unavailable"
+        description="We could not load your settings right now."
+        headingLevel="h1"
+      />
+    );
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
   const settings = await getProfileSettings();
-  if (!settings.ok) return <EmptyState title="Settings unavailable" description="We could not load your settings right now." headingLevel="h1" />;
+  if (!settings.ok)
+    return (
+      <EmptyState
+        title="Settings unavailable"
+        description="We could not load your settings right now."
+        headingLevel="h1"
+      />
+    );
 
   return <SettingsContent data={settings.data} />;
 }

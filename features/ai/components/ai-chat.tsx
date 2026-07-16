@@ -1,13 +1,17 @@
 "use client";
 
-import { Copy, RefreshCw, Send } from "lucide-react";
+import { ArrowRight, Copy, RefreshCw, Send, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { AiResponseContent } from "@/features/ai/components/ai-response-content";
-import { AI_MAX_MESSAGE_CHARACTERS } from "@/features/ai/constants/ai-limits";
+import {
+  AI_MAX_CONVERSATION_MESSAGES,
+  AI_MAX_MESSAGE_CHARACTERS,
+  AI_MAX_SESSION_HISTORY_BYTES,
+} from "@/features/ai/constants/ai-limits";
 import { aiChatStreamEventSchema } from "@/features/ai/schemas/ai-chat.schema";
 import type { AiRelatedContent } from "@/features/ai/types/ai";
 import { cn } from "@/lib/utils";
@@ -23,20 +27,28 @@ type ChatMessage = {
   readonly suggestedQuestions: readonly string[];
 };
 
-type ConversationSummary = {
-  readonly id: string;
-  readonly title: string;
-  readonly updatedAt: string;
-};
-
 const suggestedPrompts = [
-  "What is insulin resistance?",
-  "Can you explain today's lesson more simply?",
-  "Why does exercise help blood sugar?",
-  "What does metformin do?",
+  {
+    question: "What is insulin resistance?",
+    topic: "Start with the basics",
+  },
+  {
+    question: "Can you explain today's lesson more simply?",
+    topic: "Review today’s lesson",
+  },
+  {
+    question: "Why does exercise help blood sugar?",
+    topic: "Connect it to daily life",
+  },
+  {
+    question: "What does metformin do?",
+    topic: "Understand a medication",
+  },
 ] as const;
 
 const streamErrorMessages = {
+  AI_CONFIGURATION_ERROR:
+    "The educational assistant is not configured right now. Please try again later.",
   AI_RATE_LIMITED: "Please wait a moment before trying again.",
   AI_TIMEOUT: "That explanation took too long. Please try again.",
   AI_UNAVAILABLE: "The AI assistant is temporarily unavailable. Please try again.",
@@ -60,6 +72,32 @@ function createMessage(role: MessageRole, content = ""): ChatMessage {
   };
 }
 
+function historyBeforeRegeneration(messages: readonly ChatMessage[], question: string) {
+  let end = messages.length;
+  if (messages[end - 1]?.role === "assistant") end -= 1;
+  if (messages[end - 1]?.role === "user" && messages[end - 1]?.content.trim() === question.trim()) {
+    end -= 1;
+  }
+  return messages.slice(0, end);
+}
+
+function boundedSessionHistory(messages: readonly ChatMessage[]) {
+  const encoder = new TextEncoder();
+  const selected: { content: string; role: MessageRole }[] = [];
+  let bytes = 0;
+
+  for (const entry of messages.slice(-AI_MAX_CONVERSATION_MESSAGES).reverse()) {
+    if (!entry.content.trim()) continue;
+    const candidate = { content: entry.content, role: entry.role };
+    const candidateBytes = encoder.encode(JSON.stringify(candidate)).byteLength;
+    if (bytes + candidateBytes > AI_MAX_SESSION_HISTORY_BYTES) continue;
+    selected.unshift(candidate);
+    bytes += candidateBytes;
+  }
+
+  return selected;
+}
+
 function readStreamEvents(chunk: string, onEvent: (event: unknown) => void) {
   for (const event of chunk.split("\n\n")) {
     const data = event
@@ -78,8 +116,6 @@ function readStreamEvents(chunk: string, onEvent: (event: unknown) => void) {
 
 export function AiChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [conversationId, setConversationId] = useState<string | null>(null);
-  const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [message, setMessage] = useState("");
   const [lastQuestion, setLastQuestion] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -96,39 +132,6 @@ export function AiChat() {
     },
     [],
   );
-
-  useEffect(() => {
-    let active = true;
-    async function restoreConversation() {
-      const response = await fetch("/api/ai/conversations", { cache: "no-store" });
-      if (!response.ok || !active) return;
-      const data = (await response.json()) as { conversations?: ConversationSummary[] };
-      const recent = data.conversations ?? [];
-      setConversations(recent);
-      const latest = recent[0];
-      if (!latest) return;
-      const history = await fetch(`/api/ai/conversations/${latest.id}`, { cache: "no-store" });
-      if (!history.ok || !active) return;
-      const restored = (await history.json()) as {
-        messages?: { content: string; id: string; role: MessageRole }[];
-      };
-      setConversationId(latest.id);
-      setMessages(
-        (restored.messages ?? []).map((entry) => ({
-          content: entry.content,
-          id: entry.id,
-          lessonContextUsed: false,
-          relatedContent: [],
-          role: entry.role,
-          suggestedQuestions: [],
-        })),
-      );
-    }
-    void restoreConversation();
-    return () => {
-      active = false;
-    };
-  }, []);
 
   useEffect(() => {
     if (!messages.length) return;
@@ -162,7 +165,6 @@ export function AiChat() {
   function setAssistantContext(
     assistantId: string,
     context: {
-      readonly conversationId?: string | undefined;
       readonly lessonUsed: boolean;
       readonly relatedContent: readonly AiRelatedContent[];
       readonly suggestedQuestions: readonly string[];
@@ -180,7 +182,6 @@ export function AiChat() {
           : entry,
       ),
     );
-    if (context.conversationId) setConversationId(context.conversationId);
   }
 
   async function ask(question: string, regenerate = false) {
@@ -192,6 +193,14 @@ export function AiChat() {
     setLastQuestion(question);
 
     const assistantMessage = createMessage("assistant");
+    const priorMessages = regenerate ? historyBeforeRegeneration(messages, question) : messages;
+    const sessionHistory = boundedSessionHistory(priorMessages);
+    const removeEmptyAssistant = () =>
+      setMessages((current) =>
+        current.filter(
+          (entry) => entry.id !== assistantMessage.id || Boolean(entry.content.trim()),
+        ),
+      );
 
     if (regenerate) {
       setMessages((current) => [...current, assistantMessage]);
@@ -205,7 +214,7 @@ export function AiChat() {
       const response = await fetch("/api/ai/chat", {
         body: JSON.stringify({
           message: question,
-          ...(conversationId ? { conversationId } : {}),
+          ...(sessionHistory.length ? { messages: sessionHistory } : {}),
         }),
         headers: { accept: "text/event-stream", "content-type": "application/json" },
         method: "POST",
@@ -221,6 +230,7 @@ export function AiChat() {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
+      let receivedDone = false;
       let streamFailed = false;
 
       while (!controller.signal.aborted) {
@@ -248,6 +258,8 @@ export function AiChat() {
           } else if (event.data.type === "error") {
             streamFailed = true;
             setError(streamErrorMessages[event.data.code]);
+          } else if (event.data.type === "done") {
+            receivedDone = true;
           }
         });
 
@@ -256,9 +268,17 @@ export function AiChat() {
           break;
         }
       }
+
+      if (!controller.signal.aborted && (streamFailed || !receivedDone)) {
+        if (!streamFailed) {
+          setError("The AI assistant stopped before finishing. Please try again.");
+        }
+        removeEmptyAssistant();
+      }
     } catch (caught) {
       if (!(caught instanceof DOMException && caught.name === "AbortError")) {
         setError("The AI assistant is temporarily unavailable. Please try again.");
+        removeEmptyAssistant();
       }
     } finally {
       setIsStreaming(false);
@@ -286,83 +306,33 @@ export function AiChat() {
 
   function startNewConversation() {
     if (isStreaming) return;
-    setConversationId(null);
     setMessages([]);
     setError(null);
     setLastQuestion(null);
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
-  function exportConversation() {
-    if (!messages.length) return;
-    const text = messages
-      .filter((entry) => entry.content.trim())
-      .map(
-        (entry) =>
-          `## ${entry.role === "assistant" ? "Health Decoded AI" : "You"}\n\n${entry.content}`,
-      )
-      .join("\n\n");
-    const download = document.createElement("a");
-    download.href = URL.createObjectURL(new Blob([text], { type: "text/markdown;charset=utf-8" }));
-    download.download = "health-decoded-conversation.md";
-    document.body.append(download);
-    download.click();
-    download.remove();
-    URL.revokeObjectURL(download.href);
-  }
-
   return (
     <div className="mt-7 flex min-h-0 flex-1 flex-col sm:mt-8">
+      <aside
+        aria-label="Educational safety notice"
+        className="mb-6 flex gap-3 border-y border-accent-warm/35 bg-[#f2e7df] px-4 py-4 text-sm leading-6"
+        id="ai-safety-notice"
+        role="note"
+      >
+        <ShieldCheck aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-accent-warm" />
+        <div>
+          <p className="font-semibold text-foreground">Educational support only</p>
+          <p className="text-muted-foreground">
+            Health Decoded explains learning topics. It does not diagnose, interpret personal
+            results, or recommend treatments or medication changes. For urgent symptoms, contact
+            local emergency services.
+          </p>
+        </div>
+      </aside>
       <div className="mb-4 flex items-center justify-between gap-3">
-        <details className="min-w-0 text-sm">
-          <summary className="cursor-pointer font-semibold text-foreground">
-            Recent conversations
-          </summary>
-          <div className="mt-2 max-h-40 w-64 overflow-y-auto rounded-md border border-border bg-card p-2">
-            {conversations.length ? (
-              conversations.map((conversation) => (
-                <button
-                  className="w-full rounded-sm px-2 py-2 text-left text-sm hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  key={conversation.id}
-                  onClick={() => {
-                    if (conversation.id === conversationId) return;
-                    void fetch(`/api/ai/conversations/${conversation.id}`, { cache: "no-store" })
-                      .then(async (response) => (response.ok ? response.json() : null))
-                      .then((data: { messages?: ChatMessage[] } | null) => {
-                        if (!data) return;
-                        setConversationId(conversation.id);
-                        setMessages(
-                          (data.messages ?? []).map((entry) => ({
-                            ...entry,
-                            lessonContextUsed: false,
-                            relatedContent: [],
-                            suggestedQuestions: [],
-                          })),
-                        );
-                      });
-                  }}
-                  type="button"
-                >
-                  {conversation.title}
-                </button>
-              ))
-            ) : (
-              <p className="px-2 py-2 text-muted-foreground">No saved conversations yet.</p>
-            )}
-          </div>
-        </details>
+        <p className="text-sm text-muted-foreground">This conversation clears when you leave.</p>
         <div className="flex items-center gap-2">
-          {messages.length ? (
-            <Button
-              fullWidth={false}
-              onClick={exportConversation}
-              size="sm"
-              type="button"
-              variant="text"
-            >
-              Export
-            </Button>
-          ) : null}
           <Button
             fullWidth={false}
             onClick={startNewConversation}
@@ -390,16 +360,18 @@ export function AiChat() {
               >
                 <div
                   className={cn(
-                    "max-w-[88%] sm:max-w-[82%]",
+                    "max-w-[92%] sm:max-w-[86%]",
                     isAssistant
-                      ? "rounded-[14px] border border-border bg-card px-5 py-4 sm:px-6 sm:py-5"
-                      : "rounded-[12px] bg-muted px-4 py-3 text-foreground",
+                      ? "border-l-2 border-success bg-info/55 px-5 py-4 sm:px-7 sm:py-5"
+                      : "rounded-[9px] border border-accent-warm/25 bg-[#f3e4dc] px-4 py-3 text-foreground shadow-[0_2px_0_rgb(61_47_41/0.06)]",
                   )}
                 >
                   {isAssistant ? (
                     entry.content ? (
                       <>
-                        <p className="mb-3 text-sm font-semibold text-primary">Health Decoded AI</p>
+                        <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-success">
+                          Health Decoded guide
+                        </p>
                         <AiResponseContent content={entry.content} />
                         {entry.relatedContent.length ? (
                           <div className="mt-4 border-t border-border pt-3">
@@ -459,21 +431,22 @@ export function AiChat() {
                           </div>
                         ) : null}
                         {!isStreaming && isLatestAssistant && entry.suggestedQuestions.length ? (
-                          <div className="mt-4 border-t border-border pt-3">
-                            <p className="text-sm font-semibold text-foreground">You might ask</p>
-                            <div className="mt-2 flex flex-wrap gap-2">
+                          <div className="mt-6 border-t border-border pt-5">
+                            <p className="editorial-eyebrow">Continue exploring</p>
+                            <div className="mt-3 divide-y divide-border border-y border-border">
                               {entry.suggestedQuestions.map((suggestion) => (
-                                <Button
-                                  className="h-auto min-h-9 whitespace-normal px-3 py-2 text-left"
-                                  fullWidth={false}
+                                <button
+                                  className="group flex min-h-16 w-full items-center justify-between gap-5 py-4 text-left leading-6 transition hover:px-2 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
                                   key={suggestion}
                                   onClick={() => void ask(suggestion)}
-                                  size="sm"
                                   type="button"
-                                  variant="secondary"
                                 >
-                                  {suggestion}
-                                </Button>
+                                  <span>{suggestion}</span>
+                                  <ArrowRight
+                                    aria-hidden="true"
+                                    className="size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary"
+                                  />
+                                </button>
                               ))}
                             </div>
                           </div>
@@ -501,44 +474,62 @@ export function AiChat() {
             );
           })
         ) : (
-          <div className="space-y-7 py-4 sm:py-8">
+          <div className="space-y-8 py-5 sm:py-9">
             <div className="max-w-xl space-y-3">
-              <h2 className="font-serif-display text-[length:var(--text-section-title)] font-semibold tracking-tight">
+              <h2 className="font-serif-display text-3xl font-normal tracking-tight sm:text-4xl">
                 How can I help today?
               </h2>
               <p className="text-pretty leading-7 text-muted-foreground">
-                You can ask about today&apos;s lesson, medications, Type 2 diabetes concepts, healthy
-                habits, or any terms you don&apos;t understand.
+                You can ask about today&apos;s lesson, medications, Type 2 diabetes concepts,
+                healthy habits, or any terms you don&apos;t understand.
               </p>
             </div>
 
-            <div aria-label="Suggested questions" className="grid gap-2.5 sm:grid-cols-2">
-              {suggestedPrompts.map((prompt) => (
-                <Button
-                  className="min-h-14 justify-start whitespace-normal rounded-[12px] px-5 py-3.5 text-left font-medium"
-                  fullWidth
-                  key={prompt}
-                  onClick={() => void ask(prompt)}
-                  type="button"
-                  variant="secondary"
-                >
-                  {prompt}
-                </Button>
-              ))}
-            </div>
+            <section aria-labelledby="suggested-questions-title" className="space-y-5">
+              <div className="space-y-2">
+                <h3 className="editorial-eyebrow" id="suggested-questions-title">
+                  A few places to begin
+                </h3>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  Choose one path, or write a question of your own below.
+                </p>
+              </div>
+              <ol className="divide-y divide-border border-y border-border">
+                {suggestedPrompts.map((prompt, index) => (
+                  <li key={prompt.question}>
+                    <button
+                      className="group grid min-h-24 w-full items-center gap-3 py-6 text-left transition hover:px-3 hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:gap-7"
+                      onClick={() => void ask(prompt.question)}
+                      type="button"
+                    >
+                      <span className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                        {String(index + 1).padStart(2, "0")} · {prompt.topic}
+                      </span>
+                      <span className="font-serif-display text-xl font-normal leading-7 text-foreground sm:text-2xl">
+                        {prompt.question}
+                      </span>
+                      <ArrowRight
+                        aria-hidden="true"
+                        className="hidden size-5 shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary sm:block"
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </section>
           </div>
         )}
         <div ref={conversationEndRef} />
       </section>
 
       <form
-        className="safe-area-bottom border-t border-border bg-background pt-4"
+        className="safe-area-bottom border-t border-border bg-background pt-5"
         onSubmit={submit}
       >
         <label className="grid gap-2 text-sm font-semibold" htmlFor="ai-question">
           Your question
           <Textarea
-            aria-describedby={error ? "ai-request-error" : "ai-question-help"}
+            aria-describedby={error ? "ai-request-error" : "ai-safety-notice"}
             aria-invalid={Boolean(error) || undefined}
             className="max-h-40 min-h-12 resize-none"
             disabled={isStreaming}
@@ -560,10 +551,7 @@ export function AiChat() {
             value={message}
           />
         </label>
-        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm leading-6 text-muted-foreground" id="ai-question-help">
-            This is educational support, not medical advice.
-          </p>
+        <div className="mt-3 flex justify-end">
           <Button disabled={isStreaming || !message.trim()} fullWidth={false} type="submit">
             <Send aria-hidden="true" className="size-4" />
             Send

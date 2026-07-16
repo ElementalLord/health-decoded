@@ -18,17 +18,26 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
   return (
     <div className="space-y-10">
       {Object.entries(Object.groupBy(resources, ({ category }) => category)).map(
-        ([category, items]) => {
+        ([category, items], sectionIndex) => {
           const sectionId = getResourceSectionId(category);
 
           return (
-            <section aria-labelledby={sectionId} key={category}>
-              <h2
-                className="mb-4 font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
-                id={sectionId}
-              >
-                {category}
-              </h2>
+            <section
+              aria-labelledby={sectionId}
+              className={sectionIndex % 2 === 1 ? "sm:ml-16" : undefined}
+              key={category}
+            >
+              <div className="mb-5 flex items-end gap-4">
+                <span className="font-serif-display text-5xl font-light text-[#c9bdb1]">
+                  {String(sectionIndex + 1).padStart(2, "0")}
+                </span>
+                <h2
+                  className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
+                  id={sectionId}
+                >
+                  {category}
+                </h2>
+              </div>
               <ul className="divide-y divide-border border-y border-border">
                 {items?.map((resource) => (
                   <li className="py-6" key={resource.id}>

@@ -18,22 +18,18 @@ function PageHeader({
   ...props
 }: PageHeaderProps) {
   return (
-    <header className={cn("max-w-2xl space-y-3", className)} {...props}>
-      {eyebrow ? (
-        <p className="text-[length:var(--text-supporting)] font-semibold uppercase tracking-[0.1em] text-primary">
-          {eyebrow}
-        </p>
-      ) : null}
+    <header className={cn("max-w-3xl space-y-4", className)} {...props}>
+      {eyebrow ? <p className="editorial-eyebrow">{eyebrow}</p> : null}
       <h1
         className={cn(
-          "font-serif-display font-semibold text-balance",
-          compact ? "text-[length:var(--text-card-title)]" : "text-[length:var(--text-page-title)]",
+          "font-serif-display font-medium leading-[0.98] text-balance",
+          compact ? "text-3xl sm:text-4xl" : "text-[length:var(--text-page-title)]",
         )}
       >
         {title}
       </h1>
       {description ? (
-        <p className="text-pretty text-[length:var(--text-supporting)] leading-7 text-muted-foreground">
+        <p className="max-w-2xl text-pretty text-[length:var(--text-body)] leading-8 text-muted-foreground">
           {description}
         </p>
       ) : null}
