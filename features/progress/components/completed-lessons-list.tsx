@@ -28,7 +28,7 @@ export function CompletedLessonsList({ entries }: { entries: CompletedLessonHist
       </div>
 
       {entries.length ? (
-        <ul className="divide-y divide-border border-y border-border">
+        <ul className="stagger-children divide-y divide-border border-y border-border">
           {entries.map((entry) => (
             <li
               className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between"

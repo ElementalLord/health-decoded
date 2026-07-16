@@ -38,7 +38,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
                   {category}
                 </h2>
               </div>
-              <ul className="divide-y divide-border border-y border-border">
+              <ul className="stagger-children divide-y divide-border border-y border-border">
                 {items?.map((resource) => (
                   <li className="py-6" key={resource.id}>
                     <article className="max-w-2xl space-y-2.5">

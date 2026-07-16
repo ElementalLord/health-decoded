@@ -23,7 +23,7 @@ function EmptyState({
 
   return (
     <section className={cn("px-4 py-16 text-center sm:px-8", className)}>
-      <div className="mx-auto flex max-w-md flex-col items-center gap-5">
+      <div className="animate-empty-state mx-auto flex max-w-md flex-col items-center gap-5">
         {icon ? (
           <div
             aria-hidden="true"
