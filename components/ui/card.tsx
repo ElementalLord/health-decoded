@@ -4,7 +4,7 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "rounded-[var(--radius-xl)] border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-6",
+  "card-hover rounded-[var(--radius-xl)] border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-6",
   {
     variants: {
       tone: {

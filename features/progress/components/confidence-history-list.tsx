@@ -24,7 +24,7 @@ export function ConfidenceHistoryList({ entries }: { entries: ConfidenceHistoryE
       </div>
 
       {entries.length ? (
-        <ul className="divide-y divide-border border-y border-border">
+        <ul className="stagger-children divide-y divide-border border-y border-border">
           {entries.map((entry) => (
             <li
               className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-5"

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 export function StoryList({ stories }: { stories: StoryViewModel[] }) {
   return (
-    <ul className="border-y border-border">
+    <ul className="stagger-children border-y border-border">
       {stories.map((story, index) => (
         <li className="border-b border-border py-8 last:border-b-0 sm:py-10" key={story.slug}>
           <article

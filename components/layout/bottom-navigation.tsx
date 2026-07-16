@@ -45,7 +45,7 @@ function BottomNavigation({
       >
         <ul
           className={cn(
-            "mx-auto grid max-w-md items-center",
+            "stagger-children mx-auto grid max-w-md items-center",
             routes.length === 6 ? "grid-cols-6" : "grid-cols-5",
           )}
         >
