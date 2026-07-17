@@ -57,11 +57,20 @@ const DayFiveExperience = dynamic(
   { loading: ExperienceLoading },
 );
 
+const DaySixExperience = dynamic(
+  () =>
+    import("@/features/lessons/components/day-six-experience").then(
+      (module) => module.DaySixExperience,
+    ),
+  { loading: ExperienceLoading },
+);
+
 export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   if (lesson.dayNumber === 1) return <FirstFiveMinutesExperience lesson={lesson} />;
   if (lesson.dayNumber === 2) return <DayTwoExperience lesson={lesson} />;
   if (lesson.dayNumber === 3) return <DayThreeExperience lesson={lesson} />;
   if (lesson.dayNumber === 4) return <DayFourExperience lesson={lesson} />;
   if (lesson.dayNumber === 5) return <DayFiveExperience lesson={lesson} />;
+  if (lesson.dayNumber === 6) return <DaySixExperience lesson={lesson} />;
   return <StandardLessonPlayer lesson={lesson} />;
 }
