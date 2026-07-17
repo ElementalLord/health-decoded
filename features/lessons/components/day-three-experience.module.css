@@ -1,0 +1,128 @@
+.trace {
+  stroke-dasharray: 520;
+  stroke-dashoffset: 520;
+  animation: draw-trace 1.1s var(--ease-standard) forwards;
+}
+
+.pulseDot {
+  animation: dot-breathe 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.shutter {
+  animation: shutter-close 620ms var(--ease-standard) both;
+}
+
+.redCell {
+  animation: cell-drift 5.5s ease-in-out infinite;
+}
+
+.redCell:nth-child(2n) {
+  animation-delay: -1.6s;
+}
+
+.redCell:nth-child(3n) {
+  animation-delay: -3.2s;
+}
+
+.memoryWeek {
+  animation: week-arrive 320ms var(--ease-standard) both;
+}
+
+.weatherMark {
+  animation: weather-settle 500ms var(--ease-spring) both;
+}
+
+.truthLine {
+  transform-origin: left;
+  animation: truth-line 640ms var(--ease-standard) both;
+}
+
+@keyframes draw-trace {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dot-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes shutter-close {
+  0% {
+    opacity: 0;
+    transform: scale(1.18) rotate(-8deg);
+  }
+  55% {
+    opacity: 0.9;
+    transform: scale(0.92) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes cell-drift {
+  0%,
+  100% {
+    transform: translate3d(0, -2px, 0) rotate(-2deg);
+  }
+  50% {
+    transform: translate3d(4px, 4px, 0) rotate(3deg);
+  }
+}
+
+@keyframes week-arrive {
+  from {
+    opacity: 0.2;
+    transform: translateY(5px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes weather-settle {
+  from {
+    opacity: 0;
+    transform: translateY(-7px) rotate(-5deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+}
+
+@keyframes truth-line {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trace,
+  .pulseDot,
+  .shutter,
+  .redCell,
+  .memoryWeek,
+  .weatherMark,
+  .truthLine {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
