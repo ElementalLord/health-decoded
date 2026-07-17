@@ -1,0 +1,307 @@
+.toolGarden {
+  animation: tool-garden-arrive 720ms var(--ease-spring) both;
+}
+
+.toolGarden::before,
+.toolGarden::after {
+  position: absolute;
+  bottom: 1.25rem;
+  width: 5rem;
+  height: 8rem;
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+  border-radius: 70% 70% 18% 18%;
+  content: "";
+}
+
+.toolGarden::before {
+  left: -1.5rem;
+  transform: rotate(14deg);
+}
+
+.toolGarden::after {
+  right: -1.5rem;
+  transform: rotate(-14deg);
+}
+
+.pathOpening {
+  animation: path-opening-arrive 520ms var(--ease-spring) both;
+}
+
+.timeframe {
+  animation: timeframe-arrive 520ms var(--ease-spring) both;
+  transition:
+    background-color 240ms ease,
+    transform 240ms var(--ease-standard);
+}
+
+.timeframe[aria-pressed="true"] {
+  transform: translateY(-4px);
+}
+
+.dayRibbon::before {
+  position: absolute;
+  top: 50%;
+  right: 4%;
+  left: 4%;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-accent-warm) 22%, transparent);
+  content: "";
+}
+
+.dayRibbon > div {
+  position: relative;
+  z-index: 1;
+}
+
+.deskPerson {
+  transform-origin: bottom center;
+  transition: transform 460ms var(--ease-spring);
+}
+
+.deskPersonAwake {
+  transform: translateY(-0.8rem) rotate(-2deg);
+}
+
+.sittingMarker {
+  transition:
+    background-color 220ms ease,
+    transform 300ms var(--ease-spring);
+}
+
+.sittingMarker[aria-pressed="true"] {
+  transform: translateY(-0.55rem);
+}
+
+.minuteVessel {
+  position: relative;
+}
+
+.minuteVessel::before {
+  position: absolute;
+  inset: 1rem;
+  pointer-events: none;
+  border: 1px dashed color-mix(in srgb, var(--color-success) 24%, transparent);
+  border-radius: inherit;
+  content: "";
+}
+
+.minuteDot {
+  position: absolute;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 2px solid rgb(131 94 45 / 36%);
+  border-radius: 999px;
+  background: #dfa13c;
+  box-shadow: 0 3px 8px rgb(66 41 21 / 13%);
+  animation: minute-drop 440ms var(--ease-spring) both;
+}
+
+.sequenceTrack > * {
+  animation: sequence-arrive 420ms var(--ease-spring) both;
+}
+
+.contextOrbit::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: 5rem;
+  height: 5rem;
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+  border-radius: 999px;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.contextOrbit > button {
+  position: relative;
+  z-index: 1;
+}
+
+.rerouteDoor {
+  transform-origin: left center;
+  transition:
+    background-color 220ms ease,
+    transform 360ms var(--ease-spring);
+}
+
+.rerouteDoor[aria-pressed="true"] {
+  transform: perspective(800px) rotateY(-3deg) translateY(-4px);
+}
+
+.habitBridge::before {
+  position: absolute;
+  top: 50%;
+  right: 8%;
+  left: 8%;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-success) 28%, transparent);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.confidenceDial {
+  transition: border-color 260ms ease;
+}
+
+.confidenceDial input[type="range"] {
+  min-height: 2.75rem;
+}
+
+.safetyPocket {
+  position: relative;
+  overflow: hidden;
+  transition:
+    min-height 360ms var(--ease-spring),
+    background-color 220ms ease;
+}
+
+.safetyPocket::after {
+  position: absolute;
+  right: -2rem;
+  bottom: -3.5rem;
+  width: 13rem;
+  height: 9rem;
+  border: 1px solid color-mix(in srgb, var(--color-success) 24%, transparent);
+  border-radius: 50%;
+  content: "";
+}
+
+.scenarioPaper {
+  animation: scenario-paper-arrive 520ms var(--ease-spring) both;
+}
+
+.friendNote {
+  transition:
+    background-color 220ms ease,
+    transform 260ms var(--ease-spring);
+}
+
+.friendNote:nth-child(2) {
+  margin-left: clamp(0rem, 3vw, 2rem);
+}
+
+.friendNote:nth-child(3) {
+  margin-left: clamp(0rem, 6vw, 4rem);
+}
+
+.friendNote[aria-pressed="true"] {
+  transform: translateX(0.5rem);
+}
+
+.planPortrait {
+  position: relative;
+}
+
+.planPortrait::before {
+  position: absolute;
+  top: -0.7rem;
+  left: 12%;
+  width: 7rem;
+  height: 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--color-accent-warm) 28%, transparent);
+  background: color-mix(in srgb, var(--color-background) 74%, transparent);
+  content: "";
+  transform: rotate(-2deg);
+}
+
+@keyframes tool-garden-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes path-opening-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes timeframe-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes minute-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-2rem) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sequence-arrive {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scenario-paper-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(10px) rotate(-0.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+}
+
+@media (max-width: 767px) {
+  .dayRibbon::before,
+  .habitBridge::before,
+  .contextOrbit::before {
+    display: none;
+  }
+
+  .friendNote:nth-child(2),
+  .friendNote:nth-child(3) {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolGarden,
+  .pathOpening,
+  .timeframe,
+  .minuteDot,
+  .sequenceTrack > *,
+  .scenarioPaper {
+    animation: none;
+  }
+
+  .timeframe,
+  .deskPerson,
+  .sittingMarker,
+  .rerouteDoor,
+  .confidenceDial,
+  .safetyPocket,
+  .friendNote {
+    transition: none;
+  }
+}
