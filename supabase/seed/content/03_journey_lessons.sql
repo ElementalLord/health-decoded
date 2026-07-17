@@ -46,3 +46,29 @@ on conflict (id) do update set
   reviewed_by = excluded.reviewed_by,
   reviewed_at = excluded.reviewed_at,
   published_at = excluded.published_at;
+
+insert into public.journey_lessons (
+  id, journey_id, lesson_id, day_number, display_order, prerequisite_journey_lesson_id,
+  status, reviewed_by, reviewed_at, published_at
+) values (
+  '30000000-0000-0000-0000-000000000003',
+  '10000000-0000-0000-0000-000000000001',
+  '20000000-0000-0000-0000-000000000003',
+  3,
+  3,
+  '30000000-0000-0000-0000-000000000002',
+  'published',
+  'Health Decoded curriculum blueprint and Day 3 manuscript',
+  '2026-07-16T00:00:00Z',
+  '2026-07-16T00:00:00Z'
+)
+on conflict (id) do update set
+  journey_id = excluded.journey_id,
+  lesson_id = excluded.lesson_id,
+  day_number = excluded.day_number,
+  display_order = excluded.display_order,
+  prerequisite_journey_lesson_id = excluded.prerequisite_journey_lesson_id,
+  status = excluded.status,
+  reviewed_by = excluded.reviewed_by,
+  reviewed_at = excluded.reviewed_at,
+  published_at = excluded.published_at;
