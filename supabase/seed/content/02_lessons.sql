@@ -92,3 +92,35 @@ on conflict (id) do update set
   reviewed_by = excluded.reviewed_by,
   reviewed_at = excluded.reviewed_at,
   published_at = excluded.published_at;
+
+insert into public.lessons (
+  id, slug, title, subtitle, primary_topic, learning_objective, estimated_minutes,
+  content_blocks, key_takeaway, status, reviewed_by, reviewed_at, published_at
+) values (
+  '20000000-0000-0000-0000-000000000004',
+  'food-isnt-the-enemy',
+  'Food Isn''t the Enemy',
+  'Build balanced meals without turning food into a list of fears',
+  'Carbohydrates, fiber, balanced meals, and the plate method',
+  'Explain how carbohydrate-containing foods affect blood glucose, identify common carbohydrate foods, and build one balanced meal using the plate method.',
+  13,
+  '[{"type":"summary","title":"Four permissions to carry forward","points":["Food provides nourishment, culture, connection, and celebration.","Carbohydrate foods affect blood glucose but do not need to disappear.","Fiber, protein, vegetables, portions, and meal context can add balance.","Longer eating patterns matter more than judging one meal."]}]'::jsonb,
+  'Food is not the enemy: carbohydrate can remain, balance can be added, and one meal is not a verdict.',
+  'published',
+  'Health Decoded curriculum blueprint and Day 4 manuscript',
+  '2026-07-17T00:00:00Z',
+  '2026-07-17T00:00:00Z'
+)
+on conflict (id) do update set
+  slug = excluded.slug,
+  title = excluded.title,
+  subtitle = excluded.subtitle,
+  primary_topic = excluded.primary_topic,
+  learning_objective = excluded.learning_objective,
+  estimated_minutes = excluded.estimated_minutes,
+  content_blocks = excluded.content_blocks,
+  key_takeaway = excluded.key_takeaway,
+  status = excluded.status,
+  reviewed_by = excluded.reviewed_by,
+  reviewed_at = excluded.reviewed_at,
+  published_at = excluded.published_at;

@@ -41,9 +41,18 @@ const DayThreeExperience = dynamic(
   { loading: ExperienceLoading },
 );
 
+const DayFourExperience = dynamic(
+  () =>
+    import("@/features/lessons/components/day-four-experience").then(
+      (module) => module.DayFourExperience,
+    ),
+  { loading: ExperienceLoading },
+);
+
 export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   if (lesson.dayNumber === 1) return <FirstFiveMinutesExperience lesson={lesson} />;
   if (lesson.dayNumber === 2) return <DayTwoExperience lesson={lesson} />;
   if (lesson.dayNumber === 3) return <DayThreeExperience lesson={lesson} />;
+  if (lesson.dayNumber === 4) return <DayFourExperience lesson={lesson} />;
   return <StandardLessonPlayer lesson={lesson} />;
 }
