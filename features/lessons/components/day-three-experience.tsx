@@ -86,16 +86,16 @@ const dailyMoments = [
     id: "morning",
     label: "Before breakfast",
     note: "One morning snapshot",
-    x: 80,
-    y: 132,
+    x: 100,
+    y: 145,
   },
   {
     body: "Glucose often rises after carbohydrate-containing food is digested. The amount and timing vary.",
     id: "meal",
     label: "After a meal",
     note: "A natural rise",
-    x: 280,
-    y: 62,
+    x: 300,
+    y: 78,
   },
   {
     body: "Active muscles can use glucose. Movement is one of many things that can influence the next reading.",
@@ -103,7 +103,7 @@ const dailyMoments = [
     label: "After movement",
     note: "The curve can shift again",
     x: 470,
-    y: 112,
+    y: 132,
   },
   {
     body: "Sleep, stress, illness, food, movement, and medicines may all shape the day. No single curve is universal.",
@@ -111,7 +111,7 @@ const dailyMoments = [
     label: "Later that day",
     note: "Another moment, more context",
     x: 650,
-    y: 88,
+    y: 118,
   },
 ] as const;
 
@@ -145,6 +145,25 @@ const curveFactors = [
 ] as const;
 
 type CurveFactorId = (typeof curveFactors)[number]["id"];
+
+const timeLenses = [
+  {
+    body: "A blood-glucose reading reports the glucose concentration when that sample was taken. Timing and context help explain it.",
+    id: "snapshot",
+    label: "Blood-glucose reading",
+    limit: "It cannot summarize the weeks before or after that moment.",
+    window: "One moment",
+  },
+  {
+    body: "A1C estimates average glucose exposure across red blood cells of different ages, giving a wider view across roughly two to three months.",
+    id: "pattern",
+    label: "A1C",
+    limit: "It cannot replay every individual rise, fall, meal, or day.",
+    window: "Roughly 2–3 months",
+  },
+] as const;
+
+type TimeLensId = (typeof timeLenses)[number]["id"];
 
 const testWindows = [
   {
@@ -320,13 +339,17 @@ function DailyTrace({ selectedMoment }: { selectedMoment: DailyMomentId | null }
       className="overflow-hidden rounded-[1rem] border border-accent-warm/25 bg-[#f1e7de] p-4 sm:p-6"
       role="img"
     >
-      <svg aria-hidden="true" className="h-auto w-full" viewBox="0 0 720 220">
-        <path d="M20 172H700" stroke="#d9c9ba" strokeWidth="2" />
-        <path d="M20 35V172" stroke="#d9c9ba" strokeWidth="2" />
+      <svg aria-hidden="true" className="h-auto w-full" viewBox="0 0 720 240">
+        <text fill="#786b62" fontSize="13" x="42" y="24">
+          Illustrative change—not a target range
+        </text>
+        <path d="M42 180H690" stroke="#d9c9ba" strokeWidth="2" />
+        <path d="M42 34V180" stroke="#d9c9ba" strokeWidth="2" />
         <path
           className={styles.trace}
-          d="M20 140 C90 128, 130 136, 185 122 C225 111, 236 58, 285 58 C344 58, 360 124, 425 122 C500 119, 514 78, 564 86 C620 94, 646 76, 700 90"
+          d="M42 154 C100 142, 150 146, 220 137 C260 132, 270 78, 300 78 C350 78, 370 132, 440 132 C500 132, 530 110, 580 118 C620 124, 650 118, 690 108"
           fill="none"
+          pathLength="1"
           stroke="#b96c55"
           strokeLinecap="round"
           strokeWidth="7"
@@ -344,13 +367,13 @@ function DailyTrace({ selectedMoment }: { selectedMoment: DailyMomentId | null }
             />
           </g>
         ))}
-        <text fill="#786b62" fontSize="14" x="20" y="205">
+        <text fill="#786b62" fontSize="14" x="42" y="215">
           Morning
         </text>
-        <text fill="#786b62" fontSize="14" textAnchor="middle" x="360" y="205">
+        <text fill="#786b62" fontSize="14" textAnchor="middle" x="360" y="215">
           Afternoon
         </text>
-        <text fill="#786b62" fontSize="14" textAnchor="end" x="700" y="205">
+        <text fill="#786b62" fontSize="14" textAnchor="end" x="690" y="215">
           Evening
         </text>
       </svg>
@@ -373,9 +396,12 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
   const [selectedMoment, setSelectedMoment] = useState<DailyMomentId | null>(null);
   const [viewedFactors, setViewedFactors] = useState<Set<CurveFactorId>>(() => new Set());
   const [selectedFactor, setSelectedFactor] = useState<CurveFactorId | null>(null);
-  const [lensPosition, setLensPosition] = useState(8);
-  const [memoryDays, setMemoryDays] = useState(14);
-  const [mosaicChanged, setMosaicChanged] = useState(false);
+  const [viewedTimeLenses, setViewedTimeLenses] = useState<Set<TimeLensId>>(() => new Set());
+  const [selectedTimeLens, setSelectedTimeLens] = useState<TimeLensId | null>(null);
+  const [a1cWindowReviewed, setA1cWindowReviewed] = useState(false);
+  const [patternComparisonChoice, setPatternComparisonChoice] = useState<
+    "one_day" | "repeated_pattern" | null
+  >(null);
   const [viewedTests, setViewedTests] = useState<Set<TestWindowId>>(() => new Set());
   const [selectedTest, setSelectedTest] = useState<TestWindowId | null>(null);
   const [viewedThresholds, setViewedThresholds] = useState<Set<DiagnosticThresholdId>>(
@@ -452,6 +478,11 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
     setViewedFactors((current) => new Set([...current, id]));
   }
 
+  function openTimeLens(id: TimeLensId) {
+    setSelectedTimeLens(id);
+    setViewedTimeLenses((current) => new Set([...current, id]));
+  }
+
   function openTest(id: TestWindowId) {
     setSelectedTest(id);
     setViewedTests((current) => new Set([...current, id]));
@@ -519,9 +550,10 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
     if (stage === 1) return measurementParts.size === measurementLayers.length;
     if (stage === 2) return viewedMoments.size === dailyMoments.length;
     if (stage === 3) return viewedFactors.size === curveFactors.length;
-    if (stage === 4) return lensPosition >= 72 && Boolean(evaluations.window);
-    if (stage === 5) return memoryDays >= 84;
-    if (stage === 6) return mosaicChanged;
+    if (stage === 4)
+      return viewedTimeLenses.size === timeLenses.length && Boolean(evaluations.window);
+    if (stage === 5) return a1cWindowReviewed;
+    if (stage === 6) return patternComparisonChoice !== null;
     if (stage === 7) return viewedTests.size === testWindows.length;
     if (stage === 8) return viewedThresholds.size === diagnosticThresholds.length;
     if (stage === 9) return Boolean(evaluations.threshold);
@@ -538,9 +570,9 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
       "Open all three parts of a blood-glucose measurement.",
       "Explore all four moments on the daily curve.",
       "Open all four influences that can shape a day.",
-      "Move the lens toward the three-month view, then answer the question.",
-      "Move through at least twelve weeks of the A1C time window.",
-      "Change one day in the ninety-day mosaic.",
+      "Open both time windows, then answer the question.",
+      "Reveal how A1C gathers information across roughly two to three months.",
+      "Compare the meaning of one unusual day with a repeated pattern.",
       "Open all four testing windows.",
       "Review all four diagnostic thresholds.",
       "Choose what a diagnostic threshold does.",
@@ -558,9 +590,9 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
       "Give the number one job",
       "Watch a day change",
       "See what shapes the curve",
-      "Widen the time window",
+      "Compare the time windows",
       "Meet the A1C test",
-      "Change one day",
+      "Compare one day with a pattern",
       "Compare the tests",
       "Understand the thresholds",
       "Separate thresholds from goals",
@@ -784,63 +816,48 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
           </div>
         );
       }
-      case 4:
+      case 4: {
+        const selected = timeLenses.find((lens) => lens.id === selectedTimeLens);
         return (
           <div className="space-y-9">
-            <DayThreeHeading label="Change the lens">
-              A photograph and a movie can both be true.
+            <DayThreeHeading label="Two measurements, two time windows">
+              A snapshot and a longer pattern answer different questions.
             </DayThreeHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              A glucose reading is one frame. A1C is a wider view across roughly two to three
-              months. Drag the lens from one moment toward the longer pattern.
+              Open both measurements. The difference is not that one is better—it is the span of
+              time each one can describe.
             </p>
-            <div className="overflow-hidden rounded-[1rem] border border-border bg-[#eee5da] p-5 sm:p-8">
-              <div className="relative min-h-64 overflow-hidden rounded-[0.75rem] bg-[#d8c8b8]">
-                <div className="absolute inset-0 flex items-center justify-center bg-[#ead2c4] p-6 text-center">
-                  <div className={styles.shutter}>
-                    <ScanLine aria-hidden="true" className="mx-auto size-12 text-accent-warm" />
-                    <p className="mt-4 font-serif-display text-3xl">One reading</p>
-                    <p className="mt-2 text-sm text-muted-foreground">One moment · one context</p>
-                  </div>
-                </div>
-                <div
-                  className="absolute inset-0 overflow-hidden bg-[#e3ebe2] p-5 transition-[clip-path] duration-300"
-                  style={{ clipPath: `inset(0 ${100 - lensPosition}% 0 0)` }}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {timeLenses.map((lens) => (
+                <button
+                  aria-pressed={selectedTimeLens === lens.id}
+                  className={cn(
+                    "motion-tactile min-h-52 rounded-[1rem] border bg-card p-6 text-left shadow-card",
+                    selectedTimeLens === lens.id && "border-success bg-info",
+                  )}
+                  key={lens.id}
+                  onClick={() => openTimeLens(lens.id)}
+                  type="button"
                 >
-                  <div className="grid h-full grid-cols-4 gap-2 sm:grid-cols-6">
-                    {Array.from({ length: 24 }, (_, index) => (
-                      <span
-                        className={cn(
-                          "rounded-md border border-success/15",
-                          index % 5 === 0 ? "bg-accent-warm/20" : "bg-card/75",
-                        )}
-                        key={index}
-                      />
-                    ))}
-                  </div>
-                  <p className="absolute inset-x-0 bottom-5 text-center font-serif-display text-3xl">
-                    A longer pattern
-                  </p>
-                </div>
-              </div>
-              <label className="mt-6 block" htmlFor="time-window-lens">
-                <span className="flex justify-between text-sm font-semibold">
-                  <span>Snapshot</span>
-                  <span>About three months</span>
-                </span>
-                <input
-                  className="mt-4 h-11 w-full accent-[var(--accent-warm)]"
-                  id="time-window-lens"
-                  max="100"
-                  min="0"
-                  onChange={(event) => setLensPosition(Number(event.target.value))}
-                  type="range"
-                  value={lensPosition}
-                />
-              </label>
+                  <span className="editorial-eyebrow">{lens.window}</span>
+                  <span className="mt-7 block font-serif-display text-3xl">{lens.label}</span>
+                  <span className="mt-4 block leading-7 text-muted-foreground">{lens.body}</span>
+                  {viewedTimeLenses.has(lens.id) ? (
+                    <Check aria-hidden="true" className="mt-5 size-5 text-success" />
+                  ) : null}
+                </button>
+              ))}
             </div>
-            {lensPosition >= 72 ? (
-              <div className="animate-slide-up space-y-4">
+            {selected ? (
+              <div className="animate-slide-up border-l-2 border-accent-warm bg-[#f2e6dd] p-6">
+                <p className="text-sm font-bold uppercase tracking-[0.14em] text-accent-warm">
+                  Its limit matters too
+                </p>
+                <p className="mt-3 text-lg leading-8">{selected.limit}</p>
+              </div>
+            ) : null}
+            {viewedTimeLenses.size === timeLenses.length ? (
+              <div className="animate-slide-up space-y-4 border-t border-border pt-7">
                 <p className="font-semibold">Which description belongs to A1C?</p>
                 {(
                   [
@@ -865,8 +882,8 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
             ) : null}
           </div>
         );
-      case 5: {
-        const visibleWeeks = Math.ceil(memoryDays / 7);
+      }
+      case 5:
         return (
           <div className="space-y-9">
             <DayThreeHeading label="Inside the A1C test">
@@ -878,8 +895,9 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 attaches to some hemoglobin in everyone.
               </p>
               <p>
-                When average glucose exposure is higher, a higher percentage of hemoglobin has
-                glucose attached. That percentage is what A1C reports.
+                A1C reports the percentage of hemoglobin with glucose attached. Because circulating
+                red blood cells have different ages, the result reflects a longer period rather than
+                one instant.
               </p>
             </div>
             <div className="rounded-[1rem] border border-accent-warm/25 bg-[#f0e1da] p-5 sm:p-8">
@@ -914,107 +932,119 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 A simplified illustration: the dots show glucose attached to hemoglobin, not an
                 exact A1C calculation.
               </p>
-              <div className="mt-7 border-t border-accent-warm/20 pt-6">
-                <label htmlFor="a1c-memory-days">
-                  <span className="flex flex-wrap items-baseline justify-between gap-3">
-                    <span className="font-semibold">Explore the time window</span>
-                    <span className="font-serif-display text-3xl text-accent-warm">
-                      {memoryDays} days
-                    </span>
-                  </span>
-                  <input
-                    className="mt-4 h-11 w-full accent-[var(--success)]"
-                    id="a1c-memory-days"
-                    max="90"
-                    min="7"
-                    onChange={(event) => setMemoryDays(Number(event.target.value))}
-                    step="7"
-                    type="range"
-                    value={memoryDays}
-                  />
-                </label>
-                <div
-                  className="mt-4 grid grid-cols-[repeat(13,minmax(0,1fr))] gap-1"
-                  aria-hidden="true"
-                >
-                  {Array.from({ length: 13 }, (_, week) => (
-                    <span
+            </div>
+            <div className="rounded-[1rem] border border-border bg-card p-6 shadow-card sm:p-8">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <div>
+                  <p className="editorial-eyebrow">The time window</p>
+                  <h2 className="mt-3 font-serif-display text-3xl">Roughly two to three months</h2>
+                </div>
+                {!a1cWindowReviewed ? (
+                  <Button fullWidth={false} onClick={() => setA1cWindowReviewed(true)}>
+                    Show how the weeks contribute
+                  </Button>
+                ) : null}
+              </div>
+              {a1cWindowReviewed ? (
+                <div className="animate-slide-up mt-7 grid gap-3 sm:grid-cols-3">
+                  {[
+                    ["Earlier weeks", "Still part of the estimate"],
+                    ["Middle weeks", "Add more of the longer context"],
+                    ["Recent weeks", "Generally influence the result somewhat more"],
+                  ].map(([heading, body], index) => (
+                    <div
                       className={cn(
-                        "h-8 rounded-sm border",
-                        week < visibleWeeks
-                          ? cn(styles.memoryWeek, "border-success/30 bg-success/45")
-                          : "border-border bg-card/50",
+                        styles.memoryWeek,
+                        "rounded-[9px] border p-5",
+                        index === 2 ? "border-success/35 bg-info" : "border-border bg-muted/45",
                       )}
-                      key={week}
-                    />
+                      key={heading}
+                    >
+                      <p className="text-sm font-bold">{heading}</p>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+                    </div>
                   ))}
                 </div>
-              </div>
+              ) : (
+                <p className="mt-6 max-w-2xl leading-7 text-muted-foreground">
+                  Red blood cells of different ages carry information from different parts of the
+                  longer window.
+                </p>
+              )}
             </div>
-            {memoryDays >= 84 ? (
+            {a1cWindowReviewed ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-6 leading-7">
-                Red blood cells are continually being made and replaced. Looking across cells of
-                different ages lets A1C estimate a longer average—not replay every individual day.
+                A1C estimates a longer average. It does not store a day-by-day replay, and it does
+                not tell you exactly what happened after one meal.
               </p>
             ) : null}
           </div>
         );
-      }
       case 6:
         return (
           <div className="space-y-9">
-            <DayThreeHeading label="Consistency, not perfection">
-              One day cannot repaint the whole picture.
+            <DayThreeHeading label="One day versus a repeated pattern">
+              Longer averages respond to what happens over time.
             </DayThreeHeading>
-            <div className="max-w-3xl space-y-3 text-lg leading-8 text-foreground/80">
-              <p>
-                A few different days do not instantly rewrite an A1C. Most red blood cells have
-                already been circulating for weeks, and new cells replace older ones gradually.
-              </p>
-              <p>Change one day below and watch what happens to the wider mosaic.</p>
+            <p className="max-w-3xl text-lg leading-8 text-foreground/80">
+              Imagine one unusual celebration meal and, separately, a change that repeats across
+              many days. Which is more likely to shape a longer average?
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <button
+                aria-pressed={patternComparisonChoice === "one_day"}
+                className={cn(
+                  "motion-tactile min-h-56 rounded-[1rem] border bg-card p-6 text-left shadow-card",
+                  patternComparisonChoice === "one_day" && "border-accent-warm bg-[#f2e5dc]",
+                )}
+                onClick={() => setPatternComparisonChoice("one_day")}
+                type="button"
+              >
+                <span className="editorial-eyebrow">One unusual day</span>
+                <span className="mt-8 block font-serif-display text-3xl leading-tight">
+                  A celebration meal happens once.
+                </span>
+                <span className="mt-4 block leading-7 text-muted-foreground">
+                  It is real information, but it is one part of a much longer window.
+                </span>
+              </button>
+              <button
+                aria-pressed={patternComparisonChoice === "repeated_pattern"}
+                className={cn(
+                  "motion-tactile min-h-56 rounded-[1rem] border bg-card p-6 text-left shadow-card",
+                  patternComparisonChoice === "repeated_pattern" && "border-success bg-info",
+                )}
+                onClick={() => setPatternComparisonChoice("repeated_pattern")}
+                type="button"
+              >
+                <span className="editorial-eyebrow">A repeated pattern</span>
+                <span className="mt-8 block font-serif-display text-3xl leading-tight">
+                  A similar influence appears across many days.
+                </span>
+                <span className="mt-4 block leading-7 text-muted-foreground">
+                  Repetition contributes more information to the longer average.
+                </span>
+              </button>
             </div>
-            <button
-              aria-label="Change one day in a ninety-day teaching mosaic"
-              className="w-full rounded-[1rem] border border-border bg-card p-5 text-left shadow-card sm:p-8"
-              onClick={() => setMosaicChanged(true)}
-              type="button"
-            >
-              <span className="editorial-eyebrow">A three-month mosaic</span>
-              <span className="mt-5 grid grid-cols-10 gap-2 sm:grid-cols-[repeat(15,minmax(0,1fr))]">
-                {Array.from({ length: 90 }, (_, day) => (
-                  <span
-                    className={cn(
-                      "aspect-square rounded-sm border border-border/70 transition duration-500",
-                      day === 67 && mosaicChanged
-                        ? "scale-110 border-success bg-success"
-                        : day % 8 === 0
-                          ? "bg-accent-warm/25"
-                          : "bg-muted",
-                    )}
-                    key={day}
-                  />
-                ))}
-              </span>
-              <span className="mt-5 block text-sm font-semibold text-primary">
-                {mosaicChanged
-                  ? "One day changed. The larger pattern still has context."
-                  : "Tap to change one day"}
-              </span>
-            </button>
-            {mosaicChanged ? (
-              <div className="animate-slide-up grid gap-5 border-y border-border py-7 sm:grid-cols-2">
-                <p className="font-serif-display text-2xl leading-8">
-                  One balanced breakfast will not instantly lower A1C.
-                </p>
-                <p className="font-serif-display text-2xl leading-8">
-                  One celebration meal will not instantly raise it.
-                </p>
-                <p className="sm:col-span-2 text-lg leading-8 text-muted-foreground">
-                  The encouraging idea is not that choices are meaningless. It is that health is
-                  built through patterns and support—not one perfect day.
-                </p>
+            {patternComparisonChoice ? (
+              <div
+                aria-live="polite"
+                className={cn(
+                  "animate-slide-up border-l-2 p-6 text-lg leading-8",
+                  patternComparisonChoice === "repeated_pattern"
+                    ? "border-success bg-info"
+                    : "border-accent-warm bg-[#f2e6dd]",
+                )}
+              >
+                {patternComparisonChoice === "repeated_pattern"
+                  ? "Yes. A repeated pattern is more likely to shape a longer average because it contributes across more of the time window."
+                  : "One day contributes, but it does not define the whole result. A repeated pattern carries more influence across the longer window."}
               </div>
             ) : null}
+            <p className="border-y border-border py-6 font-serif-display text-2xl leading-9">
+              This is why one meal is information—not a verdict—and why patterns are more useful
+              than perfection.
+            </p>
           </div>
         );
       case 7: {

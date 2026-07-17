@@ -302,6 +302,8 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
   const [activeNutrient, setActiveNutrient] = useState<NutrientId | null>(null);
   const [pantrySelections, setPantrySelections] = useState<Set<PantryFoodId>>(() => new Set());
   const [pantryChecked, setPantryChecked] = useState(false);
+  const [pantryAttempts, setPantryAttempts] = useState(0);
+  const [pantryResolved, setPantryResolved] = useState(false);
   const [plateSelections, setPlateSelections] = useState<
     Partial<Record<PlateCategory, PlateFoodId>>
   >({});
@@ -391,6 +393,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
   }
 
   function togglePantryFood(id: PantryFoodId) {
+    if (pantryResolved) return;
     setPantryChecked(false);
     setPantrySelections((current) => {
       const next = new Set(current);
@@ -398,6 +401,21 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       else next.add(id);
       return next;
     });
+  }
+
+  function checkPantry() {
+    const nextAttempt = pantryAttempts + 1;
+    setPantryAttempts(nextAttempt);
+    setPantryChecked(true);
+
+    const accurateNow =
+      pantrySelections.size === correctPantryIds.length &&
+      correctPantryIds.every((id) => pantrySelections.has(id));
+
+    if (!accurateNow && nextAttempt >= 2) {
+      setPantrySelections(new Set(correctPantryIds));
+      setPantryResolved(true);
+    }
   }
 
   function choosePlateFood(category: PlateCategory, id: PlateFoodId) {
@@ -475,7 +493,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
     if (stage === 2) return digestionStep === 3 && Boolean(evaluations.digestion);
     if (stage === 3)
       return viewedNutrients.size === nutrients.length && Boolean(evaluations.nutrient);
-    if (stage === 4) return pantryAccurate;
+    if (stage === 4) return pantryAccurate || pantryResolved;
     if (stage === 5) return Boolean(evaluations.fiber);
     if (stage === 6)
       return Boolean(
@@ -498,7 +516,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       "Open all four meanings held at the table.",
       "Complete the digestion journey and answer the question.",
       "Listen to all three nutrient roles and answer the question.",
-      "Find every food on the shelf that contains meaningful carbohydrate.",
+      "Check the carbohydrate shelf. After two attempts, the lesson will reveal the answer so you can continue.",
       "Choose which form usually moves through digestion more gradually.",
       "Add one food to every section of the plate.",
       "Choose the meal that uses balance rather than restriction.",
@@ -506,7 +524,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       "Practice keeping all four favorite foods in real life.",
       "Choose a flexible restaurant strategy.",
       "Open and classify all four cupboard statements.",
-      "Classify all four examples as support or food policing.",
+      "Classify all four comments as helpful support or controlling language.",
       "Spread the meal receipts to reveal the longer pattern.",
       "Choose a plain-language explanation and a confidence check.",
       "Choose one reflection to complete Day 4.",
@@ -655,8 +673,8 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               </p>
               <p>Move one meal through the process. Nothing in this journey is a failure.</p>
             </div>
-            <div className="relative overflow-hidden rounded-[1rem] border border-accent-warm/25 bg-[#f0e3d8] p-6 sm:p-9">
-              <div className="grid gap-4 sm:grid-cols-4">
+            <div className="overflow-hidden rounded-[1rem] border border-accent-warm/25 bg-[#f0e3d8] p-6 sm:p-9">
+              <div className="grid grid-cols-4 gap-2 sm:gap-4">
                 {[
                   ["01", "A meal"],
                   ["02", "Digestion"],
@@ -665,7 +683,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 ].map(([number, label], index) => (
                   <div
                     className={cn(
-                      "relative min-h-28 rounded-[9px] border p-4 transition duration-500",
+                      "relative min-h-28 rounded-[9px] border p-3 transition duration-500 sm:p-4",
                       index <= digestionStep
                         ? "border-success bg-info"
                         : "border-border bg-card/60",
@@ -673,20 +691,34 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                     key={number}
                   >
                     <span className="editorial-eyebrow">{number}</span>
-                    <span className="mt-4 block font-serif-display text-xl">{label}</span>
+                    <span className="mt-4 block font-serif-display text-sm leading-tight sm:text-xl">
+                      {label}
+                    </span>
                   </div>
                 ))}
               </div>
-              {digestionStep > 0 ? (
+              <div aria-hidden="true" className="relative mx-3 mt-7 h-12">
+                <span className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-card" />
+                {[0, 1, 2, 3].map((step) => (
+                  <span
+                    className={cn(
+                      "absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-success bg-card",
+                      step <= digestionStep && "bg-success",
+                    )}
+                    key={step}
+                    style={{ left: `${4 + (step / 3) * 92}%` }}
+                  />
+                ))}
                 <span
-                  aria-hidden="true"
                   className={cn(
-                    styles.foodJourney,
-                    "absolute left-8 top-[46%] size-5 rounded-full bg-accent-warm shadow",
+                    styles.mealMarker,
+                    "absolute top-1/2 flex size-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-accent-warm text-white shadow-card",
                   )}
-                  key={digestionStep}
-                />
-              ) : null}
+                  style={{ left: `${4 + (digestionStep / 3) * 92}%` }}
+                >
+                  <Soup className="size-4" />
+                </span>
+              </div>
               <Button
                 className="mt-7"
                 disabled={digestionStep === 3}
@@ -834,6 +866,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                     food.tone,
                     pantrySelections.has(food.id) && "border-success ring-2 ring-success/25",
                   )}
+                  disabled={pantryResolved}
                   key={food.id}
                   onClick={() => togglePantryFood(food.id)}
                   style={{ animationDelay: `${index * 45}ms` }}
@@ -847,11 +880,11 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               ))}
             </div>
             <div className="flex flex-wrap items-center gap-4">
-              <Button fullWidth={false} onClick={() => setPantryChecked(true)}>
-                Check the shelf
+              <Button disabled={pantryResolved} fullWidth={false} onClick={checkPantry}>
+                {pantryResolved ? "Shelf revealed" : "Check the shelf"}
               </Button>
               <span className="text-sm text-muted-foreground">
-                {pantrySelections.size} foods selected
+                {pantrySelections.size} foods selected · {Math.min(pantryAttempts, 2)} of 2 checks
               </span>
             </div>
             {pantryChecked ? (
@@ -862,9 +895,11 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                   pantryAccurate ? "border-success bg-info" : "border-warning bg-warning/10",
                 )}
               >
-                {pantryAccurate
-                  ? "You found the full shelf: bread, rice, fruit, milk, beans, potatoes, corn, and oats all contain carbohydrate. Chicken and olive oil primarily play other nutrient roles."
-                  : "Look once more. Carbohydrate is found in grains, fruit, milk, beans, and starchy vegetables—not only foods that taste sweet."}
+                {pantryResolved
+                  ? "Here is the complete shelf so you can keep learning: bread, rice, fruit, milk, beans, potatoes, corn, and oats contain meaningful carbohydrate. Chicken and olive oil primarily play other nutrient roles."
+                  : pantryAccurate
+                    ? "You found the full shelf: bread, rice, fruit, milk, beans, potatoes, corn, and oats all contain carbohydrate. Chicken and olive oil primarily play other nutrient roles."
+                    : "One more check is available. Look for grains, fruit, milk, beans, and starchy vegetables—not only foods that taste sweet."}
               </div>
             ) : null}
           </div>
@@ -887,16 +922,16 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                   strokeWidth={1.3}
                 />
                 <h2 className="mt-4 font-serif-display text-2xl">Whole fruit</h2>
-                <div className="relative mx-auto mt-6 h-40 w-28 overflow-hidden">
-                  <div className="mx-auto h-16 w-24 rounded-t-full border-x-2 border-t-2 border-success/50" />
-                  <div className="mx-auto h-16 w-10 border-x-2 border-success/50" />
+                <div className="relative mx-auto mt-6 h-44 w-32 overflow-hidden">
+                  <div className="absolute inset-x-1 top-0 h-16 rounded-t-full border-x-2 border-t-2 border-success/50" />
+                  <div className="absolute left-1/2 top-16 h-20 w-12 -translate-x-1/2 border-x-2 border-success/50" />
                   <span
                     className={cn(
                       styles.funnelDropSlow,
-                      "absolute left-[46%] top-12 size-4 rounded-full bg-accent-warm",
+                      "absolute left-1/2 top-12 size-4 -translate-x-1/2 rounded-full bg-accent-warm",
                     )}
                   />
-                  <span className="absolute left-1/2 top-16 h-2 w-16 -translate-x-1/2 rotate-12 bg-success/35" />
+                  <span className="absolute left-1/2 top-[4.6rem] h-2 w-20 -translate-x-1/2 rotate-6 rounded-full bg-success/35" />
                 </div>
                 <p className="text-sm text-muted-foreground">More structure and fiber</p>
               </div>
@@ -907,13 +942,13 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                   strokeWidth={1.3}
                 />
                 <h2 className="mt-4 font-serif-display text-2xl">Fruit juice</h2>
-                <div className="relative mx-auto mt-6 h-40 w-28 overflow-hidden">
-                  <div className="mx-auto h-16 w-24 rounded-t-full border-x-2 border-t-2 border-accent-warm/50" />
-                  <div className="mx-auto h-16 w-10 border-x-2 border-accent-warm/50" />
+                <div className="relative mx-auto mt-6 h-44 w-32 overflow-hidden">
+                  <div className="absolute inset-x-1 top-0 h-16 rounded-t-full border-x-2 border-t-2 border-accent-warm/50" />
+                  <div className="absolute left-1/2 top-16 h-20 w-12 -translate-x-1/2 border-x-2 border-accent-warm/50" />
                   <span
                     className={cn(
                       styles.funnelDropFast,
-                      "absolute left-[46%] top-12 size-4 rounded-full bg-accent-warm",
+                      "absolute left-1/2 top-12 size-4 -translate-x-1/2 rounded-full bg-accent-warm",
                     )}
                   />
                 </div>
@@ -1273,21 +1308,15 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 <p className="editorial-eyebrow">
                   Cupboard {mythIndex + 1} of {myths.length}
                 </p>
-                <blockquote className="mt-12 max-w-3xl font-serif-display text-3xl leading-tight sm:text-4xl">
+                <blockquote className="mt-10 max-w-4xl font-serif-display text-3xl leading-tight sm:text-4xl">
                   “{myths[mythIndex]}”
                 </blockquote>
               </div>
               {mythFeedback ? (
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    styles.cupboardDoor,
-                    "absolute inset-y-6 left-6 w-[46%] rounded-l-[9px] border border-[#8f5d48]/35 bg-[#b98268] sm:inset-y-10 sm:left-10",
-                  )}
-                />
-              ) : (
-                <span className="absolute inset-y-6 left-1/2 w-px bg-[#8f5d48]/30 sm:inset-y-10" />
-              )}
+                <span className="absolute right-10 top-10 rounded-full border border-success/30 bg-info px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-success">
+                  Opened
+                </span>
+              ) : null}
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <Button onClick={() => void evaluateMyth("myth")} variant="secondary">
@@ -1315,9 +1344,27 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
         const correct = supportAnswer === current.answer;
         return (
           <div className="space-y-9">
-            <DayFourHeading label="Care belongs at the table. Control does not.">
-              Is this support—or food policing?
+            <DayFourHeading label="How family and friends can help">
+              Does this comment preserve the person&apos;s choice?
             </DayFourHeading>
+            <p className="max-w-3xl text-lg leading-8 text-foreground/80">
+              Helpful support asks permission and collaborates. A controlling comment uses shame,
+              fear, or someone else&apos;s rules to take over the food decision.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-[9px] border border-success/30 bg-info p-5">
+                <p className="font-semibold">Helpful support</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  “Would you like help?” The person keeps the final choice.
+                </p>
+              </div>
+              <div className="rounded-[9px] border border-accent-warm/30 bg-[#f2e5dc] p-5">
+                <p className="font-semibold">Controlling comment</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  “You are not allowed.” Shame or permission replaces collaboration.
+                </p>
+              </div>
+            </div>
             <div className="grid gap-7 rounded-[1rem] border border-border bg-card p-6 shadow-card sm:grid-cols-[auto_1fr] sm:items-center sm:p-10">
               <div className="flex size-36 items-center justify-center rounded-full bg-[#e4eee5]">
                 <Heart aria-hidden="true" className="size-16 text-success" strokeWidth={1.1} />
@@ -1333,10 +1380,10 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <Button onClick={() => classifySupport("support")} variant="secondary">
-                Support
+                Helpful support
               </Button>
               <Button onClick={() => classifySupport("policing")} variant="secondary">
-                Food policing
+                Controlling comment
               </Button>
             </div>
             {supportAnswer ? (
@@ -1349,17 +1396,19 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               >
                 <p className="font-serif-display text-2xl italic">
                   {correct
-                    ? "You protected the learner's dignity."
-                    : "Notice who still owns the food decision."}
+                    ? "Yes. The difference is who keeps the choice."
+                    : current.answer === "support"
+                      ? "This comment offers help without taking over."
+                      : "This comment takes control of someone else's food decision."}
                 </p>
                 <p className="mt-3 leading-7">
                   {current.answer === "support"
-                    ? "Support offers collaboration and asks what would help. The person with diabetes keeps agency."
-                    : "Food policing uses fear, permission, or shame. It can make eating more anxious without teaching a useful skill."}
+                    ? "It asks or collaborates, so the person with diabetes keeps agency and can say yes or no."
+                    : "It uses fear, permission, or shame. That can increase anxiety without teaching a practical skill."}
                 </p>
                 {supportIndex < supportStatements.length - 1 ? (
                   <Button className="mt-5" fullWidth={false} onClick={nextSupport}>
-                    Hear the next conversation
+                    Read the next comment
                   </Button>
                 ) : null}
               </div>
@@ -1386,13 +1435,20 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               onClick={() => setReceiptsSpread(true)}
               type="button"
             >
-              <span className="editorial-eyebrow">Fourteen ordinary meals and moments</span>
-              <span className="mt-4 block font-serif-display text-3xl">
-                {receiptsSpread
-                  ? "The pattern has room for variation."
-                  : "Tap to spread the receipts"}
-              </span>
-              <span className="absolute inset-x-8 bottom-8 top-28">
+              {!receiptsSpread ? (
+                <>
+                  <span className="editorial-eyebrow">Fourteen ordinary meals and moments</span>
+                  <span className="mt-4 block font-serif-display text-3xl">
+                    Tap to spread the receipts
+                  </span>
+                </>
+              ) : null}
+              <span
+                className={cn(
+                  "absolute inset-x-8 bottom-8 transition-[top] duration-500",
+                  receiptsSpread ? "top-8" : "top-28",
+                )}
+              >
                 {Array.from({ length: 14 }, (_, index) => {
                   const rotation = receiptsSpread ? (index - 6.5) * 2.2 : 0;
                   const left = receiptsSpread ? 4 + (index % 7) * 14 : 42;
