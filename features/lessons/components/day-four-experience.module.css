@@ -2,9 +2,9 @@
   animation: place-setting 720ms var(--ease-spring) both;
 }
 
-.foodJourney {
-  offset-path: path("M 10 55 C 100 0, 190 105, 310 46 C 390 8, 470 68, 570 42");
-  animation: food-journey 1.8s var(--ease-standard) both;
+.mealMarker {
+  transition: left 650ms var(--ease-standard);
+  will-change: left;
 }
 
 .note {
@@ -36,11 +36,6 @@
   animation: steam-rise 2.2s ease-in-out infinite;
 }
 
-.cupboardDoor {
-  transform-origin: left;
-  animation: cupboard-open 520ms var(--ease-standard) both;
-}
-
 .receipt {
   animation: receipt-fan 520ms var(--ease-spring) both;
   transform-origin: bottom center;
@@ -59,17 +54,6 @@
   to {
     opacity: 1;
     transform: translateY(0) rotate(0) scale(1);
-  }
-}
-
-@keyframes food-journey {
-  from {
-    offset-distance: 0%;
-    opacity: 0.4;
-  }
-  to {
-    offset-distance: 100%;
-    opacity: 1;
   }
 }
 
@@ -101,22 +85,22 @@
 @keyframes funnel-fast {
   from {
     opacity: 0;
-    transform: translateY(-22px);
+    translate: 0 -22px;
   }
   to {
     opacity: 1;
-    transform: translateY(70px);
+    translate: 0 82px;
   }
 }
 
 @keyframes funnel-slow {
   from {
     opacity: 0;
-    transform: translateY(-22px);
+    translate: 0 -22px;
   }
   to {
     opacity: 1;
-    transform: translateY(70px);
+    translate: 0 82px;
   }
 }
 
@@ -154,17 +138,6 @@
   }
 }
 
-@keyframes cupboard-open {
-  from {
-    opacity: 1;
-    transform: perspective(600px) rotateY(0);
-  }
-  to {
-    opacity: 0.2;
-    transform: perspective(600px) rotateY(-74deg);
-  }
-}
-
 @keyframes receipt-fan {
   from {
     opacity: 0;
@@ -189,7 +162,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .placeSetting,
-  .foodJourney,
   .note,
   .pantryItem,
   .funnelDropFast,
@@ -197,9 +169,12 @@
   .platePiece,
   .pour,
   .steam,
-  .cupboardDoor,
   .receipt,
   .permissionLine {
     animation: none;
+  }
+
+  .mealMarker {
+    transition: none;
   }
 }
