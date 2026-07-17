@@ -1,0 +1,205 @@
+.placeSetting {
+  animation: place-setting 720ms var(--ease-spring) both;
+}
+
+.foodJourney {
+  offset-path: path("M 10 55 C 100 0, 190 105, 310 46 C 390 8, 470 68, 570 42");
+  animation: food-journey 1.8s var(--ease-standard) both;
+}
+
+.note {
+  animation: note-rise 1.5s ease-out both;
+}
+
+.pantryItem {
+  animation: pantry-arrive 420ms var(--ease-spring) both;
+}
+
+.funnelDropFast {
+  animation: funnel-fast 1.05s ease-in infinite;
+}
+
+.funnelDropSlow {
+  animation: funnel-slow 2.25s ease-in infinite;
+}
+
+.platePiece {
+  animation: plate-piece 420ms var(--ease-spring) both;
+}
+
+.pour {
+  transform-origin: top;
+  animation: pour-fill 780ms var(--ease-standard) both;
+}
+
+.steam {
+  animation: steam-rise 2.2s ease-in-out infinite;
+}
+
+.cupboardDoor {
+  transform-origin: left;
+  animation: cupboard-open 520ms var(--ease-standard) both;
+}
+
+.receipt {
+  animation: receipt-fan 520ms var(--ease-spring) both;
+  transform-origin: bottom center;
+}
+
+.permissionLine {
+  transform-origin: left;
+  animation: permission-line 680ms var(--ease-standard) both;
+}
+
+@keyframes place-setting {
+  from {
+    opacity: 0;
+    transform: translateY(12px) rotate(-2deg) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0) scale(1);
+  }
+}
+
+@keyframes food-journey {
+  from {
+    offset-distance: 0%;
+    opacity: 0.4;
+  }
+  to {
+    offset-distance: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes note-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.8);
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-34px) scale(1.08);
+  }
+}
+
+@keyframes pantry-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes funnel-fast {
+  from {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(70px);
+  }
+}
+
+@keyframes funnel-slow {
+  from {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(70px);
+  }
+}
+
+@keyframes plate-piece {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pour-fill {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes steam-rise {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(5px) scaleX(0.9);
+  }
+  50% {
+    opacity: 0.75;
+    transform: translateY(-7px) scaleX(1.1);
+  }
+}
+
+@keyframes cupboard-open {
+  from {
+    opacity: 1;
+    transform: perspective(600px) rotateY(0);
+  }
+  to {
+    opacity: 0.2;
+    transform: perspective(600px) rotateY(-74deg);
+  }
+}
+
+@keyframes receipt-fan {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes permission-line {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .placeSetting,
+  .foodJourney,
+  .note,
+  .pantryItem,
+  .funnelDropFast,
+  .funnelDropSlow,
+  .platePiece,
+  .pour,
+  .steam,
+  .cupboardDoor,
+  .receipt,
+  .permissionLine {
+    animation: none;
+  }
+}
