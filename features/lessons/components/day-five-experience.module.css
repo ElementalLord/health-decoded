@@ -1,0 +1,236 @@
+.openingFigure {
+  animation: opening-settle 780ms var(--ease-spring) both;
+}
+
+.footstep {
+  animation: footstep-arrive 520ms var(--ease-spring) both;
+  background: color-mix(in srgb, var(--color-success) 70%, transparent);
+}
+
+.fuelRoom::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image: radial-gradient(circle at 15% 20%, rgb(255 255 255 / 42%), transparent 32%);
+}
+
+.glucoseDot {
+  position: absolute;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid rgb(153 100 37 / 55%);
+  border-radius: 999px;
+  background: #e2a338;
+  box-shadow: 0 3px 8px rgb(66 41 21 / 16%);
+  transition:
+    left 720ms var(--ease-standard),
+    top 720ms var(--ease-standard),
+    opacity 540ms ease,
+    transform 720ms var(--ease-standard);
+}
+
+.glucoseMoving {
+  top: 45% !important;
+  left: 92% !important;
+  opacity: 0.16;
+  transform: scale(0.5);
+}
+
+.muscleCell {
+  transition:
+    transform 520ms var(--ease-spring),
+    border-color 520ms ease,
+    box-shadow 520ms ease;
+}
+
+.muscleActive {
+  border-color: color-mix(in srgb, var(--color-success) 55%, transparent);
+  box-shadow:
+    0 0 0 12px color-mix(in srgb, var(--color-success) 10%, transparent),
+    var(--shadow-card);
+  transform: scale(1.025);
+}
+
+.pathwayPanel {
+  animation: pathway-open 520ms var(--ease-spring) both;
+}
+
+.movementAtlas > button {
+  transition:
+    background-color 240ms ease,
+    transform 180ms var(--ease-standard);
+}
+
+.dayWindow {
+  transition:
+    background-color 240ms ease,
+    transform 260ms var(--ease-spring);
+}
+
+.dayWindow[aria-pressed="true"] {
+  transform: translateY(-5px);
+}
+
+.benefitField::before {
+  position: absolute;
+  inset: 15% 10%;
+  pointer-events: none;
+  border: 1px dashed color-mix(in srgb, var(--color-success) 24%, transparent);
+  border-radius: 50%;
+  content: "";
+}
+
+.benefitField > button {
+  position: relative;
+  z-index: 1;
+}
+
+.mealStep {
+  animation: meal-step-arrive 560ms var(--ease-spring) both;
+}
+
+.weekDay {
+  animation: week-day-arrive 420ms var(--ease-spring) both;
+}
+
+.barrierDoor {
+  transform-origin: left center;
+  animation: barrier-open 620ms var(--ease-spring) both;
+}
+
+.planTicket {
+  position: relative;
+}
+
+.planTicket::before,
+.planTicket::after {
+  position: absolute;
+  top: 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: var(--color-background);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.planTicket::before {
+  left: -0.625rem;
+}
+
+.planTicket::after {
+  right: -0.625rem;
+}
+
+.walkTogether > span:not(:first-child) {
+  animation: walking-pair 2.8s ease-in-out infinite alternate;
+}
+
+.walkTogether > span:nth-child(3) {
+  animation-delay: -1.1s;
+}
+
+@keyframes opening-settle {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes footstep-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pathway-open {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes meal-step-arrive {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes week-day-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px) rotate(-2deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+}
+
+@keyframes barrier-open {
+  from {
+    opacity: 0;
+    transform: perspective(800px) rotateY(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(800px) rotateY(0);
+  }
+}
+
+@keyframes walking-pair {
+  from {
+    transform: translateY(0) rotate(-1deg);
+  }
+  to {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+
+@media (max-width: 639px) {
+  .glucoseMoving {
+    left: 88% !important;
+  }
+
+  .benefitField::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .openingFigure,
+  .footstep,
+  .pathwayPanel,
+  .mealStep,
+  .weekDay,
+  .barrierDoor,
+  .walkTogether > span:not(:first-child) {
+    animation: none;
+  }
+
+  .glucoseDot,
+  .muscleCell,
+  .movementAtlas > button,
+  .dayWindow {
+    transition: none;
+  }
+}
