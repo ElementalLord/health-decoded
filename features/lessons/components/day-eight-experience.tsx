@@ -156,6 +156,12 @@ function Feedback({ feedback }: { feedback: DayEightEvaluationFeedback }) {
 }
 
 function DashboardAnimation() {
+  const steps = [
+    { detail: "NOTICE", label: "ONE READING", x: 160 },
+    { detail: "LOOK BESIDE IT", label: "ADD CONTEXT", x: 410 },
+    { detail: "TAKE IT FORWARD", label: "ASK A QUESTION", x: 660 },
+  ] as const;
+
   return (
     <figure className={styles.motionFigure}>
       <svg
@@ -164,68 +170,58 @@ function DashboardAnimation() {
         role="img"
         viewBox="0 0 820 430"
       >
-        <title id="dashboard-title">A calm dashboard continues moving without giving a grade</title>
+        <title id="dashboard-title">One reading moves through three useful steps</title>
         <desc id="dashboard-desc">
-          Three looping gauges gently observe a changing road while judgment words fade away.
+          A reading token follows a clear rail from noticing one number, to adding context, to
+          asking a useful question.
         </desc>
         <rect className={styles.canvasWarm} height="430" rx="54" width="820" />
-        <path className={styles.road} d="M70 305C210 245 310 345 430 286S650 250 760 306" />
-        <g className={styles.dashboardCar} transform="translate(90 242)">
-          <rect height="52" rx="20" width="118" />
-          <circle cx="28" cy="55" r="15" />
-          <circle cx="92" cy="55" r="15" />
-          <animateMotion
-            calcMode="spline"
-            dur="9s"
-            keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
-            keyTimes="0;0.5;1"
-            path="M0 0C150 -42 280 54 430 0S580 2 580 2"
-            repeatCount="indefinite"
-          />
-        </g>
-        {[205, 410, 615].map((cx, index) => (
-          <g key={cx} transform={`translate(${cx} 132)`}>
-            <circle className={styles.gaugeFace} r="70" />
-            <path className={styles.gaugeArc} d="M-44 28A52 52 0 1 1 44 28" />
-            <g>
-              <path className={styles.gaugeNeedle} d="M0 4L0 -42" />
-              <circle className={styles.gaugeHub} r="8" />
-              <animateTransform
-                attributeName="transform"
-                dur={`${6.5 + index}s`}
-                keyTimes="0;0.3;0.68;1"
-                repeatCount="indefinite"
-                type="rotate"
-                values={`${-42 + index * 8};${22 - index * 7};${-5 + index * 5};${-42 + index * 8}`}
-              />
-            </g>
-            <text className={styles.gaugeLabel} textAnchor="middle" y="102">
-              {index === 0 ? "ONE MOMENT" : index === 1 ? "MORE CONTEXT" : "A USEFUL QUESTION"}
+        <text className={styles.journeyHeading} textAnchor="middle" x="410" y="48">
+          FROM NUMBER TO USEFUL CONVERSATION
+        </text>
+        <path className={styles.dataRail} d="M90 306H730" />
+        {steps.map(({ detail, label, x }, index) => (
+          <g className={styles.dataStation} key={label} transform={`translate(${x} 145)`}>
+            <rect height="142" rx="24" width="202" x="-101" y="-70" />
+            <circle cy="-24" r="25" />
+            <text className={styles.stationNumber} textAnchor="middle" y="-17">
+              {index + 1}
             </text>
+            <text className={styles.stationLabel} textAnchor="middle" y="25">
+              {label}
+            </text>
+            <text className={styles.stationDetail} textAnchor="middle" y="50">
+              {detail}
+            </text>
+            <circle className={styles.stationPulse} cy="161" r="18">
+              <animate
+                attributeName="opacity"
+                begin={`${index * 2.2}s`}
+                dur="6.6s"
+                keyTimes="0;0.12;0.28;1"
+                repeatCount="indefinite"
+                values="0;0.7;0;0"
+              />
+              <animate
+                attributeName="r"
+                begin={`${index * 2.2}s`}
+                dur="6.6s"
+                keyTimes="0;0.15;0.3;1"
+                repeatCount="indefinite"
+                values="14;27;34;14"
+              />
+            </circle>
           </g>
         ))}
-        <g className={styles.judgmentWords} transform="translate(306 360)">
-          <text x="0">GOOD</text>
-          <text x="132">BAD</text>
-          <animate
-            attributeName="opacity"
-            dur="6s"
-            keyTimes="0;0.25;0.55;1"
-            repeatCount="indefinite"
-            values="0.5;0.5;0;0"
-          />
-          <animateTransform
-            attributeName="transform"
-            additive="sum"
-            dur="6s"
-            keyTimes="0;0.45;1"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 0;0 16;0 16"
-          />
+        <g className={styles.readingToken}>
+          <circle r="23" />
+          <text textAnchor="middle" y="6">
+            1
+          </text>
+          <animateMotion dur="6.6s" path="M90 306H730" repeatCount="indefinite" />
         </g>
         <text className={styles.motionCaption} textAnchor="middle" x="410" y="404">
-          INFORMATION MOVES · JUDGMENT CAN LEAVE
+          NOTICE · ADD CONTEXT · ASK WHAT THE PATTERN CAN TEACH
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
@@ -395,6 +391,14 @@ function ContextConstellationAnimation({ activeCount }: { activeCount: number })
     { label: "ILLNESS", x: 245, y: 380 },
     { label: "MEDICINE", x: 540, y: 380 },
   ] as const;
+  const contextPaths = [
+    "M174 112C230 126 252 164 292 188",
+    "M614 112C568 128 546 164 508 188",
+    "M136 294C204 282 245 255 292 246",
+    "M652 294C590 282 552 255 508 246",
+    "M274 346C310 321 328 302 352 296",
+    "M512 346C486 320 468 302 448 296",
+  ] as const;
   return (
     <figure className={styles.motionFigure}>
       <svg
@@ -409,18 +413,12 @@ function ContextConstellationAnimation({ activeCount }: { activeCount: number })
           has context.
         </desc>
         <rect className={styles.canvasSage} height="470" rx="54" width="800" />
-        {contextNodes.map(({ label, x, y }, index) => (
-          <g
-            className={cn(styles.contextNode, index < activeCount && styles.contextNodeActive)}
-            key={label}
-            transform={`translate(${x} ${y})`}
-          >
-            <circle r="44" />
-            <text textAnchor="middle" y="5">
-              {label}
-            </text>
+        <g className={styles.contextPaths}>
+          {contextPaths.map((path, index) => (
             <path
-              d={`M0 0C${400 - x > 0 ? 90 : -90} 20 ${400 - x > 0 ? 145 : -145} ${225 - y > 0 ? 80 : -80} ${400 - x} ${225 - y}`}
+              className={cn(index < activeCount && styles.contextPathActive)}
+              d={path}
+              key={path}
               pathLength="1"
             >
               <animate
@@ -432,6 +430,18 @@ function ContextConstellationAnimation({ activeCount }: { activeCount: number })
                 to="-1"
               />
             </path>
+          ))}
+        </g>
+        {contextNodes.map(({ label, x, y }, index) => (
+          <g
+            className={cn(styles.contextNode, index < activeCount && styles.contextNodeActive)}
+            key={label}
+            transform={`translate(${x} ${y})`}
+          >
+            <circle r="44" />
+            <text textAnchor="middle" y="5">
+              {label}
+            </text>
           </g>
         ))}
         <g className={styles.readingCard} transform="translate(292 154)">
@@ -459,6 +469,110 @@ function ContextConstellationAnimation({ activeCount }: { activeCount: number })
       <figcaption className={styles.figureCaption}>
         <strong>Surprises can have many influences.</strong> Context does not explain every reading,
         but it can help you and your care team ask a better question.
+      </figcaption>
+    </figure>
+  );
+}
+
+function CareConversationAnimation() {
+  return (
+    <figure className={styles.careConversation}>
+      <svg
+        aria-labelledby="care-conversation-title care-conversation-desc"
+        className={styles.motionCanvas}
+        role="img"
+        viewBox="0 0 560 390"
+      >
+        <title id="care-conversation-title">
+          A learner brings a short pattern to a care partner
+        </title>
+        <desc id="care-conversation-desc">
+          A small context note travels from the learner to a shared table. The care partner receives
+          it, and a next-step speech bubble appears.
+        </desc>
+        <rect className={styles.careCanvas} height="390" rx="42" width="560" />
+        <path className={styles.sharedTable} d="M86 275H474" />
+        <g className={styles.carePerson} transform="translate(108 151)">
+          <circle cy="-56" r="37" />
+          <path d="M-44 56V0C-44 -24 44 -24 44 0V56" />
+          <path className={styles.careArm} d="M28 4C54 18 68 35 84 48">
+            <animate
+              attributeName="d"
+              dur="7s"
+              keyTimes="0;0.28;0.5;0.72;1"
+              repeatCount="indefinite"
+              values="M28 4C54 18 68 35 84 48;M28 4C54 18 68 35 84 48;M28 4C65 4 84 15 103 25;M28 4C54 18 68 35 84 48;M28 4C54 18 68 35 84 48"
+            />
+          </path>
+        </g>
+        <g className={styles.carePersonPartner} transform="translate(452 151)">
+          <circle cy="-56" r="37" />
+          <path d="M-44 56V0C-44 -24 44 -24 44 0V56" />
+          <path className={styles.careArm} d="M-28 4C-54 18 -68 35 -84 48">
+            <animate
+              attributeName="d"
+              begin="0.9s"
+              dur="7s"
+              keyTimes="0;0.28;0.5;0.72;1"
+              repeatCount="indefinite"
+              values="M-28 4C-54 18 -68 35 -84 48;M-28 4C-54 18 -68 35 -84 48;M-28 4C-65 4 -84 15 -103 25;M-28 4C-54 18 -68 35 -84 48;M-28 4C-54 18 -68 35 -84 48"
+            />
+          </path>
+        </g>
+        <g className={styles.contextNote} transform="translate(154 216)">
+          <rect height="88" rx="12" width="122" x="-61" y="-44" />
+          <path d="M-39 -20H38M-39 0H28M-39 20H42" />
+          <circle cx="-46" cy="-20" r="5" />
+          <circle cx="-46" cy="0" r="5" />
+          <circle cx="-46" cy="20" r="5" />
+          <animateTransform
+            attributeName="transform"
+            additive="sum"
+            dur="7s"
+            keyTimes="0;0.25;0.55;0.76;1"
+            repeatCount="indefinite"
+            type="translate"
+            values="0 0;0 0;126 -8;126 -8;0 0"
+          />
+        </g>
+        <g className={styles.nextStepBubble} transform="translate(383 70)">
+          <path d="M-92 -38H72C88 -38 98 -28 98 -12V22C98 38 88 48 72 48H10L-8 66L-2 48H-92C-108 48 -118 38 -118 22V-12C-118 -28 -108 -38 -92 -38Z" />
+          <text textAnchor="middle" x="-10" y="0">
+            WHAT CHANGED?
+          </text>
+          <text textAnchor="middle" x="-10" y="23">
+            WHAT NEXT?
+          </text>
+          <animate
+            attributeName="opacity"
+            dur="7s"
+            keyTimes="0;0.42;0.58;0.84;1"
+            repeatCount="indefinite"
+            values="0;0;1;1;0"
+          />
+          <animateTransform
+            attributeName="transform"
+            additive="sum"
+            dur="7s"
+            keyTimes="0;0.42;0.58;0.84;1"
+            repeatCount="indefinite"
+            type="translate"
+            values="0 8;0 8;0 0;0 0;0 8"
+          />
+        </g>
+        <text className={styles.careRole} textAnchor="middle" x="108" y="330">
+          YOU
+        </text>
+        <text className={styles.careRole} textAnchor="middle" x="452" y="330">
+          CARE PARTNER
+        </text>
+        <text className={styles.careCaption} textAnchor="middle" x="280" y="365">
+          A SHORT PATTERN MAKES THE NEXT CONVERSATION MORE CONCRETE
+        </text>
+      </svg>
+      <figcaption>
+        <strong>Here is the use:</strong> a few repeated moments plus context give you and your care
+        team something specific to discuss—without turning the data into a grade.
       </figcaption>
     </figure>
   );
@@ -909,12 +1023,21 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
               Replace “What did I do wrong?” with a better question.
             </LessonHeading>
             <div className={styles.reframeScene}>
-              <div className={styles.reframeNumber}>?</div>
-              <div className={styles.reframePerson} aria-hidden="true">
-                <span />
-                <i />
+              <div className={styles.reframePair} aria-hidden="true">
+                <div className={styles.reframePerson}>
+                  <span />
+                  <i />
+                  <b />
+                </div>
+                <div className={styles.reframeNumber}>
+                  <span>?</span>
+                  <i />
+                </div>
               </div>
-              <div className={styles.reframeRibbon}>WHAT MIGHT HAVE INFLUENCED THIS MOMENT?</div>
+              <div className={styles.reframeRibbon}>
+                <strong>LOOK BESIDE THE NUMBER</strong>
+                <span>food · movement · sleep · stress · illness · medicine</span>
+              </div>
             </div>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Food is only one influence. Movement, sleep, stress, illness, medicine, timing, and
@@ -948,18 +1071,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
               Data becomes useful when it can support a question.
             </LessonHeading>
             <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
-              <div
-                className={styles.conversationPortrait}
-                aria-label="Two people reviewing a page together"
-                role="img"
-              >
-                <div>
-                  <span />
-                  <span />
-                  <i />
-                </div>
-                <p>Bring the pattern. Keep your dignity.</p>
-              </div>
+              <CareConversationAnimation />
               <div className="grid gap-3">
                 {clinicianQuestions.map((item) => (
                   <AnswerChoice

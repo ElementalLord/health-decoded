@@ -38,12 +38,19 @@
 }
 
 .motionCaption,
-.gaugeLabel,
+.journeyHeading,
+.stationNumber,
+.stationLabel,
+.stationDetail,
+.readingToken text,
 .toolTitle,
 .toolAction,
 .contextNode text,
 .readingCard text,
-.singleBead text {
+.singleBead text,
+.careRole,
+.careCaption,
+.nextStepBubble text {
   fill: #75675e;
   font-family: var(--font-sans), sans-serif;
   font-weight: 800;
@@ -54,55 +61,59 @@
   font-size: 15px;
 }
 
-.road {
+.journeyHeading {
+  font-size: 14px;
+}
+
+.dataRail {
   fill: none;
-  stroke: #d7c9be;
+  stroke: #cbbdb1;
   stroke-linecap: round;
-  stroke-width: 18;
+  stroke-width: 8;
 }
 
-.dashboardCar rect {
-  fill: #c97962;
-}
-
-.dashboardCar circle {
-  fill: #4d3931;
-}
-
-.gaugeFace {
+.dataStation rect {
   fill: #fffaf3;
-  stroke: #ddcfc2;
+  stroke: #decfc2;
   stroke-width: 3;
 }
 
-.gaugeArc {
-  fill: none;
-  stroke: #88a48f;
-  stroke-linecap: round;
-  stroke-width: 10;
+.dataStation > circle:not(.stationPulse) {
+  fill: #e4eee6;
+  stroke: #73947e;
+  stroke-width: 4;
 }
 
-.gaugeNeedle {
+.stationNumber {
+  fill: #315d4c;
+  font-size: 20px;
+}
+
+.stationLabel {
+  fill: #4d3931;
+  font-size: 13px;
+}
+
+.stationDetail {
+  fill: #8b7d73;
+  font-size: 9px;
+}
+
+.stationPulse {
   fill: none;
   stroke: #c97962;
-  stroke-linecap: round;
-  stroke-width: 7;
+  stroke-width: 4;
 }
 
-.gaugeHub {
+.readingToken circle {
   fill: #c97962;
+  stroke: #fffaf3;
+  stroke-width: 5;
 }
 
-.gaugeLabel {
-  font-size: 11px;
-}
-
-.judgmentWords {
-  fill: #9c8d83;
-  font-family: var(--font-sans), sans-serif;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
+.readingToken text {
+  fill: #fffaf3;
+  font-size: 15px;
 }
 
 .toolPanel {
@@ -197,7 +208,7 @@
   font-size: 11px;
 }
 
-.contextNode path {
+.contextPaths path {
   fill: none;
   stroke: #b7c6b9;
   stroke-dasharray: 0.05 0.055;
@@ -210,7 +221,7 @@
   stroke: #73947e;
 }
 
-.contextNodeActive path {
+.contextPaths .contextPathActive {
   stroke: #73947e;
 }
 
@@ -369,35 +380,59 @@
 }
 
 .reframeScene {
-  position: relative;
-  display: grid;
-  min-height: 25rem;
-  grid-template-columns: 1fr 1fr;
-  place-items: center;
+  display: flex;
+  min-height: 28rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: 2rem;
   background: #f3e7de;
+  padding: 3rem 2rem 2rem;
+}
+
+.reframePair {
+  display: flex;
+  width: min(100%, 31rem);
+  min-height: 14rem;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 4vw, 2.25rem);
 }
 
 .reframeNumber {
+  position: relative;
   display: grid;
-  width: 8rem;
+  width: 8.25rem;
   aspect-ratio: 1;
   place-items: center;
   border: 4px solid #c97962;
-  border-radius: 50%;
+  border-radius: 50% 50% 50% 1.35rem;
   background: #fffaf3;
   color: #c97962;
   font-family: var(--font-serif-display), serif;
-  font-size: 5rem;
+  font-size: 4.5rem;
   animation: question-breathe 4s ease-in-out infinite;
+}
+
+.reframeNumber i {
+  position: absolute;
+  bottom: -0.7rem;
+  left: 0.55rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-bottom: 4px solid #c97962;
+  border-left: 4px solid #c97962;
+  background: #fffaf3;
+  transform: rotate(-18deg);
 }
 
 .reframePerson {
   position: relative;
-  width: 9rem;
-  height: 14rem;
+  width: 8.5rem;
+  height: 11.5rem;
   border-radius: 5rem 5rem 1.5rem 1.5rem;
   background: #789b84;
   animation: person-settle 5s ease-in-out infinite;
@@ -424,75 +459,143 @@
   border-radius: 50%;
 }
 
-.reframeRibbon {
+.reframePerson b {
   position: absolute;
-  right: 8%;
-  bottom: 2rem;
-  left: 8%;
+  top: 2.7rem;
+  right: -1.3rem;
+  width: 4.8rem;
+  height: 0.7rem;
   border-radius: 999px;
+  background: #789b84;
+  transform: rotate(-24deg);
+  transform-origin: left center;
+  animation: person-point 4s ease-in-out infinite;
+}
+
+.reframeRibbon {
+  display: grid;
+  width: min(100%, 52rem);
+  gap: 0.35rem;
+  border-radius: 1.25rem;
   background: #fffaf3;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   text-align: center;
-  font-size: 0.76rem;
-  font-weight: 850;
-  letter-spacing: 0.12em;
   animation: ribbon-rise 5s ease-in-out infinite;
 }
 
-.conversationPortrait {
-  display: grid;
-  min-height: 27rem;
-  place-items: center;
+.reframeRibbon strong {
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+
+.reframeRibbon span {
+  color: #7f7168;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+
+.careConversation {
   overflow: hidden;
+  border: 1px solid #c9d8cc;
   border-radius: 2rem;
   background: #e5eee6;
-  padding: 2rem;
 }
 
-.conversationPortrait > div {
-  position: relative;
-  width: 15rem;
-  height: 13rem;
+.careConversation svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
-.conversationPortrait span {
-  position: absolute;
-  bottom: 0;
-  width: 7rem;
-  height: 10rem;
-  border-radius: 4rem 4rem 1.5rem 1.5rem;
+.careConversation figcaption {
+  border-top: 1px solid #c9d8cc;
+  background: #f8f4ee;
+  padding: 1.1rem 1.3rem;
+  color: #75675e;
+  font-size: 0.9rem;
+  line-height: 1.65;
 }
 
-.conversationPortrait span:first-child {
-  left: 0;
-  background: #c97962;
-  animation: person-lean-left 5.5s ease-in-out infinite;
+.careConversation figcaption strong {
+  color: #4d3931;
 }
 
-.conversationPortrait span:nth-child(2) {
-  right: 0;
-  background: #789b84;
-  animation: person-lean-right 5.5s ease-in-out infinite;
+.careCanvas {
+  fill: #e5eee6;
 }
 
-.conversationPortrait i {
-  position: absolute;
-  right: 4rem;
-  bottom: 1rem;
-  left: 4rem;
-  height: 5rem;
-  border: 3px solid #d1c1b4;
-  border-radius: 0.75rem;
-  background: #fffaf3;
-  animation: shared-page 5.5s ease-in-out infinite;
+.sharedTable {
+  fill: none;
+  stroke: #b9cbbd;
+  stroke-linecap: round;
+  stroke-width: 12;
 }
 
-.conversationPortrait p {
-  color: #315d4c;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-align: center;
+.carePerson > circle,
+.carePersonPartner > circle {
+  fill: #ead7cd;
+  stroke-width: 6;
+}
+
+.carePerson > circle {
+  stroke: #c97962;
+}
+
+.carePersonPartner > circle {
+  stroke: #73947e;
+}
+
+.carePerson > path:not(.careArm) {
+  fill: #c97962;
+}
+
+.carePersonPartner > path:not(.careArm) {
+  fill: #73947e;
+}
+
+.careArm {
+  fill: none;
+  stroke: #75675e;
+  stroke-linecap: round;
+  stroke-width: 9;
+}
+
+.contextNote rect {
+  fill: #fffaf3;
+  stroke: #c97962;
+  stroke-width: 4;
+}
+
+.contextNote path {
+  fill: none;
+  stroke: #a8978a;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.contextNote circle {
+  fill: #73947e;
+}
+
+.nextStepBubble path {
+  fill: #fffaf3;
+  stroke: #73947e;
+  stroke-width: 4;
+}
+
+.nextStepBubble text {
+  fill: #315d4c;
+  font-size: 11px;
+}
+
+.careRole {
+  font-size: 12px;
+}
+
+.careCaption {
+  fill: #315d4c;
+  font-size: 10px;
 }
 
 .questionTicket {
@@ -576,33 +679,13 @@
   }
 }
 
-@keyframes person-lean-left {
+@keyframes person-point {
   0%,
   100% {
-    transform: rotate(-2deg) translateX(0);
+    transform: rotate(-24deg);
   }
   50% {
-    transform: rotate(4deg) translateX(8px);
-  }
-}
-
-@keyframes person-lean-right {
-  0%,
-  100% {
-    transform: rotate(2deg) translateX(0);
-  }
-  50% {
-    transform: rotate(-4deg) translateX(-8px);
-  }
-}
-
-@keyframes shared-page {
-  0%,
-  100% {
-    transform: translateY(3px) rotate(-1deg);
-  }
-  50% {
-    transform: translateY(-3px) rotate(1deg);
+    transform: rotate(-8deg);
   }
 }
 
@@ -627,12 +710,27 @@
 
   .reframeScene {
     min-height: 28rem;
-    grid-template-columns: 1fr;
-    padding: 3rem 1rem 6rem;
+    gap: 1.35rem;
+    padding: 2.5rem 1rem 1.5rem;
   }
 
-  .conversationPortrait {
-    min-height: 22rem;
+  .reframePair {
+    min-height: 12rem;
+    gap: 0.6rem;
+  }
+
+  .reframeNumber {
+    width: 6.8rem;
+    font-size: 3.8rem;
+  }
+
+  .reframePerson {
+    width: 7.2rem;
+    height: 10rem;
+  }
+
+  .careConversation figcaption {
+    padding: 1rem;
   }
 }
 
@@ -647,9 +745,9 @@
   .snapshotFrame b,
   .reframeNumber,
   .reframePerson,
+  .reframePerson b,
   .reframeRibbon,
-  .conversationPortrait span,
-  .conversationPortrait i {
+  .careConversation * {
     animation: none;
   }
 }
