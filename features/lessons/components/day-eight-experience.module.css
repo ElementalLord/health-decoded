@@ -39,6 +39,13 @@
 
 .motionCaption,
 .journeyHeading,
+.reframeTitle,
+.readingPanelLabel,
+.readingPanelAction,
+.contextChecklistTitle,
+.contextCheckLabel,
+.contextCheckDetail,
+.reframeFormula,
 .stationNumber,
 .stationLabel,
 .stationDetail,
@@ -379,120 +386,91 @@
   margin-left: auto;
 }
 
-.reframeScene {
-  display: flex;
-  min-height: 28rem;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: 2rem;
-  background: #f3e7de;
-  padding: 3rem 2rem 2rem;
+.reframeTitle {
+  fill: #4d3931;
+  font-size: 14px;
 }
 
-.reframePair {
-  display: flex;
-  width: min(100%, 31rem);
-  min-height: 14rem;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(0.75rem, 4vw, 2.25rem);
+.readingPanel > rect,
+.contextChecklist > rect {
+  fill: #fffaf3;
+  stroke: #decfc2;
+  stroke-width: 3;
 }
 
-.reframeNumber {
-  position: relative;
-  display: grid;
-  width: 8.25rem;
-  aspect-ratio: 1;
-  place-items: center;
-  border: 4px solid #c97962;
-  border-radius: 50% 50% 50% 1.35rem;
-  background: #fffaf3;
-  color: #c97962;
-  font-family: var(--font-serif-display), serif;
-  font-size: 4.5rem;
-  animation: question-breathe 4s ease-in-out infinite;
+.readingPanelLabel,
+.contextChecklistTitle {
+  fill: #4d3931;
+  font-size: 13px;
 }
 
-.reframeNumber i {
-  position: absolute;
-  bottom: -0.7rem;
-  left: 0.55rem;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-bottom: 4px solid #c97962;
-  border-left: 4px solid #c97962;
-  background: #fffaf3;
-  transform: rotate(-18deg);
+.readingDial {
+  fill: #f3e7de;
+  stroke: #c97962;
+  stroke-width: 4;
 }
 
-.reframePerson {
-  position: relative;
-  width: 8.5rem;
-  height: 11.5rem;
-  border-radius: 5rem 5rem 1.5rem 1.5rem;
-  background: #789b84;
-  animation: person-settle 5s ease-in-out infinite;
+.readingArc {
+  fill: none;
+  stroke: #789b84;
+  stroke-linecap: round;
+  stroke-width: 9;
 }
 
-.reframePerson span {
-  position: absolute;
-  top: -4.5rem;
-  left: 1.5rem;
-  width: 6rem;
-  aspect-ratio: 1;
-  border: 6px solid #789b84;
-  border-radius: 50%;
-  background: #ead7cd;
+.readingNeedle path {
+  fill: none;
+  stroke: #c97962;
+  stroke-linecap: round;
+  stroke-width: 7;
 }
 
-.reframePerson i {
-  position: absolute;
-  top: -1.3rem;
-  left: 3.3rem;
-  width: 2.4rem;
-  height: 0.8rem;
-  border-bottom: 4px solid #4d3931;
-  border-radius: 50%;
+.readingNeedle circle {
+  fill: #c97962;
 }
 
-.reframePerson b {
-  position: absolute;
-  top: 2.7rem;
-  right: -1.3rem;
-  width: 4.8rem;
-  height: 0.7rem;
-  border-radius: 999px;
-  background: #789b84;
-  transform: rotate(-24deg);
-  transform-origin: left center;
-  animation: person-point 4s ease-in-out infinite;
+.readingPanelAction {
+  fill: #8b7d73;
+  font-size: 10px;
 }
 
-.reframeRibbon {
-  display: grid;
-  width: min(100%, 52rem);
-  gap: 0.35rem;
-  border-radius: 1.25rem;
-  background: #fffaf3;
-  padding: 1rem 1.5rem;
-  text-align: center;
-  animation: ribbon-rise 5s ease-in-out infinite;
+.contextBridge,
+.contextBridgeArrow {
+  fill: none;
+  stroke: #b9cbbd;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7;
 }
 
-.reframeRibbon strong {
-  font-size: 0.76rem;
-  font-weight: 850;
-  letter-spacing: 0.12em;
+.contextMessenger circle {
+  fill: #c97962;
+  stroke: #fffaf3;
+  stroke-width: 4;
 }
 
-.reframeRibbon span {
-  color: #7f7168;
-  font-size: 0.9rem;
-  letter-spacing: 0.04em;
+.contextCheckRow > rect {
+  stroke: #e2d7ce;
+  stroke-width: 2;
+}
+
+.contextCheckRow > circle {
+  fill: #73947e;
+}
+
+.contextCheckLabel {
+  fill: #315d4c;
+  font-size: 10px;
+}
+
+.contextCheckDetail {
+  fill: #75675e;
+  font-size: 8.5px;
+  font-weight: 650;
+}
+
+.reframeFormula {
+  fill: #315d4c;
+  font-size: 12px;
 }
 
 .careConversation {
@@ -647,48 +625,6 @@
   }
 }
 
-@keyframes question-breathe {
-  0%,
-  100% {
-    transform: rotate(-4deg) scale(0.96);
-  }
-  50% {
-    transform: rotate(4deg) scale(1.06);
-  }
-}
-
-@keyframes person-settle {
-  0%,
-  100% {
-    transform: translateY(6px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-@keyframes ribbon-rise {
-  0%,
-  100% {
-    transform: translateY(8px);
-    opacity: 0.72;
-  }
-  50% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes person-point {
-  0%,
-  100% {
-    transform: rotate(-24deg);
-  }
-  50% {
-    transform: rotate(-8deg);
-  }
-}
-
 @media (min-width: 760px) {
   .snapshotStage {
     grid-template-columns: minmax(18rem, 0.85fr) 1.15fr;
@@ -708,27 +644,6 @@
     min-height: auto;
   }
 
-  .reframeScene {
-    min-height: 28rem;
-    gap: 1.35rem;
-    padding: 2.5rem 1rem 1.5rem;
-  }
-
-  .reframePair {
-    min-height: 12rem;
-    gap: 0.6rem;
-  }
-
-  .reframeNumber {
-    width: 6.8rem;
-    font-size: 3.8rem;
-  }
-
-  .reframePerson {
-    width: 7.2rem;
-    height: 10rem;
-  }
-
   .careConversation figcaption {
     padding: 1rem;
   }
@@ -743,10 +658,6 @@
 
   .snapshotFrame i,
   .snapshotFrame b,
-  .reframeNumber,
-  .reframePerson,
-  .reframePerson b,
-  .reframeRibbon,
   .careConversation * {
     animation: none;
   }
