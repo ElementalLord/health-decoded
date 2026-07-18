@@ -123,33 +123,43 @@ export function QuestionEnvelope({ hasQuestion }: { hasQuestion: boolean }) {
       viewBox="0 0 640 390"
     >
       <ellipse cx="320" cy="349" fill="#e9e1d7" rx="180" ry="15" />
-      <g className={cn(styles.envelopePaper, hasQuestion && styles.envelopePaperStored)}>
-        <rect
-          x="198"
-          y="53"
-          width="244"
-          height="214"
-          rx="8"
-          fill="#fbf7f1"
-          stroke="#cdbfb2"
-          strokeWidth="4"
-        />
-        <path
-          d="M232 103h176M232 132h139M232 161h158"
-          stroke="#b96c55"
-          strokeLinecap="round"
-          strokeWidth="7"
-        />
-        <circle cx="320" cy="213" fill="#d9e4d9" r="18" />
-        <path
-          d="m312 213 6 6 12-15"
-          fill="none"
-          stroke="#6f947a"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="5"
-        />
-      </g>
+      <path
+        className={cn(styles.envelopeOpenFlap, hasQuestion && styles.envelopeOpenFlapHidden)}
+        d="m145 184 175-108 175 108-175 116-175-116Z"
+        fill="#f0e4da"
+        stroke="#806654"
+        strokeLinejoin="round"
+        strokeWidth="5"
+      />
+      {!hasQuestion ? (
+        <g className={styles.envelopePaper}>
+          <rect
+            x="198"
+            y="53"
+            width="244"
+            height="214"
+            rx="8"
+            fill="#fbf7f1"
+            stroke="#cdbfb2"
+            strokeWidth="4"
+          />
+          <path
+            d="M232 103h176M232 132h139M232 161h158"
+            stroke="#b96c55"
+            strokeLinecap="round"
+            strokeWidth="7"
+          />
+          <circle cx="320" cy="213" fill="#d9e4d9" r="18" />
+          <path
+            d="m312 213 6 6 12-15"
+            fill="none"
+            stroke="#6f947a"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="5"
+          />
+        </g>
+      ) : null}
       <g>
         <rect
           x="142"
@@ -170,8 +180,8 @@ export function QuestionEnvelope({ hasQuestion }: { hasQuestion: boolean }) {
         />
         <path d="m145 333 137-104M495 333 358 229" fill="none" stroke="#806654" strokeWidth="5" />
         <path
-          className={cn(styles.envelopeFlap, hasQuestion && styles.envelopeFlapClosed)}
-          d="m145 183 175 120 175-120-175-92-175 92Z"
+          className={cn(styles.envelopeClosedFlap, hasQuestion && styles.envelopeClosedFlapVisible)}
+          d="m145 184 175 119 175-119Z"
           fill="#f0e4da"
           stroke="#806654"
           strokeLinejoin="round"

@@ -1,14 +1,16 @@
 "use client";
 
 import {
+  Activity,
   AlarmClock,
+  Armchair,
   ArrowLeft,
   BookOpen,
   Check,
-  CircleGauge,
   Clock3,
   CloudRain,
   Footprints,
+  Moon,
   MoveRight,
   Pause,
   PersonStanding,
@@ -16,6 +18,7 @@ import {
   Route,
   ShieldCheck,
   Sparkles,
+  Utensils,
   Wind,
 } from "lucide-react";
 import Link from "next/link";
@@ -33,12 +36,21 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-six-experience.module.css";
+import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
 const stageCount = 15;
 
-type EvaluationKey = "recap" | "safety" | "teachBack" | "variation";
+type EvaluationKey = "safety" | "teachBack";
+
+type BreakMotion = "stand" | "stretch" | "walk";
+
+const breakMotionLabels: Record<BreakMotion, string> = {
+  stand: "Stand",
+  stretch: "Stretch",
+  walk: "Walk",
+};
 
 const openingNeeds = [
   ["time", "I need movement to fit a crowded day."],
@@ -182,41 +194,31 @@ const habitClosings = [
 ] as const;
 const planScales = ["10 comfortable minutes", "5 comfortable minutes", "2 gentle minutes"] as const;
 
-const momentScenarios = [
+const movementMoments = [
   {
-    choices: [
-      ["break", "Stand, stretch, or move briefly if it is safe."],
-      ["wait", "Stay still until there is time for a full workout."],
-    ] as const,
-    correct: "break",
+    id: "desk",
     explanation:
       "A brief, adapted interruption can break a sitting streak. It does not need to become a workout.",
     label: "A long desk stretch",
-    prompt: "You notice you have been sitting through several tasks.",
+    verb: "Interrupt",
   },
   {
-    choices: [
-      ["option", "Choose a comfortable walk or adapted movement if it fits."],
-      ["payment", "Move hard enough to repay the meal."],
-    ] as const,
-    correct: "option",
+    id: "meal",
     explanation:
       "Post-meal movement can be one useful option. The meal is not a debt, and no exact reading is promised.",
     label: "After an ordinary meal",
-    prompt: "You feel comfortable and have a few open minutes.",
+    verb: "Choose",
   },
   {
-    choices: [
-      ["adapt", "Use the backup plan—or rest and ask for guidance when needed."],
-      ["force", "Push through so the streak stays perfect."],
-    ] as const,
-    correct: "adapt",
+    id: "hard",
     explanation:
       "A safe plan can shrink, adapt, pause, and restart. Protecting the body matters more than protecting a streak.",
     label: "A difficult body day",
-    prompt: "Pain, dizziness, illness, or unusual fatigue changes the plan.",
+    verb: "Adapt",
   },
 ] as const;
+
+type MovementMomentId = (typeof movementMoments)[number]["id"];
 
 const reflectionOptions = [
   "I can see one seam where movement might fit.",
@@ -304,7 +306,8 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
   const [openingNeed, setOpeningNeed] = useState<OpeningNeed | null>(null);
   const [recapOpened, setRecapOpened] = useState<Set<"now" | "later">>(() => new Set());
   const [daySeam, setDaySeam] = useState<DaySeamId | null>(null);
-  const [sittingBreaks, setSittingBreaks] = useState<Set<number>>(() => new Set());
+  const [sittingBreaks, setSittingBreaks] = useState<Partial<Record<number, BreakMotion>>>({});
+  const [activeBreak, setActiveBreak] = useState<BreakMotion | null>(null);
   const [selectedBouts, setSelectedBouts] = useState<Set<MovementBoutId>>(() => new Set());
   const [sequenceOrder, setSequenceOrder] = useState<SequenceId[]>([]);
   const [sequenceAttempts, setSequenceAttempts] = useState(0);
@@ -320,12 +323,8 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
   const [habitMovement, setHabitMovement] = useState<(typeof habitMovements)[number] | null>(null);
   const [habitClosing, setHabitClosing] = useState<(typeof habitClosings)[number] | null>(null);
   const [planScale, setPlanScale] = useState<(typeof planScales)[number] | null>(null);
-  const [confidence, setConfidence] = useState(5);
-  const [confidenceTouched, setConfidenceTouched] = useState(false);
   const [safetyOpened, setSafetyOpened] = useState(false);
-  const [scenarioIndex, setScenarioIndex] = useState(0);
-  const [scenarioCompleted, setScenarioCompleted] = useState(0);
-  const [scenarioChoice, setScenarioChoice] = useState<string | null>(null);
+  const [momentsOpened, setMomentsOpened] = useState<Set<MovementMomentId>>(() => new Set());
   const [reflection, setReflection] = useState<(typeof reflectionOptions)[number] | null>(null);
   const [evaluations, setEvaluations] = useState<
     Partial<Record<EvaluationKey, DaySixEvaluationFeedback>>
@@ -349,6 +348,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
     sequenceOrder.length === correctSequence.length;
   const selectedContext = movementContexts.find((item) => item.id === movementContext);
   const selectedDisruption = disruptions.find((item) => item.id === disruption);
+  const sittingBreakCount = Object.keys(sittingBreaks).length;
 
   useEffect(() => {
     if (experience.accessMode === "review") return;
@@ -410,16 +410,28 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
     }
   }
 
-  function answerScenario(choice: string) {
-    setScenarioChoice(choice);
-    setScenarioCompleted((current) => Math.max(current, scenarioIndex + 1));
+  function cycleSittingBreak(slot: number) {
+    setSittingBreaks((current) => {
+      const active = current[slot];
+      const nextMotion: BreakMotion =
+        active === "stand"
+          ? "stretch"
+          : active === "stretch"
+            ? "walk"
+            : active === "walk"
+              ? "stand"
+              : slot % 3 === 0
+                ? "stand"
+                : slot % 3 === 1
+                  ? "stretch"
+                  : "walk";
+      setActiveBreak(nextMotion);
+      return { ...current, [slot]: nextMotion };
+    });
   }
 
-  function nextScenario() {
-    if (scenarioIndex < momentScenarios.length - 1) {
-      setScenarioIndex((current) => current + 1);
-      setScenarioChoice(null);
-    }
+  function runMovementMoment(id: MovementMomentId) {
+    setMomentsOpened((current) => new Set([...current, id]));
   }
 
   function finishExperience() {
@@ -449,19 +461,18 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
 
   function canContinue() {
     if (stage === 0) return openingNeed !== null;
-    if (stage === 1) return recapOpened.size === 2 && Boolean(evaluations.recap);
+    if (stage === 1) return recapOpened.size === 2;
     if (stage === 2) return daySeam !== null;
-    if (stage === 3) return sittingBreaks.size >= 2;
+    if (stage === 3) return sittingBreakCount >= 2;
     if (stage === 4) return selectedBouts.size >= 2;
     if (stage === 5) return sequenceAccurate || sequenceResolved;
-    if (stage === 6)
-      return responseOpened.size === responseFactors.length && Boolean(evaluations.variation);
+    if (stage === 6) return responseOpened.size === responseFactors.length;
     if (stage === 7) return movementContext !== null && movementChoice !== null;
     if (stage === 8) return disruption !== null && backupChoice !== null;
     if (stage === 9) return habitAnchor !== null && habitMovement !== null && habitClosing !== null;
-    if (stage === 10) return planScale !== null && confidenceTouched;
+    if (stage === 10) return planScale !== null;
     if (stage === 11) return safetyOpened && Boolean(evaluations.safety);
-    if (stage === 12) return scenarioCompleted === momentScenarios.length;
+    if (stage === 12) return momentsOpened.size === movementMoments.length;
     if (stage === 13) return Boolean(evaluations.teachBack);
     return reflection !== null;
   }
@@ -469,18 +480,18 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
   function stageRequirement() {
     return [
       "Choose what would make movement feel more usable today.",
-      "Open both timeframes and choose the accurate recap.",
+      "Open both timeframes and watch them connect.",
       "Choose one seam in an ordinary day.",
-      "Add at least two brief sitting breaks to the timeline.",
+      "Turn at least two sitting points into a standing, stretching, or walking break.",
       "Choose at least two small movement bouts.",
       "Put all four moments in order. After two attempts, the sequence will reveal itself.",
-      "Open all four sources of context and choose why responses can differ.",
+      "Open all four sources of context.",
       "Choose one movement context and one option that could fit it.",
       "Choose one disruption and build a backup route.",
       "Choose a cue, a movement, and a kind closing signal.",
-      "Choose a starting size and move the confidence dial at least once.",
+      "Fold the plan to the starting size that feels usable.",
       "Open the safety pocket and choose the safe medicine response.",
-      "Work through all three real-life moments.",
+      "Run all three real-life movement moments.",
       "Choose the plain-language explanation you would give a friend.",
       "Choose one reflection to complete Day 6.",
     ][stage];
@@ -498,7 +509,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
         "Build a movement menu",
         "Plan for a day that changes",
         "Attach movement to real life",
-        "Set the plan by confidence",
+        "Fold the plan until it fits",
         "Carry the safety pocket",
         "Practice three real moments",
         "Explain the tool gently",
@@ -527,31 +538,40 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             <div className="grid gap-7 border-y border-border py-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div
                 className={cn(
-                  styles.toolGarden,
-                  "relative min-h-72 overflow-hidden rounded-[42%_42%_1.5rem_1.5rem] bg-[#e6eee8]",
+                  styles.routineWindow,
+                  "relative min-h-72 overflow-hidden rounded-[2.5rem_2.5rem_1.5rem_1.5rem] border border-success/20 bg-[#e6eee8] p-6 sm:p-8",
                 )}
-                aria-label="A teaching illustration of a path with several small openings rather than one large leap"
+                aria-label="An animated day showing movement fitting after breakfast, between desk tasks, and during an evening pause"
                 role="img"
               >
-                <span className="absolute bottom-14 left-[8%] right-[8%] h-px bg-success/35" />
-                {[18, 38, 60, 80].map((left, index) => (
-                  <span
-                    className={cn(
-                      styles.pathOpening,
-                      "absolute bottom-[3.05rem] size-12 rounded-full border-4 border-background bg-success text-center text-sm font-semibold leading-10 text-white",
-                    )}
-                    key={left}
-                    style={{ animationDelay: `${index * 140}ms`, left: `${left}%` }}
-                  >
-                    {index + 1}
-                  </span>
-                ))}
-                <span className="absolute bottom-[6.5rem] left-[12%] h-28 w-12 rounded-t-full bg-accent-warm/85" />
-                <span className="absolute bottom-[12.8rem] left-[13%] size-9 rounded-full bg-[#bd9278]" />
-                <Footprints
-                  className="absolute bottom-28 right-[10%] size-16 text-success/45"
-                  strokeWidth={1.2}
-                />
+                <div className={styles.routineTrack}>
+                  {[
+                    { icon: Utensils, label: "Breakfast ends", time: "Morning" },
+                    { icon: Armchair, label: "A task ends", time: "Midday" },
+                    { icon: Moon, label: "A show pauses", time: "Evening" },
+                  ].map((moment, index) => {
+                    const Icon = moment.icon;
+                    return (
+                      <span className={styles.routineMoment} key={moment.label}>
+                        <span className={styles.routineIcon}>
+                          <Icon aria-hidden="true" className="size-7" strokeWidth={1.45} />
+                        </span>
+                        <span className="mt-3 text-xs font-bold uppercase tracking-[0.14em] text-success">
+                          {moment.time}
+                        </span>
+                        <span className="mt-1 text-center text-sm font-semibold">
+                          {moment.label}
+                        </span>
+                        {index < 2 ? (
+                          <MoveRight aria-hidden="true" className={styles.routineArrow} />
+                        ) : null}
+                      </span>
+                    );
+                  })}
+                </div>
+                <p className="absolute inset-x-6 bottom-5 text-center text-xs font-semibold tracking-[0.08em] text-success uppercase">
+                  The day supplies the reminders
+                </p>
               </div>
               <div>
                 <p className="font-serif-display text-3xl">
@@ -628,27 +648,25 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
               })}
             </div>
             {recapOpened.size === 2 ? (
-              <div className="space-y-4">
-                <p className="font-semibold">Which sentence keeps the lesson accurate?</p>
-                {(
-                  [
-                    [
-                      "two_timeframes",
-                      "Movement can help muscles use glucose during activity, and regular activity can support insulin sensitivity over time.",
-                    ],
-                    ["erase_food", "Movement erases the glucose from a meal."],
-                    ["only_weight", "Movement only helps if body weight changes."],
-                  ] as const
-                ).map(([answer, label]) => (
-                  <AnswerChoice
-                    key={answer}
-                    onClick={() => evaluate({ answer, stage: "recap" }, "recap", answer)}
-                    selected={selectedAnswers.recap === answer}
-                  >
-                    {label}
-                  </AnswerChoice>
-                ))}
-                {evaluations.recap ? <ConceptFeedback feedback={evaluations.recap} /> : null}
+              <div
+                className={cn(
+                  styles.timeBridge,
+                  "grid gap-4 border-l-2 border-success bg-info p-6 sm:grid-cols-[auto_1fr_auto_1fr_auto] sm:items-center",
+                )}
+              >
+                <Activity aria-hidden="true" className="size-8 text-success" />
+                <span className="h-px bg-success/30" />
+                <Sparkles aria-hidden="true" className="size-8 text-success" />
+                <span className="h-px bg-success/30" />
+                <div>
+                  <p className="font-serif-display text-2xl italic text-success">
+                    Now can become later.
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-foreground/75">
+                    Working muscles use fuel during activity. Repetition can support insulin
+                    sensitivity over time. Neither idea erases food or depends on weight change.
+                  </p>
+                </div>
               </div>
             ) : null}
           </div>
@@ -719,55 +737,88 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
               Tap two or more pauses to imagine standing, stretching, walking briefly, or using an
               adapted movement. This is an exploration—not a schedule prescribed for you.
             </p>
+            <LessonMotionFigure variant="sitting-interruption" />
             <div
               className={cn(
                 styles.sittingScene,
                 "rounded-[1.5rem] border border-accent-warm/25 bg-[#f2e7de] p-6 sm:p-9",
               )}
             >
-              <div className="flex min-h-52 items-end justify-center gap-5 border-b border-accent-warm/30 pb-3">
+              <div className={styles.breakDemonstration}>
                 <div
-                  className={cn(
-                    styles.deskPerson,
-                    sittingBreaks.size > 0 && styles.deskPersonAwake,
-                    "relative h-36 w-24",
-                  )}
+                  aria-label={`${sittingBreakCount} movement changes split one long sitting stretch into ${sittingBreakCount + 1} shorter sections`}
+                  className={styles.breakRibbon}
+                  role="img"
                 >
-                  <span className="absolute bottom-0 left-1/2 h-20 w-12 -translate-x-1/2 rounded-t-full bg-accent-warm/80" />
-                  <span className="absolute bottom-[4.7rem] left-1/2 size-9 -translate-x-1/2 rounded-full bg-[#b98970]" />
+                  {[0, 1, 2, 3, 4].map((slot) => {
+                    const motion = sittingBreaks[slot];
+                    return (
+                      <span
+                        className={cn(
+                          styles.stillSegment,
+                          motion && styles.movementSegment,
+                          motion === "stand" && styles.movementSegmentStand,
+                          motion === "stretch" && styles.movementSegmentStretch,
+                          motion === "walk" && styles.movementSegmentWalk,
+                        )}
+                        key={slot}
+                      >
+                        {motion === "walk" ? (
+                          <Footprints className="size-7" />
+                        ) : motion === "stretch" ? (
+                          <Activity className="size-7" />
+                        ) : motion === "stand" ? (
+                          <PersonStanding className="size-7" />
+                        ) : (
+                          <Pause className="size-5" />
+                        )}
+                        <span>{motion ? breakMotionLabels[motion] : "Still"}</span>
+                      </span>
+                    );
+                  })}
                 </div>
-                <span className="h-20 w-36 border-b-8 border-l-4 border-r-4 border-[#8a705e]" />
+                <div className={styles.breakEquation}>
+                  <span>One unbroken stretch</span>
+                  <MoveRight aria-hidden="true" className="size-5" />
+                  <strong>
+                    {sittingBreakCount === 0
+                      ? "Add a change"
+                      : `${sittingBreakCount + 1} shorter sections`}
+                  </strong>
+                </div>
+                <p className={styles.breakCaption} aria-live="polite">
+                  {activeBreak
+                    ? `${breakMotionLabels[activeBreak]} changes the shape of the sitting ribbon. Tap that point again to try another kind of movement.`
+                    : "Choose a point below and watch one long ribbon split."}
+                </p>
               </div>
               <div className="mt-7 grid grid-cols-5 gap-2">
                 {[0, 1, 2, 3, 4].map((slot) => {
-                  const active = sittingBreaks.has(slot);
+                  const motion = sittingBreaks[slot];
                   return (
                     <button
-                      aria-label={`${active ? "Remove" : "Add"} a movement break at point ${slot + 1}`}
-                      aria-pressed={active}
+                      aria-label={`Movement point ${slot + 1}: ${motion ? breakMotionLabels[motion] : "sitting"}. Activate to choose the next movement.`}
+                      aria-pressed={Boolean(motion)}
                       className={cn(
                         styles.sittingMarker,
                         "motion-tactile min-h-24 rounded-full border text-center",
-                        active ? "border-success bg-success text-white" : "border-border bg-card",
+                        motion ? "border-success bg-success text-white" : "border-border bg-card",
                       )}
                       key={slot}
-                      onClick={() =>
-                        setSittingBreaks((current) => {
-                          const next = new Set(current);
-                          if (next.has(slot)) next.delete(slot);
-                          else next.add(slot);
-                          return next;
-                        })
-                      }
+                      onClick={() => cycleSittingBreak(slot)}
                       type="button"
                     >
-                      {active ? (
+                      {motion === "walk" ? (
+                        <Footprints className="mx-auto size-6" />
+                      ) : motion === "stretch" ? (
+                        <Activity className="mx-auto size-6" />
+                      ) : motion === "stand" ? (
                         <PersonStanding className="mx-auto size-6" />
                       ) : (
                         <Pause className="mx-auto size-5 text-muted-foreground" />
                       )}
                       <span className="mt-2 block text-xs font-semibold">
-                        {active ? "Move" : "Sitting"}
+                        {motion ? breakMotionLabels[motion] : "Sitting"}
                       </span>
                     </button>
                   );
@@ -775,9 +826,9 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
               </div>
             </div>
             <div className="flex items-center gap-5">
-              <p className="font-serif-display text-6xl text-success">{sittingBreaks.size}</p>
+              <p className="font-serif-display text-6xl text-success">{sittingBreakCount}</p>
               <p className="max-w-xl leading-7 text-foreground/75">
-                {sittingBreaks.size >= 2
+                {sittingBreakCount >= 2
                   ? "The still stretch now has openings. Brief movement can interrupt sitting without becoming a formal workout."
                   : "Add two possible openings. They can be standing, walking, stretching, or an adapted movement."}
               </p>
@@ -864,6 +915,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
               Tap the four moments in the order that makes biological sense. This is a teaching
               sequence, not a rule that every meal needs movement.
             </p>
+            <LessonMotionFigure variant="post-meal-window" />
             <div className="grid gap-3 sm:grid-cols-2">
               {sequenceCards.map((card) => {
                 const position = sequenceOrder.indexOf(card.id);
@@ -992,34 +1044,27 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
               </p>
             ) : null}
             {responseOpened.size === responseFactors.length ? (
-              <div className="space-y-4">
-                <p className="font-semibold">
-                  Why might one person see a different response from another?
-                </p>
-                {(
-                  [
-                    [
-                      "varies",
-                      "Activity, food, medicines, timing, and the rest of the day can all change the response.",
-                    ],
-                    [
-                      "guaranteed_drop",
-                      "Every comfortable walk should cause the same guaranteed drop.",
-                    ],
-                    ["proof_of_failure", "An unexpected number proves the movement failed."],
-                  ] as const
-                ).map(([answer, label]) => (
-                  <AnswerChoice
-                    key={answer}
-                    onClick={() => evaluate({ answer, stage: "variation" }, "variation", answer)}
-                    selected={selectedAnswers.variation === answer}
-                  >
-                    {label}
-                  </AnswerChoice>
-                ))}
-                {evaluations.variation ? (
-                  <ConceptFeedback feedback={evaluations.variation} />
-                ) : null}
+              <div
+                className={cn(
+                  styles.contextComplete,
+                  "grid gap-5 border-y border-success/30 bg-info px-6 py-7 sm:grid-cols-[auto_1fr] sm:items-center",
+                )}
+              >
+                <span className={styles.contextWeather} aria-hidden="true">
+                  <Sparkles className="size-7" />
+                  <CloudRain className="size-7" />
+                  <Wind className="size-7" />
+                </span>
+                <div>
+                  <p className="font-serif-display text-2xl italic text-success">
+                    A response is a pattern with context—not a grade.
+                  </p>
+                  <p className="mt-2 leading-7 text-foreground/75">
+                    Activity, food, medicine, timing, sleep, stress, illness, and many individual
+                    factors can change what happens. One unexpected number does not prove the
+                    movement failed.
+                  </p>
+                </div>
               </div>
             ) : null}
           </div>
@@ -1228,15 +1273,14 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             ) : null}
           </div>
         );
-      case 10:
+      case 10: {
+        const planScaleIndex = planScale ? planScales.indexOf(planScale) : -1;
         return (
           <div className="space-y-9">
-            <DaySixHeading label="Confidence sets the size">
-              Shrink the plan before you abandon it.
-            </DaySixHeading>
+            <DaySixHeading label="Let the plan bend">Fold the plan until it fits.</DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Choose a starting size, then move the dial. This is not a test of motivation. It is a
-              design check: how likely does this feel on an ordinary week?
+              Choose a starting size and watch the same plan physically fold. Smaller is not a lower
+              score. It is less surface area for a difficult day to knock over.
             </p>
             <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
               <div className="space-y-3">
@@ -1248,10 +1292,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                       planScale === scale ? "border-success bg-info" : "border-border bg-card",
                     )}
                     key={scale}
-                    onClick={() => {
-                      setPlanScale(scale);
-                      if (index > 0) setConfidence((current) => Math.min(10, current + 1));
-                    }}
+                    onClick={() => setPlanScale(scale)}
                     type="button"
                   >
                     <span className="font-semibold">{scale}</span>
@@ -1263,47 +1304,53 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
               </div>
               <div
                 className={cn(
-                  styles.confidenceDial,
-                  "rounded-[48%_48%_1.5rem_1.5rem] border border-border bg-[#f2e7de] p-7 text-center",
+                  styles.planFoldingDesk,
+                  "relative flex min-h-80 flex-col justify-between overflow-hidden rounded-[1.5rem] border border-border bg-[#f2e7de] p-7",
                 )}
+                aria-live="polite"
               >
-                <CircleGauge className="mx-auto size-10 text-accent-warm" />
-                <p className="mt-5 font-serif-display text-7xl text-accent-warm">{confidence}</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  out of 10 likely on an ordinary week
+                <div>
+                  <p className="editorial-eyebrow text-accent-warm">The same intention</p>
+                  <p className="mt-3 font-serif-display text-3xl">{planScale ?? "Choose a fold"}</p>
+                </div>
+                <div className={styles.planFoldSurface} aria-hidden="true">
+                  <span
+                    className={cn(
+                      styles.planPaper,
+                      planScaleIndex === 0 && styles.planPaperFull,
+                      planScaleIndex === 1 && styles.planPaperSmall,
+                      planScaleIndex === 2 && styles.planPaperTiny,
+                    )}
+                  >
+                    {[0, 1, 2, 3, 4].map((section) => (
+                      <span key={section} />
+                    ))}
+                  </span>
+                </div>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {planScaleIndex === -1
+                    ? "Full, small, and tiny are three versions of one plan."
+                    : planScaleIndex === 0
+                      ? "Keep the full version when it truly fits the day."
+                      : planScaleIndex === 1
+                        ? "One fold keeps the plan recognizable and easier to begin."
+                        : "Two folds protect the smallest useful version for a difficult day."}
                 </p>
-                <label
-                  className="mt-8 block text-left text-sm font-semibold"
-                  htmlFor="day-six-confidence"
-                >
-                  Move the confidence dial
-                </label>
-                <input
-                  className="mt-4 w-full accent-[var(--color-success)]"
-                  id="day-six-confidence"
-                  max="10"
-                  min="0"
-                  onChange={(event) => {
-                    setConfidence(Number(event.target.value));
-                    setConfidenceTouched(true);
-                  }}
-                  type="range"
-                  value={confidence}
-                />
               </div>
             </div>
-            <p
-              className={cn(
-                "border-l-2 p-5 leading-7",
-                confidence >= 7 ? "border-success bg-info" : "border-accent-warm bg-accent-warm/8",
-              )}
-            >
-              {confidence >= 7
-                ? "The plan feels fairly likely. Keep the backup route anyway; real life still gets a vote."
-                : "If the plan feels unlikely, try a smaller size. A two-minute plan you can begin may teach you more than a ten-minute plan that feels impossible."}
-            </p>
+            {planScale ? (
+              <p className="border-l-2 border-success bg-info p-5 leading-7" role="status">
+                <strong>{planScale}</strong> is now the starting version. The larger version still
+                exists; it simply does not have to be the price of beginning.
+              </p>
+            ) : (
+              <p className="border-l-2 border-accent-warm bg-accent-warm/8 p-5 leading-7">
+                Pick the version you would be most willing to start on an ordinary week.
+              </p>
+            )}
           </div>
         );
+      }
       case 11:
         return (
           <div className="space-y-9">
@@ -1370,76 +1417,102 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
           </div>
         );
       case 12: {
-        const scenario = momentScenarios[scenarioIndex] ?? momentScenarios[0];
-        const accurate = scenarioChoice === scenario.correct;
         return (
           <div className="space-y-9">
             <DaySixHeading label="The three-moment lab">
               Use the tool without turning it into a rule.
             </DaySixHeading>
-            <div
-              className="flex gap-2"
-              aria-label={`Scenario ${scenarioIndex + 1} of ${momentScenarios.length}`}
-            >
-              {momentScenarios.map((_, index) => (
-                <span
-                  className={cn(
-                    "h-1.5 flex-1 rounded-full",
-                    index <= scenarioIndex ? "bg-accent-warm" : "bg-border",
-                  )}
-                  key={index}
-                />
-              ))}
-            </div>
-            <div
-              className={cn(
-                styles.scenarioPaper,
-                "rounded-[1.5rem] border border-border bg-card p-7 shadow-card sm:p-10",
-              )}
-            >
-              <p className="editorial-eyebrow text-success">
-                Moment {scenarioIndex + 1} · {scenario.label}
-              </p>
-              <h2 className="mt-6 max-w-3xl font-serif-display text-4xl leading-tight">
-                {scenario.prompt}
-              </h2>
-              <div className="mt-8 grid gap-3">
-                {scenario.choices.map(([id, label]) => (
-                  <AnswerChoice
-                    key={id}
-                    onClick={() => answerScenario(id)}
-                    selected={scenarioChoice === id}
+            <p className="max-w-3xl text-lg leading-8 text-foreground/80">
+              Watch each real-life moment loop. The useful action changes with the situation:
+              interrupt a long sit, choose an optional movement window, or reroute a difficult day.
+            </p>
+            <div className={styles.momentLab}>
+              {movementMoments.map((moment) => {
+                const opened = momentsOpened.has(moment.id);
+                return (
+                  <article
+                    className={cn(
+                      styles.momentRow,
+                      "overflow-hidden rounded-[1.4rem] border p-5 text-left shadow-card sm:p-7",
+                      opened ? "border-success bg-info" : "border-border bg-card",
+                    )}
+                    key={moment.id}
                   >
-                    {label}
-                  </AnswerChoice>
-                ))}
-              </div>
-              {scenarioChoice ? (
-                <div
-                  className={cn(
-                    "mt-7 border-l-2 p-5",
-                    accurate ? "border-success bg-info" : "border-warning bg-warning/10",
-                  )}
-                >
-                  <p className="font-serif-display text-2xl italic">
-                    {accurate ? "That protects flexibility." : "Release the all-or-nothing rule."}
-                  </p>
-                  <p className="mt-2 leading-7">{scenario.explanation}</p>
-                </div>
-              ) : null}
+                    <div className={styles.momentCopy}>
+                      <p className="editorial-eyebrow text-accent-warm">{moment.verb}</p>
+                      <h2 className="mt-3 font-serif-display text-3xl leading-tight">
+                        {moment.label}
+                      </h2>
+                      <p className="mt-4 leading-7 text-foreground/75">{moment.explanation}</p>
+                      <Button
+                        className="mt-5"
+                        fullWidth={false}
+                        onClick={() => runMovementMoment(moment.id)}
+                        variant="secondary"
+                      >
+                        {opened ? (
+                          <>
+                            <Check className="size-4" /> Explored
+                          </>
+                        ) : (
+                          "Mark this moment explored"
+                        )}
+                      </Button>
+                    </div>
+                    <div
+                      className={cn(
+                        styles.momentVideo,
+                        moment.id === "desk" && styles.interruptVideo,
+                        moment.id === "meal" && styles.chooseVideo,
+                        moment.id === "hard" && styles.adaptVideo,
+                      )}
+                      aria-hidden="true"
+                    >
+                      {moment.id === "desk" ? (
+                        <>
+                          <Armchair className={styles.videoChair} />
+                          <span className={styles.videoStillLine} />
+                          <PersonStanding className={styles.videoRisingPerson} />
+                          <span className={styles.videoBreakMark} />
+                        </>
+                      ) : moment.id === "meal" ? (
+                        <>
+                          <Utensils className={styles.videoMeal} />
+                          <span className={styles.videoFuelDot} />
+                          <span className={styles.videoTravelPath} />
+                          <Footprints className={styles.videoFootprints} />
+                          <Activity className={styles.videoMuscle} />
+                        </>
+                      ) : (
+                        <>
+                          <CloudRain className={styles.videoWeather} />
+                          <Route className={styles.videoRoute} />
+                          <span className={styles.videoTraveler} />
+                          <ShieldCheck className={styles.videoShelter} />
+                        </>
+                      )}
+                      <p className={styles.videoLabel}>
+                        {moment.id === "desk"
+                          ? "sit · rise · reset"
+                          : moment.id === "meal"
+                            ? "meal · optional movement · working muscle"
+                            : "notice · reroute · protect the body"}
+                      </p>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
-            {scenarioChoice && scenarioIndex < momentScenarios.length - 1 ? (
-              <div className="flex justify-end">
-                <Button fullWidth={false} onClick={nextScenario}>
-                  Try the next moment
-                </Button>
-              </div>
-            ) : null}
-            {scenarioCompleted === momentScenarios.length ? (
-              <p className="border-l-2 border-success bg-info p-5 text-lg leading-8">
+            {momentsOpened.size === movementMoments.length ? (
+              <div
+                className={cn(
+                  styles.momentsComplete,
+                  "border-l-2 border-success bg-info p-5 text-lg leading-8",
+                )}
+              >
                 You used the same tool three different ways: interrupt, choose, and adapt. That is
                 more useful than one rigid rule.
-              </p>
+              </div>
             ) : null}
           </div>
         );
@@ -1562,7 +1635,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                     Rebuild the habit bridge
                   </Button>
                   <Button fullWidth={false} onClick={() => goToStage(10)} variant="text">
-                    Reset the confidence size
+                    Refold the plan
                   </Button>
                   <Link
                     className={buttonVariants({ fullWidth: false, variant: "text" })}

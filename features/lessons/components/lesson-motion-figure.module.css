@@ -1,0 +1,1075 @@
+.figure {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, var(--accent-warm) 28%);
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  background: var(--card);
+  box-shadow: 0 1rem 2.5rem rgb(61 46 38 / 8%);
+}
+
+.viewport {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  min-height: clamp(13rem, 42vw, 22rem);
+  background: color-mix(in srgb, var(--muted) 78%, white 22%);
+}
+
+.motionControl {
+  position: absolute;
+  z-index: 3;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--border) 74%, var(--foreground) 26%);
+  border-radius: 999px;
+  padding: 0.55rem 0.85rem;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  box-shadow: 0 0.4rem 1rem rgb(61 46 38 / 10%);
+  color: var(--foreground);
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.motionControl:hover {
+  transform: translateY(-1px);
+}
+
+.motionControl:active {
+  transform: translateY(1px);
+}
+
+.motionControl:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent-warm) 52%, transparent);
+  outline-offset: 3px;
+}
+
+.art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 22rem;
+  overflow: hidden;
+}
+
+.caption {
+  border-top: 1px solid var(--border);
+  padding: 1rem clamp(1.1rem, 3vw, 1.75rem) 1.2rem;
+  color: var(--muted-foreground);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.sceneLabel,
+.vesselLabel,
+.cellLabel {
+  fill: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.vesselLabel {
+  font-size: 11px;
+}
+
+.cellLabel {
+  fill: var(--success-foreground);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.ground {
+  fill: color-mix(in srgb, var(--foreground) 9%, transparent);
+}
+
+.calmHalo {
+  fill: color-mix(in srgb, var(--success) 24%, transparent);
+}
+
+.warmPerson {
+  fill: color-mix(in srgb, var(--accent-warm) 78%, white 22%);
+}
+
+.warmPerson circle {
+  fill: color-mix(in srgb, var(--accent-warm) 24%, white 76%);
+  stroke: var(--accent-warm);
+  stroke-width: 3;
+}
+
+.smile,
+.chestLine {
+  fill: none;
+  stroke: var(--background);
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.smile {
+  stroke: color-mix(in srgb, var(--foreground) 66%, var(--accent-warm) 34%);
+  stroke-width: 4;
+}
+
+.worryCloud {
+  fill: color-mix(in srgb, var(--muted-foreground) 34%, transparent);
+}
+
+.breathBubble {
+  fill: var(--success);
+  filter: drop-shadow(0 3px 7px rgb(67 111 84 / 24%));
+}
+
+.hugPersonWarm,
+.hugPersonGreen {
+  fill: color-mix(in srgb, var(--accent-warm) 74%, white 26%);
+}
+
+.hugPersonWarm circle,
+.hugPersonGreen circle {
+  fill: color-mix(in srgb, var(--accent-warm) 22%, white 78%);
+  stroke: var(--accent-warm);
+  stroke-width: 3;
+}
+
+.hugPersonGreen {
+  fill: color-mix(in srgb, var(--success) 72%, white 28%);
+}
+
+.hugPersonGreen circle {
+  fill: color-mix(in srgb, var(--success) 18%, white 82%);
+  stroke: var(--success);
+}
+
+.hugArmWarm,
+.hugArmGreen {
+  fill: none;
+  stroke: var(--accent-warm);
+  stroke-linecap: round;
+  stroke-width: 17;
+}
+
+.hugArmGreen {
+  stroke: var(--success);
+}
+
+.comfortHeart {
+  fill: color-mix(in srgb, var(--accent-warm) 28%, white 72%);
+  stroke: var(--accent-warm);
+  stroke-linejoin: round;
+}
+
+.vessel,
+.a1cVessel,
+.muscleVessel {
+  fill: color-mix(in srgb, var(--accent-warm) 13%, var(--muted) 87%);
+  stroke: color-mix(in srgb, var(--accent-warm) 40%, transparent);
+  stroke-width: 3;
+}
+
+.cell,
+.responseCell {
+  fill: color-mix(in srgb, var(--success) 18%, var(--card) 82%);
+  stroke: color-mix(in srgb, var(--success) 66%, transparent);
+  stroke-width: 5;
+}
+
+.cellGate,
+.responseGate {
+  fill: color-mix(in srgb, var(--warning) 24%, white 76%);
+  stroke: var(--warning);
+  stroke-width: 3;
+}
+
+.signalTrail,
+.responsePath {
+  fill: none;
+  stroke: color-mix(in srgb, var(--success) 36%, transparent);
+  stroke-dasharray: 9 12;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.insulinDot,
+.bloodDot {
+  fill: var(--success);
+  filter: drop-shadow(0 4px 8px rgb(67 111 84 / 30%));
+}
+
+.bloodDot {
+  fill: color-mix(in srgb, var(--destructive) 74%, var(--accent-warm) 26%);
+}
+
+.glucoseDot,
+.foodChunk {
+  fill: var(--warning);
+  stroke: color-mix(in srgb, var(--warning) 20%, white 80%);
+  stroke-width: 3;
+  filter: drop-shadow(0 4px 8px rgb(180 123 38 / 22%));
+}
+
+.cellGlow,
+.responseRing {
+  fill: none;
+  stroke: color-mix(in srgb, var(--success) 58%, transparent);
+  stroke-width: 7;
+}
+
+.pancreas {
+  fill: color-mix(in srgb, var(--accent-warm) 66%, white 34%);
+  stroke: var(--accent-warm);
+  stroke-linejoin: round;
+}
+
+.dayLine,
+.postMealCurve,
+.postMealGuide {
+  fill: none;
+  stroke: var(--accent-warm);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7;
+}
+
+.dayTracer,
+.curveTracer {
+  fill: var(--success);
+  stroke: white;
+  stroke-width: 4;
+  filter: drop-shadow(0 5px 9px rgb(67 111 84 / 30%));
+}
+
+.snapshotMeter {
+  fill: var(--card);
+  stroke: var(--foreground);
+  stroke-width: 4;
+  filter: drop-shadow(0 12px 18px rgb(61 46 38 / 14%));
+}
+
+.snapshotScreen {
+  fill: color-mix(in srgb, var(--success) 22%, white 78%);
+  stroke: var(--success);
+  stroke-width: 3;
+}
+
+.meterNumber {
+  fill: var(--success-foreground);
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.scanBand {
+  fill: color-mix(in srgb, var(--success) 66%, transparent);
+  filter: blur(1px);
+}
+
+.flowLine {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent-warm) 26%, transparent);
+  stroke-dasharray: 10 14;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.rbcOuter {
+  fill: color-mix(in srgb, var(--destructive) 44%, white 56%);
+  stroke: color-mix(in srgb, var(--destructive) 72%, var(--accent-warm) 28%);
+  stroke-width: 7;
+}
+
+.rbcInner {
+  fill: color-mix(in srgb, var(--destructive) 18%, white 82%);
+}
+
+.a1cMarker {
+  fill: var(--warning);
+  stroke: white;
+  stroke-width: 3;
+}
+
+.timeArrow,
+.arrowHead {
+  fill: none;
+  stroke: color-mix(in srgb, var(--success) 52%, var(--muted-foreground) 48%);
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.mealPlate circle:first-child {
+  fill: color-mix(in srgb, var(--accent-warm) 20%, white 80%);
+  stroke: var(--accent-warm);
+  stroke-width: 4;
+}
+
+.mealPlate circle:nth-child(2) {
+  fill: var(--card);
+  stroke: color-mix(in srgb, var(--accent-warm) 24%, transparent);
+  stroke-width: 3;
+}
+
+.mealPlate path {
+  fill: color-mix(in srgb, var(--success) 54%, white 46%);
+}
+
+.digestiveTube {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent-warm) 38%, var(--border) 62%);
+  stroke-linecap: round;
+  stroke-width: 24;
+}
+
+.stomach {
+  fill: color-mix(in srgb, var(--accent-warm) 13%, white 87%);
+  stroke: color-mix(in srgb, var(--accent-warm) 62%, var(--border) 38%);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.proteinDot {
+  fill: var(--success);
+  stroke: white;
+  stroke-width: 3;
+}
+
+.fatDot {
+  fill: var(--accent-warm);
+  stroke: white;
+  stroke-width: 3;
+}
+
+.fastLane,
+.slowLane {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent-warm) 30%, var(--border) 70%);
+  stroke-linecap: round;
+  stroke-width: 22;
+}
+
+.slowLane {
+  stroke: color-mix(in srgb, var(--success) 30%, var(--border) 70%);
+}
+
+.fiberGates {
+  fill: none;
+  stroke: var(--success);
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+.muscleGate {
+  fill: none;
+  stroke: var(--success);
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.muscleFibers,
+.circulationMuscle {
+  fill: color-mix(in srgb, var(--success) 58%, white 42%);
+}
+
+.heartShape {
+  fill: color-mix(in srgb, var(--accent-warm) 72%, white 28%);
+  stroke: var(--accent-warm);
+  stroke-linejoin: round;
+}
+
+.circulationVessel {
+  fill: none;
+  stroke: color-mix(in srgb, var(--success) 42%, var(--accent-warm) 58%);
+  stroke-dasharray: 12 13;
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+.postMealAxis {
+  fill: none;
+  stroke: var(--border);
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.postMealGuide {
+  stroke: var(--success);
+  stroke-dasharray: 11 12;
+  stroke-width: 6;
+}
+
+.postMealWalker {
+  fill: color-mix(in srgb, var(--accent-warm) 22%, white 78%);
+  stroke: var(--accent-warm);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 6;
+}
+
+.chairShape {
+  fill: color-mix(in srgb, var(--accent-warm) 12%, white 88%);
+  stroke: color-mix(in srgb, var(--foreground) 64%, var(--accent-warm) 36%);
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.sittingPerson {
+  fill: color-mix(in srgb, var(--accent-warm) 22%, white 78%);
+  stroke: var(--accent-warm);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7;
+}
+
+.stretchArms {
+  fill: none;
+  stroke: var(--success);
+  stroke-linecap: round;
+  stroke-width: 10;
+}
+
+.stillTimeline,
+.breakTimeline {
+  fill: none;
+  stroke: color-mix(in srgb, var(--muted-foreground) 40%, transparent);
+  stroke-linecap: round;
+  stroke-width: 13;
+}
+
+.breakTimeline {
+  stroke: var(--success);
+}
+
+.breakMarker {
+  fill: var(--success);
+  stroke: var(--background);
+  stroke-width: 7;
+}
+
+/*
+ * CSS timelines intentionally mirror the SVG timelines. They provide a second,
+ * browser-independent playback path so the illustrations keep behaving like
+ * short looping films even when a browser does not start SVG SMIL reliably.
+ */
+.breathBubble,
+.insulinDot,
+.glucoseDot,
+.foodChunk,
+.proteinDot,
+.fatDot,
+.bloodDot {
+  animation-name: gif-dot-travel;
+  animation-timing-function: cubic-bezier(0.42, 0, 0.2, 1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.rbc {
+  animation-name: gif-cell-flow;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.art[data-variant="calm-breath"] .warmPerson {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: gif-breathe 5.2s ease-in-out infinite;
+}
+
+.art[data-variant="calm-breath"] .calmHalo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-halo 5.2s ease-in-out infinite;
+}
+
+.art[data-variant="calm-breath"] .worryCloud {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-worry-soften 5.2s ease-in-out infinite;
+}
+
+.art[data-variant="comfort-hug"] .hugPersonWarm {
+  animation: gif-hug-left 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.art[data-variant="comfort-hug"] .hugPersonGreen {
+  animation: gif-hug-right 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.art[data-variant="comfort-hug"] .comfortHeart {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-heart-arrive 6s ease-in-out infinite;
+}
+
+.art[data-variant="glucose-signal"] .cellGate {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-gate-open 5.8s ease-in-out infinite;
+}
+
+.art[data-variant="glucose-signal"] .vessel,
+.art[data-variant="a1c-window"] .a1cVessel,
+.art[data-variant="muscle-fuel"] .muscleVessel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-vessel-breathe 3.2s ease-in-out infinite;
+}
+
+.art[data-variant="glucose-signal"] .cell,
+.art[data-variant="insulin-response"] .responseCell {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-cell-breathe 2.8s ease-in-out infinite;
+}
+
+.art[data-variant="glucose-signal"] .signalTrail,
+.art[data-variant="insulin-response"] .responsePath {
+  animation: gif-dash-flow 1s linear infinite;
+}
+
+.art[data-variant="glucose-signal"] .cellGlow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-cell-glow 5.8s ease-out infinite;
+}
+
+.art[data-variant="insulin-response"] .pancreas {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-pancreas-pulse 3.4s ease-in-out infinite;
+}
+
+.art[data-variant="insulin-response"] .responseRing {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-response-ring 3.2s ease-out infinite;
+}
+
+.art[data-variant="reading-snapshot"] .dayTracer {
+  animation: gif-day-tracer 7s ease-in-out infinite;
+}
+
+.art[data-variant="reading-snapshot"] .dayLine {
+  stroke-dasharray: 22 8;
+  animation: gif-day-flow 1.6s linear infinite;
+}
+
+.art[data-variant="reading-snapshot"] .scanBand {
+  animation: gif-scan 5s ease-in-out infinite;
+}
+
+.art[data-variant="reading-snapshot"] .snapshotMeter {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-meter-capture 5s ease-in-out infinite;
+}
+
+.art[data-variant="a1c-window"] .flowLine,
+.art[data-variant="digestion-journey"] .digestiveTube,
+.art[data-variant="circulation-rhythm"] .circulationVessel {
+  animation: gif-dash-flow 1.1s linear infinite;
+}
+
+.art[data-variant="a1c-window"] .a1cMarker {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-marker-pulse 1.8s ease-in-out infinite;
+}
+
+.art[data-variant="digestion-journey"] .mealPlate {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-meal-begin 4.2s ease-in-out infinite;
+}
+
+.art[data-variant="digestion-journey"] .stomach {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-stomach-work 2.2s ease-in-out infinite;
+}
+
+.art[data-variant="fiber-pace"] .fastLane,
+.art[data-variant="fiber-pace"] .slowLane {
+  stroke-dasharray: 18 10;
+  animation: gif-lane-flow 1s linear infinite;
+}
+
+.art[data-variant="fiber-pace"] .slowLane {
+  animation-duration: 2.2s;
+}
+
+.art[data-variant="fiber-pace"] .fiberGates {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-fiber-sway 1.8s ease-in-out infinite;
+}
+
+.art[data-variant="muscle-fuel"] .muscleGate {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-muscle-gate 2.2s ease-in-out infinite;
+}
+
+.art[data-variant="muscle-fuel"] .muscleFibers,
+.art[data-variant="circulation-rhythm"] .circulationMuscle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-muscle-contract 1.4s ease-in-out infinite;
+}
+
+.art[data-variant="circulation-rhythm"] .heartShape {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-heartbeat 1.45s ease-in-out infinite;
+}
+
+.art[data-variant="post-meal-window"] .curveTracer {
+  animation: gif-curve-tracer 6.4s ease-in-out infinite;
+}
+
+.art[data-variant="post-meal-window"] .postMealCurve,
+.art[data-variant="post-meal-window"] .postMealGuide {
+  stroke-dasharray: 24 9;
+  animation: gif-day-flow 1.8s linear infinite;
+}
+
+.art[data-variant="post-meal-window"] .postMealWalker {
+  animation: gif-walk-across 5.4s ease-in-out infinite;
+}
+
+.art[data-variant="sitting-interruption"] .sittingPerson {
+  animation: gif-sit-rise 6s ease-in-out infinite;
+}
+
+.art[data-variant="sitting-interruption"] .stretchArms,
+.art[data-variant="sitting-interruption"] .breakTimeline,
+.art[data-variant="sitting-interruption"] .breakMarker {
+  animation: gif-break-appear 6s ease-in-out infinite;
+}
+
+.art[data-variant="sitting-interruption"] .stillTimeline {
+  stroke-dasharray: 26 10;
+  animation: gif-day-flow 1.4s linear infinite;
+}
+
+.art[data-variant="calm-breath"] .ground,
+.art[data-variant="comfort-hug"] .ground {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gif-ground-settle 3.6s ease-in-out infinite;
+}
+
+.figure[data-motion-playing="false"] .art * {
+  animation-play-state: paused !important;
+}
+
+@keyframes gif-dot-travel {
+  0%,
+  10% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.75);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  82% {
+    opacity: 1;
+    transform: translate(var(--motion-x), var(--motion-y)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--motion-x), var(--motion-y)) scale(0.72);
+  }
+}
+
+@keyframes gif-cell-flow {
+  0% {
+    opacity: 0;
+    transform: translate(-70px, 142px) rotate(-8deg);
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(790px, 142px) rotate(18deg);
+  }
+}
+
+@keyframes gif-breathe {
+  0%,
+  100% {
+    transform: translateY(6px) scaleX(0.98);
+  }
+  45%,
+  70% {
+    transform: translateY(-7px) scaleX(1.04);
+  }
+}
+
+@keyframes gif-halo {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.84);
+  }
+  48%,
+  70% {
+    opacity: 0.55;
+    transform: scale(1.16);
+  }
+}
+
+@keyframes gif-worry-soften {
+  0%,
+  100% {
+    opacity: 0.54;
+    transform: translateX(0) scale(1);
+  }
+  48%,
+  72% {
+    opacity: 0.12;
+    transform: translateX(34px) scale(0.62);
+  }
+}
+
+@keyframes gif-hug-left {
+  0%,
+  12%,
+  100% {
+    transform: translateX(0);
+  }
+  42%,
+  78% {
+    transform: translateX(112px);
+  }
+}
+
+@keyframes gif-hug-right {
+  0%,
+  12%,
+  100% {
+    transform: translateX(0);
+  }
+  42%,
+  78% {
+    transform: translateX(-112px);
+  }
+}
+
+@keyframes gif-heart-arrive {
+  0%,
+  28%,
+  100% {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+  48%,
+  68% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  58% {
+    transform: scale(0.96);
+  }
+}
+
+@keyframes gif-gate-open {
+  0%,
+  26%,
+  100% {
+    transform: scaleY(0.58);
+  }
+  42%,
+  82% {
+    transform: scaleY(1.18);
+  }
+}
+
+@keyframes gif-vessel-breathe {
+  0%,
+  100% {
+    transform: scaleY(0.98);
+  }
+  50% {
+    transform: scaleY(1.035);
+  }
+}
+
+@keyframes gif-cell-breathe {
+  0%,
+  100% {
+    transform: scale(0.98);
+  }
+  50% {
+    transform: scale(1.045);
+  }
+}
+
+@keyframes gif-cell-glow {
+  0%,
+  40%,
+  100% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  66% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes gif-pancreas-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+    transform: scale(0.98);
+  }
+  45% {
+    filter: drop-shadow(0 0 12px color-mix(in srgb, var(--accent-warm) 54%, transparent));
+    transform: scale(1.06);
+  }
+}
+
+@keyframes gif-response-ring {
+  0% {
+    opacity: 0.58;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.72);
+  }
+}
+
+@keyframes gif-day-tracer {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(140px, -30px);
+  }
+  48% {
+    transform: translate(295px, -102px);
+  }
+  72% {
+    transform: translate(430px, -84px);
+  }
+  90% {
+    transform: translate(580px, -64px);
+  }
+}
+
+@keyframes gif-scan {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  14% {
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0.4;
+    transform: translateX(520px);
+  }
+  78% {
+    opacity: 0;
+    transform: translateX(520px);
+  }
+}
+
+@keyframes gif-meter-capture {
+  0%,
+  42%,
+  62%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+@keyframes gif-dash-flow {
+  to {
+    stroke-dashoffset: -42;
+  }
+}
+
+@keyframes gif-day-flow {
+  to {
+    stroke-dashoffset: -66;
+  }
+}
+
+@keyframes gif-marker-pulse {
+  0%,
+  100% {
+    transform: scale(0.72);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes gif-meal-begin {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  22% {
+    transform: translateX(8px) rotate(3deg);
+  }
+  44% {
+    transform: translateX(0) rotate(-2deg);
+  }
+}
+
+@keyframes gif-stomach-work {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.05, 0.9);
+  }
+}
+
+@keyframes gif-lane-flow {
+  to {
+    stroke-dashoffset: -56;
+  }
+}
+
+@keyframes gif-fiber-sway {
+  0%,
+  100% {
+    transform: skewX(-3deg);
+  }
+  50% {
+    transform: skewX(3deg);
+  }
+}
+
+@keyframes gif-muscle-gate {
+  0%,
+  100% {
+    transform: scaleX(0.82);
+  }
+  50% {
+    transform: scaleX(1.22);
+  }
+}
+
+@keyframes gif-muscle-contract {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.8);
+  }
+}
+
+@keyframes gif-heartbeat {
+  0%,
+  34%,
+  100% {
+    transform: scale(1);
+  }
+  12% {
+    transform: scale(1.14);
+  }
+  22% {
+    transform: scale(0.96);
+  }
+}
+
+@keyframes gif-curve-tracer {
+  0%,
+  100% {
+    transform: translate(80px, 211px);
+  }
+  24% {
+    transform: translate(190px, 150px);
+  }
+  42% {
+    transform: translate(250px, 70px);
+  }
+  68% {
+    transform: translate(390px, 170px);
+  }
+  90% {
+    transform: translate(638px, 171px);
+  }
+}
+
+@keyframes gif-walk-across {
+  0%,
+  100% {
+    transform: translate(395px, 95px) rotate(-2deg);
+  }
+  45% {
+    transform: translate(565px, 95px) rotate(2deg);
+  }
+  55% {
+    transform: translate(565px, 95px) rotate(-2deg);
+  }
+}
+
+@keyframes gif-sit-rise {
+  0%,
+  22%,
+  100% {
+    transform: translate(170px, 102px);
+  }
+  46%,
+  76% {
+    transform: translate(345px, 82px);
+  }
+}
+
+@keyframes gif-break-appear {
+  0%,
+  32%,
+  100% {
+    opacity: 0;
+  }
+  48%,
+  82% {
+    opacity: 1;
+  }
+}
+
+@keyframes gif-ground-settle {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scaleX(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1.04);
+  }
+}
+
+@media (max-width: 640px) {
+  .viewport {
+    min-height: 11rem;
+  }
+
+  .caption {
+    font-size: 0.85rem;
+  }
+}

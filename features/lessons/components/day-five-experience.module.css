@@ -1,10 +1,40 @@
-.openingFigure {
-  animation: opening-settle 780ms var(--ease-spring) both;
+.motionSampler {
+  isolation: isolate;
 }
 
-.footstep {
-  animation: footstep-arrive 520ms var(--ease-spring) both;
-  background: color-mix(in srgb, var(--color-success) 70%, transparent);
+.motionSample {
+  animation: motion-sample-arrive 620ms var(--ease-spring) both;
+}
+
+.motionSample svg {
+  transform-origin: center;
+  animation: ordinary-motion 3.2s ease-in-out infinite;
+}
+
+.motionSample:nth-child(2) svg {
+  animation-delay: -800ms;
+}
+
+.motionSample:nth-child(3) svg {
+  animation-delay: -1.6s;
+}
+
+.motionSample:nth-child(4) svg {
+  animation-delay: -2.4s;
+}
+
+.motionPulse {
+  position: absolute;
+  z-index: 2;
+  top: calc(50% - 0.65rem);
+  left: calc(50% - 0.65rem);
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 4px solid #f8f3eb;
+  border-radius: 999px;
+  background: var(--color-accent-warm);
+  box-shadow: 0 4px 12px rgb(66 41 21 / 18%);
+  animation: motion-pulse 2.4s var(--ease-standard) infinite;
 }
 
 .fuelRoom::before {
@@ -56,6 +86,30 @@
   animation: pathway-open 520ms var(--ease-spring) both;
 }
 
+.energyReveal > div {
+  animation: energy-step-arrive 520ms var(--ease-spring) both;
+}
+
+.energyReveal > div:nth-child(2) {
+  animation-delay: 130ms;
+}
+
+.energyReveal > div:nth-child(3) {
+  animation-delay: 260ms;
+}
+
+.pathwayBridge svg {
+  animation: bridge-signal 1.8s ease-in-out infinite;
+}
+
+.pathwayBridge svg:nth-of-type(2) {
+  animation-delay: 300ms;
+}
+
+.pathwayBridge svg:nth-of-type(3) {
+  animation-delay: 600ms;
+}
+
 .movementAtlas > button {
   transition:
     background-color 240ms ease,
@@ -86,8 +140,139 @@
   z-index: 1;
 }
 
-.mealStep {
-  animation: meal-step-arrive 560ms var(--ease-spring) both;
+.mealJourney {
+  isolation: isolate;
+}
+
+.mealGlucose {
+  position: absolute;
+  z-index: 2;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 2px solid rgb(153 100 37 / 48%);
+  border-radius: 999px;
+  opacity: 0;
+  background: #e2a338;
+  box-shadow: 0 3px 8px rgb(66 41 21 / 15%);
+  transform: translateX(-5rem) scale(0.75);
+  transition:
+    left 900ms var(--ease-standard),
+    opacity 440ms ease,
+    transform 900ms var(--ease-standard);
+}
+
+.mealGlucose:nth-of-type(2) {
+  left: 24%;
+}
+
+.mealGlucose:nth-of-type(3) {
+  left: 33%;
+}
+
+.mealGlucose:nth-of-type(4) {
+  left: 42%;
+}
+
+.mealGlucose:nth-of-type(5) {
+  left: 51%;
+}
+
+.mealGlucose:nth-of-type(6) {
+  left: 60%;
+}
+
+.mealGlucoseReleased {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.mealGlucoseUsed {
+  left: 86% !important;
+  opacity: 0;
+  transform: scale(0.42);
+}
+
+.mealWalker {
+  transform-origin: bottom center;
+  transition: transform 1.15s var(--ease-standard);
+}
+
+.mealWalkerMoving {
+  transform: translateX(min(36vw, 23rem));
+}
+
+.mealWalkerLegOne,
+.mealWalkerLegTwo {
+  position: absolute;
+  bottom: -0.15rem;
+  left: 1.25rem;
+  width: 0.28rem;
+  height: 1.3rem;
+  border-radius: 999px;
+  background: var(--color-foreground);
+  transform-origin: top center;
+}
+
+.mealWalkerLegTwo {
+  left: 1.85rem;
+}
+
+.mealWalkerMoving .mealWalkerLegOne {
+  animation: walker-leg 520ms ease-in-out infinite alternate;
+}
+
+.mealWalkerMoving .mealWalkerLegTwo {
+  animation: walker-leg 520ms ease-in-out -260ms infinite alternate-reverse;
+}
+
+.mythSheet {
+  min-height: 20rem;
+  transition:
+    border-color 260ms ease,
+    transform 320ms var(--ease-spring),
+    background-color 260ms ease;
+}
+
+.mythSheet::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 3rem;
+  height: 3rem;
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  background: var(--color-background);
+  content: "";
+  transform: translate(55%, 55%) rotate(45deg);
+  transition: transform 420ms var(--ease-spring);
+}
+
+.mythSheet:hover {
+  transform: translateY(-4px) rotate(-0.35deg);
+}
+
+.mythSheetOpen {
+  border-color: color-mix(in srgb, var(--color-success) 42%, var(--color-border));
+  background: var(--color-info);
+}
+
+.mythSheetOpen::after {
+  transform: translate(18%, 18%) rotate(45deg);
+}
+
+.mythFold {
+  min-height: 7.2rem;
+}
+
+.mythCorrection {
+  display: flex;
+  gap: 0.65rem;
+  line-height: 1.55;
+  animation: correction-unfold 480ms var(--ease-spring) both;
+}
+
+.widerTruth {
+  animation: wider-truth-arrive 620ms var(--ease-spring) both;
 }
 
 .weekDay {
@@ -123,18 +308,167 @@
   right: -0.625rem;
 }
 
-.walkTogether > span:not(:first-child) {
-  animation: walking-pair 2.8s ease-in-out infinite alternate;
+.walkPath {
+  position: absolute;
+  right: 8%;
+  bottom: 3.4rem;
+  left: 8%;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-success) 27%, transparent);
 }
 
-.walkTogether > span:nth-child(3) {
-  animation-delay: -1.1s;
+.walkSun {
+  position: absolute;
+  top: 2.5rem;
+  right: 3.2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 0.7rem solid rgb(239 201 135 / 35%);
+  border-radius: 999px;
+  background: #e7b86d;
 }
 
-@keyframes opening-settle {
+.walkTree {
+  position: absolute;
+  bottom: 3.6rem;
+  left: 9%;
+  width: 1rem;
+  height: 5.5rem;
+  border-radius: 999px;
+  background: #92735e;
+}
+
+.walkTree > span {
+  position: absolute;
+  top: -2.3rem;
+  left: -2.25rem;
+  width: 5.5rem;
+  height: 5rem;
+  border-radius: 52% 48% 45% 55%;
+  background: #91ad97;
+}
+
+.walkingGroup {
+  position: absolute;
+  bottom: 3.6rem;
+  left: clamp(2.5rem, 14%, 5rem);
+  display: flex;
+  gap: 3.75rem;
+  width: 10.25rem;
+  height: 10rem;
+  transition: left 1.4s var(--ease-standard);
+}
+
+.walkTogetherActive .walkingGroup {
+  left: max(2.5rem, calc(100% - 14rem));
+}
+
+.walker {
+  position: relative;
+  display: block;
+  width: 3.25rem;
+  height: 9.5rem;
+}
+
+.walkerHead {
+  position: absolute;
+  top: 0;
+  left: 0.52rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: #d6a587;
+}
+
+.walkerBody {
+  position: absolute;
+  top: 2rem;
+  left: 0.4rem;
+  width: 2.5rem;
+  height: 4.4rem;
+  border-radius: 1.2rem 1.2rem 0.5rem 0.5rem;
+}
+
+.walkerArm,
+.walkerArmBack {
+  position: absolute;
+  z-index: -1;
+  top: 2.55rem;
+  left: 0.25rem;
+  width: 0.48rem;
+  height: 3.7rem;
+  border-radius: 999px;
+  transform: rotate(29deg);
+  transform-origin: top center;
+}
+
+.walkerArmBack {
+  right: 0.15rem;
+  left: auto;
+  transform: rotate(-29deg);
+}
+
+.walkerLeg,
+.walkerLegBack {
+  position: absolute;
+  top: 6rem;
+  left: 0.8rem;
+  width: 0.52rem;
+  height: 3.4rem;
+  border-radius: 999px;
+  background: #5c534e;
+  transform: rotate(11deg);
+  transform-origin: top center;
+}
+
+.walkerLegBack {
+  right: 0.8rem;
+  left: auto;
+  transform: rotate(-11deg);
+}
+
+.walkerSpeech {
+  position: absolute;
+  top: -1.1rem;
+  left: 2.9rem;
+  width: max-content;
+  border-radius: 999px;
+  background: var(--color-card);
+  padding: 0.4rem 0.65rem;
+  color: var(--color-foreground);
+  font-size: 0.68rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+}
+
+.walkTogetherActive .walkerLeg,
+.walkTogetherActive .walkerArm {
+  animation: walking-limb 560ms ease-in-out infinite alternate;
+}
+
+.walkTogetherActive .walkerLegBack,
+.walkTogetherActive .walkerArmBack {
+  animation: walking-limb 560ms ease-in-out -280ms infinite alternate-reverse;
+}
+
+.walkPrompt {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1rem;
+  left: 1.5rem;
+  text-align: center;
+  color: var(--color-success);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@keyframes motion-sample-arrive {
   from {
     opacity: 0;
-    transform: translateY(14px) scale(0.97);
+    transform: translateY(12px) scale(0.96);
   }
   to {
     opacity: 1;
@@ -142,14 +476,24 @@
   }
 }
 
-@keyframes footstep-arrive {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.7);
+@keyframes ordinary-motion {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  50% {
+    transform: translateY(-0.28rem) rotate(4deg);
+  }
+}
+
+@keyframes motion-pulse {
+  0%,
+  100% {
+    transform: scale(0.78);
+  }
+  50% {
+    box-shadow: 0 0 0 0.75rem rgb(189 113 88 / 12%);
+    transform: scale(1);
   }
 }
 
@@ -164,7 +508,50 @@
   }
 }
 
-@keyframes meal-step-arrive {
+@keyframes energy-step-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bridge-signal {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes walker-leg {
+  from {
+    transform: rotate(24deg);
+  }
+  to {
+    transform: rotate(-24deg);
+  }
+}
+
+@keyframes correction-unfold {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@keyframes wider-truth-arrive {
   from {
     opacity: 0;
     transform: translateX(-12px);
@@ -197,12 +584,12 @@
   }
 }
 
-@keyframes walking-pair {
+@keyframes walking-limb {
   from {
-    transform: translateY(0) rotate(-1deg);
+    transform: rotate(24deg);
   }
   to {
-    transform: translateY(-5px) rotate(1deg);
+    transform: rotate(-24deg);
   }
 }
 
@@ -214,21 +601,48 @@
   .benefitField::before {
     display: none;
   }
+
+  .walkingGroup {
+    bottom: 4rem;
+    left: 2.25rem;
+    gap: 2.75rem;
+    width: 9.25rem;
+    transform: scale(0.88);
+    transform-origin: left bottom;
+  }
+
+  .walkTogetherActive .walkingGroup {
+    left: calc(100% - 11.5rem);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .openingFigure,
-  .footstep,
+  .motionSample,
+  .motionSample svg,
+  .motionPulse,
   .pathwayPanel,
-  .mealStep,
+  .energyReveal > div,
+  .pathwayBridge svg,
+  .mealWalkerMoving .mealWalkerLegOne,
+  .mealWalkerMoving .mealWalkerLegTwo,
+  .mythCorrection,
+  .widerTruth,
   .weekDay,
   .barrierDoor,
-  .walkTogether > span:not(:first-child) {
+  .walkTogetherActive .walkerLeg,
+  .walkTogetherActive .walkerLegBack,
+  .walkTogetherActive .walkerArm,
+  .walkTogetherActive .walkerArmBack {
     animation: none;
   }
 
   .glucoseDot,
   .muscleCell,
+  .mealGlucose,
+  .mealWalker,
+  .mythSheet,
+  .mythSheet::after,
+  .walkingGroup,
   .movementAtlas > button,
   .dayWindow {
     transition: none;
