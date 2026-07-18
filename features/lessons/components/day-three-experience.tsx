@@ -33,6 +33,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-three-experience.module.css";
+import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -734,6 +735,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 Tap each moment. Notice how the same day can contain more than one true reading.
               </p>
             </div>
+            <LessonMotionFigure variant="reading-snapshot" />
             <DailyTrace selectedMoment={selectedMoment} />
             <div className="grid gap-3 sm:grid-cols-4">
               {dailyMoments.map((moment) => (
@@ -900,39 +902,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 one instant.
               </p>
             </div>
-            <div className="rounded-[1rem] border border-accent-warm/25 bg-[#f0e1da] p-5 sm:p-8">
-              <div
-                aria-label="A teaching illustration of red blood cells with glucose markers attached to hemoglobin."
-                className="grid min-h-56 grid-cols-3 items-center gap-4 sm:grid-cols-6"
-                role="img"
-              >
-                {Array.from({ length: 6 }, (_, cell) => (
-                  <div
-                    className={cn(
-                      styles.redCell,
-                      "relative mx-auto flex size-20 items-center justify-center rounded-full border-[10px] border-[#bd675d] bg-[#e8a09a] shadow-inner sm:size-24",
-                    )}
-                    key={cell}
-                  >
-                    <span className="size-8 rounded-full bg-[#f0c0b9] sm:size-10" />
-                    {Array.from({ length: (cell % 3) + 1 }, (_, dot) => (
-                      <span
-                        className="absolute size-2.5 rounded-full bg-[#d79b2f] ring-2 ring-[#fff3dc]"
-                        key={dot}
-                        style={{
-                          left: `${20 + dot * 23}%`,
-                          top: `${14 + ((cell + dot) % 3) * 25}%`,
-                        }}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
-              <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                A simplified illustration: the dots show glucose attached to hemoglobin, not an
-                exact A1C calculation.
-              </p>
-            </div>
+            <LessonMotionFigure variant="a1c-window" />
             <div className="rounded-[1rem] border border-border bg-card p-6 shadow-card sm:p-8">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <div>

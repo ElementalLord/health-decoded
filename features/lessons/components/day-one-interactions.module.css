@@ -5,7 +5,8 @@
 .umbrellaRibs,
 .rainDrop,
 .envelopePaper,
-.envelopeFlap,
+.envelopeOpenFlap,
+.envelopeClosedFlap,
 .envelopeSeal,
 .recapPage {
   transform-box: fill-box;
@@ -75,23 +76,37 @@
 }
 
 .envelopePaper {
-  transform: translateY(-34px);
+  transform: translateY(-18px);
   transform-origin: center bottom;
   transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.envelopePaperStored {
-  transform: translateY(42px);
+.envelopeOpenFlap {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  transform-origin: center bottom;
+  transition:
+    opacity 280ms ease 320ms,
+    transform 580ms cubic-bezier(0.22, 1, 0.36, 1) 280ms;
 }
 
-.envelopeFlap {
-  transform: rotateX(0deg);
+.envelopeOpenFlapHidden {
+  opacity: 0;
+  transform: translateY(72px) scaleY(0.25);
+}
+
+.envelopeClosedFlap {
+  opacity: 0;
+  transform: translateY(-42px) scaleY(0.55);
   transform-origin: center top;
-  transition: transform 600ms ease 350ms;
+  transition:
+    opacity 260ms ease 420ms,
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1) 360ms;
 }
 
-.envelopeFlapClosed {
-  transform: rotateX(180deg);
+.envelopeClosedFlapVisible {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
 }
 
 .envelopeSeal {
@@ -177,7 +192,8 @@
   .umbrellaRibs,
   .rainDrop,
   .envelopePaper,
-  .envelopeFlap,
+  .envelopeOpenFlap,
+  .envelopeClosedFlap,
   .envelopeSeal {
     transition: none;
   }
@@ -194,7 +210,8 @@
 :global([data-reduced-motion="true"]) .umbrellaRibs,
 :global([data-reduced-motion="true"]) .rainDrop,
 :global([data-reduced-motion="true"]) .envelopePaper,
-:global([data-reduced-motion="true"]) .envelopeFlap,
+:global([data-reduced-motion="true"]) .envelopeOpenFlap,
+:global([data-reduced-motion="true"]) .envelopeClosedFlap,
 :global([data-reduced-motion="true"]) .envelopeSeal {
   transition: none;
 }

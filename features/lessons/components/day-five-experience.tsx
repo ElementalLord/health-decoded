@@ -13,11 +13,13 @@ import {
   Heart,
   Home,
   Moon,
+  MoveRight,
   PersonStanding,
   ShieldCheck,
   Smile,
   Sparkles,
   Sun,
+  Utensils,
   Waves,
 } from "lucide-react";
 import Link from "next/link";
@@ -35,12 +37,13 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-five-experience.module.css";
+import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
 const stageCount = 16;
 
-type EvaluationKey = "afterMeal" | "mechanism" | "safety" | "sensitivity" | "teachBack";
+type EvaluationKey = "safety" | "teachBack";
 
 const openingFeelings = [
   ["pressure", "Exercise sounds like another demand."],
@@ -152,6 +155,12 @@ const myths = [
   "Movement only counts when it happens at a gym.",
   "Several small bouts of activity can still be meaningful.",
   "Exercise only matters if the number on the scale changes.",
+] as const;
+
+const mythCorrections = [
+  "Movement can happen at home, outside, in water, in a chair, or anywhere muscles work.",
+  "Several small bouts can still give muscles useful work across a day.",
+  "Movement supports glucose use, the heart, strength, mood, sleep, and function—even without a scale change.",
 ] as const;
 
 const barriers = [
@@ -288,6 +297,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
   const [stage, setStage] = useState(0);
   const [openingFeeling, setOpeningFeeling] = useState<OpeningFeeling | null>(null);
   const [fuelCycles, setFuelCycles] = useState(0);
+  const [mealJourney, setMealJourney] = useState(0);
   const [pathwaysSeen, setPathwaysSeen] = useState<Set<"during" | "regular">>(() => new Set());
   const [atlasOpened, setAtlasOpened] = useState<Set<EverydayMovementId>>(() => new Set());
   const [activeAtlas, setActiveAtlas] = useState<EverydayMovementId | null>(null);
@@ -300,9 +310,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
   const [studioResolved, setStudioResolved] = useState(false);
   const [benefitsOpened, setBenefitsOpened] = useState<Set<BodyBenefitId>>(() => new Set());
   const [activeBenefit, setActiveBenefit] = useState<BodyBenefitId | null>(null);
-  const [mythIndex, setMythIndex] = useState(0);
-  const [mythCompleted, setMythCompleted] = useState(0);
-  const [mythFeedback, setMythFeedback] = useState<DayFiveEvaluationFeedback | null>(null);
+  const [mythsOpened, setMythsOpened] = useState<Set<number>>(() => new Set());
   const [returnedAfterPause, setReturnedAfterPause] = useState(false);
   const [barrier, setBarrier] = useState<BarrierId | null>(null);
   const [barrierOption, setBarrierOption] = useState<string | null>(null);
@@ -372,24 +380,6 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
     else setMessage(result.message);
   }
 
-  async function evaluateMyth(answer: "more_accurate" | "myth") {
-    const result = await evaluateDayFiveAction({ answer, stage: "myth", statement: mythIndex });
-    if (!result.ok) {
-      setMessage(result.message);
-      return;
-    }
-    setMythFeedback(result.data);
-    if (mythIndex === myths.length - 1) setMythCompleted(myths.length);
-  }
-
-  function nextMyth() {
-    setMythCompleted((current) => Math.max(current, mythIndex + 1));
-    if (mythIndex < myths.length - 1) {
-      setMythIndex((current) => current + 1);
-      setMythFeedback(null);
-    }
-  }
-
   function checkStudio() {
     const nextAttempt = studioAttempts + 1;
     setStudioAttempts(nextAttempt);
@@ -430,14 +420,14 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
 
   function canContinue() {
     if (stage === 0) return openingFeeling !== null;
-    if (stage === 1) return fuelCycles >= 3 && Boolean(evaluations.mechanism);
-    if (stage === 2) return pathwaysSeen.size === 2 && Boolean(evaluations.sensitivity);
+    if (stage === 1) return fuelCycles >= 3;
+    if (stage === 2) return pathwaysSeen.size === 2;
     if (stage === 3) return atlasOpened.size >= 4;
     if (stage === 4) return movementWindows.size >= 2;
     if (stage === 5) return studioAccurate || studioResolved;
     if (stage === 6) return benefitsOpened.size >= 4;
-    if (stage === 7) return Boolean(evaluations.afterMeal);
-    if (stage === 8) return mythCompleted === myths.length;
+    if (stage === 7) return mealJourney >= 3;
+    if (stage === 8) return mythsOpened.size === myths.length;
     if (stage === 9) return returnedAfterPause;
     if (stage === 10) return barrier !== null && barrierOption !== null;
     if (stage === 11) return safetyCards.size === 3 && Boolean(evaluations.safety);
@@ -450,14 +440,14 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
   function stageRequirement() {
     const requirements = [
       "Choose the sentence closest to how exercise feels right now.",
-      "Activate the muscle three times and answer what happened to the glucose.",
-      "Open both glucose pathways and answer what regular movement can change.",
+      "Activate the muscle three times and watch the full fuel cycle.",
+      "Open both timeframes in the movement mechanism.",
       "Open at least four kinds of everyday movement.",
       "Add two realistic movement openings to the day.",
       "Sort all six activities. After two attempts, the studio will reveal the answer.",
       "Open at least four benefits that are not about earning food.",
-      "Choose the accurate explanation of movement after a meal.",
-      "Classify all three movement statements.",
+      "Move the meal-time visual through all three transitions.",
+      "Open all three narrow rules to reveal the wider truth.",
       "Use the return button after the interrupted day.",
       "Choose one real barrier and one workable response.",
       "Open all three safety notes and choose the safe medication response.",
@@ -509,27 +499,36 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             <div className="grid gap-8 border-y border-border py-9 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div
                 className={cn(
-                  styles.openingFigure,
-                  "relative min-h-72 overflow-hidden rounded-[45%_45%_18%_18%] bg-[#e5eee8]",
+                  styles.motionSampler,
+                  "relative grid min-h-72 grid-cols-2 gap-px overflow-hidden rounded-[2.5rem_2.5rem_1rem_1rem] border border-success/20 bg-success/20 p-px",
                 )}
-                aria-label="A teaching illustration of a person beginning a gentle walk as a path appears one step at a time"
+                aria-label="Four animated examples of ordinary movement: walking, household movement, dancing, and seated movement"
                 role="img"
               >
-                <span className="absolute bottom-10 left-[10%] h-2 w-[80%] rounded-full bg-success/30" />
-                {[18, 32, 47, 62, 76].map((left, index) => (
-                  <span
-                    className={cn(styles.footstep, "absolute bottom-12 h-7 w-4 rounded-[60%_40%]")}
-                    key={left}
-                    style={{
-                      animationDelay: `${index * 130}ms`,
-                      left: `${left}%`,
-                      rotate: index % 2 ? "18deg" : "-18deg",
-                    }}
-                  />
-                ))}
-                <span className="absolute bottom-[4.35rem] right-[14%] h-28 w-14 rounded-t-full bg-accent-warm/85" />
-                <span className="absolute bottom-[10.2rem] right-[14.65%] size-12 rounded-full bg-[#d9aa8d]" />
-                <span className="absolute bottom-[7.7rem] right-[10%] h-2 w-16 rotate-[32deg] rounded-full bg-accent-warm" />
+                {[
+                  { icon: Footprints, label: "Walk" },
+                  { icon: Home, label: "Chores" },
+                  { icon: Activity, label: "Dance" },
+                  { icon: Armchair, label: "Seated" },
+                ].map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      className={cn(
+                        styles.motionSample,
+                        "flex flex-col items-center justify-center bg-[#e5eee8]",
+                      )}
+                      key={item.label}
+                      style={{ animationDelay: `${index * 130}ms` }}
+                    >
+                      <Icon className="size-10 text-success" strokeWidth={1.35} />
+                      <span className="mt-3 text-xs font-bold uppercase tracking-[0.16em] text-success">
+                        {item.label}
+                      </span>
+                    </div>
+                  );
+                })}
+                <span className={styles.motionPulse} aria-hidden="true" />
               </div>
               <div className="space-y-5 text-lg leading-8 text-foreground/80">
                 <p>
@@ -577,6 +576,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
               Glucose is fuel, but it has to enter cells to be useful. Contracting muscles ask for
               more energy. Activate the muscle and watch the teaching model.
             </p>
+            <LessonMotionFigure variant="muscle-fuel" />
             <div
               className={cn(
                 styles.fuelRoom,
@@ -634,31 +634,23 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
               </div>
             </div>
             {fuelCycles >= 3 ? (
-              <div className="space-y-4">
-                <p className="font-semibold">What did the animation represent?</p>
-                <div className="grid gap-3">
-                  {(
-                    [
-                      [
-                        "muscles_use_glucose",
-                        "Working muscles can take up glucose and use it for energy.",
-                      ],
-                      ["work_off_food", "The movement erased or paid for a meal."],
-                      ["glucose_disappears", "The glucose simply disappeared."],
-                    ] as const
-                  ).map(([answer, label]) => (
-                    <AnswerChoice
-                      key={answer}
-                      onClick={() => evaluate({ answer, stage: "mechanism" }, "mechanism", answer)}
-                      selected={selectedAnswers.mechanism === answer}
-                    >
-                      {label}
-                    </AnswerChoice>
-                  ))}
-                </div>
-                {evaluations.mechanism ? (
-                  <ConceptFeedback feedback={evaluations.mechanism} />
-                ) : null}
+              <div
+                className={cn(
+                  styles.energyReveal,
+                  "grid gap-px overflow-hidden rounded-[1.25rem] border border-border bg-border sm:grid-cols-3",
+                )}
+              >
+                {[
+                  ["01", "Muscle contracts", "The working muscle asks for energy."],
+                  ["02", "Glucose enters", "Fuel moves from the blood toward the muscle cell."],
+                  ["03", "Energy is used", "Glucose is used or stored—it is not erased."],
+                ].map(([number, title, body]) => (
+                  <div className="bg-card p-5" key={number}>
+                    <span className="font-serif-display text-4xl text-accent-warm">{number}</span>
+                    <h2 className="mt-6 font-serif-display text-2xl">{title}</h2>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+                  </div>
+                ))}
               </div>
             ) : null}
             <p className="border-l-2 border-success bg-info px-5 py-4 text-sm leading-6 text-foreground/75">
@@ -720,30 +712,23 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
               ))}
             </div>
             {pathwaysSeen.size === 2 ? (
-              <div className="space-y-4">
-                <p className="font-semibold">What can regular physical activity improve?</p>
-                <div className="grid gap-3">
-                  {(
-                    [
-                      ["regular_activity", "How effectively cells respond to available insulin."],
-                      ["one_hard_workout", "Only the benefits of one very hard workout."],
-                      ["exercise_cures", "A guaranteed cure that replaces all other care."],
-                    ] as const
-                  ).map(([answer, label]) => (
-                    <AnswerChoice
-                      key={answer}
-                      onClick={() =>
-                        evaluate({ answer, stage: "sensitivity" }, "sensitivity", answer)
-                      }
-                      selected={selectedAnswers.sensitivity === answer}
-                    >
-                      {label}
-                    </AnswerChoice>
-                  ))}
+              <div
+                className={cn(
+                  styles.pathwayBridge,
+                  "relative overflow-hidden rounded-[1.25rem] border border-success/25 bg-info p-6 sm:p-8",
+                )}
+              >
+                <div className="flex items-center gap-4">
+                  <Activity className="size-8 shrink-0 text-success" />
+                  <span className="h-px flex-1 bg-success/35" />
+                  <Sparkles className="size-8 shrink-0 text-success" />
+                  <span className="h-px flex-1 bg-success/35" />
+                  <ShieldCheck className="size-8 shrink-0 text-success" />
                 </div>
-                {evaluations.sensitivity ? (
-                  <ConceptFeedback feedback={evaluations.sensitivity} />
-                ) : null}
+                <p className="mt-6 font-serif-display text-2xl italic text-success">
+                  Movement can help muscles use fuel now. Repeated activity can help the insulin
+                  signal work more effectively over time.
+                </p>
               </div>
             ) : null}
           </div>
@@ -1031,107 +1016,165 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             <DayFiveHeading label="One possible moment">
               After a meal, movement can give fuel a job.
             </DayFiveHeading>
-            <div className="grid gap-0 overflow-hidden rounded-[1.5rem] border border-border bg-card md:grid-cols-3">
-              {[
-                {
-                  icon: "🍲",
-                  label: "A meal supplies fuel",
-                  note: "Carbohydrate is digested into glucose.",
-                },
-                {
-                  icon: "→",
-                  label: "A comfortable movement",
-                  note: "Walking or adapted movement asks muscles to work.",
-                },
-                {
-                  icon: "⚡",
-                  label: "Muscles use energy",
-                  note: "Working muscle cells can take up glucose for fuel.",
-                },
-              ].map((step, index) => (
-                <div
-                  className={cn(
-                    styles.mealStep,
-                    "min-h-60 border-border p-7 text-center md:border-r last:border-r-0",
-                  )}
-                  key={step.label}
-                  style={{ animationDelay: `${index * 160}ms` }}
-                >
-                  <span aria-hidden="true" className="text-4xl">
-                    {step.icon}
-                  </span>
-                  <p className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-accent-warm">
-                    Step 0{index + 1}
-                  </p>
-                  <h2 className="mt-3 font-serif-display text-2xl">{step.label}</h2>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{step.note}</p>
-                </div>
-              ))}
-            </div>
-            <div className="space-y-4">
-              <p className="font-semibold">
-                What is the most accurate way to describe this option?
-              </p>
-              <div className="grid gap-3">
-                {(
-                  [
-                    [
-                      "supports_fuel_use",
-                      "It can be one practical way to help working muscles use fuel.",
-                    ],
-                    ["guarantees_number", "It guarantees a specific blood-glucose number."],
-                    ["repays_meal", "It repays the body for eating a meal."],
-                  ] as const
-                ).map(([answer, label]) => (
-                  <AnswerChoice
-                    key={answer}
-                    onClick={() => evaluate({ answer, stage: "after_meal" }, "afterMeal", answer)}
-                    selected={selectedAnswers.afterMeal === answer}
-                  >
-                    {label}
-                  </AnswerChoice>
+            <p className="max-w-3xl text-lg leading-8 text-foreground/80">
+              Move the scene forward. The visual shows one optional sequence—not a requirement to
+              exercise after every meal and not a promise about a specific reading.
+            </p>
+            <LessonMotionFigure variant="circulation-rhythm" />
+            <div
+              className={cn(
+                styles.mealJourney,
+                "relative overflow-hidden rounded-[1.5rem] border border-accent-warm/25 bg-[#f2e7de] p-6 sm:p-9",
+              )}
+            >
+              <div className="grid grid-cols-4 gap-2">
+                {["Meal", "Digestion", "Movement", "Fuel used"].map((label, index) => (
+                  <div className="text-center" key={label}>
+                    <span
+                      className={cn(
+                        "mx-auto flex size-10 items-center justify-center rounded-full border text-sm font-bold",
+                        mealJourney >= index
+                          ? "border-success bg-success text-white"
+                          : "border-border bg-card text-muted-foreground",
+                      )}
+                    >
+                      {index + 1}
+                    </span>
+                    <span className="mt-2 hidden text-xs font-semibold sm:block">{label}</span>
+                  </div>
                 ))}
               </div>
-              {evaluations.afterMeal ? <ConceptFeedback feedback={evaluations.afterMeal} /> : null}
+              <div className="relative mt-8 min-h-64 border-y border-accent-warm/20">
+                <div className="absolute left-[4%] top-1/2 flex size-24 -translate-y-1/2 items-center justify-center rounded-full border border-accent-warm/30 bg-card">
+                  <Utensils className="size-9 text-accent-warm" />
+                </div>
+                <span className="absolute left-[18%] right-[18%] top-1/2 h-16 -translate-y-1/2 rounded-full border border-accent-warm/25 bg-[#e9bca9]/45" />
+                {[0, 1, 2, 3, 4].map((dot) => (
+                  <span
+                    className={cn(
+                      styles.mealGlucose,
+                      mealJourney >= 1 && styles.mealGlucoseReleased,
+                      mealJourney >= 3 && styles.mealGlucoseUsed,
+                    )}
+                    key={dot}
+                    style={{ top: `${40 + (dot % 2) * 18}%`, transitionDelay: `${dot * 90}ms` }}
+                  />
+                ))}
+                <div className="absolute right-[3%] top-1/2 flex size-28 -translate-y-1/2 items-center justify-center rounded-[45%] border-8 border-success/25 bg-[#dfe9df] text-center">
+                  <div>
+                    <Dumbbell className="mx-auto size-7 text-success" />
+                    <span className="mt-1 block text-xs font-semibold">Muscle</span>
+                  </div>
+                </div>
+                <div
+                  className={cn(
+                    styles.mealWalker,
+                    mealJourney >= 2 && styles.mealWalkerMoving,
+                    "absolute bottom-3 left-[28%] h-16 w-10",
+                  )}
+                  aria-hidden="true"
+                >
+                  <span className="absolute left-2 top-0 size-6 rounded-full bg-[#c79679]" />
+                  <span className="absolute bottom-0 left-2 h-11 w-6 rounded-t-full bg-accent-warm" />
+                  <span className={styles.mealWalkerLegOne} />
+                  <span className={styles.mealWalkerLegTwo} />
+                </div>
+              </div>
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                <p className="max-w-xl leading-7 text-foreground/75">
+                  {
+                    [
+                      "A meal supplies the body with fuel.",
+                      "Digestion releases glucose into the bloodstream.",
+                      "Comfortable movement asks muscles to work.",
+                      "Working muscles can take up and use fuel. The meal was not erased or repaid.",
+                    ][mealJourney]
+                  }
+                </p>
+                <Button
+                  disabled={mealJourney >= 3}
+                  fullWidth={false}
+                  onClick={() => setMealJourney((current) => Math.min(3, current + 1))}
+                >
+                  {mealJourney >= 3 ? (
+                    <>
+                      <Check className="size-4" /> Sequence complete
+                    </>
+                  ) : (
+                    <>
+                      Move the moment forward <MoveRight className="size-4" />
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         );
       case 8:
         return (
           <div className="space-y-9">
-            <DayFiveHeading label={`Movement myth ${mythIndex + 1} of ${myths.length}`}>
-              Make the rule wide enough for a real life.
+            <DayFiveHeading label="Rules worth reopening">
+              Three movement rules became too small for real life.
             </DayFiveHeading>
-            <div className="rounded-[1.5rem] border border-border bg-card p-7 text-center shadow-card sm:p-12">
-              <p className="editorial-eyebrow">Myth or more accurate?</p>
-              <blockquote className="mx-auto mt-7 max-w-3xl font-serif-display text-3xl leading-tight sm:text-5xl">
-                “{myths[mythIndex]}”
-              </blockquote>
-              <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-                <Button fullWidth={false} onClick={() => evaluateMyth("myth")} variant="secondary">
-                  Myth
-                </Button>
-                <Button
-                  fullWidth={false}
-                  onClick={() => evaluateMyth("more_accurate")}
-                  variant="secondary"
-                >
-                  More accurate
-                </Button>
-              </div>
+            <p className="max-w-3xl text-lg leading-8 text-foreground/80">
+              Open each narrow rule. The paper does not disappear; it unfolds into an explanation
+              that leaves more room for different bodies, schedules, and lives.
+            </p>
+            <div className="grid gap-5 lg:grid-cols-3">
+              {myths.map((myth, index) => {
+                const opened = mythsOpened.has(index);
+
+                return (
+                  <button
+                    aria-expanded={opened}
+                    className={cn(
+                      styles.mythSheet,
+                      opened && styles.mythSheetOpen,
+                      "relative overflow-hidden rounded-[1.35rem] border border-border bg-card p-6 text-left shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:p-7",
+                    )}
+                    key={myth}
+                    onClick={() =>
+                      setMythsOpened((current) => {
+                        const next = new Set(current);
+                        next.add(index);
+                        return next;
+                      })
+                    }
+                    type="button"
+                  >
+                    <span className="editorial-eyebrow">
+                      Rule {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="mt-5 block font-serif-display text-2xl leading-tight">
+                      “{myth}”
+                    </span>
+                    <span className={cn(styles.mythFold, "mt-7 block border-t border-border pt-5")}>
+                      {opened ? (
+                        <span className={styles.mythCorrection}>
+                          <Check
+                            aria-hidden="true"
+                            className="mt-0.5 size-5 shrink-0 text-success"
+                          />
+                          <span>{mythCorrections[index]}</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-2 font-bold text-accent-warm">
+                          Open this rule <MoveRight aria-hidden="true" className="size-4" />
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-            {mythFeedback ? (
-              <div className="space-y-4">
-                <ConceptFeedback feedback={mythFeedback} />
-                {mythIndex < myths.length - 1 ? (
-                  <Button fullWidth={false} onClick={nextMyth}>
-                    Next statement
-                  </Button>
-                ) : (
-                  <p className="font-serif-display text-2xl italic text-success">
-                    Three narrower rules have made room for a more flexible life.
-                  </p>
+            {mythsOpened.size === myths.length ? (
+              <div
+                className={cn(
+                  styles.widerTruth,
+                  "border-l-2 border-success bg-info px-6 py-5 font-serif-display text-2xl italic text-success",
                 )}
+              >
+                Movement can be flexible and still be meaningful.
               </div>
             ) : null}
           </div>
@@ -1439,20 +1482,37 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             </DayFiveHeading>
             <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
               <div
-                className={cn(styles.walkTogether, "relative min-h-80 rounded-[48%] bg-[#e5eee8]")}
+                className={cn(
+                  styles.walkTogether,
+                  supportChoice && styles.walkTogetherActive,
+                  "relative min-h-80 overflow-hidden rounded-[42%] bg-[#e5eee8]",
+                )}
                 aria-label="A teaching illustration of two people walking together at the same pace"
                 role="img"
               >
-                <span className="absolute bottom-12 left-[15%] right-[15%] h-2 rounded-full bg-success/25" />
-                {[36, 62].map((left, index) => (
-                  <span
-                    className="absolute bottom-[3.2rem] h-36 w-16 rounded-t-full"
-                    key={left}
-                    style={{ backgroundColor: index ? "#6f947a" : "#bd7158", left: `${left}%` }}
-                  >
-                    <span className="absolute -top-11 left-2 size-12 rounded-full bg-[#d9aa8d]" />
-                  </span>
-                ))}
+                <span className={styles.walkPath} aria-hidden="true" />
+                <span className={styles.walkSun} aria-hidden="true" />
+                <span className={styles.walkTree} aria-hidden="true">
+                  <span />
+                </span>
+                <span className={styles.walkingGroup} aria-hidden="true">
+                  {["#bd7158", "#6f947a"].map((color, index) => (
+                    <span className={styles.walker} key={color}>
+                      <span className={styles.walkerHead} />
+                      <span className={styles.walkerBody} style={{ backgroundColor: color }} />
+                      <span className={styles.walkerArm} style={{ backgroundColor: color }} />
+                      <span className={styles.walkerArmBack} style={{ backgroundColor: color }} />
+                      <span className={styles.walkerLeg} />
+                      <span className={styles.walkerLegBack} />
+                      {index === 0 ? <span className={styles.walkerSpeech}>Together?</span> : null}
+                    </span>
+                  ))}
+                </span>
+                <span className={styles.walkPrompt}>
+                  {supportChoice
+                    ? "A shared pace—not supervision."
+                    : "Choose the support that fits."}
+                </span>
               </div>
               <div className="space-y-4">
                 <p className="text-lg leading-8 text-foreground/80">

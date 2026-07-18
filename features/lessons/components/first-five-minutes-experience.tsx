@@ -34,6 +34,7 @@ import {
   QuestionEnvelope,
   SupportUmbrella,
 } from "@/features/lessons/components/day-one-interactions";
+import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -583,17 +584,20 @@ export function FirstFiveMinutesExperience({
     switch (screen) {
       case 0:
         return (
-          <div className="grid min-h-[560px] content-center gap-9 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-            <ArrivalIllustration />
-            <div className="space-y-6">
-              <ExperienceHeading>Let&apos;s slow down for a moment.</ExperienceHeading>
-              <div className="max-w-xl space-y-3 text-lg leading-8 text-foreground/80">
-                <p>You were just told you have Type 2 diabetes.</p>
-                <p>That&apos;s a lot to hear.</p>
-                <p>You don&apos;t have to understand everything today.</p>
-                <p>We&apos;ll take this one step at a time.</p>
+          <div className="space-y-9">
+            <div className="grid min-h-[520px] content-center gap-9 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+              <ArrivalIllustration />
+              <div className="space-y-6">
+                <ExperienceHeading>Let&apos;s slow down for a moment.</ExperienceHeading>
+                <div className="max-w-xl space-y-3 text-lg leading-8 text-foreground/80">
+                  <p>You were just told you have Type 2 diabetes.</p>
+                  <p>That&apos;s a lot to hear.</p>
+                  <p>You don&apos;t have to understand everything today.</p>
+                  <p>We&apos;ll take this one step at a time.</p>
+                </div>
               </div>
             </div>
+            <LessonMotionFigure variant="calm-breath" />
           </div>
         );
       case 1:
@@ -628,6 +632,7 @@ export function FirstFiveMinutesExperience({
                 </p>
               </div>
             ) : null}
+            <LessonMotionFigure variant="comfort-hug" />
             <p className="text-sm text-muted-foreground">
               Your choice stays on this page and is not saved.
             </p>
@@ -1069,45 +1074,55 @@ export function FirstFiveMinutesExperience({
         );
       case 11:
         return (
-          <div className="space-y-9">
-            <div className="grid items-center gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-              <QuestionEnvelope hasQuestion={appointmentQuestion !== null} />
-              <div className="space-y-5">
-                <ExperienceHeading eyebrow="One question is enough">
-                  Put one question somewhere safe.
-                </ExperienceHeading>
-                <p className="text-lg leading-8 text-muted-foreground">
-                  You do not need a complete list. Choose the question you would most like your
-                  healthcare team to answer next.
-                </p>
+          <div className="space-y-8">
+            <div className="max-w-4xl space-y-5 [--text-page-title:clamp(3.25rem,7vw,6.75rem)]">
+              <ExperienceHeading eyebrow="One question is enough">
+                Put one question somewhere safe.
+              </ExperienceHeading>
+              <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+                You do not need a complete list. Choose the question you would most like your
+                healthcare team to answer next.
+              </p>
+            </div>
+            <div className="grid gap-7 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] lg:items-start">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                {appointmentQuestions.map((question) => (
+                  <SoftChoice
+                    dimmed={appointmentQuestion !== null && appointmentQuestion !== question}
+                    key={question}
+                    onClick={() => setAppointmentQuestion(question)}
+                    selected={appointmentQuestion === question}
+                  >
+                    {question}
+                  </SoftChoice>
+                ))}
+              </div>
+              <div className="rounded-[1.5rem] border border-border bg-[#f4ece4] p-5 sm:p-7">
+                <div className="mx-auto w-full max-w-md">
+                  <QuestionEnvelope hasQuestion={appointmentQuestion !== null} />
+                </div>
+                <div aria-live="polite" className="border-t border-border pt-5">
+                  {appointmentQuestion ? (
+                    <div className="animate-fade-in">
+                      <p className="editorial-eyebrow text-success">Tucked safely inside</p>
+                      <p className="mt-3 font-serif-display text-2xl leading-8">
+                        “{appointmentQuestion}”
+                      </p>
+                      <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                        This question stays on this page and is not saved to your profile.
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="editorial-eyebrow text-accent-warm">Envelope open</p>
+                      <p className="mt-3 leading-7 text-muted-foreground">
+                        Choose one question. The note will slide in and the envelope will close.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {appointmentQuestions.map((question) => (
-                <SoftChoice
-                  dimmed={appointmentQuestion !== null && appointmentQuestion !== question}
-                  key={question}
-                  onClick={() => setAppointmentQuestion(question)}
-                  selected={appointmentQuestion === question}
-                >
-                  {question}
-                </SoftChoice>
-              ))}
-            </div>
-            {appointmentQuestion ? (
-              <div
-                aria-live="polite"
-                className="animate-fade-in border-y border-border bg-muted/45 px-6 py-6"
-              >
-                <p className="editorial-eyebrow text-success">Saved for your next conversation</p>
-                <p className="mt-3 font-serif-display text-2xl leading-8">
-                  “{appointmentQuestion}”
-                </p>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  This question stays on this page and is not saved to your profile.
-                </p>
-              </div>
-            ) : null}
           </div>
         );
       case 12:

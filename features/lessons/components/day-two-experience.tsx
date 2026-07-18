@@ -31,6 +31,7 @@ import {
 } from "@/features/lessons/actions/day-two.actions";
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
+import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -682,6 +683,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
                 including muscle and fat cells. Those cells can then use or store the glucose.
               </p>
             </div>
+            <LessonMotionFigure variant="glucose-signal" />
             <div className="relative" key={signalReplay}>
               <BloodstreamDiagram entered={signalArrived ? 3 : 0} />
               <span
@@ -848,6 +850,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
               When cells become less responsive to insulin, the pancreas may make more insulin to
               help keep blood glucose in range.
             </p>
+            <LessonMotionFigure variant="insulin-response" />
             <div className="grid border-y border-border md:grid-cols-2">
               <section className="space-y-3 py-6 md:pr-8">
                 <p className="editorial-eyebrow text-success">For a time</p>

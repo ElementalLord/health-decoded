@@ -31,6 +31,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-four-experience.module.css";
+import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -673,6 +674,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               </p>
               <p>Move one meal through the process. Nothing in this journey is a failure.</p>
             </div>
+            <LessonMotionFigure variant="digestion-journey" />
             <div className="overflow-hidden rounded-[1rem] border border-accent-warm/25 bg-[#f0e3d8] p-6 sm:p-9">
               <div className="grid grid-cols-4 gap-2 sm:gap-4">
                 {[
@@ -955,6 +957,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 <p className="text-sm text-muted-foreground">Less intact structure</p>
               </div>
             </div>
+            <LessonMotionFigure variant="fiber-pace" />
             <p className="font-semibold">
               Which will usually move more gradually through digestion?
             </p>
