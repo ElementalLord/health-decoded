@@ -21,10 +21,11 @@ test("Day 8 uses one custom nine-chapter experience", () => {
   assert.match(experience, /A reading is information—not a verdict/);
 });
 
-test("Day 8 includes four distinct purposeful looping visual explanations", () => {
+test("Day 8 includes distinct purposeful looping visual explanations", () => {
   assert.match(experience, /function DashboardAnimation/);
   assert.match(experience, /function ToolStudioAnimation/);
   assert.match(experience, /function ContextConstellationAnimation/);
+  assert.match(experience, /function CareConversationAnimation/);
   assert.match(experience, /function PatternLoomAnimation/);
   assert.ok(
     (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 16,
@@ -32,6 +33,15 @@ test("Day 8 includes four distinct purposeful looping visual explanations", () =
   );
   assert.match(styles, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(experience, /type="range"/);
+});
+
+test("Day 8 visual metaphors keep their sequence and labels legible", () => {
+  assert.match(experience, /FROM NUMBER TO USEFUL CONVERSATION/);
+  assert.match(experience, /NOTICE · ADD CONTEXT · ASK WHAT THE PATTERN CAN TEACH/);
+  assert.match(experience, /LOOK BESIDE THE NUMBER/);
+  assert.match(experience, /Here is the use:/);
+  assert.doesNotMatch(experience, /className=\{styles\.dashboardCar\}/);
+  assert.doesNotMatch(styles, /\.conversationPortrait/);
 });
 
 test("Day 8 teaches context and patterns without prescribing targets", () => {
