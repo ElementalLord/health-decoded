@@ -474,6 +474,123 @@ function ContextConstellationAnimation({ activeCount }: { activeCount: number })
   );
 }
 
+function ReframeContextAnimation() {
+  const contextRows = [
+    { detail: "morning · after a meal · before sleep", label: "TIME", y: 130 },
+    { detail: "food · movement · rest · stress", label: "ROUTINE", y: 201 },
+    { detail: "illness · medicine · symptoms", label: "BODY", y: 272 },
+  ] as const;
+
+  return (
+    <figure className={styles.motionFigure}>
+      <svg
+        aria-labelledby="reframe-context-title reframe-context-desc"
+        className={styles.motionCanvas}
+        role="img"
+        viewBox="0 0 820 430"
+      >
+        <title id="reframe-context-title">One reading becomes more useful beside its context</title>
+        <desc id="reframe-context-desc">
+          A reading card pauses, then three context checks for time, routine, and the body light up
+          in sequence before a useful question appears.
+        </desc>
+        <rect className={styles.canvasWarm} height="430" rx="54" width="820" />
+        <text className={styles.reframeTitle} textAnchor="middle" x="410" y="46">
+          FROM SURPRISE TO A USEFUL QUESTION
+        </text>
+
+        <g className={styles.readingPanel}>
+          <rect height="224" rx="30" width="244" x="58" y="82" />
+          <text className={styles.readingPanelLabel} textAnchor="middle" x="180" y="121">
+            ONE READING
+          </text>
+          <circle className={styles.readingDial} cx="180" cy="194" r="54" />
+          <path className={styles.readingArc} d="M148 214A40 40 0 1 1 212 214" />
+          <g className={styles.readingNeedle} transform="translate(180 194)">
+            <path d="M0 5L0 -31" />
+            <circle r="7" />
+            <animateTransform
+              attributeName="transform"
+              dur="6.6s"
+              keyTimes="0;0.18;0.36;0.78;1"
+              repeatCount="indefinite"
+              type="rotate"
+              values="-18;-18;12;12;-18"
+            />
+          </g>
+          <text className={styles.readingPanelAction} textAnchor="middle" x="180" y="278">
+            PAUSE BEFORE JUDGING
+          </text>
+        </g>
+
+        <path className={styles.contextBridge} d="M326 194H452" />
+        <path className={styles.contextBridgeArrow} d="M440 180L456 194L440 208" />
+        <g className={styles.contextMessenger}>
+          <circle r="11" />
+          <animateMotion
+            dur="6.6s"
+            keyTimes="0;0.2;0.44;0.76;1"
+            path="M326 194H452"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="opacity"
+            dur="6.6s"
+            keyTimes="0;0.16;0.44;0.76;1"
+            repeatCount="indefinite"
+            values="0;1;1;0;0"
+          />
+        </g>
+
+        <g className={styles.contextChecklist}>
+          <rect height="276" rx="32" width="306" x="472" y="64" />
+          <text className={styles.contextChecklistTitle} x="502" y="104">
+            LOOK BESIDE IT
+          </text>
+          {contextRows.map(({ detail, label, y }, index) => (
+            <g className={styles.contextCheckRow} key={label}>
+              <rect height="56" rx="16" width="246" x="502" y={y}>
+                <animate
+                  attributeName="fill"
+                  begin={`${index * 1.45}s`}
+                  dur="6.6s"
+                  keyTimes="0;0.12;0.3;1"
+                  repeatCount="indefinite"
+                  values="#fffaf3;#e4eee6;#fffaf3;#fffaf3"
+                />
+              </rect>
+              <circle cx="522" cy={y + 28} r="7">
+                <animate
+                  attributeName="r"
+                  begin={`${index * 1.45}s`}
+                  dur="6.6s"
+                  keyTimes="0;0.12;0.3;1"
+                  repeatCount="indefinite"
+                  values="7;11;7;7"
+                />
+              </circle>
+              <text className={styles.contextCheckLabel} x="542" y={y + 23}>
+                {label}
+              </text>
+              <text className={styles.contextCheckDetail} x="542" y={y + 42}>
+                {detail}
+              </text>
+            </g>
+          ))}
+        </g>
+
+        <text className={styles.reframeFormula} textAnchor="middle" x="410" y="390">
+          ONE READING + CONTEXT = A BETTER QUESTION
+        </text>
+      </svg>
+      <figcaption className={styles.figureCaption}>
+        <strong>Here is the use:</strong> pause before judging the number, add what was happening
+        around it, and bring the fuller question to your care team.
+      </figcaption>
+    </figure>
+  );
+}
+
 function CareConversationAnimation() {
   return (
     <figure className={styles.careConversation}>
@@ -1022,23 +1139,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
             <LessonHeading label="When a number surprises you">
               Replace “What did I do wrong?” with a better question.
             </LessonHeading>
-            <div className={styles.reframeScene}>
-              <div className={styles.reframePair} aria-hidden="true">
-                <div className={styles.reframePerson}>
-                  <span />
-                  <i />
-                  <b />
-                </div>
-                <div className={styles.reframeNumber}>
-                  <span>?</span>
-                  <i />
-                </div>
-              </div>
-              <div className={styles.reframeRibbon}>
-                <strong>LOOK BESIDE THE NUMBER</strong>
-                <span>food · movement · sleep · stress · illness · medicine</span>
-              </div>
-            </div>
+            <ReframeContextAnimation />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Food is only one influence. Movement, sleep, stress, illness, medicine, timing, and
               routine can all belong in the story. General education cannot tell you to change a
