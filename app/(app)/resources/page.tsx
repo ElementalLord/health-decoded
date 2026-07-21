@@ -15,11 +15,11 @@ export default async function ResourcesPage() {
   const resources = listReviewedResources();
 
   return (
-    <section className="mx-auto max-w-5xl space-y-12 py-6 sm:py-10">
+    <section className="mx-auto max-w-6xl space-y-8 py-6 sm:space-y-10 sm:py-10">
       <PageHeader
-        description="Trusted external information to explore at your own pace."
-        eyebrow="Learn more"
-        title="A library for the questions that linger"
+        description="Clear answers for the moments between appointments. Every guide is reviewed, practical, and published by the CDC or NIH."
+        eyebrow="18 trusted guides"
+        title="Keep learning, one question at a time"
       />
       <ResourcesList resources={resources} />
     </section>

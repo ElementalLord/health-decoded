@@ -414,7 +414,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
         return;
       }
       window.localStorage.removeItem(storageKey);
-      router.push(result.data.nextRoute ?? "/journey");
+      router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
 
@@ -1654,7 +1654,11 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                   Tomorrow: medicines as tools, not judgments.
                 </p>
                 <Button disabled={isPending} onClick={finishExperience}>
-                  {experience.accessMode === "review" ? "Return to journey" : "Complete Day 5"}
+                  {isPending
+                    ? "Saving your progress…"
+                    : experience.accessMode === "review"
+                      ? "Return to journey"
+                      : "Complete Day 5"}
                 </Button>
                 <div className="flex flex-wrap justify-center gap-3">
                   <Button fullWidth={false} onClick={() => goToStage(1)} variant="text">

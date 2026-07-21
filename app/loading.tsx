@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <PageLoadingState label="Loading page">
+    <PageLoadingState label="Preparing Health Decoded">
       <div className="space-y-3">
         <Skeleton className="h-8 w-2/3" />
         <Skeleton className="h-5 w-full" />

@@ -22,5 +22,5 @@ export async function completeOnboardingAction(
       status: "error",
       message: "We could not save your setup right now. Please try again.",
     };
-  redirect("/journey");
+  redirect("/journey?welcome=1");
 }

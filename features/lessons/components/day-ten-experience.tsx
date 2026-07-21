@@ -857,7 +857,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         return;
       }
       window.localStorage.removeItem(storageKey);
-      router.push(result.data.nextRoute ?? "/journey");
+      router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
 
@@ -1297,7 +1297,11 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
               </div>
             </div>
             <Button disabled={isPending} fullWidth={false} onClick={finishExperience}>
-              {experience.accessMode === "review" ? "Return to journey" : "Complete Day 10"}
+              {isPending
+                ? "Saving your progress…"
+                : experience.accessMode === "review"
+                  ? "Return to journey"
+                  : "Complete Day 10"}
             </Button>
           </div>
         );

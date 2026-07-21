@@ -3,7 +3,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LessonLoading() {
   return (
-    <PageLoadingState className="mx-auto max-w-[760px] space-y-8 py-8" label="Loading lesson">
+    <PageLoadingState
+      className="mx-auto max-w-[760px] space-y-8 py-8"
+      label="Preparing your lesson and restoring your place"
+    >
       <div className="space-y-3 border-b border-border pb-5">
         <Skeleton className="h-5 w-16" />
         <Skeleton className="h-10 w-3/4" />

@@ -522,7 +522,7 @@ export function FirstFiveMinutesExperience({
         return;
       }
       window.localStorage.removeItem(storageKey);
-      router.push(result.data.nextRoute ?? "/lessons/2");
+      router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
 
@@ -1284,7 +1284,7 @@ export function FirstFiveMinutesExperience({
             ) : null}
             <Button disabled={isPending} onClick={finishExperience} size="lg">
               {isPending
-                ? "Saving…"
+                ? "Saving your progress…"
                 : incompleteActivities.length
                   ? `Go to “${incompleteActivities[0]!.title}” ↑`
                   : experience.accessMode === "review"

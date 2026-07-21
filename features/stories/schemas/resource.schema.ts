@@ -13,12 +13,11 @@ const approvedHosts = new Set([
 export const resourceSchema = z
   .object({
     category: z.enum([
-      "Understanding Type 2 Diabetes",
-      "Food and Eating",
-      "Physical Activity",
-      "Medication Education",
-      "Blood Sugar Basics",
-      "Finding Support",
+      "Start here",
+      "Everyday habits",
+      "Treatment & safety",
+      "Whole-body health",
+      "Support & access",
     ]),
     description: z.string().trim().min(1).max(300),
     id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),

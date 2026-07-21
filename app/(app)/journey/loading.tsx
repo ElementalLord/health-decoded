@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function JourneyLoading() {
   return (
-    <PageLoadingState className="space-y-8 py-6 sm:py-10" label="Loading today’s journey">
+    <PageLoadingState className="space-y-8 py-6 sm:py-10" label="Preparing today’s journey">
       <div className="space-y-3">
         <Skeleton className="h-10 w-64 max-w-full" />
         <Skeleton className="h-6 w-96 max-w-full" />

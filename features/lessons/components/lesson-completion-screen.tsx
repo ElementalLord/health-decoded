@@ -28,7 +28,7 @@ export function LessonCompletionScreen({
   return (
     <section aria-labelledby="lesson-complete-heading" className="mx-auto max-w-4xl py-6 sm:py-10">
       <div className="space-y-8 border-y border-border py-8 sm:py-12">
-        <CompletionIllustration className="mx-auto max-w-sm" />
+        <CompletionIllustration className="animate-success-pulse mx-auto max-w-sm" />
         <div className="space-y-3 text-center">
           <p aria-live="polite" className="editorial-eyebrow">
             Day {dayNumber} · Your progress was saved
@@ -39,10 +39,10 @@ export function LessonCompletionScreen({
             ref={headingRef}
             tabIndex={-1}
           >
-            Complete.
+            Lesson complete.
           </h1>
           <p className="text-pretty leading-7 text-muted-foreground">
-            You finished today&apos;s step.
+            You understand more today than you did before you began.
           </p>
         </div>
 
@@ -59,13 +59,8 @@ export function LessonCompletionScreen({
           <p className="text-sm text-muted-foreground">From {lessonTitle}</p>
         </section>
 
-        <div className="space-y-2 bg-muted/55 px-6 py-7 sm:px-8">
-          <p className="editorial-eyebrow text-success">One thing you learned</p>
-          <p className="font-serif-display text-2xl leading-8">{keyTakeaway}</p>
-        </div>
-
         <div className="space-y-1.5 border-t border-border pt-8">
-          <p className="editorial-eyebrow">Tomorrow</p>
+          <p className="editorial-eyebrow">What comes next</p>
           {completion.journeyCompleted ? (
             <p className="leading-7 text-muted-foreground">
               You completed this journey. You can return whenever you would like to review what you
@@ -82,7 +77,7 @@ export function LessonCompletionScreen({
           )}
           {completion.xpAwarded > 0 ? (
             <p className="text-sm font-medium text-primary">
-              +{completion.xpAwarded} Confidence XP
+              This lesson added {completion.xpAwarded} Confidence XP to your learning record.
             </p>
           ) : null}
         </div>
@@ -90,7 +85,7 @@ export function LessonCompletionScreen({
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:flex-wrap">
           {completion.nextRoute ? (
             <Link className={cn(buttonVariants(), "min-h-12 px-6")} href={completion.nextRoute}>
-              Continue to next lesson
+              Continue when you&apos;re ready
             </Link>
           ) : null}
           <Link
@@ -103,7 +98,7 @@ export function LessonCompletionScreen({
             )}
             href="/journey"
           >
-            Return to Today&apos;s Journey
+            Return to your journey
           </Link>
           <Link
             className={cn(buttonVariants({ fullWidth: false, variant: "text" }), "min-h-11")}

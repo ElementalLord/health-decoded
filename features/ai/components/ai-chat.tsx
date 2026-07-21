@@ -121,7 +121,10 @@ export function AiChat() {
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [newConversationOpen, setNewConversationOpen] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const activeAssistantIdRef = useRef<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const conversationEndRef = useRef<HTMLDivElement>(null);
   const scrollFrameRef = useRef<number | null>(null);
@@ -191,9 +194,11 @@ export function AiChat() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
     setError(null);
+    setNotice(null);
     setLastQuestion(question);
 
     const assistantMessage = createMessage("assistant");
+    activeAssistantIdRef.current = assistantMessage.id;
     const priorMessages = regenerate ? historyBeforeRegeneration(messages, question) : messages;
     const sessionHistory = boundedSessionHistory(priorMessages);
     const removeEmptyAssistant = () =>
@@ -282,8 +287,11 @@ export function AiChat() {
         removeEmptyAssistant();
       }
     } finally {
-      setIsStreaming(false);
-      abortControllerRef.current = null;
+      if (abortControllerRef.current === controller) {
+        setIsStreaming(false);
+        abortControllerRef.current = null;
+        activeAssistantIdRef.current = null;
+      }
     }
   }
 
@@ -310,8 +318,23 @@ export function AiChat() {
     if (isStreaming) return;
     setMessages([]);
     setError(null);
+    setNotice(null);
     setLastQuestion(null);
     setCopiedMessageId(null);
+    setNewConversationOpen(false);
+    requestAnimationFrame(() => inputRef.current?.focus());
+  }
+
+  function stopResponse() {
+    const assistantId = activeAssistantIdRef.current;
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    activeAssistantIdRef.current = null;
+    setIsStreaming(false);
+    setMessages((current) =>
+      current.filter((entry) => entry.id !== assistantId || Boolean(entry.content.trim())),
+    );
+    setNotice("Stopped. You can rephrase the question or continue whenever you’re ready.");
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
@@ -337,8 +360,9 @@ export function AiChat() {
         <p className="text-sm text-muted-foreground">This conversation clears when you leave.</p>
         {messages.length ? (
           <Button
+            disabled={isStreaming}
             fullWidth={false}
-            onClick={startNewConversation}
+            onClick={() => setNewConversationOpen(true)}
             size="sm"
             type="button"
             variant="secondary"
@@ -347,8 +371,34 @@ export function AiChat() {
           </Button>
         ) : null}
       </div>
+      {newConversationOpen ? (
+        <div
+          aria-labelledby="new-conversation-confirmation"
+          className="motion-status mb-5 flex flex-col gap-3 border-l-2 border-accent-warm bg-[#f2e7df] px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+          role="group"
+        >
+          <p className="text-sm leading-6 text-muted-foreground" id="new-conversation-confirmation">
+            Start fresh? The messages in this private session will be cleared from the page.
+          </p>
+          <div className="flex shrink-0 flex-wrap gap-3">
+            <Button
+              fullWidth={false}
+              onClick={() => setNewConversationOpen(false)}
+              size="sm"
+              type="button"
+              variant="text"
+            >
+              Keep these messages
+            </Button>
+            <Button fullWidth={false} onClick={startNewConversation} size="sm" type="button">
+              Start fresh
+            </Button>
+          </div>
+        </div>
+      ) : null}
       <section
         aria-label="AI tutor conversation"
+        aria-busy={isStreaming}
         className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-6 sm:space-y-6"
       >
         {messages.length ? (
@@ -375,6 +425,12 @@ export function AiChat() {
                         <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-success">
                           Health Decoded guide
                         </p>
+                        {entry.lessonContextUsed ? (
+                          <p className="mb-4 border-l-2 border-success/50 pl-3 text-xs leading-5 text-muted-foreground">
+                            Connected to today&apos;s lesson so this explanation fits what you are
+                            learning now.
+                          </p>
+                        ) : null}
                         <AiResponseContent content={entry.content} />
                         {entry.relatedContent.length ? (
                           <div className="mt-4 border-t border-border pt-3">
@@ -466,7 +522,7 @@ export function AiChat() {
                           <span className="size-1.5 animate-pulse rounded-full bg-primary [animation-delay:120ms]" />
                           <span className="size-1.5 animate-pulse rounded-full bg-primary [animation-delay:240ms]" />
                         </span>
-                        Health Decoded is thinking…
+                        Taking a moment to make this clear…
                       </div>
                     )
                   ) : (
@@ -484,7 +540,8 @@ export function AiChat() {
               </h2>
               <p className="text-pretty leading-7 text-muted-foreground">
                 You can ask about today&apos;s lesson, medications, Type 2 diabetes concepts,
-                healthy habits, or any terms you don&apos;t understand.
+                healthy habits, or any terms you don&apos;t understand. Ask for a shorter or simpler
+                answer at any time.
               </p>
             </div>
 
@@ -554,12 +611,31 @@ export function AiChat() {
             value={message}
           />
         </label>
-        <div className="mt-3 flex justify-end">
-          <Button disabled={isStreaming || !message.trim()} fullWidth={false} type="submit">
-            <Send aria-hidden="true" className="size-4" />
-            Send
-          </Button>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <p className="text-xs leading-5 text-muted-foreground">
+            Enter sends · Shift + Enter adds a line
+          </p>
+          {isStreaming ? (
+            <Button fullWidth={false} onClick={stopResponse} type="button" variant="secondary">
+              Stop response
+            </Button>
+          ) : (
+            <Button disabled={!message.trim()} fullWidth={false} type="submit">
+              <Send aria-hidden="true" className="size-4" />
+              Send
+            </Button>
+          )}
         </div>
+
+        {notice ? (
+          <p
+            aria-live="polite"
+            className="motion-status mt-3 text-sm text-muted-foreground"
+            role="status"
+          >
+            {notice}
+          </p>
+        ) : null}
 
         {error ? (
           <div

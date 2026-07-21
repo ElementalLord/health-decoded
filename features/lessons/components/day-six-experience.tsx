@@ -624,7 +624,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
         return;
       }
       window.localStorage.removeItem(storageKey);
-      router.push(result.data.nextRoute ?? "/journey");
+      router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
 
@@ -1775,7 +1775,11 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                   Tomorrow: medicines as tools, not judgments.
                 </p>
                 <Button disabled={isPending} onClick={finishExperience}>
-                  {experience.accessMode === "review" ? "Return to journey" : "Complete Day 6"}
+                  {isPending
+                    ? "Saving your progress…"
+                    : experience.accessMode === "review"
+                      ? "Return to journey"
+                      : "Complete Day 6"}
                 </Button>
                 <div className="flex flex-wrap justify-center gap-3">
                   <Button fullWidth={false} onClick={() => goToStage(9)} variant="text">

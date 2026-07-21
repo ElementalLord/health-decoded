@@ -74,7 +74,7 @@ export async function saveConfidenceCheckInAction(
 
   return {
     status: "success",
-    message: "Your check-in was saved.",
+    message: "Thank you for checking in. There is no right answer, and this can change any day.",
     savedValue: savedConfidence.data,
   };
 }

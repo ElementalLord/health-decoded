@@ -913,7 +913,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
         return;
       }
       window.localStorage.removeItem(storageKey);
-      router.push(result.data.nextRoute ?? "/journey");
+      router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
 
@@ -1281,7 +1281,11 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
               </div>
             </div>
             <Button disabled={isPending} fullWidth={false} onClick={finishExperience}>
-              {experience.accessMode === "review" ? "Return to journey" : "Complete Day 8"}
+              {isPending
+                ? "Saving your progress…"
+                : experience.accessMode === "review"
+                  ? "Return to journey"
+                  : "Complete Day 8"}
             </Button>
           </div>
         );
