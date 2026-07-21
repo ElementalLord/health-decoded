@@ -74,6 +74,8 @@ test("keeps completed lesson review in Progress instead of duplicating it on Jou
   assert.match(progressSource, /Days 6–10/);
   assert.match(progressSource, /Days 11–14/);
   assert.match(progressSource, /<details\s+className="group\/learning-section/);
+  assert.match(progressSource, /tracking-tight text-success/);
+  assert.match(progressSource, /text-4xl.*text-success\/85/);
 });
 
 test("acknowledges reflection without grading it", () => {

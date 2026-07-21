@@ -60,7 +60,7 @@ function MilestoneEntry({
         </span>
         <span
           className={cn(
-            "mt-1 block font-serif-display text-lg font-semibold leading-snug text-foreground",
+            "mt-1 block font-serif-display text-lg font-semibold leading-snug text-info-foreground",
             milestone.state === "locked" && "text-muted-foreground",
           )}
         >
@@ -132,7 +132,7 @@ export function LearningRecord({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1.5">
           <h2
-            className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
+            className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight text-success"
             id="learning-record-title"
           >
             Your learning record
@@ -163,11 +163,11 @@ export function LearningRecord({
               key={section.number}
             >
               <summary className="grid min-h-20 cursor-pointer list-none grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-4 transition-colors duration-[var(--duration-fast)] hover:bg-muted/30 sm:px-6 [&::-webkit-details-marker]:hidden">
-                <span className="font-serif-display text-4xl font-light leading-none text-accent-warm">
+                <span className="font-serif-display text-4xl font-light leading-none text-success/85">
                   0{section.number}
                 </span>
                 <span>
-                  <span className="block font-serif-display text-xl font-semibold sm:text-2xl">
+                  <span className="block font-serif-display text-xl font-semibold text-success sm:text-2xl">
                     {section.title}
                   </span>
                   <span className="mt-1 block text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground">
