@@ -26,7 +26,7 @@ test("Day 10 includes distinct comforting looping visual explanations", () => {
   assert.match(experience, /function DecisionLanternAnimation/);
   assert.match(experience, /function HabitLoopAnimation/);
   assert.match(experience, /function NextStepStaircaseAnimation/);
-  assert.match(experience, /function GentleWeekAnimation/);
+  assert.match(experience, /function GrowthOverWeeksAnimation/);
   assert.ok(
     (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 16,
     "expected multiple independently moving parts across all five visual explanations",
@@ -44,7 +44,7 @@ test("Day 10 visual metaphors keep their sequence and labels legible", () => {
   assert.match(experience, /FEWER DECISIONS · MORE CALM/);
   assert.match(experience, /THE LOOP THAT MAKES HABITS AUTOMATIC/);
   assert.match(experience, /A MISSED STEP IS NOT A RESTART/);
-  assert.match(experience, /SHOWING UP BEATS BEING PERFECT/);
+  assert.match(experience, /PROGRESS GROWS OVER WEEKS, NOT DAYS/);
   assert.match(experience, /A ROUTINE IS A DECISION YOU ONLY MAKE ONCE/);
   assert.match(experience, /DON’T START OVER — JUST TAKE THE NEXT STEP/);
   assert.match(experience, /Here is the use:/);
