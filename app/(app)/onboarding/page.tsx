@@ -4,6 +4,8 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { OnboardingFlow } from "@/features/onboarding/components/onboarding-flow";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "Welcome" };
+
 export default async function OnboardingPage() {
   const profile = await getCurrentProfile();
   if (!profile.ok) {

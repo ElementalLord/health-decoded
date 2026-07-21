@@ -5,6 +5,8 @@ import { ResourcesList } from "@/features/resources/components/resources";
 import { listReviewedResources } from "@/features/resources/services/resources.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "Resources" };
+
 export default async function ResourcesPage() {
   const profile = await getCurrentProfile();
   if (!profile.ok) redirect("/journey");

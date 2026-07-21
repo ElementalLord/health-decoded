@@ -2,6 +2,8 @@ import { PageHeader } from "@/components/shared/page-header";
 import { AuthForm } from "@/features/auth/components/auth-form";
 import { resetPasswordAction } from "@/features/auth/actions/auth.actions";
 
+export const metadata = { title: "Set a new password" };
+
 export default function ResetPasswordPage() {
   return (
     <div className="space-y-8">

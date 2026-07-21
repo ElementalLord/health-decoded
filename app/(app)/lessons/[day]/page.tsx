@@ -6,6 +6,8 @@ import { lessonDaySchema } from "@/features/lessons/schemas/lesson-route.schema"
 import { getAuthorizedLesson } from "@/features/lessons/services/lesson-player.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "Lesson" };
+
 export default async function LessonPage({ params }: { params: Promise<{ day: string }> }) {
   const { day: rawDay } = await params;
   const parsedDay = lessonDaySchema.safeParse(rawDay);

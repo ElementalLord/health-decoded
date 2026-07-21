@@ -7,6 +7,8 @@ import { StoryList } from "@/features/stories/components/stories";
 import { listStories } from "@/features/stories/services/stories.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "Learning stories" };
+
 export default async function StoriesPage() {
   const profile = await getCurrentProfile();
   if (!profile.ok) redirect("/journey");

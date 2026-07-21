@@ -10,6 +10,8 @@ import { ProgressEmptyState } from "@/features/progress/components/progress-empt
 import { getProgressData } from "@/features/progress/services/progress.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "Progress" };
+
 export default async function ProgressPage() {
   const profile = await getCurrentProfile();
   if (!profile.ok) return <ProgressEmptyState />;
