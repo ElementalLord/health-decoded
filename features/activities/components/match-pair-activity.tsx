@@ -134,9 +134,12 @@ export function MatchPairActivityView({
       </div>
 
       {isComplete ? (
-        <p aria-live="polite" className="text-sm text-success">
-          This activity is complete.
-        </p>
+        <div aria-live="polite" className="border-l-2 border-success bg-info px-4 py-3">
+          <p className="font-medium text-success">These connections are in place.</p>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            You can keep moving, or pause here and read through them once more.
+          </p>
+        </div>
       ) : (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">
@@ -151,9 +154,23 @@ export function MatchPairActivityView({
         </div>
       )}
 
-      <p aria-live="polite" className="min-h-6 text-sm leading-6 text-muted-foreground">
-        {feedback}
-      </p>
+      {feedback ? (
+        <div
+          aria-live="polite"
+          className={cn(
+            "motion-status border-l-2 px-4 py-3 text-sm leading-6",
+            canRetry ? "border-warning bg-warning/10" : "border-success bg-info",
+          )}
+          role="status"
+        >
+          <p className="font-semibold text-foreground">
+            {canRetry ? "A useful place to pause" : "You found the connections"}
+          </p>
+          <p className="mt-1 text-muted-foreground">{feedback}</p>
+        </div>
+      ) : (
+        <div aria-hidden="true" className="min-h-6" />
+      )}
       {!isComplete && canRetry ? (
         <Button
           fullWidth={false}
@@ -165,7 +182,7 @@ export function MatchPairActivityView({
           }}
           variant="text"
         >
-          Try again
+          Revisit the pairs
         </Button>
       ) : null}
     </section>

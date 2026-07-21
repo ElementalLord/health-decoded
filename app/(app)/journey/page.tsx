@@ -7,13 +7,19 @@ import { JourneyCompleteState } from "@/features/journeys/components/journey-com
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
 import { JourneyProgressSummary } from "@/features/journeys/components/journey-progress-summary";
 import { JourneyUnavailableState } from "@/features/journeys/components/journey-unavailable-state";
+import { LessonCompletionArrival } from "@/features/journeys/components/lesson-completion-arrival";
 import { TodaysLessonCard } from "@/features/journeys/components/todays-lesson-card";
 import { getJourneyHomeData } from "@/features/journeys/services/journey-home.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
 export const metadata = { title: "Your journey" };
 
-export default async function JourneyPage() {
+export default async function JourneyPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ completed?: string; welcome?: string }>;
+}) {
+  const { completed, welcome } = await searchParams;
   const profile = await getCurrentProfile();
 
   if (!profile.ok) {
@@ -38,12 +44,33 @@ export default async function JourneyPage() {
     );
   }
 
+  const completedDay = Number(completed);
+  const showCompletionArrival =
+    Number.isInteger(completedDay) &&
+    completedDay >= 1 &&
+    completedDay <= journey.data.progress.totalDays &&
+    completedDay <= journey.data.progress.completedLessons;
+
   return (
     <section className="space-y-12 py-3 sm:space-y-16 sm:py-6">
       <JourneyGreeting
+        completedLessons={journey.data.progress.completedLessons}
+        currentLessonStatus={
+          journey.data.kind === "ready" ? journey.data.currentLesson.status : undefined
+        }
         displayName={profile.data.display_name}
+        firstVisit={welcome === "1"}
         journeyComplete={journey.data.kind === "complete"}
+        totalLessons={journey.data.progress.totalDays}
       />
+
+      {showCompletionArrival ? (
+        <LessonCompletionArrival
+          completedLessons={journey.data.progress.completedLessons}
+          dayNumber={completedDay}
+          journeyComplete={journey.data.kind === "complete"}
+        />
+      ) : null}
 
       {journey.data.kind === "complete" ? (
         <>

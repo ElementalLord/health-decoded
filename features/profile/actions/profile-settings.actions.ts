@@ -70,5 +70,8 @@ export async function updateSettingsAction(
     return { status: "error", message: "We couldn’t save your settings. Please try again." };
   }
   revalidatePath("/", "layout");
-  return { status: "success", message: "Your settings were saved." };
+  return {
+    status: "success",
+    message: "Your preferences are saved. Health Decoded will use them from here.",
+  };
 }

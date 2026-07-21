@@ -15,7 +15,7 @@ function PageLoadingState({ children, className, label, ...props }: PageLoadingS
       role="status"
       {...props}
     >
-      <span className="sr-only">{label}</span>
+      <p className="editorial-eyebrow motion-status text-muted-foreground">{label}</p>
       <div aria-hidden="true" className="contents">
         {children}
       </div>

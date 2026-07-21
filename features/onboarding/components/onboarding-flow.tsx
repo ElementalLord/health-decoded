@@ -221,7 +221,7 @@ export function OnboardingFlow() {
             </Button>
           ) : (
             <Button disabled={pending} type="submit">
-              {pending ? "Saving…" : "Finish setup"}
+              {pending ? "Saving your choices and opening your journey…" : "Finish setup"}
             </Button>
           )}
         </div>

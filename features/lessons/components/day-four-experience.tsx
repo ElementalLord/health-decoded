@@ -484,7 +484,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
         return;
       }
       window.localStorage.removeItem(storageKey);
-      router.push(result.data.nextRoute ?? "/journey");
+      router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
 
@@ -1636,7 +1636,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 </div>
                 <Button disabled={isPending} onClick={finishExperience} size="lg">
                   {isPending
-                    ? "Saving…"
+                    ? "Saving your progress…"
                     : experience.accessMode === "review"
                       ? "Return to lesson library"
                       : "Complete Day 4"}
