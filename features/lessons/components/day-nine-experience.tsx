@@ -281,7 +281,7 @@ function SteadyBalanceAnimation() {
             />
           </path>
           {[0, 1].map((dot) => (
-            <circle className={styles.waveDot} key={dot} r="11">
+            <circle className={styles.waveDot} key={dot} opacity="0" r="11">
               <animateMotion
                 begin={`${dot * 3.6}s`}
                 dur="7.2s"
@@ -392,7 +392,7 @@ function SlowTideAnimation() {
                   values="11;18;11;11"
                 />
               </circle>
-              <circle className={styles.signalHalo} cx="22" cy="22" r="20">
+              <circle className={styles.signalHalo} cx="22" cy="22" opacity="0" r="20">
                 <animate
                   attributeName="opacity"
                   begin={`${index * 2.1}s`}
@@ -492,7 +492,7 @@ function QuickBellAnimation() {
             AN EARLY WARNING BELL
           </text>
           {[0, 1].map((ring) => (
-            <circle className={styles.bellRing} cx="110" cy="150" key={ring} r="30">
+            <circle className={styles.bellRing} cx="110" cy="150" key={ring} opacity="0" r="30">
               <animate
                 attributeName="r"
                 begin={`${ring * 1.1}s`}
@@ -604,7 +604,7 @@ function ActionPathAnimation() {
             <text className={styles.stationDetail} textAnchor="middle" y="48">
               {detail}
             </text>
-            <circle className={styles.stationPulse} cy="108" r="16">
+            <circle className={styles.stationPulse} cy="108" opacity="0" r="16">
               <animate
                 attributeName="opacity"
                 begin={`${index * 2.5}s`}
@@ -688,7 +688,7 @@ function SteadyHandAnimation() {
             <rect className={styles.detectorBody} height="26" rx="13" width="92" x="-46" y="-13" />
             <circle className={styles.detectorEye} cy="0" r="6" />
             {[0, 1].map((ring) => (
-              <circle className={styles.detectorRing} key={ring} r="20">
+              <circle className={styles.detectorRing} key={ring} opacity="0" r="20">
                 <animate
                   attributeName="r"
                   begin={`${ring * 1.4}s`}
