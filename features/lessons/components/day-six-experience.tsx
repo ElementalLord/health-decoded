@@ -220,6 +220,175 @@ const movementMoments = [
 
 type MovementMomentId = (typeof movementMoments)[number]["id"];
 
+function MovementMomentVideo({ variant }: { variant: MovementMomentId }) {
+  if (variant === "desk") {
+    return (
+      <svg className={styles.momentSvg} viewBox="0 0 320 180" focusable="false">
+        <g className={styles.widgetChair}>
+          <rect height="54" rx="11" width="55" x="34" y="74" />
+          <path d="M27 98h68M43 128v28M80 128v28" />
+        </g>
+        <path className={styles.widgetMutedLine} d="M112 125H286" />
+        <g className={styles.widgetWarmPerson} transform="translate(73 70)">
+          <circle cx="0" cy="0" r="12" />
+          <path d="M0 14v35M0 28l24 16M0 49h31M31 49v29" />
+          <animate
+            attributeName="opacity"
+            dur="5.4s"
+            keyTimes="0;0.28;0.4;0.78;0.9;1"
+            repeatCount="indefinite"
+            values="1;1;0;0;1;1"
+          />
+        </g>
+        <g className={styles.widgetGreenPerson} transform="translate(190 60)">
+          <circle cx="0" cy="0" r="12" />
+          <path d="M0 14v52M0 26l-22-18M0 26l22-18M0 66l-18 31M0 66l18 31" />
+          <animate
+            attributeName="opacity"
+            dur="5.4s"
+            keyTimes="0;0.32;0.45;0.76;0.88;1"
+            repeatCount="indefinite"
+            values="0;0;1;1;0;0"
+          />
+          <animateTransform
+            additive="sum"
+            attributeName="transform"
+            dur="5.4s"
+            keyTimes="0;0.42;0.58;0.74;1"
+            repeatCount="indefinite"
+            type="rotate"
+            values="0;0;-8;8;0"
+          />
+        </g>
+        <path className={styles.widgetSuccessLine} d="M112 125h63m34 0h77" opacity="0">
+          <animate
+            attributeName="opacity"
+            dur="5.4s"
+            keyTimes="0;0.35;0.48;0.78;1"
+            repeatCount="indefinite"
+            values="0;0;1;1;0"
+          />
+        </path>
+        <circle className={styles.widgetBreak} cx="192" cy="125" r="0">
+          <animate
+            attributeName="r"
+            dur="5.4s"
+            keyTimes="0;0.35;0.52;0.78;1"
+            repeatCount="indefinite"
+            values="0;0;12;12;0"
+          />
+        </circle>
+      </svg>
+    );
+  }
+
+  if (variant === "meal") {
+    return (
+      <svg className={styles.momentSvg} viewBox="0 0 320 180" focusable="false">
+        <g className={styles.widgetPlate}>
+          <circle cx="45" cy="92" r="29" />
+          <circle cx="45" cy="92" r="17" />
+          <path d="M37 90c8-12 21-8 22 4-7 9-17 10-22-4z" />
+        </g>
+        <path className={styles.widgetTimeLine} d="M82 92H287" />
+        <circle className={styles.widgetTimeNode} cx="96" cy="92" r="7" />
+        <circle className={styles.widgetTimeNode} cx="276" cy="92" r="7" />
+        <rect className={styles.widgetWindow} height="54" rx="27" width="102" x="130" y="65">
+          <animate
+            attributeName="opacity"
+            dur="4.8s"
+            keyTimes="0;0.15;0.75;1"
+            repeatCount="indefinite"
+            values="0.35;0.82;0.82;0.35"
+          />
+        </rect>
+        <g className={styles.widgetClock} transform="translate(181 44)">
+          <circle cx="0" cy="0" r="18" />
+          <g>
+            <path d="M0 0v-10M0 0l9 5" />
+            <animateTransform
+              attributeName="transform"
+              dur="4.8s"
+              repeatCount="indefinite"
+              type="rotate"
+              values="0;360"
+            />
+          </g>
+          <animateTransform
+            attributeName="transform"
+            dur="4.8s"
+            keyTimes="0;0.18;0.72;1"
+            repeatCount="indefinite"
+            type="translate"
+            values="181 44;181 39;181 39;181 44"
+          />
+        </g>
+        <g className={styles.widgetWindowWalker} opacity="0">
+          <circle cx="0" cy="-13" r="7" />
+          <path d="M0-5v20M0 1l-10 8M0 1l10 8M0 15l-9 14M0 15l10 14" />
+          <animateMotion dur="4.8s" path="M145 92H218" repeatCount="indefinite" />
+          <animate
+            attributeName="opacity"
+            dur="4.8s"
+            keyTimes="0;0.15;0.78;1"
+            repeatCount="indefinite"
+            values="0;1;1;0"
+          />
+        </g>
+        <text className={styles.widgetSvgLabel} x="181" y="145" textAnchor="middle">
+          OPTIONAL WINDOW
+        </text>
+      </svg>
+    );
+  }
+
+  return (
+    <svg className={styles.momentSvg} viewBox="0 0 320 180" focusable="false">
+      <g className={styles.widgetCloud}>
+        <circle cx="48" cy="55" r="18" />
+        <circle cx="68" cy="47" r="24" />
+        <circle cx="92" cy="58" r="16" />
+        <path d="M48 84l-8 17m31-17-8 17m31-17-8 17" />
+        <animateTransform
+          attributeName="transform"
+          dur="5.8s"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0;5 -4;5 -4;0 0"
+        />
+        <animate
+          attributeName="opacity"
+          dur="5.8s"
+          repeatCount="indefinite"
+          values="0.8;0.45;0.45;0.8"
+        />
+      </g>
+      <path className={styles.widgetRoute} d="M52 126C117 145 164 91 256 106" />
+      <circle className={styles.widgetTraveler} cx="0" cy="0" opacity="0" r="9">
+        <animateMotion dur="5.8s" path="M52 126C117 145 164 91 256 106" repeatCount="indefinite" />
+        <animate
+          attributeName="opacity"
+          dur="5.8s"
+          keyTimes="0;0.1;0.88;1"
+          repeatCount="indefinite"
+          values="0;1;1;0"
+        />
+      </circle>
+      <g className={styles.widgetShield} transform="translate(267 102)">
+        <path d="M0-28 25-18v19c0 23-17 34-25 38C-8 35-25 24-25 1v-19z">
+          <animate
+            attributeName="stroke-width"
+            dur="2.2s"
+            repeatCount="indefinite"
+            values="4;8;4"
+          />
+        </path>
+        <path d="m-10 2 7 7 14-18" />
+      </g>
+    </svg>
+  );
+}
+
 const reflectionOptions = [
   "I can see one seam where movement might fit.",
   "A smaller backup feels more realistic than a perfect plan.",
@@ -1468,34 +1637,12 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                       )}
                       aria-hidden="true"
                     >
-                      {moment.id === "desk" ? (
-                        <>
-                          <Armchair className={styles.videoChair} />
-                          <span className={styles.videoStillLine} />
-                          <PersonStanding className={styles.videoRisingPerson} />
-                          <span className={styles.videoBreakMark} />
-                        </>
-                      ) : moment.id === "meal" ? (
-                        <>
-                          <Utensils className={styles.videoMeal} />
-                          <span className={styles.videoFuelDot} />
-                          <span className={styles.videoTravelPath} />
-                          <Footprints className={styles.videoFootprints} />
-                          <Activity className={styles.videoMuscle} />
-                        </>
-                      ) : (
-                        <>
-                          <CloudRain className={styles.videoWeather} />
-                          <Route className={styles.videoRoute} />
-                          <span className={styles.videoTraveler} />
-                          <ShieldCheck className={styles.videoShelter} />
-                        </>
-                      )}
+                      <MovementMomentVideo variant={moment.id} />
                       <p className={styles.videoLabel}>
                         {moment.id === "desk"
                           ? "sit · rise · reset"
                           : moment.id === "meal"
-                            ? "meal · optional movement · working muscle"
+                            ? "after a meal · optional, flexible window"
                             : "notice · reroute · protect the body"}
                       </p>
                     </div>

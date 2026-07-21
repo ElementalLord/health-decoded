@@ -327,139 +327,216 @@ function SupportLensAnimation() {
 }
 
 function BodyToolsAnimation() {
-  const glucose = [0, 1, 2, 3];
   return (
     <figure className={styles.motionFigure}>
       <svg
         aria-labelledby="body-tools-title body-tools-desc"
         className={styles.motionCanvas}
         role="img"
-        viewBox="0 0 920 470"
+        viewBox="0 0 920 600"
       >
         <title id="body-tools-title">
-          Several diabetes medication pathways working around the body
+          Four distinct workshops represent different medication pathways
         </title>
         <desc id="body-tools-desc">
-          A looping visual shows the liver releasing less glucose, an insulin signal reaching a
-          cell, digestion slowing, and a kidney route removing glucose.
+          Four separate looping scenes show a liver loading dock releasing less glucose, an
+          hourglass slowing digestion, a kidney filter directing glucose outward, and radio waves
+          supporting a cell response.
         </desc>
-        <rect className={styles.softRoom} height="470" rx="56" width="920" />
-        <path className={styles.vessel} d="M92 232H814" />
-        {glucose.map((item) => (
-          <circle className={styles.glucose} cx="0" cy={220 + (item % 2) * 25} key={item} r="11">
+        <rect className={styles.softRoom} height="600" rx="56" width="920" />
+        <defs>
+          <clipPath clipPathUnits="userSpaceOnUse" id="day-seven-hourglass-interior">
+            <path d="M611 113H690c-2 18-19 25-29 35 10 11 27 18 29 36h-79c2-18 19-25 29-36-10-10-27-17-29-35z" />
+          </clipPath>
+        </defs>
+
+        <g aria-label="Liver loading dock releasing less glucose">
+          <rect className={styles.pathwayPanel} height="224" rx="28" width="400" x="40" y="38" />
+          <text className={styles.pathwayTitle} x="70" y="76">
+            LIVER LOADING DOCK
+          </text>
+          <path
+            className={styles.liver}
+            d="M74 126c37-30 100-16 127 19-13 38-51 59-112 48-23-13-32-40-15-67z"
+          />
+          <rect className={styles.loadingDock} height="72" rx="8" width="96" x="290" y="121" />
+          <g className={styles.glucoseCrate}>
+            <rect height="30" rx="6" width="34" x="219" y="143" />
+            <text x="236" y="164">
+              G
+            </text>
+            <animateTransform
+              attributeName="transform"
+              dur="7s"
+              keyTimes="0;0.22;0.48;0.7;1"
+              repeatCount="indefinite"
+              type="translate"
+              values="-28 0;0 0;43 0;43 0;-28 0"
+            />
+            <animate
+              attributeName="opacity"
+              dur="7s"
+              keyTimes="0;0.12;0.56;0.72;1"
+              repeatCount="indefinite"
+              values="0;1;1;0;0"
+            />
+          </g>
+          <rect className={styles.loadingShutter} height="10" rx="5" width="76" x="300" y="126">
+            <animate
+              attributeName="height"
+              dur="7s"
+              keyTimes="0;0.38;0.58;0.84;1"
+              repeatCount="indefinite"
+              values="10;10;58;58;10"
+            />
+          </rect>
+          <text className={styles.pathwayAction} textAnchor="middle" x="240" y="231">
+            RELEASE LESS
+          </text>
+        </g>
+
+        <g aria-label="Digestion hourglass slowing the pace">
+          <rect className={styles.pathwayPanel} height="224" rx="28" width="400" x="480" y="38" />
+          <text className={styles.pathwayTitle} x="510" y="76">
+            DIGESTION HOURGLASS
+          </text>
+          <path
+            className={styles.hourglassFrame}
+            d="M593 107h115M593 190h115M608 107c0 36 28 31 28 42s-28 8-28 41M693 107c0 36-28 31-28 42s28 8 28 41"
+          />
+          <g clipPath="url(#day-seven-hourglass-interior)">
+            {[
+              "M628 120Q638 136 648 148Q640 161 631 177",
+              "M650 119V177",
+              "M672 120Q662 136 652 148Q660 161 669 177",
+            ].map((path, item) => (
+              <circle className={styles.foodDot} cx="0" cy="0" key={path} r="7">
+                <animateMotion
+                  begin={`${item * 0.8}s`}
+                  dur="6.6s"
+                  keyTimes="0;0.28;0.58;0.8;1"
+                  path={path}
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  begin={`${item * 0.8}s`}
+                  dur="6.6s"
+                  keyTimes="0;0.12;0.78;0.9;1"
+                  repeatCount="indefinite"
+                  values="0;1;1;0;0"
+                />
+              </circle>
+            ))}
+          </g>
+          <g transform="translate(770 148)">
+            <g>
+              <path className={styles.pendulumStem} d="M0-42V0" />
+              <circle className={styles.pendulumWeight} cx="0" cy="18" r="17" />
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                keyTimes="0;0.5;1"
+                repeatCount="indefinite"
+                type="rotate"
+                values="-25 0 -42;25 0 -42;-25 0 -42"
+              />
+            </g>
+          </g>
+          <text className={styles.pathwayAction} textAnchor="middle" x="680" y="231">
+            SLOW THE PACE
+          </text>
+        </g>
+
+        <g aria-label="Kidney filter directing glucose outward">
+          <rect className={styles.pathwayPanel} height="224" rx="28" width="400" x="40" y="286" />
+          <text className={styles.pathwayTitle} x="70" y="324">
+            KIDNEY FILTER
+          </text>
+          <path
+            className={styles.kidneyShape}
+            d="M105 351c-51 5-54 82-19 110 25 20 43-3 51-31 5-22 1-49 17-66-12-11-28-16-49-13z"
+          />
+          <path className={styles.filterChute} d="M188 375h128l-19 40v43" />
+          <g className={styles.filterMesh}>
+            <path d="M198 388h111M210 400h93M225 412h73" />
+            <animate
+              attributeName="opacity"
+              dur="5.8s"
+              keyTimes="0;0.25;0.55;0.8;1"
+              repeatCount="indefinite"
+              values="0.35;1;1;0.35;0.35"
+            />
+          </g>
+          <g className={styles.glucoseCrate}>
+            <rect height="28" rx="6" width="32" x="-16" y="-14" />
+            <text x="0" y="6">
+              G
+            </text>
             <animateMotion
-              begin={`${item * 1.35}s`}
-              dur="6.2s"
-              path="M100 0H704"
+              dur="5.8s"
+              keyTimes="0;0.42;0.72;1"
+              path="M188 375H316L297 415V458"
               repeatCount="indefinite"
             />
             <animate
               attributeName="opacity"
-              begin={`${item * 1.35}s`}
-              dur="6.2s"
-              keyTimes="0;0.08;0.9;1"
+              dur="5.8s"
+              keyTimes="0;0.12;0.78;1"
               repeatCount="indefinite"
               values="0;1;1;0"
             />
-          </circle>
-        ))}
-        <g transform="translate(70 92)">
-          <path
-            className={styles.liver}
-            d="M18 29c42-34 115-18 146 22-14 43-59 68-130 55C9 91-2 59 18 29z"
-          />
-          <path className={styles.signalPath} d="M145 69h73" />
-          <circle className={styles.glucose} cx="151" cy="69" r="9">
+          </g>
+          <text className={styles.pathwayAction} textAnchor="middle" x="240" y="481">
+            DIRECT OUTWARD
+          </text>
+        </g>
+
+        <g aria-label="Cell receiving a medicine-supported signal">
+          <rect className={styles.pathwayPanel} height="224" rx="28" width="400" x="480" y="286" />
+          <text className={styles.pathwayTitle} x="510" y="324">
+            CELL RADIO
+          </text>
+          <rect className={styles.signalRadio} height="80" rx="18" width="112" x="520" y="358" />
+          <line className={styles.radioAntenna} x1="576" x2="601" y1="358" y2="337" />
+          {[0, 1, 2].map((wave) => (
+            <path
+              className={styles.radioWave}
+              d={`M${646 + wave * 16} ${370 - wave * 8}q${30 + wave * 9} 28 0 ${56 + wave * 16}`}
+              key={wave}
+            >
+              <animate
+                attributeName="opacity"
+                begin={`${wave * 0.45}s`}
+                dur="4.8s"
+                keyTimes="0;0.2;0.48;0.72;1"
+                repeatCount="indefinite"
+                values="0;1;1;0;0"
+              />
+            </path>
+          ))}
+          <circle className={styles.cell} cx="804" cy="398" r="55">
             <animate
-              attributeName="cx"
+              attributeName="r"
               dur="4.8s"
-              keyTimes="0;0.42;0.68;1"
+              keyTimes="0;0.34;0.55;0.74;1"
               repeatCount="indefinite"
-              values="151;204;204;151"
-            />
-            <animate
-              attributeName="opacity"
-              dur="4.8s"
-              keyTimes="0;0.42;0.68;1"
-              repeatCount="indefinite"
-              values="1;1;0.18;1"
+              values="55;55;61;55;55"
             />
           </circle>
-          <text className={styles.svgLabel} x="54" y="138">
-            LIVER
+          <text className={styles.pathwayAction} textAnchor="middle" x="680" y="481">
+            SUPPORT THE RESPONSE
           </text>
         </g>
-        <g transform="translate(366 64)">
-          <path className={styles.digestive} d="M26 14v42c0 34 63 31 63 70 0 31-34 38-62 38" />
-          <circle className={styles.foodDot} cx="26" cy="14" r="10">
-            <animateMotion
-              dur="8s"
-              path="M0 0v42c0 34 63 31 63 70 0 31-34 38-62 38"
-              repeatCount="indefinite"
-            />
-          </circle>
-          <text className={styles.svgLabel} x="-6" y="198">
-            DIGESTION
-          </text>
-        </g>
-        <g transform="translate(634 63)">
-          <path
-            className={styles.kidneyShape}
-            d="M38 8c-39 4-42 63-15 85 19 16 33-2 39-23 4-17 1-38 13-51C66 11 54 6 38 8z"
-          />
-          <path className={styles.kidneyRoute} d="M54 75c17 29 15 55 2 86" />
-          <circle className={styles.glucose} cx="54" cy="75" r="9">
-            <animateMotion dur="5.5s" path="M0 0c17 29 15 55 2 86" repeatCount="indefinite" />
-            <animate
-              attributeName="opacity"
-              dur="5.5s"
-              keyTimes="0;0.75;1"
-              repeatCount="indefinite"
-              values="1;1;0"
-            />
-          </circle>
-          <text className={styles.svgLabel} x="-2" y="198">
-            KIDNEY ROUTE
-          </text>
-        </g>
-        <g transform="translate(774 175)">
-          <circle className={styles.cell} cx="0" cy="50" r="70" />
-          <rect className={styles.cellDoor} height="52" rx="15" width="22" x="-62" y="24">
-            <animate
-              attributeName="height"
-              dur="5.2s"
-              keyTimes="0;0.28;0.48;0.72;1"
-              repeatCount="indefinite"
-              values="52;52;76;76;52"
-            />
-            <animate
-              attributeName="y"
-              dur="5.2s"
-              keyTimes="0;0.28;0.48;0.72;1"
-              repeatCount="indefinite"
-              values="24;24;12;12;24"
-            />
-          </rect>
-          <circle className={styles.insulinSignal} cx="-150" cy="50" r="10">
-            <animate
-              attributeName="cx"
-              dur="5.2s"
-              keyTimes="0;0.3;0.44;0.72;1"
-              repeatCount="indefinite"
-              values="-150;-77;-77;-150;-150"
-            />
-          </circle>
-          <text className={styles.svgLabel} textAnchor="middle" x="5" y="55">
-            CELL
-          </text>
-        </g>
-        <text className={styles.motionCaption} textAnchor="middle" x="460" y="428">
-          DIFFERENT TOOLS · DIFFERENT BODY PATHWAYS
+
+        <text className={styles.motionCaption} textAnchor="middle" x="460" y="560">
+          FOUR TOOLS · FOUR DIFFERENT JOBS
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>There is no single “diabetes pill.”</strong> Different medicine classes work through
-        different pathways; a clinician fits the tool to the person.
+        different pathways. These are simplified teaching scenes—not a claim that every medicine
+        performs every job—and a clinician fits the tool to the person.
       </figcaption>
     </figure>
   );
@@ -472,92 +549,126 @@ function InsulinBridgeAnimation() {
         aria-labelledby="insulin-bridge-title insulin-bridge-desc"
         className={styles.motionCanvas}
         role="img"
-        viewBox="0 0 820 410"
+        viewBox="0 0 820 440"
       >
-        <title id="insulin-bridge-title">Insulin signals a cell to receive glucose</title>
+        <title id="insulin-bridge-title">An insulin lighthouse signals a cell harbor</title>
         <desc id="insulin-bridge-desc">
-          An endless loop shows an insulin signal arriving first, a cell response opening, and
-          glucose moving inward.
+          A looping lighthouse metaphor shows an insulin beam reaching a cell harbor, a dock gate
+          opening, and glucose cargo boats entering.
         </desc>
-        <rect className={styles.softRoom} height="410" rx="56" width="820" />
-        <path className={styles.vessel} d="M74 207H642" />
-        <g transform="translate(664 112)">
-          <circle className={styles.cell} cx="0" cy="96" r="91" />
-          <rect className={styles.cellDoor} height="68" rx="17" width="26" x="-88" y="62">
+        <rect className={styles.softRoom} height="440" rx="56" width="820" />
+        <path className={styles.harborWater} d="M46 287q90-24 180 0t180 0 180 0 188 0" />
+
+        <g aria-label="Insulin signal lighthouse" transform="translate(92 99)">
+          <path className={styles.lighthouseTower} d="M35 70h76l-11 130H46z" />
+          <rect className={styles.lighthouseLamp} height="45" rx="12" width="90" x="28" y="28" />
+          <path className={styles.lighthouseRoof} d="M20 28h106L74 0z" />
+          <polygon className={styles.lighthouseBeam} points="116,45 520,4 520,126">
             <animate
-              attributeName="height"
-              dur="6.4s"
-              keyTimes="0;0.32;0.48;0.78;1"
+              attributeName="points"
+              dur="12s"
+              keyTimes="0;0.12;0.24;0.82;0.92;1"
               repeatCount="indefinite"
-              values="68;68;104;104;68"
-            />
-            <animate
-              attributeName="y"
-              dur="6.4s"
-              keyTimes="0;0.32;0.48;0.78;1"
-              repeatCount="indefinite"
-              values="62;62;44;44;62"
-            />
-          </rect>
-          <text className={styles.svgLabel} textAnchor="middle" x="7" y="102">
-            CELL
-          </text>
-          <circle className={styles.cellPulse} cx="0" cy="96" fill="none" r="100">
-            <animate
-              attributeName="r"
-              dur="6.4s"
-              keyTimes="0;0.34;0.55;0.82;1"
-              repeatCount="indefinite"
-              values="100;100;125;125;100"
+              values="116,45 360,18 360,88;116,45 360,18 360,88;116,45 520,4 520,126;116,45 520,4 520,126;116,45 360,18 360,88;116,45 360,18 360,88"
             />
             <animate
               attributeName="opacity"
-              dur="6.4s"
-              keyTimes="0;0.34;0.55;0.82;1"
+              dur="12s"
+              keyTimes="0;0.12;0.24;0.82;0.92;1"
               repeatCount="indefinite"
-              values="0;0;0.45;0;0"
+              values="0.12;0.12;0.42;0.42;0.12;0.12"
+            />
+          </polygon>
+          <text className={styles.lighthouseLabel} textAnchor="middle" x="73" y="226">
+            INSULIN SIGNAL
+          </text>
+        </g>
+
+        <g aria-label="Cell harbor" transform="translate(662 112)">
+          <circle className={styles.cellHarbor} cx="0" cy="104" r="94" />
+          <rect className={styles.harborOpening} height="66" width="25" x="-105" y="71" />
+          <g transform="translate(-84 104)">
+            <g>
+              <rect className={styles.harborGate} height="62" rx="3" width="13" x="-7" y="-31" />
+              <animateTransform
+                attributeName="transform"
+                dur="12s"
+                keyTimes="0;0.22;0.3;0.78;0.86;0.94;1"
+                repeatCount="indefinite"
+                type="rotate"
+                values="0;0;-90;-90;-180;-180;0"
+              />
+            </g>
+          </g>
+          <text className={styles.svgLabel} textAnchor="middle" x="18" y="110">
+            CELL HARBOR
+          </text>
+          <circle className={styles.cellPulse} cx="0" cy="104" fill="none" r="102">
+            <animate
+              attributeName="r"
+              dur="12s"
+              keyTimes="0;0.22;0.3;0.82;0.9;1"
+              repeatCount="indefinite"
+              values="102;102;118;118;102;102"
+            />
+            <animate
+              attributeName="opacity"
+              dur="12s"
+              keyTimes="0;0.22;0.3;0.82;0.9;1"
+              repeatCount="indefinite"
+              values="0;0;0.42;0.42;0;0"
             />
           </circle>
         </g>
-        <circle className={styles.insulinSignal} cx="110" cy="207" r="13">
-          <animate
-            attributeName="cx"
-            dur="6.4s"
-            keyTimes="0;0.32;0.48;0.78;1"
-            repeatCount="indefinite"
-            values="110;576;576;110;110"
-          />
-        </circle>
-        {[0, 1, 2].map((item) => (
-          <circle className={styles.glucose} cx="120" cy={180 + item * 29} key={item} r="12">
-            <animate
-              attributeName="cx"
-              begin={`${item * 0.16}s`}
-              dur="6.4s"
-              keyTimes="0;0.46;0.78;0.9;1"
+
+        {[
+          {
+            keyPoints: "0;0;0;1;1;1",
+            keyTimes: "0;0.2;0.32;0.5;0.56;1",
+            opacityTimes: "0;0.14;0.32;0.5;0.58;1",
+          },
+          {
+            keyPoints: "0;0;0;1;1;1",
+            keyTimes: "0;0.32;0.44;0.62;0.68;1",
+            opacityTimes: "0;0.26;0.44;0.62;0.7;1",
+          },
+          {
+            keyPoints: "0;0;0;1;1;1",
+            keyTimes: "0;0.44;0.56;0.74;0.8;1",
+            opacityTimes: "0;0.38;0.56;0.74;0.82;1",
+          },
+        ].map(({ keyPoints, keyTimes, opacityTimes }) => (
+          <g className={styles.glucoseBoat} key={keyTimes} transform="translate(248 260)">
+            <path d="M0 0h54l-10 20H10z" />
+            <rect height="18" rx="5" width="24" x="15" y="-17" />
+            <text x="27" y="-4">
+              G
+            </text>
+            <animateMotion
+              calcMode="linear"
+              dur="12s"
+              keyPoints={keyPoints}
+              keyTimes={keyTimes}
+              path="M0 0C140 10 260 -20 390 -44"
               repeatCount="indefinite"
-              values="120;390;690;690;120"
             />
             <animate
               attributeName="opacity"
-              begin={`${item * 0.16}s`}
-              dur="6.4s"
-              keyTimes="0;0.44;0.78;0.9;1"
+              dur="12s"
+              keyTimes={opacityTimes}
               repeatCount="indefinite"
-              values="1;1;1;0;0"
+              values="0;1;1;1;0;0"
             />
-          </circle>
+          </g>
         ))}
-        <text className={styles.motionCaption} x="78" y="294">
-          SIGNAL FIRST
-        </text>
-        <text className={styles.motionCaption} textAnchor="middle" x="410" y="360">
-          INSULIN IS TREATMENT · NOT PUNISHMENT
+        <text className={styles.motionCaption} textAnchor="middle" x="410" y="392">
+          THE SIGNAL OPENS A RESPONSE · GLUCOSE CAN FOLLOW
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Insulin is a body signal and a treatment tool.</strong> Prescribed insulin can add
-        the signal the body needs. It is not a last-place finish or a personal failure.
+        <strong>Insulin is a body signal and a treatment tool.</strong> The lighthouse is a teaching
+        metaphor: insulin does not carry glucose like cargo. Prescribed insulin can add the signal
+        the body needs; it is not a last-place finish or a personal failure.
       </figcaption>
     </figure>
   );

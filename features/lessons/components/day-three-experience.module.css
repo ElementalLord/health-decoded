@@ -21,10 +21,6 @@
   animation-delay: -3.2s;
 }
 
-.memoryWeek {
-  animation: week-arrive 320ms var(--ease-standard) both;
-}
-
 .weatherMark {
   animation: weather-settle 500ms var(--ease-spring) both;
 }
@@ -32,6 +28,134 @@
 .truthLine {
   transform-origin: left;
   animation: truth-line 640ms var(--ease-standard) both;
+}
+
+.a1cTimeWindow {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
+  border-radius: 18px;
+  background: #fbf7f1;
+}
+
+.a1cTimeWindowSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.a1cWindowEarlier,
+.a1cWindowMiddle,
+.a1cWindowRecent {
+  stroke-width: 1.5;
+}
+
+.a1cWindowEarlier {
+  fill: #f2ece4;
+  stroke: #ddd2c5;
+}
+
+.a1cWindowMiddle {
+  fill: #ede9e1;
+  stroke: #d8d1c6;
+}
+
+.a1cWindowRecent {
+  fill: #e3ece4;
+  stroke: #a9c0ae;
+}
+
+.a1cWindowZoneTitle,
+.a1cWindowAxisLabel {
+  fill: #74685f;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0.11em;
+}
+
+.a1cWindowRail {
+  fill: none;
+  stroke: #c8beb2;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.a1cWeekTick {
+  stroke: #fffaf3;
+  stroke-width: 2;
+}
+
+.a1cWeekPoint {
+  fill: #9c8d81;
+}
+
+.a1cCellOuter {
+  fill: #d89587;
+  stroke: #b85f4f;
+  stroke-width: 3;
+}
+
+.a1cCellInner {
+  fill: #efd5cf;
+}
+
+.a1cGlucoseMark {
+  fill: #d39139;
+  stroke: #fffaf3;
+  stroke-width: 1.5;
+}
+
+.a1cTodayLine {
+  stroke: #6f947a;
+  stroke-width: 3;
+}
+
+.a1cTodayDot {
+  fill: #6f947a;
+  stroke: #fbf7f1;
+  stroke-width: 3;
+}
+
+.a1cWindowArrow {
+  fill: none;
+  stroke: #83786e;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.a1cWindowLegend {
+  display: grid;
+  gap: 1px;
+  border-top: 1px solid #e3d9ce;
+  background: #e3d9ce;
+}
+
+.a1cWindowLegend p {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 16px 18px;
+  background: #fbf7f1;
+}
+
+.a1cWindowLegend strong {
+  color: var(--color-foreground);
+  font-size: 0.84rem;
+}
+
+.a1cWindowLegend span,
+.a1cWindowCaveat {
+  color: var(--color-muted-foreground);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.a1cWindowCaveat {
+  margin: 0;
+  border-top: 1px solid #e3d9ce;
+  padding: 13px 18px 15px;
+  font-style: italic;
 }
 
 @keyframes draw-trace {
@@ -62,17 +186,6 @@
   }
 }
 
-@keyframes week-arrive {
-  from {
-    opacity: 0.2;
-    transform: translateY(5px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
 @keyframes weather-settle {
   from {
     opacity: 0;
@@ -95,11 +208,16 @@
   }
 }
 
+@media (min-width: 700px) {
+  .a1cWindowLegend {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .trace,
   .pulseDot,
   .redCell,
-  .memoryWeek,
   .weatherMark,
   .truthLine {
     animation: none;
