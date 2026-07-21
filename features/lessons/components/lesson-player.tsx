@@ -105,6 +105,14 @@ const DayElevenExperience = dynamic(
   { loading: ExperienceLoading },
 );
 
+const DayTwelveExperience = dynamic(
+  () =>
+    import("@/features/lessons/components/day-twelve-experience").then(
+      (module) => module.DayTwelveExperience,
+    ),
+  { loading: ExperienceLoading },
+);
+
 export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   if (lesson.dayNumber === 1) return <FirstFiveMinutesExperience lesson={lesson} />;
   if (lesson.dayNumber === 2) return <DayTwoExperience lesson={lesson} />;
@@ -117,5 +125,6 @@ export function LessonPlayer({ lesson }: { lesson: LessonPlayerViewModel }) {
   if (lesson.dayNumber === 9) return <DayNineExperience lesson={lesson} />;
   if (lesson.dayNumber === 10) return <DayTenExperience lesson={lesson} />;
   if (lesson.dayNumber === 11) return <DayElevenExperience lesson={lesson} />;
+  if (lesson.dayNumber === 12) return <DayTwelveExperience lesson={lesson} />;
   return <StandardLessonPlayer lesson={lesson} />;
 }
