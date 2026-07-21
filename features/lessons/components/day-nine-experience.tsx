@@ -340,7 +340,7 @@ function SlowTideAnimation() {
         <text className={styles.sceneHeading} textAnchor="middle" x="440" y="48">
           HIGH OFTEN BUILDS SLOWLY
         </text>
-        <g transform="translate(76 96)">
+        <g transform="translate(76 84)">
           <rect className={styles.vesselShell} height="300" rx="30" width="220" />
           <clipPath id="day-nine-vessel-window">
             <rect height="288" rx="24" width="208" x="6" y="6" />
@@ -378,7 +378,7 @@ function SlowTideAnimation() {
             EXTRA GLUCOSE GATHERS GRADUALLY
           </text>
         </g>
-        <g transform="translate(356 96)">
+        <g transform="translate(356 84)">
           <rect className={styles.scenePanel} height="300" rx="28" width="448" />
           {lamps.map(({ label, y }, index) => (
             <g key={label} transform={`translate(30 ${y})`}>
@@ -568,7 +568,7 @@ function ActionPathAnimation() {
   const stations = [
     { detail: "BREATHE FIRST", label: "PAUSE & NOTICE", x: 170 },
     { detail: "THE ONE YOUR TEAM GAVE YOU", label: "FOLLOW YOUR PLAN", x: 440 },
-    { detail: "REACH OUT EARLY", label: "STILL OFF? CONTACT YOUR TEAM", x: 710 },
+    { detail: "CONTACT YOUR TEAM EARLY", label: "STILL OFF OR WORSE?", x: 710 },
   ] as const;
 
   return (
@@ -641,7 +641,7 @@ function ActionPathAnimation() {
           </path>
           <rect className={styles.urgentBanner} height="52" rx="16" width="452" x="214" y="300" />
           <text className={styles.urgentBannerLabel} textAnchor="middle" x="440" y="332">
-            URGENT SIGNALS TAKE THE FAST LANE → PROMPT MEDICAL CARE
+            URGENT SIGNALS → PROMPT MEDICAL CARE
           </text>
           <g className={styles.urgentToken}>
             <circle r="15" />
@@ -694,7 +694,7 @@ function SteadyHandAnimation() {
                   begin={`${ring * 1.4}s`}
                   dur="2.8s"
                   repeatCount="indefinite"
-                  values="18;56"
+                  values="18;48"
                 />
                 <animate
                   attributeName="opacity"
@@ -706,7 +706,7 @@ function SteadyHandAnimation() {
               </circle>
             ))}
           </g>
-          {["M108 216C100 196 116 186 108 166", "M138 220C130 198 146 190 138 168"].map((wisp) => (
+          {["M132 212C124 192 140 182 132 158", "M164 216C156 196 172 188 164 162"].map((wisp) => (
             <path className={styles.steamPath} d={wisp} key={wisp} pathLength="1">
               <animate
                 attributeName="stroke-dashoffset"
@@ -717,8 +717,8 @@ function SteadyHandAnimation() {
               />
             </path>
           ))}
-          <path className={styles.panShape} d="M84 226H166L158 250H92Z" />
-          <path className={styles.panHandle} d="M166 232H198" />
+          <path className={styles.panShape} d="M108 224H188L180 248H116Z" />
+          <path className={styles.panHandle} d="M188 230H222" />
           <text className={styles.panelAction} textAnchor="middle" x="150" y="276">
             THE ALARM NOTICES · IT DOES NOT DECIDE
           </text>
@@ -742,7 +742,7 @@ function SteadyHandAnimation() {
                 values="0.55;0.15;0.55"
               />
             </circle>
-            <circle className={styles.calmHead} cy="-26" r="24" />
+            <circle className={styles.calmHead} cy="-30" r="24" />
             <path className={styles.calmBody} d="M-30 62V14C-30 -6 30 -6 30 14V62" />
             <circle className={styles.calmBreath} cy="30" r="10">
               <animate
@@ -754,11 +754,11 @@ function SteadyHandAnimation() {
               />
             </circle>
           </g>
-          <g className={styles.calmSteps} transform="translate(190 76)">
-            <rect height="150" rx="18" width="118" x="-14" y="-18" />
+          <g className={styles.calmSteps} transform="translate(172 76)">
+            <rect height="150" rx="18" width="146" x="0" y="-18" />
             {["PAUSE", "BREATHE", "FOLLOW PLAN"].map((step, index) => (
               <g key={step} transform={`translate(0 ${index * 44})`}>
-                <circle className={styles.calmStepDot} cx="6" cy="12" r="6">
+                <circle className={styles.calmStepDot} cx="24" cy="12" r="6">
                   <animate
                     attributeName="r"
                     begin={`${index * 1.85}s`}
@@ -768,7 +768,7 @@ function SteadyHandAnimation() {
                     values="5;9;5;5"
                   />
                 </circle>
-                <text className={styles.calmStepLabel} x="22" y="17">
+                <text className={styles.calmStepLabel} x="40" y="17">
                   {step}
                 </text>
               </g>
