@@ -46,7 +46,7 @@ function MilestoneEntry({
     <>
       <span
         className={cn(
-          "inline-flex size-9 shrink-0 items-center justify-center border border-border bg-muted text-muted-foreground",
+          "inline-flex size-9 shrink-0 items-center justify-center rounded-[3px] border border-border bg-muted text-muted-foreground",
           isCompleted && "border-success/25 bg-success/12 text-success",
           milestone.state === "current" &&
             "border-accent-warm/30 bg-accent-warm/12 text-accent-warm",
@@ -95,7 +95,7 @@ function MilestoneEntry({
       {isCompleted ? (
         <Link
           aria-label={`Review day ${milestone.dayNumber}: ${milestone.lessonTitle}`}
-          className="group flex h-full min-h-24 items-start gap-3 border border-border bg-card p-4 transition-[border-color,box-shadow] duration-[var(--duration-fast)] hover:border-accent-warm/45 hover:shadow-[4px_4px_0_rgb(68_47_37/0.06)]"
+          className="group flex h-full min-h-24 items-start gap-3 rounded-[4px] border border-border bg-card p-4 transition-[border-color,box-shadow] duration-[var(--duration-fast)] hover:border-accent-warm/45 hover:shadow-[4px_4px_0_rgb(68_47_37/0.06)]"
           href={`/lessons/${milestone.dayNumber}`}
         >
           {content}
@@ -103,7 +103,7 @@ function MilestoneEntry({
       ) : (
         <div
           className={cn(
-            "flex h-full min-h-24 items-start gap-3 border border-border/75 p-4",
+            "flex h-full min-h-24 items-start gap-3 rounded-[4px] border border-border/75 p-4",
             milestone.state === "current" && "border-accent-warm/40 bg-accent-warm/5",
             milestone.state === "locked" && "bg-muted/25",
           )}
@@ -159,7 +159,7 @@ export function LearningRecord({
 
           return (
             <details
-              className="group/learning-section border border-border bg-card"
+              className="group/learning-section overflow-hidden rounded-[6px] border border-border bg-card"
               key={section.number}
             >
               <summary className="grid min-h-20 cursor-pointer list-none grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-4 transition-colors duration-[var(--duration-fast)] hover:bg-muted/30 sm:px-6 [&::-webkit-details-marker]:hidden">
