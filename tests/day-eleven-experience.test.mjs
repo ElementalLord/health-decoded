@@ -25,13 +25,21 @@ test("Day 11 uses one custom ten-chapter experience", () => {
 test("Day 11 includes at least three distinct endlessly looping visual explanations", () => {
   assert.match(experience, /function FutureGardenAnimation/);
   assert.match(experience, /function ConnectedBodyAnimation/);
-  assert.match(experience, /function ScreeningLanternAnimation/);
+  assert.match(experience, /function QuietSignalScannerAnimation/);
   assert.match(experience, /function AbcOrbitAnimation/);
+  assert.doesNotMatch(experience, /lighthouse|lantern/i);
   assert.ok(
     (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 20,
     "expected multiple independently looping elements across the four visual explanations",
   );
   assert.match(styles, /prefers-reduced-motion: reduce/);
+});
+
+test("Day 11 keeps its completion headline centered with the card beneath it", () => {
+  assert.match(
+    experience,
+    /<LessonHeading centered>Protection grows wherever care keeps showing up\.<\/LessonHeading>/,
+  );
 });
 
 test("Day 11 turns the blueprint activities into user-input interactions", () => {
