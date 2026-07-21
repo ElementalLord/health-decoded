@@ -6,6 +6,8 @@ import { loginAction } from "@/features/auth/actions/auth.actions";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { getSafeRedirectPath } from "@/lib/auth/redirects";
 
+export const metadata = { title: "Sign in" };
+
 export default async function LoginPage({
   searchParams,
 }: {

@@ -11,6 +11,8 @@ import { TodaysLessonCard } from "@/features/journeys/components/todays-lesson-c
 import { getJourneyHomeData } from "@/features/journeys/services/journey-home.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "Your journey" };
+
 export default async function JourneyPage() {
   const profile = await getCurrentProfile();
 

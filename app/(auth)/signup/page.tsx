@@ -6,6 +6,8 @@ import { signupAction } from "@/features/auth/actions/auth.actions";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { DEFAULT_AUTHENTICATED_DESTINATION } from "@/lib/auth/redirects";
 
+export const metadata = { title: "Create account" };
+
 export default async function SignupPage() {
   const user = await getAuthenticatedUser();
   if (user.ok) redirect(DEFAULT_AUTHENTICATED_DESTINATION);
