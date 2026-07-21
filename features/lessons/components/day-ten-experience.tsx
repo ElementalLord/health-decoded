@@ -29,34 +29,34 @@ const openingFeelings = [
 
 const dailyDecisions = [
   {
-    body: "A simple meal pattern turns this from a daily debate into a quiet default.",
-    id: "eat",
-    label: "“What should I eat?”",
+    body: "A fixed time and place answers this for you, so the doubt never gets to start.",
+    id: "already",
+    label: "“Wait—did I already do that today?”",
   },
   {
-    body: "A short walk attached to a meal answers this before it is even asked.",
-    id: "move",
-    label: "“Should I move today?”",
+    body: "A step you decided on in advance doesn’t wait for a mood that may not arrive.",
+    id: "feel",
+    label: "“Do I feel like it right now?”",
   },
   {
-    body: "Same time, same place—so the answer is almost always yes.",
-    id: "medication",
-    label: "“Did I take my medication?”",
+    body: "By evening, willpower runs thin. A routine spends none of it.",
+    id: "tired",
+    label: "“Can I face one more choice today?”",
   },
   {
-    body: "If your care team asked you to check, a routine time settles the when.",
-    id: "check",
-    label: "“Should I check my blood sugar?”",
+    body: "A thing with a home doesn’t need to be searched for every single morning.",
+    id: "where",
+    label: "“Now where did I put that?”",
   },
   {
-    body: "A water bottle within reach quietly answers this all day long.",
-    id: "drink",
-    label: "“What should I drink?”",
+    body: "Each open question is a tiny tax. A routine quietly closes the loop for you.",
+    id: "worth",
+    label: "“Is this really worth deciding again?”",
   },
   {
-    body: "A regular wind-down protects sleep—and tomorrow’s decision energy.",
-    id: "sleep",
-    label: "“When should I wind down?”",
+    body: "A planned pause is far easier to keep than a good intention made on the spot.",
+    id: "later",
+    label: "“Eh, maybe I’ll get to it later…”",
   },
 ] as const;
 type DailyDecisionId = (typeof dailyDecisions)[number]["id"];
@@ -70,25 +70,25 @@ const habitAnchors = [
 
 const habitAdditions = [
   "I’ll take my medication, as prescribed",
-  "I’ll take a short walk",
-  "I’ll refill my water bottle",
-  "I’ll set out tomorrow’s medication where I’ll see it",
+  "I’ll stretch for two slow minutes",
+  "I’ll jot down tomorrow’s one small step",
+  "I’ll lay out what I need for the morning",
 ] as const;
 
 const environmentSupports = [
-  ["fruit", "Fruit where you can actually see it"],
+  ["fruit", "A fruit bowl on the counter, treats in a cupboard"],
   ["shoes", "Walking shoes near the door"],
-  ["water", "A water bottle on your desk"],
-  ["snacks", "Healthier snacks at eye level"],
-  ["visible", "Medication or meter somewhere visible—if recommended"],
+  ["water", "A water bottle filled and within reach"],
+  ["mirror", "A gentle note on the bathroom mirror"],
+  ["organizer", "A weekly pill organizer—if recommended"],
 ] as const;
 type EnvironmentSupportId = (typeof environmentSupports)[number][0];
 
 const starterRoutines = [
-  ["walk", "A short walk after one meal"],
-  ["lunch", "Preparing tomorrow’s lunch tonight"],
-  ["medication", "Taking medication at the same time daily, as prescribed"],
-  ["water", "Water instead of a sugary drink at lunch"],
+  ["walk", "A five-minute walk after dinner"],
+  ["swap", "Swapping one sugary drink for water"],
+  ["prep", "Packing lunch the night before"],
+  ["winddown", "A steady wind-down time at night"],
 ] as const;
 
 const visibleReminders = [
@@ -101,7 +101,7 @@ const visibleReminders = [
 const reflections = [
   "Small habits, repeated kindly, quietly become who I am.",
   "A routine is a decision I only have to make once.",
-  "One missed day is a pause, not a restart.",
+  "Progress is measured in weeks, not perfect days.",
   "My routine should fit my life—not someone else’s.",
 ] as const;
 
@@ -613,81 +613,108 @@ function NextStepStaircaseAnimation() {
   );
 }
 
-function GentleWeekAnimation() {
-  const days = ["M", "T", "W", "T", "F", "S", "S"] as const;
+function GrowthOverWeeksAnimation() {
+  const dots = [
+    { begin: "0.2s", cx: 60, cy: 208 },
+    { begin: "1.4s", cx: 190, cy: 176 },
+    { begin: "2.6s", cx: 320, cy: 154 },
+    { begin: "3.8s", cx: 450, cy: 134 },
+    { begin: "5s", cx: 578, cy: 108 },
+    { begin: "6.2s", cx: 688, cy: 76 },
+  ] as const;
+  const weeks = [
+    { label: "WEEK 1", x: 118 },
+    { label: "WEEK 2", x: 288 },
+    { label: "WEEK 3", x: 456 },
+    { label: "WEEK 4", x: 626 },
+  ] as const;
+  const curve = "M60 208C170 196 250 168 320 154S470 128 578 108 660 90 688 76";
 
   return (
     <figure className={styles.motionFigure}>
       <svg
-        aria-labelledby="gentle-week-title gentle-week-desc"
+        aria-labelledby="growth-weeks-title growth-weeks-desc"
         className={styles.motionCanvas}
         role="img"
-        viewBox="0 0 880 440"
+        viewBox="0 0 820 448"
       >
-        <title id="gentle-week-title">A week of gentle checkmarks with one open day</title>
-        <desc id="gentle-week-desc">
-          Checkmarks bloom across a week of day cards; one day stays open with a soft heart, and the
-          checks simply continue afterward.
+        <title id="growth-weeks-title">Small weekly steps rise into gradual, gentle progress</title>
+        <desc id="growth-weeks-desc">
+          A soft curve climbs across four weeks while gentle points settle onto it one after
+          another, showing progress building slowly over time rather than in a single day.
         </desc>
-        <rect className={styles.canvasWarm} height="440" rx="54" width="880" />
-        <text className={styles.sceneHeading} textAnchor="middle" x="440" y="48">
-          SHOWING UP BEATS BEING PERFECT
+        <rect className={styles.canvasWarm} height="448" rx="54" width="820" />
+        <text className={styles.sceneHeading} textAnchor="middle" x="410" y="46">
+          PROGRESS GROWS OVER WEEKS, NOT DAYS
         </text>
-        {days.map((letter, index) => {
-          const x = 62 + index * 108;
-          const markBegin = 0.08 + index * 0.1;
-          return (
-            <g key={`${letter}-${index}`}>
-              <text className={styles.weekLetter} textAnchor="middle" x={x + 46} y="112">
-                {letter}
-              </text>
-              <rect className={styles.weekCard} height="150" rx="16" width="92" x={x} y="132" />
-              {index === 3 ? (
-                <g className={styles.weekHeart} opacity="0" transform={`translate(${x + 46} 196)`}>
-                  <path d="M0 4C-6 -4 -14 0 -14 6C-14 12 -6 16 0 22C6 16 14 12 14 6C14 0 6 -4 0 4Z" />
-                  <animate
-                    attributeName="opacity"
-                    dur="12s"
-                    keyTimes={`0;${markBegin};${markBegin + 0.05};0.9;1`}
-                    repeatCount="indefinite"
-                    values="0;0;0.85;0.85;0"
-                  />
-                </g>
-              ) : (
-                <path
-                  className={styles.weekCheck}
-                  d={`M${x + 30} 208L${x + 42} 220L${x + 64} 192`}
-                  opacity="0"
-                >
-                  <animate
-                    attributeName="opacity"
-                    dur="12s"
-                    keyTimes={`0;${markBegin};${markBegin + 0.05};0.9;1`}
-                    repeatCount="indefinite"
-                    values="0;0;1;1;0"
-                  />
-                </path>
-              )}
-            </g>
-          );
-        })}
-        <path className={styles.weekThread} d="M80 330H800" pathLength="1">
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="7s"
-            from="1"
-            repeatCount="indefinite"
-            to="-1"
-          />
-        </path>
-        <text className={styles.motionCaption} textAnchor="middle" x="440" y="404">
-          ONE OPEN DAY DOESN’T UNDO A WEEK OF SHOWING UP
+        <g transform="translate(58 80)">
+          <rect className={styles.scenePanel} height="292" rx="28" width="704" />
+          <path className={styles.growthBaseline} d="M40 244H664" />
+          <path
+            className={styles.growthArea}
+            d="M60 208C170 196 250 168 320 154S470 128 578 108 660 90 688 76L688 244L60 244Z"
+          >
+            <animate
+              attributeName="opacity"
+              dur="6s"
+              keyTimes="0;0.5;1"
+              repeatCount="indefinite"
+              values="0.3;0.5;0.3"
+            />
+          </path>
+          <path className={styles.growthLine} d={curve} pathLength="1">
+            <animate
+              attributeName="stroke-dashoffset"
+              dur="7s"
+              from="1"
+              repeatCount="indefinite"
+              to="-1"
+            />
+          </path>
+          {dots.map(({ begin, cx, cy }) => (
+            <circle className={styles.growthDot} cx={cx} cy={cy} key={begin} opacity="0" r="9">
+              <animate
+                attributeName="opacity"
+                begin={begin}
+                dur="8s"
+                keyTimes="0;0.06;0.9;1"
+                repeatCount="indefinite"
+                values="0;1;1;0"
+              />
+              <animate
+                attributeName="r"
+                begin={begin}
+                dur="8s"
+                keyTimes="0;0.08;0.9;1"
+                repeatCount="indefinite"
+                values="4;9;9;4"
+              />
+            </circle>
+          ))}
+          <g className={styles.growthSprout} transform="translate(688 76)">
+            <path d="M0 6C-6 -2 -14 2 -14 8C-14 14 -6 18 0 24C6 18 14 14 14 8C14 2 6 -2 0 6Z" />
+            <animate
+              attributeName="opacity"
+              dur="4s"
+              keyTimes="0;0.5;1"
+              repeatCount="indefinite"
+              values="0.55;0.95;0.55"
+            />
+          </g>
+          {weeks.map(({ label, x }) => (
+            <text className={styles.weekAxisLabel} key={label} textAnchor="middle" x={x} y="272">
+              {label}
+            </text>
+          ))}
+        </g>
+        <text className={styles.motionCaption} textAnchor="middle" x="410" y="424">
+          SMALL, REPEATED WEEKS QUIETLY ADD UP
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Ask “did I keep showing up?”</strong> instead of “was I perfect?”. Consistency
-        builds confidence; perfection mostly builds pressure. The open day gets kindness, and the
-        week keeps going.
+        <strong>Improvement is gradual.</strong> Managing diabetes is more like learning an
+        instrument than cramming for an exam—some weeks feel easier than others, and the quiet,
+        repeated ones are what add up.
       </figcaption>
     </figure>
   );
@@ -1182,10 +1209,10 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
       case 7:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Consistency over perfection">
-              The goal is not a flawless week. It is a week you kept returning to.
+            <LessonHeading label="Progress grows over weeks">
+              Improvement is gradual—more like tending a plant than passing a test.
             </LessonHeading>
-            <GentleWeekAnimation />
+            <GrowthOverWeeksAnimation />
             <div className="grid gap-3 sm:grid-cols-2">
               {reflections.map((item) => (
                 <AnswerChoice

@@ -45,7 +45,7 @@
 .questionMark,
 .loopNodeLabel,
 .loopDetail,
-.weekLetter,
+.weekAxisLabel,
 .stepNote {
   fill: #7c6f65;
   font-family: var(--font-sans), sans-serif;
@@ -220,35 +220,39 @@
   font-size: 9.5px;
 }
 
-.weekCard {
-  fill: #fffaf3;
+.growthBaseline {
+  fill: none;
   stroke: #e2d5c9;
+  stroke-linecap: round;
   stroke-width: 3;
 }
 
-.weekLetter {
-  fill: #93857a;
-  font-size: 12px;
+.growthArea {
+  fill: #dfe7e0;
+  opacity: 0.4;
 }
 
-.weekCheck {
+.growthLine {
   fill: none;
   stroke: #8aa693;
+  stroke-dasharray: 0.06 0.04;
   stroke-linecap: round;
-  stroke-linejoin: round;
   stroke-width: 6;
 }
 
-.weekHeart path {
-  fill: #dcaf9e;
+.growthDot {
+  fill: #8aa693;
+  stroke: #fffaf3;
+  stroke-width: 3;
 }
 
-.weekThread {
-  fill: none;
-  stroke: #d8c8b8;
-  stroke-dasharray: 0.03 0.035;
-  stroke-linecap: round;
-  stroke-width: 5;
+.growthSprout path {
+  fill: #a7c1ad;
+}
+
+.weekAxisLabel {
+  fill: #93857a;
+  font-size: 11px;
 }
 
 .decisionCard {
@@ -507,12 +511,5 @@
   .motionCanvas animateMotion,
   .motionCanvas animateTransform {
     display: none;
-  }
-
-  /* Static marks stay readable without their entrance animations; elements
-     positioned by animateMotion stay hidden so they never park at an origin. */
-  .weekCheck,
-  .weekHeart {
-    opacity: 1;
   }
 }
