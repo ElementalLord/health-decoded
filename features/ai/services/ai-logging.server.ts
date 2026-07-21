@@ -17,6 +17,8 @@ type AiOperationLog = {
   readonly correlation_id: string;
   readonly request_category: AiRequestCategory;
   readonly refusal_type?: AiRefusalType;
+  readonly security_control?:
+    "duplicate_or_quota" | "output_validation" | "provider_budget" | "provider_circuit";
 };
 
 const logger = createServerLogger();
