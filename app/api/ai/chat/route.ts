@@ -1,26 +1,24 @@
 import { NextResponse } from "next/server";
 
-import { AI_MAX_REQUEST_BYTES } from "@/features/ai/constants/ai-limits";
 import { aiChatRequestSchema } from "@/features/ai/schemas/ai-chat.schema";
 import { createAiChatStream } from "@/features/ai/services/ai-chat.server";
+import {
+  getAiNetworkBucketKey,
+  hasJsonContentType,
+  hasTrustedAiRequestOrigin,
+  readBoundedAiRequestBody,
+} from "@/features/ai/services/ai-request-security.server";
 import type { AiChatFailureCategory, AiChatStreamEvent } from "@/features/ai/types/ai";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 
 const encoder = new TextEncoder();
+const securityHeaders = {
+  "Cache-Control": "no-store",
+  "X-Content-Type-Options": "nosniff",
+} as const;
 
 function errorResponse(status: number, code: string, message: string) {
-  return NextResponse.json(
-    { error: { code, message } },
-    { headers: { "Cache-Control": "no-store" }, status },
-  );
-}
-
-function exceedsRequestSize(request: Request) {
-  const contentLength = request.headers.get("content-length");
-  if (!contentLength) return false;
-
-  const parsedLength = Number(contentLength);
-  return Number.isFinite(parsedLength) && parsedLength > AI_MAX_REQUEST_BYTES;
+  return NextResponse.json({ error: { code, message } }, { headers: securityHeaders, status });
 }
 
 function streamEvent(event: AiChatStreamEvent) {
@@ -51,23 +49,25 @@ export async function POST(request: Request) {
     return errorResponse(401, "UNAUTHORIZED", "You need to sign in to continue.");
   }
 
-  const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) {
+  if (!hasTrustedAiRequestOrigin(request)) {
     return errorResponse(403, "FORBIDDEN", "The request could not be accepted.");
   }
 
-  if (exceedsRequestSize(request)) {
-    return errorResponse(413, "REQUEST_TOO_LARGE", "Please shorten your request and try again.");
+  if (!hasJsonContentType(request)) {
+    return errorResponse(415, "UNSUPPORTED_MEDIA_TYPE", "The request could not be accepted.");
   }
 
-  const body = await request.text();
-  if (new TextEncoder().encode(body).byteLength > AI_MAX_REQUEST_BYTES) {
+  const boundedBody = await readBoundedAiRequestBody(request);
+  if (!boundedBody.ok && boundedBody.reason === "too_large") {
     return errorResponse(413, "REQUEST_TOO_LARGE", "Please shorten your request and try again.");
+  }
+  if (!boundedBody.ok) {
+    return errorResponse(400, "INVALID_AI_REQUEST", "Please check your request and try again.");
   }
 
   let input: unknown;
   try {
-    input = JSON.parse(body);
+    input = JSON.parse(boundedBody.body);
   } catch {
     return errorResponse(400, "INVALID_AI_REQUEST", "Please check your request and try again.");
   }
@@ -77,7 +77,14 @@ export async function POST(request: Request) {
     return errorResponse(400, "INVALID_AI_REQUEST", "Please check your request and try again.");
   }
 
-  const result = await createAiChatStream({ ...parsed.data, userId: user.data.id }, request.signal);
+  const result = await createAiChatStream(
+    {
+      ...parsed.data,
+      networkKey: getAiNetworkBucketKey(request),
+      userId: user.data.id,
+    },
+    request.signal,
+  );
   if (!result.ok) return serviceErrorResponse(result.category);
 
   const stream = new ReadableStream<Uint8Array>({
@@ -99,6 +106,7 @@ export async function POST(request: Request) {
       Connection: "keep-alive",
       "Content-Type": "text/event-stream; charset=utf-8",
       "X-Accel-Buffering": "no",
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }

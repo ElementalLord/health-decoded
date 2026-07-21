@@ -1,7 +1,3 @@
-"use client";
-
-import { useRef, useState, type CSSProperties } from "react";
-
 import styles from "@/features/lessons/components/lesson-motion-figure.module.css";
 import { cn } from "@/lib/utils";
 
@@ -19,95 +15,81 @@ export type LessonMotionVariant =
   | "post-meal-window"
   | "sitting-interruption";
 
-const motionCopy: Record<LessonMotionVariant, { label: string; caption: string }> = {
+const motionCopy: Record<LessonMotionVariant, { label: string; cue: string; caption: string }> = {
   "calm-breath": {
     label: "A person taking a slow breath while a cloud of worry softens",
+    cue: "Watch the breath expand while the worry cloud softens.",
     caption:
       "A slower breath cannot solve a diagnosis, but it can give a worried body one quieter moment to take in the next idea.",
   },
   "comfort-hug": {
     label: "Two people moving closer and sharing a reassuring embrace",
+    cue: "Watch two people move together and share the weight.",
     caption:
       "Support can begin with something human and small: sitting close, listening, and reminding someone they do not have to carry every question alone.",
   },
   "glucose-signal": {
     label: "An insulin signal reaching a cell before glucose moves inside",
+    cue: "Watch insulin arrive first, open the response, and let glucose follow.",
     caption:
       "The green signal represents insulin. It reaches the cell first; glucose can then move from the bloodstream into the cell.",
   },
   "insulin-response": {
     label: "A pancreas sending repeated insulin signals toward a cell",
+    cue: "Watch the pancreas repeat its signal when the cell responds less strongly.",
     caption:
       "When cells respond less effectively, the pancreas may send more insulin signals to produce a similar response.",
   },
   "reading-snapshot": {
     label: "A glucose meter capturing one moving moment from a changing day",
+    cue: "Watch the day keep moving while the meter captures one moment.",
     caption:
       "A meter reading is a snapshot. The day keeps moving around it, so timing and context belong beside the number.",
   },
   "a1c-window": {
     label: "Red blood cells circulating over time as glucose markers attach",
+    cue: "Watch many marked red blood cells circulate across the longer window.",
     caption:
       "A1C reflects glucose attached to hemoglobin across many circulating red blood cells—not one meal or one unusual day.",
   },
   "digestion-journey": {
     label: "A meal moving into digestion and separating into smaller nutrients",
+    cue: "Watch one meal travel forward and separate into usable nutrients.",
     caption:
       "Digestion changes a mixed meal into smaller nutrients. Carbohydrate becomes glucose; protein and fat have other jobs too.",
   },
   "fiber-pace": {
     label: "Glucose moving quickly on one path and more gradually past fiber on another",
+    cue: "Compare the fast upper path with the slower fiber-rich path below.",
     caption:
       "Fiber can slow the pace of digestion. Both paths move forward, but the fiber-rich path releases glucose more gradually.",
   },
   "muscle-fuel": {
     label: "Working muscle fibers contracting as they take in glucose for fuel",
+    cue: "Watch contracting muscle fibers pull glucose out of the bloodstream.",
     caption:
       "Contracting muscles need fuel. As they work, they can take up glucose for energy through more than one pathway.",
   },
   "circulation-rhythm": {
     label: "A beating heart moving fuel through a vessel toward a working muscle",
+    cue: "Follow fuel from the beating heart, through vessels, into working muscle.",
     caption:
       "Movement asks the heart, blood vessels, and muscles to work together. The rhythm can begin with ordinary, comfortable motion.",
   },
   "post-meal-window": {
     label: "A person walking while a post-meal teaching curve rises and settles",
+    cue: "Watch the teaching curve rise and settle while comfortable movement continues.",
     caption:
       "A short, comfortable movement window after a meal can help working muscles use glucose. This is a teaching pattern, not a promised reading.",
   },
   "sitting-interruption": {
     label:
       "A seated person standing, stretching, and sitting again to interrupt a long still period",
+    cue: "Watch one short stand divide a long still period into smaller sections.",
     caption:
       "A brief interruption changes one long still period into shorter sections. The useful change is the break—not a perfect workout.",
   },
 };
-
-function LoopTransform({
-  begin = "0s",
-  dur,
-  type = "translate",
-  values,
-}: {
-  begin?: string;
-  dur: string;
-  type?: "rotate" | "scale" | "translate";
-  values: string;
-}) {
-  return (
-    <animateTransform
-      attributeName="transform"
-      begin={begin}
-      calcMode="spline"
-      dur={dur}
-      keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1"
-      keyTimes="0;0.38;0.72;1"
-      repeatCount="indefinite"
-      type={type}
-      values={values}
-    />
-  );
-}
 
 function MovingCircle({
   begin,
@@ -128,37 +110,51 @@ function MovingCircle({
   const dy = to[1] - from[1];
 
   return (
-    <circle
-      className={className}
-      cx={from[0]}
-      cy={from[1]}
-      opacity="0"
-      r={r}
-      style={
-        {
-          "--motion-x": `${dx}px`,
-          "--motion-y": `${dy}px`,
-          animationDelay: begin,
-          animationDuration: dur,
-        } as CSSProperties
-      }
-    >
+    <circle className={className} cx={from[0]} cy={from[1]} opacity="0" r={r}>
+      <animateMotion
+        begin={begin}
+        calcMode="spline"
+        dur={dur}
+        keySplines="0.42 0 0.2 1"
+        keyTimes="0;1"
+        path={`M0 0L${dx} ${dy}`}
+        repeatCount="indefinite"
+      />
       <animate
         attributeName="opacity"
         begin={begin}
         dur={dur}
-        keyTimes="0;0.12;0.8;1"
+        keyTimes="0;0.12;0.84;1"
         repeatCount="indefinite"
         values="0;1;1;0"
       />
-      <animateTransform
-        attributeName="transform"
+    </circle>
+  );
+}
+
+function MovingPathCircle({
+  begin,
+  className,
+  dur,
+  path,
+  r = 10,
+}: {
+  begin: string;
+  className: string | undefined;
+  dur: string;
+  path: string;
+  r?: number;
+}) {
+  return (
+    <circle className={className} cx="0" cy="0" opacity="0" r={r}>
+      <animateMotion begin={begin} dur={dur} path={path} repeatCount="indefinite" />
+      <animate
+        attributeName="opacity"
         begin={begin}
         dur={dur}
-        keyTimes="0;0.18;0.82;1"
+        keyTimes="0;0.1;0.88;1"
         repeatCount="indefinite"
-        type="translate"
-        values={`0 0;0 0;${dx} ${dy};${dx} ${dy}`}
+        values="0;1;1;0"
       />
     </circle>
   );
@@ -178,7 +174,6 @@ function CalmBreathScene() {
         />
       </circle>
       <g className={styles.warmPerson}>
-        <LoopTransform dur="5.2s" values="0 7;0 -7;0 -7;0 7" />
         <circle cx="286" cy="91" r="31" />
         <path d="M236 234v-77c0-39 22-58 50-58s50 19 50 58v77z" />
         <path className={styles.smile} d="M268 84c10 8 26 8 36 0" />
@@ -190,17 +185,32 @@ function CalmBreathScene() {
             values="M252 169c22 8 46 8 68 0;M248 155c24 22 52 22 76 0;M248 155c24 22 52 22 76 0;M252 169c22 8 46 8 68 0"
           />
         </path>
+        <animateTransform
+          attributeName="transform"
+          dur="5.2s"
+          keyTimes="0;0.28;0.62;1"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0;0 -5;0 -5;0 0"
+        />
       </g>
       <g className={styles.worryCloud}>
-        <circle cx="500" cy="105" r="25">
+        <circle cx="386" cy="72" r="23">
           <animate attributeName="r" dur="5.2s" repeatCount="indefinite" values="25;18;18;25" />
         </circle>
-        <circle cx="530" cy="96" r="32">
+        <circle cx="414" cy="62" r="30">
           <animate attributeName="r" dur="5.2s" repeatCount="indefinite" values="32;22;22;32" />
         </circle>
-        <circle cx="561" cy="110" r="22">
+        <circle cx="443" cy="76" r="21">
           <animate attributeName="r" dur="5.2s" repeatCount="indefinite" values="22;15;15;22" />
         </circle>
+        <animateTransform
+          attributeName="transform"
+          dur="5.2s"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0;12 -8;12 -8;0 0"
+        />
         <animate
           attributeName="opacity"
           dur="5.2s"
@@ -213,10 +223,10 @@ function CalmBreathScene() {
           begin={begin}
           className={styles.breathBubble}
           dur="5.2s"
-          from={[328, 115 + index * 10]}
+          from={[322, 112 + index * 10]}
           key={begin}
           r={8 - index}
-          to={[520, 105 - index * 5]}
+          to={[406, 73 - index * 5]}
         />
       ))}
       <text className={styles.sceneLabel} x="360" y="286" textAnchor="middle">
@@ -231,7 +241,6 @@ function ComfortHugScene() {
     <>
       <ellipse className={styles.ground} cx="360" cy="260" rx="190" ry="15" />
       <g className={styles.hugPersonWarm}>
-        <LoopTransform dur="6s" values="0 0;112 0;112 0;0 0" />
         <circle cx="188" cy="94" r="29" />
         <path d="M143 235v-78c0-34 19-52 45-52s45 18 45 52v78z" />
         <path className={styles.smile} d="M173 89c9 7 21 7 30 0" />
@@ -243,9 +252,16 @@ function ComfortHugScene() {
             values="M215 150c20 0 36 9 48 24;M215 150c48 1 82 14 112 49;M215 150c48 1 82 14 112 49;M215 150c20 0 36 9 48 24"
           />
         </path>
+        <animateTransform
+          attributeName="transform"
+          dur="6s"
+          keyTimes="0;0.18;0.4;0.76;1"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0;0 0;100 0;100 0;0 0"
+        />
       </g>
       <g className={styles.hugPersonGreen}>
-        <LoopTransform dur="6s" values="0 0;-112 0;-112 0;0 0" />
         <circle cx="532" cy="94" r="29" />
         <path d="M487 235v-78c0-34 19-52 45-52s45 18 45 52v78z" />
         <path className={styles.smile} d="M517 89c9 7 21 7 30 0" />
@@ -257,6 +273,14 @@ function ComfortHugScene() {
             values="M505 150c-20 0-36 9-48 24;M505 150c-48 1-82 14-112 49;M505 150c-48 1-82 14-112 49;M505 150c-20 0-36 9-48 24"
           />
         </path>
+        <animateTransform
+          attributeName="transform"
+          dur="6s"
+          keyTimes="0;0.18;0.4;0.76;1"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0;0 0;-100 0;-100 0;0 0"
+        />
       </g>
       <path
         className={styles.comfortHeart}
@@ -291,7 +315,6 @@ function GlucoseSignalScene() {
           values="134;134;118;118;134"
         />
       </rect>
-      <path className={styles.signalTrail} d="M92 106C245 54 405 82 522 124" />
       <MovingCircle
         begin="-1.2s"
         className={styles.insulinDot}
@@ -321,6 +344,23 @@ function GlucoseSignalScene() {
           r={12}
           to={dot.to}
         />
+      ))}
+      {[0, 1].map((index) => (
+        <path
+          className={styles.gateSignal}
+          d={`M${506 - index * 18} 118c-16 18-16 40 0 58`}
+          key={index}
+          opacity="0"
+        >
+          <animate
+            attributeName="opacity"
+            begin={`${-index * 0.5}s`}
+            dur="2.4s"
+            keyTimes="0;0.3;0.7;1"
+            repeatCount="indefinite"
+            values="0;0.85;0.4;0"
+          />
+        </path>
       ))}
       <circle className={styles.cellGlow} cx="574" cy="147" r="66">
         <animate attributeName="r" dur="5.8s" repeatCount="indefinite" values="66;66;78;66;66" />
@@ -367,6 +407,18 @@ function InsulinResponseScene() {
       <circle className={styles.responseCell} cx="590" cy="151" r="65" />
       <rect className={styles.responseGate} height="44" rx="10" width="20" x="542" y="129" />
       <path className={styles.responsePath} d="M260 151H525" />
+      {[302, 374, 446].map((x, index) => (
+        <path className={styles.signalWave} d={`M${x} 134c18 10 18 24 0 34`} key={x} opacity="0">
+          <animate
+            attributeName="opacity"
+            begin={`${-index * 0.7}s`}
+            dur="2.8s"
+            keyTimes="0;0.25;0.65;1"
+            repeatCount="indefinite"
+            values="0;1;1;0"
+          />
+        </path>
+      ))}
       {["-0.2s", "-1.25s", "-2.3s", "-3.35s"].map((begin) => (
         <MovingCircle
           begin={begin}
@@ -416,24 +468,64 @@ function ReadingSnapshotScene() {
         className={styles.dayLine}
         d="M70 196C150 155 222 188 296 140C365 95 430 65 500 111C552 145 590 157 650 132"
       />
-      <circle className={styles.dayTracer} cx="70" cy="196" r="10">
+      <circle className={styles.dayTracer} cx="0" cy="0" r="10">
         <animateMotion
           dur="7s"
-          path="M0 0C80-41 152-8 226-56C295-101 360-131 430-85C482-51 520-39 580-64"
+          path="M70 196C150 155 222 188 296 140C365 95 430 65 500 111C552 145 590 157 650 132"
           repeatCount="indefinite"
         />
       </circle>
       <g className={styles.snapshotMeter}>
         <rect height="112" rx="22" width="142" x="289" y="60" />
         <rect className={styles.snapshotScreen} height="42" rx="9" width="92" x="314" y="82" />
+        {[327, 341, 355, 369, 383].map((x, index) => (
+          <rect
+            className={styles.meterTick}
+            height={6 + index * 2}
+            key={x}
+            rx="2"
+            width="6"
+            x={x}
+            y={113 - index * 2}
+          >
+            <animate
+              attributeName="opacity"
+              begin={`${-index * 0.22}s`}
+              dur="1.5s"
+              repeatCount="indefinite"
+              values="0.2;1;0.2"
+            />
+          </rect>
+        ))}
         <circle cx="360" cy="146" r="10" />
         <text className={styles.meterNumber} x="360" y="110" textAnchor="middle">
           128
+          <animate
+            attributeName="opacity"
+            dur="5s"
+            keyTimes="0;0.35;0.48;0.72;1"
+            repeatCount="indefinite"
+            values="0.35;0.35;1;1;0.35"
+          />
         </text>
+        <animateTransform
+          attributeName="transform"
+          dur="5s"
+          keyTimes="0;0.42;0.5;0.62;1"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0;0 0;0 -5;0 0;0 0"
+        />
       </g>
       <rect className={styles.scanBand} height="180" width="12" x="90" y="46">
-        <LoopTransform dur="5s" values="0 0;520 0;520 0;0 0" />
-        <animate attributeName="opacity" dur="5s" repeatCount="indefinite" values="0;0.75;0;0" />
+        <animate attributeName="x" dur="5s" repeatCount="indefinite" values="90;90;610;610;90" />
+        <animate
+          attributeName="opacity"
+          dur="5s"
+          keyTimes="0;0.08;0.72;0.82;1"
+          repeatCount="indefinite"
+          values="0;0.72;0.42;0;0"
+        />
       </rect>
       <text className={styles.vesselLabel} x="74" y="241">
         MORNING
@@ -448,13 +540,19 @@ function ReadingSnapshotScene() {
   );
 }
 
-function CirculatingCell({ begin, markers = 2 }: { begin: string; markers?: number }) {
+function CirculatingCell({
+  begin,
+  lane,
+  markers = 2,
+}: {
+  begin: string;
+  lane: number;
+  markers?: number;
+}) {
+  const y = 105 + lane * 35;
+
   return (
-    <g
-      className={styles.rbc}
-      opacity="0"
-      style={{ animationDelay: begin, animationDuration: "8s" }}
-    >
+    <g className={styles.rbc} opacity="0">
       <circle className={styles.rbcOuter} cx="0" cy="0" r="38" />
       <circle className={styles.rbcInner} cx="0" cy="0" r="18" />
       {Array.from({ length: markers }).map((_, index) => (
@@ -474,21 +572,19 @@ function CirculatingCell({ begin, markers = 2 }: { begin: string; markers?: numb
           />
         </circle>
       ))}
+      <animateMotion
+        begin={begin}
+        dur="8s"
+        path={`M-55 ${y}C120 ${y - 25} 250 ${y + 25} 390 ${y}S650 ${y - 22} 775 ${y}`}
+        repeatCount="indefinite"
+      />
       <animate
         attributeName="opacity"
         begin={begin}
         dur="8s"
-        keyTimes="0;0.08;0.92;1"
+        keyTimes="0;0.08;0.9;1"
         repeatCount="indefinite"
         values="0;1;1;0"
-      />
-      <animateTransform
-        attributeName="transform"
-        begin={begin}
-        dur="8s"
-        repeatCount="indefinite"
-        type="translate"
-        values="-70 142;790 142"
       />
     </g>
   );
@@ -498,13 +594,22 @@ function A1cWindowScene() {
   return (
     <>
       <rect className={styles.a1cVessel} height="164" rx="82" width="640" x="40" y="58" />
-      <path className={styles.flowLine} d="M70 140H650" />
-      <CirculatingCell begin="-0.5s" markers={1} />
-      <CirculatingCell begin="-2.3s" markers={2} />
-      <CirculatingCell begin="-4.1s" markers={3} />
-      <CirculatingCell begin="-5.9s" markers={2} />
-      <CirculatingCell begin="-7.7s" markers={3} />
-      <path className={styles.timeArrow} d="M118 252H602" />
+      <path className={styles.flowLine} d="M70 140H650">
+        <animate
+          attributeName="stroke-dashoffset"
+          dur="1.2s"
+          repeatCount="indefinite"
+          values="0;-48"
+        />
+      </path>
+      <CirculatingCell begin="-0.5s" lane={0} markers={1} />
+      <CirculatingCell begin="-2.1s" lane={2} markers={2} />
+      <CirculatingCell begin="-3.7s" lane={1} markers={3} />
+      <CirculatingCell begin="-5.3s" lane={0} markers={2} />
+      <CirculatingCell begin="-6.9s" lane={2} markers={3} />
+      <path className={styles.timeArrow} d="M118 252H602">
+        <animate attributeName="opacity" dur="2.4s" repeatCount="indefinite" values="0.55;1;0.55" />
+      </path>
       <path className={styles.arrowHead} d="m602 252-18-11m18 11-18 11" />
       <text className={styles.vesselLabel} x="102" y="282">
         WEEKS AGO
@@ -523,8 +628,12 @@ function DigestionJourneyScene() {
   return (
     <>
       <g className={styles.mealPlate}>
-        <circle cx="108" cy="138" r="54" />
-        <circle cx="108" cy="138" r="35" />
+        <circle cx="108" cy="138" r="54">
+          <animate attributeName="r" dur="4.2s" repeatCount="indefinite" values="52;57;52" />
+        </circle>
+        <circle cx="108" cy="138" r="35">
+          <animate attributeName="r" dur="4.2s" repeatCount="indefinite" values="34;38;34" />
+        </circle>
         <path d="M92 132c13-17 32-12 36 5-8 16-27 21-36-5z" />
       </g>
       <path className={styles.digestiveTube} d="M176 138H282" />
@@ -607,16 +716,7 @@ function FiberPaceScene() {
       <path className={styles.slowLane} d="M70 214H650" />
       <g className={styles.fiberGates}>
         {[260, 340, 420, 500].map((x, index) => (
-          <path d={`M${x} 190v48`} key={x}>
-            <animateTransform
-              attributeName="transform"
-              begin={`${-index * 0.35}s`}
-              dur="2.6s"
-              repeatCount="indefinite"
-              type="rotate"
-              values={`-6 ${x} 214;6 ${x} 214;-6 ${x} 214`}
-            />
-          </path>
+          <path d={`M${x} 190v48`} key={x} style={{ animationDelay: `${-index * 0.35}s` }} />
         ))}
       </g>
       {["-0.2s", "-1.9s", "-3.6s"].map((begin) => (
@@ -755,15 +855,39 @@ function CirculationRhythmScene() {
           />
         </rect>
       </g>
-      {["-0.2s", "-1.55s", "-2.9s"].map((begin, index) => (
-        <MovingCircle
-          begin={begin}
-          className={index === 1 ? styles.glucoseDot : styles.bloodDot}
+      {[
+        {
+          begin: "-0.2s",
+          className: styles.glucoseDot,
+          path: "M170 146C282 82 408 84 532 119",
+          r: 10,
+        },
+        {
+          begin: "-1.55s",
+          className: styles.bloodDot,
+          path: "M170 162C296 226 410 224 542 181",
+          r: 12,
+        },
+        {
+          begin: "-2.9s",
+          className: styles.glucoseDot,
+          path: "M170 146C282 82 408 84 532 119",
+          r: 9,
+        },
+        {
+          begin: "-3.7s",
+          className: styles.bloodDot,
+          path: "M542 181C410 224 296 226 170 162",
+          r: 11,
+        },
+      ].map((particle) => (
+        <MovingPathCircle
+          begin={particle.begin}
+          className={particle.className}
           dur="4.2s"
-          from={[184, 153 + index * 8]}
-          key={begin}
-          r={9 + index}
-          to={[525, 126 + index * 31]}
+          key={particle.begin}
+          path={particle.path}
+          r={particle.r}
         />
       ))}
       <text className={styles.sceneLabel} x="116" y="246" textAnchor="middle">
@@ -803,13 +927,25 @@ function PostMealWindowScene() {
       </circle>
       <g className={styles.postMealWalker}>
         <circle cx="0" cy="0" r="17" />
-        <path d="M0 18v48M0 32l-22 18M0 32l23 16M0 66l-20 35M0 66l24 34" />
-        <animateTransform
-          attributeName="transform"
+        <path d="M0 18v48M0 32l-22 18M0 32l23 16M0 66l-20 35M0 66l24 34">
+          <animate
+            attributeName="d"
+            dur="1.1s"
+            repeatCount="indefinite"
+            values="M0 18v48M0 32l-22 18M0 32l23 16M0 66l-20 35M0 66l24 34;M0 18v48M0 32l22 18M0 32l-23 16M0 66l20 35M0 66l-24 34;M0 18v48M0 32l-22 18M0 32l23 16M0 66l-20 35M0 66l24 34"
+          />
+        </path>
+        <animateMotion
           dur="5.4s"
+          path="M420 123C465 119 515 126 568 145"
           repeatCount="indefinite"
-          type="translate"
-          values="395 95;565 95;395 95"
+        />
+        <animate
+          attributeName="opacity"
+          dur="5.4s"
+          keyTimes="0;0.12;0.82;1"
+          repeatCount="indefinite"
+          values="0;1;1;0"
         />
       </g>
       <text className={styles.vesselLabel} x="80" y="264">
@@ -826,65 +962,100 @@ function PostMealWindowScene() {
 }
 
 function SittingInterruptionScene() {
+  const timelineSegments = Array.from({ length: 11 }, (_, index) => 276 + index * 33);
+
   return (
     <>
+      <ellipse className={styles.breakHalo} cx="423" cy="137" rx="92" ry="105">
+        <animate
+          attributeName="opacity"
+          dur="6s"
+          keyTimes="0;0.32;0.46;0.76;0.9;1"
+          repeatCount="indefinite"
+          values="0;0;0.45;0.45;0;0"
+        />
+        <animate
+          attributeName="rx"
+          dur="6s"
+          keyTimes="0;0.38;0.58;0.78;1"
+          repeatCount="indefinite"
+          values="70;70;96;96;70"
+        />
+      </ellipse>
       <g className={styles.chairShape}>
-        <rect height="86" rx="16" width="104" x="118" y="125" />
-        <path d="M136 211v35M204 211v35M108 163h121" />
+        <rect height="86" rx="16" width="104" x="102" y="116" />
+        <path d="M120 202v38M188 202v38M92 154h121" />
       </g>
-      <g className={styles.sittingPerson}>
+      <g className={styles.sittingPerson} transform="translate(154 93)">
         <circle cx="0" cy="0" r="22" />
         <path d="M0 24v55M0 45l34 25M0 79h48M48 79v48M0 79l-20 46" />
+        <animate
+          attributeName="opacity"
+          dur="6s"
+          keyTimes="0;0.25;0.38;0.78;0.9;1"
+          repeatCount="indefinite"
+          values="1;1;0;0;1;1"
+        />
+      </g>
+      <g className={styles.standingPerson} transform="translate(423 72)">
+        <circle cx="0" cy="0" r="22" />
+        <path d="M0 24v80M0 43l-38-28M0 43l38-28M0 104l-24 43M0 104l24 43" />
+        <animate
+          attributeName="opacity"
+          dur="6s"
+          keyTimes="0;0.3;0.42;0.74;0.86;1"
+          repeatCount="indefinite"
+          values="0;0;1;1;0;0"
+        />
         <animateTransform
           attributeName="transform"
+          additive="sum"
           dur="6s"
-          keyTimes="0;0.23;0.45;0.75;1"
+          keyTimes="0;0.38;0.55;0.72;1"
           repeatCount="indefinite"
-          type="translate"
-          values="170 102;170 102;345 82;345 82;170 102"
+          type="rotate"
+          values="0;0;-5;5;0"
         />
       </g>
-      <g className={styles.stretchArms}>
-        <path d="M345 130l-37-35M345 130l37-35" />
+      <g className={styles.breakArrow} opacity="0">
+        <path d="M230 137h84" />
+        <path d="m298 122 18 15-18 15" />
         <animate
           attributeName="opacity"
           dur="6s"
-          keyTimes="0;0.35;0.5;0.76;1"
+          keyTimes="0;0.3;0.42;0.7;0.82;1"
           repeatCount="indefinite"
-          values="0;0;1;1;0"
+          values="0;0;1;1;0;0"
         />
       </g>
-      <path className={styles.stillTimeline} d="M275 210H635" />
-      <path className={styles.breakTimeline} d="M275 210H405M455 210H635">
+      <g className={styles.segmentedTimeline}>
+        {timelineSegments.map((x) => (
+          <rect height="12" key={x} rx="6" width="25" x={x} y="222" />
+        ))}
+      </g>
+      <g className={styles.breakSegments} opacity="0">
+        {timelineSegments.slice(4, 7).map((x) => (
+          <rect height="12" key={x} rx="6" width="25" x={x} y="222" />
+        ))}
         <animate
           attributeName="opacity"
           dur="6s"
-          keyTimes="0;0.32;0.48;0.82;1"
+          keyTimes="0;0.34;0.48;0.78;0.9;1"
           repeatCount="indefinite"
-          values="0;0;1;1;0"
+          values="0;0;1;1;0;0"
         />
-      </path>
-      <circle className={styles.breakMarker} cx="430" cy="210" r="22">
-        <animate
-          attributeName="opacity"
-          dur="6s"
-          keyTimes="0;0.32;0.48;0.82;1"
-          repeatCount="indefinite"
-          values="0;0;1;1;0"
-        />
-        <animate
-          attributeName="r"
-          dur="6s"
-          keyTimes="0;0.32;0.5;0.82;1"
-          repeatCount="indefinite"
-          values="8;8;24;24;8"
-        />
-      </circle>
-      <text className={styles.sceneLabel} x="455" y="260" textAnchor="middle">
-        SIT · RISE · STRETCH · RETURN
+      </g>
+      <text className={styles.sceneLabel} x="154" y="262" textAnchor="middle">
+        SIT
       </text>
-      <text className={styles.vesselLabel} x="455" y="286" textAnchor="middle">
-        ONE BREAK TURNS A LONG STILL PERIOD INTO SHORTER SECTIONS
+      <text className={styles.sceneLabel} x="423" y="262" textAnchor="middle">
+        BRIEF BREAK
+      </text>
+      <text className={styles.sceneLabel} x="612" y="262" textAnchor="middle">
+        RETURN
+      </text>
+      <text className={styles.vesselLabel} x="360" y="288" textAnchor="middle">
+        ONE BRIEF BREAK DIVIDES A LONG STILL PERIOD
       </text>
     </>
   );
@@ -914,45 +1085,27 @@ export function LessonMotionFigure({
   className?: string;
 }) {
   const copy = motionCopy[variant];
-  const svgRef = useRef<SVGSVGElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-
-  const togglePlayback = () => {
-    const svg = svgRef.current;
-    if (isPlaying) svg?.pauseAnimations?.();
-    else svg?.unpauseAnimations?.();
-    setIsPlaying((playing) => !playing);
-  };
 
   return (
-    <figure
-      className={cn(styles.figure, className)}
-      data-motion-playing={isPlaying ? "true" : "false"}
-    >
+    <figure className={cn(styles.figure, className)} data-motion-loop="continuous">
       <div className={styles.viewport} role="img" aria-label={copy.label}>
         <svg
-          ref={svgRef}
           className={styles.art}
           viewBox="0 0 720 300"
           preserveAspectRatio="xMidYMid meet"
+          shapeRendering="geometricPrecision"
+          textRendering="optimizeLegibility"
           aria-hidden="true"
           data-variant={variant}
           focusable="false"
         >
           <Scene variant={variant} />
         </svg>
-        <button
-          type="button"
-          className={styles.motionControl}
-          aria-label={isPlaying ? "Pause this animation" : "Play this animation"}
-          aria-pressed={!isPlaying}
-          onClick={togglePlayback}
-        >
-          <span aria-hidden="true">{isPlaying ? "Ⅱ" : "▶"}</span>
-          {isPlaying ? "Pause" : "Play"}
-        </button>
       </div>
-      <figcaption className={styles.caption}>{copy.caption}</figcaption>
+      <figcaption className={styles.caption}>
+        <strong className={styles.motionCue}>{copy.cue}</strong>
+        <span>{copy.caption}</span>
+      </figcaption>
     </figure>
   );
 }

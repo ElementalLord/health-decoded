@@ -2,8 +2,9 @@ import "server-only";
 
 import { ApiError, GoogleGenAI } from "@google/genai";
 
-import { AI_PROVIDER_TIMEOUT_MS } from "@/features/ai/constants/ai-limits";
+import { AI_MAX_PROMPT_CHARACTERS } from "@/features/ai/constants/ai-limits";
 import { DEFAULT_AI_MODEL } from "@/features/ai/constants/ai-models";
+import { getAiSecurityConfig } from "@/features/ai/services/ai-security-config.server";
 import { getGeminiServerEnv } from "@/lib/env/server";
 import {
   isPermittedAiTextPrefix,
@@ -75,6 +76,11 @@ function streamFailureCategory(category: AiProviderFailureCategory) {
 
 export const aiProvider: AiProvider = {
   async *generateResponseStream({ prompt, systemInstruction }, signal) {
+    if (prompt.length > AI_MAX_PROMPT_CHARACTERS) {
+      yield { category: "unexpected", kind: "error" };
+      return;
+    }
+
     const configuration = getGeminiConfiguration();
     if (!configuration.ok) {
       yield { category: "configuration", kind: "error" };
@@ -88,6 +94,8 @@ export const aiProvider: AiProvider = {
       apiVersion: "v1beta",
     });
 
+    const securityConfig = getAiSecurityConfig();
+
     try {
       const response = await client.models.generateContentStream({
         model: DEFAULT_AI_MODEL,
@@ -100,9 +108,9 @@ export const aiProvider: AiProvider = {
           // duplicate requests and to respect Gemini quota limits.
           httpOptions: {
             retryOptions: { attempts: 2 },
-            timeout: AI_PROVIDER_TIMEOUT_MS,
+            timeout: securityConfig.providerTimeoutMs,
           },
-          maxOutputTokens: 700,
+          maxOutputTokens: securityConfig.maxOutputTokens,
           responseMimeType: "text/plain",
           systemInstruction,
           temperature: 0.2,

@@ -3,8 +3,20 @@ import "server-only";
 import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
-import { consumeAiRequestSlot } from "@/features/ai/services/ai-rate-limit.server";
-import { AiResponseStreamNormalizer } from "@/features/ai/services/ai-response-normalizer";
+import { assessAiOutputSafety } from "@/features/ai/services/ai-output-safety";
+import {
+  consumeAiProviderBudget,
+  recordAiProviderFailure,
+  recordAiProviderSuccess,
+} from "@/features/ai/services/ai-provider-guard.server";
+import {
+  consumeAiRequestSlot,
+  fingerprintAiRequest,
+} from "@/features/ai/services/ai-rate-limit.server";
+import {
+  normalizeAiResponseOpening,
+  normalizeAiResponseText,
+} from "@/features/ai/services/ai-response-normalizer";
 import { assessAiSafety } from "@/features/ai/services/ai-safety.server";
 import type {
   AiChatFailureCategory,
@@ -12,6 +24,7 @@ import type {
   AiChatStreamEvent,
 } from "@/features/ai/types/ai";
 import { aiProvider } from "@/services/ai/provider";
+import { parseAiProviderText } from "@/services/ai/response-parser";
 
 type AiChatStreamResult =
   | { readonly ok: true; readonly data: AsyncGenerator<AiChatStreamEvent> }
@@ -75,14 +88,47 @@ export async function createAiChatStream(
     return refusalStream(safety.message);
   }
 
-  if (!consumeAiRequestSlot(input.userId)) {
-    logAiOperation({ ...loggingContext, outcome: "rate_limited" });
+  const rateLimit = consumeAiRequestSlot({
+    fingerprint: fingerprintAiRequest(input.message),
+    networkKey: input.networkKey,
+    sensitive: safety.category === "Prompt Injection / Abuse",
+    userId: input.userId,
+  });
+  if (!rateLimit.allowed) {
+    logAiOperation({
+      ...loggingContext,
+      outcome: "rate_limited",
+      security_control: "duplicate_or_quota",
+    });
     return { ok: false, category: "rate_limited" };
   }
 
   if (safety.kind === "refuse") {
     logAiOperation({ ...loggingContext, outcome: "refused", refusal_type: safety.refusalType });
     return refusalStream(safety.message);
+  }
+
+  for (const entry of input.messages ?? []) {
+    if (entry.role === "user") {
+      const historySafety = assessAiSafety(entry.content);
+      if (historySafety.kind === "refuse") {
+        logAiOperation({
+          ...loggingContext,
+          outcome: "refused",
+          refusal_type: historySafety.refusalType,
+        });
+        return refusalStream(historySafety.message);
+      }
+    } else if (!assessAiOutputSafety(entry.content).safe) {
+      logAiOperation({
+        ...loggingContext,
+        outcome: "refused",
+        refusal_type: "prompt_injection",
+      });
+      return refusalStream(
+        "I can’t use conversation history that contains unsafe or hidden instructions. Please start a new conversation and ask a Type 2 diabetes education question.",
+      );
+    }
   }
 
   const context = await loadTrustedAiContext({
@@ -95,24 +141,37 @@ export async function createAiChatStream(
     return { ok: false, category: "context" };
   }
 
-  const prompt = buildAiPrompt({
-    context: context.data.promptContext,
-    message: input.message,
-    ...(input.messages?.length
-      ? {
-          messages: input.messages.filter(
-            (entry) => entry.role === "assistant" || assessAiSafety(entry.content).kind === "allow",
-          ),
-        }
-      : {}),
-  });
+  let prompt: ReturnType<typeof buildAiPrompt>;
+  try {
+    prompt = buildAiPrompt({
+      context: context.data.promptContext,
+      message: input.message,
+      ...(input.messages?.length ? { messages: input.messages } : {}),
+    });
+  } catch {
+    logAiOperation({ ...loggingContext, outcome: "unexpected" });
+    return { ok: false, category: "unexpected" };
+  }
+
+  const providerBudget = consumeAiProviderBudget();
+  if (!providerBudget.allowed) {
+    logAiOperation({
+      ...loggingContext,
+      outcome: providerBudget.reason === "budget" ? "rate_limited" : "unexpected",
+      security_control: providerBudget.reason === "budget" ? "provider_budget" : "provider_circuit",
+    });
+    return {
+      ok: false,
+      category: providerBudget.reason === "budget" ? "rate_limited" : "unexpected",
+    };
+  }
 
   return {
     ok: true,
     data: (async function* () {
       let outcome: "configuration" | "rate_limited" | "success" | "timeout" | "unexpected" =
         "success";
-      const normalizer = new AiResponseStreamNormalizer();
+      let providerText = "";
 
       yield {
         lessonUsed: Boolean(context.data.promptContext.lesson),
@@ -125,12 +184,12 @@ export async function createAiChatStream(
         if (signal?.aborted) return;
 
         if (event.kind === "text") {
-          const normalizedText = normalizer.append(event.text);
-          if (normalizedText) yield { text: normalizedText, type: "delta" };
+          providerText += event.text;
           continue;
         }
 
         outcome = event.category;
+        recordAiProviderFailure();
         logAiOperation({
           ...loggingContext,
           duration_bucket: durationBucket(Date.now() - startedAt),
@@ -140,17 +199,22 @@ export async function createAiChatStream(
         return;
       }
 
-      const finalText = normalizer.finish();
-      if (!finalText) {
+      const normalizedText = normalizeAiResponseText(normalizeAiResponseOpening(providerText));
+      const parsedOutput = parseAiProviderText(normalizedText);
+      const outputSafety = parsedOutput.ok ? assessAiOutputSafety(parsedOutput.text) : null;
+      if (!parsedOutput.ok || !outputSafety?.safe) {
+        recordAiProviderFailure();
         logAiOperation({
           ...loggingContext,
           duration_bucket: durationBucket(Date.now() - startedAt),
           outcome: "unexpected",
+          security_control: "output_validation",
         });
         yield { code: "AI_UNAVAILABLE", type: "error" };
         return;
       }
-      yield { text: finalText, type: "delta" };
+      recordAiProviderSuccess();
+      yield { text: parsedOutput.text, type: "delta" };
       yield { type: "done" };
       logAiOperation({
         ...loggingContext,

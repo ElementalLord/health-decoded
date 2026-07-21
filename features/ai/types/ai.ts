@@ -1,6 +1,7 @@
 import type { AiChatRequestInput } from "@/features/ai/schemas/ai-chat.schema";
 
 export type AiChatRequest = AiChatRequestInput & {
+  readonly networkKey: string;
   readonly userId: string;
 };
 

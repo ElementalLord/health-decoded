@@ -1,0 +1,664 @@
+.motionFigure {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-accent-warm) 28%, var(--color-border));
+  border-radius: clamp(1.35rem, 3vw, 2.4rem);
+  background: #f7f1ea;
+  box-shadow: 0 22px 54px rgb(72 52 42 / 8%);
+}
+
+.motionCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.canvasWarm {
+  fill: #f3e8df;
+}
+
+.canvasPaper {
+  fill: #fbf7f1;
+}
+
+.canvasSage {
+  fill: #e7eee7;
+}
+
+.figureCaption {
+  border-top: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-card) 90%, transparent);
+  padding: 1.25rem clamp(1.1rem, 3vw, 1.75rem);
+  color: color-mix(in srgb, var(--color-foreground) 76%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.figureCaption strong {
+  color: var(--color-foreground);
+}
+
+.motionCaption,
+.journeyHeading,
+.reframeTitle,
+.readingPanelLabel,
+.readingPanelAction,
+.contextChecklistTitle,
+.contextCheckLabel,
+.contextCheckDetail,
+.reframeFormula,
+.stationNumber,
+.stationLabel,
+.stationDetail,
+.readingToken text,
+.toolTitle,
+.toolAction,
+.contextNode text,
+.readingCard text,
+.singleBead text,
+.careRole,
+.careCaption,
+.nextStepBubble text {
+  fill: #75675e;
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.motionCaption {
+  font-size: 15px;
+}
+
+.journeyHeading {
+  font-size: 14px;
+}
+
+.dataRail {
+  fill: none;
+  stroke: #cbbdb1;
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+.dataStation rect {
+  fill: #fffaf3;
+  stroke: #decfc2;
+  stroke-width: 3;
+}
+
+.dataStation > circle:not(.stationPulse) {
+  fill: #e4eee6;
+  stroke: #73947e;
+  stroke-width: 4;
+}
+
+.stationNumber {
+  fill: #315d4c;
+  font-size: 20px;
+}
+
+.stationLabel {
+  fill: #4d3931;
+  font-size: 13px;
+}
+
+.stationDetail {
+  fill: #8b7d73;
+  font-size: 9px;
+}
+
+.stationPulse {
+  fill: none;
+  stroke: #c97962;
+  stroke-width: 4;
+}
+
+.readingToken circle {
+  fill: #c97962;
+  stroke: #fffaf3;
+  stroke-width: 5;
+}
+
+.readingToken text {
+  fill: #fffaf3;
+  font-size: 15px;
+}
+
+.toolPanel {
+  fill: #f6eee6;
+  stroke: #dfd2c6;
+  stroke-width: 2;
+}
+
+.toolTitle {
+  font-size: 12px;
+}
+
+.toolAction {
+  font-size: 11px;
+}
+
+.loomThread,
+.patternThread {
+  fill: none;
+  stroke: #c97962;
+  stroke-dasharray: 0.09 0.055;
+  stroke-linecap: round;
+}
+
+.loomThread {
+  stroke-width: 7;
+}
+
+.a1cSpool circle {
+  fill: #e5eee6;
+  stroke: #73947e;
+  stroke-width: 5;
+}
+
+.a1cSpool path {
+  fill: none;
+  stroke: #73947e;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.cameraBody {
+  fill: #c97962;
+}
+
+.cameraLens {
+  fill: #fff8ed;
+  stroke: #62483e;
+  stroke-width: 5;
+}
+
+.cameraBlade {
+  fill: #73947e;
+}
+
+.snapshotCard rect {
+  fill: #fffaf3;
+  stroke: #d5c5b6;
+  stroke-width: 3;
+}
+
+.snapshotCard path {
+  fill: none;
+  stroke: #c97962;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.filmstrip rect {
+  fill: #e2ebe3;
+  stroke: #73947e;
+  stroke-width: 3;
+}
+
+.filmstrip path {
+  fill: none;
+  stroke: #c97962;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.contextNode circle {
+  fill: #f8f3ec;
+  stroke: #aebfb1;
+  stroke-width: 3;
+  transition:
+    fill 250ms ease,
+    stroke 250ms ease;
+}
+
+.contextNode text {
+  font-size: 11px;
+}
+
+.contextPaths path {
+  fill: none;
+  stroke: #b7c6b9;
+  stroke-dasharray: 0.05 0.055;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.contextNodeActive circle {
+  fill: #cfe0d2;
+  stroke: #73947e;
+}
+
+.contextPaths .contextPathActive {
+  stroke: #73947e;
+}
+
+.readingCard rect {
+  fill: #fffaf3;
+  stroke: #c97962;
+  stroke-width: 4;
+}
+
+.readingCard text {
+  font-size: 14px;
+}
+
+.loomFrame path {
+  fill: none;
+  stroke: #cfbfb2;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.patternThread {
+  stroke-width: 8;
+}
+
+.patternBead,
+.singleBead circle {
+  fill: #73947e;
+  stroke: #fffaf3;
+  stroke-width: 4;
+}
+
+.singleBead text {
+  font-size: 12px;
+}
+
+.toolCard {
+  min-height: 19rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  background: var(--color-card);
+  padding: 1.5rem;
+  text-align: left;
+  box-shadow: 0 8px 20px rgb(70 50 40 / 5%);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.toolCard:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 52%, var(--color-border));
+}
+
+.toolCard > span {
+  color: var(--color-accent-warm);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.toolCard h2 {
+  margin-top: 1.25rem;
+  font-family: var(--font-serif-display), serif;
+  font-size: 1.8rem;
+}
+
+.toolCard strong {
+  display: block;
+  margin-top: 1.25rem;
+  line-height: 1.5;
+}
+
+.toolCard p {
+  margin-top: 0.75rem;
+  color: var(--color-muted-foreground);
+  line-height: 1.7;
+}
+
+.toolCardOpen {
+  border-color: #7e9d88;
+  background: #e9f0ea;
+}
+
+.snapshotStage {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  border-block: 1px solid var(--color-border);
+  padding-block: 2rem;
+}
+
+.snapshotFrame {
+  position: relative;
+  display: grid;
+  min-height: 18rem;
+  place-items: center;
+  overflow: hidden;
+  border: 10px solid #4d3931;
+  border-radius: 1.75rem;
+  background: #f2e4db;
+  color: #4d3931;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.snapshotFrame i {
+  position: absolute;
+  width: 55%;
+  height: 55%;
+  border: 4px solid #c97962;
+  border-radius: 50%;
+  animation: focus-ring 4.5s ease-in-out infinite;
+}
+
+.snapshotFrame b {
+  position: absolute;
+  inset: 0;
+  background: #fffdf8;
+  opacity: 0;
+  animation: camera-flash 4.5s ease-out infinite;
+}
+
+.contextButton,
+.patternChip {
+  display: flex;
+  min-height: 3.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-card);
+  padding: 0.85rem 1.1rem;
+  font-weight: 700;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.contextButton:hover,
+.patternChip:hover {
+  transform: translateY(-2px);
+}
+
+.contextButtonOpen,
+.patternChipSelected {
+  border-color: #73947e;
+  background: #e4eee6;
+  color: #315d4c;
+}
+
+.contextButton svg:last-child {
+  margin-left: auto;
+}
+
+.reframeTitle {
+  fill: #4d3931;
+  font-size: 14px;
+}
+
+.readingPanel > rect,
+.contextChecklist > rect {
+  fill: #fffaf3;
+  stroke: #decfc2;
+  stroke-width: 3;
+}
+
+.readingPanelLabel,
+.contextChecklistTitle {
+  fill: #4d3931;
+  font-size: 13px;
+}
+
+.readingDial {
+  fill: #f3e7de;
+  stroke: #c97962;
+  stroke-width: 4;
+}
+
+.readingArc {
+  fill: none;
+  stroke: #789b84;
+  stroke-linecap: round;
+  stroke-width: 9;
+}
+
+.readingNeedle path {
+  fill: none;
+  stroke: #c97962;
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.readingNeedle circle {
+  fill: #c97962;
+}
+
+.readingPanelAction {
+  fill: #8b7d73;
+  font-size: 10px;
+}
+
+.contextBridge,
+.contextBridgeArrow {
+  fill: none;
+  stroke: #b9cbbd;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7;
+}
+
+.contextMessenger circle {
+  fill: #c97962;
+  stroke: #fffaf3;
+  stroke-width: 4;
+}
+
+.contextCheckRow > rect {
+  stroke: #e2d7ce;
+  stroke-width: 2;
+}
+
+.contextCheckRow > circle {
+  fill: #73947e;
+}
+
+.contextCheckLabel {
+  fill: #315d4c;
+  font-size: 10px;
+}
+
+.contextCheckDetail {
+  fill: #75675e;
+  font-size: 8.5px;
+  font-weight: 650;
+}
+
+.reframeFormula {
+  fill: #315d4c;
+  font-size: 12px;
+}
+
+.careConversation {
+  overflow: hidden;
+  border: 1px solid #c9d8cc;
+  border-radius: 2rem;
+  background: #e5eee6;
+}
+
+.careConversation svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.careConversation figcaption {
+  border-top: 1px solid #c9d8cc;
+  background: #f8f4ee;
+  padding: 1.1rem 1.3rem;
+  color: #75675e;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.careConversation figcaption strong {
+  color: #4d3931;
+}
+
+.careCanvas {
+  fill: #e5eee6;
+}
+
+.sharedTable {
+  fill: none;
+  stroke: #b9cbbd;
+  stroke-linecap: round;
+  stroke-width: 12;
+}
+
+.carePerson > circle,
+.carePersonPartner > circle {
+  fill: #ead7cd;
+  stroke-width: 6;
+}
+
+.carePerson > circle {
+  stroke: #c97962;
+}
+
+.carePersonPartner > circle {
+  stroke: #73947e;
+}
+
+.carePerson > path:not(.careArm) {
+  fill: #c97962;
+}
+
+.carePersonPartner > path:not(.careArm) {
+  fill: #73947e;
+}
+
+.careArm {
+  fill: none;
+  stroke: #75675e;
+  stroke-linecap: round;
+  stroke-width: 9;
+}
+
+.contextNote rect {
+  fill: #fffaf3;
+  stroke: #c97962;
+  stroke-width: 4;
+}
+
+.contextNote path {
+  fill: none;
+  stroke: #a8978a;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.contextNote circle {
+  fill: #73947e;
+}
+
+.nextStepBubble path {
+  fill: #fffaf3;
+  stroke: #73947e;
+  stroke-width: 4;
+}
+
+.nextStepBubble text {
+  fill: #315d4c;
+  font-size: 11px;
+}
+
+.careRole {
+  font-size: 12px;
+}
+
+.careCaption {
+  fill: #315d4c;
+  font-size: 10px;
+}
+
+.questionTicket {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  border-left: 3px solid #73947e;
+  background: #e5eee6;
+  padding: 1.5rem;
+}
+
+.questionTicket svg {
+  width: 2rem;
+  height: 2rem;
+  color: #557963;
+}
+
+.questionTicket p:last-child {
+  margin-top: 0.35rem;
+  font-family: var(--font-serif-display), serif;
+  font-size: 1.35rem;
+}
+
+@keyframes focus-ring {
+  0%,
+  100% {
+    transform: scale(1.1);
+    opacity: 0.55;
+  }
+  45%,
+  70% {
+    transform: scale(0.72);
+    opacity: 1;
+  }
+}
+
+@keyframes camera-flash {
+  0%,
+  52%,
+  100% {
+    opacity: 0;
+  }
+  56% {
+    opacity: 0.85;
+  }
+  64% {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 760px) {
+  .snapshotStage {
+    grid-template-columns: minmax(18rem, 0.85fr) 1.15fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .motionFigure {
+    border-radius: 1.35rem;
+  }
+
+  .motionCanvas {
+    min-height: 19rem;
+  }
+
+  .toolCard {
+    min-height: auto;
+  }
+
+  .careConversation figcaption {
+    padding: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motionCanvas animate,
+  .motionCanvas animateMotion,
+  .motionCanvas animateTransform {
+    display: none;
+  }
+
+  .snapshotFrame i,
+  .snapshotFrame b,
+  .careConversation * {
+    animation: none;
+  }
+}
