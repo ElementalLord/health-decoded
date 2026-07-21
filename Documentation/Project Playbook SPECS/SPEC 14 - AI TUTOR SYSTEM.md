@@ -279,7 +279,7 @@ Users should leave conversations thinking:
 "That finally makes sense."
 not
 "That was technically correct."
-If users trust the AI enough to ask their next question—but still understand that it complements, rather than replaces, their healthcare team—then the AI Tutor has achieved its purpose.
+If users trust the AI enough to ask their next question, but still understand that it complements, rather than replaces, their healthcare team, then the AI Tutor has achieved its purpose.
 
 Engineering Notes
 The AI Tutor should be implemented as a retrieval-augmented educational system rather than a general-purpose chatbot. Before generating a response, the backend should retrieve relevant clinician-reviewed lesson content, medication information, glossary definitions, and safety guidance based on the user's question and current journey stage. This curated context is then provided to the language model along with a fixed system prompt defining the AI's role, tone, and safety boundaries. Conversation history should be limited to the active thread to maintain context while controlling token usage. The application should stream responses for responsiveness and expose reusable endpoints so the AI can be invoked consistently from the Ask AI page, lesson pages, medication pages, and caregiver content without duplicating logic.

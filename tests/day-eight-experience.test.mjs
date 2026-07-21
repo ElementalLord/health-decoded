@@ -18,7 +18,7 @@ const unlockMigration = readFileSync(
 test("Day 8 uses one custom nine-chapter experience", () => {
   assert.match(player, /if \(lesson\.dayNumber === 8\) return <DayEightExperience/);
   assert.match(experience, /const stageCount = 9/);
-  assert.match(experience, /A reading is information—not a verdict/);
+  assert.match(experience, /A reading is information, not a verdict/);
 });
 
 test("Day 8 includes distinct purposeful looping visual explanations", () => {

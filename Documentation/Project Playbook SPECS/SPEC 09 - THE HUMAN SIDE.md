@@ -254,7 +254,7 @@ Instead of thinking:
 "Why am I reacting like this?"
 Users begin thinking:
 "Other people felt this too."
-By the end of the first two weeks, the user should feel less shame, less isolation, and more self-compassion—not because the app offered motivational speeches, but because it consistently acknowledged what they were already feeling.
+By the end of the first two weeks, the user should feel less shame, less isolation, and more self-compassion, not because the app offered motivational speeches, but because it consistently acknowledged what they were already feeling.
 
 Engineering Notes
 The Human Side should be built from a lightweight content system rather than hardcoded screens. Daily reflections, patient stories, milestone messages, and "You're Not Alone" insights should all be content-driven so clinicians and writers can update them without changing the application. Reflection entries should remain private by default and stored separately from lesson progress. The UI should prioritize fast loading, minimal interaction cost, and visual calm, ensuring this section feels noticeably different from educational lessons while remaining consistent with the rest of the design system.
@@ -262,4 +262,4 @@ The Human Side should be built from a lightweight content system rather than har
 The Guiding Principle
 If I could leave one sentence for every designer, engineer, and writer working on this feature, it would be this:
 The Human Side should never try to make people feel better. It should make people feel understood.
-That's a subtle difference, but it's the difference between an app that offers comfort and one that earns trust. I think this feature, if executed well, will be one of the reasons people recommend Health Decoded to friends, family, and even their healthcare providers—not because it has the most features, but because it understands what most health apps overlook.
+That's a subtle difference, but it's the difference between an app that offers comfort and one that earns trust. I think this feature, if executed well, will be one of the reasons people recommend Health Decoded to friends, family, and even their healthcare providers, not because it has the most features, but because it understands what most health apps overlook.

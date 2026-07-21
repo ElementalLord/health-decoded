@@ -2,7 +2,7 @@ update public.lessons
 set
   slug = 'understanding-your-diagnosis',
   title = 'Understanding Your Diagnosis',
-  subtitle = 'What this means—and what it does not',
+  subtitle = 'What this means, and what it does not',
   primary_topic = 'A calm first look at Type 2 diabetes',
   learning_objective = 'Understand the main meaning of a Type 2 diabetes diagnosis and recognize when symptoms need urgent attention.',
   estimated_minutes = 15,

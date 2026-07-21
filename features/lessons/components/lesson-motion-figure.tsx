@@ -50,7 +50,7 @@ const motionCopy: Record<LessonMotionVariant, { label: string; cue: string; capt
     label: "Red blood cells circulating over time as glucose markers attach",
     cue: "Watch many marked red blood cells circulate across the longer window.",
     caption:
-      "A1C reflects glucose attached to hemoglobin across many circulating red blood cells—not one meal or one unusual day.",
+      "A1C reflects glucose attached to hemoglobin across many circulating red blood cells, not one meal or one unusual day.",
   },
   "digestion-journey": {
     label: "A meal moving into digestion and separating into smaller nutrients",
@@ -87,7 +87,7 @@ const motionCopy: Record<LessonMotionVariant, { label: string; cue: string; capt
       "A seated person standing, stretching, and sitting again to interrupt a long still period",
     cue: "Watch one short stand divide a long still period into smaller sections.",
     caption:
-      "A brief interruption changes one long still period into shorter sections. The useful change is the break—not a perfect workout.",
+      "A brief interruption changes one long still period into shorter sections. The useful change is the break, not a perfect workout.",
   },
 };
 

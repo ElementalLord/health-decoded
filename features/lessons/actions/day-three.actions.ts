@@ -79,7 +79,7 @@ const windowFeedback: Record<
   },
   diagnosis_score: {
     accurate: false,
-    body: "A1C may be used in diagnosis, but the result is information—not a grade, verdict, or measure of effort.",
+    body: "A1C may be used in diagnosis, but the result is information, not a grade, verdict, or measure of effort.",
     heading: "The number has a medical job, not a moral meaning.",
     whyOthers: [
       "A1C describes a longer pattern of glucose exposure.",

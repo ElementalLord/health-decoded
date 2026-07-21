@@ -1,4 +1,4 @@
-# Prompt 27 — AI Safety, Guardrails & Medical Boundaries
+# Prompt 27, AI Safety, Guardrails & Medical Boundaries
 
 ## Objective
 

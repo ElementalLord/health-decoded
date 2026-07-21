@@ -103,7 +103,7 @@ const sensitivityFeedback: Record<
   },
   one_hard_workout: {
     accurate: false,
-    body: "One intense workout is not required. Repeatable activity—including smaller bouts—can be a more useful starting point than one exhausting effort.",
+    body: "One intense workout is not required. Repeatable activity, including smaller bouts, can be a more useful starting point than one exhausting effort.",
     heading: "Consistency matters more than heroics.",
     details: [
       "Starting gradually can reduce injury risk.",
@@ -127,7 +127,7 @@ const afterMealFeedback: Record<
 > = {
   supports_fuel_use: {
     accurate: true,
-    body: "A short, comfortable walk after a meal can be one practical way to let working muscles use fuel. It is an option—not a requirement or a promise about a specific reading.",
+    body: "A short, comfortable walk after a meal can be one practical way to let working muscles use fuel. It is an option, not a requirement or a promise about a specific reading.",
     heading: "A small window can hold a useful choice.",
     details: [
       "A seated or adapted movement can also count.",
@@ -217,7 +217,7 @@ export async function evaluateDayFiveAction(input: unknown): Promise<DayFiveEval
     data: {
       accurate,
       body: accurate
-        ? "Working muscles use glucose, regular activity can improve insulin sensitivity, and small, safe bouts can count. Movement is a tool—not a punishment or a perfection test."
+        ? "Working muscles use glucose, regular activity can improve insulin sensitivity, and small, safe bouts can count. Movement is a tool, not a punishment or a perfection test."
         : "The lesson is not asking for a gym membership or a perfect routine. It is asking for one safe, repeatable way to let your muscles work.",
       heading: accurate
         ? "That is the lesson in plain language."

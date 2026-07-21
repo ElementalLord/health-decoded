@@ -1,6 +1,6 @@
 # Health Decoded AI Build Pipeline
 
-# Prompt 12 — Today’s Journey Home
+# Prompt 12, Today’s Journey Home
 
 ## Purpose
 
@@ -235,7 +235,7 @@ Do not create a dense grid of widgets.
 
 ---
 
-# Section 1 — Greeting
+# Section 1, Greeting
 
 Display a short greeting using the user’s approved display name.
 
@@ -268,7 +268,7 @@ Do not introduce a large date/time library solely for greetings.
 
 ---
 
-# Section 2 — Today’s Journey Hero
+# Section 2, Today’s Journey Hero
 
 This is the primary visual focus.
 
@@ -365,7 +365,7 @@ Do not silently change migrations.
 
 ---
 
-# Section 3 — Why This Matters Today
+# Section 3, Why This Matters Today
 
 Display one short sentence from approved lesson metadata or content configuration.
 
@@ -389,7 +389,7 @@ The text should come from published content metadata or an approved development 
 
 ---
 
-# Section 4 — Journey Progress
+# Section 4, Journey Progress
 
 Display a simple progress summary.
 
@@ -426,7 +426,7 @@ A small preview may be allowed, but the full experience belongs to its dedicated
 
 ---
 
-# Section 5 — Daily Confidence Check
+# Section 5, Daily Confidence Check
 
 Implement a lightweight confidence interaction only if the relevant specification places it on the Journey screen.
 
@@ -496,7 +496,7 @@ Your check-in was saved.
 
 ---
 
-# Section 6 — Support Shortcuts
+# Section 6, Support Shortcuts
 
 Only show shortcuts for routes that currently exist.
 

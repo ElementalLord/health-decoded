@@ -9,7 +9,7 @@ insert into public.lessons (
   'Hyperglycemia, hypoglycemia, symptom recognition, calm response plans, urgent signals, and knowing when to seek help',
   'Recognize the common gradual signals of high blood sugar and the quicker signals of low blood sugar, explain that low-glucose risk depends largely on medications, respond to possible highs and lows by following a personal care plan, and identify the uncommon urgent signals that deserve prompt medical care.',
   18,
-  '[{"type":"summary","title":"Three ideas worth carrying","points":["High and low blood sugar feel different: highs often build slowly, lows often announce themselves quickly.","Most changes are not emergencies—pause, follow the care team plan, and reach out early when something stays off.","Urgent signals are uncommon, and recognizing them is preparedness, not fear."]}]'::pg_catalog.jsonb,
+  '[{"type":"summary","title":"Three ideas worth carrying","points":["High and low blood sugar feel different: highs often build slowly, lows often announce themselves quickly.","Most changes are not emergencies, pause, follow the care team plan, and reach out early when something stays off.","Urgent signals are uncommon, and recognizing them is preparedness, not fear."]}]'::pg_catalog.jsonb,
   'Knowing what to do is more powerful than being afraid of what might happen. Recognize the signals early, stay calm, and follow the plan you built with your care team.',
   'published',
   'Health Decoded curriculum blueprint and Day 9 manuscript',

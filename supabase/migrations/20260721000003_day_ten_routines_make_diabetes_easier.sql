@@ -9,7 +9,7 @@ insert into public.lessons (
   'Routines, decision fatigue, habit stacking, environment design, consistency over perfection, and returning after interruptions',
   'Explain how routines reduce daily decision fatigue, build a habit stack that attaches a new habit to an existing anchor, set up visible environment supports that make healthy choices easier, and respond to interrupted routines with the next small step instead of all-or-nothing thinking.',
   18,
-  '[{"type":"summary","title":"Three ideas worth carrying","points":["A routine is a decision you make once, then simply repeat.","Small habits stacked onto existing ones beat dramatic overnight overhauls.","When life interrupts, you do not start over—you take the next step, without guilt."]}]'::pg_catalog.jsonb,
+  '[{"type":"summary","title":"Three ideas worth carrying","points":["A routine is a decision you make once, then simply repeat.","Small habits stacked onto existing ones beat dramatic overnight overhauls.","When life interrupts, you do not start over, you take the next step, without guilt."]}]'::pg_catalog.jsonb,
   'Consistency is more powerful than perfection. Small routines, repeated kindly and returned to after interruptions, make diabetes fit into your life.',
   'published',
   'Health Decoded curriculum blueprint and Day 10 manuscript',

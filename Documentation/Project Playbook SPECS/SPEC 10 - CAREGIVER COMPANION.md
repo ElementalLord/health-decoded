@@ -256,7 +256,7 @@ Instead of thinking:
 "I need to manage their diabetes."
 They begin thinking:
 "I can support them while they manage their diabetes."
-Likewise, the patient should feel more understood—not more monitored.
+Likewise, the patient should feel more understood, not more monitored.
 The strongest outcome isn't that caregivers know more medical facts.
 It's that conversations become calmer, more supportive, and less driven by fear.
 

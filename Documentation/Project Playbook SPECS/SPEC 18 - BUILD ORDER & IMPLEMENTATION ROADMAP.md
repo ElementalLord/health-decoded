@@ -91,7 +91,7 @@ Polish
 Milestone 10
 Launch Preparation
 
-Milestone 1 — Foundation
+Milestone 1, Foundation
 Objective
 Create the project infrastructure.
 Tasks
@@ -111,7 +111,7 @@ A deployable application shell.
 No features.
 Only infrastructure.
 
-Milestone 2 — Authentication
+Milestone 2, Authentication
 Objective
 Users can create an account and log in.
 Tasks
@@ -126,7 +126,7 @@ Deliverable
 A complete authentication system.
 Nothing else.
 
-Milestone 3 — Journey
+Milestone 3, Journey
 Objective
 Build the application's home experience.
 Tasks
@@ -141,7 +141,7 @@ Loading states
 Deliverable
 Users can sign in and reach their dashboard.
 
-Milestone 4 — Daily Lessons
+Milestone 4, Daily Lessons
 Objective
 Build the educational experience.
 Tasks
@@ -156,7 +156,7 @@ Seed Day 1–Day 7 lessons
 Deliverable
 Users can complete lessons from start to finish.
 
-Milestone 5 — Interactive Learning
+Milestone 5, Interactive Learning
 Objective
 Transform reading into participation.
 Tasks
@@ -171,7 +171,7 @@ Boss Level
 Deliverable
 Every lesson contains one interactive activity.
 
-Milestone 6 — AI Tutor
+Milestone 6, AI Tutor
 Objective
 Integrate the educational AI.
 Tasks
@@ -187,7 +187,7 @@ Deliverable
 A fully functional educational AI.
 This is the prototype's signature feature.
 
-Milestone 7 — Medication Library
+Milestone 7, Medication Library
 Objective
 Build the educational medication experience.
 Tasks
@@ -199,7 +199,7 @@ Clinician-reviewed seed content
 Deliverable
 Users can understand medications in plain English.
 
-Milestone 8 — Caregiver Companion
+Milestone 8, Caregiver Companion
 Objective
 Support family members.
 Tasks
@@ -210,7 +210,7 @@ Conversation starters
 Deliverable
 A companion experience that mirrors the patient's journey.
 
-Milestone 9 — Polish
+Milestone 9, Polish
 Objective
 Improve quality.
 Tasks
@@ -225,7 +225,7 @@ Visual consistency review
 Deliverable
 The application feels professional and cohesive.
 
-Milestone 10 — Launch Preparation
+Milestone 10, Launch Preparation
 Objective
 Prepare the prototype for user testing.
 Tasks
@@ -373,8 +373,8 @@ Success Criteria
 This implementation roadmap succeeds when the project reaches a polished, testable prototype without requiring major architectural changes during development.
 Every milestone should add meaningful value while preserving stability.
 At no point should the team need to stop and rethink the application's foundation.
-By the end of the roadmap, Health Decoded should feel like a complete product—not because it has every possible feature, but because every included feature is coherent, reliable, and thoughtfully integrated.
+By the end of the roadmap, Health Decoded should feel like a complete product, not because it has every possible feature, but because every included feature is coherent, reliable, and thoughtfully integrated.
 
 The Guiding Principle
 If there is one sentence that should guide the entire build process, it is this:
-Build the smallest version of Health Decoded that genuinely helps someone feel less overwhelmed after a Type 2 diabetes diagnosis—and build every feature well before building the next one.
+Build the smallest version of Health Decoded that genuinely helps someone feel less overwhelmed after a Type 2 diabetes diagnosis, and build every feature well before building the next one.

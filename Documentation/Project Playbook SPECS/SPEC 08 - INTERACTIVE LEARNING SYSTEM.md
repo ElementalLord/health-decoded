@@ -1,7 +1,7 @@
 Purpose
 Reading creates awareness.
 Doing creates understanding.
-The Interactive Learning System exists because people do not build confidence by consuming information—they build confidence by interacting with it.
+The Interactive Learning System exists because people do not build confidence by consuming information, they build confidence by interacting with it.
 Every activity inside Health Decoded should answer one simple question:
 "Do I actually understand this?"
 The objective is never entertainment.
@@ -37,7 +37,7 @@ Users should never finish a lesson without actively applying what they just lear
 
 The Three Rules
 Every interaction in Health Decoded follows three non-negotiable rules.
-Rule 1 — Teach, Don't Test
+Rule 1, Teach, Don't Test
 The goal is never to see whether the user is right or wrong.
 The goal is to help them discover why.
 If a user answers incorrectly, they should never feel like they failed.
@@ -50,7 +50,7 @@ Almost. This is a really common misunderstanding.
 Then explain it in one or two sentences before allowing the user to try again.
 Learning always comes before scoring.
 
-Rule 2 — One Concept Per Interaction
+Rule 2, One Concept Per Interaction
 Every activity reinforces exactly one lesson objective.
 Never combine topics.
 If today's lesson is:
@@ -64,7 +64,7 @@ Users should leave saying,
 Not,
 "I learned ten unrelated facts."
 
-Rule 3 — Every Success Builds Confidence
+Rule 3, Every Success Builds Confidence
 The reward isn't points.
 The reward is certainty.
 Instead of saying
@@ -229,7 +229,7 @@ Your doctor prescribed Metformin.
 You want dinner.
 What questions would you ask before leaving the appointment?
 Users work through a realistic scenario using everything they've learned during the week.
-Boss Levels celebrate growth—not mastery.
+Boss Levels celebrate growth, not mastery.
 
 8. Explain It Yourself
 This is the interaction I believe users will remember most.
@@ -252,7 +252,7 @@ Example
 +75 Confidence XP
 The animation lasts less than one second.
 Then it disappears.
-Users should remember what they learned—not how many points they earned.
+Users should remember what they learned, not how many points they earned.
 
 Tiny Celebrations
 Health Decoded celebrates understanding.

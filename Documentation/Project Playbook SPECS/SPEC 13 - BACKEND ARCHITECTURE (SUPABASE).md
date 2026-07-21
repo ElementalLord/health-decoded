@@ -93,7 +93,7 @@ ai_conversations
 reflection_entries
 Each table has one clear responsibility.
 
-Table 1 — Profiles
+Table 1, Profiles
 Stores user information.
 Columns
 id (UUID)
@@ -113,7 +113,7 @@ Preferred language
 Timezone
 Never store medical values like A1C in the prototype.
 
-Table 2 — Lessons
+Table 2, Lessons
 Stores every educational lesson.
 Columns
 id
@@ -153,7 +153,7 @@ Reflection
 Activity:
 Confidence Check
 
-Table 3 — Activities
+Table 3, Activities
 Every lesson references one activity.
 Columns
 id
@@ -179,7 +179,7 @@ Myth Buster
 Explain It Yourself
 The frontend renders the activity based on the type.
 
-Table 4 — Lesson Progress
+Table 4, Lesson Progress
 Tracks completion.
 Columns
 id
@@ -203,7 +203,7 @@ Journey progress
 Confidence Map
 Completion percentage
 
-Table 5 — User Progress
+Table 5, User Progress
 Stores overall journey state.
 Columns
 user_id
@@ -223,7 +223,7 @@ journey_started
 journey_completed
 This table powers the Home screen.
 
-Table 6 — Medications
+Table 6, Medications
 Stores medication content.
 Columns
 id
@@ -249,7 +249,7 @@ questions_for_doctor
 medical_reviewed
 Each medication page is entirely database-driven.
 
-Table 7 — Patient Stories
+Table 7, Patient Stories
 Stores weekly stories.
 Columns
 id
@@ -265,7 +265,7 @@ key_takeaway
 published
 Stories can easily be replaced without changing code.
 
-Table 8 — Caregiver Lessons
+Table 8, Caregiver Lessons
 Stores caregiver content.
 Columns
 id
@@ -283,7 +283,7 @@ conversation_prompt
 published
 Every patient lesson can optionally reference a caregiver lesson.
 
-Table 9 — Reflection Entries
+Table 9, Reflection Entries
 Stores optional reflections.
 Columns
 id
@@ -300,7 +300,7 @@ Maximum length
 No sentiment analysis.
 No emotional scoring.
 
-Table 10 — Confidence History
+Table 10, Confidence History
 Stores confidence check-ins.
 Columns
 id
@@ -318,7 +318,7 @@ Somewhat
 Confident
 This powers the Confidence Map.
 
-Table 11 — AI Conversations
+Table 11, AI Conversations
 Stores AI history.
 Columns
 id
@@ -343,7 +343,7 @@ content
 timestamp
 This mirrors modern chat applications and allows conversations to scale efficiently.
 
-Table 12 — User Settings
+Table 12, User Settings
 Stores preferences.
 Columns
 user_id
@@ -509,4 +509,4 @@ The backend should be organized around stable content models rather than applica
 The Guiding Principle
 If there is one sentence that should guide every backend decision, it is this:
 The backend should remember the user's journey so the frontend can focus entirely on teaching it.
-A clean backend isn't measured by how many tables it has—it's measured by how little the frontend needs to know about how the data is stored. That separation will make Health Decoded easier to build now and far easier to expand after the prototype.
+A clean backend isn't measured by how many tables it has, it's measured by how little the frontend needs to know about how the data is stored. That separation will make Health Decoded easier to build now and far easier to expand after the prototype.

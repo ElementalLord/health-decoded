@@ -217,7 +217,7 @@ export function LessonContentBlockView({
           </blockquote>
           {block.attribution ? (
             <figcaption className="mt-7 text-xs font-bold uppercase tracking-[0.2em] opacity-65">
-              — {block.attribution}
+              , {block.attribution}
             </figcaption>
           ) : null}
         </figure>

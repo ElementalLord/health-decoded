@@ -70,7 +70,7 @@ No hidden pages.
 No secondary dashboards.
 No unnecessary complexity.
 
-Screen 1 — Authentication
+Screen 1, Authentication
 Purpose
 Allow users to securely access their journey.
 
@@ -103,7 +103,7 @@ Profile Found
 
 Journey
 
-Screen 2 — Onboarding
+Screen 2, Onboarding
 Shown only once.
 Purpose:
 Understand enough about the user to personalize their experience.
@@ -135,7 +135,7 @@ Day One unlocked
 
 Journey
 
-Screen 3 — Journey (Home)
+Screen 3, Journey (Home)
 This is the heart of the application.
 Users always return here.
 
@@ -158,7 +158,7 @@ The Journey changes based on progress.
 Week One looks different than Week Six.
 The interface quietly grows with the user.
 
-Screen 4 — Daily Lesson
+Screen 4, Daily Lesson
 Every lesson follows exactly the same structure.
 
 Layout
@@ -178,7 +178,7 @@ Continue
 ↓
 Interactive Activity
 
-Screen 5 — Interactive Activity
+Screen 5, Interactive Activity
 One activity.
 One learning objective.
 No distractions.
@@ -204,7 +204,7 @@ Completion
 ↓
 Lesson Complete
 
-Screen 6 — Lesson Complete
+Screen 6, Lesson Complete
 This is one of the most emotionally important screens.
 Purpose:
 Pause.
@@ -221,7 +221,7 @@ Return Home
 
 This screen should last less than fifteen seconds.
 
-Screen 7 — Ask AI
+Screen 7, Ask AI
 The AI receives its own dedicated experience.
 Not a popup.
 Not a floating widget.
@@ -243,7 +243,7 @@ Why am I still tired?
 
 The empty state teaches users how to use the AI.
 
-Screen 8 — Medication Library
+Screen 8, Medication Library
 Purpose
 Simple explanations.
 Not prescriptions.
@@ -263,7 +263,7 @@ Opening one
 ↓
 Medication Detail
 
-Screen 9 — Medication Detail
+Screen 9, Medication Detail
 Purpose
 Answer every question someone commonly asks about one medication.
 
@@ -279,7 +279,7 @@ Related AI questions
 No dosage calculators.
 No personalized advice.
 
-Screen 10 — Caregiver Companion
+Screen 10, Caregiver Companion
 Purpose
 Help loved ones support the patient.
 
@@ -292,7 +292,7 @@ Weekly caregiver story
 
 Should feel shorter than the patient experience.
 
-Screen 11 — Profile
+Screen 11, Profile
 Purpose
 Show progress.
 Nothing else.
@@ -308,7 +308,7 @@ Settings shortcut
 No charts.
 No statistics overload.
 
-Screen 12 — Settings
+Screen 12, Settings
 Purpose
 Simple personalization.
 

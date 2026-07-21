@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 const stageCount = 9;
 
 const openingFeelings = [
-  ["overwhelmed", "Overwhelmed—there is so much to remember every day"],
+  ["overwhelmed", "Overwhelmed, there is so much to remember every day"],
   ["tired", "Tired of deciding the same things over and over"],
   ["hopeful", "Hopeful that this can start to feel automatic"],
   ["curious", "Curious how small habits actually add up"],
@@ -31,7 +31,7 @@ const dailyDecisions = [
   {
     body: "A fixed time and place answers this for you, so the doubt never gets to start.",
     id: "already",
-    label: "“Wait—did I already do that today?”",
+    label: "“Wait, did I already do that today?”",
   },
   {
     body: "A step you decided on in advance doesn’t wait for a mood that may not arrive.",
@@ -80,7 +80,7 @@ const environmentSupports = [
   ["shoes", "Walking shoes near the door"],
   ["water", "A water bottle filled and within reach"],
   ["mirror", "A gentle note on the bathroom mirror"],
-  ["organizer", "A weekly pill organizer—if recommended"],
+  ["organizer", "A weekly pill organizer, if recommended"],
 ] as const;
 type EnvironmentSupportId = (typeof environmentSupports)[number][0];
 
@@ -102,7 +102,7 @@ const reflections = [
   "Small habits, repeated kindly, quietly become who I am.",
   "A routine is a decision I only have to make once.",
   "Progress is measured in weeks, not perfect days.",
-  "My routine should fit my life—not someone else’s.",
+  "My routine should fit my life, not someone else’s.",
 ] as const;
 
 const glossary = [
@@ -118,12 +118,12 @@ const glossary = [
   },
   {
     definition:
-      "Attaching a new habit to something you already do every day—“after I brush my teeth, I take my medication”—so the old habit reminds you of the new one.",
+      "Attaching a new habit to something you already do every day (“after I brush my teeth, I take my medication”) so the old habit reminds you of the new one.",
     term: "Habit stacking",
   },
   {
     definition:
-      "Placing helpful things where you will see them—fruit on the counter, shoes by the door, a note on the fridge—so the healthy choice becomes the easy choice.",
+      "Placing helpful things where you will see them (fruit on the counter, shoes by the door, a note on the fridge) so the healthy choice becomes the easy choice.",
     term: "Visible reminder",
   },
   {
@@ -212,8 +212,8 @@ function DayRhythmAnimation() {
       >
         <title id="day-rhythm-title">A gentle sun crosses a day held by three anchors</title>
         <desc id="day-rhythm-desc">
-          A soft sun drifts along a day arc while three routine anchors—morning, midday, and
-          evening—glow in turn beneath it.
+          A soft sun drifts along a day arc while three routine anchors, morning, midday, and
+          evening, glow in turn beneath it.
         </desc>
         <rect className={styles.canvasWarm} height="452" rx="54" width="820" />
         <text className={styles.sceneHeading} textAnchor="middle" x="410" y="46">
@@ -296,8 +296,8 @@ function DayRhythmAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>You don’t have to hold it all in your head.</strong> A few gentle anchors—morning,
-        midday, evening—quietly carry the remembering for you, the way brushing your teeth needs no
+        <strong>You don’t have to hold it all in your head.</strong> A few gentle anchors, morning,
+        midday, evening, quietly carry the remembering for you, the way brushing your teeth needs no
         debate.
       </figcaption>
     </figure>
@@ -430,8 +430,8 @@ function DecisionLanternAnimation() {
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>Decision fatigue is real.</strong> Every open question costs a little light. A
-        routine answers the question once, in advance—so by evening there is still something left in
-        the lantern.
+        routine answers the question once, in advance, so by evening there is still something left
+        in the lantern.
       </figcaption>
     </figure>
   );
@@ -522,7 +522,7 @@ function HabitLoopAnimation() {
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>Here is the use:</strong> your brain already remembers the anchor. Attach the new
-        habit right after it, and the old routine does the reminding—no willpower contest required.
+        habit right after it, and the old routine does the reminding, no willpower contest required.
       </figcaption>
     </figure>
   );
@@ -601,13 +601,13 @@ function NextStepStaircaseAnimation() {
           A PAUSED DAY
         </text>
         <text className={styles.motionCaption} textAnchor="middle" x="440" y="446">
-          DON’T START OVER — JUST TAKE THE NEXT STEP
+          DON’T START OVER, JUST TAKE THE NEXT STEP
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>Missing a step on a staircase</strong> never sends you back to the bottom. You
-        steady yourself and take the next one. An interrupted routine works exactly the same
-        way—tomorrow is simply the next step.
+        steady yourself and take the next one. An interrupted routine works exactly the same way,
+        tomorrow is simply the next step.
       </figcaption>
     </figure>
   );
@@ -713,7 +713,7 @@ function GrowthOverWeeksAnimation() {
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>Improvement is gradual.</strong> Managing diabetes is more like learning an
-        instrument than cramming for an exam—some weeks feel easier than others, and the quiet,
+        instrument than cramming for an exam, some weeks feel easier than others, and the quiet,
         repeated ones are what add up.
       </figcaption>
     </figure>
@@ -908,7 +908,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
             <DecisionLanternAnimation />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Open the everyday questions that quietly drain the day. Notice how each one can be
-              answered in advance by a small routine—so it stops being a question at all.
+              answered in advance by a small routine, so it stops being a question at all.
             </p>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               {dailyDecisions.map((decision) => {
@@ -975,7 +975,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                   [
                     [
                       "one_small_habit",
-                      "The one who starts with one small habit—like a short walk after dinner.",
+                      "The one who starts with one small habit, like a short walk after dinner.",
                     ],
                     [
                       "everything_at_once",
@@ -1004,7 +1004,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-9">
             <LessonHeading label="Habit stacking">
-              Attach the new habit to something you already do—and let the old habit remind you.
+              Attach the new habit to something you already do, and let the old habit remind you.
             </LessonHeading>
             <HabitLoopAnimation />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
@@ -1121,7 +1121,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
             </div>
             {supportsPlaced.size >= 3 ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 leading-7">
-                Lovely. None of these require willpower at the moment of choice—that is exactly the
+                Lovely. None of these require willpower at the moment of choice, that is exactly the
                 point. Tiny changes to your environment quietly support you every day.
               </p>
             ) : null}
@@ -1131,7 +1131,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-9">
             <LessonHeading label="When life interrupts">
-              A birthday, a busy week, a tired evening—your routine can bend without breaking.
+              A birthday, a busy week, a tired evening, your routine can bend without breaking.
             </LessonHeading>
             <NextStepStaircaseAnimation />
             <div className="border-y border-border py-8">
@@ -1197,7 +1197,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                 <div>
                   <p className="editorial-eyebrow text-success">This week’s gentle experiment</p>
                   <p>
-                    {starterRoutines.find(([id]) => id === starterRoutine)?.[1]} — remembered by{" "}
+                    {starterRoutines.find(([id]) => id === starterRoutine)?.[1]}, remembered by{" "}
                     {visibleReminders.find(([id]) => id === reminder)?.[1].toLowerCase()}. Visible
                     reminders are tools, not signs of forgetfulness.
                   </p>
@@ -1210,7 +1210,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-9">
             <LessonHeading label="Progress grows over weeks">
-              Improvement is gradual—more like tending a plant than passing a test.
+              Improvement is gradual, more like tending a plant than passing a test.
             </LessonHeading>
             <GrowthOverWeeksAnimation />
             <div className="grid gap-3 sm:grid-cols-2">
@@ -1234,7 +1234,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                   [
                     [
                       "consistency_routines",
-                      "Simple routines that make healthy choices easier—and returning to them whenever life interrupts.",
+                      "Simple routines that make healthy choices easier, and returning to them whenever life interrupts.",
                     ],
                     ["perfect_choices", "Making perfect choices at every meal, every single day."],
                     [
@@ -1265,7 +1265,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
               <p className="editorial-eyebrow text-success">Three ideas worth carrying</p>
               <ol className="mt-6 space-y-6">
                 {[
-                  "A routine is a decision you make once, then simply repeat—so the day costs less energy.",
+                  "A routine is a decision you make once, then simply repeat, so the day costs less energy.",
                   "Small habits stacked onto things you already do beat dramatic overnight overhauls.",
                   "When life interrupts, you don’t start over. You take the next step, without guilt.",
                 ].map((item, index) => (
@@ -1285,7 +1285,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                   Preventing complications without fear
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  How steady routines help protect your eyes, kidneys, heart, and nerves—through
+                  How steady routines help protect your eyes, kidneys, heart, and nerves, through
                   small consistent choices, not fear.
                 </p>
               </div>

@@ -1,6 +1,6 @@
 # Health Decoded AI Build Pipeline
 
-# Prompt 13 — Lesson Reader Foundation
+# Prompt 13, Lesson Reader Foundation
 
 ## Purpose
 
