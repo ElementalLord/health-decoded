@@ -108,7 +108,7 @@ Understanding blood sugar helps explain why food, exercise, and medication all w
 4. Remember This
 One sentence.
 Example:
-Blood sugar isn't bad—your body needs it. The goal is keeping it in a healthy range.
+Blood sugar isn't bad, your body needs it. The goal is keeping it in a healthy range.
 
 5. Continue Learning
 The AI suggests exactly one related lesson.
@@ -161,7 +161,7 @@ Blood sugar pathway
 Healthy Plate
 Digestive system
 Medication timeline
-Visuals should always reinforce—not replace—the written explanation.
+Visuals should always reinforce, not replace, the written explanation.
 
 Suggested Follow-Up Questions
 At the end of every response, the AI suggests three natural next questions.
@@ -264,4 +264,4 @@ They always knew what to learn next.
 The AI respected its limits instead of pretending to be their doctor.
 The AI should become the place users go when they think,
 "I know this is probably a simple question, but I just want someone to explain it."
-If Health Decoded earns that level of trust, then the AI has become more than a chatbot—it has become the educational companion the platform was built around.
+If Health Decoded earns that level of trust, then the AI has become more than a chatbot, it has become the educational companion the platform was built around.

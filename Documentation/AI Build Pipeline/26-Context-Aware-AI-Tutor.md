@@ -1,4 +1,4 @@
-# Prompt 26 — Context-Aware AI Tutor
+# Prompt 26, Context-Aware AI Tutor
 
 ## Objective
 

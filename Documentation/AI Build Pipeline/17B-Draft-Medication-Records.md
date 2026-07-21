@@ -1,4 +1,4 @@
-# Prompt 17B — Research-Backed Draft Medication Records
+# Prompt 17B, Research-Backed Draft Medication Records
 
 Create four source-backed, unpublished educational medication drafts for metformin, empagliflozin, semaglutide injection, and sitagliptin. Each record must remain in `draft` status, include the internal notice that it is not clinically reviewed and must not be published, cite an official primary or government source, and contain no reviewer or publication metadata.
 

@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 const stageCount = 9;
 
 const openingFeelings = [
-  ["worried", "Worried—those words sound frightening"],
+  ["worried", "Worried, those words sound frightening"],
   ["curious", "Curious about what the signals actually mean"],
   ["prepared", "Ready to feel prepared instead of afraid"],
   ["unsure", "Unsure whether this even applies to me"],
@@ -44,7 +44,7 @@ const highCauses = [
     label: "Being sick",
   },
   {
-    body: "Significant stress releases hormones that can nudge glucose upward—even without food changes.",
+    body: "Significant stress releases hormones that can nudge glucose upward, even without food changes.",
     id: "stress",
     label: "A stressful stretch",
   },
@@ -54,7 +54,7 @@ const highCauses = [
     label: "The body responding differently",
   },
   {
-    body: "Sometimes there is no obvious explanation—and that does not mean you did something wrong.",
+    body: "Sometimes there is no obvious explanation, and that does not mean you did something wrong.",
     id: "unknown",
     label: "No clear reason at all",
   },
@@ -110,7 +110,7 @@ const supportPeople = [
 ] as const;
 
 const reflections = [
-  "Most blood sugar changes are manageable—not emergencies.",
+  "Most blood sugar changes are manageable, not emergencies.",
   "High and low have different signals, and I can learn mine.",
   "A symptom is a signal to pay attention, not a reason to panic.",
   "Asking for help early is part of taking good care of myself.",
@@ -134,7 +134,7 @@ const glossary = [
   },
   {
     definition:
-      "Uncommon symptoms—such as persistent vomiting, trouble breathing, difficulty staying awake, or growing confusion—that deserve prompt medical care.",
+      "Uncommon symptoms (such as persistent vomiting, trouble breathing, difficulty staying awake, or growing confusion) that deserve prompt medical care.",
     term: "Urgent signals",
   },
   {
@@ -190,8 +190,8 @@ function AnswerChoice({
 
 function sorterConfirmation(side: "high" | "low") {
   return side === "high"
-    ? "Yes—often a gradual high-side signal."
-    : "Yes—often a quick low-side signal.";
+    ? "Yes, often a gradual high-side signal."
+    : "Yes, often a quick low-side signal.";
 }
 
 function sorterCorrection(side: "high" | "low") {
@@ -303,12 +303,12 @@ function SteadyBalanceAnimation() {
           </text>
         </g>
         <text className={styles.motionCaption} textAnchor="middle" x="410" y="404">
-          MOST CHANGES ARE SMALL DRIFTS — NOT EMERGENCIES
+          MOST CHANGES ARE SMALL DRIFTS, NOT EMERGENCIES
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>Balance is a range, not a single point.</strong> Blood glucose rises and settles all
-        day. Today is about recognizing when a drift is asking for attention—without treating every
+        day. Today is about recognizing when a drift is asking for attention, without treating every
         movement as an alarm.
       </figcaption>
     </figure>
@@ -417,12 +417,12 @@ function SlowTideAnimation() {
           ))}
         </g>
         <text className={styles.motionCaption} textAnchor="middle" x="440" y="444">
-          SIGNALS OFTEN APPEAR GRADUALLY — SOMETIMES ONLY ONE OR TWO
+          SIGNALS OFTEN APPEAR GRADUALLY, SOMETIMES ONLY ONE OR TWO
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>A rising tide, not a sudden wave.</strong> When glucose stays higher than the body
-        can comfortably use, the body pulls extra water to flush some out—which is why thirst and
+        can comfortably use, the body pulls extra water to flush some out, which is why thirst and
         restroom trips are often the first gentle signals.
       </figcaption>
     </figure>
@@ -557,7 +557,7 @@ function QuickBellAnimation() {
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>These symptoms are protective.</strong> The body creates fast, noticeable signals on
-        purpose—so you can respond early. Whether lows are likely for you depends largely on your
+        purpose, so you can respond early. Whether lows are likely for you depends largely on your
         medications, which is why your care team explains your personal risk.
       </figcaption>
     </figure>
@@ -654,8 +654,8 @@ function ActionPathAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Here is the use:</strong> most highs and lows travel the calm path—pause, follow the
-        plan your care team gave you, and reach out early if things stay off. Urgent signals are
+        <strong>Here is the use:</strong> most highs and lows travel the calm path, pause, follow
+        the plan your care team gave you, and reach out early if things stay off. Urgent signals are
         uncommon, and they skip straight to prompt medical care.
       </figcaption>
     </figure>
@@ -680,7 +680,7 @@ function SteadyHandAnimation() {
         </desc>
         <rect className={styles.canvasWarm} height="440" rx="54" width="820" />
         <text className={styles.sceneHeading} textAnchor="middle" x="410" y="48">
-          A SIGNAL ASKS FOR ATTENTION — NOT PANIC
+          A SIGNAL ASKS FOR ATTENTION, NOT PANIC
         </text>
         <g transform="translate(70 96)">
           <rect className={styles.scenePanel} height="288" rx="28" width="300" />
@@ -783,9 +783,9 @@ function SteadyHandAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>The smoke detector idea:</strong> an alarm while cooking gets your attention—it does
-        not mean the house is burning down. Blood sugar signals work the same way: they say “pay
-        attention,” and your plan says what to do next.
+        <strong>The smoke detector idea:</strong> an alarm while cooking gets your attention, it
+        does not mean the house is burning down. Blood sugar signals work the same way: they say
+        “pay attention,” and your plan says what to do next.
       </figcaption>
     </figure>
   );
@@ -941,7 +941,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
           <div className="space-y-10">
             <div className="grid gap-8 lg:grid-cols-[1fr_17rem] lg:items-end">
               <LessonHeading label="Day 09 · Highs, lows, and knowing when to act">
-                Preparedness is quieter than panic—and far more useful.
+                Preparedness is quieter than panic, and far more useful.
               </LessonHeading>
               <div className="border-l-2 border-accent-warm pl-6">
                 <p className="editorial-number text-accent-warm">09</p>
@@ -965,7 +965,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             {openingFeeling ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 text-lg leading-8">
-                Whatever you chose is a reasonable place to start. Knowledge replaces fear—by the
+                Whatever you chose is a reasonable place to start. Knowledge replaces fear, by the
                 end of today you will know what to watch for and when to ask for help.
               </p>
             ) : null}
@@ -979,7 +979,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             </LessonHeading>
             <SlowTideAnimation />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              One high reading rarely means something is seriously wrong—care teams pay far more
+              One high reading rarely means something is seriously wrong, care teams pay far more
               attention to repeated patterns. Open the everyday reasons glucose can drift higher.
             </p>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
@@ -1006,7 +1006,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             {activeCause ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 leading-7">
                 {highCauses.find((cause) => cause.id === activeCause)?.body} None of these reasons
-                are moral verdicts—they are context for a conversation with your care team.
+                are moral verdicts, they are context for a conversation with your care team.
               </p>
             ) : null}
           </div>
@@ -1044,7 +1044,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
               >
                 {lowRiskChoice === "medications"
                   ? "Exactly. Some diabetes medications can increase the chance of a low; others rarely cause lows on their own. Your healthcare provider explains your personal level of risk."
-                  : "Not quite—risk is not the same for everyone, and lows are not limited to one medication. It depends largely on which medications someone takes, which is why your care team explains your personal risk."}
+                  : "Not quite, risk is not the same for everyone, and lows are not limited to one medication. It depends largely on which medications someone takes, which is why your care team explains your personal risk."}
               </p>
             ) : null}
           </div>
@@ -1057,7 +1057,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             </LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               For each signal, choose whether it more often belongs with high or low blood sugar.
-              Bodies differ—this is common-pattern practice, not a diagnosis.
+              Bodies differ, this is common-pattern practice, not a diagnosis.
             </p>
             <div className="space-y-3">
               {symptomCards.map((card) => {
@@ -1138,7 +1138,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
                 [
                   [
                     "follow_plan",
-                    "Follow the plan your care team gave you—and check your blood sugar if they asked you to.",
+                    "Follow the plan your care team gave you, and check your blood sugar if they asked you to.",
                   ],
                   ["wait_it_out", "Ignore it and wait for the feeling to pass on its own."],
                   ["exercise_through", "Head out for a brisk walk to burn through it."],
@@ -1160,7 +1160,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
                   Afterwards, become a gentle detective.
                 </p>
                 <p className="mt-3 max-w-3xl leading-8 text-muted-foreground">
-                  Many care plans include a fast-acting carbohydrate for mild lows—the exact steps
+                  Many care plans include a fast-acting carbohydrate for mild lows, the exact steps
                   belong to your personal plan. Once things feel steady, look back with curiosity,
                   not blame:
                 </p>
@@ -1213,7 +1213,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
                   [
                     [
                       "prompt_care",
-                      "Seek medical care promptly—this is what urgent signals are for.",
+                      "Seek medical care promptly, this is what urgent signals are for.",
                     ],
                     ["wait_days", "Wait a few days to see whether it settles."],
                     ["online_forums", "Compare your symptoms with strangers online first."],
@@ -1239,7 +1239,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
               Preparedness is mostly knowing four small things.
             </LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Check off what is already true—or what you would like to set up this week. This stays
+              Check off what is already true, or what you would like to set up this week. This stays
               in your browser; it is a thinking tool, not a medical record.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -1292,7 +1292,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
               </div>
               {supportPerson ? (
                 <p className="mt-4 animate-slide-up border-l-2 border-success bg-info p-4 leading-7">
-                  A lovely choice. Sharing what you learned today—even five minutes of it—turns a
+                  A lovely choice. Sharing what you learned today (even five minutes of it) turns a
                   private worry into a shared plan.
                 </p>
               ) : null}
@@ -1327,7 +1327,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
                   [
                     [
                       "prepared_not_panicked",
-                      "Most changes are manageable—learn your signals, follow your care team’s plan, and get help when symptoms are severe or don’t improve.",
+                      "Most changes are manageable, learn your signals, follow your care team’s plan, and get help when symptoms are severe or don’t improve.",
                     ],
                     [
                       "every_change_emergency",
@@ -1362,7 +1362,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
                 {[
                   "High and low blood sugar feel different: highs often build slowly with thirst and tiredness, while lows tend to announce themselves quickly.",
                   "Most changes are not emergencies. Pause, follow the plan your care team gave you, and reach out early when something stays off.",
-                  "Urgent signals are uncommon—and recognizing them is preparedness, not fear. Prompt medical care exists exactly for those moments.",
+                  "Urgent signals are uncommon, and recognizing them is preparedness, not fear. Prompt medical care exists exactly for those moments.",
                 ].map((item, index) => (
                   <li className="grid grid-cols-[3rem_1fr] gap-4 text-lg leading-8" key={item}>
                     <span className="font-serif-display text-4xl text-accent-warm">
@@ -1381,7 +1381,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
                   Small, consistent habits reduce decision fatigue and help diabetes fit into your
-                  life—rather than take it over.
+                  life, rather than take it over.
                 </p>
               </div>
               <div>

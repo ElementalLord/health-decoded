@@ -46,7 +46,7 @@ test("Day 10 visual metaphors keep their sequence and labels legible", () => {
   assert.match(experience, /A MISSED STEP IS NOT A RESTART/);
   assert.match(experience, /PROGRESS GROWS OVER WEEKS, NOT DAYS/);
   assert.match(experience, /A ROUTINE IS A DECISION YOU ONLY MAKE ONCE/);
-  assert.match(experience, /DON’T START OVER — JUST TAKE THE NEXT STEP/);
+  assert.match(experience, /DON’T START OVER, JUST TAKE THE NEXT STEP/);
   assert.match(experience, /Here is the use:/);
 });
 

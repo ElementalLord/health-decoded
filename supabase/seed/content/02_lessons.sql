@@ -68,11 +68,11 @@ insert into public.lessons (
   '20000000-0000-0000-0000-000000000005',
   'movement-your-bodys-secret-superpower',
   'Movement: Your Body''s Secret Superpower',
-  'How working muscles use glucose—and why small, safe bouts count',
+  'How working muscles use glucose, and why small, safe bouts count',
   'Physical activity, muscle glucose uptake, and insulin sensitivity',
   'Explain one way movement changes glucose use, identify approachable aerobic and strength activities, and draft one realistic, safe first-week movement action.',
   14,
-  '[{"type":"summary","title":"Three truths to carry forward","points":["Working muscles can take up glucose and use it for energy.","Regular physical activity can improve insulin sensitivity.","Small, safe, repeatable movement counts—even when it is adapted or interrupted."]}]'::jsonb,
+  '[{"type":"summary","title":"Three truths to carry forward","points":["Working muscles can take up glucose and use it for energy.","Regular physical activity can improve insulin sensitivity.","Small, safe, repeatable movement counts, even when it is adapted or interrupted."]}]'::jsonb,
   'Movement is a glucose tool, not a punishment: working muscles use fuel, regular activity can improve insulin sensitivity, and one realistic opening is enough to begin.',
   'published',
   'Health Decoded curriculum blueprint, Day 5 manuscript, CDC, ADA, and NIDDK guidance',
@@ -139,7 +139,7 @@ insert into public.lessons (
   '[{"type":"summary","title":"The body system","points":["Glucose is a source of energy.","Insulin helps many cells take in glucose.","Cells may respond less effectively to insulin.","The pancreas may not meet the body’s increased insulin need.","More glucose remains in the blood."]}]'::jsonb,
   'Type 2 diabetes is not simply about whether the body makes insulin. The body may respond less effectively to insulin, and the pancreas may not make enough insulin to meet the increased need. As a result, more glucose remains in the blood.',
   'published',
-  'Implementation specification — medical review pending',
+  'Implementation specification, medical review pending',
   '2026-07-15T00:00:00Z',
   '2026-07-15T00:00:00Z'
 )

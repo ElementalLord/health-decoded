@@ -407,9 +407,9 @@ Clinicians should be able to improve educational material without needing engine
 Most importantly, users should experience a calm, predictable learning journey where every lesson builds naturally on the one before it.
 
 Engineering Notes
-Educational content should be represented as structured JSON objects stored in the database rather than raw HTML. Each lesson should consist of reusable section blocks (text, image, callout, activity, summary) that the frontend renders dynamically. This block-based architecture minimizes hardcoded layouts, ensures consistency across all lessons, and makes future expansion—such as adding videos or interactive diagrams—possible without rewriting the rendering engine. The frontend should treat every content type as data, allowing the same rendering components to be reused across lessons, medication pages, caregiver content, and future educational modules.
+Educational content should be represented as structured JSON objects stored in the database rather than raw HTML. Each lesson should consist of reusable section blocks (text, image, callout, activity, summary) that the frontend renders dynamically. This block-based architecture minimizes hardcoded layouts, ensures consistency across all lessons, and makes future expansion, such as adding videos or interactive diagrams, possible without rewriting the rendering engine. The frontend should treat every content type as data, allowing the same rendering components to be reused across lessons, medication pages, caregiver content, and future educational modules.
 
 The Guiding Principle
 If there is one sentence that should guide every content decision, it is this:
-The software should not know what it is teaching—it should only know how to teach it.
+The software should not know what it is teaching, it should only know how to teach it.
 By separating educational content from application logic, Health Decoded becomes far easier to maintain, clinically review, and expand. The application becomes an educational platform rather than a collection of hardcoded pages, ensuring that future improvements can focus on helping patients learn rather than rebuilding the software itself.

@@ -1,7 +1,7 @@
 I actually want to make a bigger update than just fixing "Type 2 Diabetes."
 After looking at everything we've built over the past few days, I think the Master Build Prompt should act like a technical project manager, not just a prompt. This means it should actively prevent the AI from making common mistakes, keep the implementation incremental, and enforce quality. This version is what I would personally use if I were building Health Decoded with Claude Code or Codex.
 
-HEALTH DECODED — MASTER BUILD PROMPT
+HEALTH DECODED, MASTER BUILD PROMPT
 Version 2.0 (Final)
 Role
 You are the Lead Software Engineer responsible for implementing Health Decoded, a modern educational web application designed to help people newly diagnosed with Type 2 Diabetes better understand their condition through short, interactive, and confidence-building lessons.
@@ -268,7 +268,7 @@ The code is clean, modular, and maintainable.
 Only then should work stop.
 
 Project Philosophy
-Health Decoded should feel like a trusted guide—not a medical textbook.
+Health Decoded should feel like a trusted guide, not a medical textbook.
 Every feature should help users:
 understand their diagnosis
 feel less overwhelmed

@@ -207,7 +207,7 @@ True or False
 "I should stop taking Metformin if I have mild nausea."
 After answering,
 the app explains the reasoning in plain English and reminds users to speak with their healthcare team before making changes to prescribed medication.
-The goal is reinforcement—not testing.
+The goal is reinforcement, not testing.
 
 Search
 The search experience should be forgiving.

@@ -43,7 +43,7 @@ test("Day 9 visual metaphors keep their sequence and labels legible", () => {
   assert.match(experience, /HIGH OFTEN BUILDS SLOWLY/);
   assert.match(experience, /LOWS OFTEN ANNOUNCE THEMSELVES QUICKLY/);
   assert.match(experience, /A CALM PATH BEATS A PANICKED GUESS/);
-  assert.match(experience, /A SIGNAL ASKS FOR ATTENTION — NOT PANIC/);
+  assert.match(experience, /A SIGNAL ASKS FOR ATTENTION, NOT PANIC/);
   assert.match(experience, /PAUSE · BREATHE · FOLLOW YOUR PLAN/);
   assert.match(experience, /MOST MOMENTS USE THE CALM PATH · A FEW USE THE FAST LANE/);
   assert.match(experience, /Here is the use:/);

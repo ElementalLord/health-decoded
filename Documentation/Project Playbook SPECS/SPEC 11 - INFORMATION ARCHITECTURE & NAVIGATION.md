@@ -343,8 +343,8 @@ The navigation should quietly disappear into the background, allowing the educat
 If a first-time user can confidently explore the prototype without guidance, then the information architecture has done its job.
 
 Engineering Notes
-The navigation system should be implemented as a small set of reusable layout components rather than unique page structures. Every screen should inherit the same spacing system, typography hierarchy, card styles, header behavior, and transition animations. Navigation state should remain lightweight, predictable, and easy to extend as new features are added after the prototype. Engineers should optimize for consistency over customization—new content should fit into existing layouts rather than creating new ones.
+The navigation system should be implemented as a small set of reusable layout components rather than unique page structures. Every screen should inherit the same spacing system, typography hierarchy, card styles, header behavior, and transition animations. Navigation state should remain lightweight, predictable, and easy to extend as new features are added after the prototype. Engineers should optimize for consistency over customization, new content should fit into existing layouts rather than creating new ones.
 
 The Guiding Principle
 If there is one sentence that should guide every navigation decision, it is this:
-The user should never have to think about how to use Health Decoded. Their attention should be spent understanding diabetes—not understanding the interface.
+The user should never have to think about how to use Health Decoded. Their attention should be spent understanding diabetes, not understanding the interface.

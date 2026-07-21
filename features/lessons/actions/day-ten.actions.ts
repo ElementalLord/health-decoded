@@ -53,8 +53,8 @@ export async function evaluateDayTenAction(input: unknown): Promise<DayTenEvalua
       data: {
         accurate,
         body: accurate
-          ? "A habit small enough to repeat on a tired Tuesday is strong enough to last. It becomes an anchor you can gently build on—no overhaul required."
-          : "Changing everything overnight feels productive, but it usually exhausts the person doing it—and waiting for motivation hands your health to your busiest day. One small, repeatable habit outlasts both.",
+          ? "A habit small enough to repeat on a tired Tuesday is strong enough to last. It becomes an anchor you can gently build on, no overhaul required."
+          : "Changing everything overnight feels productive, but it usually exhausts the person doing it, and waiting for motivation hands your health to your busiest day. One small, repeatable habit outlasts both.",
         heading: accurate
           ? "Small enough to repeat is strong enough to last."
           : "Big overhauls burn bright, then fade.",
@@ -69,8 +69,8 @@ export async function evaluateDayTenAction(input: unknown): Promise<DayTenEvalua
       data: {
         accurate,
         body: accurate
-          ? "A party, a missed walk, a tired evening—none of them erase your progress. Ask “what is the healthiest thing I can do next?” and take that one step, without guilt."
-          : "Writing off the whole week—or punishing yourself to make up for one evening—turns one moment into many. Your routine is still there, and returning to it after interruptions is what makes it last.",
+          ? "A party, a missed walk, a tired evening, none of them erase your progress. Ask “what is the healthiest thing I can do next?” and take that one step, without guilt."
+          : "Writing off the whole week, or punishing yourself to make up for one evening, turns one moment into many. Your routine is still there, and returning to it after interruptions is what makes it last.",
         heading: accurate
           ? "The next step is the whole plan."
           : "One evening is a pause, not a verdict.",
@@ -84,7 +84,7 @@ export async function evaluateDayTenAction(input: unknown): Promise<DayTenEvalua
     data: {
       accurate,
       body: accurate
-        ? "Simple routines make healthy choices easier, and returning to them after interruptions is what makes them last. Consistency—not perfection—is what quietly adds up."
+        ? "Simple routines make healthy choices easier, and returning to them after interruptions is what makes them last. Consistency, not perfection, is what quietly adds up."
         : "No one makes perfect choices every day, and motivation fades by evening. Routines are stronger than both: decide once, repeat gently, and come back without guilt.",
       heading: accurate
         ? "That is the secret, gently put."

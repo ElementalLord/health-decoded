@@ -11,7 +11,7 @@ The Dashboard should feel calm, personal, and encouraging. It should never feel 
 The Dashboard is designed around one primary action.
 Everything else is secondary.
 When a user opens the app, they should instinctively tap Continue Today's Lesson without needing to think.
-Every other feature exists to support that journey—not distract from it.
+Every other feature exists to support that journey, not distract from it.
 If two elements compete for attention, the design has failed.
 
 3. User Goals

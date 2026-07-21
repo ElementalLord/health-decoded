@@ -50,7 +50,7 @@ export function GlucoseInsulinAnimation() {
         className="border-t border-[#d7cbbd] px-5 py-4 text-xs leading-5 text-[#786a61] sm:px-7"
         id="glucose-animation-caption"
       >
-        A visual metaphor: insulin does not literally catch glucose—it signals many cells to take
+        A visual metaphor: insulin does not literally catch glucose, it signals many cells to take
         glucose in for energy.
       </p>
     </section>

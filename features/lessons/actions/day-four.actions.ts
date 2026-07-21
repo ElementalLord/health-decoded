@@ -73,7 +73,7 @@ const digestionFeedback: Record<
 > = {
   body_handling: {
     accurate: true,
-    body: "Food supplies nutrients and energy. In Type 2 diabetes, the challenge is that insulin does not help the body manage glucose as effectively as before—not that eating food is a failure.",
+    body: "Food supplies nutrients and energy. In Type 2 diabetes, the challenge is that insulin does not help the body manage glucose as effectively as before, not that eating food is a failure.",
     heading: "Food enters a body that is already working differently.",
     whyOthers: [
       "A meal does not create Type 2 diabetes at the moment it is eaten.",
