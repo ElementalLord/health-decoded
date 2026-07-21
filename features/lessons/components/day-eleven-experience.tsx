@@ -166,11 +166,24 @@ const glossary = [
   },
 ] as const;
 
-function LessonHeading({ children, label }: { children: ReactNode; label?: string }) {
+function LessonHeading({
+  centered = false,
+  children,
+  label,
+}: {
+  centered?: boolean;
+  children: ReactNode;
+  label?: string;
+}) {
   return (
-    <div className="space-y-3">
+    <div className={cn("space-y-3", centered && "mx-auto max-w-4xl text-center")}>
       {label ? <p className="editorial-eyebrow">{label}</p> : null}
-      <h1 className="max-w-4xl font-serif-display text-[length:var(--text-page-title)] font-normal leading-[0.96] text-balance">
+      <h1
+        className={cn(
+          "max-w-4xl font-serif-display text-[length:var(--text-page-title)] font-normal leading-[0.96] text-balance",
+          centered && "mx-auto",
+        )}
+      >
         {children}
       </h1>
     </div>
@@ -433,83 +446,139 @@ function ConnectedBodyAnimation() {
   );
 }
 
-function ScreeningLanternAnimation() {
+function QuietSignalScannerAnimation() {
   return (
     <figure className={styles.motionFigure}>
       <svg
-        aria-labelledby="screening-lantern-title screening-lantern-desc"
+        aria-labelledby="quiet-signal-title quiet-signal-desc"
         className={styles.motionCanvas}
         role="img"
         viewBox="0 0 820 430"
       >
-        <title id="screening-lantern-title">
-          A lantern revealing quiet signals before a bell rings
-        </title>
-        <desc id="screening-lantern-desc">
-          A warm beam sweeps continuously over small signals, showing how screening can find changes
-          before symptoms appear.
+        <title id="quiet-signal-title">A scanner finding small changes in quiet patterns</title>
+        <desc id="quiet-signal-desc">
+          A transparent scanning window moves continuously across three calm lines and softly
+          highlights small changes before they become obvious.
         </desc>
         <defs>
-          <linearGradient id="lantern-night" x1="0" x2="1">
-            <stop offset="0" stopColor="#142f38" />
-            <stop offset="1" stopColor="#315f62" />
+          <linearGradient id="scanner-surface" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stopColor="#edf5f0" />
+            <stop offset="1" stopColor="#f9f1e5" />
           </linearGradient>
-          <linearGradient id="lantern-beam" x1="0" x2="1">
-            <stop offset="0" stopColor="#f7dfa4" stopOpacity="0.8" />
-            <stop offset="1" stopColor="#f7dfa4" stopOpacity="0" />
+          <linearGradient id="scanner-window" x1="0" x2="1">
+            <stop offset="0" stopColor="#fffdf7" stopOpacity="0.18" />
+            <stop offset="0.5" stopColor="#fffdf7" stopOpacity="0.86" />
+            <stop offset="1" stopColor="#fffdf7" stopOpacity="0.18" />
           </linearGradient>
+          <filter id="scanner-glow">
+            <feGaussianBlur stdDeviation="8" />
+          </filter>
         </defs>
-        <rect fill="url(#lantern-night)" height="430" rx="28" width="820" />
-        <path d="M150 305 L150 128 L198 128 L198 305" fill="#e8eee8" opacity="0.94" />
-        <rect fill="#c98569" height="36" rx="9" width="74" x="137" y="104" />
-        <circle cx="174" cy="122" fill="#fff3c7" r="13">
-          <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0.55;1;0.55" />
-        </circle>
-        <g transform="translate(174 122)">
-          <path d="M0 0 L520 -92 L520 92 Z" fill="url(#lantern-beam)" opacity="0.58">
-            <animateTransform
-              attributeName="transform"
-              dur="7s"
-              repeatCount="indefinite"
-              type="rotate"
-              values="-7;7;-7"
-            />
-          </path>
+        <rect fill="url(#scanner-surface)" height="430" rx="28" width="820" />
+        <g fill="none" stroke="#789c8a" strokeLinecap="round" strokeWidth="4">
+          <path d="M78 114 H270 C292 114 294 88 316 88 C338 88 340 114 362 114 H742" />
+          <path d="M78 210 H408 C430 210 432 238 454 238 C476 238 478 210 500 210 H742" />
+          <path d="M78 306 H548 C570 306 572 278 594 278 C616 278 618 306 640 306 H742" />
         </g>
-        {[350, 475, 600].map((x, index) => (
-          <g key={x}>
-            <circle cx={x} cy={246 - index * 22} fill="#f5cb7a" opacity="0.26" r="8">
+        {[
+          { begin: "0s", cx: 316, cy: 88 },
+          { begin: "1.7s", cx: 454, cy: 238 },
+          { begin: "3.4s", cx: 594, cy: 278 },
+        ].map((signal) => (
+          <g key={`${signal.cx}-${signal.cy}`}>
+            <circle
+              cx={signal.cx}
+              cy={signal.cy}
+              fill="#d0966f"
+              filter="url(#scanner-glow)"
+              opacity="0.16"
+              r="22"
+            >
               <animate
                 attributeName="opacity"
-                begin={`${index * 1.1}s`}
-                dur="4.5s"
+                begin={signal.begin}
+                dur="5.1s"
                 repeatCount="indefinite"
-                values="0.18;1;0.18"
-              />
-              <animate
-                attributeName="r"
-                begin={`${index * 1.1}s`}
-                dur="4.5s"
-                repeatCount="indefinite"
-                values="6;11;6"
+                values="0.08;0.34;0.08"
               />
             </circle>
-            <path
-              d={`M${x} ${257 - index * 22} L${x} 314`}
-              stroke="#9fc1af"
-              strokeDasharray="4 6"
-              strokeWidth="2"
-            />
+            <circle cx={signal.cx} cy={signal.cy} fill="#c78364" opacity="0.55" r="7">
+              <animate
+                attributeName="r"
+                begin={signal.begin}
+                dur="5.1s"
+                repeatCount="indefinite"
+                values="5;10;5"
+              />
+              <animate
+                attributeName="opacity"
+                begin={signal.begin}
+                dur="5.1s"
+                repeatCount="indefinite"
+                values="0.34;1;0.34"
+              />
+            </circle>
           </g>
         ))}
-        <path d="M92 315 H730" stroke="#aec8bc" strokeLinecap="round" strokeWidth="3" />
-        <text className={styles.motionEyebrow} textAnchor="middle" x="410" y="372">
-          SCREENING CAN SEE WHAT SYMPTOMS CANNOT YET SAY
-        </text>
+        <g>
+          <rect
+            fill="url(#scanner-window)"
+            height="286"
+            rx="28"
+            stroke="#d3a173"
+            strokeWidth="2"
+            width="112"
+            x="74"
+            y="54"
+          />
+          <path
+            d="M130 70 V324"
+            opacity="0.8"
+            stroke="#d3a173"
+            strokeDasharray="5 8"
+            strokeWidth="2"
+          />
+          <circle cx="130" cy="360" fill="#315f62" r="10" />
+          <animateTransform
+            attributeName="transform"
+            dur="9s"
+            repeatCount="indefinite"
+            type="translate"
+            values="0 0;560 0;0 0"
+          />
+        </g>
+        <g fill="#789c8a" opacity="0.68">
+          <circle cx="370" cy="380" r="5">
+            <animate
+              attributeName="opacity"
+              dur="3s"
+              repeatCount="indefinite"
+              values="0.35;1;0.35"
+            />
+          </circle>
+          <circle cx="410" cy="380" r="5">
+            <animate
+              attributeName="opacity"
+              begin="1s"
+              dur="3s"
+              repeatCount="indefinite"
+              values="0.35;1;0.35"
+            />
+          </circle>
+          <circle cx="450" cy="380" r="5">
+            <animate
+              attributeName="opacity"
+              begin="2s"
+              dur="3s"
+              repeatCount="indefinite"
+              values="0.35;1;0.35"
+            />
+          </circle>
+        </g>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Screening is a lantern, not an alarm.</strong> It does not search for bad news; it
-        creates a chance to notice quiet changes while there is more time to respond.
+        <strong>Screening is a quiet pattern scan, not a warning siren.</strong> It creates a chance
+        to notice small changes while there is more time and more room to respond.
       </figcaption>
     </figure>
   );
@@ -927,7 +996,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="Quiet does not mean invisible">
               Screening works best before symptoms need to get your attention.
             </LessonHeading>
-            <ScreeningLanternAnimation />
+            <QuietSignalScannerAnimation />
             <div className={styles.silentNote}>
               <p className="editorial-eyebrow">Symptoms or no symptoms?</p>
               <p>
@@ -1257,7 +1326,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-12 text-center">
             <p className="editorial-eyebrow">Day 11 complete</p>
-            <LessonHeading>Protection grows wherever care keeps showing up.</LessonHeading>
+            <LessonHeading centered>Protection grows wherever care keeps showing up.</LessonHeading>
             <div className={styles.completionShield}>
               <ShieldCheck aria-hidden="true" />
               <p>Risk is not destiny.</p>
