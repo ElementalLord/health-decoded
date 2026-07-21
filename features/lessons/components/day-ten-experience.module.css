@@ -1,0 +1,515 @@
+.motionFigure {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-accent-warm) 24%, var(--color-border));
+  border-radius: clamp(1.35rem, 3vw, 2.4rem);
+  background: #f7f1ea;
+  box-shadow: 0 22px 54px rgb(72 52 42 / 7%);
+}
+
+.motionCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.canvasWarm {
+  fill: #f3e8df;
+}
+
+.canvasPaper {
+  fill: #fbf7f1;
+}
+
+.canvasSage {
+  fill: #e7eee7;
+}
+
+.figureCaption {
+  border-top: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-card) 90%, transparent);
+  padding: 1.25rem clamp(1.1rem, 3vw, 1.75rem);
+  color: color-mix(in srgb, var(--color-foreground) 76%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.figureCaption strong {
+  color: var(--color-foreground);
+}
+
+.motionCaption,
+.sceneHeading,
+.panelTitle,
+.panelAction,
+.anchorLabel,
+.questionMark,
+.loopNodeLabel,
+.loopDetail,
+.weekAxisLabel,
+.stepNote {
+  fill: #7c6f65;
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.motionCaption {
+  font-size: 15px;
+}
+
+.sceneHeading {
+  fill: #55463d;
+  font-size: 14px;
+}
+
+.scenePanel {
+  fill: #fffaf3;
+  stroke: #e2d5c9;
+  stroke-width: 3;
+}
+
+.panelTitle {
+  fill: #55463d;
+  font-size: 12px;
+}
+
+.panelAction {
+  fill: #93857a;
+  font-size: 9.5px;
+}
+
+.softCloud {
+  fill: #efe4d8;
+}
+
+.skyArc {
+  fill: none;
+  stroke: #d8c8b8;
+  stroke-dasharray: 2 12;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.sunOrb {
+  fill: #ecc98f;
+  stroke: #fffaf3;
+  stroke-width: 4;
+}
+
+.sunHalo {
+  fill: none;
+  stroke: #ecd7ae;
+  stroke-width: 3;
+}
+
+.anchorNode {
+  fill: #e7efe8;
+  stroke: #8aa693;
+  stroke-width: 3;
+}
+
+.anchorHalo {
+  fill: none;
+  stroke: #a9bfaf;
+  stroke-width: 3;
+}
+
+.anchorLabel {
+  fill: #55463d;
+  font-size: 10px;
+}
+
+.questionBubble {
+  fill: #f6ece1;
+  stroke: #d9c4b2;
+  stroke-width: 2.5;
+}
+
+.questionMark {
+  fill: #a08a7a;
+  font-size: 14px;
+}
+
+.lanternBody {
+  fill: #fffaf3;
+  stroke: #b9a795;
+  stroke-width: 4;
+}
+
+.lanternFlame {
+  fill: #ecc98f;
+  stroke: #d9b073;
+  stroke-width: 2;
+}
+
+.lanternHalo {
+  fill: none;
+  stroke: #ecd7ae;
+  stroke-width: 3;
+}
+
+.loopRing {
+  fill: none;
+  stroke: #a9bfaf;
+  stroke-dasharray: 0.035 0.03;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.loopToken circle {
+  fill: #8aa693;
+  stroke: #fffaf3;
+  stroke-width: 4;
+}
+
+.loopNode {
+  fill: #fffaf3;
+  stroke: #c5d4c8;
+  stroke-width: 3;
+}
+
+.loopNodeHalo {
+  fill: none;
+  stroke: #a9bfaf;
+  stroke-width: 3;
+}
+
+.loopNodeLabel {
+  fill: #43604f;
+  font-size: 11px;
+}
+
+.loopDetail {
+  fill: #93857a;
+  font-size: 8.5px;
+}
+
+.stepBlock {
+  fill: #f6eee6;
+  stroke: #e0d2c4;
+  stroke-width: 3;
+}
+
+.stepSoft {
+  fill: #f7e9e0;
+  stroke: #ddc0b0;
+}
+
+.stepHeart path {
+  fill: #d9a08c;
+}
+
+.walkerHead {
+  fill: #ead9cf;
+  stroke: #c98f77;
+  stroke-width: 4;
+}
+
+.walkerBody {
+  fill: #c98f77;
+}
+
+.walkerHalo {
+  fill: none;
+  stroke: #b9cbbd;
+  stroke-width: 3;
+}
+
+.stepNote {
+  fill: #ad7460;
+  font-size: 9.5px;
+}
+
+.growthBaseline {
+  fill: none;
+  stroke: #e2d5c9;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.growthArea {
+  fill: #dfe7e0;
+  opacity: 0.4;
+}
+
+.growthLine {
+  fill: none;
+  stroke: #8aa693;
+  stroke-dasharray: 0.06 0.04;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.growthDot {
+  fill: #8aa693;
+  stroke: #fffaf3;
+  stroke-width: 3;
+}
+
+.growthSprout path {
+  fill: #a7c1ad;
+}
+
+.weekAxisLabel {
+  fill: #93857a;
+  font-size: 11px;
+}
+
+.decisionCard {
+  display: flex;
+  min-height: 11rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  background: var(--color-card);
+  padding: 1.35rem;
+  text-align: left;
+  box-shadow: 0 8px 20px rgb(70 50 40 / 4%);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.decisionCard:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 42%, var(--color-border));
+}
+
+.decisionCard > span {
+  color: var(--color-accent-warm);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.decisionCard strong {
+  font-family: var(--font-serif-display), serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.decisionCard p {
+  color: var(--color-muted-foreground);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.decisionCardOpen {
+  border-color: #8fa998;
+  background: #ecf1ed;
+}
+
+.decisionCardOpen > span {
+  color: #5c7a67;
+}
+
+.compareBoard {
+  display: grid;
+  gap: 1rem;
+  border-block: 1px solid var(--color-border);
+  padding-block: 1.75rem;
+}
+
+.compareBoard > div {
+  border-radius: 1.25rem;
+  padding: 1.4rem 1.5rem;
+}
+
+.compareBoard > div:first-child {
+  border: 1px solid #e6cfc2;
+  background: #f8efe8;
+}
+
+.compareBoard > div:last-child {
+  border: 1px solid #c9d8cc;
+  background: #ecf1ed;
+}
+
+.compareBoard p {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.compareBoard > div:first-child p {
+  color: #96604a;
+}
+
+.compareBoard > div:last-child p {
+  color: #43604f;
+}
+
+.compareBoard ul {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.45rem;
+  line-height: 1.6;
+}
+
+.compareBoard li {
+  padding-left: 1.1rem;
+  position: relative;
+}
+
+.compareBoard li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: currentcolor;
+  opacity: 0.5;
+}
+
+.compareBoard li:last-child {
+  margin-top: 0.35rem;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.stackChip {
+  display: flex;
+  min-height: 3.5rem;
+  width: 100%;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-card);
+  padding: 0.85rem 1.15rem;
+  text-align: left;
+  font-weight: 600;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    opacity 160ms ease;
+}
+
+.stackChip:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.stackChip:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.stackChipSelected {
+  border-color: #c98f77;
+  background: #f7ece4;
+  color: #96604a;
+}
+
+.stackChipUsed {
+  border-style: dashed;
+}
+
+.stackRow {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border-left: 3px solid #8aa693;
+  background: #ecf1ed;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  line-height: 1.6;
+  transition: background 160ms ease;
+}
+
+.stackRow:hover {
+  background: #e3ebe5;
+}
+
+.stackRow svg {
+  flex-shrink: 0;
+  color: #5c7a67;
+}
+
+.supportChip {
+  display: flex;
+  min-height: 3.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-card);
+  padding: 0.85rem 1.1rem;
+  text-align: left;
+  font-weight: 700;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.supportChip:hover {
+  transform: translateY(-2px);
+}
+
+.supportChipOn {
+  border-color: #8fa998;
+  background: #ecf1ed;
+  color: #43604f;
+}
+
+.supportChip svg:last-child {
+  margin-left: auto;
+}
+
+.experimentTicket {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  border-left: 3px solid #8aa693;
+  background: #ecf1ed;
+  padding: 1.5rem;
+}
+
+.experimentTicket > svg {
+  width: 2rem;
+  height: 2rem;
+  color: #5c7a67;
+}
+
+.experimentTicket p:last-child {
+  margin-top: 0.35rem;
+  font-family: var(--font-serif-display), serif;
+  font-size: 1.25rem;
+  line-height: 1.55;
+}
+
+@media (min-width: 700px) {
+  .compareBoard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .motionFigure {
+    border-radius: 1.35rem;
+  }
+
+  .motionCanvas {
+    min-height: 19rem;
+  }
+
+  .decisionCard {
+    min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motionCanvas animate,
+  .motionCanvas animateMotion,
+  .motionCanvas animateTransform {
+    display: none;
+  }
+}

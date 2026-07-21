@@ -6,6 +6,8 @@ import { getProfileSettings } from "@/features/profile/services/profile-settings
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 import { getProgressData } from "@/features/progress/services/progress.server";
 
+export const metadata = { title: "Profile" };
+
 export default async function ProfilePage() {
   const profile = await getCurrentProfile();
   if (!profile.ok)

@@ -73,7 +73,7 @@ export async function evaluateDayEightAction(input: unknown): Promise<DayEightEv
           : "A surprising reading is not a moral verdict and is not enough reason to change a treatment plan on your own. Record the context and follow the plan your care team gave you.",
         heading: accurate
           ? "Curiosity is useful data care."
-          : "Pause the judgment—and the treatment change.",
+          : "Pause the judgment, and the treatment change.",
       },
       ok: true,
     };

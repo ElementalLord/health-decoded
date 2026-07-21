@@ -88,7 +88,7 @@ const glossary = [
   },
   {
     definition:
-      "Details around a reading—such as timing, food, movement, sleep, stress, illness, and medicine.",
+      "Details around a reading, such as timing, food, movement, sleep, stress, illness, and medicine.",
     term: "Context",
   },
 ] as const;
@@ -225,7 +225,7 @@ function DashboardAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>A reading is a dashboard glance—not a grade.</strong> It can help answer a question
+        <strong>A reading is a dashboard glance, not a grade.</strong> It can help answer a question
         about the body without measuring effort, courage, or worth.
       </figcaption>
     </figure>
@@ -689,7 +689,7 @@ function CareConversationAnimation() {
       </svg>
       <figcaption>
         <strong>Here is the use:</strong> a few repeated moments plus context give you and your care
-        team something specific to discuss—without turning the data into a grade.
+        team something specific to discuss, without turning the data into a grade.
       </figcaption>
     </figure>
   );
@@ -868,7 +868,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
     return [
       "Choose how monitoring feels to you today.",
       "Open A1C, finger-stick, and CGM.",
-      "Choose what a snapshot can—and cannot—tell you.",
+      "Choose what a snapshot can (and cannot) tell you.",
       "Open at least four context clues.",
       "Add three moments to the pattern and answer the pattern check.",
       "Choose the curious response to a surprising reading.",
@@ -930,7 +930,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
                 <p className="editorial-number text-accent-warm">08</p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   Today is not about memorizing targets. It is about learning what different views
-                  can—and cannot—tell you.
+                  can (and cannot) tell you.
                 </p>
               </div>
             </div>
@@ -993,7 +993,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
       case 2:
         return (
           <div className="space-y-9">
-            <LessonHeading label="A photograph is honest—and incomplete">
+            <LessonHeading label="A photograph is honest, and incomplete">
               One reading belongs to one moment.
             </LessonHeading>
             <div className={styles.snapshotStage}>
@@ -1052,7 +1052,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
             <ContextConstellationAnimation activeCount={contextsOpened.size} />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Tap the influences that can belong in a monitoring conversation. You are gathering
-              context—not trying to prove the cause of one reading.
+              context, not trying to prove the cause of one reading.
             </p>
             <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
               {contextClues.map(([id, label]) => {
@@ -1245,14 +1245,14 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
         return (
           <div className="space-y-12 text-center">
             <p className="editorial-eyebrow">Day 8 complete</p>
-            <LessonHeading>A reading is information—not a verdict.</LessonHeading>
+            <LessonHeading>A reading is information, not a verdict.</LessonHeading>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
               <p className="editorial-eyebrow text-success">Three ideas worth carrying</p>
               <ol className="mt-6 space-y-6">
                 {[
                   "A1C offers a longer view, a finger-stick captures one moment, and a CGM can show change across many moments.",
                   "One reading is a clue. Repeated context can reveal a more useful pattern.",
-                  "Numbers measure glucose—not effort, courage, or worth. Surprises belong with curiosity and the care team’s plan.",
+                  "Numbers measure glucose, not effort, courage, or worth. Surprises belong with curiosity and the care team’s plan.",
                 ].map((item, index) => (
                   <li className="grid grid-cols-[3rem_1fr] gap-4 text-lg leading-8" key={item}>
                     <span className="font-serif-display text-4xl text-accent-warm">

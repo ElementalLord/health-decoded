@@ -17,7 +17,10 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Health Decoded",
+  title: {
+    default: "Health Decoded",
+    template: "%s · Health Decoded",
+  },
   description: "Educational support for the first 90 days after a Type 2 diabetes diagnosis.",
 };
 

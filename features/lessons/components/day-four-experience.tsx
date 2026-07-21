@@ -281,7 +281,7 @@ function ConceptFeedback({ feedback }: { feedback: DayFourEvaluationFeedback }) 
           {feedback.whyOthers.map((reason) => (
             <li className="flex gap-2" key={reason}>
               <span aria-hidden="true" className="text-accent-warm">
-                —
+                •{" "}
               </span>
               {reason}
             </li>
@@ -901,7 +901,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                   ? "Here is the complete shelf so you can keep learning: bread, rice, fruit, milk, beans, potatoes, corn, and oats contain meaningful carbohydrate. Chicken and olive oil primarily play other nutrient roles."
                   : pantryAccurate
                     ? "You found the full shelf: bread, rice, fruit, milk, beans, potatoes, corn, and oats all contain carbohydrate. Chicken and olive oil primarily play other nutrient roles."
-                    : "One more check is available. Look for grains, fruit, milk, beans, and starchy vegetables—not only foods that taste sweet."}
+                    : "One more check is available. Look for grains, fruit, milk, beans, and starchy vegetables, not only foods that taste sweet."}
               </div>
             ) : null}
           </div>
@@ -986,7 +986,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               Make one plate with three useful roles.
             </DayFourHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Choose one food for each section. This is a flexible visual starting point—not a
+              Choose one food for each section. This is a flexible visual starting point, not a
               prescription for every cuisine, appetite, budget, or medical need.
             </p>
             <div className="grid gap-7 lg:grid-cols-[1fr_0.9fr] lg:items-center">
@@ -1214,7 +1214,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               >
                 <p className="font-serif-display text-2xl italic">
                   {favoriteAnswer === scenario.correct
-                    ? "Yes—and there is still room for health context."
+                    ? "Yes, and there is still room for health context."
                     : "That response makes the rule harsher than it needs to be."}
                 </p>
                 <p className="mt-3 leading-7">{scenario.response}</p>
@@ -1254,7 +1254,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 />
                 <p className="mt-7 font-serif-display text-3xl">Tonight&apos;s menu</p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Familiar foods, larger portions, imperfect information—and still more than one
+                  Familiar foods, larger portions, imperfect information, and still more than one
                   reasonable choice.
                 </p>
                 <span
@@ -1490,7 +1490,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
             {receiptsSpread ? (
               <div className="animate-slide-up grid gap-5 border-y border-border py-7 sm:grid-cols-2">
                 <p className="font-serif-display text-2xl leading-8">
-                  Consistency is something you return to—not something one meal can destroy.
+                  Consistency is something you return to, not something one meal can destroy.
                 </p>
                 <p className="text-lg leading-8 text-muted-foreground">
                   Patterns matter, and personal eating plans can still include culture, budget,
@@ -1617,7 +1617,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 <p aria-live="polite" className="mt-5 bg-info p-5 leading-7">
                   {reflection.includes("professional") || reflection.includes("culture")
                     ? "That is a thoughtful next step. A registered dietitian nutritionist or diabetes education specialist can help shape this framework around your health needs, culture, budget, medicines, and preferences."
-                    : "That is enough for today. Confidence can begin with one meal you understand—not a lifetime of perfect eating."}
+                    : "That is enough for today. Confidence can begin with one meal you understand, not a lifetime of perfect eating."}
                 </p>
               ) : null}
             </div>
@@ -1629,7 +1629,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                     <h2 className="mt-3 font-serif-display text-3xl">Eating in real life</h2>
                     <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
                       You will carry this flexible plate into portions, labels, drinks, snacks, and
-                      repeatable meal choices—without searching for perfection.
+                      repeatable meal choices, without searching for perfection.
                     </p>
                   </div>
                   <ShoppingBasketIllustration />

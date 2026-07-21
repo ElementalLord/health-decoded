@@ -7,6 +7,8 @@ import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+export const metadata = { title: "Caregiver guide" };
+
 export default async function CaregiverArticlePage({
   params,
 }: {

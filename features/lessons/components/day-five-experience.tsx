@@ -160,7 +160,7 @@ const myths = [
 const mythCorrections = [
   "Movement can happen at home, outside, in water, in a chair, or anywhere muscles work.",
   "Several small bouts can still give muscles useful work across a day.",
-  "Movement supports glucose use, the heart, strength, mood, sleep, and function—even without a scale change.",
+  "Movement supports glucose use, the heart, strength, mood, sleep, and function, even without a scale change.",
 ] as const;
 
 const barriers = [
@@ -282,7 +282,7 @@ function ConceptFeedback({ feedback }: { feedback: DayFiveEvaluationFeedback }) 
         {feedback.details.map((detail) => (
           <li className="flex gap-2" key={detail}>
             <span aria-hidden="true" className="text-accent-warm">
-              —
+              •{" "}
             </span>
             {detail}
           </li>
@@ -541,7 +541,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                   kitchen, a garden, a pool, or a chair.
                 </p>
                 <p className="font-serif-display text-2xl italic text-foreground">
-                  Your body responds to movement—not perfection.
+                  Your body responds to movement, not perfection.
                 </p>
               </div>
             </div>
@@ -643,7 +643,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                 {[
                   ["01", "Muscle contracts", "The working muscle asks for energy."],
                   ["02", "Glucose enters", "Fuel moves from the blood toward the muscle cell."],
-                  ["03", "Energy is used", "Glucose is used or stored—it is not erased."],
+                  ["03", "Energy is used", "Glucose is used or stored, it is not erased."],
                 ].map(([number, title, body]) => (
                   <div className="bg-card p-5" key={number}>
                     <span className="font-serif-display text-4xl text-accent-warm">{number}</span>
@@ -663,7 +663,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
         return (
           <div className="space-y-9">
             <DayFiveHeading label="Two pathways, one useful tool">
-              Movement helps now—and regular movement can help later.
+              Movement helps now, and regular movement can help later.
             </DayFiveHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               There are two ideas worth separating. Open each pathway to see what changes.
@@ -1017,7 +1017,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
               After a meal, movement can give fuel a job.
             </DayFiveHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Move the scene forward. The visual shows one optional sequence—not a requirement to
+              Move the scene forward. The visual shows one optional sequence, not a requirement to
               exercise after every meal and not a promise about a specific reading.
             </p>
             <LessonMotionFigure variant="circulation-rhythm" />
@@ -1246,7 +1246,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             {returnedAfterPause ? (
               <p className="animate-slide-up font-serif-display text-3xl italic text-success">
-                Consistency means coming back—not never stopping.
+                Consistency means coming back, not never stopping.
               </p>
             ) : null}
           </div>
@@ -1400,7 +1400,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             </DayFiveHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               This plan stays in this lesson and is not saved as health information. Choose a
-              movement, an anchor, and a starting amount that feels possible—not impressive.
+              movement, an anchor, and a starting amount that feels possible, not impressive.
             </p>
             <div className="space-y-8 rounded-[1.5rem] border border-border bg-card p-6 shadow-card sm:p-9">
               <fieldset>
@@ -1510,7 +1510,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                 </span>
                 <span className={styles.walkPrompt}>
                   {supportChoice
-                    ? "A shared pace—not supervision."
+                    ? "A shared pace, not supervision."
                     : "Choose the support that fits."}
                 </span>
               </div>
@@ -1651,7 +1651,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                   Progress is a return, not a perfect streak.
                 </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Tomorrow: medicines as tools—not judgments.
+                  Tomorrow: medicines as tools, not judgments.
                 </p>
                 <Button disabled={isPending} onClick={finishExperience}>
                   {experience.accessMode === "review" ? "Return to journey" : "Complete Day 5"}

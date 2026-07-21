@@ -46,7 +46,7 @@ The prototype should demonstrate one exceptional experience instead of many inco
 
 4. Product Principles
 Every feature added to Health Decoded must follow these principles.
-Principle 1 — One Goal Per Screen
+Principle 1, One Goal Per Screen
 Every screen should answer one primary question or ask the user to complete one primary action.
 Examples:
 Dashboard → Continue today's lesson.
@@ -55,7 +55,7 @@ Quiz → Check understanding.
 Medication Library → Learn about one medication.
 The interface should never ask users to choose between several equally important actions.
 
-Principle 2 — One Concept Per Lesson
+Principle 2, One Concept Per Lesson
 Each lesson teaches one major concept.
 For example:
 Day 1
@@ -68,7 +68,7 @@ Not:
 "What is diabetes, blood sugar, A1C, insulin resistance, medications, exercise, complications, and nutrition?"
 Learning should feel manageable.
 
-Principle 3 — Learning Through Interaction
+Principle 3, Learning Through Interaction
 Users should interact approximately every 30–60 seconds.
 Reading alone is not enough.
 Every lesson should alternate between:
@@ -85,7 +85,7 @@ Animation
 Reflection
 This rhythm keeps attention high and prevents long blocks of text.
 
-Principle 4 — No Punishment
+Principle 4, No Punishment
 Health Decoded never punishes users.
 No streaks.
 No losing XP.
@@ -93,7 +93,7 @@ No guilt messages.
 No "You're behind."
 If a user returns after three weeks, they simply continue where they left off.
 
-Principle 5 — Every Animation Has Purpose
+Principle 5, Every Animation Has Purpose
 Animations exist only to improve understanding.
 Examples include:
 Showing glucose entering the bloodstream.

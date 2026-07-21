@@ -1,4 +1,4 @@
-# Prompt 24 — Gemini AI Infrastructure & Integration
+# Prompt 24, Gemini AI Infrastructure & Integration
 
 ## Objective
 
@@ -15,9 +15,9 @@ Read:
 - Engineering Constitution
 - Security Constitution
 - ADR-001
-- SPEC 06 — Personal Diabetes Educator
-- SPEC 14 — AI Tutor System
-- SPEC 17 — Technical Architecture
+- SPEC 06, Personal Diabetes Educator
+- SPEC 14, AI Tutor System
+- SPEC 17, Technical Architecture
 
 Confirm they are consistent before implementation. If a conflict exists, stop and report it.
 

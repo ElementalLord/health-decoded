@@ -96,7 +96,7 @@ const variationFeedback: Record<
   },
   proof_of_failure: {
     accurate: false,
-    body: "One unexpected reading is not proof that the movement failed—or that the person failed. It is one piece of context for the care plan.",
+    body: "One unexpected reading is not proof that the movement failed, or that the person failed. It is one piece of context for the care plan.",
     details: [
       "Movement has benefits beyond a single glucose value.",
       "Questions about personal readings belong with the healthcare team.",

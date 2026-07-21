@@ -1,4 +1,4 @@
-# Prompt 28 — AI Memory, Conversation History & Personalization
+# Prompt 28, AI Memory, Conversation History & Personalization
 
 ## Current storage model
 

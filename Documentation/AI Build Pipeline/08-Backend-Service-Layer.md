@@ -1,6 +1,6 @@
 # Health Decoded AI Build Pipeline
 
-# Prompt 08 — Backend Service Layer
+# Prompt 08, Backend Service Layer
 
 ## Purpose
 

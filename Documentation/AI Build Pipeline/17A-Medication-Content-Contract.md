@@ -1,6 +1,6 @@
 # Health Decoded AI Build Pipeline
 
-# Prompt 17A — Medication Content Contract and Review Pipeline
+# Prompt 17A, Medication Content Contract and Review Pipeline
 
 ## Purpose
 

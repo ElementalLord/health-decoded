@@ -1,6 +1,6 @@
 # Health Decoded AI Build Pipeline
 
-# Prompt 09 — Authentication
+# Prompt 09, Authentication
 
 ## Purpose
 

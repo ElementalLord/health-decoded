@@ -417,4 +417,4 @@ The design system should be implemented as reusable design tokens and shared UI 
 The Guiding Principle
 If there is one sentence that should guide every visual decision, it is this:
 The interface should disappear. The user's confidence should not.
-A beautiful interface isn't one that attracts attention—it's one that quietly helps people feel capable. That should be the defining visual characteristic of Health Decoded.
+A beautiful interface isn't one that attracts attention, it's one that quietly helps people feel capable. That should be the defining visual characteristic of Health Decoded.
