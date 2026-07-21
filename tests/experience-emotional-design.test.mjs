@@ -58,7 +58,8 @@ test("gives the AI guide transparent context and user control", () => {
   assert.match(aiSource, /aria-busy=\{isStreaming\}/);
   assert.match(aiPageSource, /Ask Health Decoded chat workspace/);
   assert.match(aiPageSource, /Your private learning conversation/);
-  assert.match(aiPageSource, /rounded-\[28px\].*border.*bg-\[#fffaf3\].*shadow/);
+  assert.match(aiPageSource, /border-t-4 border-t-accent-warm/);
+  assert.doesNotMatch(aiPageSource, /rounded-\[28px\]|rounded-full/);
 });
 
 test("keeps completed lesson review in Progress instead of duplicating it on Journey", () => {
@@ -68,6 +69,10 @@ test("keeps completed lesson review in Progress instead of duplicating it on Jou
   assert.doesNotMatch(journeySource, /CompletedLessonReview|Your lesson library/);
   assert.match(journeySource, /Open your learning record/);
   assert.match(progressSource, /href=\{`\/lessons\/\$\{milestone\.dayNumber\}`\}/);
+  assert.match(progressSource, /Days 1–5/);
+  assert.match(progressSource, /Days 6–10/);
+  assert.match(progressSource, /Days 11–14/);
+  assert.match(progressSource, /<details\s+className="group\/learning-section/);
 });
 
 test("acknowledges reflection without grading it", () => {
