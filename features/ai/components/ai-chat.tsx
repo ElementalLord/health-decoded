@@ -583,7 +583,7 @@ export function AiChat() {
       </section>
 
       <form
-        className="safe-area-bottom border-t border-border bg-background pt-5"
+        className="safe-area-bottom rounded-[var(--radius-lg)] border border-[#d9c9bc] bg-card p-4 shadow-[0_12px_32px_rgb(68_47_37/0.08)] sm:p-5"
         onSubmit={submit}
       >
         <label className="grid gap-2 text-sm font-semibold" htmlFor="ai-question">

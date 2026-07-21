@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { ActionRow } from "@/components/shared/action-row";
-import { CompletedLessonReview } from "@/features/journeys/components/completed-lesson-review";
 import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
@@ -75,7 +74,13 @@ export default async function JourneyPage({
       {journey.data.kind === "complete" ? (
         <>
           <JourneyCompleteState journey={journey.data} />
-          <CompletedLessonReview stages={journey.data.reviewStages} />
+          <div className="motion-reveal border-y border-border">
+            <ActionRow
+              description="Revisit completed lessons, confidence check-ins, and milestones together."
+              href="/progress"
+              title="Open your learning record"
+            />
+          </div>
         </>
       ) : (
         <>
@@ -97,8 +102,6 @@ export default async function JourneyPage({
             journeyTitle={journey.data.journeyTitle}
             progress={journey.data.progress}
           />
-
-          <CompletedLessonReview stages={journey.data.reviewStages} />
 
           {journey.data.currentLesson.lessonProgressId ? (
             <ConfidenceCheck
