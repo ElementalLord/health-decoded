@@ -1,0 +1,667 @@
+.motionFigure {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-accent-warm) 28%, var(--color-border));
+  border-radius: clamp(1.35rem, 3vw, 2.4rem);
+  background: #f7f1ea;
+  box-shadow: 0 22px 54px rgb(72 52 42 / 8%);
+}
+
+.motionCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.canvasWarm {
+  fill: #f3e8df;
+}
+
+.canvasPaper {
+  fill: #fbf7f1;
+}
+
+.canvasSage {
+  fill: #e7eee7;
+}
+
+.figureCaption {
+  border-top: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-card) 90%, transparent);
+  padding: 1.25rem clamp(1.1rem, 3vw, 1.75rem);
+  color: color-mix(in srgb, var(--color-foreground) 76%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.figureCaption strong {
+  color: var(--color-foreground);
+}
+
+.motionCaption,
+.sceneHeading,
+.panelTitle,
+.panelAction,
+.signalLabel,
+.quickChipLabel,
+.stationNumber,
+.stationLabel,
+.stationDetail,
+.urgentBannerLabel,
+.calmStepLabel {
+  fill: #75675e;
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.motionCaption {
+  font-size: 15px;
+}
+
+.sceneHeading {
+  fill: #4d3931;
+  font-size: 14px;
+}
+
+.scenePanel {
+  fill: #fffaf3;
+  stroke: #decfc2;
+  stroke-width: 3;
+}
+
+.panelTitle {
+  fill: #4d3931;
+  font-size: 12px;
+}
+
+.panelAction {
+  fill: #8b7d73;
+  font-size: 9.5px;
+}
+
+.gaugeDial {
+  fill: #f3e7de;
+  stroke: #c97962;
+  stroke-width: 4;
+}
+
+.gaugeArc {
+  fill: none;
+  stroke: #789b84;
+  stroke-linecap: round;
+  stroke-width: 9;
+}
+
+.gaugeNeedle path {
+  fill: none;
+  stroke: #c97962;
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.gaugeNeedle circle {
+  fill: #c97962;
+}
+
+.waveBand {
+  fill: none;
+  stroke: #aebfb1;
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.wavePath {
+  fill: none;
+  stroke: #c97962;
+  stroke-dasharray: 0.09 0.055;
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.waveDot {
+  fill: #73947e;
+  stroke: #fffaf3;
+  stroke-width: 4;
+}
+
+.vesselShell {
+  fill: #fffaf3;
+  stroke: #decfc2;
+  stroke-width: 4;
+}
+
+.vesselTide {
+  fill: #ecd9c8;
+}
+
+.tideDot {
+  fill: #c97962;
+  stroke: #fffaf3;
+  stroke-width: 3;
+}
+
+.signalLamp {
+  fill: #e8b98f;
+  stroke: #c97962;
+  stroke-width: 3;
+}
+
+.signalHalo {
+  fill: none;
+  stroke: #c97962;
+  stroke-width: 3;
+}
+
+.signalLabel {
+  fill: #4d3931;
+  font-size: 12px;
+}
+
+.brainBulb {
+  fill: #f6e3b8;
+  stroke: #c9a24f;
+  stroke-width: 4;
+}
+
+.brainCurl {
+  fill: none;
+  stroke: #a8875a;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.fuelLine {
+  fill: none;
+  stroke: #c97962;
+  stroke-dasharray: 0.14 0.1;
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.fuelCell {
+  fill: #e4eee6;
+  stroke: #73947e;
+  stroke-width: 3;
+}
+
+.bellBody {
+  fill: #c97962;
+  stroke: #a95f4b;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.bellClapper {
+  fill: #62483e;
+}
+
+.bellRing {
+  fill: none;
+  stroke: #c97962;
+  stroke-width: 4;
+}
+
+.quickChip {
+  fill: #fffaf3;
+  stroke: #73947e;
+  stroke-width: 3;
+}
+
+.quickChipLabel {
+  fill: #315d4c;
+  font-size: 11px;
+}
+
+.pathRail {
+  fill: none;
+  stroke: #cbbdb1;
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+.pathStation rect {
+  fill: #fffaf3;
+  stroke: #decfc2;
+  stroke-width: 3;
+}
+
+.pathStation > circle:not(.stationPulse) {
+  fill: #e4eee6;
+  stroke: #73947e;
+  stroke-width: 4;
+}
+
+.stationNumber {
+  fill: #315d4c;
+  font-size: 18px;
+}
+
+.stationLabel {
+  fill: #4d3931;
+  font-size: 11px;
+}
+
+.stationDetail {
+  fill: #8b7d73;
+  font-size: 8.5px;
+}
+
+.stationPulse {
+  fill: none;
+  stroke: #73947e;
+  stroke-width: 4;
+}
+
+.pathToken circle {
+  fill: #73947e;
+  stroke: #fffaf3;
+  stroke-width: 5;
+}
+
+.pathToken path {
+  fill: none;
+  stroke: #fffaf3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.urgentRail {
+  fill: none;
+  stroke: #c97962;
+  stroke-dasharray: 0.045 0.03;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.urgentBanner {
+  fill: #f7e5dd;
+  stroke: #c97962;
+  stroke-width: 3;
+}
+
+.urgentBannerLabel {
+  fill: #9c4f38;
+  font-size: 11px;
+}
+
+.urgentToken circle {
+  fill: #c97962;
+  stroke: #fffaf3;
+  stroke-width: 4;
+}
+
+.urgentToken path {
+  fill: none;
+  stroke: #fffaf3;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.detectorBody {
+  fill: #fffaf3;
+  stroke: #62483e;
+  stroke-width: 4;
+}
+
+.detectorEye {
+  fill: #c97962;
+}
+
+.detectorRing {
+  fill: none;
+  stroke: #c97962;
+  stroke-width: 4;
+}
+
+.steamPath {
+  fill: none;
+  stroke: #b3a396;
+  stroke-dasharray: 0.16 0.12;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.panShape {
+  fill: #62483e;
+}
+
+.panHandle {
+  fill: none;
+  stroke: #62483e;
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.breathHalo {
+  fill: none;
+  stroke: #73947e;
+  stroke-width: 3;
+}
+
+.calmHead {
+  fill: #ead7cd;
+  stroke: #c97962;
+  stroke-width: 5;
+}
+
+.calmBody {
+  fill: #c97962;
+}
+
+.calmBreath {
+  fill: #f3e7de;
+  stroke: #fffaf3;
+  stroke-width: 3;
+}
+
+.calmSteps rect {
+  fill: #e4eee6;
+  stroke: #aebfb1;
+  stroke-width: 3;
+}
+
+.calmStepDot {
+  fill: #73947e;
+}
+
+.calmStepLabel {
+  fill: #315d4c;
+  font-size: 10px;
+}
+
+.causeCard {
+  display: flex;
+  min-height: 11rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  background: var(--color-card);
+  padding: 1.35rem;
+  text-align: left;
+  box-shadow: 0 8px 20px rgb(70 50 40 / 5%);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.causeCard:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 52%, var(--color-border));
+}
+
+.causeCard > span {
+  color: var(--color-accent-warm);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.causeCard strong {
+  font-family: var(--font-serif-display), serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.causeCard p {
+  color: var(--color-muted-foreground);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.causeCardOpen {
+  border-color: #7e9d88;
+  background: #e9f0ea;
+}
+
+.causeCardOpen > span {
+  color: #557963;
+}
+
+.sorterRow {
+  display: grid;
+  gap: 0.85rem;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-card);
+  padding: 1rem 1.25rem;
+  transition:
+    border-color 200ms ease,
+    background 200ms ease;
+}
+
+.sorterRow > p:first-child {
+  font-weight: 700;
+}
+
+.sorterRow > div {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.sorterRowCorrect {
+  border-color: #7e9d88;
+  background: #eef4ef;
+}
+
+.sorterRowGentle {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 55%, var(--color-border));
+  background: #f9efe7;
+}
+
+.sorterButton {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-card);
+  padding: 0.5rem 1.05rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.sorterButton:hover {
+  transform: translateY(-2px);
+}
+
+.sorterButtonHigh {
+  border-color: #c97962;
+  background: #f5e2d8;
+  color: #8d4630;
+}
+
+.sorterButtonLow {
+  border-color: #73947e;
+  background: #e4eee6;
+  color: #315d4c;
+}
+
+.sorterVerdict {
+  min-height: 1.4rem;
+  color: var(--color-muted-foreground);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.symptomChart {
+  display: grid;
+  gap: 1rem;
+  border-block: 1px solid var(--color-border);
+  padding-block: 1.75rem;
+}
+
+.symptomChart > div {
+  border-radius: 1.25rem;
+  padding: 1.4rem 1.5rem;
+}
+
+.symptomChart > div:first-child {
+  border: 1px solid #e3c4b4;
+  background: #f8ece3;
+}
+
+.symptomChart > div:last-child {
+  border: 1px solid #c2d3c5;
+  background: #e9f0ea;
+}
+
+.symptomChart p {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.symptomChart > div:first-child p {
+  color: #8d4630;
+}
+
+.symptomChart > div:last-child p {
+  color: #315d4c;
+}
+
+.symptomChart ul {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.45rem;
+  line-height: 1.6;
+}
+
+.symptomChart li {
+  padding-left: 1.1rem;
+  position: relative;
+}
+
+.symptomChart li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: currentcolor;
+  opacity: 0.55;
+}
+
+.clueChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-card);
+  padding: 0.6rem 1.05rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+}
+
+.urgentChip,
+.planChip,
+.supportChip {
+  display: flex;
+  min-height: 3.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-card);
+  padding: 0.85rem 1.1rem;
+  text-align: left;
+  font-weight: 700;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.urgentChip:hover,
+.planChip:hover,
+.supportChip:hover {
+  transform: translateY(-2px);
+}
+
+.urgentChipOpen {
+  border-color: #c97962;
+  background: #f5e2d8;
+  color: #8d4630;
+}
+
+.urgentChip svg:last-child {
+  margin-left: auto;
+}
+
+.planChip {
+  border-radius: 1rem;
+}
+
+.planChip > span {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+}
+
+.planChipChecked {
+  border-color: #73947e;
+  background: #e4eee6;
+  color: #315d4c;
+}
+
+.planChipChecked > span {
+  border-color: #557963;
+  background: #557963;
+  color: #fff;
+}
+
+.supportChipSelected {
+  border-color: #73947e;
+  background: #e4eee6;
+  color: #315d4c;
+}
+
+@media (min-width: 700px) {
+  .sorterRow {
+    grid-template-columns: 1.1fr auto 1fr;
+  }
+
+  .symptomChart {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .motionFigure {
+    border-radius: 1.35rem;
+  }
+
+  .motionCanvas {
+    min-height: 19rem;
+  }
+
+  .causeCard {
+    min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motionCanvas animate,
+  .motionCanvas animateMotion,
+  .motionCanvas animateTransform {
+    display: none;
+  }
+}
