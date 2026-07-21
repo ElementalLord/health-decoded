@@ -41,7 +41,7 @@ export default async function AiPage() {
       </div>
       <section
         aria-label="Ask Health Decoded chat workspace"
-        className="relative mt-8 border border-[#cdb9aa] border-t-4 border-t-accent-warm bg-[#fffdf8] shadow-[12px_12px_0_rgb(68_47_37/0.07)]"
+        className="relative mt-8 overflow-hidden rounded-[6px] border border-[#cdb9aa] border-t-4 border-t-accent-warm bg-[#fffdf8] shadow-[12px_12px_0_rgb(68_47_37/0.07)]"
       >
         <div
           aria-hidden="true"
@@ -49,7 +49,7 @@ export default async function AiPage() {
         />
         <header className="relative grid gap-5 border-b border-[#d7c5b7] bg-[#f3e9e1]/75 px-5 py-5 sm:grid-cols-[1fr_auto] sm:items-center sm:px-8">
           <div className="flex items-center gap-4">
-            <span className="inline-flex size-11 shrink-0 items-center justify-center border border-success/25 bg-info text-success shadow-[3px_3px_0_rgb(61_47_41/0.08)]">
+            <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-[4px] border border-success/25 bg-info text-success shadow-[3px_3px_0_rgb(61_47_41/0.08)]">
               <MessagesSquare aria-hidden="true" className="size-5" />
             </span>
             <div>

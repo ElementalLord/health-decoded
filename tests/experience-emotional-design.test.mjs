@@ -59,6 +59,7 @@ test("gives the AI guide transparent context and user control", () => {
   assert.match(aiPageSource, /Ask Health Decoded chat workspace/);
   assert.match(aiPageSource, /Your private learning conversation/);
   assert.match(aiPageSource, /border-t-4 border-t-accent-warm/);
+  assert.match(aiPageSource, /rounded-\[6px\]/);
   assert.doesNotMatch(aiPageSource, /rounded-\[28px\]|rounded-full/);
 });
 
