@@ -10,7 +10,7 @@ declare
     'profiles', 'user_settings', 'journeys', 'lessons', 'journey_lessons',
     'activities', 'activity_answer_keys', 'medications', 'patient_stories',
     'caregiver_content', 'user_journeys', 'lesson_progress', 'activity_progress',
-    'confidence_check_ins', 'reflection_entries'
+    'confidence_check_ins', 'reflection_entries', 'ai_conversations', 'ai_messages'
   ];
 begin
   if (
@@ -113,6 +113,13 @@ begin
 
   if has_table_privilege('authenticated', 'public.user_settings', 'delete') then
     raise exception 'User settings deletion must not break the one-row-per-user invariant';
+  end if;
+
+  if has_table_privilege('authenticated', 'public.ai_conversations', 'insert')
+    or has_table_privilege('authenticated', 'public.ai_conversations', 'update')
+    or has_table_privilege('authenticated', 'public.ai_messages', 'insert')
+    or has_table_privilege('authenticated', 'public.ai_messages', 'update') then
+    raise exception 'Session-only AI chat tables must not accept browser writes';
   end if;
 
   if has_function_privilege(

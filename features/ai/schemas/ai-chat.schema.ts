@@ -7,20 +7,26 @@ import {
 } from "@/features/ai/constants/ai-limits";
 
 const markupPattern = /<\/?[a-z][^>]*>/i;
+const unsafeControlPattern =
+  /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u202a-\u202e\u2066-\u2069]/u;
+
+function isSafePlainText(value: string) {
+  return !markupPattern.test(value) && !unsafeControlPattern.test(value);
+}
 
 const plainTextMessage = z
   .string()
   .trim()
   .min(1)
   .max(AI_MAX_MESSAGE_CHARACTERS)
-  .refine((value) => !markupPattern.test(value), "Messages must be plain text.");
+  .refine(isSafePlainText, "Messages must be safe plain text.");
 
 const assistantHistoryText = z
   .string()
   .trim()
   .min(1)
   .max(AI_MAX_OUTPUT_CHARACTERS)
-  .refine((value) => !markupPattern.test(value), "Messages must be plain text.");
+  .refine(isSafePlainText, "Messages must be safe plain text.");
 
 export const aiChatRequestSchema = z
   .object({
