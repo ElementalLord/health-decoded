@@ -904,7 +904,7 @@ export function FirstFiveMinutesExperience({
       case 8:
         return (
           <div className="space-y-8">
-            <ExperienceHeading>What can wait—and what cannot?</ExperienceHeading>
+            <ExperienceHeading>What can wait, and what cannot?</ExperienceHeading>
             <p className="text-lg leading-8 text-muted-foreground">
               Open both cards. The difference is the useful part.
             </p>

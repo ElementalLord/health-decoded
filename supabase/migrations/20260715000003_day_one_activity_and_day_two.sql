@@ -10,7 +10,7 @@ insert into public.activities (
   '20000000-0000-0000-0000-000000000001',
   2,
   'match_pair',
-  'What can wait—and what cannot?',
+  'What can wait, and what cannot?',
   'Match each situation with the kind of response it needs.',
   '{"prompt":"Connect each situation with planned follow-up or urgent help.","left_items":[{"id":"follow-up-questions","label":"Questions about test results, medicine, food, movement, or home monitoring"},{"id":"urgent-symptoms","label":"Repeated vomiting, severe abdominal pain, difficulty breathing, or inability to keep liquids down"}],"right_items":[{"id":"planned-follow-up","label":"Bring these to a planned healthcare appointment"},{"id":"urgent-help","label":"Seek urgent medical care rather than waiting for a routine appointment"}],"feedback":{"correct":"Here is the connection: most questions can wait for planned follow-up, while serious symptoms should not wait.","retry":"One part needs another look. Questions about a care plan usually belong in follow-up; serious symptoms need urgent help."}}'::pg_catalog.jsonb,
   'Most diagnosis questions can be handled through planned follow-up. Serious warning signs should not wait.',
@@ -54,7 +54,7 @@ insert into public.lessons (
   '[{"type":"summary","title":"The body system","points":["Glucose is a source of energy.","Insulin helps many cells take in glucose.","Cells may respond less effectively to insulin.","The pancreas may not meet the body’s increased insulin need.","More glucose remains in the blood."]}]'::pg_catalog.jsonb,
   'Type 2 diabetes is not simply about whether the body makes insulin. The body may respond less effectively to insulin, and the pancreas may not make enough insulin to meet the increased need. As a result, more glucose remains in the blood.',
   'published',
-  'Implementation specification — medical review pending',
+  'Implementation specification, medical review pending',
   '2026-07-15T00:00:00Z',
   '2026-07-15T00:00:00Z'
 )
@@ -84,7 +84,7 @@ insert into public.journey_lessons (
   2,
   '30000000-0000-0000-0000-000000000001',
   'published',
-  'Implementation specification — medical review pending',
+  'Implementation specification, medical review pending',
   '2026-07-15T00:00:00Z',
   '2026-07-15T00:00:00Z'
 )

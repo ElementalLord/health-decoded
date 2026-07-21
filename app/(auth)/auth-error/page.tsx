@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/shared/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+export const metadata = { title: "Sign-in problem" };
+
 export default function AuthErrorPage() {
   return (
     <div className="space-y-8">

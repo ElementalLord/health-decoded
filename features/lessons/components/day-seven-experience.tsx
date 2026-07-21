@@ -216,7 +216,7 @@ function Feedback({ feedback }: { feedback: DaySevenEvaluationFeedback }) {
         {feedback.details.map((detail) => (
           <li className="flex gap-2" key={detail}>
             <span aria-hidden="true" className="text-accent-warm">
-              —
+              •{" "}
             </span>
             {detail}
           </li>
@@ -319,7 +319,7 @@ function SupportLensAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>A tool changes what becomes possible—not your worth.</strong> Glasses support
+        <strong>A tool changes what becomes possible, not your worth.</strong> Glasses support
         vision. Medication can support a body process. Neither is a moral grade.
       </figcaption>
     </figure>
@@ -535,8 +535,8 @@ function BodyToolsAnimation() {
       </svg>
       <figcaption className={styles.figureCaption}>
         <strong>There is no single “diabetes pill.”</strong> Different medicine classes work through
-        different pathways. These are simplified teaching scenes—not a claim that every medicine
-        performs every job—and a clinician fits the tool to the person.
+        different pathways. These are simplified teaching scenes, not a claim that every medicine
+        performs every job, and a clinician fits the tool to the person.
       </figcaption>
     </figure>
   );
@@ -1077,7 +1077,7 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
         return (
           <div className="space-y-9">
             <LessonHeading label="Not either-or">
-              Build support around the person—not pressure around the pill.
+              Build support around the person, not pressure around the pill.
             </LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Choose at least three pieces. The illustration becomes steadier as care works
@@ -1115,8 +1115,8 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
             </div>
             {supports.size >= 3 ? (
               <p className="border-l-2 border-success bg-info p-5 leading-7">
-                Medication can complement daily habits and clinical care. It does not erase them—and
-                they do not erase the value of medicine.
+                Medication can complement daily habits and clinical care. It does not erase them,
+                and they do not erase the value of medicine.
               </p>
             ) : null}
           </div>
@@ -1186,7 +1186,7 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
                 )}
               >
                 {insulinTruth === "treatment"
-                  ? "Yes. Insulin can be used at different times for different reasons. It is a treatment—not a consequence or moral verdict."
+                  ? "Yes. Insulin can be used at different times for different reasons. It is a treatment, not a consequence or moral verdict."
                   : "Release the failure story. Insulin is a treatment tool, and when it is used depends on the body and clinical situation."}
               </p>
             ) : null}
@@ -1242,7 +1242,7 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
               Let a routine carry some of the remembering.
             </LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              This is a memory practice—not a medication instruction. Follow the prescription label
+              This is a memory practice, not a medication instruction. Follow the prescription label
               and care-team guidance.
             </p>
             <div className="grid gap-7 lg:grid-cols-2">
@@ -1285,7 +1285,7 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
                   </h2>
                   <p>
                     Use only if it matches the prescription instructions. If cost, access, memory,
-                    or side effects get in the way, ask for problem-solving—not blame.
+                    or side effects get in the way, ask for problem-solving, not blame.
                   </p>
                 </div>
               </div>
@@ -1371,7 +1371,7 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
               <ol className="mt-6 space-y-6">
                 {[
                   "Different medicines work through different body pathways, and the plan should be fitted to the person.",
-                  "Metformin is common—not universal. Insulin is treatment—not failure.",
+                  "Metformin is common, not universal. Insulin is treatment, not failure.",
                   "Know the name, purpose, and safety questions for your medicine; concerns belong with the care team.",
                 ].map((item, index) => (
                   <li className="grid grid-cols-[3rem_1fr] gap-4 text-lg leading-8" key={item}>

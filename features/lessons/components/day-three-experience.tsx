@@ -54,7 +54,7 @@ const feelingResponses: Record<NumberFeeling, string> = {
   grade:
     "A number can start to feel like proof of how well you have behaved. Today, we will give it a smaller and more accurate job: reporting information.",
   warning:
-    "Numbers can sound like alarms when no one explains their time window. Today, you will learn what each one can—and cannot—say.",
+    "Numbers can sound like alarms when no one explains their time window. Today, you will learn what each one can, and cannot, say.",
   mystery:
     "That is a reasonable place to begin. A number without context is difficult to use. We will add the context one layer at a time.",
   information:
@@ -68,7 +68,7 @@ const measurementLayers = [
     label: "What it measures",
   },
   {
-    body: "One particular moment—the time the sample was taken.",
+    body: "One particular moment, the time the sample was taken.",
     id: "when",
     label: "When it measures",
   },
@@ -322,7 +322,7 @@ function ConceptFeedback({ feedback }: { feedback: DayThreeEvaluationFeedback })
           {feedback.whyOthers.map((reason) => (
             <li className="flex gap-2" key={reason}>
               <span aria-hidden="true" className="text-accent-warm">
-                —
+                •{" "}
               </span>
               {reason}
             </li>
@@ -342,7 +342,7 @@ function DailyTrace({ selectedMoment }: { selectedMoment: DailyMomentId | null }
     >
       <svg aria-hidden="true" className="h-auto w-full" viewBox="0 0 720 240">
         <text fill="#786b62" fontSize="13" x="42" y="24">
-          Illustrative change—not a target range
+          Illustrative change, not a target range
         </text>
         <path d="M42 180H690" stroke="#d9c9ba" strokeWidth="2" />
         <path d="M42 34V180" stroke="#d9c9ba" strokeWidth="2" />
@@ -751,7 +751,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               <div className="space-y-4 text-lg leading-8 text-foreground/80">
                 <p>
                   You may remember a blood-glucose result, an A1C percentage, or several tests from
-                  the day you were diagnosed—without remembering what any of them meant.
+                  the day you were diagnosed, without remembering what any of them meant.
                 </p>
                 <p>
                   A number without a time window can feel frightening. Today, each number gets
@@ -759,7 +759,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 </p>
               </div>
               <div
-                aria-label="An example A1C percentage, 6.5 percent—not the learner's personal result"
+                aria-label="An example A1C percentage, 6.5 percent, not the learner's personal result"
                 className="relative flex min-h-52 items-center justify-center overflow-hidden rounded-full bg-[#efe5da]"
                 role="img"
               >
@@ -767,7 +767,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                   6.5%
                 </span>
                 <span className="absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                  An example—not your result
+                  An example, not your result
                 </span>
                 <span className="absolute left-6 top-8 size-3 rounded-full bg-success/45" />
                 <span className="absolute bottom-10 right-8 size-5 rounded-full border-2 border-accent-warm/35" />
@@ -950,7 +950,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               A snapshot and a longer pattern answer different questions.
             </DayThreeHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Open both measurements. The difference is not that one is better—it is the span of
+              Open both measurements. The difference is not that one is better, it is the span of
               time each one can describe.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -1120,7 +1120,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               </div>
             ) : null}
             <p className="border-y border-border py-6 font-serif-display text-2xl leading-9">
-              This is why one meal is information—not a verdict—and why patterns are more useful
+              This is why one meal is information, not a verdict, and why patterns are more useful
               than perfection.
             </p>
           </div>
@@ -1199,7 +1199,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
             <div className="max-w-3xl space-y-3 text-lg leading-8 text-foreground/80">
               <p>
                 Clinicians use agreed cut points to decide when results meet diagnostic criteria for
-                diabetes. These are diagnostic thresholds—not universal treatment goals.
+                diabetes. These are diagnostic thresholds, not universal treatment goals.
               </p>
               <p>
                 When classic symptoms are absent, an abnormal result is usually confirmed with a
@@ -1289,7 +1289,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
         return (
           <div className="space-y-9">
             <DayThreeHeading label="Pattern detective">
-              Look for repetition—not the most dramatic dot.
+              Look for repetition, not the most dramatic dot.
             </DayThreeHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               This fictional week has no numbers because the task is not to interpret a personal
@@ -1364,7 +1364,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
         return (
           <div className="space-y-9">
             <DayThreeHeading label="Weather, money, and one meal">
-              Does this use one moment—or pattern reasoning?
+              Does this use one moment, or pattern reasoning?
             </DayThreeHeading>
             <div className="relative overflow-hidden rounded-[1rem] border border-accent-warm/25 bg-[#efe5da] p-6 sm:p-10">
               <div className="absolute right-8 top-8 text-accent-warm/40">
@@ -1435,10 +1435,10 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
             <div className="border-l-2 border-success bg-info p-6 leading-7">
               <p className="font-semibold">A1C is useful, but it is not infallible.</p>
               <p className="mt-2">
-                Conditions that change red-blood-cell lifespan or hemoglobin—such as some anemias,
-                recent blood loss or transfusion, kidney disease, and certain hemoglobin
-                variants—can affect A1C accuracy. When results do not fit together, clinicians look
-                more closely instead of blaming the person.
+                Conditions that change red-blood-cell lifespan or hemoglobin, such as some anemias,
+                recent blood loss or transfusion, kidney disease, and certain hemoglobin variants,
+                can affect A1C accuracy. When results do not fit together, clinicians look more
+                closely instead of blaming the person.
               </p>
             </div>
             <p className="font-semibold">Why might a clinician compare several tests?</p>
@@ -1530,7 +1530,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
             </div>
             <div className="space-y-0 border-y border-border">
               {[
-                ["01", "Blood glucose", "A point-in-time measurement—a snapshot with context."],
+                ["01", "Blood glucose", "A point-in-time measurement, a snapshot with context."],
                 [
                   "02",
                   "A1C",
@@ -1591,8 +1591,8 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                       Food and blood sugar basics
                     </h2>
                     <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
-                      You will use today’s time windows to understand what can change after
-                      eating—without turning food into fear or a list of forbidden choices.
+                      You will use today’s time windows to understand what can change after eating,
+                      without turning food into fear or a list of forbidden choices.
                     </p>
                   </div>
                   <Utensils

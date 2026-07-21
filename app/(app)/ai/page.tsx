@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/shared/page-header";
 import { AiChat } from "@/features/ai/components/ai-chat";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "AI tutor" };
+
 export default async function AiPage() {
   const profile = await getCurrentProfile();
   if (!profile.ok) {

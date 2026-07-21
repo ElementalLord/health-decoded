@@ -536,7 +536,7 @@ Write code that a new developer can understand in five minutes.
 Consistency is more valuable than cleverness.
 
 Success Criteria
-The architecture succeeds when a new developer—or an AI coding agent—can clone the repository, understand the project structure within minutes, and confidently add a new feature without restructuring the codebase.
+The architecture succeeds when a new developer, or an AI coding agent, can clone the repository, understand the project structure within minutes, and confidently add a new feature without restructuring the codebase.
 Every feature should feel isolated.
 Every layer should have a clear purpose.
 Every dependency should flow in one direction.
@@ -547,4 +547,4 @@ The frontend should be built as a collection of independent feature modules comm
 
 The Guiding Principle
 If there is one sentence that should guide every engineering decision, it is this:
-The codebase should be organized so clearly that the next developer—or the next AI coding agent—can predict where any piece of code belongs before they even search for it.
+The codebase should be organized so clearly that the next developer, or the next AI coding agent, can predict where any piece of code belongs before they even search for it.

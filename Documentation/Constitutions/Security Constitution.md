@@ -35,12 +35,12 @@ No component is exempt.
 
 Security Philosophy
 Health Decoded follows six core security principles.
-Principle 1 — Secure by Default
+Principle 1, Secure by Default
 Every new feature must begin from the most secure reasonable configuration.
 Developers should never assume future hardening will occur.
 If something should be secure, it must be secure from the first implementation.
 
-Principle 2 — Never Trust Input
+Principle 2, Never Trust Input
 Every piece of external data is considered untrusted.
 This includes:
 User input
@@ -54,11 +54,11 @@ Database values from previous versions
 Browser state
 Everything must be validated.
 
-Principle 3 — Least Privilege
+Principle 3, Least Privilege
 Every user, API, service, and system receives only the permissions absolutely necessary.
 No component should receive administrative access unless there is no safer alternative.
 
-Principle 4 — Defense in Depth
+Principle 4, Defense in Depth
 Security must never rely on a single protection.
 For example:
 Authentication alone is not enough.
@@ -67,7 +67,7 @@ Validation is still required.
 Logging is still required.
 Every layer should assume another layer could fail.
 
-Principle 5 — Fail Securely
+Principle 5, Fail Securely
 When uncertainty exists, the system must deny access rather than grant it.
 Examples:
 Unknown user → deny.
@@ -76,7 +76,7 @@ Failed validation → reject request.
 Missing permission → reject request.
 Never "guess" what the user intended.
 
-Principle 6 — Security Before Features
+Principle 6, Security Before Features
 No feature is important enough to justify weakening security.
 If a feature cannot be implemented securely, it must be redesigned.
 

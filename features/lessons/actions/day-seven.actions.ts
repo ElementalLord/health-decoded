@@ -61,7 +61,7 @@ export async function evaluateDaySevenAction(input: unknown): Promise<DaySevenEv
           "A treatment plan can change as the person’s needs and evidence change.",
         ],
         heading: accurate
-          ? "The plan is fitted—not assigned as a grade."
+          ? "The plan is fitted, not assigned as a grade."
           : "Bring the person back into the plan.",
       },
       ok: true,
@@ -93,7 +93,7 @@ export async function evaluateDaySevenAction(input: unknown): Promise<DaySevenEv
     data: {
       accurate,
       body: accurate
-        ? "Medication is one tool that can support the body. Needing it is not a moral verdict, and insulin is treatment—not punishment or proof of failure."
+        ? "Medication is one tool that can support the body. Needing it is not a moral verdict, and insulin is treatment, not punishment or proof of failure."
         : "Day 7 releases the idea that treatment measures worth. Medicines, including insulin, are tools chosen for what the body needs.",
       details: [
         "Healthy habits and medication can work together.",

@@ -1,4 +1,4 @@
-# Prompt 25 — AI Tutor Experience & Chat Interface
+# Prompt 25, AI Tutor Experience & Chat Interface
 
 ## Objective
 
@@ -15,11 +15,11 @@ Read:
 - Engineering Constitution
 - Security Constitution
 - ADR-001
-- SPEC 06 — Personal Diabetes Educator
-- SPEC 14 — AI Tutor System
-- SPEC 12 — Design System & Visual Language
-- SPEC 15 — Application Flow & Screen Specifications
-- SPEC 17 — Technical Architecture
+- SPEC 06, Personal Diabetes Educator
+- SPEC 14, AI Tutor System
+- SPEC 12, Design System & Visual Language
+- SPEC 15, Application Flow & Screen Specifications
+- SPEC 17, Technical Architecture
 
 Inspect the implementation from Prompt 24 before writing code.
 

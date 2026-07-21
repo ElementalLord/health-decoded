@@ -8,6 +8,8 @@ import { CaregiverUnavailableState } from "@/features/caregiver/components/careg
 import { listPublishedCaregiverContent } from "@/features/caregiver/services/caregiver.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "Caregiver companion" };
+
 export default async function CaregiverPage() {
   const profile = await getCurrentProfile();
   if (!profile.ok) redirect("/journey");

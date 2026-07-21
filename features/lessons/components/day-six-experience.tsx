@@ -68,7 +68,7 @@ const openingResponses: Record<OpeningNeed, string> = {
     "Your plan will have a full-size version and a smaller backup. A low-energy day does not have to become a zero-or-failure day.",
   memory:
     "You will attach movement to something that already happens, so the day itself can become the reminder.",
-  time: "We will look for seams in the day—not a missing hour. Brief movement can live between ordinary events.",
+  time: "We will look for seams in the day, not a missing hour. Brief movement can live between ordinary events.",
 };
 
 const daySeams = [
@@ -459,7 +459,7 @@ function ConceptFeedback({ feedback }: { feedback: DaySixEvaluationFeedback }) {
         {feedback.details.map((detail) => (
           <li className="flex gap-2" key={detail}>
             <span aria-hidden="true" className="text-accent-warm">
-              —
+              •{" "}
             </span>
             {detail}
           </li>
@@ -848,7 +848,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             </DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               A seam is the small moment between two things that already happen. Choose one place
-              where a brief movement option could be remembered—not guaranteed.
+              where a brief movement option could be remembered, not guaranteed.
             </p>
             <div
               className={cn(
@@ -904,7 +904,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             </DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Tap two or more pauses to imagine standing, stretching, walking briefly, or using an
-              adapted movement. This is an exploration—not a schedule prescribed for you.
+              adapted movement. This is an exploration, not a schedule prescribed for you.
             </p>
             <LessonMotionFigure variant="sitting-interruption" />
             <div
@@ -1174,7 +1174,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
           <div className="space-y-9">
             <DaySixHeading label="No promised number">A response has context.</DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              The same movement does not guarantee the same glucose result for every person—or even
+              The same movement does not guarantee the same glucose result for every person, or even
               on every day. Open the four pieces of context.
             </p>
             <div
@@ -1226,7 +1226,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                 </span>
                 <div>
                   <p className="font-serif-display text-2xl italic text-success">
-                    A response is a pattern with context—not a grade.
+                    A response is a pattern with context, not a grade.
                   </p>
                   <p className="mt-2 leading-7 text-foreground/75">
                     Activity, food, medicine, timing, sleep, stress, illness, and many individual
@@ -1309,7 +1309,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-9">
             <DaySixHeading label="Real life reroutes">
-              A changed day needs a route—not a verdict.
+              A changed day needs a route, not a verdict.
             </DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Choose what tends to knock plans off course. Then make a backup small enough to remain
@@ -1366,7 +1366,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             ) : null}
             {backupChoice ? (
               <p className="border-l-2 border-success bg-info p-5 text-lg leading-8">
-                The backup is part of the plan—not evidence that the original plan failed.
+                The backup is part of the plan, not evidence that the original plan failed.
               </p>
             ) : null}
           </div>
@@ -1772,7 +1772,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                   A tool is allowed to fit the person using it.
                 </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Tomorrow: medicines as tools—not judgments.
+                  Tomorrow: medicines as tools, not judgments.
                 </p>
                 <Button disabled={isPending} onClick={finishExperience}>
                   {experience.accessMode === "review" ? "Return to journey" : "Complete Day 6"}

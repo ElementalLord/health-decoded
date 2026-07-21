@@ -2,6 +2,8 @@ import { PageHeader } from "@/components/shared/page-header";
 import { AuthForm } from "@/features/auth/components/auth-form";
 import { resendVerificationAction } from "@/features/auth/actions/auth.actions";
 
+export const metadata = { title: "Verify your email" };
+
 export default function VerifyEmailPage() {
   return (
     <div className="space-y-8">

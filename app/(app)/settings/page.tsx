@@ -5,6 +5,8 @@ import { SettingsContent } from "@/features/profile/components/settings-content"
 import { getProfileSettings } from "@/features/profile/services/profile-settings.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
+export const metadata = { title: "Settings" };
+
 export default async function SettingsPage() {
   const profile = await getCurrentProfile();
   if (!profile.ok)

@@ -31,7 +31,7 @@ export default function HomePage() {
             </h1>
             <p className="mt-9 max-w-[38rem] text-lg leading-9 text-[#827168] sm:text-xl">
               A private, compassionate companion for life after a Type 2 diagnosis. One calm lesson
-              at a time—at your own pace, with a guide by your side.
+              at a time, at your own pace, with a guide by your side.
             </p>
             <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
               <Link
@@ -81,7 +81,7 @@ export default function HomePage() {
           It&apos;s the beginning of a gentler one.”
         </blockquote>
         <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#8d7b70]">
-          — The Health Decoded team
+          The Health Decoded team
         </p>
       </section>
 
@@ -123,7 +123,7 @@ export default function HomePage() {
             </h2>
             <p className="mt-7 max-w-4xl text-lg leading-9 text-[#827168]">
               Our AI guide speaks in plain, gentle language. No medical jargon. No judgment. Just
-              clear educational answers whenever you need them—at 3 AM, between meetings, or while
+              clear educational answers whenever you need them, at 3 AM, between meetings, or while
               waiting for the kettle to boil.
             </p>
             <div className="mt-10 flex flex-wrap items-end gap-4">
@@ -151,7 +151,7 @@ export default function HomePage() {
               When you stumble, we help you up.
             </h2>
             <p className="mt-7 text-lg leading-9 text-[#827168]">
-              Fictional composite stories of people living with Type 2—because knowing you&apos;re
+              Fictional composite stories of people living with Type 2, because knowing you&apos;re
               not alone changes everything. Real emotions, real setbacks, real grace.
             </p>
             <Link className="mt-8 inline-flex items-center gap-2 font-semibold" href="/signup">
@@ -207,7 +207,7 @@ export default function HomePage() {
           Educational support, not medical advice
         </p>
         <p className="mt-3 text-sm">
-          © 2026 Health Decoded — A compassionate companion for the first 90 days.
+          © 2026 Health Decoded. A compassionate companion for the first 90 days.
         </p>
       </footer>
     </>
