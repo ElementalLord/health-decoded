@@ -15,54 +15,40 @@
   background: color-mix(in srgb, var(--muted) 78%, white 22%);
 }
 
-.motionControl {
-  position: absolute;
-  z-index: 3;
-  top: 0.75rem;
-  right: 0.75rem;
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  gap: 0.45rem;
-  border: 1px solid color-mix(in srgb, var(--border) 74%, var(--foreground) 26%);
-  border-radius: 999px;
-  padding: 0.55rem 0.85rem;
-  background: color-mix(in srgb, var(--card) 92%, transparent);
-  box-shadow: 0 0.4rem 1rem rgb(61 46 38 / 10%);
-  color: var(--foreground);
-  font-size: 0.75rem;
-  font-weight: 750;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.motionControl:hover {
-  transform: translateY(-1px);
-}
-
-.motionControl:active {
-  transform: translateY(1px);
-}
-
-.motionControl:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--accent-warm) 52%, transparent);
-  outline-offset: 3px;
-}
-
 .art {
   display: block;
   width: 100%;
   height: 100%;
   max-height: 22rem;
   overflow: hidden;
+  shape-rendering: geometricprecision;
+  text-rendering: optimizelegibility;
+}
+
+.art :is(path, circle, ellipse, rect, line, polyline, polygon) {
+  vector-effect: non-scaling-stroke;
 }
 
 .caption {
+  display: grid;
+  gap: 0.38rem;
   border-top: 1px solid var(--border);
   padding: 1rem clamp(1.1rem, 3vw, 1.75rem) 1.2rem;
   color: var(--muted-foreground);
   font-size: 0.92rem;
   line-height: 1.65;
+}
+
+.motionCue {
+  color: var(--foreground);
+  font-size: 0.82rem;
+  font-weight: 760;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
+}
+
+.caption span {
+  display: block;
 }
 
 .sceneLabel,
@@ -186,11 +172,18 @@
   stroke-width: 3;
 }
 
-.signalTrail,
 .responsePath {
   fill: none;
   stroke: color-mix(in srgb, var(--success) 36%, transparent);
   stroke-dasharray: 9 12;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.gateSignal,
+.signalWave {
+  fill: none;
+  stroke: var(--success);
   stroke-linecap: round;
   stroke-width: 5;
 }
@@ -262,6 +255,10 @@
   font-family: var(--font-serif);
   font-size: 20px;
   font-weight: 700;
+}
+
+.meterTick {
+  fill: var(--success);
 }
 
 .scanBand {
@@ -416,12 +413,18 @@
   stroke-width: 7;
 }
 
-.sittingPerson {
+.sittingPerson,
+.standingPerson {
   fill: color-mix(in srgb, var(--accent-warm) 22%, white 78%);
   stroke: var(--accent-warm);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 7;
+}
+
+.standingPerson {
+  fill: color-mix(in srgb, var(--success) 16%, white 84%);
+  stroke: var(--success);
 }
 
 .stretchArms {
@@ -431,73 +434,32 @@
   stroke-width: 10;
 }
 
-.stillTimeline,
-.breakTimeline {
+.breakHalo {
+  fill: color-mix(in srgb, var(--success) 18%, transparent);
+}
+
+.breakArrow {
   fill: none;
-  stroke: color-mix(in srgb, var(--muted-foreground) 40%, transparent);
-  stroke-linecap: round;
-  stroke-width: 13;
-}
-
-.breakTimeline {
   stroke: var(--success);
-}
-
-.breakMarker {
-  fill: var(--success);
-  stroke: var(--background);
+  stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-width: 7;
 }
 
-/*
- * CSS timelines intentionally mirror the SVG timelines. They provide a second,
- * browser-independent playback path so the illustrations keep behaving like
- * short looping films even when a browser does not start SVG SMIL reliably.
- */
-.breathBubble,
-.insulinDot,
-.glucoseDot,
-.foodChunk,
-.proteinDot,
-.fatDot,
-.bloodDot {
-  animation-name: gif-dot-travel;
-  animation-timing-function: cubic-bezier(0.42, 0, 0.2, 1);
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+.segmentedTimeline {
+  fill: color-mix(in srgb, var(--muted-foreground) 36%, transparent);
 }
 
-.rbc {
-  animation-name: gif-cell-flow;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+.breakSegments {
+  fill: var(--success);
 }
 
-.art[data-variant="calm-breath"] .warmPerson {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: gif-breathe 5.2s ease-in-out infinite;
-}
+/* Moving particles use SVG timelines so their paths remain deterministic. */
 
 .art[data-variant="calm-breath"] .calmHalo {
   transform-box: fill-box;
   transform-origin: center;
   animation: gif-halo 5.2s ease-in-out infinite;
-}
-
-.art[data-variant="calm-breath"] .worryCloud {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: gif-worry-soften 5.2s ease-in-out infinite;
-}
-
-.art[data-variant="comfort-hug"] .hugPersonWarm {
-  animation: gif-hug-left 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.art[data-variant="comfort-hug"] .hugPersonGreen {
-  animation: gif-hug-right 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .art[data-variant="comfort-hug"] .comfortHeart {
@@ -527,7 +489,6 @@
   animation: gif-cell-breathe 2.8s ease-in-out infinite;
 }
 
-.art[data-variant="glucose-signal"] .signalTrail,
 .art[data-variant="insulin-response"] .responsePath {
   animation: gif-dash-flow 1s linear infinite;
 }
@@ -550,23 +511,9 @@
   animation: gif-response-ring 3.2s ease-out infinite;
 }
 
-.art[data-variant="reading-snapshot"] .dayTracer {
-  animation: gif-day-tracer 7s ease-in-out infinite;
-}
-
 .art[data-variant="reading-snapshot"] .dayLine {
   stroke-dasharray: 22 8;
   animation: gif-day-flow 1.6s linear infinite;
-}
-
-.art[data-variant="reading-snapshot"] .scanBand {
-  animation: gif-scan 5s ease-in-out infinite;
-}
-
-.art[data-variant="reading-snapshot"] .snapshotMeter {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: gif-meter-capture 5s ease-in-out infinite;
 }
 
 .art[data-variant="a1c-window"] .flowLine,
@@ -603,10 +550,10 @@
   animation-duration: 2.2s;
 }
 
-.art[data-variant="fiber-pace"] .fiberGates {
+.art[data-variant="fiber-pace"] .fiberGates path {
   transform-box: fill-box;
   transform-origin: center;
-  animation: gif-fiber-sway 1.8s ease-in-out infinite;
+  animation: gif-fiber-sway 2.6s ease-in-out infinite;
 }
 
 .art[data-variant="muscle-fuel"] .muscleGate {
@@ -628,33 +575,10 @@
   animation: gif-heartbeat 1.45s ease-in-out infinite;
 }
 
-.art[data-variant="post-meal-window"] .curveTracer {
-  animation: gif-curve-tracer 6.4s ease-in-out infinite;
-}
-
 .art[data-variant="post-meal-window"] .postMealCurve,
 .art[data-variant="post-meal-window"] .postMealGuide {
   stroke-dasharray: 24 9;
   animation: gif-day-flow 1.8s linear infinite;
-}
-
-.art[data-variant="post-meal-window"] .postMealWalker {
-  animation: gif-walk-across 5.4s ease-in-out infinite;
-}
-
-.art[data-variant="sitting-interruption"] .sittingPerson {
-  animation: gif-sit-rise 6s ease-in-out infinite;
-}
-
-.art[data-variant="sitting-interruption"] .stretchArms,
-.art[data-variant="sitting-interruption"] .breakTimeline,
-.art[data-variant="sitting-interruption"] .breakMarker {
-  animation: gif-break-appear 6s ease-in-out infinite;
-}
-
-.art[data-variant="sitting-interruption"] .stillTimeline {
-  stroke-dasharray: 26 10;
-  animation: gif-day-flow 1.4s linear infinite;
 }
 
 .art[data-variant="calm-breath"] .ground,
@@ -662,10 +586,6 @@
   transform-box: fill-box;
   transform-origin: center;
   animation: gif-ground-settle 3.6s ease-in-out infinite;
-}
-
-.figure[data-motion-playing="false"] .art * {
-  animation-play-state: paused !important;
 }
 
 @keyframes gif-dot-travel {

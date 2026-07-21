@@ -365,7 +365,9 @@
 
 .momentRow {
   display: grid;
+  grid-template-rows: auto minmax(13rem, auto);
   gap: 1.25rem;
+  min-width: 0;
   transition:
     border-color 220ms ease,
     background-color 220ms ease,
@@ -377,21 +379,157 @@
 }
 
 .momentCopy {
-  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .momentVideo {
   position: relative;
-  min-height: 13rem;
+  min-height: 12.5rem;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--color-accent-warm) 24%, transparent);
   border-radius: 1.1rem;
   background: var(--color-background);
 }
 
-.momentVideo svg,
-.momentVideo span {
+.momentSvg {
   position: absolute;
+  inset: 0 0 1.8rem;
+  display: block;
+  width: 100%;
+  height: calc(100% - 1.8rem);
+  overflow: hidden;
+  shape-rendering: geometricprecision;
+}
+
+.momentSvg :is(path, circle, rect, ellipse) {
+  vector-effect: non-scaling-stroke;
+}
+
+.widgetChair {
+  fill: color-mix(in srgb, var(--color-accent-warm) 10%, white 90%);
+  stroke: color-mix(in srgb, var(--color-foreground) 62%, var(--color-accent-warm) 38%);
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.widgetWarmPerson,
+.widgetGreenPerson {
+  fill: color-mix(in srgb, var(--color-accent-warm) 20%, white 80%);
+  stroke: var(--color-accent-warm);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+}
+
+.widgetGreenPerson {
+  fill: color-mix(in srgb, var(--color-success) 16%, white 84%);
+  stroke: var(--color-success);
+}
+
+.widgetMutedLine,
+.widgetSuccessLine,
+.widgetRoute {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-muted-foreground) 33%, transparent);
+  stroke-linecap: round;
+  stroke-width: 10;
+}
+
+.widgetSuccessLine {
+  stroke: var(--color-success);
+}
+
+.widgetBreak,
+.widgetTraveler {
+  fill: var(--color-accent-warm);
+  stroke: white;
+  stroke-width: 4;
+}
+
+.widgetPlate circle:first-child {
+  fill: color-mix(in srgb, var(--color-accent-warm) 16%, white 84%);
+  stroke: var(--color-accent-warm);
+  stroke-width: 4;
+}
+
+.widgetPlate circle:nth-child(2) {
+  fill: var(--color-card);
+  stroke: color-mix(in srgb, var(--color-accent-warm) 28%, transparent);
+  stroke-width: 3;
+}
+
+.widgetPlate path {
+  fill: color-mix(in srgb, var(--color-success) 60%, white 40%);
+}
+
+.widgetRoute {
+  stroke: color-mix(in srgb, var(--color-success) 38%, var(--color-border) 62%);
+  stroke-width: 5;
+}
+
+.widgetTimeLine {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-muted-foreground) 34%, transparent);
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.widgetTimeNode {
+  fill: var(--color-card);
+  stroke: color-mix(in srgb, var(--color-muted-foreground) 52%, transparent);
+  stroke-width: 3;
+}
+
+.widgetWindow {
+  fill: color-mix(in srgb, var(--color-success) 19%, white 81%);
+  stroke: color-mix(in srgb, var(--color-success) 58%, transparent);
+  stroke-width: 3;
+}
+
+.widgetClock circle {
+  fill: var(--color-card);
+  stroke: var(--color-success);
+  stroke-width: 4;
+}
+
+.widgetClock path {
+  fill: none;
+  stroke: var(--color-success);
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.widgetWindowWalker {
+  fill: color-mix(in srgb, var(--color-accent-warm) 20%, white 80%);
+  stroke: var(--color-accent-warm);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.widgetSvgLabel {
+  fill: var(--color-muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: 0.11em;
+}
+
+.widgetCloud {
+  fill: color-mix(in srgb, var(--color-muted-foreground) 32%, transparent);
+  stroke: color-mix(in srgb, var(--color-muted-foreground) 64%, transparent);
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.widgetShield {
+  fill: color-mix(in srgb, var(--color-success) 17%, white 83%);
+  stroke: var(--color-success);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
 }
 
 .videoLabel {
@@ -405,124 +543,6 @@
   letter-spacing: 0.1em;
   text-align: center;
   text-transform: uppercase;
-}
-
-.videoChair {
-  bottom: 3.5rem;
-  left: 1.25rem;
-  width: 4rem;
-  color: #8a705e;
-}
-
-.videoStillLine {
-  right: 1.5rem;
-  bottom: 4.4rem;
-  left: 5.7rem;
-  height: 0.7rem;
-  border-radius: 999px;
-  background: #d9c2b3;
-}
-
-.videoRisingPerson {
-  bottom: 4.15rem;
-  left: 4.9rem;
-  z-index: 2;
-  width: 3.5rem;
-  color: var(--color-success);
-  animation: mini-person-rise 5.2s ease-in-out infinite;
-}
-
-.videoBreakMark {
-  bottom: 3.6rem;
-  left: 57%;
-  z-index: 1;
-  width: 4.2rem;
-  height: 2.3rem;
-  border: 0.65rem solid var(--color-background);
-  border-radius: 999px;
-  background: var(--color-success);
-  opacity: 0;
-  animation: mini-break-open 5.2s ease-in-out infinite;
-}
-
-.videoMeal {
-  top: 3rem;
-  left: 1.2rem;
-  width: 3.3rem;
-  color: var(--color-accent-warm);
-  animation: mini-meal-pulse 4.8s ease-in-out infinite;
-}
-
-.videoTravelPath {
-  top: 4.4rem;
-  right: 4.7rem;
-  left: 5.3rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-success) 28%, transparent);
-}
-
-.videoFuelDot {
-  top: 4rem;
-  left: 5rem;
-  z-index: 2;
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 0.2rem solid var(--color-background);
-  border-radius: 50%;
-  background: var(--color-warning);
-  animation: mini-fuel-travel 4.8s ease-in-out infinite;
-}
-
-.videoFootprints {
-  bottom: 3.1rem;
-  left: 34%;
-  width: 3.6rem;
-  color: var(--color-success);
-  animation: mini-footsteps-cross 4.8s ease-in-out infinite;
-}
-
-.videoMuscle {
-  top: 3rem;
-  right: 1.2rem;
-  width: 3.5rem;
-  color: var(--color-success);
-  animation: mini-muscle-work 1.6s ease-in-out infinite;
-}
-
-.videoWeather {
-  top: 2.1rem;
-  left: 1.3rem;
-  width: 4rem;
-  color: var(--color-muted-foreground);
-  animation: mini-weather-pass 6s ease-in-out infinite;
-}
-
-.videoRoute {
-  top: 3.2rem;
-  left: calc(50% - 2.25rem);
-  width: 4.5rem;
-  color: color-mix(in srgb, var(--color-success) 58%, var(--color-muted-foreground) 42%);
-}
-
-.videoTraveler {
-  top: 4rem;
-  left: 4.9rem;
-  z-index: 2;
-  width: 1.2rem;
-  height: 1.2rem;
-  border: 0.2rem solid var(--color-background);
-  border-radius: 50%;
-  background: var(--color-accent-warm);
-  animation: mini-reroute 6s ease-in-out infinite;
-}
-
-.videoShelter {
-  top: 2.65rem;
-  right: 1.25rem;
-  width: 4rem;
-  color: var(--color-success);
-  animation: mini-shelter-glow 3s ease-in-out infinite;
 }
 
 .momentsComplete {
@@ -899,10 +919,22 @@
   }
 }
 
-@media (min-width: 56rem) {
-  .momentRow {
-    grid-template-columns: minmax(0, 0.9fr) minmax(19rem, 1.1fr);
+@media (min-width: 64rem) {
+  .momentLab {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: stretch;
+  }
+
+  .momentRow {
+    grid-template-rows: minmax(22rem, auto) 13rem;
+  }
+
+  .momentRow h2 {
+    font-size: clamp(1.65rem, 2.2vw, 2.1rem);
+  }
+
+  .momentCopy > button {
+    margin-top: auto;
   }
 }
 
@@ -914,15 +946,6 @@
   .movementSegmentStand svg,
   .movementSegmentStretch svg,
   .movementSegmentWalk svg,
-  .videoRisingPerson,
-  .videoBreakMark,
-  .videoMeal,
-  .videoFuelDot,
-  .videoFootprints,
-  .videoMuscle,
-  .videoWeather,
-  .videoTraveler,
-  .videoShelter,
   .contextWeather svg,
   .minuteDot,
   .sequenceTrack > *,

@@ -76,46 +76,118 @@
   letter-spacing: 0.14em;
 }
 
-.vessel {
-  fill: none;
-  stroke: #e7b9aa;
-  stroke-linecap: round;
-  stroke-width: 74;
+.pathwayPanel {
+  fill: #fffaf4;
+  stroke: #ddd0c3;
+  stroke-width: 2;
 }
 
-.glucose,
+.pathwayTitle,
+.pathwayAction,
+.lighthouseLabel {
+  fill: #74665e;
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.pathwayTitle {
+  font-size: 14px;
+}
+
+.pathwayAction {
+  font-size: 13px;
+}
+
+.loadingDock {
+  fill: #eee3d8;
+  stroke: #a88a77;
+  stroke-width: 3;
+}
+
+.loadingShutter {
+  fill: #70967d;
+}
+
+.glucoseCrate rect {
+  fill: #d89b3f;
+  stroke: #fff4dc;
+  stroke-width: 3;
+}
+
+.glucoseCrate text {
+  fill: #573b31;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 850;
+  text-anchor: middle;
+}
+
+.hourglassFrame {
+  fill: none;
+  stroke: #a88a77;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 6;
+}
+
+.pendulumStem {
+  fill: none;
+  stroke: #70967d;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.pendulumWeight {
+  fill: #dfe9df;
+  stroke: #70967d;
+  stroke-width: 5;
+}
+
+.filterChute {
+  fill: none;
+  stroke: #cda994;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 12;
+}
+
+.filterMesh path {
+  fill: none;
+  stroke: #70967d;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.signalRadio {
+  fill: #e4ece6;
+  stroke: #70967d;
+  stroke-width: 5;
+}
+
+.radioAntenna {
+  stroke: #70967d;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.radioWave {
+  fill: none;
+  stroke: #70967d;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
 .foodDot {
   fill: #d89b3f;
   stroke: #fff4dc;
   stroke-width: 4;
 }
 
-.insulinSignal {
-  fill: #70967d;
-  stroke: #edf5ef;
-  stroke-width: 4;
-}
-
-.signalPath,
-.kidneyRoute {
-  fill: none;
-  stroke: #8cad98;
-  stroke-dasharray: 9 10;
-  stroke-linecap: round;
-  stroke-width: 6;
-}
-
 .liver {
   fill: #d19a87;
   stroke: #bd6c55;
   stroke-width: 5;
-}
-
-.digestive {
-  fill: none;
-  stroke: #cda994;
-  stroke-linecap: round;
-  stroke-width: 25;
 }
 
 .kidneyShape {
@@ -130,15 +202,78 @@
   stroke-width: 8;
 }
 
-.cellDoor {
+.cellPulse {
+  stroke: #91ad99;
+  stroke-width: 8;
+}
+
+.harborWater {
+  fill: none;
+  stroke: #c7d8cd;
+  stroke-linecap: round;
+  stroke-width: 9;
+}
+
+.lighthouseTower {
+  fill: #f1d9cd;
+  stroke: #bd6c55;
+  stroke-linejoin: round;
+  stroke-width: 6;
+}
+
+.lighthouseLamp {
+  fill: #fff0d8;
+  stroke: #cf933d;
+  stroke-width: 5;
+}
+
+.lighthouseRoof {
+  fill: #bd6c55;
+}
+
+.lighthouseBeam {
+  fill: #f5c86e;
+}
+
+.lighthouseLabel {
+  font-size: 13px;
+}
+
+.cellHarbor {
+  fill: #dfe9df;
+  stroke: #7c9f88;
+  stroke-width: 8;
+}
+
+.harborOpening {
+  fill: #f5eee7;
+}
+
+.harborGate {
   fill: #fff0d8;
   stroke: #cf933d;
   stroke-width: 4;
 }
 
-.cellPulse {
-  stroke: #91ad99;
-  stroke-width: 8;
+.glucoseBoat path {
+  fill: #d89b3f;
+  stroke: #b87925;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.glucoseBoat rect {
+  fill: #fff0d8;
+  stroke: #b87925;
+  stroke-width: 3;
+}
+
+.glucoseBoat text {
+  fill: #573b31;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 11px;
+  font-weight: 850;
+  text-anchor: middle;
 }
 
 .comfortPortrait {
