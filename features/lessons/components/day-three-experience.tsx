@@ -385,6 +385,130 @@ function DailyTrace({ selectedMoment }: { selectedMoment: DailyMomentId | null }
   );
 }
 
+function A1cTimeWindowVisual() {
+  const weeks = Array.from({ length: 12 }, (_, index) => index);
+  const circulatingCells = [
+    { begin: "-1s", duration: "10s", glucoseOffset: -11, y: 128 },
+    { begin: "-4.3s", duration: "11.5s", glucoseOffset: 10, y: 128 },
+    { begin: "-7.2s", duration: "12.5s", glucoseOffset: -5, y: 128 },
+  ] as const;
+
+  return (
+    <div
+      aria-label="An animated teaching timeline spanning roughly twelve weeks. Red blood cells of different ages circulate across the window, while the most recent weeks receive gentle emphasis. This is not an exact week-by-week weighting formula."
+      className={styles.a1cTimeWindow}
+      role="img"
+    >
+      <svg aria-hidden="true" className={styles.a1cTimeWindowSvg} viewBox="0 0 900 270">
+        <rect className={styles.a1cWindowEarlier} height="154" rx="20" width="260" x="36" y="42" />
+        <rect className={styles.a1cWindowMiddle} height="154" rx="20" width="260" x="304" y="42" />
+        <rect className={styles.a1cWindowRecent} height="154" rx="20" width="292" x="572" y="42">
+          <animate
+            attributeName="opacity"
+            dur="4.8s"
+            repeatCount="indefinite"
+            values="0.72;1;0.72"
+          />
+        </rect>
+
+        <text className={styles.a1cWindowZoneTitle} x="64" y="74">
+          EARLIER WEEKS
+        </text>
+        <text className={styles.a1cWindowZoneTitle} x="332" y="74">
+          MIDDLE WEEKS
+        </text>
+        <text className={styles.a1cWindowZoneTitle} x="600" y="74">
+          RECENT WEEKS
+        </text>
+
+        <path className={styles.a1cWindowRail} d="M66 128H834" pathLength="1" />
+        {weeks.map((week) => {
+          const x = 66 + week * (768 / 11);
+          return (
+            <g key={week}>
+              <line
+                className={styles.a1cWeekTick}
+                x1={x}
+                x2={x}
+                y1={week % 4 === 0 ? 112 : 118}
+                y2={week % 4 === 0 ? 144 : 138}
+              />
+              <circle className={styles.a1cWeekPoint} cx={x} cy="128" r="4" />
+            </g>
+          );
+        })}
+
+        {circulatingCells.map((cell, index) => (
+          <g key={cell.begin}>
+            <animateMotion
+              begin={cell.begin}
+              dur={cell.duration}
+              path={`M66 ${cell.y}H834`}
+              repeatCount="indefinite"
+            />
+            <g className={styles.a1cCellBody}>
+              <circle className={styles.a1cCellOuter} r="18" />
+              <circle className={styles.a1cCellInner} r="10" />
+              <circle className={styles.a1cGlucoseMark} cx={cell.glucoseOffset} cy="-9" r="4" />
+              <circle
+                className={styles.a1cGlucoseMark}
+                cx={cell.glucoseOffset > 0 ? -8 : 9}
+                cy="8"
+                r="3.5"
+              />
+              <animateTransform
+                attributeName="transform"
+                dur={`${6 + index}s`}
+                from="0 0 0"
+                repeatCount="indefinite"
+                to="360 0 0"
+                type="rotate"
+              />
+            </g>
+          </g>
+        ))}
+
+        <line className={styles.a1cTodayLine} x1="834" x2="834" y1="92" y2="166" />
+        <circle className={styles.a1cTodayDot} cx="834" cy="128" r="7">
+          <animate attributeName="r" dur="2.4s" repeatCount="indefinite" values="6;9;6" />
+          <animate
+            attributeName="opacity"
+            dur="2.4s"
+            repeatCount="indefinite"
+            values="0.72;1;0.72"
+          />
+        </circle>
+
+        <text className={styles.a1cWindowAxisLabel} x="66" y="230">
+          ABOUT 12 WEEKS AGO
+        </text>
+        <text className={styles.a1cWindowAxisLabel} textAnchor="end" x="834" y="230">
+          TODAY
+        </text>
+        <path className={styles.a1cWindowArrow} d="M66 210H824M812 199L824 210L812 221" />
+      </svg>
+
+      <div className={styles.a1cWindowLegend}>
+        <p>
+          <strong>Earlier weeks</strong>
+          <span>Still belong to the estimate.</span>
+        </p>
+        <p>
+          <strong>Middle weeks</strong>
+          <span>Add more of the longer context.</span>
+        </p>
+        <p>
+          <strong>Recent weeks</strong>
+          <span>Usually contribute somewhat more.</span>
+        </p>
+      </div>
+      <p className={styles.a1cWindowCaveat}>
+        The changing emphasis is a teaching cue, not an exact week-by-week formula.
+      </p>
+    </div>
+  );
+}
+
 export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -911,29 +1035,13 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 </div>
                 {!a1cWindowReviewed ? (
                   <Button fullWidth={false} onClick={() => setA1cWindowReviewed(true)}>
-                    Show how the weeks contribute
+                    Explore the time window
                   </Button>
                 ) : null}
               </div>
               {a1cWindowReviewed ? (
-                <div className="animate-slide-up mt-7 grid gap-3 sm:grid-cols-3">
-                  {[
-                    ["Earlier weeks", "Still part of the estimate"],
-                    ["Middle weeks", "Add more of the longer context"],
-                    ["Recent weeks", "Generally influence the result somewhat more"],
-                  ].map(([heading, body], index) => (
-                    <div
-                      className={cn(
-                        styles.memoryWeek,
-                        "rounded-[9px] border p-5",
-                        index === 2 ? "border-success/35 bg-info" : "border-border bg-muted/45",
-                      )}
-                      key={heading}
-                    >
-                      <p className="text-sm font-bold">{heading}</p>
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
-                    </div>
-                  ))}
+                <div className="animate-slide-up mt-7">
+                  <A1cTimeWindowVisual />
                 </div>
               ) : (
                 <p className="mt-6 max-w-2xl leading-7 text-muted-foreground">

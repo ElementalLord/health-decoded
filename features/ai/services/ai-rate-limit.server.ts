@@ -1,44 +1,135 @@
 import "server-only";
 
-import {
-  AI_RAPID_REQUEST_INTERVAL_MS,
-  AI_RATE_LIMIT_WINDOW_MS,
-  AI_REQUESTS_PER_WINDOW,
-} from "@/features/ai/constants/ai-limits";
+import { createHash } from "node:crypto";
+
+import { getAiSecurityConfig } from "@/features/ai/services/ai-security-config.server";
+
+export type AiRateLimitReason =
+  "blocked" | "daily" | "duplicate" | "hourly" | "minute" | "network" | "rapid";
+
+export type AiRateLimitDecision =
+  { readonly allowed: true } | { readonly allowed: false; readonly reason: AiRateLimitReason };
+
+type RequestRecord = {
+  readonly at: number;
+  readonly fingerprint: string;
+};
 
 type RequestWindow = {
-  readonly requests: number[];
+  blockedUntil: number;
+  requests: RequestRecord[];
+  violations: number;
 };
 
 const globalRateLimit = globalThis as typeof globalThis & {
-  healthDecodedAiRateLimit?: Map<string, RequestWindow>;
+  healthDecodedAiNetworkRateLimit?: Map<string, number[]>;
+  healthDecodedAiUserRateLimit?: Map<string, RequestWindow>;
 };
 
-const requestWindows = globalRateLimit.healthDecodedAiRateLimit ?? new Map<string, RequestWindow>();
-globalRateLimit.healthDecodedAiRateLimit = requestWindows;
+const userWindows =
+  globalRateLimit.healthDecodedAiUserRateLimit ?? new Map<string, RequestWindow>();
+const networkWindows =
+  globalRateLimit.healthDecodedAiNetworkRateLimit ?? new Map<string, number[]>();
+globalRateLimit.healthDecodedAiUserRateLimit = userWindows;
+globalRateLimit.healthDecodedAiNetworkRateLimit = networkWindows;
 
-export function consumeAiRequestSlot(userId: string, now = Date.now()) {
-  const windowStart = now - AI_RATE_LIMIT_WINDOW_MS;
-  const activeRequests = (requestWindows.get(userId)?.requests ?? []).filter(
-    (requestAt) => requestAt > windowStart,
-  );
-  const lastRequest = activeRequests.at(-1);
+export function fingerprintAiRequest(message: string) {
+  return createHash("sha256").update(message.trim().toLocaleLowerCase()).digest("hex");
+}
 
-  if (
-    activeRequests.length >= AI_REQUESTS_PER_WINDOW ||
-    (lastRequest !== undefined && now - lastRequest < AI_RAPID_REQUEST_INTERVAL_MS)
-  ) {
-    requestWindows.set(userId, { requests: activeRequests });
-    return false;
-  }
+function activeSince(records: readonly RequestRecord[], start: number) {
+  return records.filter((record) => record.at > start);
+}
 
-  requestWindows.set(userId, { requests: [...activeRequests, now] });
+function progressiveBlock(window: RequestWindow, now: number, baseBlockMs: number) {
+  const violations = Math.min(window.violations + 1, 8);
+  window.violations = violations;
+  window.blockedUntil = now + Math.min(baseBlockMs * 2 ** (violations - 1), 24 * 60 * 60_000);
+}
 
-  if (requestWindows.size > 1_000) {
-    for (const [key, entry] of requestWindows) {
-      if (!entry.requests.some((requestAt) => requestAt > windowStart)) requestWindows.delete(key);
+function cleanup(now: number) {
+  const dayStart = now - 24 * 60 * 60_000;
+  if (userWindows.size > 1_000) {
+    for (const [key, window] of userWindows) {
+      if (window.blockedUntil <= now && !window.requests.some((request) => request.at > dayStart)) {
+        userWindows.delete(key);
+      }
     }
   }
+  if (networkWindows.size > 1_000) {
+    const minuteStart = now - 60_000;
+    for (const [key, requests] of networkWindows) {
+      if (!requests.some((requestAt) => requestAt > minuteStart)) networkWindows.delete(key);
+    }
+  }
+}
 
-  return true;
+export function consumeAiRequestSlot(
+  input: {
+    readonly fingerprint: string;
+    readonly networkKey: string;
+    readonly sensitive?: boolean;
+    readonly userId: string;
+  },
+  now = Date.now(),
+): AiRateLimitDecision {
+  const config = getAiSecurityConfig();
+  const minuteStart = now - 60_000;
+  const hourStart = now - 60 * 60_000;
+  const dayStart = now - 24 * 60 * 60_000;
+  const duplicateStart = now - config.duplicateWindowMs;
+  const existing = userWindows.get(input.userId) ?? {
+    blockedUntil: 0,
+    requests: [],
+    violations: 0,
+  };
+  existing.requests = activeSince(existing.requests, dayStart);
+
+  if (existing.blockedUntil > now) {
+    userWindows.set(input.userId, existing);
+    return { allowed: false, reason: "blocked" };
+  }
+
+  const activeNetworkRequests = (networkWindows.get(input.networkKey) ?? []).filter(
+    (requestAt) => requestAt > minuteStart,
+  );
+  const minuteRequests = activeSince(existing.requests, minuteStart);
+  const hourRequests = activeSince(existing.requests, hourStart);
+  const lastRequest = existing.requests.at(-1);
+  const duplicateCount = existing.requests.filter(
+    (request) => request.at > duplicateStart && request.fingerprint === input.fingerprint,
+  ).length;
+
+  let reason: AiRateLimitReason | null = null;
+  if (lastRequest && now - lastRequest.at < config.rapidRequestIntervalMs) {
+    reason = "rapid";
+  } else if (duplicateCount >= config.duplicateRequestLimit) {
+    reason = "duplicate";
+  } else if (minuteRequests.length >= config.requestsPerMinute) {
+    reason = "minute";
+  } else if (hourRequests.length >= config.requestsPerHour) {
+    reason = "hourly";
+  } else if (existing.requests.length >= config.requestsPerDay) {
+    reason = "daily";
+  } else if (activeNetworkRequests.length >= config.networkRequestsPerMinute) {
+    reason = "network";
+  }
+
+  if (reason) {
+    progressiveBlock(existing, now, config.abuseBlockMs);
+    userWindows.set(input.userId, existing);
+    networkWindows.set(input.networkKey, activeNetworkRequests);
+    cleanup(now);
+    return { allowed: false, reason };
+  }
+
+  if (existing.violations > 0 && now - (lastRequest?.at ?? 0) > 60 * 60_000) {
+    existing.violations -= 1;
+  }
+  existing.requests.push({ at: now, fingerprint: input.fingerprint });
+  if (input.sensitive) progressiveBlock(existing, now, config.abuseBlockMs);
+  userWindows.set(input.userId, existing);
+  networkWindows.set(input.networkKey, [...activeNetworkRequests, now]);
+  cleanup(now);
+  return { allowed: true };
 }
