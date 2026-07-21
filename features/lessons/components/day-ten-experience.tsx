@@ -99,7 +99,7 @@ const visibleReminders = [
 ] as const;
 
 const reflections = [
-  "Consistency is more powerful than perfection.",
+  "Small habits, repeated kindly, quietly become who I am.",
   "A routine is a decision I only have to make once.",
   "One missed day is a pause, not a restart.",
   "My routine should fit my life—not someone else’s.",
@@ -208,20 +208,31 @@ function DayRhythmAnimation() {
         aria-labelledby="day-rhythm-title day-rhythm-desc"
         className={styles.motionCanvas}
         role="img"
-        viewBox="0 0 820 430"
+        viewBox="0 0 820 452"
       >
         <title id="day-rhythm-title">A gentle sun crosses a day held by three anchors</title>
         <desc id="day-rhythm-desc">
           A soft sun drifts along a day arc while three routine anchors—morning, midday, and
           evening—glow in turn beneath it.
         </desc>
-        <rect className={styles.canvasWarm} height="430" rx="54" width="820" />
-        <text className={styles.sceneHeading} textAnchor="middle" x="410" y="48">
+        <rect className={styles.canvasWarm} height="452" rx="54" width="820" />
+        <text className={styles.sceneHeading} textAnchor="middle" x="410" y="46">
           A DAY WITH GENTLE ANCHORS
         </text>
-        <g transform="translate(58 84)">
-          <rect className={styles.scenePanel} height="252" rx="28" width="704" />
-          <ellipse className={styles.softCloud} cx="540" cy="76" rx="36" ry="14">
+        <g transform="translate(58 82)">
+          <rect className={styles.scenePanel} height="286" rx="28" width="704" />
+          <ellipse className={styles.softCloud} cx="196" cy="104" rx="30" ry="12">
+            <animateTransform
+              attributeName="transform"
+              additive="sum"
+              dur="13s"
+              keyTimes="0;0.5;1"
+              repeatCount="indefinite"
+              type="translate"
+              values="-22 0;22 0;-22 0"
+            />
+          </ellipse>
+          <ellipse className={styles.softCloud} cx="540" cy="74" rx="38" ry="15">
             <animateTransform
               attributeName="transform"
               additive="sum"
@@ -232,7 +243,7 @@ function DayRhythmAnimation() {
               values="-16 0;16 0;-16 0"
             />
           </ellipse>
-          <path className={styles.skyArc} d="M60 190Q352 40 644 190" />
+          <path className={styles.skyArc} d="M60 178Q352 34 644 178" />
           <g opacity="0">
             <circle className={styles.sunHalo} r="24">
               <animate
@@ -244,7 +255,7 @@ function DayRhythmAnimation() {
               />
             </circle>
             <circle className={styles.sunOrb} r="15" />
-            <animateMotion dur="14s" path="M60 190Q352 40 644 190" repeatCount="indefinite" />
+            <animateMotion dur="14s" path="M60 178Q352 34 644 178" repeatCount="indefinite" />
             <animate
               attributeName="opacity"
               dur="14s"
@@ -254,7 +265,7 @@ function DayRhythmAnimation() {
             />
           </g>
           {anchors.map(({ begin, label, x }) => (
-            <g key={label} transform={`translate(${x} 210)`}>
+            <g key={label} transform={`translate(${x} 214)`}>
               <circle className={styles.anchorHalo} opacity="0" r="26">
                 <animate
                   attributeName="opacity"
@@ -274,13 +285,13 @@ function DayRhythmAnimation() {
                 />
               </circle>
               <circle className={styles.anchorNode} r="19" />
-              <text className={styles.anchorLabel} textAnchor="middle" y="42">
+              <text className={styles.anchorLabel} textAnchor="middle" y="44">
                 {label}
               </text>
             </g>
           ))}
         </g>
-        <text className={styles.motionCaption} textAnchor="middle" x="410" y="404">
+        <text className={styles.motionCaption} textAnchor="middle" x="410" y="420">
           ROUTINES CARRY THE DAY SO MEMORY DOESN’T HAVE TO
         </text>
       </svg>
