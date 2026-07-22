@@ -13,6 +13,7 @@ import {
   Stethoscope,
   Waypoints,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
@@ -210,391 +211,184 @@ function Feedback({ feedback }: { feedback: DayTwelveEvaluationFeedback }) {
   );
 }
 
-function ResilienceWeaveAnimation() {
+function HumanStoryFigure({
+  alt,
+  caption,
+  emphasis,
+  priority = false,
+  src,
+}: {
+  alt: string;
+  caption: string;
+  emphasis: string;
+  priority?: boolean;
+  src: string;
+}) {
   return (
-    <figure className={styles.motionFigure}>
-      <svg
-        aria-labelledby="resilience-weave-title resilience-weave-desc"
-        className={styles.motionCanvas}
-        role="img"
-        viewBox="0 0 820 430"
-      >
-        <title id="resilience-weave-title">A living thread weaving around interruptions</title>
-        <desc id="resilience-weave-desc">
-          A warm thread continually bends around shifting blocks and rejoins its direction without
-          returning to the beginning.
-        </desc>
-        <defs>
-          <linearGradient id="day-twelve-weave-bg" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="0" stopColor="#214b45" />
-            <stop offset="1" stopColor="#3f7468" />
-          </linearGradient>
-          <filter id="day-twelve-thread-glow">
-            <feGaussianBlur stdDeviation="5" />
-          </filter>
-        </defs>
-        <rect fill="url(#day-twelve-weave-bg)" height="430" rx="6" width="820" />
-        {[105, 185, 265, 345].map((y, index) => (
-          <path
-            d={`M70 ${y} H750`}
-            fill="none"
-            key={y}
-            opacity="0.2"
-            stroke="#d6e4d8"
-            strokeDasharray="8 13"
-            strokeWidth="2"
-          >
-            <animate
-              attributeName="stroke-dashoffset"
-              dur={`${8 + index}s`}
-              from="0"
-              repeatCount="indefinite"
-              to="-84"
-            />
-          </path>
-        ))}
-        <rect fill="#173e39" height="92" rx="5" width="76" x="354" y="169">
-          <animate attributeName="y" dur="7s" repeatCount="indefinite" values="169;153;169" />
-        </rect>
-        <rect fill="#f5c397" height="56" opacity="0.82" rx="4" width="56" x="526" y="287">
-          <animateTransform
-            attributeName="transform"
-            dur="9s"
-            from="0 554 315"
-            repeatCount="indefinite"
-            to="360 554 315"
-            type="rotate"
-          />
-        </rect>
-        <path
-          d="M56 216 C170 216 218 216 290 216 C326 216 326 126 390 126 C454 126 454 216 506 216 C570 216 570 328 630 328 C690 328 710 216 770 216"
-          fill="none"
-          filter="url(#day-twelve-thread-glow)"
-          opacity="0.35"
-          stroke="#f3aa7f"
-          strokeWidth="14"
-        >
-          <animate attributeName="opacity" dur="4s" repeatCount="indefinite" values=".18;.42;.18" />
-        </path>
-        <path
-          d="M56 216 C170 216 218 216 290 216 C326 216 326 126 390 126 C454 126 454 216 506 216 C570 216 570 328 630 328 C690 328 710 216 770 216"
-          fill="none"
-          stroke="#f9d0aa"
-          strokeDasharray="18 9"
-          strokeLinecap="square"
-          strokeWidth="7"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="2.8s"
-            from="0"
-            repeatCount="indefinite"
-            to="-54"
-          />
-        </path>
-        <rect fill="#fff7e9" height="14" rx="3" width="14" x="0" y="0">
-          <animateMotion
-            dur="8s"
-            path="M56 216 C170 216 218 216 290 216 C326 216 326 126 390 126 C454 126 454 216 506 216 C570 216 570 328 630 328 C690 328 710 216 770 216"
-            repeatCount="indefinite"
-          />
-        </rect>
-      </svg>
-      <figcaption className={styles.figureCaption}>
-        <strong>The thread does not restart when the pattern changes.</strong> It notices the new
-        shape, bends, and continues. Adaptability is care that can move with real life.
+    <figure className={styles.humanFigure}>
+      <Image
+        alt={alt}
+        className={styles.humanImage}
+        height={928}
+        priority={priority}
+        sizes="(max-width: 1100px) 100vw, 1020px"
+        src={src}
+        width={1664}
+      />
+      <figcaption className={styles.humanCaption}>
+        <strong>{emphasis}</strong> {caption}
       </figcaption>
     </figure>
   );
 }
 
-function ProblemSolvingCycleAnimation() {
+function AdaptiveDayTimeline() {
+  const originalPlan = [
+    ["Morning", "Usual start"],
+    ["12:00", "Planned lunch"],
+    ["After work", "Planned walk"],
+    ["Evening", "Dinner at home"],
+  ] as const;
+  const changedDay = [
+    ["Morning", "Usual start"],
+    ["12:00", "Meeting runs long"],
+    ["2:00", "Best available lunch"],
+    ["Evening", "Return to the next routine"],
+  ] as const;
+
   return (
-    <figure className={styles.motionFigure}>
-      <svg
-        aria-labelledby="solver-cycle-title solver-cycle-desc"
-        className={styles.motionCanvasCompact}
-        role="img"
-        viewBox="0 0 820 360"
-      >
-        <title id="solver-cycle-title">A four-part problem-solving cycle</title>
-        <desc id="solver-cycle-desc">
-          Four connected stations pulse while a marker travels through them and begins another calm
-          cycle.
-        </desc>
-        <rect fill="#edf3ed" height="360" rx="6" width="820" />
-        <path
-          d="M230 180 C230 83 325 54 410 54 C495 54 590 83 590 180 C590 277 495 306 410 306 C325 306 230 277 230 180 Z"
-          fill="none"
-          stroke="#9cb5a6"
-          strokeDasharray="7 9"
-          strokeWidth="3"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="5s"
-            from="0"
-            repeatCount="indefinite"
-            to="-64"
-          />
-        </path>
-        {(
-          [
-            [410, 54, "#d68464", "0s"],
-            [590, 180, "#688d83", "1.5s"],
-            [410, 306, "#d9a970", "3s"],
-            [230, 180, "#7c9ea2", "4.5s"],
-          ] as const
-        ).map(([cx, cy, color, begin]) => (
-          <g key={`${cx}-${cy}`}>
-            <rect
-              fill={color}
-              height="54"
-              rx="5"
-              width="54"
-              x={Number(cx) - 27}
-              y={Number(cy) - 27}
-            >
-              <animate
-                attributeName="opacity"
-                begin={String(begin)}
-                dur="6s"
-                repeatCount="indefinite"
-                values=".62;1;.62"
-              />
-            </rect>
-            <rect
-              fill="none"
-              height="70"
-              rx="6"
-              stroke={color}
-              strokeWidth="2"
-              width="70"
-              x={Number(cx) - 35}
-              y={Number(cy) - 35}
-            >
-              <animate
-                attributeName="opacity"
-                begin={String(begin)}
-                dur="6s"
-                repeatCount="indefinite"
-                values="0;.55;0"
-              />
-            </rect>
-          </g>
-        ))}
-        <circle fill="#fffaf1" r="9">
-          <animateMotion
-            dur="8s"
-            path="M410 54 C495 54 590 83 590 180 C590 277 495 306 410 306 C325 306 230 277 230 180 C230 83 325 54 410 54 Z"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="410" cy="180" fill="#3d655b" opacity="0.12" r="64">
-          <animate attributeName="r" dur="4s" repeatCount="indefinite" values="54;72;54" />
-          <animate attributeName="opacity" dur="4s" repeatCount="indefinite" values=".08;.2;.08" />
-        </circle>
-        <path
-          d="M388 180 H432 M410 158 V202"
-          stroke="#456d62"
-          strokeLinecap="square"
-          strokeWidth="5"
-        />
-      </svg>
+    <figure className={styles.teachingFigure}>
+      <div className={styles.visualIntro}>
+        <p className="editorial-eyebrow">One day · two valid routes</p>
+        <h2>The plan changed. Care did not disappear.</h2>
+        <p>Follow the lower timeline: the interruption changes two steps, not the whole day.</p>
+      </div>
+      <div className={styles.timelineComparison}>
+        <section className={styles.timelineLane}>
+          <div className={styles.timelineLaneLabel}>
+            <span>Plan A</span>
+            <strong>What I expected</strong>
+          </div>
+          <ol className={styles.timelineSteps} data-route="original">
+            {originalPlan.map(([time, event]) => (
+              <li key={`${time}-${event}`}>
+                <span>{time}</span>
+                <strong>{event}</strong>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <section className={styles.timelineLane}>
+          <div className={styles.timelineLaneLabel}>
+            <span>Real life</span>
+            <strong>What actually happened</strong>
+          </div>
+          <ol className={styles.timelineSteps} data-route="adapted">
+            {changedDay.map(([time, event], index) => (
+              <li
+                data-kind={index === 1 ? "change" : index > 1 ? "response" : "steady"}
+                key={`${time}-${event}`}
+              >
+                <span>{time}</span>
+                <strong>{event}</strong>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
       <figcaption className={styles.figureCaption}>
-        <strong>This is a cycle, not a one-time test.</strong> You can pause again, understand more,
-        choose differently, and keep adjusting as the situation changes.
+        <strong>The interruption is one part of the day, not a verdict on the day.</strong> The
+        animation highlights the exact sequence: notice what changed, make the next workable choice,
+        then reconnect with the routine that is still available.
       </figcaption>
     </figure>
   );
 }
 
-function SickDayWeatherAnimation() {
+function SickDayCauseAndResponse() {
   return (
-    <figure className={styles.motionFigure}>
-      <svg
-        aria-labelledby="sick-weather-title sick-weather-desc"
-        className={styles.motionCanvasCompact}
-        role="img"
-        viewBox="0 0 820 380"
-      >
-        <title id="sick-weather-title">A body system responding to changing sick-day weather</title>
-        <desc id="sick-weather-desc">
-          A storm moves across a body-shaped network while a hydration vessel and support line keep
-          moving beside it.
-        </desc>
-        <defs>
-          <linearGradient id="day-twelve-weather-bg" x1="0" x2="1">
-            <stop offset="0" stopColor="#eef3ed" />
-            <stop offset="1" stopColor="#e7efef" />
-          </linearGradient>
-          <clipPath id="day-twelve-water-clip">
-            <path d="M646 111 H734 L721 304 H659 Z" />
-          </clipPath>
-        </defs>
-        <rect fill="url(#day-twelve-weather-bg)" height="380" rx="6" width="820" />
-        <g opacity="0.9">
-          <ellipse cx="158" cy="100" fill="#78949a" rx="62" ry="29">
-            <animate attributeName="cx" dur="11s" repeatCount="indefinite" values="134;184;134" />
-          </ellipse>
-          <circle cx="122" cy="91" fill="#78949a" r="29" />
-          <circle cx="178" cy="84" fill="#6e8a90" r="36" />
-          {[122, 158, 194].map((x, index) => (
-            <path d={`M${x} 132 L${x - 8} 160`} key={x} stroke="#6a9095" strokeWidth="5">
-              <animate
-                attributeName="opacity"
-                begin={`${index * 0.4}s`}
-                dur="1.8s"
-                repeatCount="indefinite"
-                values="0;1;0"
-              />
-              <animateTransform
-                attributeName="transform"
-                begin={`${index * 0.4}s`}
-                dur="1.8s"
-                from="0 0"
-                repeatCount="indefinite"
-                to="0 28"
-                type="translate"
-              />
-            </path>
-          ))}
-        </g>
-        <g fill="none" stroke="#527a6f" strokeWidth="5">
-          <circle cx="410" cy="102" r="44" />
-          <path d="M410 147 V262 M410 180 L338 226 M410 180 L482 226 M410 262 L360 329 M410 262 L460 329" />
-        </g>
-        {[185, 216, 247].map((y, index) => (
-          <path
-            d={`M273 ${y} C320 ${y - 26} 345 ${y + 28} 390 ${y}`}
-            fill="none"
-            key={y}
-            stroke="#d68162"
-            strokeDasharray="6 7"
-            strokeWidth="3"
-          >
-            <animate
-              attributeName="stroke-dashoffset"
-              begin={`${index * 0.35}s`}
-              dur="2.6s"
-              from="0"
-              repeatCount="indefinite"
-              to="-52"
-            />
-          </path>
-        ))}
-        <path d="M646 111 H734 L721 304 H659 Z" fill="#fffaf1" stroke="#668b82" strokeWidth="4" />
-        <rect
-          clipPath="url(#day-twelve-water-clip)"
-          fill="#8bb6bb"
-          height="135"
-          width="120"
-          x="630"
-          y="190"
-        >
-          <animate attributeName="y" dur="4s" repeatCount="indefinite" values="205;178;205" />
-          <animate attributeName="height" dur="4s" repeatCount="indefinite" values="120;147;120" />
-        </rect>
-        <path d="M503 269 C553 269 565 230 619 230" fill="none" stroke="#83a999" strokeWidth="4">
-          <animate
-            attributeName="stroke-dasharray"
-            dur="3s"
-            repeatCount="indefinite"
-            values="3 12;14 6;3 12"
-          />
-        </path>
-        <circle cx="410" cy="102" fill="#f1b487" opacity="0.28" r="58">
-          <animate attributeName="r" dur="3.4s" repeatCount="indefinite" values="52;67;52" />
-          <animate attributeName="opacity" dur="3.4s" repeatCount="indefinite" values=".1;.3;.1" />
-        </circle>
-      </svg>
+    <figure className={styles.teachingFigure}>
+      <div className={styles.visualIntro}>
+        <p className="editorial-eyebrow">What illness changes</p>
+        <h2>New conditions need a different response.</h2>
+        <p>The highlight moves from cause to body changes to the actions that protect you.</p>
+      </div>
+      <div className={styles.causeFlow}>
+        <section className={styles.flowPanel}>
+          <CloudRain aria-hidden="true" />
+          <p className="editorial-eyebrow">1 · Illness begins</p>
+          <h3>The body releases stress hormones.</h3>
+          <p>This response helps fight illness, but it can also change diabetes management.</p>
+        </section>
+        <span aria-hidden="true" className={styles.flowConnector} />
+        <section className={styles.flowPanel}>
+          <Waypoints aria-hidden="true" />
+          <p className="editorial-eyebrow">2 · What may change</p>
+          <h3>Glucose may rise even when you eat less.</h3>
+          <p>Vomiting, diarrhea, or fever can also increase fluid loss and dehydration risk.</p>
+        </section>
+        <span aria-hidden="true" className={styles.flowConnector} />
+        <section className={styles.flowPanel}>
+          <Droplets aria-hidden="true" />
+          <p className="editorial-eyebrow">3 · What protects</p>
+          <h3>Use the written sick-day plan.</h3>
+          <p>
+            Follow personal monitoring and medicine guidance, drink as able, and call early for
+            warning signs.
+          </p>
+        </section>
+      </div>
       <figcaption className={styles.figureCaption}>
-        <strong>Illness changes the weather inside the body.</strong> Stress hormones can raise
-        glucose even when eating less, while vomiting, diarrhea, or fever can make hydration harder.
-        A written sick-day plan helps you respond to the new conditions.
+        <strong>Eating less does not guarantee that glucose will fall during illness.</strong> The
+        useful response is preparation: personal instructions, hydration when possible, and clear
+        thresholds for getting help.
       </figcaption>
     </figure>
   );
 }
 
-function BackupBridgeAnimation() {
+function BackupPlanSequence({
+  planBackup,
+  planTrigger,
+}: {
+  planBackup: PlanBackupId | null;
+  planTrigger: PlanTriggerId | null;
+}) {
+  const change =
+    planTriggers.find(([id]) => id === planTrigger)?.[1] ??
+    "A long workday uses the time I planned";
+  const response =
+    planBackups.find(([id]) => id === planBackup)?.[1] ??
+    "I will choose five useful minutes instead of abandoning the whole idea";
+
   return (
-    <figure className={styles.motionFigure}>
-      <svg
-        aria-labelledby="backup-bridge-title backup-bridge-desc"
-        className={styles.motionCanvasCompact}
-        role="img"
-        viewBox="0 0 820 360"
-      >
-        <title id="backup-bridge-title">A Plan B bridge carrying care around a blocked route</title>
-        <desc id="backup-bridge-desc">
-          A moving marker reaches a closed section, takes a lower bridge, and rejoins the continuing
-          path.
-        </desc>
-        <rect fill="#244f48" height="360" rx="6" width="820" />
-        <path d="M62 166 H300" fill="none" stroke="#d7e5d9" strokeWidth="7" />
-        <path d="M520 166 H758" fill="none" stroke="#d7e5d9" strokeWidth="7" />
-        <path
-          d="M300 166 C340 166 344 270 410 270 C476 270 480 166 520 166"
-          fill="none"
-          stroke="#f2b48a"
-          strokeDasharray="15 8"
-          strokeWidth="8"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="2.8s"
-            from="0"
-            repeatCount="indefinite"
-            to="-46"
-          />
-        </path>
-        <g>
-          <rect fill="#173d38" height="86" rx="5" width="102" x="359" y="103">
-            <animate attributeName="opacity" dur="5s" repeatCount="indefinite" values=".75;1;.75" />
-          </rect>
-          <path d="M379 125 L441 167 M441 125 L379 167" stroke="#f4d0ab" strokeWidth="7" />
-        </g>
-        <rect fill="#fff8e9" height="18" rx="3" width="18" x="0" y="0">
-          <animateMotion
-            dur="7s"
-            path="M62 166 H300 C340 166 344 270 410 270 C476 270 480 166 520 166 H758"
-            repeatCount="indefinite"
-          />
-        </rect>
-        {[330, 410, 490].map((x, index) => (
-          <rect fill="#86aa97" height="32" key={x} rx="4" width="32" x={x - 16} y="286">
-            <animate
-              attributeName="opacity"
-              begin={`${index * 0.6}s`}
-              dur="3s"
-              repeatCount="indefinite"
-              values=".25;.9;.25"
-            />
-          </rect>
-        ))}
-        <path d="M77 105 H221" stroke="#8fb1a0" strokeDasharray="5 9" strokeWidth="3">
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="4s"
-            from="0"
-            repeatCount="indefinite"
-            to="-56"
-          />
-        </path>
-        <path d="M599 105 H743" stroke="#8fb1a0" strokeDasharray="5 9" strokeWidth="3">
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="4s"
-            from="0"
-            repeatCount="indefinite"
-            to="-56"
-          />
-        </path>
-      </svg>
+    <figure className={styles.teachingFigure}>
+      <div className={styles.visualIntro}>
+        <p className="editorial-eyebrow">Plan B keeps the purpose</p>
+        <h2>The action changes. The care still counts.</h2>
+        <p>This sequence updates as you make your choices below.</p>
+      </div>
+      <ol className={styles.planSequence}>
+        <li>
+          <span>1 · Plan A</span>
+          <strong>Protect one supportive routine today</strong>
+        </li>
+        <li data-kind="change">
+          <span>2 · Life changes</span>
+          <strong>{change}</strong>
+        </li>
+        <li data-kind="response">
+          <span>3 · Plan B</span>
+          <strong>{response}</strong>
+        </li>
+        <li data-kind="continue">
+          <span>4 · What remains true</span>
+          <strong>I am still practicing care</strong>
+        </li>
+      </ol>
       <figcaption className={styles.figureCaption}>
-        <strong>Plan B is not a lesser plan.</strong> It is the bridge that keeps one changed moment
-        from becoming an abandoned day.
+        <strong>Plan B is a prepared response, not a lesser plan.</strong> It keeps the reason
+        behind the routine while changing the action to fit the day you actually have.
       </figcaption>
     </figure>
   );
@@ -784,7 +578,13 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 </p>
               </div>
             </div>
-            <ResilienceWeaveAnimation />
+            <HumanStoryFigure
+              alt="Friends laughing around a picnic table while others play catch and share a hug in a sunny park"
+              caption="Friendship, food, movement, laughter, and changed schedules are the life the plan is meant to support."
+              emphasis="Care belongs inside a full life."
+              priority
+              src="/lessons/day-12/community-in-real-life.jpg"
+            />
             <div>
               <p className={styles.promptTitle}>
                 When a careful plan changes, what feels most true?
@@ -819,7 +619,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="A reusable way through">
               Four small moves can make a difficult moment feel workable.
             </LessonHeading>
-            <ProblemSolvingCycleAnimation />
+            <AdaptiveDayTimeline />
             <p className={styles.lede}>
               Open each move. They happen in order, but the cycle stays flexible: new information
               may send you back around.
@@ -915,7 +715,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-9">
             <LessonHeading label="Design for the day you actually have">
-              Protect one helpful thread instead of demanding the whole pattern.
+              Protect one helpful action instead of demanding the whole plan.
             </LessonHeading>
             <div className={styles.builderBoard}>
               <div>
@@ -967,15 +767,13 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="When illness changes the conditions">
               A sick day needs a plan of its own.
             </LessonHeading>
-            <SickDayWeatherAnimation />
-            <div className={styles.scienceNote}>
-              <p className="editorial-eyebrow">Why glucose may change</p>
-              <p>
-                During illness, the body releases stress hormones to help fight the illness. Those
-                hormones can also make glucose harder to manage. Eating less does not always mean
-                glucose will be lower, and fluid loss can add another layer of risk.
-              </p>
-            </div>
+            <HumanStoryFigure
+              alt="A trusted friend sitting close to someone resting on a sofa, offering water beside a phone and written care plan"
+              caption="A trusted person can help with fluids, read the written plan, notice when symptoms are worsening, and make a call when thinking feels harder."
+              emphasis="A sick-day plan can include people."
+              src="/lessons/day-12/sick-day-support.jpg"
+            />
+            <SickDayCauseAndResponse />
             <div>
               <p className={styles.promptTitle}>
                 Open the four anchors of a personal sick-day plan.
@@ -1149,10 +947,16 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
       case 7:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Build the bridge before you need it">
-              Plan A gives direction. Plan B gives the plan resilience.
+            <LessonHeading label="Prepare the backup before you need it">
+              Plan A gives direction. Plan B keeps care usable.
             </LessonHeading>
-            <BackupBridgeAnimation />
+            <HumanStoryFigure
+              alt="Friends laughing and dancing together indoors while rain falls outside and two people share a joyful hug"
+              caption="The outdoor plan changed, but connection, laughter, and movement did not vanish. The purpose continued in a new form."
+              emphasis="A changed plan can still be a good time."
+              src="/lessons/day-12/plan-b-together.jpg"
+            />
+            <BackupPlanSequence planBackup={planBackup} planTrigger={planTrigger} />
             <div className={styles.builderBoard}>
               <div>
                 <p className="editorial-eyebrow">Plan A changes when…</p>
@@ -1185,7 +989,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             </div>
             {planTrigger && planBackup ? (
               <div className={styles.planTicket}>
-                <p className="editorial-eyebrow">Your backup bridge</p>
+                <p className="editorial-eyebrow">Your Plan B</p>
                 <p>
                   If {planTriggers.find(([id]) => id === planTrigger)?.[1].toLowerCase()},{" "}
                   {planBackups.find(([id]) => id === planBackup)?.[1].toLowerCase()}.
