@@ -730,7 +730,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
           <div className="space-y-9">
             <div className="grid gap-8 lg:grid-cols-[1fr_18rem] lg:items-end">
               <DayThreeHeading label="Day 03 · Understanding your numbers">
-                A number can be useful without becoming a verdict.
+                A number becomes useful when you know what it measures.
               </DayThreeHeading>
               <div className="border-l-2 border-accent-warm pl-6">
                 <p className="editorial-number">03</p>
@@ -1120,8 +1120,8 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               </div>
             ) : null}
             <p className="border-y border-border py-6 font-serif-display text-2xl leading-9">
-              This is why one meal is information, not a verdict, and why patterns are more useful
-              than isolated events.
+              This is why one day contributes to the longer view without determining it, and why a
+              repeated pattern is more informative than one isolated day.
             </p>
           </div>
         );

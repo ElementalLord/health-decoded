@@ -23,7 +23,7 @@ const stageCount = 9;
 
 const openingFeelings = [
   ["curious", "Curious about what the numbers can teach me"],
-  ["nervous", "Nervous that a reading might feel like a grade"],
+  ["nervous", "Nervous that one reading might carry too much weight"],
   ["overloaded", "Overloaded by devices, graphs, and advice"],
   ["unsure", "Unsure whether I need to check at home"],
 ] as const;
@@ -68,10 +68,10 @@ const clinicianQuestions = [
 ] as const;
 
 const reflections = [
-  "A reading can be information without becoming a judgment.",
-  "One number is a moment; a pattern has more context.",
-  "Different monitoring tools answer different questions.",
-  "I can stay curious and bring questions to my care team.",
+  "I can name the question before choosing a monitoring tool.",
+  "I can add context before looking for a repeated pattern.",
+  "I know what to ask when a reading surprises me.",
+  "I want my clinician to explain when monitoring is useful for my plan.",
 ] as const;
 
 const glossary = [
@@ -226,8 +226,8 @@ function DashboardAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>A reading is a dashboard glance, not a grade.</strong> It can help answer a question
-        about the body without measuring effort, courage, or worth.
+        <strong>A reading is one dashboard glance.</strong> Its value comes from the question it
+        helps answer and the context placed beside it.
       </figcaption>
     </figure>
   );
@@ -375,9 +375,9 @@ function ToolStudioAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>No tool is a moral ranking.</strong> A clinician chooses the kind of information
-        that is useful for an individual treatment plan; not everyone needs home monitoring or a
-        CGM.
+        <strong>Each tool has a different time window.</strong> A clinician chooses the kind of
+        information that is useful for an individual treatment plan; not everyone needs home
+        monitoring or a CGM.
       </figcaption>
     </figure>
   );
@@ -520,7 +520,7 @@ function ReframeContextAnimation() {
             />
           </g>
           <text className={styles.readingPanelAction} textAnchor="middle" x="180" y="278">
-            PAUSE BEFORE JUDGING
+            PAUSE AND ADD CONTEXT
           </text>
         </g>
 
@@ -585,8 +585,8 @@ function ReframeContextAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Here is the use:</strong> pause before judging the number, add what was happening
-        around it, and bring the fuller question to your care team.
+        <strong>Here is the use:</strong> add what was happening around the reading, look for a
+        repeated pattern, and bring the fuller question to your care team.
       </figcaption>
     </figure>
   );
@@ -690,7 +690,7 @@ function CareConversationAnimation() {
       </svg>
       <figcaption>
         <strong>Here is the use:</strong> a few repeated moments plus context give you and your care
-        team something specific to discuss, without turning the data into a grade.
+        team something specific to discuss and a clearer place to decide what comes next.
       </figcaption>
     </figure>
   );
@@ -874,7 +874,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
       "Add three moments to the pattern and answer the pattern check.",
       "Choose the curious response to a surprising reading.",
       "Choose one question to carry to your care team.",
-      "Choose one reflection and match the tools to their questions.",
+      "Choose one monitoring skill and match the tools to their questions.",
     ][stage];
   }
 
@@ -885,7 +885,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
         "Give monitoring a question",
         "Place context beside it",
         "Look for a pattern",
-        "Respond without judgment",
+        "Respond with context",
         "Make monitoring a conversation",
         "Carry the perspective forward",
         "Open the monitoring field notes",
@@ -925,7 +925,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
           <div className="space-y-10">
             <div className="grid gap-8 lg:grid-cols-[1fr_17rem] lg:items-end">
               <LessonHeading label="Day 08 · Understanding your blood sugar data">
-                A number can inform you without defining you.
+                A number is useful when it helps answer a care question.
               </LessonHeading>
               <div className="border-l-2 border-accent-warm pl-6">
                 <p className="editorial-number text-accent-warm">08</p>
@@ -937,8 +937,8 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
             </div>
             <LessonStoryImage
               alt="A woman calmly adds context to a notebook beside a glucose meter, a meal, and her work bag"
-              caption="Food, timing, sleep, stress, medicine, illness, and activity can all help explain a reading. Curiosity is more useful than judgment."
-              emphasis="A reading is a clue, not a grade."
+              caption="Food, timing, sleep, stress, medicine, illness, and activity can all help explain a reading. Context helps turn a number into a useful question."
+              emphasis="Start with the question."
               priority
               src="/lessons/day-08/context-not-judgment.jpg"
             />
@@ -956,8 +956,8 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
             </div>
             {openingFeeling ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 text-lg leading-8">
-                You do not need to earn a “good” number here. We will practice reading information
-                with context, curiosity, and support.
+                You do not need to interpret a reading in isolation. We will practice choosing a
+                purpose, adding context, and following an agreed response plan.
               </p>
             ) : null}
           </div>
@@ -1023,7 +1023,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
                 [
                   ["moment", "A question already named in my care plan."],
                   ["month", "A wish to collect extra numbers just in case."],
-                  ["worth", "A need to prove I handled today correctly."],
+                  ["worth", "A wish to collect data without a decision or response in mind."],
                 ] as const
               ).map(([id, label]) => (
                 <AnswerChoice
@@ -1046,7 +1046,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
               >
                 {snapshotMeaning === "moment"
                   ? "Exactly. A defined question gives the reading a purpose and helps clarify what to do with it."
-                  : "Collecting numbers without a question can add burden without adding clarity. Monitoring should support a care decision, not grade the person."}
+                  : "Collecting numbers without a question can add burden without adding clarity. Monitoring is most useful when it supports a care decision or agreed response."}
               </p>
             ) : null}
           </div>
@@ -1157,7 +1157,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
               {(
                 [
                   ["curiosity", "Record the context and become curious."],
-                  ["self_blame", "Treat the reading as proof of failure."],
+                  ["self_blame", "Treat one reading as enough evidence to redraw the plan."],
                   ["change_treatment", "Change medicine or dosing on your own."],
                 ] as const
               ).map(([answer, label]) => (
@@ -1214,7 +1214,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
         return (
           <div className="space-y-9">
             <LessonHeading label="Monitoring decision check">
-              The tools describe glucose. They do not describe you.
+              Which monitoring skill would you carry forward?
             </LessonHeading>
             <div className="grid gap-3 sm:grid-cols-2">
               {reflections.map((item) => (
@@ -1259,14 +1259,14 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
         return (
           <div className="space-y-12 text-center">
             <p className="editorial-eyebrow">Day 8 complete</p>
-            <LessonHeading>A reading is information, not a verdict.</LessonHeading>
+            <LessonHeading>A useful monitoring plan starts with a question.</LessonHeading>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
               <p className="editorial-eyebrow text-success">Monitoring field notes</p>
               <ol className="mt-6 space-y-6">
                 {[
                   "A1C offers a longer view, a finger-stick captures one moment, and a CGM can show change across many moments.",
                   "One reading is a clue. Repeated context can reveal a more useful pattern.",
-                  "Numbers measure glucose, not effort, courage, or worth. Surprises belong with curiosity and the care team’s plan.",
+                  "When a reading surprises you, record the context, follow the agreed plan, and bring the pattern to your care team rather than changing treatment alone.",
                 ].map((item, index) => (
                   <li className="grid grid-cols-[3rem_1fr] gap-4 text-lg leading-8" key={item}>
                     <span className="font-serif-display text-4xl text-accent-warm">

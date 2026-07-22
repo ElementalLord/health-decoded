@@ -1402,7 +1402,8 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
                 <p className="editorial-eyebrow">Tomorrow</p>
                 <h2 className="mt-3 font-serif-display text-3xl">Monitoring and data</h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  Learn how numbers can inform care without becoming grades.
+                  Learn which question each monitoring tool can answer and how context turns a
+                  reading into a useful care conversation.
                 </p>
               </div>
               <div>

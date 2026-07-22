@@ -1221,12 +1221,12 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                 </span>
                 <div>
                   <p className="font-serif-display text-2xl italic text-success">
-                    A response is a pattern with context, not a grade.
+                    Movement responses vary with context.
                   </p>
                   <p className="mt-2 leading-7 text-foreground/75">
                     Activity, food, medicine, timing, sleep, stress, illness, and many individual
-                    factors can change what happens. One unexpected number does not prove the
-                    movement failed.
+                    factors can change what happens. One reading cannot summarize every benefit of
+                    the movement or predict the next response.
                   </p>
                 </div>
               </div>

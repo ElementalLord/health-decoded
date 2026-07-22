@@ -1299,8 +1299,8 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                   Preventing complications without fear
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  How steady routines help protect your eyes, kidneys, heart, and nerves, through
-                  small consistent choices, not fear.
+                  Learn why diabetes eye exams, kidney tests, foot checks, and the ABCs create
+                  opportunities to notice change early and plan care with less fear.
                 </p>
               </div>
               <div>

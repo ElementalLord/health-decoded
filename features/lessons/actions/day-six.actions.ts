@@ -80,10 +80,10 @@ const variationFeedback: Record<
     accurate: true,
     body: "The effect of activity can vary with the activity, food, timing, medicines, stress, sleep, and the person. A useful action does not promise one exact reading.",
     details: [
-      "When monitoring is part of a care plan, patterns can be more informative than judging one result.",
+      "When monitoring is part of a care plan, patterns can be more informative than one result.",
       "General education cannot predict an individual glucose response.",
     ],
-    heading: "A response is information, not a grade.",
+    heading: "Expect a range of responses.",
   },
   guaranteed_drop: {
     accurate: false,
@@ -96,12 +96,12 @@ const variationFeedback: Record<
   },
   proof_of_failure: {
     accurate: false,
-    body: "One unexpected reading is not proof that the movement failed, or that the person failed. It is one piece of context for the care plan.",
+    body: "One unexpected reading cannot show whether movement was useful overall. It is one piece of context for the care plan, and movement has benefits beyond a single glucose value.",
     details: [
       "Movement has benefits beyond a single glucose value.",
       "Questions about personal readings belong with the healthcare team.",
     ],
-    heading: "One number cannot grade the whole effort.",
+    heading: "One result cannot summarize the activity.",
   },
 };
 

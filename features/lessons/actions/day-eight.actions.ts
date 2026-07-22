@@ -54,7 +54,7 @@ export async function evaluateDayEightAction(input: unknown): Promise<DayEightEv
         accurate,
         body: accurate
           ? "A repeated pattern gives the care team more context than one isolated moment. The goal is not a flat line; it is a useful question."
-          : "One reading can be useful, but it cannot describe a whole week or prove success or failure. Look for repeated context before drawing a conclusion.",
+          : "One reading can be useful, but it cannot describe a whole week. Look for repeated context before drawing a broader conclusion.",
         heading: accurate
           ? "Follow the pattern, not the pressure."
           : "Let one moment stay one moment.",
@@ -70,10 +70,8 @@ export async function evaluateDayEightAction(input: unknown): Promise<DayEightEv
         accurate,
         body: accurate
           ? "Curiosity creates room for context: food, movement, sleep, stress, illness, medication, and timing can all matter."
-          : "A surprising reading is not a moral verdict and is not enough reason to change a treatment plan on your own. Record the context and follow the plan your care team gave you.",
-        heading: accurate
-          ? "Curiosity is useful data care."
-          : "Pause the judgment, and the treatment change.",
+          : "A surprising reading is not enough reason to change a treatment plan on your own. Record the context and follow the plan your care team gave you.",
+        heading: accurate ? "Curiosity is useful data care." : "Pause before changing the plan.",
       },
       ok: true,
     };

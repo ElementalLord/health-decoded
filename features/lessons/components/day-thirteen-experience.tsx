@@ -1197,7 +1197,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               <p className="editorial-eyebrow">Relationship agreements</p>
               <ol className={styles.takeawayList}>
                 {[
-                  "Diabetes is a condition you manage, not an identity or a verdict about your character.",
+                  "Diabetes is a condition you manage, not your identity or a definition of your character.",
                   "Helpful support asks permission, respects choice, and reduces burden. Concern does not excuse control.",
                   "A clear request and a calm boundary can protect both your health and your relationships.",
                 ].map((item, index) => (
@@ -1216,11 +1216,11 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             ) : null}
             <div className="mx-auto grid max-w-3xl gap-6 text-left md:grid-cols-2">
               <div>
-                <p className="editorial-eyebrow">Tomorrow · The final lesson</p>
-                <h2 className="mt-3 font-serif-display text-3xl">Putting It All Together</h2>
+                <p className="editorial-eyebrow">Your next step</p>
+                <h2 className="mt-3 font-serif-display text-3xl">Try one small, specific ask</h2>
                 <p className="mt-2 leading-7">
-                  Gather what you have learned into a realistic month-one care map and decide what
-                  matters next.
+                  Choose a real person and test the request you drafted. Notice whether the support
+                  feels lighter, clearer, and still yours.
                 </p>
               </div>
               <div>

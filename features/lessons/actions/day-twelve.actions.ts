@@ -106,7 +106,7 @@ export async function evaluateDayTwelveAction(input: unknown): Promise<DayTwelve
     data: {
       accurate,
       body: accurate
-        ? "That is the heart of flexible self-care. Pause, understand what changed, choose one workable response, and adjust again if needed. A difficult moment is information, not a verdict."
+        ? "That is the heart of flexible self-care. Pause, understand what changed, choose one workable response, and adjust again if needed."
         : "Waiting for a ceremonial restart or trying to punish the past keeps the disruption in charge. The next useful decision can be small, imperfect, and available right now.",
       heading: accurate ? "Adaptability keeps care moving." : "You do not need a perfect restart.",
     },
