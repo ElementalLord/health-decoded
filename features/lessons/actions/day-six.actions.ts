@@ -145,15 +145,15 @@ export async function evaluateDaySixAction(input: unknown): Promise<DaySixEvalua
     data: {
       accurate,
       body: accurate
-        ? "Movement gives working muscles a way to use fuel. A small, safe action can be attached to real life, adapted when plans change, and repeated without becoming punishment."
-        : "Bring the explanation back to the body and to real life: movement is a flexible tool, not payment for food or a test of perfect exercise.",
+        ? "A usable movement option accounts for the body, the setting, the action, a clear finish point, and an approachable duration. That is practical design, not a test of motivation."
+        : "Bring the answer back to fit: the useful option is safe for the person, possible in the setting, and clear enough to begin and finish without becoming punishment.",
       details: [
-        "A post-meal walk is one option, not a requirement or a promise.",
-        "A plan that can shrink and restart is more useful than an all-or-nothing rule.",
+        "A post-meal walk is one timing option, not a requirement or a promise.",
+        "Place, position, pace, and duration can all be adjusted.",
       ],
       heading: accurate
-        ? "That is Day 6 in plain language."
-        : "Keep the tool; release the pressure.",
+        ? "That is movement placement in plain language."
+        : "Design the conditions before judging the effort.",
     },
     ok: true,
   };

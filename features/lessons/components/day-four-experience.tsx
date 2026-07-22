@@ -528,7 +528,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       "Open and classify all four cupboard statements.",
       "Classify all four comments as helpful support or controlling language.",
       "Spread the meal receipts to reveal the longer pattern.",
-      "Choose a plain-language explanation and a confidence check.",
+      "Choose the flexible food explanation and a confidence check.",
       "Choose one reflection to complete Day 4.",
     ];
     return requirements[stage];
@@ -550,7 +550,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       "Invite support to the table",
       "Look beyond one meal",
       "Explain it in plain language",
-      "Choose what you will carry forward",
+      "Review the four permissions",
     ] as const;
     return labels[stage] ?? "Continue";
   }
@@ -1257,7 +1257,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
         return (
           <div className="space-y-9">
             <DayFourHeading label="The restaurant question">
-              Look for “more balanced,” not “perfect.”
+              Look for a workable balance, not one supposedly correct plate.
             </DayFourHeading>
             <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
               <div className="relative min-h-80 rounded-t-full border border-accent-warm/25 bg-[#eadace] p-8 text-center">
@@ -1268,7 +1268,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 />
                 <p className="mt-7 font-serif-display text-3xl">Tonight&apos;s menu</p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Familiar foods, larger portions, imperfect information, and still more than one
+                  Familiar foods, larger portions, limited information, and still more than one
                   reasonable choice.
                 </p>
                 <span
@@ -1296,7 +1296,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                       "ban_carbs",
                       "Remove every carbohydrate before considering the rest of the meal.",
                     ],
-                    ["find_perfect", "Search until you find the one flawless menu item."],
+                    ["find_perfect", "Search until you find the one supposedly correct menu item."],
                   ] as const
                 ).map(([answer, label]) => (
                   <AnswerChoice
@@ -1517,8 +1517,8 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       case 14:
         return (
           <div className="space-y-9">
-            <DayFourHeading label="Teach it back">
-              How would you explain food and blood glucose now?
+            <DayFourHeading label="Dinner-table explanation">
+              Which answer keeps food accurate and flexible?
             </DayFourHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               A friend says, “I have Type 2 diabetes, so I guess carbohydrates and every food I love
@@ -1531,7 +1531,10 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                   "Carbohydrates affect blood glucose, but they can remain part of meals. Fiber, balance, portions, patterns, preferences, and your care plan all add context.",
                 ],
                 ["carbs_forbidden", "Yes. Every carbohydrate needs to disappear immediately."],
-                ["perfect_diet", "You only need to discover the one perfect diabetes diet."],
+                [
+                  "perfect_diet",
+                  "You only need to discover the one universally correct diabetes diet.",
+                ],
               ] as const
             ).map(([answer, label]) => (
               <AnswerChoice
@@ -1631,7 +1634,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 <p aria-live="polite" className="mt-5 bg-info p-5 leading-7">
                   {reflection.includes("professional") || reflection.includes("culture")
                     ? "That is a thoughtful next step. A registered dietitian nutritionist or diabetes education specialist can help shape this framework around your health needs, culture, budget, medicines, and preferences."
-                    : "That is enough for today. Confidence can begin with one meal you understand, not a lifetime of perfect eating."}
+                    : "That is enough for today. Confidence can begin with one meal you understand, not a lifetime mapped out in advance."}
                 </p>
               ) : null}
             </div>
@@ -1643,7 +1646,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                     <h2 className="mt-3 font-serif-display text-3xl">Eating in real life</h2>
                     <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
                       You will carry this flexible plate into portions, labels, drinks, snacks, and
-                      repeatable meal choices, without searching for perfection.
+                      repeatable meal choices while leaving room for variety.
                     </p>
                   </div>
                   <ShoppingBasketIllustration />

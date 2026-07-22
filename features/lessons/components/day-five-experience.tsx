@@ -42,7 +42,7 @@ import { LessonStoryImage } from "@/features/lessons/components/lesson-story-ima
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
-const stageCount = 16;
+const stageCount = 11;
 
 type EvaluationKey = "safety" | "teachBack";
 
@@ -424,17 +424,16 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
     if (stage === 1) return fuelCycles >= 3;
     if (stage === 2) return pathwaysSeen.size === 2;
     if (stage === 3) return atlasOpened.size >= 4;
-    if (stage === 4) return movementWindows.size >= 2;
-    if (stage === 5) return studioAccurate || studioResolved;
-    if (stage === 6) return benefitsOpened.size >= 4;
-    if (stage === 7) return mealJourney >= 3;
-    if (stage === 8) return mythsOpened.size === myths.length;
-    if (stage === 9) return returnedAfterPause;
-    if (stage === 10) return barrier !== null && barrierOption !== null;
-    if (stage === 11) return safetyCards.size === 3 && Boolean(evaluations.safety);
-    if (stage === 12) return planMovement !== null && planAnchor !== null && planDuration !== null;
-    if (stage === 13) return supportChoice !== null;
-    if (stage === 14) return Boolean(evaluations.teachBack) && confidence !== null;
+    if (stage === 4) return studioAccurate || studioResolved;
+    if (stage === 5) return benefitsOpened.size >= 4;
+    if (stage === 6) return mythsOpened.size === myths.length;
+    if (stage === 7) return safetyCards.size === 3 && Boolean(evaluations.safety);
+    if (stage === 8)
+      return (
+        supportChoice ===
+        "The people are running, reaching, and changing direction while they play."
+      );
+    if (stage === 9) return Boolean(evaluations.teachBack) && confidence !== null;
     return reflection !== null;
   }
 
@@ -444,17 +443,12 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
       "Activate the muscle three times and watch the full fuel cycle.",
       "Open both timeframes in the movement mechanism.",
       "Open at least four kinds of everyday movement.",
-      "Add two realistic movement openings to the day.",
       "Sort all six activities. After two attempts, the studio will reveal the answer.",
       "Open at least four benefits that are not about earning food.",
-      "Move the meal-time visual through all three transitions.",
       "Open all three narrow rules to reveal the wider truth.",
-      "Use the return button after the interrupted day.",
-      "Choose one real barrier and one workable response.",
       "Open all three safety notes and choose the safe medication response.",
-      "Choose a movement, an anchor, and a small starting amount.",
-      "Choose one kind of support that would protect your plan.",
-      "Choose a plain-language explanation and a confidence response.",
+      "Choose why playful activity still counts as movement.",
+      "Choose the movement-mechanism explanation and a confidence response.",
       "Choose one reflection to complete Day 5.",
     ];
     return requirements[stage];
@@ -465,24 +459,20 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
       "See what working muscles do",
       "Follow the second pathway",
       "Find movement beyond the gym",
-      "Build movement into a real day",
       "Visit the movement studio",
       "See what else movement supports",
-      "Walk through a meal-time option",
       "Clear the all-or-nothing myths",
-      "Practice returning",
-      "Work with a real barrier",
       "Start with safety",
-      "Build one first-week plan",
-      "Protect the plan with support",
-      "Explain it in plain language",
-      "Choose what you will carry forward",
+      "Recognize movement inside play",
+      "Check the movement mechanism",
+      "Review movement mechanisms",
     ] as const;
     return labels[stage] ?? "Continue";
   }
 
   function renderStage() {
-    switch (stage) {
+    const contentStage = [0, 1, 2, 3, 5, 6, 8, 11, 13, 14, 15][stage] ?? 15;
+    switch (contentStage) {
       case 0:
         return (
           <div className="space-y-10">
@@ -549,7 +539,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                   kitchen, a garden, a pool, or a chair.
                 </p>
                 <p className="font-serif-display text-2xl italic text-foreground">
-                  Your body responds to movement, not perfection.
+                  Your muscles can benefit across many comfortable durations and intensities.
                 </p>
               </div>
             </div>
@@ -1190,7 +1180,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
       case 9:
         return (
           <div className="space-y-9">
-            <DayFiveHeading label="Consistency without perfection">
+            <DayFiveHeading label="Returning after a pause">
               A pause is not the end of the path.
             </DayFiveHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
@@ -1485,8 +1475,8 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
       case 13:
         return (
           <div className="space-y-9">
-            <DayFiveHeading label="Make support concrete">
-              Protect the opening instead of policing the effort.
+            <DayFiveHeading label="Movement can look like living">
+              Play counts before anyone calls it exercise.
             </DayFiveHeading>
             <LessonStoryImage
               alt="A child, parent, and grandparent run and laugh together while flying a kite in a park"
@@ -1524,20 +1514,20 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                 </span>
                 <span className={styles.walkPrompt}>
                   {supportChoice
-                    ? "A shared pace, not supervision."
-                    : "Choose the support that fits."}
+                    ? "Muscles are working inside an ordinary life."
+                    : "Choose what makes this physical activity."}
                 </span>
               </div>
               <div className="space-y-4">
                 <p className="text-lg leading-8 text-foreground/80">
-                  Support does not have to mean supervision. It can make one small action easier to
-                  begin or repeat.
+                  The body responds to muscle work, not to whether an activity has gym equipment, a
+                  scoreboard, or the label “workout.” What makes this scene physical activity?
                 </p>
                 {[
-                  "Invite someone to join one comfortable walk or activity.",
-                  "Ask someone to protect ten quiet minutes from interruptions.",
-                  "Choose encouragement without scorekeeping.",
-                  "Keep the plan private and ask for space instead.",
+                  "The people are running, reaching, and changing direction while they play.",
+                  "The kite makes the activity count even if everyone stands still.",
+                  "Only the youngest person’s movement counts as physical activity.",
+                  "It counts only if they track the minutes and intensity.",
                 ].map((option) => (
                   <AnswerChoice
                     key={option}
@@ -1550,8 +1540,26 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
               </div>
             </div>
             {supportChoice ? (
-              <p className="border-l-2 border-success bg-info p-5 leading-7">
-                <strong>Your boundary:</strong> {supportChoice}
+              <p
+                className={cn(
+                  "border-l-2 p-5 leading-7",
+                  supportChoice ===
+                    "The people are running, reaching, and changing direction while they play."
+                    ? "border-success bg-info"
+                    : "border-warning bg-warning/10",
+                )}
+              >
+                {supportChoice ===
+                "The people are running, reaching, and changing direction while they play." ? (
+                  <>
+                    <strong>Exactly:</strong> muscle work inside play is still physical activity.
+                  </>
+                ) : (
+                  <>
+                    <strong>Look again:</strong> equipment, age, tracking, and the word “workout” do
+                    not decide whether muscles are active.
+                  </>
+                )}
               </p>
             ) : null}
           </div>
@@ -1559,7 +1567,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
       case 14:
         return (
           <div className="space-y-9">
-            <DayFiveHeading label="Teach it back">
+            <DayFiveHeading label="Mechanism checkpoint">
               What makes movement a glucose tool?
             </DayFiveHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
@@ -1576,7 +1584,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                   ["only_gym_counts", "Only a formal gym workout is strong enough to help."],
                   [
                     "perfect_or_none",
-                    "Movement only matters when the routine is perfect and uninterrupted.",
+                    "Movement only matters when every session is formal and uninterrupted.",
                   ],
                 ] as const
               ).map(([answer, label]) => (
@@ -1628,10 +1636,11 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                 Your body already knows how to begin.
               </h1>
               <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-                Movement gives working muscles a reason to use fuel. It can be small, adapted,
-                interrupted, and returned to.
+                Movement gives working muscles a reason to use fuel, supports insulin sensitivity
+                over time, and offers benefits beyond a single number or weight change.
               </p>
             </div>
+            <p className="editorial-eyebrow text-success">Movement mechanisms</p>
             <div className="grid gap-5 border-y border-border py-8 md:grid-cols-3">
               {[
                 ["01", "Working muscles use glucose for energy."],
@@ -1662,10 +1671,10 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             {reflection ? (
               <div className="space-y-6 rounded-[1.5rem] bg-info p-7 text-center sm:p-10">
                 <p className="font-serif-display text-3xl italic text-success">
-                  Progress is a return, not a perfect streak.
+                  Movement can be useful before it ever looks like a workout.
                 </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Tomorrow: medicines as tools, not judgments.
+                  Tomorrow: fitting movement into a real day.
                 </p>
                 <Button disabled={isPending} onClick={finishExperience}>
                   {isPending
@@ -1678,8 +1687,8 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                   <Button fullWidth={false} onClick={() => goToStage(1)} variant="text">
                     Review the muscle visual
                   </Button>
-                  <Button fullWidth={false} onClick={() => goToStage(12)} variant="text">
-                    Rebuild the first-week plan
+                  <Button fullWidth={false} onClick={() => goToStage(4)} variant="text">
+                    Review movement types
                   </Button>
                   <Link
                     className={buttonVariants({ fullWidth: false, variant: "text" })}

@@ -48,8 +48,9 @@ test("Day 8 visual metaphors keep their sequence and labels legible", () => {
 });
 
 test("Day 8 teaches context and patterns without prescribing targets", () => {
-  assert.match(experience, /One reading belongs to one moment/);
-  assert.match(experience, /A pattern is not perfection/);
+  assert.match(experience, /Start with what the information should help you decide/);
+  assert.match(experience, /More data is\s+not\s+automatically more useful data/);
+  assert.match(experience, /A pattern is a clue, not proof/);
   assert.match(experience, /not everyone needs home monitoring or a\s+CGM/i);
   assert.doesNotMatch(experience, /target range|ideal number|check every day/i);
   assert.doesNotMatch(experience, /mg\/dL|mmol\/L/);
