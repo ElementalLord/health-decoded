@@ -11,7 +11,6 @@ import {
   CupSoda,
   GlassWater,
   Heart,
-  Milk,
   Pizza,
   Soup,
   Wheat,
@@ -36,7 +35,7 @@ import { LessonStoryImage } from "@/features/lessons/components/lesson-story-ima
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
-const stageCount = 16;
+const stageCount = 15;
 
 type EvaluationKey =
   "digestion" | "nutrient" | "fiber" | "plate" | "drink" | "restaurant" | "teachBack";
@@ -200,13 +199,6 @@ const myths = [
   "The plate method is a flexible starting point, not the only correct way to eat.",
 ] as const;
 
-const supportStatements = [
-  { answer: "policing", text: "Are you sure you are allowed to eat that?" },
-  { answer: "support", text: "Would it help if we planned a meal together?" },
-  { answer: "policing", text: "You ruined the day with that dessert." },
-  { answer: "support", text: "What kind of support would feel useful to you?" },
-] as const;
-
 const reflectionOptions = [
   "Carbohydrates feel less frightening.",
   "I can picture a balanced plate.",
@@ -315,9 +307,6 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
   const [mythIndex, setMythIndex] = useState(0);
   const [mythCompleted, setMythCompleted] = useState(0);
   const [mythFeedback, setMythFeedback] = useState<DayFourEvaluationFeedback | null>(null);
-  const [supportIndex, setSupportIndex] = useState(0);
-  const [supportAnswer, setSupportAnswer] = useState<"support" | "policing" | null>(null);
-  const [supportCompleted, setSupportCompleted] = useState(0);
   const [receiptsSpread, setReceiptsSpread] = useState(false);
   const [confidence, setConfidence] = useState<string | null>(null);
   const [reflection, setReflection] = useState<(typeof reflectionOptions)[number] | null>(null);
@@ -450,20 +439,6 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
     }
   }
 
-  function classifySupport(answer: "support" | "policing") {
-    setSupportAnswer(answer);
-    if (supportIndex === supportStatements.length - 1)
-      setSupportCompleted(supportStatements.length);
-  }
-
-  function nextSupport() {
-    setSupportCompleted((current) => Math.max(current, supportIndex + 1));
-    if (supportIndex < supportStatements.length - 1) {
-      setSupportIndex((current) => current + 1);
-      setSupportAnswer(null);
-    }
-  }
-
   function finishExperience() {
     if (experience.accessMode === "review") {
       router.push("/journey");
@@ -506,9 +481,8 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
     if (stage === 9) return favoriteCompleted === favoriteScenarios.length;
     if (stage === 10) return Boolean(evaluations.restaurant);
     if (stage === 11) return mythCompleted === myths.length;
-    if (stage === 12) return supportCompleted === supportStatements.length;
-    if (stage === 13) return receiptsSpread;
-    if (stage === 14) return Boolean(evaluations.teachBack) && confidence !== null;
+    if (stage === 12) return receiptsSpread;
+    if (stage === 13) return Boolean(evaluations.teachBack) && confidence !== null;
     return reflection !== null;
   }
 
@@ -526,7 +500,6 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       "Practice keeping all four favorite foods in real life.",
       "Choose a flexible restaurant strategy.",
       "Open and classify all four cupboard statements.",
-      "Classify all four comments as helpful support or controlling language.",
       "Spread the meal receipts to reveal the longer pattern.",
       "Choose the flexible food explanation and a confidence check.",
       "Choose one reflection to complete Day 4.",
@@ -547,7 +520,6 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       "Keep favorite foods in the story",
       "Take the plate method out to eat",
       "Open the myth cupboard",
-      "Invite support to the table",
       "Look beyond one meal",
       "Explain it in plain language",
       "Review the four permissions",
@@ -680,7 +652,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 After eating, digestion breaks food into smaller components. Proteins can become
                 amino acids, fats can become fatty acids, and many carbohydrates become glucose.
               </p>
-              <p>Move one meal through the process. Nothing in this journey is a failure.</p>
+              <p>Move one meal through the process and keep the normal job of glucose in view.</p>
             </div>
             <LessonMotionFigure variant="digestion-journey" />
             <div className="overflow-hidden rounded-[1rem] border border-accent-warm/25 bg-[#f0e3d8] p-6 sm:p-9">
@@ -1188,7 +1160,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
             <LessonStoryImage
               alt="A diverse group of adult friends laugh and share varied dishes around a restaurant table"
               caption="A satisfying meal can include favorite food, helpful context, and connection. No plate at this table is a test of character."
-              emphasis="Eating with joy is not failure."
+              emphasis="Joy and balance can share a table."
               src="/lessons/day-04/table-without-guilt.jpg"
             />
             <div className="grid gap-7 rounded-[1rem] border border-accent-warm/25 bg-[#efe3d8] p-6 sm:grid-cols-[14rem_1fr] sm:items-center sm:p-9">
@@ -1356,87 +1328,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
             </p>
           </div>
         );
-      case 12: {
-        const current = supportStatements[supportIndex]!;
-        const correct = supportAnswer === current.answer;
-        return (
-          <div className="space-y-9">
-            <DayFourHeading label="How family and friends can help">
-              Does this comment preserve the person&apos;s choice?
-            </DayFourHeading>
-            <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Helpful support asks permission and collaborates. A controlling comment uses shame,
-              fear, or someone else&apos;s rules to take over the food decision.
-            </p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-[9px] border border-success/30 bg-info p-5">
-                <p className="font-semibold">Helpful support</p>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  “Would you like help?” The person keeps the final choice.
-                </p>
-              </div>
-              <div className="rounded-[9px] border border-accent-warm/30 bg-[#f2e5dc] p-5">
-                <p className="font-semibold">Controlling comment</p>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  “You are not allowed.” Shame or permission replaces collaboration.
-                </p>
-              </div>
-            </div>
-            <div className="grid gap-7 rounded-[1rem] border border-border bg-card p-6 shadow-card sm:grid-cols-[auto_1fr] sm:items-center sm:p-10">
-              <div className="flex size-36 items-center justify-center rounded-full bg-[#e4eee5]">
-                <Heart aria-hidden="true" className="size-16 text-success" strokeWidth={1.1} />
-              </div>
-              <div>
-                <p className="editorial-eyebrow">
-                  Conversation {supportIndex + 1} of {supportStatements.length}
-                </p>
-                <blockquote className="mt-5 font-serif-display text-3xl leading-tight sm:text-4xl">
-                  “{current.text}”
-                </blockquote>
-              </div>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Button onClick={() => classifySupport("support")} variant="secondary">
-                Helpful support
-              </Button>
-              <Button onClick={() => classifySupport("policing")} variant="secondary">
-                Controlling comment
-              </Button>
-            </div>
-            {supportAnswer ? (
-              <div
-                aria-live="polite"
-                className={cn(
-                  "animate-slide-up rounded-[1rem] border p-6",
-                  correct ? "border-success/30 bg-info" : "border-warning/35 bg-warning/10",
-                )}
-              >
-                <p className="font-serif-display text-2xl italic">
-                  {correct
-                    ? "Yes. The difference is who keeps the choice."
-                    : current.answer === "support"
-                      ? "This comment offers help without taking over."
-                      : "This comment takes control of someone else's food decision."}
-                </p>
-                <p className="mt-3 leading-7">
-                  {current.answer === "support"
-                    ? "It asks or collaborates, so the person with diabetes keeps agency and can say yes or no."
-                    : "It uses fear, permission, or shame. That can increase anxiety without teaching a practical skill."}
-                </p>
-                {supportIndex < supportStatements.length - 1 ? (
-                  <Button className="mt-5" fullWidth={false} onClick={nextSupport}>
-                    Read the next comment
-                  </Button>
-                ) : null}
-              </div>
-            ) : null}
-            <p className="text-sm text-muted-foreground">
-              {supportCompleted} of {supportStatements.length} conversations classified
-            </p>
-          </div>
-        );
-      }
-      case 13:
+      case 12:
         return (
           <div className="space-y-10">
             <DayFourHeading label="One meal is one receipt">
@@ -1514,7 +1406,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
             ) : null}
           </div>
         );
-      case 14:
+      case 13:
         return (
           <div className="space-y-9">
             <DayFourHeading label="Dinner-table explanation">
@@ -1597,7 +1489,11 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                   "Balance can add",
                   "Vegetables, protein, fiber, and context can join the meal.",
                 ],
-                ["04", "Patterns matter", "One meal is not a verdict on an entire life."],
+                [
+                  "04",
+                  "Patterns create context",
+                  "A flexible pattern tells you more than one dinner.",
+                ],
               ].map(([number, heading, body], index) => (
                 <div
                   className="grid gap-3 py-6 sm:grid-cols-[5rem_13rem_1fr] sm:items-baseline"
@@ -1640,16 +1536,18 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             {reflection ? (
               <div className="animate-slide-up space-y-7">
-                <div className="grid gap-6 border-y border-accent-warm/25 bg-[#f1e5dc] p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
+                <div className="border-y border-accent-warm/25 bg-[#f1e5dc] p-6 sm:p-8">
                   <div>
                     <p className="editorial-eyebrow">Tomorrow · Day 5</p>
-                    <h2 className="mt-3 font-serif-display text-3xl">Eating in real life</h2>
+                    <h2 className="mt-3 font-serif-display text-3xl">
+                      How movement helps the body
+                    </h2>
                     <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
-                      You will carry this flexible plate into portions, labels, drinks, snacks, and
-                      repeatable meal choices while leaving room for variety.
+                      You will see how working muscles use glucose, why activity can improve insulin
+                      sensitivity, and how ordinary movement can support more than one part of
+                      health.
                     </p>
                   </div>
-                  <ShoppingBasketIllustration />
                 </div>
                 <Button disabled={isPending} onClick={finishExperience} size="lg">
                   {isPending
@@ -1799,23 +1697,5 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
         </div>
       </Modal>
     </section>
-  );
-}
-
-function ShoppingBasketIllustration() {
-  return (
-    <div
-      aria-label="A simple teaching illustration of a grocery basket containing varied foods"
-      className="relative flex size-28 items-end justify-center rounded-full bg-card"
-      role="img"
-    >
-      <div className="mb-5 h-12 w-20 rounded-b-[1.5rem] border-2 border-accent-warm bg-[#ead8c8]" />
-      <Apple aria-hidden="true" className="absolute left-7 top-7 size-8 text-accent-warm" />
-      <Carrot aria-hidden="true" className="absolute right-7 top-6 size-9 rotate-12 text-success" />
-      <Milk
-        aria-hidden="true"
-        className="absolute left-1/2 top-4 size-8 -translate-x-1/2 text-[#6f8f87]"
-      />
-    </div>
   );
 }

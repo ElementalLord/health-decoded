@@ -59,7 +59,7 @@ const solverSteps = [
     title: "Choose",
   },
   {
-    body: "Notice what happened and revise again if needed. Adjusting is part of the skill, not evidence the first choice failed.",
+    body: "Notice what happened and revise again if needed. Adjustment is the feedback step that keeps the plan usable.",
     id: "adjust",
     number: "04",
     title: "Adjust",
@@ -76,7 +76,7 @@ const lifeSituations = [
 type LifeSituationId = (typeof lifeSituations)[number][0];
 
 const lifeTools = [
-  ["notice", "Notice what changed before judging the day"],
+  ["notice", "Notice what changed before choosing the next response"],
   ["available", "Choose the most supportive option that is actually available"],
   ["small", "Protect one small routine: water, a pause, movement, or rest"],
   ["support", "Ask someone for practical help or more time"],
@@ -266,9 +266,9 @@ function AdaptiveDayTimeline() {
         </section>
       </div>
       <figcaption className={styles.figureCaption}>
-        <strong>The interruption is one part of the day, not a verdict on the day.</strong> The
-        animation highlights the exact sequence: notice what changed, make the next workable choice,
-        then reconnect with the routine that is still available.
+        <strong>Find the exact point where conditions changed.</strong> The animation highlights the
+        response sequence: notice the change, make the next workable choice, then reconnect with the
+        routine that is still available.
       </figcaption>
     </figure>
   );
@@ -723,7 +723,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                   <p className="editorial-eyebrow">Your flexible-day note</p>
                   <p>
                     When {lifeSituations.find(([id]) => id === lifeSituation)?.[1].toLowerCase()}, I
-                    can use {lifeToolChoices.size} tools instead of calling the day a failure.
+                    can use {lifeToolChoices.size} tools to keep the next decision workable.
                   </p>
                 </div>
               </div>

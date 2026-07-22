@@ -1013,8 +1013,8 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             {activeCause ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 leading-7">
-                {highCauses.find((cause) => cause.id === activeCause)?.body} None of these reasons
-                are moral verdicts, they are context for a conversation with your care team.
+                {highCauses.find((cause) => cause.id === activeCause)?.body} Naming a possible
+                contributor gives your care team a more specific question to investigate with you.
               </p>
             ) : null}
           </div>

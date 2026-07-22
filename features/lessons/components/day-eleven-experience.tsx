@@ -992,7 +992,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
             </LessonHeading>
             <LessonStoryImage
               alt="A patient sits comfortably at a retinal camera while an eye-care clinician explains the exam and a partner offers support"
-              caption="A routine eye exam can find small changes before vision feels different, creating more time for protection and follow-up."
+              caption="A diabetes eye exam can find small retinal changes before vision feels different, creating more time for protection and follow-up."
               emphasis="Screening looks ahead with care."
               src="/lessons/day-11/eye-care.jpg"
             />
@@ -1079,7 +1079,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
             <p className={styles.personalNote}>
               <Stethoscope aria-hidden="true" />
               <span>
-                The ABCs are not grades, and this lesson does not set personal targets. Your
+                The ABCs have different jobs, and this lesson does not set personal targets. Your
                 clinician can explain what each result means for you and how often it should be
                 reviewed.
               </span>

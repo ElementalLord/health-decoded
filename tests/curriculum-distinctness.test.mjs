@@ -21,6 +21,10 @@ const lessonFiles = [
 const lessons = Object.fromEntries(
   lessonFiles.map((file) => [file, readFileSync(`features/lessons/components/${file}`, "utf8")]),
 );
+const optimizationMigration = readFileSync(
+  "supabase/migrations/20260722000001_optimize_curriculum_progression.sql",
+  "utf8",
+);
 
 test("each lesson has a distinct instructional owner", () => {
   const ownershipMarkers = [
@@ -76,6 +80,30 @@ test("later lessons do not reteach earlier lesson exercises", () => {
   assert.doesNotMatch(lessons["day-thirteen-experience.tsx"], /Needing medicine means you failed/);
   assert.doesNotMatch(lessons["day-thirteen-experience.tsx"], /You caused your diabetes/);
   assert.match(lessons["day-twelve-experience.tsx"], /Make the call usable/);
+  assert.doesNotMatch(lessons["day-four-experience.tsx"], /How family and friends can help/);
+  assert.doesNotMatch(lessons["day-four-experience.tsx"], /supportStatements/);
+  assert.match(lessons["day-thirteen-experience.tsx"], /Encouragement is not surveillance/);
+});
+
+test("lesson handoffs match the published thirteen-day journey", () => {
+  assert.match(lessons["day-four-experience.tsx"], /Tomorrow · Day 5/);
+  assert.match(lessons["day-four-experience.tsx"], /How movement helps the body/);
+  assert.match(
+    lessons["day-seven-experience.tsx"],
+    /which question each monitoring tool can answer/i,
+  );
+  assert.match(lessons["day-ten-experience.tsx"], /diabetes eye exams, kidney tests, foot checks/i);
+  assert.doesNotMatch(lessons["day-thirteen-experience.tsx"], /Tomorrow · The final lesson/);
+  assert.match(lessons["day-thirteen-experience.tsx"], /Try one small, specific ask/);
+});
+
+test("database summaries preserve the revised instructional ownership", () => {
+  assert.match(optimizationMigration, /working muscles use glucose/i);
+  assert.match(optimizationMigration, /Body fit and life fit come before a movement plan/);
+  assert.match(optimizationMigration, /question-led monitoring/);
+  assert.match(optimizationMigration, /clear finish cue/);
+  assert.match(optimizationMigration, /pause, understand, choose, and adjust/);
+  assert.doesNotMatch(optimizationMigration, /returning after interruptions/);
 });
 
 test("lesson recaps have topic-specific labels", () => {

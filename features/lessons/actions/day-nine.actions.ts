@@ -67,7 +67,7 @@ export async function evaluateDayNineAction(input: unknown): Promise<DayNineEval
       data: {
         accurate,
         body: accurate
-          ? "Persistent vomiting, trouble staying awake, breathing difficulty, or growing confusion are signals to seek medical care promptly, not signs you failed. They are uncommon, and recognizing them is exactly what preparedness means."
+          ? "Persistent vomiting, trouble staying awake, breathing difficulty, or growing confusion are signals to seek medical care promptly. They are uncommon, and recognizing them is exactly what preparedness means."
           : "Urgent signals such as persistent vomiting or growing confusion should not wait days or be compared against strangers online. They deserve prompt medical care from professionals who know how to help.",
         heading: accurate
           ? "Urgent signals get prompt care."
