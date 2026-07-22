@@ -102,7 +102,7 @@ const visibleReminders = [
 const reflections = [
   "Small habits, repeated kindly, quietly become who I am.",
   "A routine is a decision I only have to make once.",
-  "Progress is measured in weeks, not perfect days.",
+  "I can name an anchor, an action, and a finish cue.",
   "My routine should fit my life, not someone else’s.",
 ] as const;
 
@@ -129,7 +129,7 @@ const glossary = [
   },
   {
     definition:
-      "Returning to your habits again and again over weeks, including after interruptions. It matters far more than any single perfect day.",
+      "Repeating a chosen action across many opportunities. It describes frequency over time, not a score for any single day.",
     term: "Consistency",
   },
 ] as const;
@@ -529,7 +529,7 @@ function HabitLoopAnimation() {
   );
 }
 
-function NextStepStaircaseAnimation() {
+function CompletionCueStaircaseAnimation() {
   const steps = [0, 1, 2, 3, 4] as const;
 
   return (
@@ -540,14 +540,14 @@ function NextStepStaircaseAnimation() {
         role="img"
         viewBox="0 0 880 470"
       >
-        <title id="next-step-title">A walker pauses at a soft step, then simply continues</title>
+        <title id="next-step-title">A walker completes a small routine and marks the finish</title>
         <desc id="next-step-desc">
-          A gentle figure climbs a staircase, pauses beside one softly marked step, and then takes
-          the next step upward instead of starting over.
+          A gentle figure climbs a short staircase toward a softly marked completion step, showing
+          how a visible ending can close one routine loop.
         </desc>
         <rect className={styles.canvasPaper} height="470" rx="54" width="880" />
         <text className={styles.sceneHeading} textAnchor="middle" x="440" y="48">
-          A MISSED STEP IS NOT A RESTART
+          GIVE THE ROUTINE A CLEAR ENDING
         </text>
         {steps.map((index) => (
           <rect
@@ -599,16 +599,16 @@ function NextStepStaircaseAnimation() {
           />
         </g>
         <text className={styles.stepNote} textAnchor="middle" x="505" y="390">
-          A PAUSED DAY
+          FINISH CUE
         </text>
         <text className={styles.motionCaption} textAnchor="middle" x="440" y="446">
-          DON’T START OVER, JUST TAKE THE NEXT STEP
+          BEGIN · DO · NOTICE THE FINISH
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Missing a step on a staircase</strong> never sends you back to the bottom. You
-        steady yourself and take the next one. An interrupted routine works exactly the same way,
-        tomorrow is simply the next step.
+        <strong>A routine needs an ending as well as a beginning.</strong> A check mark, a kind
+        word, or putting the tool away can make completion visible without turning it into a reward
+        test.
       </figcaption>
     </figure>
   );
@@ -734,10 +734,10 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
   const [reminder, setReminder] = useState<string | null>(null);
   const [reflection, setReflection] = useState<(typeof reflections)[number] | null>(null);
   const [evaluations, setEvaluations] = useState<
-    Partial<Record<"firstHabit" | "setback" | "teachBack", DayTenEvaluationFeedback>>
+    Partial<Record<"firstHabit" | "closure" | "teachBack", DayTenEvaluationFeedback>>
   >({});
   const [selectedAnswers, setSelectedAnswers] = useState<
-    Partial<Record<"firstHabit" | "setback" | "teachBack", string>>
+    Partial<Record<"firstHabit" | "closure" | "teachBack", string>>
   >({});
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [exitOpen, setExitOpen] = useState(false);
@@ -788,7 +788,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
 
   async function evaluate(
     input: unknown,
-    key: "firstHabit" | "setback" | "teachBack",
+    key: "firstHabit" | "closure" | "teachBack",
     answer: string,
   ) {
     setSelectedAnswers((current) => ({ ...current, [key]: answer }));
@@ -803,7 +803,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
     if (stage === 2) return Boolean(evaluations.firstHabit);
     if (stage === 3) return stacks.length >= 2;
     if (stage === 4) return supportsPlaced.size >= 3;
-    if (stage === 5) return Boolean(evaluations.setback);
+    if (stage === 5) return Boolean(evaluations.closure);
     if (stage === 6) return starterRoutine !== null && reminder !== null;
     if (stage === 7) return reflection !== null && Boolean(evaluations.teachBack);
     return true;
@@ -816,9 +816,9 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
       "Choose which neighbor’s start is more likely to last.",
       "Build at least two habit stacks from an anchor and a new habit.",
       "Set up at least three easy-choice supports.",
-      "Choose the kind response to an interrupted routine.",
+      "Choose the cue that closes a completed routine.",
       "Choose one starter routine and one visible reminder.",
-      "Choose one reflection and complete the teach-back.",
+      "Choose one reflection and identify the complete routine recipe.",
     ][stage];
   }
 
@@ -829,10 +829,10 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         "Start smaller than you think",
         "Stack a habit onto an anchor",
         "Make the easy choice the near one",
-        "Practice an interrupted week",
+        "Add a finish cue",
         "Choose your one small start",
         "Keep showing up gently",
-        "See today’s takeaway",
+        "Review the routine recipe",
       ][stage] ?? "Continue"
     );
   }
@@ -901,7 +901,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
             {openingFeeling ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 text-lg leading-8">
                 However today feels, here is the gentle promise of this lesson: managing diabetes is
-                not hundreds of perfect decisions a day. It is a few small routines, repeated
+                not hundreds of separate decisions a day. It is a few small routines, repeated
                 kindly.
               </p>
             ) : null}
@@ -1144,37 +1144,37 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
       case 5:
         return (
           <div className="space-y-9">
-            <LessonHeading label="When life interrupts">
-              A birthday, a busy week, a tired evening, your routine can bend without breaking.
+            <LessonHeading label="Close the loop">
+              Give a completed routine a clear, kind ending.
             </LessonHeading>
-            <NextStepStaircaseAnimation />
+            <CompletionCueStaircaseAnimation />
             <div className="border-y border-border py-8">
               <p className="font-serif-display text-3xl">
-                You missed your evening walk and had dessert at a celebration. What is the kind,
-                effective next move?
+                You finish the five-minute routine you chose. Which ending makes completion visible
+                without raising the difficulty or judging the result?
               </p>
               <div className="mt-6 grid gap-3 md:grid-cols-3">
                 {(
                   [
                     [
-                      "next_decision",
-                      "Ask “what is the healthiest thing I can do next?” and simply take that step.",
+                      "notice_completion",
+                      "Mark it complete, say “done for today,” and let the routine end.",
                     ],
-                    ["week_ruined", "Call the week ruined and start fresh next Monday."],
-                    ["make_up_for_it", "Skip meals tomorrow to make up for tonight."],
+                    ["raise_difficulty", "Immediately double tomorrow’s version so today counts."],
+                    ["add_punishment", "Grade the result and criticize yourself if it felt easy."],
                   ] as const
                 ).map(([answer, label]) => (
                   <AnswerChoice
                     key={answer}
-                    onClick={() => evaluate({ answer, stage: "setback" }, "setback", answer)}
-                    selected={selectedAnswers.setback === answer}
+                    onClick={() => evaluate({ answer, stage: "closure" }, "closure", answer)}
+                    selected={selectedAnswers.closure === answer}
                   >
                     {label}
                   </AnswerChoice>
                 ))}
               </div>
             </div>
-            {evaluations.setback ? <Feedback feedback={evaluations.setback} /> : null}
+            {evaluations.closure ? <Feedback feedback={evaluations.closure} /> : null}
           </div>
         );
       case 6:
@@ -1248,9 +1248,9 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                   [
                     [
                       "consistency_routines",
-                      "Simple routines that make healthy choices easier, and returning to them whenever life interrupts.",
+                      "Simple routines that reduce decisions by using an anchor, visible support, and a clear finish cue.",
                     ],
-                    ["perfect_choices", "Making perfect choices at every meal, every single day."],
+                    ["perfect_choices", "Relying on willpower for every meal, every single day."],
                     [
                       "motivation_daily",
                       "Waking up with enough motivation and willpower each morning.",
@@ -1274,14 +1274,14 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-12 text-center">
             <p className="editorial-eyebrow">Day 10 complete</p>
-            <LessonHeading>Consistency is more powerful than perfection.</LessonHeading>
+            <LessonHeading>A clear routine is easier to repeat.</LessonHeading>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
-              <p className="editorial-eyebrow text-success">Three ideas worth carrying</p>
+              <p className="editorial-eyebrow text-success">Routine recipe</p>
               <ol className="mt-6 space-y-6">
                 {[
                   "A routine is a decision you make once, then simply repeat, so the day costs less energy.",
                   "Small habits stacked onto things you already do beat dramatic overnight overhauls.",
-                  "When life interrupts, you don’t start over. You take the next step, without guilt.",
+                  "A visible finish cue closes the loop without turning completion into a grade or a demand to do more.",
                 ].map((item, index) => (
                   <li className="grid grid-cols-[3rem_1fr] gap-4 text-lg leading-8" key={item}>
                     <span className="font-serif-display text-4xl text-accent-warm">
@@ -1299,8 +1299,8 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                   Preventing complications without fear
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  How steady routines help protect your eyes, kidneys, heart, and nerves, through
-                  small consistent choices, not fear.
+                  Learn why diabetes eye exams, kidney tests, foot checks, and the ABCs create
+                  opportunities to notice change early and plan care with less fear.
                 </p>
               </div>
               <div>

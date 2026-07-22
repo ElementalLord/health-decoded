@@ -80,10 +80,10 @@ const variationFeedback: Record<
     accurate: true,
     body: "The effect of activity can vary with the activity, food, timing, medicines, stress, sleep, and the person. A useful action does not promise one exact reading.",
     details: [
-      "When monitoring is part of a care plan, patterns can be more informative than judging one result.",
+      "When monitoring is part of a care plan, patterns can be more informative than one result.",
       "General education cannot predict an individual glucose response.",
     ],
-    heading: "A response is information, not a grade.",
+    heading: "Expect a range of responses.",
   },
   guaranteed_drop: {
     accurate: false,
@@ -96,12 +96,12 @@ const variationFeedback: Record<
   },
   proof_of_failure: {
     accurate: false,
-    body: "One unexpected reading is not proof that the movement failed, or that the person failed. It is one piece of context for the care plan.",
+    body: "One unexpected reading cannot show whether movement was useful overall. It is one piece of context for the care plan, and movement has benefits beyond a single glucose value.",
     details: [
       "Movement has benefits beyond a single glucose value.",
       "Questions about personal readings belong with the healthcare team.",
     ],
-    heading: "One number cannot grade the whole effort.",
+    heading: "One result cannot summarize the activity.",
   },
 };
 
@@ -145,15 +145,15 @@ export async function evaluateDaySixAction(input: unknown): Promise<DaySixEvalua
     data: {
       accurate,
       body: accurate
-        ? "Movement gives working muscles a way to use fuel. A small, safe action can be attached to real life, adapted when plans change, and repeated without becoming punishment."
-        : "Bring the explanation back to the body and to real life: movement is a flexible tool, not payment for food or a test of perfect exercise.",
+        ? "A usable movement option accounts for the body, the setting, the action, a clear finish point, and an approachable duration. That is practical design, not a test of motivation."
+        : "Bring the answer back to fit: the useful option is safe for the person, possible in the setting, and clear enough to begin and finish without becoming punishment.",
       details: [
-        "A post-meal walk is one option, not a requirement or a promise.",
-        "A plan that can shrink and restart is more useful than an all-or-nothing rule.",
+        "A post-meal walk is one timing option, not a requirement or a promise.",
+        "Place, position, pace, and duration can all be adjusted.",
       ],
       heading: accurate
-        ? "That is Day 6 in plain language."
-        : "Keep the tool; release the pressure.",
+        ? "That is movement placement in plain language."
+        : "Design the conditions before judging the effort.",
     },
     ok: true,
   };

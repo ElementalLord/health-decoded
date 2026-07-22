@@ -31,7 +31,7 @@ import { LessonStoryImage } from "@/features/lessons/components/lesson-story-ima
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
-const stageCount = 10;
+const stageCount = 9;
 
 const openingFeelings = [
   ["uneasy", "A little uneasy about the word complications"],
@@ -687,10 +687,10 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
   const [careChoices, setCareChoices] = useState<Set<CareCheckId>>(() => new Set());
   const [reflection, setReflection] = useState<(typeof reflections)[number] | null>(null);
   const [evaluations, setEvaluations] = useState<
-    Partial<Record<"risk" | "silent" | "showingUp" | "teachBack", DayElevenEvaluationFeedback>>
+    Partial<Record<"risk" | "silent" | "teachBack", DayElevenEvaluationFeedback>>
   >({});
   const [selectedAnswers, setSelectedAnswers] = useState<
-    Partial<Record<"risk" | "silent" | "showingUp" | "teachBack", string>>
+    Partial<Record<"risk" | "silent" | "teachBack", string>>
   >({});
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [exitOpen, setExitOpen] = useState(false);
@@ -736,11 +736,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
     window.scrollTo({ behavior: reduced ? "auto" : "smooth", top: 0 });
   }
 
-  async function evaluate(
-    input: unknown,
-    key: "risk" | "silent" | "showingUp" | "teachBack",
-    answer: string,
-  ) {
+  async function evaluate(input: unknown, key: "risk" | "silent" | "teachBack", answer: string) {
     setSelectedAnswers((current) => ({ ...current, [key]: answer }));
     const result = await evaluateDayElevenAction(input);
     if (result.ok) setEvaluations((current) => ({ ...current, [key]: result.data }));
@@ -777,8 +773,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
     if (stage === 4) return openedAbcs.size === abcCards.length;
     if (stage === 5) return timelineMatches.size === timelineChecks.length;
     if (stage === 6) return careChoices.size >= 4;
-    if (stage === 7) return Boolean(evaluations.showingUp);
-    if (stage === 8) return reflection !== null && Boolean(evaluations.teachBack);
+    if (stage === 7) return reflection !== null && Boolean(evaluations.teachBack);
     return true;
   }
 
@@ -791,8 +786,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
       "Open A, B, and C to complete the protection orbit.",
       "Match each preventive check with the reason it matters.",
       "Add at least four items to your next-visit checklist.",
-      "Choose the protective response to an imperfect week.",
-      "Choose a reflection and complete the eye-screening teach-back.",
+      "Choose a reflection and complete the eye-screening rationale.",
     ][stage];
   }
 
@@ -805,7 +799,6 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
         "Meet the diabetes ABCs",
         "Match checks to their purpose",
         "Build a care checklist",
-        "Practice showing up imperfectly",
         "Make the lesson your own",
         "See your protection map",
       ][stage] ?? "Continue"
@@ -999,7 +992,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
             </LessonHeading>
             <LessonStoryImage
               alt="A patient sits comfortably at a retinal camera while an eye-care clinician explains the exam and a partner offers support"
-              caption="A routine eye exam can find small changes before vision feels different, creating more time for protection and follow-up."
+              caption="A diabetes eye exam can find small retinal changes before vision feels different, creating more time for protection and follow-up."
               emphasis="Screening looks ahead with care."
               src="/lessons/day-11/eye-care.jpg"
             />
@@ -1086,7 +1079,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
             <p className={styles.personalNote}>
               <Stethoscope aria-hidden="true" />
               <span>
-                The ABCs are not grades, and this lesson does not set personal targets. Your
+                The ABCs have different jobs, and this lesson does not set personal targets. Your
                 clinician can explain what each result means for you and how often it should be
                 reviewed.
               </span>
@@ -1228,59 +1221,6 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
       case 7:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Prevention is more powerful than perfection">
-              You do not have to earn the right to show up for care.
-            </LessonHeading>
-            <div className={styles.storyPanel}>
-              <div>
-                <p className="editorial-eyebrow">Jordan</p>
-                <p>
-                  Had an imperfect month, feels embarrassed, and thinks about canceling the care
-                  visit until everything is “back on track.”
-                </p>
-              </div>
-              <div>
-                <p className="editorial-eyebrow">Alex</p>
-                <p>
-                  Had the same imperfect month, keeps the visit, shares what got difficult, and asks
-                  which next step would help most.
-                </p>
-              </div>
-            </div>
-            <div className="border-y border-border py-8">
-              <p className="font-serif-display text-3xl">
-                Which response creates more protection after a difficult month?
-              </p>
-              <div className="mt-6 grid gap-3 md:grid-cols-3">
-                {(
-                  [
-                    [
-                      "keep_showing_up",
-                      "Keep the visit, be honest, and ask for the next useful step.",
-                    ],
-                    [
-                      "cancel_until_perfect",
-                      "Cancel until every routine has been perfect for a while.",
-                    ],
-                    ["avoid_results", "Avoid tests because knowing might feel uncomfortable."],
-                  ] as const
-                ).map(([answer, label]) => (
-                  <AnswerChoice
-                    key={answer}
-                    onClick={() => evaluate({ answer, stage: "showing_up" }, "showingUp", answer)}
-                    selected={selectedAnswers.showingUp === answer}
-                  >
-                    {label}
-                  </AnswerChoice>
-                ))}
-              </div>
-            </div>
-            {evaluations.showingUp ? <Feedback feedback={evaluations.showingUp} /> : null}
-          </div>
-        );
-      case 8:
-        return (
-          <div className="space-y-9">
             <LessonHeading label="Turn information into confidence">
               If you can explain the why, you can ask for the care.
             </LessonHeading>
@@ -1301,7 +1241,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
               </div>
             </div>
             <div className={styles.teachBack}>
-              <p className="editorial-eyebrow">One-sentence teach-back</p>
+              <p className="editorial-eyebrow">Eye-screening rationale</p>
               <h2>
                 A friend says, “My vision is fine, so why would I need diabetes eye screening?”
               </h2>
@@ -1346,7 +1286,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
               <span>Screen early · Know your ABCs · Bring your questions</span>
             </div>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
-              <p className="editorial-eyebrow text-success">Three truths worth carrying</p>
+              <p className="editorial-eyebrow text-success">Prevention calendar</p>
               <ol className="mt-6 space-y-6">
                 {[
                   "Complications are risks, not guarantees. Steady care can prevent, delay, or reduce harm.",
@@ -1367,8 +1307,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
                 <p className="editorial-eyebrow">Tomorrow</p>
                 <h2 className="mt-3 font-serif-display text-3xl">Problem solving for real life</h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  Turn obstacles into experiments, build backup plans, and keep moving when the
-                  first idea does not fit.
+                  Use a four-step solver to respond when a real-life situation changes.
                 </p>
               </div>
               <div>

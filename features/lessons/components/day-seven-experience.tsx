@@ -130,21 +130,21 @@ const lowRiskCards = [
 type LowRiskId = (typeof lowRiskCards)[number]["id"];
 
 const routineAnchors = [
-  "With breakfast",
-  "With an evening routine",
-  "Beside a daily object",
+  "The exact medicine name",
+  "What it is meant to help with",
+  "The label instructions",
 ] as const;
 const routineSupports = [
-  "A simple pill organizer",
-  "A calendar check",
-  "A refill reminder",
+  "The prescription label",
+  "A pharmacist",
+  "The prescribing care team",
 ] as const;
 
 const clinicianQuestions = [
   "What is this medicine meant to help with?",
   "What side effects should I call you about?",
   "Can this medicine cause low glucose for me?",
-  "What should I do if I miss a dose?",
+  "Which written instructions should I keep with this medicine?",
   "How will we know whether it is helping?",
 ] as const;
 
@@ -790,11 +790,11 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
       "Open all four fit factors and answer the personalization check.",
       "Open all five body pathways.",
       "Open each medicine example.",
-      "Choose at least three supports that can work together.",
+      "Choose at least three parts of the care system.",
       "Open all three low-glucose safety notes.",
       "Choose the accurate insulin statement.",
       "Choose the safe next step for a side-effect concern.",
-      "Choose one routine anchor and one practical support.",
+      "Choose one fact to verify and one reliable source.",
       "Choose one clinician question, one reflection, and the Day 7 explanation.",
     ][stage];
   }
@@ -806,13 +806,13 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
         "Fit the plan to the person",
         "See where tools can work",
         "Meet three examples",
-        "Build a support structure",
+        "Assemble the care system",
         "Understand low-glucose risk",
         "Reframe insulin",
         "Open the safety conversation",
-        "Make support practical",
+        "Build a medication fact card",
         "Carry one question forward",
-        "See today’s takeaway",
+        "Open the medicine literacy card",
       ][stage] ?? "Continue"
     );
   }
@@ -1084,12 +1084,12 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
       case 5:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Not either-or">
-              Build support around the person, not pressure around the pill.
+            <LessonHeading label="Treatment works in a system">
+              Medicine can have one job without replacing the rest of care.
             </LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Choose at least three pieces. The illustration becomes steadier as care works
-              together.
+              Choose at least three parts. The model shows parallel roles, not a contest over which
+              one proves the person is trying hard enough.
             </p>
             <div className={styles.supportStructure}>
               <div className={styles.supportPerson}>
@@ -1123,8 +1123,8 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
             </div>
             {supports.size >= 3 ? (
               <p className="border-l-2 border-success bg-info p-5 leading-7">
-                Medication can complement daily habits and clinical care. It does not erase them,
-                and they do not erase the value of medicine.
+                Medication, food, movement, rest, and clinical follow-up can do different jobs in
+                the same care system. None is a moral substitute for another.
               </p>
             ) : null}
           </div>
@@ -1246,22 +1246,22 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
       case 9:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Consistency without surveillance">
-              Let a routine carry some of the remembering.
+            <LessonHeading label="Medication literacy">
+              Build a fact card before you build assumptions.
             </LessonHeading>
             <LessonStoryImage
-              alt="A man takes his prescribed medicine with water at breakfast while his partner smiles and pours tea"
-              caption="When the instructions fit breakfast, a reminder, or another ordinary anchor, medicine can become one small part of the day."
-              emphasis="Treatment can live inside a normal life."
+              alt="A man reads his prescription label with water nearby while his partner pours tea"
+              caption="The medicine name, purpose, and exact instructions belong together. A pharmacist or prescribing team can clarify anything the label leaves uncertain."
+              emphasis="Verify the plan you actually have."
               src="/lessons/day-07/everyday-medicine-routine.jpg"
             />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              This is a memory practice, not a medication instruction. Follow the prescription label
-              and care-team guidance.
+              This activity does not interpret a personal prescription. It practices identifying
+              which fact needs checking and where a trustworthy answer can come from.
             </p>
             <div className="grid gap-7 lg:grid-cols-2">
               <section>
-                <h2 className="font-serif-display text-2xl">Choose an ordinary anchor</h2>
+                <h2 className="font-serif-display text-2xl">Choose a fact to verify</h2>
                 <div className="mt-4 grid gap-3">
                   {routineAnchors.map((item) => (
                     <AnswerChoice
@@ -1275,7 +1275,7 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
                 </div>
               </section>
               <section>
-                <h2 className="font-serif-display text-2xl">Choose a practical support</h2>
+                <h2 className="font-serif-display text-2xl">Choose a reliable source</h2>
                 <div className="mt-4 grid gap-3">
                   {routineSupports.map((item) => (
                     <AnswerChoice
@@ -1293,13 +1293,13 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
               <div className={styles.routineTicket}>
                 <Pill aria-hidden="true" />
                 <div>
-                  <p className="editorial-eyebrow">A routine you can discuss</p>
+                  <p className="editorial-eyebrow">Medication fact card</p>
                   <h2>
                     {routineAnchor} · {routineSupport}
                   </h2>
                   <p>
-                    Use only if it matches the prescription instructions. If cost, access, memory,
-                    or side effects get in the way, ask for problem-solving, not blame.
+                    Verify the exact answer for this prescription. Do not infer dose, timing, or
+                    missed-dose instructions from a general lesson or from someone else’s medicine.
                   </p>
                 </div>
               </div>
@@ -1349,7 +1349,7 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
               </div>
             </div>
             <div>
-              <h2 className="font-serif-display text-3xl">Explain Day 7 in one sentence.</h2>
+              <h2 className="font-serif-display text-3xl">Medication literacy checkpoint</h2>
               <div className="mt-4 grid gap-3 md:grid-cols-3">
                 {(
                   [
@@ -1381,7 +1381,7 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
             <p className="editorial-eyebrow">Day 7 complete</p>
             <LessonHeading>Medication is not a judgment. It is a tool.</LessonHeading>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
-              <p className="editorial-eyebrow text-success">Three ideas worth carrying</p>
+              <p className="editorial-eyebrow text-success">Medicine literacy card</p>
               <ol className="mt-6 space-y-6">
                 {[
                   "Different medicines work through different body pathways, and the plan should be fitted to the person.",
@@ -1402,7 +1402,8 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
                 <p className="editorial-eyebrow">Tomorrow</p>
                 <h2 className="mt-3 font-serif-display text-3xl">Monitoring and data</h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  Learn how numbers can inform care without becoming grades.
+                  Learn which question each monitoring tool can answer and how context turns a
+                  reading into a useful care conversation.
                 </p>
               </div>
               <div>

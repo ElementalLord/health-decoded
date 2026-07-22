@@ -511,7 +511,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
             </DayTwoHeading>
             <LessonStoryImage
               alt="A diabetes educator and an adult learner study a simple body-and-food sketch together at a table"
-              caption="The goal is not to memorize a perfect diagram. It is to build an explanation you can use and ask questions about."
+              caption="The goal is not to memorize every detail in the diagram. It is to build an explanation you can use and ask questions about."
               emphasis="Understanding grows through conversation."
               priority
               src="/lessons/day-02/learning-together.jpg"
@@ -1233,7 +1233,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
         const clarityChoices = Object.keys(clarityReviews) as ClarityChoice[];
         return (
           <div className="space-y-8">
-            <DayTwoHeading>How would you explain it?</DayTwoHeading>
+            <DayTwoHeading>Trace the body story in one pass.</DayTwoHeading>
             <p className="font-semibold leading-7">
               A friend asks, “If you still make insulin, why is your blood glucose high?” Which
               answer would you give?
@@ -1384,9 +1384,9 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
             {reflection ? (
               <div className="animate-fade-in space-y-6">
                 <div>
-                  <p className="editorial-eyebrow">Today you learned</p>
+                  <p className="editorial-eyebrow">Body-story recap</p>
                   <h2 className="mt-3 font-serif-display text-4xl font-normal">
-                    What to carry with you
+                    The mechanism in five links
                   </h2>
                 </div>
                 <div className="divide-y divide-border border-y border-border">

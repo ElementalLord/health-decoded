@@ -891,7 +891,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
       "Choose the safest first response to a possible low.",
       "Open at least four urgent signals and choose the response.",
       "Check off at least three parts of your simple plan.",
-      "Choose one reflection and complete the teach-back.",
+      "Choose one reflection and run the response path.",
     ][stage];
   }
 
@@ -905,7 +905,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
         "Know when high needs more",
         "Build your simple plan",
         "Practice staying calm",
-        "See today’s takeaway",
+        "Review the action cues",
       ][stage] ?? "Continue"
     );
   }
@@ -1013,8 +1013,8 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             {activeCause ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 leading-7">
-                {highCauses.find((cause) => cause.id === activeCause)?.body} None of these reasons
-                are moral verdicts, they are context for a conversation with your care team.
+                {highCauses.find((cause) => cause.id === activeCause)?.body} Naming a possible
+                contributor gives your care team a more specific question to investigate with you.
               </p>
             ) : null}
           </div>
@@ -1371,7 +1371,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
               Knowing what to do is more powerful than being afraid of what might happen.
             </LessonHeading>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
-              <p className="editorial-eyebrow text-success">Three ideas worth carrying</p>
+              <p className="editorial-eyebrow text-success">Action cues</p>
               <ol className="mt-6 space-y-6">
                 {[
                   "High and low blood sugar feel different: highs often build slowly with thirst and tiredness, while lows tend to announce themselves quickly.",

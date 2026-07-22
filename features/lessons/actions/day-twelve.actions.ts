@@ -13,7 +13,7 @@ const dayTwelveEvaluationSchema = z.discriminatedUnion("stage", [
     .strict(),
   z
     .object({
-      answer: z.enum(["seek_urgent_help", "wait_it_out", "ignore_fluids"]),
+      answer: z.enum(["call_with_details", "guess_medicine", "wait_without_plan"]),
       stage: z.literal("sick_day"),
     })
     .strict(),
@@ -70,16 +70,16 @@ export async function evaluateDayTwelveAction(input: unknown): Promise<DayTwelve
   }
 
   if (data.stage === "sick_day") {
-    const accurate = data.answer === "seek_urgent_help";
+    const accurate = data.answer === "call_with_details";
     return {
       data: {
         accurate,
         body: accurate
-          ? "Yes. Repeated vomiting and being unable to keep fluids down can lead to dangerous dehydration and may need urgent evaluation. Use the person's sick-day instructions and seek urgent medical help; use emergency services for severe symptoms such as trouble breathing, confusion, or difficulty staying awake."
-          : "Waiting without help is not the safe experiment here. When someone is vomiting repeatedly and cannot keep fluids down, use their sick-day instructions and seek urgent medical help. Severe breathing trouble, confusion, or difficulty staying awake calls for emergency services.",
+          ? "A concise handoff gives the care team usable context: what changed, what the written plan says, what has already been done, the exact medicines involved, and the question that needs an answer."
+          : "Do not improvise a medicine rule or ignore uncertainty because symptoms seem mild. Use the written plan and contact the care team with specific details when an instruction is unclear.",
         heading: accurate
-          ? "This is a help-now signal."
-          : "Move this situation into the help-now lane.",
+          ? "That call carries the information forward."
+          : "Replace guessing with a specific handoff.",
       },
       ok: true,
     };
@@ -106,7 +106,7 @@ export async function evaluateDayTwelveAction(input: unknown): Promise<DayTwelve
     data: {
       accurate,
       body: accurate
-        ? "That is the heart of flexible self-care. Pause, understand what changed, choose one workable response, and adjust again if needed. A difficult moment is information, not a verdict."
+        ? "That is the heart of flexible self-care. Pause, understand what changed, choose one workable response, and adjust again if needed."
         : "Waiting for a ceremonial restart or trying to punish the past keeps the disruption in charge. The next useful decision can be small, imperfect, and available right now.",
       heading: accurate ? "Adaptability keeps care moving." : "You do not need a perfect restart.",
     },

@@ -18,14 +18,14 @@ const unlockMigration = readFileSync(
 test("Day 10 uses one custom nine-chapter experience", () => {
   assert.match(player, /if \(lesson\.dayNumber === 10\) return <DayTenExperience/);
   assert.match(experience, /const stageCount = 9/);
-  assert.match(experience, /Consistency is more powerful than perfection/);
+  assert.match(experience, /A clear routine is easier to repeat/);
 });
 
 test("Day 10 includes distinct comforting looping visual explanations", () => {
   assert.match(experience, /function DayRhythmAnimation/);
   assert.match(experience, /function DecisionLanternAnimation/);
   assert.match(experience, /function HabitLoopAnimation/);
-  assert.match(experience, /function NextStepStaircaseAnimation/);
+  assert.match(experience, /function CompletionCueStaircaseAnimation/);
   assert.match(experience, /function GrowthOverWeeksAnimation/);
   assert.ok(
     (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 16,
@@ -43,10 +43,10 @@ test("Day 10 visual metaphors keep their sequence and labels legible", () => {
   assert.match(experience, /A DAY WITH GENTLE ANCHORS/);
   assert.match(experience, /FEWER DECISIONS · MORE CALM/);
   assert.match(experience, /THE LOOP THAT MAKES HABITS AUTOMATIC/);
-  assert.match(experience, /A MISSED STEP IS NOT A RESTART/);
+  assert.match(experience, /GIVE THE ROUTINE A CLEAR ENDING/);
   assert.match(experience, /PROGRESS GROWS OVER WEEKS, NOT DAYS/);
   assert.match(experience, /A ROUTINE IS A DECISION YOU ONLY MAKE ONCE/);
-  assert.match(experience, /DON’T START OVER, JUST TAKE THE NEXT STEP/);
+  assert.match(experience, /BEGIN · DO · NOTICE THE FINISH/);
   assert.match(experience, /Here is the use:/);
 });
 
@@ -62,15 +62,15 @@ test("Day 10 teaches habit stacking and environment design interactively", () =>
 test("Day 10 stays kind and non-prescriptive", () => {
   assert.match(experience, /as prescribed/);
   assert.match(experience, /if recommended/);
-  assert.match(experience, /without\s+guilt/);
+  assert.match(experience, /without turning it into a reward\s+test/);
   assert.doesNotMatch(experience, /mg\/dL|mmol\/L/);
   assert.doesNotMatch(experience, /target range|ideal number/i);
 });
 
-test("Day 10 keeps evaluation authenticated and setbacks normalized", () => {
+test("Day 10 keeps evaluation authenticated and routine closure nonjudgmental", () => {
   assert.match(action, /getAuthenticatedUser/);
-  assert.match(action, /returning to them after interruptions/);
-  assert.match(action, /One evening is a pause, not a verdict/);
+  assert.match(action, /A simple finish cue makes the completed action visible/);
+  assert.match(action, /Completion does not need a penalty/);
   assert.match(experience, /not saved as health information/);
 });
 

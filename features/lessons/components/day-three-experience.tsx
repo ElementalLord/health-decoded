@@ -5,15 +5,12 @@ import {
   BookOpen,
   Check,
   ChevronRight,
-  CloudSun,
   Droplets,
   Film,
-  Footprints,
   Gauge,
   MoonStar,
   ScanLine,
   Sparkles,
-  Sun,
   TestTube2,
   Utensils,
 } from "lucide-react";
@@ -38,7 +35,7 @@ import { LessonStoryImage } from "@/features/lessons/components/lesson-story-ima
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
-const stageCount = 15;
+const stageCount = 13;
 
 type EvaluationKey = "window" | "threshold" | "pattern" | "tests" | "teachBack";
 
@@ -121,28 +118,28 @@ type DailyMomentId = (typeof dailyMoments)[number]["id"];
 
 const curveFactors = [
   {
-    body: "Carbohydrate-containing food is broken down into glucose, so the curve may rise after eating.",
-    icon: Utensils,
-    id: "food",
-    label: "Food",
+    body: "Start by naming the test: A1C, fasting plasma glucose, random plasma glucose, or a glucose-tolerance test. The name tells you what kind of result you are reading.",
+    icon: TestTube2,
+    id: "test_name",
+    label: "Test name",
   },
   {
-    body: "Active muscles use glucose, so movement can change what happens next.",
-    icon: Footprints,
-    id: "movement",
-    label: "Movement",
-  },
-  {
-    body: "Stress and illness hormones can prompt the body to release more glucose.",
-    icon: CloudSun,
-    id: "stress",
-    label: "Stress or illness",
-  },
-  {
-    body: "Sleep and glucose-lowering medicines can also shape the pattern. Their effects differ by person and treatment.",
+    body: "Check whether the sample was fasting, random, or taken at a timed point after a glucose drink. The condition is part of the result.",
     icon: MoonStar,
-    id: "sleep_medicine",
-    label: "Sleep and medicine",
+    id: "sample_condition",
+    label: "Sample condition",
+  },
+  {
+    body: "A1C is reported as a percentage. Plasma glucose is commonly reported in mg/dL in the United States. Never compare values without their units.",
+    icon: Gauge,
+    id: "unit",
+    label: "Unit",
+  },
+  {
+    body: "Keep the date and laboratory reference information attached. Results from different days or methods may need clinical interpretation before they are compared.",
+    icon: ScanLine,
+    id: "source_date",
+    label: "Date and source",
   },
 ] as const;
 
@@ -235,22 +232,22 @@ type DiagnosticThresholdId = (typeof diagnosticThresholds)[number]["id"];
 
 const misconceptionStatements = [
   {
-    analogy: "One rainy hour cannot describe an entire season.",
-    statement: "One unexpectedly high reading means every day has gone wrong.",
+    analogy: "A wide-angle photograph is not supposed to match one close-up pixel for pixel.",
+    statement: "My A1C should match the finger-stick result I took this morning.",
   },
   {
-    analogy: "One purchase cannot describe an entire bank history.",
-    statement: "One balanced meal means Type 2 diabetes has disappeared.",
+    analogy: "A doorway can identify entry without dictating where every person should stand.",
+    statement: "The diagnostic threshold automatically becomes my personal treatment goal.",
   },
   {
-    analogy: "A week of weather reveals more than one cloud.",
-    statement: "Several readings with timing and context can begin to reveal a pattern.",
+    analogy: "Two lenses can disagree because they are focused at different distances.",
+    statement: "If A1C and another glucose result differ, one of the tests must be useless.",
   },
 ] as const;
 
 const reflectionOptions = [
   "My numbers feel less like grades.",
-  "I understand why one reading is not the whole story.",
+  "I can separate a diagnostic threshold from a personal goal.",
   "I can explain what A1C measures.",
   "I know why my doctor may compare several tests.",
   "I feel calmer, but I still want to review.",
@@ -674,19 +671,17 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
   function canContinue() {
     if (stage === 0) return numberFeeling !== null;
     if (stage === 1) return measurementParts.size === measurementLayers.length;
-    if (stage === 2) return viewedMoments.size === dailyMoments.length;
-    if (stage === 3) return viewedFactors.size === curveFactors.length;
-    if (stage === 4)
+    if (stage === 2) return viewedFactors.size === curveFactors.length;
+    if (stage === 3)
       return viewedTimeLenses.size === timeLenses.length && Boolean(evaluations.window);
-    if (stage === 5) return a1cWindowReviewed;
-    if (stage === 6) return patternComparisonChoice !== null;
-    if (stage === 7) return viewedTests.size === testWindows.length;
-    if (stage === 8) return viewedThresholds.size === diagnosticThresholds.length;
-    if (stage === 9) return Boolean(evaluations.threshold);
-    if (stage === 10) return Boolean(evaluations.pattern);
-    if (stage === 11) return mythCompleted === misconceptionStatements.length;
-    if (stage === 12) return Boolean(evaluations.tests);
-    if (stage === 13) return Boolean(evaluations.teachBack) && confidence !== null;
+    if (stage === 4) return a1cWindowReviewed;
+    if (stage === 5) return viewedTests.size === testWindows.length;
+    if (stage === 6) return viewedThresholds.size === diagnosticThresholds.length;
+    if (stage === 7) return Boolean(evaluations.threshold);
+    if (stage === 8) return Boolean(evaluations.pattern);
+    if (stage === 9) return mythCompleted === misconceptionStatements.length;
+    if (stage === 10) return Boolean(evaluations.tests);
+    if (stage === 11) return Boolean(evaluations.teachBack) && confidence !== null;
     return reflection !== null;
   }
 
@@ -694,18 +689,16 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
     const requirements = [
       "Choose the description closest to how numbers feel right now.",
       "Open all three parts of a blood-glucose measurement.",
-      "Explore all four moments on the daily curve.",
-      "Open all four influences that can shape a day.",
+      "Open all four parts of a result label.",
       "Open both time windows, then answer the question.",
       "Reveal how A1C gathers information across roughly two to three months.",
-      "Compare the meaning of one unusual day with a repeated pattern.",
       "Open all four testing windows.",
       "Review all four diagnostic thresholds.",
       "Choose what a diagnostic threshold does.",
-      "Choose the most useful pattern in the week.",
-      "Classify all three statements.",
+      "Choose what an A1C average cannot reconstruct.",
+      "Resolve all three lab mix-ups.",
       "Choose why clinicians may compare several tests.",
-      "Choose a plain-language explanation and a confidence check.",
+      "Interpret the sample result and choose a confidence check.",
       "Choose one reflection to complete Day 3.",
     ];
     return requirements[stage];
@@ -714,31 +707,30 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
   function continueLabel() {
     const labels = [
       "Give the number one job",
-      "Watch a day change",
-      "See what shapes the curve",
+      "Learn to read the result label",
       "Compare the time windows",
       "Meet the A1C test",
-      "Compare one day with a pattern",
       "Compare the tests",
       "Understand the thresholds",
       "Separate thresholds from goals",
-      "Look for a pattern",
-      "Challenge the one-number myths",
+      "Find the limit of an average",
+      "Untangle the lab mix-ups",
       "See why tests are compared",
-      "Explain it in plain language",
-      "Choose what you will carry forward",
+      "Interpret a sample report",
+      "Open the lab-reading key",
     ] as const;
     return labels[stage] ?? "Continue";
   }
 
   function renderStage() {
-    switch (stage) {
+    const contentStage = [0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14][stage] ?? 14;
+    switch (contentStage) {
       case 0:
         return (
           <div className="space-y-9">
             <div className="grid gap-8 lg:grid-cols-[1fr_18rem] lg:items-end">
               <DayThreeHeading label="Day 03 · Understanding your numbers">
-                A number can be useful without becoming a verdict.
+                A number becomes useful when you know what it measures.
               </DayThreeHeading>
               <div className="border-l-2 border-accent-warm pl-6">
                 <p className="editorial-number">03</p>
@@ -749,9 +741,9 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               </div>
             </div>
             <LessonStoryImage
-              alt="A woman calmly checks her glucose at breakfast and writes a note beside the meter"
-              caption="The reading becomes more useful when it travels with timing, food, sleep, stress, symptoms, and the question you want answered."
-              emphasis="A number needs context."
+              alt="A woman notes the source and time beside a glucose meter result"
+              caption="Before interpreting any value, identify whether it came from a home meter or a laboratory test. The method, condition, unit, and date are part of the label."
+              emphasis="Name the test before reading the value."
               priority
               src="/lessons/day-03/reading-with-context.jpg"
             />
@@ -904,12 +896,12 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
         const selected = curveFactors.find((factor) => factor.id === selectedFactor);
         return (
           <div className="space-y-9">
-            <DayThreeHeading label="Build the context">
-              The number changes because life changes.
+            <DayThreeHeading label="Read the label before the value">
+              A result needs its name, condition, unit, and date.
             </DayThreeHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              A reading does not arrive alone. Open each influence and place it beside the curve.
-              This is why curiosity gives you more information than self-criticism.
+              Before interpreting a result, identify what was measured and how. Open each label
+              part; none is optional when two values are being compared.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               {curveFactors.map((factor) => {
@@ -945,7 +937,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               </Card>
             ) : null}
             <p className="border-l-2 border-success px-5 py-2 font-serif-display text-2xl italic leading-9">
-              Context does not excuse a number. It explains what question to ask next.
+              A value without its label is incomplete information.
             </p>
           </div>
         );
@@ -1128,8 +1120,8 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               </div>
             ) : null}
             <p className="border-y border-border py-6 font-serif-display text-2xl leading-9">
-              This is why one meal is information, not a verdict, and why patterns are more useful
-              than perfection.
+              This is why one day contributes to the longer view without determining it, and why a
+              repeated pattern is more informative than one isolated day.
             </p>
           </div>
         );
@@ -1296,15 +1288,16 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
       case 10:
         return (
           <div className="space-y-9">
-            <DayThreeHeading label="Pattern detective">
-              Look for repetition, not the most dramatic dot.
+            <DayThreeHeading label="The limit of an average">
+              A1C cannot replay the days inside it.
             </DayThreeHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              This fictional week has no numbers because the task is not to interpret a personal
-              target. It is to notice which information repeats.
+              This fictional week has no numbers because it is not a personal target exercise. The
+              dots show why a longer average cannot tell you exactly when each rise or fall
+              happened.
             </p>
             <div
-              aria-label="A seven-day teaching chart. Morning dots are repeatedly in a similar upper band, while one afternoon dot is the single highest point."
+              aria-label="A seven-day teaching chart with different morning and later dots. The individual dots vary even though they can contribute to one longer average."
               className="rounded-[1rem] border border-border bg-card p-5 shadow-card sm:p-8"
               role="img"
             >
@@ -1348,12 +1341,12 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 </span>
               </div>
             </div>
-            <p className="font-semibold">Which observation gives the most useful pattern?</p>
+            <p className="font-semibold">Which detail is missing from an A1C result by itself?</p>
             {(
               [
-                ["highest_point", "Thursday has the single highest dot."],
-                ["repeated_mornings", "The morning dots return to a similar band across the week."],
-                ["best_day", "Saturday has one of the lowest later dots."],
+                ["exact_today", "Whether today’s morning dot was the highest one."],
+                ["daily_variation", "The exact timing and shape of each day’s rises and falls."],
+                ["personal_goal", "The treatment goal chosen with a healthcare professional."],
               ] as const
             ).map(([answer, label]) => (
               <AnswerChoice
@@ -1371,17 +1364,17 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
         const current = misconceptionStatements[mythIndex]!;
         return (
           <div className="space-y-9">
-            <DayThreeHeading label="Weather, money, and one meal">
-              Does this use one moment, or pattern reasoning?
+            <DayThreeHeading label="Three lab mix-ups">
+              Is each test being asked to do its actual job?
             </DayThreeHeading>
             <div className="relative overflow-hidden rounded-[1rem] border border-accent-warm/25 bg-[#efe5da] p-6 sm:p-10">
               <div className="absolute right-8 top-8 text-accent-warm/40">
                 {mythIndex === 0 ? (
-                  <CloudSun className={cn(styles.weatherMark, "size-20")} strokeWidth={1.1} />
+                  <TestTube2 className={cn(styles.weatherMark, "size-20")} strokeWidth={1.1} />
                 ) : mythIndex === 1 ? (
                   <Gauge className={cn(styles.weatherMark, "size-20")} strokeWidth={1.1} />
                 ) : (
-                  <Sun className={cn(styles.weatherMark, "size-20")} strokeWidth={1.1} />
+                  <ScanLine className={cn(styles.weatherMark, "size-20")} strokeWidth={1.1} />
                 )}
               </div>
               <p className="editorial-eyebrow">Statement {mythIndex + 1} of 3</p>
@@ -1394,10 +1387,10 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <Button onClick={() => void evaluateMyth("single_moment")} variant="secondary">
-                One moment is doing too much
+                This confuses two test jobs
               </Button>
               <Button onClick={() => void evaluateMyth("pattern_reasoning")} variant="secondary">
-                This uses pattern reasoning
+                This keeps each test in its job
               </Button>
             </div>
             {mythFeedback ? (
@@ -1421,9 +1414,9 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               Why is one test sometimes not enough?
             </DayThreeHeading>
             <LessonStoryImage
-              alt="A patient and clinician sit together and review a simple glucose pattern on a tablet"
-              caption="Several results can reveal what repeats. Your care team adds symptoms, routines, medications, and goals before deciding what the pattern means."
-              emphasis="Patterns are interpreted together."
+              alt="A patient and clinician sit together and compare laboratory results on a tablet"
+              caption="A care team can compare test names, sample conditions, timing, health history, and factors that may affect accuracy before interpreting a difference."
+              emphasis="Different windows can be compared together."
               src="/lessons/day-03/reviewing-patterns.jpg"
             />
             <div className="grid gap-4 sm:grid-cols-3">
@@ -1480,8 +1473,8 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
       case 13:
         return (
           <div className="space-y-9">
-            <DayThreeHeading label="Teach it back">
-              How would you explain the numbers now?
+            <DayThreeHeading label="Sample report check">
+              Which explanation keeps the test jobs separate?
             </DayThreeHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               A friend says, “My reading looked normal today, so maybe the diabetes is gone.” Which
@@ -1491,7 +1484,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               [
                 [
                   "useful_windows",
-                  "Today’s reading is one useful moment. A1C and repeated results show longer patterns, and your care team uses them with the rest of your health context.",
+                  "Today’s reading reports one measured moment. A1C estimates a much longer window, and your care team interprets each result according to its test conditions and your health context.",
                 ],
                 ["daily_grade", "A normal reading means you earned a good grade today."],
                 ["one_reading_decides", "One normal reading proves the diagnosis has disappeared."],
@@ -1539,7 +1532,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
             <div className="text-center">
               <p className="editorial-eyebrow">Let the important parts settle</p>
               <h1 className="mx-auto mt-5 max-w-4xl font-serif-display text-[length:var(--text-page-title)] font-normal leading-[0.94] text-balance">
-                Four truths are enough to carry forward.
+                Your lab-reading key.
               </h1>
             </div>
             <div className="space-y-0 border-y border-border">
@@ -1553,8 +1546,8 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 ["03", "Different tests", "Different windows that can be compared and confirmed."],
                 [
                   "04",
-                  "The meaning",
-                  "Numbers are tools for learning and care. They are not judgments about you.",
+                  "The boundary",
+                  "Diagnostic thresholds identify a condition; personal treatment goals are chosen separately.",
                 ],
               ].map(([number, heading, body], index) => (
                 <div
@@ -1623,10 +1616,10 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                       : "Complete Day 3"}
                 </Button>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <Button fullWidth={false} onClick={() => goToStage(4)} variant="text">
+                  <Button fullWidth={false} onClick={() => goToStage(3)} variant="text">
                     Review snapshot versus A1C
                   </Button>
-                  <Button fullWidth={false} onClick={() => goToStage(7)} variant="text">
+                  <Button fullWidth={false} onClick={() => goToStage(5)} variant="text">
                     Review the four tests
                   </Button>
                   <Link

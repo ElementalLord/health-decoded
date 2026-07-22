@@ -41,7 +41,7 @@ import { LessonStoryImage } from "@/features/lessons/components/lesson-story-ima
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
-const stageCount = 15;
+const stageCount = 12;
 
 type EvaluationKey = "safety" | "teachBack";
 
@@ -66,9 +66,9 @@ const openingResponses: Record<OpeningNeed, string> = {
   comfort:
     "We will build with adaptable choices. A useful plan respects pain, balance, mobility, recovery, and the guidance of your care team.",
   energy:
-    "Your plan will have a full-size version and a smaller backup. A low-energy day does not have to become a zero-or-failure day.",
+    "We will compare effort levels and choose a duration that feels usable in the body you have today.",
   memory:
-    "You will attach movement to something that already happens, so the day itself can become the reminder.",
+    "We will name a visible setting and finish cue so the movement instruction is easy to recognize.",
   time: "We will look for seams in the day, not a missing hour. Brief movement can live between ordinary events.",
 };
 
@@ -175,12 +175,7 @@ const disruptions = [
 
 type DisruptionId = (typeof disruptions)[number]["id"];
 
-const habitAnchors = [
-  "After breakfast",
-  "When a call ends",
-  "When a show pauses",
-  "After dinner",
-] as const;
+const habitAnchors = ["At home", "At work", "Outdoors", "In a community space"] as const;
 const habitMovements = [
   "walk for a few minutes",
   "use seated movement",
@@ -188,10 +183,10 @@ const habitMovements = [
   "move through one song",
 ] as const;
 const habitClosings = [
-  "mark it done",
-  "take one slow breath",
-  "drink some water",
-  "say, ‘That counted’",
+  "check how my body feels",
+  "cool down comfortably",
+  "note whether the setting worked",
+  "stop at the planned time",
 ] as const;
 const planScales = ["10 comfortable minutes", "5 comfortable minutes", "2 gentle minutes"] as const;
 
@@ -213,7 +208,7 @@ const movementMoments = [
   {
     id: "hard",
     explanation:
-      "A safe plan can shrink, adapt, pause, and restart. Protecting the body matters more than protecting a streak.",
+      "A safe plan can shrink, change position, or pause in response to body signals. The body check decides what fits today.",
     label: "A difficult body day",
     verb: "Adapt",
   },
@@ -392,7 +387,7 @@ function MovementMomentVideo({ variant }: { variant: MovementMomentId }) {
 
 const reflectionOptions = [
   "I can see one seam where movement might fit.",
-  "A smaller backup feels more realistic than a perfect plan.",
+  "A setting adjustment feels more realistic than forcing the original option.",
   "Movement feels more like a tool and less like punishment.",
   "I want to ask my care team how to personalize this safely.",
   "I am still deciding what would fit my body and life.",
@@ -635,34 +630,28 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
     if (stage === 2) return daySeam !== null;
     if (stage === 3) return sittingBreakCount >= 2;
     if (stage === 4) return selectedBouts.size >= 2;
-    if (stage === 5) return sequenceAccurate || sequenceResolved;
-    if (stage === 6) return responseOpened.size === responseFactors.length;
-    if (stage === 7) return movementContext !== null && movementChoice !== null;
-    if (stage === 8) return disruption !== null && backupChoice !== null;
-    if (stage === 9) return habitAnchor !== null && habitMovement !== null && habitClosing !== null;
-    if (stage === 10) return planScale !== null;
-    if (stage === 11) return safetyOpened && Boolean(evaluations.safety);
-    if (stage === 12) return momentsOpened.size === movementMoments.length;
-    if (stage === 13) return Boolean(evaluations.teachBack);
+    if (stage === 5) return movementContext !== null && movementChoice !== null;
+    if (stage === 6) return disruption !== null && backupChoice !== null;
+    if (stage === 7) return habitAnchor !== null && habitMovement !== null && habitClosing !== null;
+    if (stage === 8) return planScale !== null;
+    if (stage === 9) return momentsOpened.size === movementMoments.length;
+    if (stage === 10) return Boolean(evaluations.teachBack);
     return reflection !== null;
   }
 
   function stageRequirement() {
     return [
       "Choose what would make movement feel more usable today.",
-      "Open both timeframes and watch them connect.",
+      "Open both fit checks.",
       "Choose one seam in an ordinary day.",
       "Turn at least two sitting points into a standing, stretching, or walking break.",
       "Choose at least two small movement bouts.",
-      "Put all four moments in order. After two attempts, the sequence will reveal itself.",
-      "Open all four sources of context.",
       "Choose one movement context and one option that could fit it.",
-      "Choose one disruption and build a backup route.",
-      "Choose a cue, a movement, and a kind closing signal.",
-      "Fold the plan to the starting size that feels usable.",
-      "Open the safety pocket and choose the safe medicine response.",
+      "Choose one movement constraint and one workable adjustment.",
+      "Choose a setting, a movement, and a finish check.",
+      "Choose an initial duration that feels usable.",
       "Run all three real-life movement moments.",
-      "Choose the plain-language explanation you would give a friend.",
+      "Choose the explanation that reviews the movement design.",
       "Choose one reflection to complete Day 6.",
     ][stage];
   }
@@ -670,26 +659,24 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
   function continueLabel() {
     return (
       [
-        "Separate today from over time",
+        "Check body fit and life fit",
         "Find a seam in the day",
         "Interrupt a sitting streak",
         "Let smaller bouts add up",
-        "Sequence a post-meal option",
-        "Make room for different responses",
         "Build a movement menu",
-        "Plan for a day that changes",
-        "Attach movement to real life",
-        "Fold the plan until it fits",
-        "Carry the safety pocket",
+        "Adapt the movement setting",
+        "Write a movement instruction",
+        "Choose a starting duration",
         "Practice three real moments",
-        "Explain the tool gently",
-        "See what you built",
+        "Review the movement design",
+        "Review your movement design",
       ][stage] ?? "Continue"
     );
   }
 
   function renderStage() {
-    switch (stage) {
+    const contentStage = [0, 1, 2, 3, 4, 7, 8, 9, 10, 12, 13, 14][stage] ?? 14;
+    switch (contentStage) {
       case 0:
         return (
           <div className="space-y-10">
@@ -777,24 +764,24 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
       case 1:
         return (
           <div className="space-y-9">
-            <DaySixHeading label="A 60-second bridge">One tool. Two timeframes.</DaySixHeading>
+            <DaySixHeading label="Two fit checks">Start with the body and the day.</DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Day 5 explained why movement matters. Open the two ideas we need before using them in
-              a real day.
+              Day 5 already explained what movement does in the body. Day 6 begins where that
+              science becomes a choice: whether an option fits this person in this setting.
             </p>
             <div className="grid gap-5 md:grid-cols-[1.08fr_0.92fr]">
               {[
                 {
                   id: "now" as const,
-                  number: "NOW",
-                  title: "While muscles work",
-                  body: "Active muscles need energy and can take up glucose to use as fuel.",
+                  number: "BODY FIT",
+                  title: "Can this feel safe and comfortable?",
+                  body: "Consider balance, pain, mobility, energy, recovery, medicines, and any individualized guidance.",
                 },
                 {
                   id: "later" as const,
-                  number: "OVER TIME",
-                  title: "When movement repeats",
-                  body: "Regular activity can improve insulin sensitivity, helping cells respond more effectively to available insulin.",
+                  number: "LIFE FIT",
+                  title: "Can this happen in the setting I have?",
+                  body: "Consider time, weather, privacy, equipment, transportation, company, and what is actually available.",
                 },
               ].map((item, index) => {
                 const opened = recapOpened.has(item.id);
@@ -818,7 +805,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                     </span>
                     <h2 className="mt-12 font-serif-display text-3xl">{item.title}</h2>
                     <p className="mt-4 leading-7 text-foreground/75">
-                      {opened ? item.body : "Open this timeframe"}
+                      {opened ? item.body : "Open this fit check"}
                     </p>
                   </button>
                 );
@@ -837,11 +824,11 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                 <span className="h-px bg-success/30" />
                 <div>
                   <p className="font-serif-display text-2xl italic text-success">
-                    Now can become later.
+                    Fit comes before intensity.
                   </p>
                   <p className="mt-2 text-sm leading-6 text-foreground/75">
-                    Working muscles use fuel during activity. Repetition can support insulin
-                    sensitivity over time. Neither idea erases food or depends on weight change.
+                    A movement option becomes usable when both the body and the setting have been
+                    considered. The same activity can fit one person or place and not another.
                   </p>
                 </div>
               </div>
@@ -1234,12 +1221,12 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                 </span>
                 <div>
                   <p className="font-serif-display text-2xl italic text-success">
-                    A response is a pattern with context, not a grade.
+                    Movement responses vary with context.
                   </p>
                   <p className="mt-2 leading-7 text-foreground/75">
                     Activity, food, medicine, timing, sleep, stress, illness, and many individual
-                    factors can change what happens. One unexpected number does not prove the
-                    movement failed.
+                    factors can change what happens. One reading cannot summarize every benefit of
+                    the movement or predict the next response.
                   </p>
                 </div>
               </div>
@@ -1322,12 +1309,12 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
       case 8:
         return (
           <div className="space-y-9">
-            <DaySixHeading label="Real life reroutes">
-              A changed day needs a route, not a verdict.
+            <DaySixHeading label="Adjust the setting">
+              Keep the purpose; change the movement conditions.
             </DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Choose what tends to knock plans off course. Then make a backup small enough to remain
-              possible.
+              Keep the movement purpose in view while changing its conditions. Choose one
+              constraint, then select an option that changes the setting, position, or pace.
             </p>
             <div className="grid gap-4 md:grid-cols-3">
               {disruptions.map((item) => {
@@ -1380,7 +1367,8 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             ) : null}
             {backupChoice ? (
               <p className="border-l-2 border-success bg-info p-5 text-lg leading-8">
-                The backup is part of the plan, not evidence that the original plan failed.
+                That adjustment preserves the purpose of moving while respecting the conditions you
+                named.
               </p>
             ) : null}
           </div>
@@ -1388,12 +1376,12 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
       case 9:
         return (
           <div className="space-y-9">
-            <DaySixHeading label="The habit bridge">
-              Let something familiar carry the new action.
+            <DaySixHeading label="A movement instruction card">
+              Make the setting, action, and finish point visible.
             </DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Build one three-part bridge: a cue that already happens, a small movement, and a
-              closing signal that feels kind rather than judgmental.
+              This is not a habit-stacking exercise. It is a clear instruction you could hand to
+              yourself or another person without leaving the important conditions vague.
             </p>
             <div
               className={cn(
@@ -1403,19 +1391,19 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             >
               {[
                 {
-                  label: "01 · When",
+                  label: "01 · Where",
                   values: habitAnchors,
                   selected: habitAnchor,
                   select: (value: (typeof habitAnchors)[number]) => setHabitAnchor(value),
                 },
                 {
-                  label: "02 · I will",
+                  label: "02 · Movement",
                   values: habitMovements,
                   selected: habitMovement,
                   select: (value: (typeof habitMovements)[number]) => setHabitMovement(value),
                 },
                 {
-                  label: "03 · Then",
+                  label: "03 · Finish check",
                   values: habitClosings,
                   selected: habitClosing,
                   select: (value: (typeof habitClosings)[number]) => setHabitClosing(value),
@@ -1451,7 +1439,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             </div>
             {habitAnchor && habitMovement && habitClosing ? (
               <blockquote className="animate-slide-up border-l-2 border-accent-warm pl-6 font-serif-display text-3xl italic leading-tight">
-                “{habitAnchor}, I will {habitMovement}. Then I will {habitClosing}.”
+                “{habitAnchor}: {habitMovement}, then {habitClosing}.”
               </blockquote>
             ) : null}
           </div>
@@ -1460,10 +1448,10 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
         const planScaleIndex = planScale ? planScales.indexOf(planScale) : -1;
         return (
           <div className="space-y-9">
-            <DaySixHeading label="Let the plan bend">Fold the plan until it fits.</DaySixHeading>
+            <DaySixHeading label="A duration sampler">Choose the first dose of time.</DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Choose a starting size and watch the same plan physically fold. Smaller is not a lower
-              score. It is less surface area for a difficult day to knock over.
+              Compare three starting durations for the same comfortable movement. This is a
+              preference exercise, not an exercise prescription or a promise about glucose.
             </p>
             <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
               <div className="space-y-3">
@@ -1493,8 +1481,10 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                 aria-live="polite"
               >
                 <div>
-                  <p className="editorial-eyebrow text-accent-warm">The same intention</p>
-                  <p className="mt-3 font-serif-display text-3xl">{planScale ?? "Choose a fold"}</p>
+                  <p className="editorial-eyebrow text-accent-warm">The same movement</p>
+                  <p className="mt-3 font-serif-display text-3xl">
+                    {planScale ?? "Choose a duration"}
+                  </p>
                 </div>
                 <div className={styles.planFoldSurface} aria-hidden="true">
                   <span
@@ -1512,23 +1502,23 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                 </div>
                 <p className="text-sm leading-6 text-muted-foreground">
                   {planScaleIndex === -1
-                    ? "Full, small, and tiny are three versions of one plan."
+                    ? "Compare the three durations before selecting the most approachable start."
                     : planScaleIndex === 0
-                      ? "Keep the full version when it truly fits the day."
+                      ? "The longest example may suit someone who already has the time and comfort."
                       : planScaleIndex === 1
-                        ? "One fold keeps the plan recognizable and easier to begin."
-                        : "Two folds protect the smallest useful version for a difficult day."}
+                        ? "The middle example offers a shorter first trial."
+                        : "The briefest example is still a real movement choice, not a score."}
                 </p>
               </div>
             </div>
             {planScale ? (
               <p className="border-l-2 border-success bg-info p-5 leading-7" role="status">
-                <strong>{planScale}</strong> is now the starting version. The larger version still
-                exists; it simply does not have to be the price of beginning.
+                <strong>{planScale}</strong> is now your example starting duration. Comfort and
+                individualized safety guidance still decide whether it fits.
               </p>
             ) : (
               <p className="border-l-2 border-accent-warm bg-accent-warm/8 p-5 leading-7">
-                Pick the version you would be most willing to start on an ordinary week.
+                Pick the duration you would be most willing to try in an ordinary setting.
               </p>
             )}
           </div>
@@ -1681,20 +1671,22 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
       case 13:
         return (
           <div className="space-y-9">
-            <DaySixHeading label="Teach it gently">What would you tell a friend?</DaySixHeading>
+            <DaySixHeading label="Design review">
+              What makes a movement option usable?
+            </DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              They ask, “Why does everyone keep telling me to exercise?” Choose the answer that
-              explains the body without adding pressure.
+              A friend understands why movement helps but cannot picture it fitting their day.
+              Choose the answer that applies Day 6 without repeating the physiology lesson.
             </p>
             <div className="grid gap-4">
               {(
                 [
                   [
                     "useful_tool",
-                    "Movement gives working muscles a way to use glucose. Small, safe bouts can fit real life, and regular movement can support insulin sensitivity.",
+                    "Start with body fit and life fit, then name a setting, comfortable action, finish check, and approachable duration.",
                   ],
                   ["food_payment", "Movement is how you pay for eating carbohydrate."],
-                  ["perfect_workout", "Only a perfect workout routine will make a difference."],
+                  ["perfect_workout", "Only a formal workout routine will make a difference."],
                 ] as const
               ).map(([answer, label], index) => (
                 <button
@@ -1726,11 +1718,11 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             <div className="text-center">
               <p className="editorial-eyebrow">Day 6 · Complete</p>
               <h1 className="mt-5 font-serif-display text-[length:var(--text-hero)] font-normal leading-[0.9]">
-                You built a plan that knows how to bend.
+                You designed movement for a real setting.
               </h1>
               <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-                It has a seam, a movement, a starting size, a closing signal, and a route for
-                changed days.
+                It has a place, a comfortable action, a finish check, a starting duration, and an
+                accessibility adjustment.
               </p>
             </div>
             <div
@@ -1740,7 +1732,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
               )}
             >
               <div>
-                <p className="editorial-eyebrow text-accent-warm">Your working draft</p>
+                <p className="editorial-eyebrow text-accent-warm">Your movement design</p>
                 <blockquote className="mt-6 font-serif-display text-3xl leading-tight">
                   “{habitAnchor ?? "At one familiar moment"}, I will{" "}
                   {habitMovement ?? movementChoice?.toLowerCase() ?? "use a small movement"}.”
@@ -1749,14 +1741,18 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                   Starting size: <strong>{planScale ?? "the smallest useful version"}</strong>
                 </p>
                 <p className="mt-2 leading-7 text-foreground/75">
-                  Backup: <strong>{backupChoice ?? "adapt when the day changes"}</strong>
+                  Setting adjustment:{" "}
+                  <strong>{backupChoice ?? "change the conditions if needed"}</strong>
                 </p>
               </div>
               <div className="grid gap-px overflow-hidden rounded-[1rem] border border-border bg-border">
                 {[
-                  ["01", "Movement helps working muscles use fuel."],
-                  ["02", "Small bouts and sitting breaks can create usable openings."],
-                  ["03", "A flexible plan can shrink, adapt, and restart."],
+                  ["01", "Body fit checks comfort, ability, safety, and guidance."],
+                  ["02", "Life fit checks setting, time, access, and preference."],
+                  [
+                    "03",
+                    "A clear instruction names where, what, when to finish, and for how long.",
+                  ],
                 ].map(([number, truth]) => (
                   <div className="bg-card p-5" key={number}>
                     <span className="font-serif-display text-4xl text-success">{number}</span>
@@ -1796,11 +1792,11 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                       : "Complete Day 6"}
                 </Button>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <Button fullWidth={false} onClick={() => goToStage(9)} variant="text">
-                    Rebuild the habit bridge
+                  <Button fullWidth={false} onClick={() => goToStage(7)} variant="text">
+                    Rewrite the movement card
                   </Button>
-                  <Button fullWidth={false} onClick={() => goToStage(10)} variant="text">
-                    Refold the plan
+                  <Button fullWidth={false} onClick={() => goToStage(8)} variant="text">
+                    Compare durations
                   </Button>
                   <Link
                     className={buttonVariants({ fullWidth: false, variant: "text" })}
