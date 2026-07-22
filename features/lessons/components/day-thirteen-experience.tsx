@@ -323,7 +323,6 @@ function SupportConversationAnimation() {
             <p>{line}</p>
           </div>
         ))}
-        <div className={styles.conversationLine} aria-hidden="true" />
       </div>
       <figcaption>
         <strong>What to notice:</strong> the helper never guesses. Permission and feedback keep the
@@ -359,13 +358,69 @@ function BoundaryConversationAnimation() {
           <span>RESPECTFUL NEXT MOVE</span>
           <p>“Understood. Would conversation or company help instead?”</p>
         </div>
-        <div className={styles.boundarySpace} aria-hidden="true">
-          <span />
-        </div>
       </div>
       <figcaption>
         <strong>What to notice:</strong> a boundary closes the unwanted behavior while leaving a
         better way to connect.
+      </figcaption>
+    </figure>
+  );
+}
+
+function SupportMapAnimation({ selectedRings }: { selectedRings: ReadonlySet<MapRing> }) {
+  const legend = [
+    ["close", "People I choose", "Personal support invited by me"],
+    ["care", "Care team", "Professional guidance and treatment"],
+    ["community", "Community", "Belonging, peers, and shared experience"],
+  ] as const;
+
+  return (
+    <figure className={styles.supportMapFigure} data-motion-loop="continuous">
+      <div
+        aria-label="A continuously moving support map with the learner at the center and three separate circles for chosen people, the care team, and community"
+        className={styles.supportMap}
+        role="img"
+      >
+        <div
+          className={cn(
+            styles.mapRing,
+            styles.mapCommunity,
+            selectedRings.has("community") && styles.mapRingActive,
+          )}
+        >
+          <i aria-hidden="true" className={styles.mapSignal} />
+          <div
+            className={cn(
+              styles.mapRing,
+              styles.mapCare,
+              selectedRings.has("care") && styles.mapRingActive,
+            )}
+          >
+            <i aria-hidden="true" className={styles.mapSignal} />
+            <div
+              className={cn(
+                styles.mapRing,
+                styles.mapClose,
+                selectedRings.has("close") && styles.mapRingActive,
+              )}
+            >
+              <i aria-hidden="true" className={styles.mapSignal} />
+              <strong>ME</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul aria-label="Support map key" className={styles.mapLegend}>
+        {legend.map(([ring, label, description]) => (
+          <li className={styles[`mapLegend_${ring}`]} key={ring}>
+            <strong>{label}</strong>
+            <span>{description}</span>
+          </li>
+        ))}
+      </ul>
+      <figcaption>
+        <strong>What to notice:</strong> every circle can contribute something different, while the
+        person at the center keeps ownership of the plan.
       </figcaption>
     </figure>
   );
@@ -956,8 +1011,9 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
           </div>
         );
       case 7: {
-        const selectedByRing = (ring: MapRing) =>
-          mapOptions.filter(([itemRing, label]) => itemRing === ring && mapChoices.has(label));
+        const selectedRings = new Set(
+          mapOptions.filter(([, label]) => mapChoices.has(label)).map(([ring]) => ring),
+        );
         return (
           <div className="space-y-9">
             <LessonHeading label="Build a support system that fits">
@@ -970,40 +1026,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               src="/lessons/day-13/community-belonging.jpg"
             />
             <div className={styles.mapLayout}>
-              <div
-                aria-label="A support map with the learner at the center, surrounded by chosen close people, care professionals, and community"
-                className={styles.supportMap}
-                role="img"
-              >
-                <div
-                  className={cn(
-                    styles.mapRing,
-                    styles.mapCommunity,
-                    selectedByRing("community").length > 0 && styles.mapRingActive,
-                  )}
-                >
-                  <span>COMMUNITY</span>
-                  <div
-                    className={cn(
-                      styles.mapRing,
-                      styles.mapCare,
-                      selectedByRing("care").length > 0 && styles.mapRingActive,
-                    )}
-                  >
-                    <span>CARE TEAM</span>
-                    <div
-                      className={cn(
-                        styles.mapRing,
-                        styles.mapClose,
-                        selectedByRing("close").length > 0 && styles.mapRingActive,
-                      )}
-                    >
-                      <span>PEOPLE I CHOOSE</span>
-                      <strong>ME</strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <SupportMapAnimation selectedRings={selectedRings} />
               <div className={styles.mapChoices}>
                 {(["close", "care", "community"] as const).map((ring) => (
                   <section key={ring}>

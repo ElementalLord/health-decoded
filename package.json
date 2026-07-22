@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "test:ai": "node --no-warnings --experimental-strip-types --test tests/ai-safety.test.mjs tests/ai-response-normalizer.test.mjs",
     "test:ai-safety": "node --no-warnings --experimental-strip-types --test tests/ai-safety.test.mjs",
-    "test:lessons": "node --no-warnings --experimental-strip-types --test tests/lesson-composition.test.mjs tests/lesson-motion.test.mjs tests/lesson-story-images.test.mjs tests/curriculum-distinctness.test.mjs tests/day-seven-experience.test.mjs tests/day-eight-experience.test.mjs tests/day-nine-experience.test.mjs tests/day-ten-experience.test.mjs tests/day-eleven-experience.test.mjs tests/day-twelve-experience.test.mjs tests/day-thirteen-experience.test.mjs",
+    "test:lessons": "node --no-warnings --experimental-strip-types --test tests/lesson-composition.test.mjs tests/lesson-motion.test.mjs tests/lesson-story-images.test.mjs tests/lesson-route-coverage.test.mjs tests/curriculum-distinctness.test.mjs tests/day-seven-experience.test.mjs tests/day-eight-experience.test.mjs tests/day-nine-experience.test.mjs tests/day-ten-experience.test.mjs tests/day-eleven-experience.test.mjs tests/day-twelve-experience.test.mjs tests/day-thirteen-experience.test.mjs",
     "validate:medications": "node --experimental-strip-types scripts/validate-medications.mts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
