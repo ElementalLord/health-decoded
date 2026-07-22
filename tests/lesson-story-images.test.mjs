@@ -51,6 +51,10 @@ const lessonImages = {
     component: "day-twelve-experience.tsx",
     images: ["community-in-real-life.jpg", "sick-day-support.jpg", "plan-b-together.jpg"],
   },
+  "day-13": {
+    component: "day-thirteen-experience.tsx",
+    images: ["listening-without-fixing.jpg", "community-belonging.jpg"],
+  },
 };
 
 const storyComponent = readFileSync("features/lessons/components/lesson-story-image.tsx", "utf8");
@@ -59,7 +63,7 @@ const storyStyles = readFileSync(
   "utf8",
 );
 
-test("Lessons 1 through 12 include 25 purposeful human story illustrations", () => {
+test("Lessons 1 through 13 include 27 purposeful human story illustrations", () => {
   let totalImages = 0;
 
   for (const [day, lesson] of Object.entries(lessonImages)) {
@@ -78,7 +82,7 @@ test("Lessons 1 through 12 include 25 purposeful human story illustrations", () 
     }
   }
 
-  assert.equal(totalImages, 25);
+  assert.equal(totalImages, 27);
 });
 
 test("The shared story treatment is accessible, responsive, and only slightly rounded", () => {
