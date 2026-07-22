@@ -15,6 +15,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-nine-experience.module.css";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -951,6 +952,13 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
                 </p>
               </div>
             </div>
+            <LessonStoryImage
+              alt="Two friends smile while packing a small safety pouch with a meter, water, phone, juice, and snacks"
+              caption="A few familiar supplies and one trusted person can turn uncertainty into a clear next step. Preparation is there to quiet fear."
+              emphasis="Being ready can feel peaceful."
+              priority
+              src="/lessons/day-09/ready-kit.jpg"
+            />
             <SteadyBalanceAnimation />
             <div className="grid gap-3 sm:grid-cols-2">
               {openingFeelings.map(([id, label]) => (
@@ -1238,6 +1246,12 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             <LessonHeading label="A simple plan beats a complicated binder">
               Preparedness is mostly knowing four small things.
             </LessonHeading>
+            <LessonStoryImage
+              alt="A man stays close to a woman resting on a sofa while he calmly calls for help"
+              caption="If someone feels unwell, noticing the change, staying together, and getting the right help are practical acts of care."
+              emphasis="A hard moment does not have to be a lonely one."
+              src="/lessons/day-09/helping-moment.jpg"
+            />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Check off what is already true, or what you would like to set up this week. This stays
               in your browser; it is a thinking tool, not a medical record.

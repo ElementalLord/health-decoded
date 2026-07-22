@@ -37,6 +37,7 @@ import { completeLessonAction } from "@/features/lessons/actions/lesson-completi
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-six-experience.module.css";
 import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -704,6 +705,13 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                 </p>
               </div>
             </div>
+            <LessonStoryImage
+              alt="Three adult friends laugh together during an easy early-evening walk through their neighborhood"
+              caption="A comfortable walk after a meal is one option—not a rule. The useful plan is the one that fits your body, schedule, and company."
+              emphasis="Movement can fit the moment."
+              priority
+              src="/lessons/day-06/after-dinner-walk.jpg"
+            />
             <div className="grid gap-7 border-y border-border py-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div
                 className={cn(
@@ -1245,6 +1253,12 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             <DaySixHeading label="A movement menu">
               Start with the life. Then choose the movement.
             </DaySixHeading>
+            <LessonStoryImage
+              alt="Two coworkers chat while taking a short movement break on a bright office staircase"
+              caption="A few minutes between tasks can interrupt long sitting. Small movement still counts, even when it happens in work clothes."
+              emphasis="The day can supply the opening."
+              src="/lessons/day-06/workday-movement.jpg"
+            />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               A routine is easier to repeat when it respects setting, ability, company, and
               preference. Choose the context closest to what would help.

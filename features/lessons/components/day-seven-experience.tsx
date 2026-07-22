@@ -24,6 +24,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-seven-experience.module.css";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -858,6 +859,13 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
                 </p>
               </div>
             </div>
+            <LessonStoryImage
+              alt="A patient asks a pharmacist a question while they review a medicine bottle and instruction card together"
+              caption="Knowing what a medicine is for, how to use it, and what concerns to report is part of safe care. Questions are welcome."
+              emphasis="Medicine should come with a conversation."
+              priority
+              src="/lessons/day-07/pharmacist-conversation.jpg"
+            />
             <div className="grid gap-7 border-y border-border py-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
               <div
                 className={styles.comfortPortrait}
@@ -1241,6 +1249,12 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
             <LessonHeading label="Consistency without surveillance">
               Let a routine carry some of the remembering.
             </LessonHeading>
+            <LessonStoryImage
+              alt="A man takes his prescribed medicine with water at breakfast while his partner smiles and pours tea"
+              caption="When the instructions fit breakfast, a reminder, or another ordinary anchor, medicine can become one small part of the day."
+              emphasis="Treatment can live inside a normal life."
+              src="/lessons/day-07/everyday-medicine-routine.jpg"
+            />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               This is a memory practice, not a medication instruction. Follow the prescription label
               and care-team guidance.

@@ -35,6 +35,7 @@ import {
   SupportUmbrella,
 } from "@/features/lessons/components/day-one-interactions";
 import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -597,6 +598,13 @@ export function FirstFiveMinutesExperience({
                 </div>
               </div>
             </div>
+            <LessonStoryImage
+              alt="A woman writes one question in a notebook at the kitchen table while her partner sits nearby with tea"
+              caption="You do not need to solve the whole diagnosis today. One question, one breath, and one next step are enough for a beginning."
+              emphasis="A gentle start still counts."
+              priority
+              src="/lessons/day-01/gentle-beginning.jpg"
+            />
             <LessonMotionFigure variant="calm-breath" />
           </div>
         );
@@ -1033,6 +1041,12 @@ export function FirstFiveMinutesExperience({
               </div>
               <SupportUmbrella openedCount={openedSupport.size} />
             </div>
+            <LessonStoryImage
+              alt="Two women share a long supportive hug on a sunny porch after a healthcare visit"
+              caption="A trusted person can listen, remember details, come to an appointment, or simply help the day feel less lonely."
+              emphasis="Support is part of care."
+              src="/lessons/day-01/supported-not-alone.jpg"
+            />
             <div className="grid gap-4 sm:grid-cols-3">
               {supportOptions.map((option) => {
                 const opened = openedSupport.has(option.id);

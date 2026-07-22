@@ -1,0 +1,33 @@
+.figure {
+  overflow: hidden;
+  border: 1px solid rgb(75 106 94 / 20%);
+  border-radius: 6px;
+  background: #fffdf8;
+  box-shadow: 0 20px 54px rgb(41 72 64 / 8%);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 8.9;
+  object-fit: cover;
+}
+
+.caption {
+  border-top: 1px solid #dde2da;
+  padding: 1.05rem 1.35rem 1.2rem;
+  color: #61736c;
+  line-height: 1.7;
+}
+
+.caption strong {
+  color: #3b6156;
+}
+
+@media (max-width: 640px) {
+  .caption {
+    padding: 0.9rem 1rem 1rem;
+    font-size: 0.925rem;
+  }
+}

@@ -38,6 +38,7 @@ import { completeLessonAction } from "@/features/lessons/actions/lesson-completi
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-five-experience.module.css";
 import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -496,6 +497,13 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                 </p>
               </div>
             </div>
+            <LessonStoryImage
+              alt="A group of adults with varied bodies laugh and dance together in a living room"
+              caption="Movement can be social, playful, seated, brief, or improvised. The body responds to activity—not whether it looks like a workout."
+              emphasis="Joyful movement counts."
+              priority
+              src="/lessons/day-05/movement-joy.jpg"
+            />
             <div className="grid gap-8 border-y border-border py-9 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div
                 className={cn(
@@ -1480,6 +1488,12 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             <DayFiveHeading label="Make support concrete">
               Protect the opening instead of policing the effort.
             </DayFiveHeading>
+            <LessonStoryImage
+              alt="A child, parent, and grandparent run and laugh together while flying a kite in a park"
+              caption="Play, family time, and fresh air can carry movement without turning the moment into a test or performance."
+              emphasis="A full life can move."
+              src="/lessons/day-05/everyday-play.jpg"
+            />
             <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
               <div
                 className={cn(

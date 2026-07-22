@@ -13,7 +13,6 @@ import {
   Stethoscope,
   Waypoints,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
@@ -26,6 +25,7 @@ import {
 } from "@/features/lessons/actions/day-twelve.actions";
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import styles from "@/features/lessons/components/day-twelve-experience.module.css";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
@@ -208,37 +208,6 @@ function Feedback({ feedback }: { feedback: DayTwelveEvaluationFeedback }) {
         <p className="mt-2 leading-7">{feedback.body}</p>
       </div>
     </div>
-  );
-}
-
-function HumanStoryFigure({
-  alt,
-  caption,
-  emphasis,
-  priority = false,
-  src,
-}: {
-  alt: string;
-  caption: string;
-  emphasis: string;
-  priority?: boolean;
-  src: string;
-}) {
-  return (
-    <figure className={styles.humanFigure}>
-      <Image
-        alt={alt}
-        className={styles.humanImage}
-        height={928}
-        priority={priority}
-        sizes="(max-width: 1100px) 100vw, 1020px"
-        src={src}
-        width={1664}
-      />
-      <figcaption className={styles.humanCaption}>
-        <strong>{emphasis}</strong> {caption}
-      </figcaption>
-    </figure>
   );
 }
 
@@ -578,7 +547,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 </p>
               </div>
             </div>
-            <HumanStoryFigure
+            <LessonStoryImage
               alt="Friends laughing around a picnic table while others play catch and share a hug in a sunny park"
               caption="Friendship, food, movement, laughter, and changed schedules are the life the plan is meant to support."
               emphasis="Care belongs inside a full life."
@@ -767,7 +736,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="When illness changes the conditions">
               A sick day needs a plan of its own.
             </LessonHeading>
-            <HumanStoryFigure
+            <LessonStoryImage
               alt="A trusted friend sitting close to someone resting on a sofa, offering water beside a phone and written care plan"
               caption="A trusted person can help with fluids, read the written plan, notice when symptoms are worsening, and make a call when thinking feels harder."
               emphasis="A sick-day plan can include people."
@@ -950,7 +919,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="Prepare the backup before you need it">
               Plan A gives direction. Plan B keeps care usable.
             </LessonHeading>
-            <HumanStoryFigure
+            <LessonStoryImage
               alt="Friends laughing and dancing together indoors while rain falls outside and two people share a joyful hug"
               caption="The outdoor plan changed, but connection, laughter, and movement did not vanish. The purpose continued in a new form."
               emphasis="A changed plan can still be a good time."

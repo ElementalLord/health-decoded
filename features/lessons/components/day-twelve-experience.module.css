@@ -137,7 +137,6 @@
   }
 }
 
-.humanFigure,
 .teachingFigure {
   overflow: hidden;
   border: 1px solid rgb(75 106 94 / 20%);
@@ -146,15 +145,6 @@
   box-shadow: 0 20px 54px rgb(41 72 64 / 8%);
 }
 
-.humanImage {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 8.9;
-  object-fit: cover;
-}
-
-.humanCaption,
 .figureCaption {
   border-top: 1px solid #dde2da;
   padding: 1.15rem 1.4rem 1.3rem;
@@ -162,7 +152,6 @@
   line-height: 1.75;
 }
 
-.humanCaption strong,
 .figureCaption strong {
   color: #3b6156;
 }
