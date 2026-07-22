@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import test from "node:test";
 
 const player = readFileSync("features/lessons/components/lesson-player.tsx", "utf8");
@@ -22,17 +22,34 @@ test("Day 12 uses one custom ten-chapter experience", () => {
   assert.match(experience, /Flexible care can bend without breaking/);
 });
 
-test("Day 12 includes four distinct endlessly looping visual explanations", () => {
-  assert.match(experience, /function ResilienceWeaveAnimation/);
-  assert.match(experience, /function ProblemSolvingCycleAnimation/);
-  assert.match(experience, /function SickDayWeatherAnimation/);
-  assert.match(experience, /function BackupBridgeAnimation/);
-  assert.doesNotMatch(experience, /lighthouse|lantern/i);
-  assert.ok(
-    (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 24,
-    "expected at least 24 independently looping SVG elements",
-  );
+test("Day 12 uses three labeled teaching sequences with motion tied to meaning", () => {
+  assert.match(experience, /function AdaptiveDayTimeline/);
+  assert.match(experience, /function SickDayCauseAndResponse/);
+  assert.match(experience, /function BackupPlanSequence/);
+  assert.match(experience, /One day · two valid routes/);
+  assert.match(experience, /1 · Illness begins/);
+  assert.match(experience, /4 · What remains true/);
+  assert.match(styles, /animation: timeline-node-focus 8s ease-in-out infinite/);
+  assert.match(styles, /animation: flow-panel-focus 9s ease-in-out infinite/);
+  assert.match(styles, /animation: plan-sequence-focus 8s ease-in-out infinite/);
   assert.match(styles, /prefers-reduced-motion: reduce/);
+  assert.doesNotMatch(experience, /<svg|animateMotion|lighthouse|lantern|weave|bridge|weather/i);
+});
+
+test("Day 12 grounds the lesson in warm human scenes instead of abstract decoration", () => {
+  assert.match(experience, /community-in-real-life\.jpg/);
+  assert.match(experience, /sick-day-support\.jpg/);
+  assert.match(experience, /plan-b-together\.jpg/);
+  assert.match(experience, /play catch and share a hug/);
+  assert.match(experience, /offering water beside a phone and written care plan/);
+  assert.match(experience, /laughing and dancing together indoors/);
+  for (const filename of [
+    "community-in-real-life.jpg",
+    "sick-day-support.jpg",
+    "plan-b-together.jpg",
+  ]) {
+    assert.ok(statSync(`public/lessons/day-12/${filename}`).size > 100_000);
+  }
 });
 
 test("Day 12 uses softly squared controls rather than pill-shaped lesson UI", () => {
@@ -49,7 +66,7 @@ test("Day 12 turns the curriculum activities into user-input interactions", () =
   assert.match(experience, /Choose/);
   assert.match(experience, /Adjust/);
   assert.match(experience, /lifeToolChoices\.size >= 2/);
-  assert.match(experience, /Your backup bridge/);
+  assert.match(experience, /Your Plan B/);
   assert.match(experience, /scriptSituation/);
   assert.match(experience, /One-sentence teach-back/);
 });
