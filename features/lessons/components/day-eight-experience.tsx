@@ -30,22 +30,22 @@ const openingFeelings = [
 
 const monitoringTools = [
   {
-    body: "A longer view that estimates average glucose across roughly two to three months. It is not today’s reading.",
+    body: "Useful for a scheduled care conversation about the longer view; it does not answer what is happening right now.",
     id: "a1c",
     label: "A1C",
-    question: "What has the longer pattern looked like?",
+    question: "Has the longer view changed between visits?",
   },
   {
-    body: "A measurement at one specific moment. Timing and context belong beside the number.",
+    body: "Useful when a personal plan names a specific moment or symptom to check; timing and context travel with the result.",
     id: "finger",
     label: "Finger-stick meter",
-    question: "What is happening at this moment?",
+    question: "What is happening at the planned check time?",
   },
   {
-    body: "Many readings across day and night that can make movement and repeated patterns easier to see.",
+    body: "Useful when many readings across day and night can answer a defined question about change, timing, or repeated events.",
     id: "cgm",
     label: "Continuous glucose monitor",
-    question: "How is glucose changing across many moments?",
+    question: "What changes across the day or night?",
   },
 ] as const;
 type MonitoringToolId = (typeof monitoringTools)[number]["id"];
@@ -774,7 +774,7 @@ function PatternLoomAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>A pattern is not perfection.</strong> Repeated context can help reveal a useful
+        <strong>A pattern is a clue, not proof.</strong> Repeated context can help reveal a useful
         story; one unusual day remains one thread in a much larger fabric.
       </figcaption>
     </figure>
@@ -869,12 +869,12 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
     return [
       "Choose how monitoring feels to you today.",
       "Open A1C, finger-stick, and CGM.",
-      "Choose what a snapshot can (and cannot) tell you.",
+      "Choose the best reason to collect a reading.",
       "Open at least four context clues.",
       "Add three moments to the pattern and answer the pattern check.",
       "Choose the curious response to a surprising reading.",
       "Choose one question to carry to your care team.",
-      "Choose one reflection and complete the teach-back.",
+      "Choose one reflection and match the tools to their questions.",
     ][stage];
   }
 
@@ -882,13 +882,13 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
     return (
       [
         "Meet the three tools",
-        "Turn a number into a moment",
+        "Give monitoring a question",
         "Place context beside it",
         "Look for a pattern",
         "Respond without judgment",
         "Make monitoring a conversation",
         "Carry the perspective forward",
-        "See today’s takeaway",
+        "Open the monitoring field notes",
       ][stage] ?? "Continue"
     );
   }
@@ -930,8 +930,8 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
               <div className="border-l-2 border-accent-warm pl-6">
                 <p className="editorial-number text-accent-warm">08</p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Today is not about memorizing targets. It is about learning what different views
-                  can (and cannot) tell you.
+                  Day 3 explained laboratory results. Today is about a different job: deciding
+                  whether home data can answer a useful care question.
                 </p>
               </div>
             </div>
@@ -965,8 +965,8 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
       case 1:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Three windows, not one ranking">
-              Each monitoring tool answers a different question.
+            <LessonHeading label="Match the tool to the decision">
+              Collect information only when it has a job.
             </LessonHeading>
             <ToolStudioAnimation />
             <div className="grid gap-4 md:grid-cols-3">
@@ -1001,29 +1001,29 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
       case 2:
         return (
           <div className="space-y-9">
-            <LessonHeading label="A photograph is honest, and incomplete">
-              One reading belongs to one moment.
+            <LessonHeading label="Question before device">
+              Start with what the information should help you decide.
             </LessonHeading>
             <div className={styles.snapshotStage}>
               <div className={styles.snapshotFrame}>
-                <span>THIS MOMENT</span>
+                <span>DEFINED QUESTION</span>
                 <i />
                 <b />
               </div>
               <div>
-                <p className="font-serif-display text-3xl">A snapshot can tell you…</p>
+                <p className="font-serif-display text-3xl">A useful monitoring plan begins with…</p>
                 <p className="mt-3 text-lg leading-8 text-muted-foreground">
-                  what the device measured at that time. It cannot replay yesterday, predict
-                  tomorrow, or assign a grade to the person holding it.
+                  a question, a time or situation to check, and an agreed response. More data is not
+                  automatically more useful data.
                 </p>
               </div>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
               {(
                 [
-                  ["moment", "It describes one measured moment."],
-                  ["month", "It explains the whole month."],
-                  ["worth", "It measures how hard someone tried."],
+                  ["moment", "A question already named in my care plan."],
+                  ["month", "A wish to collect extra numbers just in case."],
+                  ["worth", "A need to prove I handled today correctly."],
                 ] as const
               ).map(([id, label]) => (
                 <AnswerChoice
@@ -1045,8 +1045,8 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
                 )}
               >
                 {snapshotMeaning === "moment"
-                  ? "Exactly. Keep the moment, then place timing and context beside it."
-                  : "A single reading cannot explain a month or measure effort. Let it remain one useful, limited moment."}
+                  ? "Exactly. A defined question gives the reading a purpose and helps clarify what to do with it."
+                  : "Collecting numbers without a question can add burden without adding clarity. Monitoring should support a care decision, not grade the person."}
               </p>
             ) : null}
           </div>
@@ -1126,7 +1126,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
                 [
                   ["pattern", "Repeated context across several moments"],
                   ["single_reading", "One isolated reading"],
-                  ["perfect_number", "A perfectly flat line"],
+                  ["perfect_number", "A completely flat line"],
                 ] as const
               ).map(([answer, label]) => (
                 <AnswerChoice
@@ -1213,7 +1213,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
       case 7:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Teach it back gently">
+            <LessonHeading label="Monitoring decision check">
               The tools describe glucose. They do not describe you.
             </LessonHeading>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -1261,7 +1261,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
             <p className="editorial-eyebrow">Day 8 complete</p>
             <LessonHeading>A reading is information, not a verdict.</LessonHeading>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
-              <p className="editorial-eyebrow text-success">Three ideas worth carrying</p>
+              <p className="editorial-eyebrow text-success">Monitoring field notes</p>
               <ol className="mt-6 space-y-6">
                 {[
                   "A1C offers a longer view, a finger-stick captures one moment, and a CGM can show change across many moments.",

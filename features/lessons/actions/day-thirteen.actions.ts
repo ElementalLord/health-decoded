@@ -7,7 +7,7 @@ import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 const dayThirteenEvaluationSchema = z.discriminatedUnion("stage", [
   z
     .object({
-      answer: z.enum(["many_factors", "sugar_only", "visible_condition"]),
+      answer: z.enum(["name_impact", "prove_worth", "stay_silent"]),
       stage: z.literal("stigma_myth"),
     })
     .strict(),
@@ -63,16 +63,16 @@ export async function evaluateDayThirteenAction(
   const data = parsed.data;
 
   if (data.stage === "stigma_myth") {
-    const accurate = data.answer === "many_factors";
+    const accurate = data.answer === "name_impact";
     return {
       data: {
         accurate,
         body: accurate
-          ? "Exactly. Type 2 diabetes develops through many interacting factors, including genetics, age, family history, environment, access, and the way the body responds to insulin. A diagnosis is not a character judgment."
-          : "That answer repeats a stigma story. Type 2 diabetes is shaped by many interacting factors, and there is no single appearance or behavior that explains who develops it. Blame hides useful information; it does not improve care.",
+          ? "Naming the impact keeps the response grounded in what happened. A limit can be brief, and the person affected gets to decide whether education, distance, or ending the conversation is right for them."
+          : "A person does not owe a full medical defense, and good intentions do not erase impact. They can name what landed, set a boundary, and choose how much conversation to offer.",
         heading: accurate
-          ? "Complex condition, no blame required."
-          : "Trade the shortcut for the full story.",
+          ? "Impact named; choice preserved."
+          : "The response still belongs to the person affected.",
       },
       ok: true,
     };

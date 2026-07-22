@@ -68,17 +68,17 @@ test("Day 13 turns the curriculum activities into meaningful user input", () => 
   assert.match(experience, /mapChoices/);
   assert.match(experience, /confidence/);
   assert.match(experience, /reflection/);
-  assert.match(experience, /One-sentence teach-back/);
+  assert.match(experience, /Define support without control/);
 });
 
 test("Day 13 directly teaches stigma, consent, privacy, and emotional support", () => {
-  assert.match(experience, /Type 2 diabetes develops through many interacting factors/);
+  assert.match(experience, /Stigma writes social rules/);
   assert.match(experience, /Support offers a hand\. Control grabs the steering wheel/);
   assert.match(experience, /Disclosure belongs to you/);
   assert.match(experience, /diabetes distress persists/);
   assert.match(experience, /not saved as health information/);
-  assert.match(experience, /myth: "Needing medicine means you failed\."/);
-  assert.match(experience, /Medicine is one treatment tool\. It cannot measure effort/);
+  assert.match(experience, /Concern gives family permission to monitor food and numbers/);
+  assert.match(experience, /A joke is harmless if the speaker did not mean it badly/);
 });
 
 test("Day 13 evaluation is authenticated and does not store private written input", () => {

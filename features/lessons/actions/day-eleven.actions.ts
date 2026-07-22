@@ -19,12 +19,6 @@ const dayElevenEvaluationSchema = z.discriminatedUnion("stage", [
     .strict(),
   z
     .object({
-      answer: z.enum(["keep_showing_up", "cancel_until_perfect", "avoid_results"]),
-      stage: z.literal("showing_up"),
-    })
-    .strict(),
-  z
-    .object({
       answer: z.enum(["find_early_changes", "prove_nothing_is_wrong", "replace_daily_care"]),
       stage: z.literal("teach_back"),
     })
@@ -78,20 +72,6 @@ export async function evaluateDayElevenAction(input: unknown): Promise<DayEleven
         heading: accurate
           ? "No symptoms can still be the right time to look."
           : "Screening does not need a symptom to be useful.",
-      },
-      ok: true,
-    };
-  }
-
-  if (data.stage === "showing_up") {
-    const accurate = data.answer === "keep_showing_up";
-    return {
-      data: {
-        accurate,
-        body: accurate
-          ? "Exactly. Preventive care is not a reward for a perfect week. Honest check-ins help your care team see patterns, adjust support, and protect what matters next."
-          : "Avoiding a visit can feel safer in the moment, but it removes information and support. You never have to earn care by being perfect; showing up honestly is itself a protective action.",
-        heading: accurate ? "Showing up counts as care." : "Care is not a test you have to pass.",
       },
       ok: true,
     };

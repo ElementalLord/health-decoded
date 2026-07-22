@@ -217,8 +217,8 @@ export async function evaluateDayFiveAction(input: unknown): Promise<DayFiveEval
     data: {
       accurate,
       body: accurate
-        ? "Working muscles use glucose, regular activity can improve insulin sensitivity, and small, safe bouts can count. Movement is a tool, not a punishment or a perfection test."
-        : "The lesson is not asking for a gym membership or a perfect routine. It is asking for one safe, repeatable way to let your muscles work.",
+        ? "Working muscles use glucose, regular activity can improve insulin sensitivity, and small, safe bouts can count. Movement is a tool, not a debt repayment or a fitness audition."
+        : "The lesson is not asking for a gym membership or an advanced routine. It is asking for one safe way to let your muscles work.",
       heading: accurate
         ? "That is the lesson in plain language."
         : "Bring the idea back to real life.",

@@ -53,7 +53,7 @@ export async function evaluateDayEightAction(input: unknown): Promise<DayEightEv
       data: {
         accurate,
         body: accurate
-          ? "A repeated pattern gives the care team more context than one isolated moment. The goal is not a perfect line; it is a useful question."
+          ? "A repeated pattern gives the care team more context than one isolated moment. The goal is not a flat line; it is a useful question."
           : "One reading can be useful, but it cannot describe a whole week or prove success or failure. Look for repeated context before drawing a conclusion.",
         heading: accurate
           ? "Follow the pattern, not the pressure."

@@ -169,7 +169,7 @@ const plateFeedback: Record<
 > = {
   balanced_plate: {
     accurate: true,
-    body: "The plate method makes room for nonstarchy vegetables, protein, and carbohydrate. It is a visual starting point, not a demand for a perfect plate at every meal.",
+    body: "The plate method makes room for nonstarchy vegetables, protein, and carbohydrate. It is a visual starting point, not a rigid plate prescription for every meal.",
     heading: "You added balance without banning the rice.",
     whyOthers: [
       "Removing all carbohydrate is not the goal of the plate method.",
@@ -259,10 +259,10 @@ export async function evaluateDayFourAction(input: unknown): Promise<DayFourEval
         accurate,
         body: accurate
           ? "Looking for a vegetable, a protein, a carbohydrate portion, and a drink that fits your needs turns the plate method into a flexible restaurant question."
-          : "Eating out does not require banning every carbohydrate or discovering one perfect menu item. A few practical additions or portion choices can create more balance.",
+          : "Eating out does not require banning every carbohydrate or discovering one universally correct menu item. A few practical additions or portion choices can create more balance.",
         heading: accurate
           ? "You looked for a workable meal."
-          : "The restaurant is not a perfection test.",
+          : "A restaurant meal does not require an exact calculation.",
         whyOthers: [
           "Carbohydrate foods can remain part of the meal.",
           "There may be several reasonable choices rather than one flawless answer.",
@@ -295,13 +295,13 @@ export async function evaluateDayFourAction(input: unknown): Promise<DayFourEval
       accurate,
       body: accurate
         ? "Carbohydrate foods affect blood glucose, but they can remain part of meals. Fiber, balance, portions, patterns, preferences, and a person’s care plan all add context."
-        : "Diabetes nutrition is not a ban list or a perfect-diet competition. The useful skill is building informed, repeatable meals that fit a person’s life and care plan.",
+        : "Diabetes nutrition is not a ban list or a competition for one correct diet. The useful skill is building informed, repeatable meals that fit a person’s life and care plan.",
       heading: accurate
         ? "That is food confidence in plain language."
         : "Bring flexibility back to the explanation.",
       whyOthers: [
         "Carbohydrates do not need to disappear.",
-        "No single eating pattern is perfect for every person.",
+        "No single eating pattern is right for every person.",
       ],
     },
   };

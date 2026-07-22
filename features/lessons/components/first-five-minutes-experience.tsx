@@ -75,7 +75,8 @@ const firstThoughts = [
   {
     id: "processing",
     label: "I’m just trying to take it in.",
-    response: "Taking it in is enough for now. Nothing here asks you to make a perfect plan today.",
+    response:
+      "Taking it in is enough for now. Nothing here asks you to make a complete life plan today.",
   },
 ] as const;
 
@@ -153,7 +154,7 @@ const firstDayBagItems = [
   {
     belongsToday: false,
     id: "perfect_food_plan",
-    label: "A perfect food plan for every future meal",
+    label: "A detailed food plan for every future meal",
   },
   {
     belongsToday: true,
@@ -179,25 +180,25 @@ const firstDayBagItems = [
 
 type FirstDayBagItemId = (typeof firstDayBagItems)[number]["id"];
 
-const supportOptions = [
+const followUpAnchors = [
   {
-    body: "They can explain test results, discuss treatment, and help decide what comes next.",
+    body: "Know how to reach the team that will interpret results, discuss treatment, and explain what comes next.",
     id: "care_team",
-    label: "Your healthcare team",
+    label: "Care-team contact",
   },
   {
-    body: "They can listen, sit beside you, or help remember questions without trying to fix everything.",
-    id: "trusted_person",
-    label: "Someone you trust",
+    body: "Keep the date, place, and any preparation instructions together so the next visit is easier to find.",
+    id: "appointment_details",
+    label: "Appointment details",
   },
   {
-    body: "You can return for calm explanations, review a lesson, or write down a new question.",
+    body: "Use one dependable place to review unfamiliar terms and capture questions before the visit.",
     id: "learning_space",
-    label: "A steady learning space",
+    label: "Question parking place",
   },
 ] as const;
 
-type SupportOptionId = (typeof supportOptions)[number]["id"];
+type FollowUpAnchorId = (typeof followUpAnchors)[number]["id"];
 
 const appointmentQuestions = [
   "What do my test results mean?",
@@ -387,7 +388,7 @@ export function FirstFiveMinutesExperience({
   );
   const [packedTodayItems, setPackedTodayItems] = useState<Set<FirstDayBagItemId>>(() => new Set());
   const [bagMessage, setBagMessage] = useState<string | null>(null);
-  const [openedSupport, setOpenedSupport] = useState<Set<SupportOptionId>>(() => new Set());
+  const [openedFollowUp, setOpenedFollowUp] = useState<Set<FollowUpAnchorId>>(() => new Set());
   const [appointmentQuestion, setAppointmentQuestion] = useState<
     (typeof appointmentQuestions)[number] | null
   >(null);
@@ -483,8 +484,8 @@ export function FirstFiveMinutesExperience({
     );
   }
 
-  function openSupport(id: SupportOptionId) {
-    setOpenedSupport((current) => new Set([...current, id]));
+  function openFollowUp(id: FollowUpAnchorId) {
+    setOpenedFollowUp((current) => new Set([...current, id]));
   }
 
   function openSafetyPanel(panel: "planned" | "urgent") {
@@ -540,7 +541,7 @@ export function FirstFiveMinutesExperience({
     if (screen === 7) return manageabilityRevealed;
     if (screen === 8) return viewedSafetyPanels.size === 2;
     if (screen === 9) return packedTodayItems.size === 3;
-    if (screen === 10) return openedSupport.size === supportOptions.length;
+    if (screen === 10) return openedFollowUp.size === followUpAnchors.length;
     if (screen === 11) return appointmentQuestion !== null;
     if (screen === 12) return surprise !== null;
     if (screen === 13) return tinyAction !== null;
@@ -552,7 +553,7 @@ export function FirstFiveMinutesExperience({
     if (screen === 4) return "Tap through all four cards before continuing.";
     if (screen === 8) return "Open both cards to compare what can wait with what cannot.";
     if (screen === 9) return "Place the three useful first-day ideas in your bag.";
-    if (screen === 10) return "Open all three sources of support.";
+    if (screen === 10) return "Open all three follow-up anchors.";
     if (screen === 11) return "Choose one question for your next healthcare conversation.";
     if (screen === 12) return "Choose one reflection to continue.";
     if (screen === 13) return "Choose one small next step to continue.";
@@ -570,12 +571,12 @@ export function FirstFiveMinutesExperience({
       "See what manageable means",
       "Know what should not wait",
       "Pack what matters today",
-      "See where support can come from",
+      "Set up the first follow-up",
       "Save one question",
       "Pause and reflect",
       "Choose one small next step",
       "Review the three truths",
-      "See today’s takeaway",
+      "Review first-day essentials",
     ] as const;
 
     return labels[screen] ?? "Continue";
@@ -1031,25 +1032,25 @@ export function FirstFiveMinutesExperience({
           <div className="space-y-9">
             <div className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
               <div className="space-y-5 lg:order-2">
-                <ExperienceHeading eyebrow="Support is part of care">
-                  You were never meant to hold this alone.
+                <ExperienceHeading eyebrow="The first follow-up">
+                  Know where the next steps live.
                 </ExperienceHeading>
                 <p className="text-lg leading-8 text-muted-foreground">
-                  Support does not remove your independence. It gives you more places to set down a
-                  question, remember a detail, or take a breath.
+                  Today does not require a complete care plan. These three anchors make the next
+                  appointment easier to locate, prepare for, and use.
                 </p>
               </div>
-              <SupportUmbrella openedCount={openedSupport.size} />
+              <SupportUmbrella openedCount={openedFollowUp.size} />
             </div>
             <LessonStoryImage
               alt="Two women share a long supportive hug on a sunny porch after a healthcare visit"
-              caption="A trusted person can listen, remember details, come to an appointment, or simply help the day feel less lonely."
-              emphasis="Support is part of care."
+              caption="If you want company, someone you trust can help hold the appointment details or come with you. The follow-up still belongs to you."
+              emphasis="The next step can be concrete."
               src="/lessons/day-01/supported-not-alone.jpg"
             />
             <div className="grid gap-4 sm:grid-cols-3">
-              {supportOptions.map((option) => {
-                const opened = openedSupport.has(option.id);
+              {followUpAnchors.map((option) => {
+                const opened = openedFollowUp.has(option.id);
                 return (
                   <button
                     aria-expanded={opened}
@@ -1058,7 +1059,7 @@ export function FirstFiveMinutesExperience({
                       opened && "border-success",
                     )}
                     key={option.id}
-                    onClick={() => openSupport(option.id)}
+                    onClick={() => openFollowUp(option.id)}
                     type="button"
                   >
                     <span className="editorial-eyebrow text-success">
@@ -1076,12 +1077,12 @@ export function FirstFiveMinutesExperience({
                 );
               })}
             </div>
-            {openedSupport.size === supportOptions.length ? (
+            {openedFollowUp.size === followUpAnchors.length ? (
               <p
                 aria-live="polite"
                 className="animate-fade-in font-serif-display text-2xl italic leading-8 text-success"
               >
-                Asking for support is one way of caring for yourself.
+                You now know where to place the appointment, the contact, and the question.
               </p>
             ) : null}
           </div>
@@ -1222,7 +1223,7 @@ export function FirstFiveMinutesExperience({
           <div className="space-y-8">
             <div className="mx-auto max-w-3xl space-y-4 text-center">
               <ExperienceHeading eyebrow="Let the important parts settle">
-                Three truths are enough to remember.
+                Your first-day map has three anchors.
               </ExperienceHeading>
               <p className="text-lg leading-8 text-muted-foreground">
                 The details can return later. These are the ideas worth carrying out of your first
@@ -1241,7 +1242,7 @@ export function FirstFiveMinutesExperience({
           <div className="space-y-10 py-6 sm:py-10">
             <ArrivalIllustration />
             <div className="space-y-3">
-              <ExperienceHeading eyebrow="Today you learned">
+              <ExperienceHeading eyebrow="First-day essentials">
                 Before you leave today...
               </ExperienceHeading>
             </div>
@@ -1383,7 +1384,7 @@ export function FirstFiveMinutesExperience({
       </p>
 
       <Modal
-        description="Your place in today’s experience will be saved on this device. Your thoughts, worries, support choices, appointment question, reflection, and next step are not saved."
+        description="Your place in today’s experience will be saved on this device. Your thoughts, worries, follow-up selections, appointment question, reflection, and next step are not saved."
         onOpenChange={setExitOpen}
         open={exitOpen}
         title="Leave for now?"

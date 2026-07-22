@@ -87,7 +87,7 @@ const motionCopy: Record<LessonMotionVariant, { label: string; cue: string; capt
       "A seated person standing, stretching, and sitting again to interrupt a long still period",
     cue: "Watch one short stand divide a long still period into smaller sections.",
     caption:
-      "A brief interruption changes one long still period into shorter sections. The useful change is the break, not a perfect workout.",
+      "A brief interruption changes one long still period into shorter sections. The useful change is the break, not a formal workout.",
   },
 };
 

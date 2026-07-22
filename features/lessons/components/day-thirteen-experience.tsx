@@ -47,27 +47,28 @@ const identityIdeas = [
 
 const myths = [
   {
-    id: "cause",
-    myth: "You caused your diabetes.",
+    id: "disclosure",
+    myth: "You should explain your diabetes whenever someone asks.",
     reality:
-      "Type 2 diabetes develops through many interacting factors. Blame is neither accurate nor useful.",
+      "Disclosure belongs to the person living with diabetes. A question does not create an obligation to share private health information.",
   },
   {
-    id: "food",
-    myth: "People with diabetes can never enjoy dessert.",
+    id: "monitoring",
+    myth: "Concern gives family permission to monitor food and numbers.",
     reality:
-      "Favorite foods can fit within an overall eating pattern. Food is not a test of character.",
+      "Concern still needs consent. Helpful involvement is invited, specific, and open to a no.",
   },
   {
-    id: "medicine",
-    myth: "Needing medicine means you failed.",
-    reality: "Medicine is one treatment tool. It cannot measure effort, discipline, or worth.",
+    id: "independence",
+    myth: "Asking for help means losing independence.",
+    reality:
+      "Chosen support can protect independence by reducing burden while leaving decisions with the person.",
   },
   {
-    id: "appearance",
-    myth: "You can tell who has diabetes by looking.",
+    id: "impact",
+    myth: "A joke is harmless if the speaker did not mean it badly.",
     reality:
-      "There is no diabetes look. People of many ages, backgrounds, and body types live with it.",
+      "Intent and impact are different. The person affected can name the impact and set a boundary.",
   },
 ] as const;
 type MythId = (typeof myths)[number]["id"];
@@ -499,14 +500,14 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
     return [
       "Choose how support feels as you begin.",
       "Choose one identity or write a few words of your own.",
-      "Open all four myth cards and complete the fact check.",
+      "Decode all four social assumptions and complete the response check.",
       "Sort all four examples and answer the support question.",
       "Choose a kind of support, a person, and one specific request.",
       "Choose a situation and rehearse the respectful boundary.",
       "Choose the response that protects both the need and the person's privacy.",
       "Choose at least three supports across at least two circles.",
       "Choose one form of emotional support that could help today.",
-      "Complete the reflection, confidence check, and teach-back.",
+      "Complete the reflection, confidence check, and support definition.",
     ][stage];
   }
 
@@ -514,7 +515,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
     return (
       [
         "Remember the whole person",
-        "Unpack stigma",
+        "Decode the social rules",
         "Compare support and control",
         "Build a useful request",
         "Practice a boundary",
@@ -522,7 +523,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         "Map your support system",
         "Include emotional health",
         "Put the lesson into words",
-        "See what you can carry forward",
+        "Review the relationship agreements",
       ][stage] ?? "Continue"
     );
   }
@@ -646,13 +647,12 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
       case 2:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Stigma uses shortcuts">
-              Open the myth. Keep the fuller story.
+            <LessonHeading label="Stigma writes social rules">
+              Spot the assumption hiding inside the comment.
             </LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              A myth can still hurt even when the person repeating it “means well.” Facts do not
-              erase that impact, but they can keep someone else’s assumption from becoming your
-              shame.
+              These are not repeats of biology, food, or medication lessons. They are relationship
+              claims about privacy, permission, independence, and impact.
             </p>
             <div className={styles.mythGrid}>
               {myths.map((item, index) => {
@@ -666,22 +666,30 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                     type="button"
                   >
                     <span>0{index + 1}</span>
-                    <p className="editorial-eyebrow">{opened ? "Reality" : "Common myth"}</p>
+                    <p className="editorial-eyebrow">
+                      {opened ? "Who actually decides" : "Unspoken social rule"}
+                    </p>
                     <h2>{opened ? item.reality : "“" + item.myth + "”"}</h2>
-                    <small>{opened ? "Keep the full story" : "Open the reality"}</small>
+                    <small>{opened ? "Choice stays with the person" : "Reveal the right"}</small>
                   </button>
                 );
               })}
             </div>
             <div className={styles.knowledgePanel}>
-              <p className="editorial-eyebrow">Fact check</p>
-              <h2>Which statement is accurate?</h2>
+              <p className="editorial-eyebrow">Response check</p>
+              <h2>What can someone do when a stigmatizing comment lands?</h2>
               <div className="mt-5 grid gap-3">
                 {(
                   [
-                    ["many_factors", "Type 2 diabetes is influenced by many interacting factors."],
-                    ["sugar_only", "Type 2 diabetes is caused by one food choice."],
-                    ["visible_condition", "You can reliably identify diabetes by appearance."],
+                    [
+                      "name_impact",
+                      "Name the impact, set a limit, and decide whether to continue the conversation.",
+                    ],
+                    [
+                      "prove_worth",
+                      "Explain every health decision until the other person approves.",
+                    ],
+                    ["stay_silent", "Stay silent because good intentions cancel the impact."],
                   ] as const
                 ).map(([answer, label]) => (
                   <AnswerChoice
@@ -1121,7 +1129,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               </div>
             </div>
             <div className={styles.knowledgePanel}>
-              <p className="editorial-eyebrow">One-sentence teach-back</p>
+              <p className="editorial-eyebrow">Define support without control</p>
               <h2>What makes support helpful?</h2>
               <div className="mt-5 grid gap-3">
                 {(
@@ -1163,7 +1171,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               <span>Ask · Listen · Offer · Check</span>
             </div>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
-              <p className="editorial-eyebrow">Three truths worth carrying</p>
+              <p className="editorial-eyebrow">Relationship agreements</p>
               <ol className={styles.takeawayList}>
                 {[
                   "Diabetes is a condition you manage, not an identity or a verdict about your character.",

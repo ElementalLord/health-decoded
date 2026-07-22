@@ -68,7 +68,7 @@ test("Day 12 turns the curriculum activities into user-input interactions", () =
   assert.match(experience, /lifeToolChoices\.size >= 2/);
   assert.match(experience, /Your Plan B/);
   assert.match(experience, /scriptSituation/);
-  assert.match(experience, /One-sentence teach-back/);
+  assert.match(experience, /Run the solver/);
 });
 
 test("Day 12 teaches illness and missed-dose safety without inventing one universal rule", () => {

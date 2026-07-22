@@ -13,8 +13,8 @@ const dayTenEvaluationSchema = z.discriminatedUnion("stage", [
     .strict(),
   z
     .object({
-      answer: z.enum(["next_decision", "week_ruined", "make_up_for_it"]),
-      stage: z.literal("setback"),
+      answer: z.enum(["notice_completion", "raise_difficulty", "add_punishment"]),
+      stage: z.literal("closure"),
     })
     .strict(),
   z
@@ -63,17 +63,15 @@ export async function evaluateDayTenAction(input: unknown): Promise<DayTenEvalua
     };
   }
 
-  if (data.stage === "setback") {
-    const accurate = data.answer === "next_decision";
+  if (data.stage === "closure") {
+    const accurate = data.answer === "notice_completion";
     return {
       data: {
         accurate,
         body: accurate
-          ? "A party, a missed walk, a tired evening, none of them erase your progress. Ask “what is the healthiest thing I can do next?” and take that one step, without guilt."
-          : "Writing off the whole week, or punishing yourself to make up for one evening, turns one moment into many. Your routine is still there, and returning to it after interruptions is what makes it last.",
-        heading: accurate
-          ? "The next step is the whole plan."
-          : "One evening is a pause, not a verdict.",
+          ? "A simple finish cue makes the completed action visible and lets the routine end. It does not require a bigger version, a special feeling, or a grade."
+          : "Doubling the next version or grading an easy routine changes completion into pressure. A neutral check mark or kind closing phrase is enough.",
+        heading: accurate ? "The loop has a clear ending." : "Completion does not need a penalty.",
       },
       ok: true,
     };
@@ -84,11 +82,9 @@ export async function evaluateDayTenAction(input: unknown): Promise<DayTenEvalua
     data: {
       accurate,
       body: accurate
-        ? "Simple routines make healthy choices easier, and returning to them after interruptions is what makes them last. Consistency, not perfection, is what quietly adds up."
-        : "No one makes perfect choices every day, and motivation fades by evening. Routines are stronger than both: decide once, repeat gently, and come back without guilt.",
-      heading: accurate
-        ? "That is the secret, gently put."
-        : "Perfection and motivation both run out.",
+        ? "Simple routines reduce decisions by linking an approachable action to an existing anchor, arranging a visible support, and marking a clear finish."
+        : "Motivation and constant willpower are unreliable design tools. A routine is clearer: decide the anchor, action, environment support, and finish cue in advance.",
+      heading: accurate ? "That is the routine recipe." : "Bring the design back into the answer.",
     },
     ok: true,
   };

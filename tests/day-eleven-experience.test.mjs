@@ -15,9 +15,9 @@ const unlockMigration = readFileSync(
   "utf8",
 );
 
-test("Day 11 uses one custom ten-chapter experience", () => {
+test("Day 11 uses one custom nine-chapter experience", () => {
   assert.match(player, /if \(lesson\.dayNumber === 11\) return <DayElevenExperience/);
-  assert.match(experience, /const stageCount = 10/);
+  assert.match(experience, /const stageCount = 9/);
   assert.match(experience, /Your future deserves a plan, not a fear story/);
   assert.match(experience, /Protection grows wherever care keeps showing up/);
 });
@@ -48,7 +48,7 @@ test("Day 11 turns the blueprint activities into user-input interactions", () =>
   assert.match(experience, /Pack your care compass/);
   assert.match(experience, /careChoices\.size >= 4/);
   assert.match(experience, /Which preventive check surprised you most/);
-  assert.match(experience, /One-sentence teach-back/);
+  assert.match(experience, /Eye-screening rationale/);
 });
 
 test("Day 11 teaches each required protection concept without fear framing", () => {

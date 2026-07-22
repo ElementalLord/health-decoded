@@ -19,7 +19,7 @@ const dayThreeEvaluationSchema = z.discriminatedUnion("stage", [
     .strict(),
   z
     .object({
-      answer: z.enum(["highest_point", "repeated_mornings", "best_day"]),
+      answer: z.enum(["exact_today", "daily_variation", "personal_goal"]),
       stage: z.literal("pattern"),
     })
     .strict(),
@@ -122,43 +122,43 @@ const thresholdFeedback: Record<
 };
 
 const patternFeedback: Record<
-  "highest_point" | "repeated_mornings" | "best_day",
+  "exact_today" | "daily_variation" | "personal_goal",
   DayThreeEvaluationFeedback
 > = {
-  highest_point: {
+  exact_today: {
     accurate: false,
-    body: "The highest dot may be worth noticing, but one dot cannot explain what usually happens or what surrounded that reading.",
-    heading: "One point is a clue, not the whole pattern.",
+    body: "A1C cannot identify which exact morning was highest. That requires a dated point-in-time record, not a longer average.",
+    heading: "A1C does not replay a specific day.",
     whyOthers: [
-      "Repeated morning readings show something recurring across several days.",
-      "The lowest or most reassuring day is also only one part of the picture.",
+      "A longer average does not preserve every daily rise and fall.",
+      "A personal treatment goal is decided separately with a healthcare professional.",
     ],
   },
-  repeated_mornings: {
+  daily_variation: {
     accurate: true,
-    body: "A similar morning shape appearing across several days is a pattern. That gives a care team more context than choosing only the highest or lowest point.",
-    heading: "You looked for repetition, not drama.",
+    body: "A1C estimates average glucose exposure across a longer window. It cannot reconstruct the precise timing and shape of each day inside that average.",
+    heading: "An average compresses the timeline.",
     whyOthers: [
-      "The single highest point may have a one-time context.",
-      "The best-looking day cannot represent every other day.",
+      "A dated meter or sensor record is needed to inspect individual moments.",
+      "A personal goal comes from a care decision, not from reverse-engineering an average.",
     ],
   },
-  best_day: {
+  personal_goal: {
     accurate: false,
-    body: "A reassuring day is still useful information, but it cannot stand in for the rest of the week.",
-    heading: "One good day is still one day.",
+    body: "A1C does not determine one universal treatment goal. Goals are individualized with a healthcare professional.",
+    heading: "A result and a goal are different things.",
     whyOthers: [
-      "Repeated morning readings reveal what happened more than once.",
-      "The highest point alone also lacks enough context.",
+      "The chart’s individual moments are also not recoverable from A1C alone.",
+      "Diagnostic cut points and treatment goals do different jobs.",
     ],
   },
 };
 
-const mythAnswers = ["single_moment", "single_moment", "pattern_reasoning"] as const;
+const mythAnswers = ["single_moment", "single_moment", "single_moment"] as const;
 const mythBodies = [
-  "One unexpectedly high reading does not erase every other reading or explain the entire condition. It is one moment to place in context.",
-  "One balanced meal can be a useful choice, but it does not make Type 2 diabetes disappear. Longer patterns matter more than a single meal.",
-  "Several readings gathered with timing and context can reveal repetition. That is why patterns are more useful than praise or blame for one result.",
+  "A morning finger-stick and A1C describe different time windows, so they are not expected to match as if they were the same measurement.",
+  "A diagnostic threshold helps identify a condition. A personal treatment goal is chosen separately with a healthcare professional.",
+  "A1C and glucose tests can differ because they examine different windows or conditions. A clinician can check timing, method, health context, and factors that affect accuracy.",
 ] as const;
 
 export async function evaluateDayThreeAction(input: unknown): Promise<DayThreeEvaluationResult> {
@@ -183,13 +183,11 @@ export async function evaluateDayThreeAction(input: unknown): Promise<DayThreeEv
       data: {
         accurate,
         body: mythBodies[data.statement]!,
-        heading: accurate
-          ? "That keeps the number in context."
-          : "That asks one moment to explain too much.",
+        heading: accurate ? "That separates the test jobs." : "Keep each test in its own job.",
         whyOthers: [
           data.answer === "single_moment"
-            ? "Pattern reasoning looks for repetition across time and context."
-            : "A single-moment conclusion treats one result or choice as the whole story.",
+            ? "The statement merges measurements, thresholds, or purposes that need to stay distinct."
+            : "The two tests or clinical decisions in this statement are not interchangeable.",
         ],
       },
     };

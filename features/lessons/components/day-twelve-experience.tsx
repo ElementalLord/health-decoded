@@ -485,7 +485,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
       "Choose the safe response to Jordan's symptoms.",
       "Choose the safe response to a missed medication dose.",
       "Choose a Plan A disruption and a Plan B response.",
-      "Complete the three-part script and the teach-back.",
+      "Complete the three-part script and run the solver once more.",
     ][stage];
   }
 
@@ -500,7 +500,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         "Handle a missed dose safely",
         "Build Plan B",
         "Write your real-life script",
-        "See what you can carry forward",
+        "Review the problem-solving sequence",
       ][stage] ?? "Continue"
     );
   }
@@ -638,7 +638,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 and you still need to decide what happens next.
               </p>
             </div>
-            <div className={styles.solverLine} aria-label="Problem-solving sequence">
+            <div className={styles.solverLine} aria-label="Four-step real-life solver">
               {solverSteps.map((item) => (
                 <div key={item.id}>
                   <span>{item.number}</span>
@@ -782,53 +782,56 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
       case 5:
         return (
           <div className="space-y-9">
-            <LessonHeading label="A calm safety net">
-              Knowing when to call is part of the plan, not a sign you failed.
+            <LessonHeading label="Make the call usable">
+              A clear handoff helps the care team answer the real question.
             </LessonHeading>
             <div className={styles.signalBoard}>
               <div>
                 <span className={styles.signalMark} data-tone="steady" />
-                <p className="editorial-eyebrow">Follow the written plan</p>
+                <p className="editorial-eyebrow">What changed</p>
                 <p>
-                  Mild symptoms, able to drink, thinking clearly, and able to follow instructions.
+                  Symptoms, when they began, ability to drink or eat, and whether anything is
+                  worsening.
                 </p>
               </div>
               <div>
                 <span className={styles.signalMark} data-tone="call" />
-                <p className="editorial-eyebrow">Call the care team</p>
+                <p className="editorial-eyebrow">What you already followed</p>
                 <p>
-                  Unsure about medicines, repeated vomiting or diarrhea, signs of dehydration, or
-                  glucose and ketone concerns named in the personal plan.
+                  The written sick-day instructions, fluids, exact medicine names, and readings or
+                  ketones only when the personal plan asks for them.
                 </p>
               </div>
               <div>
                 <span className={styles.signalMark} data-tone="urgent" />
-                <p className="editorial-eyebrow">Emergency help now</p>
+                <p className="editorial-eyebrow">What you need answered</p>
                 <p>
-                  Severe trouble breathing, new confusion, difficulty waking or staying awake,
-                  severe abdominal pain, or being unable to keep liquids down with worsening
-                  illness.
+                  What to do next, which written instruction applies, and what change should prompt
+                  another call or urgent help.
                 </p>
               </div>
             </div>
             <div className={styles.scenarioPanel}>
               <p className="editorial-eyebrow">Jordan&apos;s sick day</p>
-              <h2>Jordan is vomiting repeatedly and cannot keep water down.</h2>
-              <p>Jordan feels weaker and is unsure what to do next.</p>
+              <h2>Jordan has a fever, can drink, and is thinking clearly, but is eating less.</h2>
+              <p>Jordan has the written plan nearby but is unsure how one instruction applies.</p>
             </div>
             <div className="border-y border-border py-8">
-              <p className={styles.promptTitle}>What is the safest next step?</p>
+              <p className={styles.promptTitle}>What makes the care-team call most useful?</p>
               <div className="mt-6 grid gap-3">
                 {(
                   [
                     [
-                      "seek_urgent_help",
-                      "Use the sick-day instructions and seek urgent medical help now; use emergency services if severe symptoms are present.",
+                      "call_with_details",
+                      "Share what changed, what the written plan says, the exact medicines involved, and the specific question that remains.",
                     ],
-                    ["wait_it_out", "Wait until tomorrow without telling anyone."],
                     [
-                      "ignore_fluids",
-                      "Focus only on food and ignore the trouble keeping fluids down.",
+                      "guess_medicine",
+                      "Guess which medicine rule applies and call only if it fails.",
+                    ],
+                    [
+                      "wait_without_plan",
+                      "Wait without using the written plan because the symptoms are not dramatic.",
                     ],
                   ] as const
                 ).map(([answer, label]) => (
@@ -846,8 +849,9 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <div className={styles.urgentNote}>
               <ShieldAlert aria-hidden="true" />
               <p>
-                If you think someone may be in immediate danger, contact local emergency services.
-                Do not rely on this lesson to decide whether an emergency is serious enough.
+                Day 9 owns emergency-signal practice. Keep that action plan available: severe
+                trouble breathing, new confusion, difficulty waking, or another immediate danger
+                needs emergency help rather than a routine message.
               </p>
             </div>
           </div>
@@ -1025,7 +1029,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               </blockquote>
             ) : null}
             <div className={styles.teachBack}>
-              <p className="editorial-eyebrow">One-sentence teach-back</p>
+              <p className="editorial-eyebrow">Run the solver</p>
               <h2>
                 A friend says, “Yesterday went badly, so I have to wait until Monday and start over
                 perfectly.” What would you say?
@@ -1071,7 +1075,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               <span>Pause · Understand · Choose · Adjust</span>
             </div>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
-              <p className="editorial-eyebrow">Three truths worth carrying</p>
+              <p className="editorial-eyebrow">Problem-solving sequence</p>
               <ol className={styles.takeawayList}>
                 {[
                   "One meal, missed routine, or difficult day does not decide your health. Adaptability is a diabetes skill.",
