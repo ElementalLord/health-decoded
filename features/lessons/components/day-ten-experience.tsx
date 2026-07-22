@@ -15,6 +15,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-ten-experience.module.css";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -878,6 +879,13 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                 </p>
               </div>
             </div>
+            <LessonStoryImage
+              alt="A multigenerational family laughs while finishing dinner and gathering jackets and walking shoes"
+              caption="Shared meals, reminders, and a short walk can become family rhythms. A routine is allowed to feel warm, social, and flexible."
+              emphasis="Care can be something people do together."
+              priority
+              src="/lessons/day-10/routine-together.jpg"
+            />
             <DayRhythmAnimation />
             <div className="grid gap-3 sm:grid-cols-2">
               {openingFeelings.map(([id, label]) => (
@@ -1089,6 +1097,12 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
             <LessonHeading label="Make the healthy choice the easy choice">
               Your environment votes on your habits all day long.
             </LessonHeading>
+            <LessonStoryImage
+              alt="A woman places walking shoes by the door beside a jacket and water while breakfast is ready nearby"
+              caption="Shoes by the door, water within reach, and care tools near an existing routine reduce how much the moment has to ask of you."
+              emphasis="Preparation can carry the remembering."
+              src="/lessons/day-10/kind-environment.jpg"
+            />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               A fruit bowl you can see beats a promise you have to remember. Instead of relying only
               on willpower, set up your space so the healthy choice is the near one. Choose the

@@ -32,6 +32,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -508,6 +509,13 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
             <DayTwoHeading label="A quick connection">
               Yesterday, you learned the main idea
             </DayTwoHeading>
+            <LessonStoryImage
+              alt="A diabetes educator and an adult learner study a simple body-and-food sketch together at a table"
+              caption="The goal is not to memorize a perfect diagram. It is to build an explanation you can use and ask questions about."
+              emphasis="Understanding grows through conversation."
+              priority
+              src="/lessons/day-02/learning-together.jpg"
+            />
             <Card className="rounded-[1rem] border-accent-warm/20 bg-[#f1e8df] p-6 sm:p-8">
               <p className="text-lg leading-8">
                 Type 2 diabetes means that too much glucose is staying in your blood.
@@ -556,6 +564,12 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
                 range as effectively as it should.
               </p>
             </div>
+            <LessonStoryImage
+              alt="Two older adults laugh while tending vegetables together in a community garden"
+              caption="Diabetes changes how the body handles glucose; it does not erase strength, pleasure, usefulness, or a life shared with other people."
+              emphasis="Your body is still capable."
+              src="/lessons/day-02/capable-life.jpg"
+            />
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
               {previewItems.map(([id, label]) => (
                 <button

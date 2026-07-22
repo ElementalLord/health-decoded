@@ -27,6 +27,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-eleven-experience.module.css";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -996,6 +997,12 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="Quiet does not mean invisible">
               Screening works best before symptoms need to get your attention.
             </LessonHeading>
+            <LessonStoryImage
+              alt="A patient sits comfortably at a retinal camera while an eye-care clinician explains the exam and a partner offers support"
+              caption="A routine eye exam can find small changes before vision feels different, creating more time for protection and follow-up."
+              emphasis="Screening looks ahead with care."
+              src="/lessons/day-11/eye-care.jpg"
+            />
             <QuietSignalScannerAnimation />
             <div className={styles.silentNote}>
               <p className="editorial-eyebrow">Symptoms or no symptoms?</p>
@@ -1160,6 +1167,12 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="Pack your care compass">
               A preventive visit is easier when your questions arrive with you.
             </LessonHeading>
+            <LessonStoryImage
+              alt="A clinician gently checks a woman's foot during a routine visit while her partner sits close and holds her hand"
+              caption="Foot, eye, kidney, blood-pressure, and lab checks create chances to notice change early and respond before it becomes harder."
+              emphasis="Regular checks are acts of protection."
+              src="/lessons/day-11/preventive-visit.jpg"
+            />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Build a sample checklist for a future care conversation. Choose at least four topics
               you would want to remember. This stays in your browser and is not saved as health

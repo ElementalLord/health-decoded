@@ -34,6 +34,7 @@ import { completeLessonAction } from "@/features/lessons/actions/lesson-completi
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-three-experience.module.css";
 import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -747,6 +748,13 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                 </p>
               </div>
             </div>
+            <LessonStoryImage
+              alt="A woman calmly checks her glucose at breakfast and writes a note beside the meter"
+              caption="The reading becomes more useful when it travels with timing, food, sleep, stress, symptoms, and the question you want answered."
+              emphasis="A number needs context."
+              priority
+              src="/lessons/day-03/reading-with-context.jpg"
+            />
             <div className="grid gap-6 border-y border-border py-8 sm:grid-cols-[1fr_0.85fr] sm:items-center">
               <div className="space-y-4 text-lg leading-8 text-foreground/80">
                 <p>
@@ -1412,6 +1420,12 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
             <DayThreeHeading label="Several clues, one conversation">
               Why is one test sometimes not enough?
             </DayThreeHeading>
+            <LessonStoryImage
+              alt="A patient and clinician sit together and review a simple glucose pattern on a tablet"
+              caption="Several results can reveal what repeats. Your care team adds symptoms, routines, medications, and goals before deciding what the pattern means."
+              emphasis="Patterns are interpreted together."
+              src="/lessons/day-03/reviewing-patterns.jpg"
+            />
             <div className="grid gap-4 sm:grid-cols-3">
               {[
                 ["One moment", "Fasting or random glucose", Droplets],

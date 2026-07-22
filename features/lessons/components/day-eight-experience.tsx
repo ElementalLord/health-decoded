@@ -15,6 +15,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-eight-experience.module.css";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -934,6 +935,13 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
                 </p>
               </div>
             </div>
+            <LessonStoryImage
+              alt="A woman calmly adds context to a notebook beside a glucose meter, a meal, and her work bag"
+              caption="Food, timing, sleep, stress, medicine, illness, and activity can all help explain a reading. Curiosity is more useful than judgment."
+              emphasis="A reading is a clue, not a grade."
+              priority
+              src="/lessons/day-08/context-not-judgment.jpg"
+            />
             <DashboardAnimation />
             <div className="grid gap-3 sm:grid-cols-2">
               {openingFeelings.map(([id, label]) => (
@@ -1171,6 +1179,12 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
             <LessonHeading label="Monitoring is a conversation">
               Data becomes useful when it can support a question.
             </LessonHeading>
+            <LessonStoryImage
+              alt="A patient and clinician point together to a simple pattern on a tablet beside meal and sleep context"
+              caption="A pattern can open a question about meals, sleep, stress, medicine, or timing. Meaning comes from the conversation around it."
+              emphasis="Bring the pattern and the context."
+              src="/lessons/day-08/pattern-conversation.jpg"
+            />
             <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
               <CareConversationAnimation />
               <div className="grid gap-3">

@@ -32,6 +32,7 @@ import { completeLessonAction } from "@/features/lessons/actions/lesson-completi
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import styles from "@/features/lessons/components/day-four-experience.module.css";
 import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-figure";
+import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -570,6 +571,13 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 </p>
               </div>
             </div>
+            <LessonStoryImage
+              alt="Family and friends of several generations laugh while cooking rice, beans, vegetables, and flatbread together"
+              caption="A diabetes-supportive meal does not require abandoning the foods, people, and traditions that make a table feel like home."
+              emphasis="Culture belongs in the plan."
+              priority
+              src="/lessons/day-04/food-and-culture.jpg"
+            />
             <div className="grid gap-7 border-y border-border py-8 sm:grid-cols-[1fr_0.9fr] sm:items-center">
               <div className="space-y-4 text-lg leading-8 text-foreground/80">
                 <p>
@@ -1177,6 +1185,12 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
             <DayFourHeading label="Favorite foods stay in the story">
               Practice a “yes, and” instead of a ban.
             </DayFourHeading>
+            <LessonStoryImage
+              alt="A diverse group of adult friends laugh and share varied dishes around a restaurant table"
+              caption="A satisfying meal can include favorite food, helpful context, and connection. No plate at this table is a test of character."
+              emphasis="Eating with joy is not failure."
+              src="/lessons/day-04/table-without-guilt.jpg"
+            />
             <div className="grid gap-7 rounded-[1rem] border border-accent-warm/25 bg-[#efe3d8] p-6 sm:grid-cols-[14rem_1fr] sm:items-center sm:p-9">
               <div className="flex aspect-square items-center justify-center rounded-full bg-card shadow-card">
                 <Icon aria-hidden="true" className="size-20 text-accent-warm" strokeWidth={1.1} />
