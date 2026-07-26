@@ -55,6 +55,28 @@ test("Day 14 uses three human SVG scenes with native continuous motion", () => {
   assert.doesNotMatch(experience, /type="range"|slider|lighthouse|lantern|random graph/i);
 });
 
+test("Day 14 keeps the passing cloud physically attached to its rain", () => {
+  assert.match(
+    experience,
+    /className=\{styles\.weatherSystem\}[\s\S]*className=\{styles\.rainCloud\}[\s\S]*className=\{styles\.rainDrops\}[\s\S]*values="-180 0;150 0;510 0"/,
+  );
+  assert.match(experience, /values="0 -5;0 70"/);
+  assert.doesNotMatch(experience, /values="0 -10;70 86"/);
+});
+
+test("Day 14 replaces static recap blocks with emotional user-controlled scenes", () => {
+  assert.match(experience, /function ThenNowStory/);
+  assert.match(experience, /useState<"then" \| "now">/);
+  assert.match(experience, /At the beginning/);
+  assert.match(experience, /Fourteen days later/);
+  assert.match(experience, /The questions did not disappear\. You became less alone inside them/);
+  assert.match(experience, /function ToolPracticeStudio/);
+  assert.match(experience, /useState<EverydayToolId>\("food"\)/);
+  assert.match(experience, /Choose a tool to explore/);
+  assert.match(experience, /One tool, inside one real moment/);
+  assert.doesNotMatch(experience, /beforeAfter|toolLines/);
+});
+
 test("Day 14 grounds recognition and optimism in two unique human scenes", () => {
   assert.match(experience, /quiet-recognition\.jpg/);
   assert.match(experience, /life-keeps-growing\.jpg/);
@@ -99,6 +121,7 @@ test("Day 14 uses an open editorial layout instead of a modern card dashboard", 
   assert.doesNotMatch(styles, /box-shadow:/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:1\.5rem|2rem|3rem)/);
+  assert.doesNotMatch(styles, /border-left|border-inline-start|border-right/);
   assert.doesNotMatch(experience, /rounded-full/);
 });
 

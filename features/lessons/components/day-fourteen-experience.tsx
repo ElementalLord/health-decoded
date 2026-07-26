@@ -33,6 +33,39 @@ const nextSteps = [
   ["return", "Practice returning after one interrupted day"],
 ] as const;
 
+const everydayTools = [
+  {
+    body: "Build around a familiar meal instead of replacing your life with a rulebook. Add balance where it helps, keep culture and enjoyment in the room, and let one plate remain one plate.",
+    id: "food",
+    invitation: "What could join a meal you already love?",
+    label: "At the table",
+    title: "Food can feel familiar and supportive.",
+  },
+  {
+    body: "Let movement meet the body and day you actually have. A friend, a favorite song, a garden, or a chair can turn a health task into a human moment.",
+    id: "movement",
+    invitation: "Where could movement feel more like living?",
+    label: "In motion",
+    title: "Movement can carry company and joy.",
+  },
+  {
+    body: "Knowing a medicine’s name, purpose, timing, and safety notes makes it a tool you can understand—not a symbol of failure or a mystery you must quietly manage.",
+    id: "medicine",
+    invitation: "Which medicine question would bring relief?",
+    label: "With medicine",
+    title: "Understanding can make medicine feel lighter.",
+  },
+  {
+    body: "Use a reading to answer a real question. Timing, context, and patterns make the number useful; judgment only makes it louder.",
+    id: "monitoring",
+    invitation: "What would you want a reading to help you learn?",
+    label: "With a reading",
+    title: "A number can become information again.",
+  },
+] as const;
+
+type EverydayToolId = (typeof everydayTools)[number]["id"];
+
 type MilestoneDraft = {
   arrivalFeeling: string | null;
   nextStep: string | null;
@@ -250,11 +283,41 @@ function ReturnAfterRainMotion() {
       <circle className={styles.treeLeaf} cx="595" cy="103" r="55" />
       <path className={styles.benchShape} d="M326 217h135M338 232h112M348 232l-9 31M440 232l9 31" />
 
-      <g className={styles.rainCloud}>
-        <ellipse cx="250" cy="75" rx="65" ry="27" />
-        <circle cx="219" cy="65" r="28" />
-        <circle cx="266" cy="55" r="36" />
-        <circle cx="301" cy="70" r="24" />
+      <g className={styles.weatherSystem}>
+        <g className={styles.rainCloud}>
+          <ellipse cx="250" cy="75" rx="65" ry="27" />
+          <circle cx="219" cy="65" r="28" />
+          <circle cx="266" cy="55" r="36" />
+          <circle cx="301" cy="70" r="24" />
+        </g>
+        <g className={styles.rainDrops}>
+          {[0, 1, 2, 3, 4].map((drop) => (
+            <path d={`M${202 + drop * 23} 112l-7 24`} key={drop}>
+              <animateTransform
+                attributeName="transform"
+                begin={`${drop * -0.24}s`}
+                dur="1.2s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 -5;0 70"
+              />
+              <animate
+                attributeName="opacity"
+                begin={`${drop * -0.24}s`}
+                dur="1.2s"
+                repeatCount="indefinite"
+                values="0;0.9;0"
+              />
+            </path>
+          ))}
+          <animate
+            attributeName="opacity"
+            dur="9s"
+            keyTimes="0;0.22;0.63;0.76;1"
+            repeatCount="indefinite"
+            values="0;1;1;0;0"
+          />
+        </g>
         <animateTransform
           attributeName="transform"
           dur="9s"
@@ -269,34 +332,6 @@ function ReturnAfterRainMotion() {
           keyTimes="0;0.15;0.72;1"
           repeatCount="indefinite"
           values="0;0.9;0.9;0"
-        />
-      </g>
-      <g className={styles.rainDrops}>
-        {[0, 1, 2, 3, 4].map((drop) => (
-          <path d={`M${172 + drop * 31} 108l-8 25`} key={drop}>
-            <animateTransform
-              attributeName="transform"
-              begin={`${drop * -0.28}s`}
-              dur="1.4s"
-              repeatCount="indefinite"
-              type="translate"
-              values="0 -10;70 86"
-            />
-            <animate
-              attributeName="opacity"
-              begin={`${drop * -0.28}s`}
-              dur="1.4s"
-              repeatCount="indefinite"
-              values="0;0.85;0"
-            />
-          </path>
-        ))}
-        <animate
-          attributeName="opacity"
-          dur="9s"
-          keyTimes="0;0.22;0.63;0.76;1"
-          repeatCount="indefinite"
-          values="0;1;1;0;0"
         />
       </g>
 
@@ -409,6 +444,362 @@ function FullLifePicnicMotion() {
         />
       </circle>
     </MotionFigure>
+  );
+}
+
+function ThenNowStory() {
+  const [view, setView] = useState<"then" | "now">("then");
+  const isNow = view === "now";
+
+  return (
+    <section className={styles.thenNowStory}>
+      <div
+        aria-label={
+          isNow
+            ? "Two people sit together at a table as a question becomes easier to share"
+            : "One person sits with a new diagnosis while many unanswered thoughts gather nearby"
+        }
+        className={styles.thenNowVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 330"
+        >
+          <rect className={isNow ? styles.nowWash : styles.thenWash} height="330" width="720" />
+          <circle
+            className={styles.storySun}
+            cx="620"
+            cy="66"
+            opacity={isNow ? "0.85" : "0.18"}
+            r="34"
+          >
+            <animate attributeName="r" dur="4.8s" repeatCount="indefinite" values="31;37;31" />
+          </circle>
+          <path className={styles.storyFloor} d="M36 268c198-8 444-8 648 0" />
+
+          {isNow ? (
+            <g className={styles.storyMoment} key="now">
+              <path className={styles.storyTable} d="M225 221h276M253 221v51M474 221v51" />
+              <path className={styles.storyNotebook} d="M333 204h68l12 17h-92z">
+                <animate
+                  attributeName="opacity"
+                  dur="3.8s"
+                  repeatCount="indefinite"
+                  values="0.7;1;0.7"
+                />
+              </path>
+              <g className={styles.personWarm}>
+                <circle cx="290" cy="143" r="23" />
+                <path d="M258 220v-48c0-25 13-38 32-38s32 13 32 38v48z" />
+                <path className={styles.personLine} d="M311 175c18 3 30 13 45 31" />
+                <animateTransform
+                  attributeName="transform"
+                  dur="5s"
+                  repeatCount="indefinite"
+                  type="rotate"
+                  values="0 290 220;-2 290 220;0 290 220"
+                />
+              </g>
+              <g className={styles.personSage}>
+                <circle cx="448" cy="141" r="23" />
+                <path d="M416 220v-49c0-25 13-38 32-38s32 13 32 38v49z" />
+                <path className={styles.personLine} d="M424 176c-19 5-30 14-43 30" />
+                <animateTransform
+                  attributeName="transform"
+                  dur="5s"
+                  repeatCount="indefinite"
+                  type="rotate"
+                  values="0 448 220;2 448 220;0 448 220"
+                />
+              </g>
+              <g className={styles.sharedQuestion}>
+                <path d="M329 100h82" />
+                <path d="M344 83h52" />
+                <animate
+                  attributeName="opacity"
+                  dur="4.2s"
+                  repeatCount="indefinite"
+                  values="0.25;1;1;0.25"
+                />
+                <animateTransform
+                  attributeName="transform"
+                  dur="4.2s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="-6 0;6 0;-6 0"
+                />
+              </g>
+            </g>
+          ) : (
+            <g className={styles.storyMoment} key="then">
+              <g className={styles.personBlue}>
+                <circle cx="360" cy="141" r="24" />
+                <path d="M326 228v-54c0-27 14-41 34-41s34 14 34 41v54z" />
+                <path className={styles.personLine} d="M336 177c16 14 32 20 49 1" />
+                <animateTransform
+                  attributeName="transform"
+                  dur="5.4s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 2;0 -3;0 2"
+                />
+              </g>
+              <g className={styles.worryThoughts}>
+                {[0, 1, 2, 3, 4].map((thought) => (
+                  <circle
+                    cx={230 + thought * 67}
+                    cy={82 + (thought % 2) * 28}
+                    key={thought}
+                    r={13 + (thought % 3) * 4}
+                  >
+                    <animate
+                      attributeName="r"
+                      begin={`${thought * -0.5}s`}
+                      dur="4s"
+                      repeatCount="indefinite"
+                      values={`${11 + (thought % 3) * 4};${16 + (thought % 3) * 4};${11 + (thought % 3) * 4}`}
+                    />
+                    <animate
+                      attributeName="opacity"
+                      begin={`${thought * -0.5}s`}
+                      dur="4s"
+                      repeatCount="indefinite"
+                      values="0.2;0.75;0.2"
+                    />
+                  </circle>
+                ))}
+              </g>
+              <path className={styles.storyChair} d="M302 222h116M317 222v47M404 222v47" />
+            </g>
+          )}
+        </svg>
+      </div>
+
+      <div aria-label="Choose a point in the story" className={styles.storyChoices} role="group">
+        <button
+          aria-pressed={!isNow}
+          className={cn(!isNow && styles.storyChoiceActive)}
+          onClick={() => setView("then")}
+          type="button"
+        >
+          <span>01</span>
+          At the beginning
+        </button>
+        <button
+          aria-pressed={isNow}
+          className={cn(isNow && styles.storyChoiceActive)}
+          onClick={() => setView("now")}
+          type="button"
+        >
+          <span>02</span>
+          Fourteen days later
+        </button>
+      </div>
+
+      <div aria-live="polite" className={styles.storyCopy} key={view}>
+        <p className="editorial-eyebrow">{isNow ? "Now" : "Then"}</p>
+        <h2>
+          {isNow
+            ? "You have a way to make the moment smaller."
+            : "The diagnosis may have sounded larger than your life."}
+        </h2>
+        <p>
+          {isNow
+            ? "You can name what is happening, add timing and context, choose one useful tool, and ask for help when the question belongs with someone else."
+            : "New words, new numbers, and new decisions can arrive all at once. It can be hard to know which question belongs first—or whether one moment has already decided the future."}
+        </p>
+        <em>
+          {isNow
+            ? "The questions did not disappear. You became less alone inside them."
+            : "Feeling overwhelmed was not a failure. It was a human response to carrying too much at once."}
+        </em>
+      </div>
+    </section>
+  );
+}
+
+function ToolPracticeStudio() {
+  const [activeTool, setActiveTool] = useState<EverydayToolId>("food");
+  const active = everydayTools.find((tool) => tool.id === activeTool) ?? everydayTools[0];
+
+  return (
+    <section className={styles.toolPractice}>
+      <div
+        aria-label={`An animated ordinary-life scene for ${active.label.toLowerCase()}`}
+        className={styles.toolVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 320"
+        >
+          <rect className={styles.toolWash} height="320" width="720" />
+          <circle className={styles.storySun} cx="620" cy="58" r="28">
+            <animate attributeName="r" dur="4.6s" repeatCount="indefinite" values="25;31;25" />
+          </circle>
+          <path className={styles.storyFloor} d="M28 264c220-8 448-8 664 0" />
+
+          {activeTool === "food" ? (
+            <g className={styles.toolMoment} key="food">
+              <path className={styles.storyTable} d="M170 218h380M208 218v48M516 218v48" />
+              <ellipse className={styles.plateShape} cx="360" cy="211" rx="48" ry="11" />
+              <g className={styles.personWarm}>
+                <circle cx="245" cy="142" r="23" />
+                <path d="M213 218v-48c0-24 13-37 32-37s32 13 32 37v48z" />
+              </g>
+              <g className={styles.personSage}>
+                <circle cx="475" cy="141" r="23" />
+                <path d="M443 218v-49c0-24 13-37 32-37s32 13 32 37v49z" />
+              </g>
+              <path
+                className={styles.foodSteam}
+                d="M345 196c-10-11 10-17 0-31M374 196c-10-11 10-17 0-31"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.4s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 8;0 -7;0 8"
+                />
+                <animate
+                  attributeName="opacity"
+                  dur="3.4s"
+                  repeatCount="indefinite"
+                  values="0.1;0.9;0.1"
+                />
+              </path>
+            </g>
+          ) : null}
+
+          {activeTool === "movement" ? (
+            <g className={styles.toolMoment} key="movement">
+              <path className={styles.treeTrunk} d="M550 112v151" />
+              <circle className={styles.treeLeaf} cx="550" cy="91" r="52">
+                <animateTransform
+                  attributeName="transform"
+                  dur="5s"
+                  repeatCount="indefinite"
+                  type="rotate"
+                  values="-2 550 135;2 550 135;-2 550 135"
+                />
+              </circle>
+              <g>
+                <g className={styles.personWarm}>
+                  <circle cx="260" cy="160" r="22" />
+                  <path d="M230 230v-45c0-24 12-37 30-37s30 13 30 37v45z" />
+                  <path className={styles.personLine} d="M245 228l-17 36M276 228l19 36" />
+                </g>
+                <g className={styles.personSage}>
+                  <circle cx="320" cy="156" r="23" />
+                  <path d="M289 230v-47c0-24 13-38 31-38s31 14 31 38v47z" />
+                  <path className={styles.personLine} d="M305 228l-14 36M335 228l21 36" />
+                </g>
+                <path className={styles.friendLine} d="M283 190c13-10 24-10 37 0" />
+                <animateTransform
+                  attributeName="transform"
+                  dur="6.8s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="-90 0;90 0;-90 0"
+                />
+              </g>
+            </g>
+          ) : null}
+
+          {activeTool === "medicine" ? (
+            <g className={styles.toolMoment} key="medicine">
+              <path className={styles.storyTable} d="M180 221h360M215 221v45M505 221v45" />
+              <g className={styles.personSage}>
+                <circle cx="270" cy="145" r="23" />
+                <path d="M238 220v-48c0-24 13-37 32-37s32 13 32 37v48z" />
+              </g>
+              <path className={styles.medicineBottle} d="M405 145h45v73h-45zM413 130h29v15h-29z" />
+              <path className={styles.storyNotebook} d="M328 202h62l12 18h-86z" />
+              <g className={styles.medicineSignal}>
+                <circle cx="428" cy="119" r="8" />
+                <circle cx="428" cy="96" r="6" />
+                <animate
+                  attributeName="opacity"
+                  dur="3.8s"
+                  repeatCount="indefinite"
+                  values="0.2;1;0.2"
+                />
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.8s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 6;0 -6;0 6"
+                />
+              </g>
+            </g>
+          ) : null}
+
+          {activeTool === "monitoring" ? (
+            <g className={styles.toolMoment} key="monitoring">
+              <path className={styles.storyTable} d="M175 221h370M210 221v45M510 221v45" />
+              <g className={styles.personBlue}>
+                <circle cx="265" cy="145" r="23" />
+                <path d="M233 220v-48c0-24 13-37 32-37s32 13 32 37v48z" />
+              </g>
+              <g className={styles.personSage}>
+                <circle cx="475" cy="145" r="23" />
+                <path d="M443 220v-48c0-24 13-37 32-37s32 13 32 37v48z" />
+              </g>
+              <rect className={styles.meterShape} height="68" rx="5" width="58" x="341" y="147" />
+              <rect className={styles.meterScreen} height="24" rx="2" width="36" x="352" y="158">
+                <animate
+                  attributeName="opacity"
+                  dur="3.6s"
+                  repeatCount="indefinite"
+                  values="0.35;1;0.35"
+                />
+              </rect>
+              <g className={styles.sharedQuestion}>
+                <path d="M328 111h84" />
+                <path d="M342 94h56" />
+                <animate
+                  attributeName="opacity"
+                  dur="4s"
+                  repeatCount="indefinite"
+                  values="0.2;1;1;0.2"
+                />
+              </g>
+            </g>
+          ) : null}
+        </svg>
+      </div>
+
+      <div aria-label="Choose a tool to explore" className={styles.toolChoices} role="group">
+        {everydayTools.map((tool, index) => (
+          <button
+            aria-pressed={activeTool === tool.id}
+            className={cn(activeTool === tool.id && styles.toolChoiceActive)}
+            key={tool.id}
+            onClick={() => setActiveTool(tool.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {tool.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.toolCopy} key={activeTool}>
+        <p className="editorial-eyebrow">One tool, inside one real moment</p>
+        <h2>{active.title}</h2>
+        <p>{active.body}</p>
+        <em>{active.invitation}</em>
+      </div>
+    </section>
   );
 }
 
@@ -600,26 +991,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Where you began">
               The first day asked you to understand, not to become perfect.
             </LessonHeading>
-            <div className={styles.beforeAfter}>
-              <section>
-                <p className="editorial-eyebrow">Then</p>
-                <h2>The diagnosis may have sounded larger than your life.</h2>
-                <p>
-                  New words, new numbers, and new decisions can arrive all at once. It can be hard
-                  to know which question belongs first or whether a single meal, reading, or missed
-                  routine has already decided the future.
-                </p>
-              </section>
-              <section>
-                <p className="editorial-eyebrow">Now</p>
-                <h2>You have a way to make the moment smaller.</h2>
-                <p>
-                  Name what is happening. Add timing and context. Choose one useful tool. Ask for
-                  help when the question belongs with someone else. That sequence is knowledge you
-                  can use.
-                </p>
-              </section>
-            </div>
+            <ThenNowStory />
             <p className={styles.handwrittenLine}>
               The first change may be simple: the question in front of you no longer feels
               impossible to enter.
@@ -747,39 +1119,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Tools that can work together">
               A plan can be flexible without becoming careless.
             </LessonHeading>
-            <div className={styles.toolLines}>
-              <section>
-                <h2>Food can be balanced, familiar, and meaningful.</h2>
-                <p>
-                  Carbohydrate is not forbidden. Fiber, protein, fat, portions, preferences,
-                  culture, access, and the rest of the meal all add context. One plate does not
-                  define your health.
-                </p>
-              </section>
-              <section>
-                <h2>Movement can be ordinary and adapted.</h2>
-                <p>
-                  Working muscles can use glucose. Walking, chores, dancing, gardening, water
-                  movement, strength work, and seated options can all count when they fit your body
-                  and safety needs.
-                </p>
-              </section>
-              <section>
-                <h2>Medicine is a tool, not a failure.</h2>
-                <p>
-                  A medication can support what the body needs. Knowing its name, purpose, timing,
-                  possible side effects, and what to do when a dose is missed makes the tool safer
-                  and easier to use.
-                </p>
-              </section>
-              <section>
-                <h2>Monitoring can answer a question.</h2>
-                <p>
-                  A reading is most useful when you know why you are checking and what you plan to
-                  do with the result. More checking is not automatically better checking.
-                </p>
-              </section>
-            </div>
+            <p className={styles.lede}>
+              Choose a moment below. The same person is not asked to use every tool at once; the
+              scene changes to show how one tool can support one ordinary part of life.
+            </p>
+            <ToolPracticeStudio />
           </div>
         );
 
