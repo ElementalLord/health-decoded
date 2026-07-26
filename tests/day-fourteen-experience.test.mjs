@@ -25,28 +25,34 @@ const completionArrival = readFileSync(
   "utf8",
 );
 
-test("Day 14 uses one custom twelve-chapter milestone experience", () => {
+test("Day 14 uses the fuller eleven-chapter rhythm of the early lessons", () => {
   assert.match(player, /if \(lesson\.dayNumber === 14\) return <DayFourteenExperience/);
-  assert.match(experience, /const stageCount = 12/);
-  assert.match(experience, /This is not the finish line/);
+  assert.match(experience, /const stageCount = 11/);
+  assert.match(
+    experience,
+    /text-\[length:var\(--text-page-title\)\] font-normal leading-\[0\.96\]/,
+  );
+  assert.match(experience, /border-b border-border pb-5/);
+  assert.match(experience, /flex-1 py-8 sm:py-12/);
+  assert.match(experience, /border-t border-border pt-5/);
+  assert.match(experience, /You know more than you did fourteen days ago/);
   assert.match(experience, /Your foundation is built/);
   assert.match(experience, /Day 15 begins with understanding behind you/);
 });
 
-test("Day 14 uses three purposeful continuously looping teaching scenes", () => {
-  assert.match(experience, /function FoundationHomeAnimation/);
-  assert.match(experience, /function PracticeLoopAnimation/);
-  assert.match(experience, /function NextStepCalendarAnimation/);
-  assert.equal((experience.match(/data-motion-loop="continuous"/g) ?? []).length, 3);
-  assert.match(experience, /no room carries the whole house/);
-  assert.match(experience, /Repetition is not starting over/);
-  assert.match(experience, /Thursday stays open, and Friday still receives a mark/);
-  assert.match(styles, /animation: room-purpose-focus 9s ease-in-out infinite/);
-  assert.match(styles, /animation: practice-station-focus 9s ease-in-out infinite/);
-  assert.match(styles, /animation: calendar-walk-week 8s ease-in-out infinite/);
-  assert.match(styles, /prefers-reduced-motion: reduce/);
-  assert.match(styles, /data-reduced-motion="true"/);
-  assert.doesNotMatch(experience, /lighthouse|lantern|bridge|random graph/i);
+test("Day 14 uses three human SVG scenes with native continuous motion", () => {
+  assert.match(experience, /function OrdinaryLifeMotion/);
+  assert.match(experience, /function ReturnAfterRainMotion/);
+  assert.match(experience, /function FullLifePicnicMotion/);
+  assert.equal((experience.match(/<MotionFigure/g) ?? []).length, 3);
+  assert.match(experience, /data-motion-loop="continuous"/);
+  assert.ok((experience.match(/repeatCount="indefinite"/g) ?? []).length >= 20);
+  assert.ok((experience.match(/<animateTransform/g) ?? []).length >= 10);
+  assert.match(experience, /<animateMotion/);
+  assert.match(experience, /Breakfast, friendship, and a care conversation/);
+  assert.match(experience, /a changed moment does not have to become an abandoned plan/);
+  assert.match(experience, /The purpose of the plan is a fuller ordinary life/);
+  assert.doesNotMatch(experience, /type="range"|slider|lighthouse|lantern|random graph/i);
 });
 
 test("Day 14 grounds recognition and optimism in two unique human scenes", () => {
@@ -60,40 +66,45 @@ test("Day 14 grounds recognition and optimism in two unique human scenes", () =>
   }
 });
 
-test("Day 14 turns synthesis into meaningful learner input without grading", () => {
-  assert.match(experience, /toolkitItems/);
-  assert.match(experience, /draggable=\{!selected\}/);
-  assert.match(experience, /handleToolDrop/);
-  assert.match(experience, /openedFoundations/);
-  assert.match(experience, /confidenceScenarios/);
-  assert.match(experience, /checklistSkills/);
-  assert.match(experience, /planAreas/);
+test("Day 14 keeps reflection light, optional, and free from checkbox labor", () => {
+  assert.match(experience, /Reflections on this lesson are optional/);
+  assert.match(experience, /You can choose one, or simply keep reading/);
+  assert.match(experience, /Choosing is optional/);
+  assert.match(experience, /arrivalFeelings/);
+  assert.match(experience, /nextSteps/);
   assert.match(experience, /promise/);
-  assert.match(experience, /Nothing here is graded/);
+  assert.doesNotMatch(experience, /carryTruths|confidenceViews/);
+  assert.doesNotMatch(
+    experience,
+    /toolkitItems|checklistSkills|draggable=|handleToolDrop|canContinue|stageRequirement|To continue:/,
+  );
+  assert.doesNotMatch(experience, /\bCheck\s*,|choiceMark|checkButton/);
   assert.doesNotMatch(experience, /correctAnswer|isCorrect|data-correct|styles\.incorrect/i);
 });
 
-test("Day 14 keeps the personal plan private and revisitable on the same browser", () => {
+test("Day 14 keeps the optional personal note private and revisitable on the same browser", () => {
   assert.match(experience, /day-fourteen-foundation/);
   assert.match(experience, /window\.localStorage\.setItem\(draftKey/);
-  assert.match(experience, /saved only in this browser/);
-  assert.match(experience, /not sent to Health Decoded as health information/);
-  assert.match(experience, /Clear my private Day 14 draft from this browser/);
+  assert.match(experience, /saved only in this browser/i);
+  assert.match(experience, /not sent to Health Decoded as health\s+information/);
+  assert.match(experience, /Clear my private Day 14 note from this browser/);
   assert.doesNotMatch(experience, /insert\(|update\(|from\(/);
 });
 
-test("Day 14 keeps controls softly squared and text in the muted confidence palette", () => {
-  assert.match(styles, /\.answerChoice[\s\S]*border-radius: 6px/);
-  assert.match(styles, /\.toolCard[\s\S]*border-radius: 6px/);
-  assert.match(styles, /\.progressTrack[\s\S]*border-radius: 3px/);
-  assert.match(styles, /--lesson-ink: #405750/);
+test("Day 14 uses an open editorial layout instead of a modern card dashboard", () => {
+  assert.match(styles, /\.editorialChoice[\s\S]*border-top: 1px solid/);
+  assert.match(styles, /\.numberedEssay[\s\S]*border-top: 1px solid/);
+  assert.match(styles, /\.motionFigure[\s\S]*border-block: 1px solid/);
+  assert.match(styles, /--lesson-ink: #50665f/);
+  assert.doesNotMatch(styles, /box-shadow:/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
+  assert.doesNotMatch(styles, /border-radius:\s*(?:1\.5rem|2rem|3rem)/);
   assert.doesNotMatch(experience, /rounded-full/);
 });
 
 test("Day 14 is a foundation milestone rather than a false ninety-day finale", () => {
   assert.match(experience, /Foundation complete · Days 1–14/);
-  assert.match(experience, /76 days of practice ahead/);
+  assert.match(experience, /The next 76 days/);
   assert.doesNotMatch(experience, /graduation|trophy|confetti/i);
   assert.match(completeState, /Foundation phase · Days 1–14/);
   assert.match(completeState, /The next 76 days/);
