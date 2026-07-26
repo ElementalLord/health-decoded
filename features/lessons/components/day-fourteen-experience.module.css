@@ -19,8 +19,7 @@
 .pullQuote {
   max-width: 48rem;
   margin: 0;
-  border-left: 2px solid var(--accent-warm);
-  padding: 0.35rem 0 0.35rem clamp(1.25rem, 3vw, 2rem);
+  padding: 0.35rem 0;
   color: var(--lesson-ink);
   font-family: var(--font-serif);
   font-size: clamp(1.55rem, 3vw, 2.35rem);
@@ -106,33 +105,165 @@
   background: color-mix(in srgb, var(--success) 7%, transparent);
 }
 
-.beforeAfter {
+.thenNowStory {
   display: grid;
-  border-block: 1px solid var(--border);
+  gap: 1.5rem;
 }
 
-.beforeAfter section {
-  display: grid;
-  gap: 1rem;
-  padding: 1.8rem 0;
+.thenNowVisual,
+.toolVisual {
+  overflow: hidden;
+  aspect-ratio: 720 / 330;
+  background: color-mix(in srgb, var(--muted) 82%, white 18%);
 }
 
-.beforeAfter section + section {
-  border-top: 1px solid var(--border);
+.thenWash {
+  fill: #e9efef;
 }
 
-.beforeAfter h2 {
-  max-width: 31rem;
+.nowWash {
+  fill: #f1eee5;
+}
+
+.storySun {
+  fill: #ebc988;
+}
+
+.storyFloor {
+  fill: none;
+  stroke: #a9b9ae;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.storyTable,
+.storyChair {
+  fill: none;
+  stroke: #6f8178;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7;
+}
+
+.storyNotebook {
+  fill: #fffaf2;
+  stroke: #c47b61;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.sharedQuestion {
+  fill: none;
+  stroke: #c47b61;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.worryThoughts {
+  fill: #879da2;
+}
+
+.storyChoices,
+.toolChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem clamp(1.2rem, 4vw, 2.8rem);
+}
+
+.storyChoices button,
+.toolChoices button {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  border: 0;
+  background: transparent;
+  padding: 0.55rem 0;
+  color: var(--muted-foreground);
+  font-weight: 650;
+  text-align: left;
+}
+
+.storyChoices button > span,
+.toolChoices button > span {
+  color: var(--accent-warm);
   font-family: var(--font-serif);
-  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.storyChoices button:hover,
+.toolChoices button:hover,
+.storyChoiceActive,
+.toolChoiceActive {
+  color: var(--lesson-ink) !important;
+}
+
+.storyChoiceActive::after,
+.toolChoiceActive::after {
+  width: 0.42rem;
+  height: 0.42rem;
+  align-self: center;
+  border-radius: 50%;
+  background: var(--accent-warm);
+  content: "";
+}
+
+.storyCopy,
+.toolCopy {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 48rem;
+  animation: quiet-copy-arrival 280ms ease-out both;
+}
+
+.storyMoment,
+.toolMoment {
+  animation: visual-arrival 320ms ease-out both;
+}
+
+.storyCopy h2,
+.toolCopy h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.7rem, 3.2vw, 2.45rem);
   font-weight: 500;
   line-height: 1.15;
 }
 
-.beforeAfter section > p:last-child {
+.storyCopy > p:not(:first-child),
+.toolCopy > p:not(:first-child) {
   color: var(--muted-foreground);
   font-size: 1.03rem;
   line-height: 1.8;
+}
+
+.storyCopy em,
+.toolCopy em {
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  line-height: 1.5;
+}
+
+@keyframes quiet-copy-arrival {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes visual-arrival {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .handwrittenLine {
@@ -380,8 +511,7 @@
 }
 
 .numberedEssay h2,
-.contextSequence h2,
-.toolLines h2 {
+.contextSequence h2 {
   font-family: var(--font-serif);
   font-size: clamp(1.45rem, 2.6vw, 2rem);
   font-weight: 500;
@@ -389,8 +519,7 @@
 }
 
 .numberedEssay p,
-.contextSequence p,
-.toolLines p {
+.contextSequence p {
   color: var(--muted-foreground);
   line-height: 1.78;
 }
@@ -421,22 +550,57 @@
 
 .closingSentence {
   max-width: 47rem;
-  border-left: 2px solid var(--success);
-  padding-left: 1.4rem;
   font-size: 1.12rem;
   line-height: 1.8;
 }
 
-.toolLines {
+.toolPractice {
   display: grid;
-  border-top: 1px solid var(--border);
+  gap: 1.5rem;
 }
 
-.toolLines section {
-  display: grid;
-  gap: 0.7rem;
-  border-bottom: 1px solid var(--border);
-  padding: 1.55rem 0;
+.toolVisual {
+  aspect-ratio: 720 / 320;
+}
+
+.toolWash {
+  fill: #edf2ed;
+}
+
+.foodSteam {
+  fill: none;
+  stroke: #809a90;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.medicineBottle {
+  fill: #f8f1e8;
+  stroke: #6c8b7d;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.medicineSignal {
+  fill: #d79a6f;
+}
+
+.meterShape {
+  fill: #fffaf2;
+  stroke: #597a6b;
+  stroke-width: 4;
+}
+
+.meterScreen {
+  fill: #b8d1c2;
+}
+
+.toolChoices {
+  justify-content: space-between;
+}
+
+.toolCopy {
+  min-height: 11rem;
 }
 
 .protectionSpread {
@@ -473,8 +637,7 @@
 .returnStories section {
   display: grid;
   gap: 0.6rem;
-  border-left: 2px solid color-mix(in srgb, var(--success) 55%, var(--border));
-  padding-left: 1.25rem;
+  align-content: start;
 }
 
 .safetyNotes p,
@@ -517,8 +680,6 @@
 
 .nextPhase blockquote {
   margin: 0;
-  border-left: 2px solid var(--accent-warm);
-  padding-left: 1.35rem;
   color: var(--lesson-ink);
   font-family: var(--font-serif);
   font-size: clamp(1.4rem, 2.8vw, 2rem);
@@ -609,8 +770,6 @@
 .whatYouCarry {
   display: grid;
   gap: 0.8rem;
-  border-left: 2px solid var(--accent-warm);
-  padding-left: 1.35rem;
 }
 
 .whatYouCarry > p:not(:first-child),
@@ -692,41 +851,29 @@
     grid-template-columns: minmax(14rem, 0.72fr) minmax(0, 1.28fr);
   }
 
-  .beforeAfter,
   .editorialColumns,
   .protectionSpread,
   .milestoneSpread {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .beforeAfter section {
-    padding: 2.2rem 2rem 2.2rem 0;
-  }
-
-  .beforeAfter section + section {
-    border-top: 0;
-    border-left: 1px solid var(--border);
-    padding-right: 0;
-    padding-left: 2rem;
-  }
-
-  .contextSequence,
-  .toolLines {
+  .contextSequence {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 3rem;
   }
 
-  .contextSequence section:nth-child(odd),
-  .toolLines section:nth-child(odd) {
+  .contextSequence section:nth-child(odd) {
     padding-right: 1.75rem;
   }
 
-  .contextSequence section:nth-child(even),
-  .toolLines section:nth-child(even) {
-    border-left: 1px solid var(--border);
-    padding-left: 1.75rem;
+  .contextSequence section:nth-child(even) {
+    padding-left: 0;
   }
 
-  .safetyNotes,
+  .safetyNotes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .returnStories {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -737,7 +884,6 @@
 
   .milestoneSpread section + section {
     border-top: 0;
-    border-left: 1px solid var(--border);
     padding-right: 0;
     padding-left: 2rem;
   }
