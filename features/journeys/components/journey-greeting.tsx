@@ -20,7 +20,7 @@ export function JourneyGreeting({
   const message = firstVisit
     ? "Nothing here needs to happen all at once. Your first calm lesson is ready whenever you are."
     : journeyComplete
-      ? `You completed all ${totalLessons} lessons. Everything you learned is here whenever you want another look.`
+      ? `You completed all ${totalLessons} lessons in the Foundation Phase. What you learned is ready to become steadier through the next chapter of practice.`
       : currentLessonStatus === "in_progress"
         ? "Your place is saved. Continue from exactly where you stopped, whenever it feels right."
         : completedLessons > 0

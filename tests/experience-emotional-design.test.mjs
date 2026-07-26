@@ -20,6 +20,7 @@ const lessonExperiences = [
   "day-eleven-experience.tsx",
   "day-twelve-experience.tsx",
   "day-thirteen-experience.tsx",
+  "day-fourteen-experience.tsx",
 ];
 
 test("returns every completed custom lesson to a calm journey acknowledgement", () => {
