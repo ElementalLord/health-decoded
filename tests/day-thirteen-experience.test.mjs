@@ -21,42 +21,38 @@ const unlockMigration = readFileSync(
 test("Day 13 uses one custom eleven-chapter experience", () => {
   assert.match(player, /if \(lesson\.dayNumber === 13\) return <DayThirteenExperience/);
   assert.match(experience, /const stageCount = 11/);
-  assert.match(experience, /The right support makes room for you/);
+  assert.match(experience, /The right support makes more room for you/);
   assert.match(experience, /Care can be shared without giving yourself away/);
 });
 
-test("Day 13 uses four labeled loops whose motion teaches a relationship skill", () => {
+test("Day 13 uses four purposeful human loops whose motion teaches a relationship skill", () => {
   assert.match(experience, /function SharedLoadAnimation/);
-  assert.match(experience, /function SupportConversationAnimation/);
+  assert.match(experience, /function ConsentConversationAnimation/);
   assert.match(experience, /function BoundaryConversationAnimation/);
-  assert.match(experience, /function SupportMapAnimation/);
-  assert.match(experience, /Help can lighten one part without taking over the whole/);
+  assert.match(experience, /function SupportTableAnimation/);
+  assert.match(experience, /permission comes first/);
   assert.match(experience, /Ask\. Listen\. Offer\. Check\./);
-  assert.match(experience, /Concern can change shape when the limit is clear/);
+  assert.match(experience, /A clear limit makes room for a better way to care/);
+  assert.match(experience, /No one\s+seat has to carry every kind of need/);
   assert.equal((experience.match(/data-motion-loop="continuous"/g) ?? []).length, 4);
-  assert.match(styles, /animation: share-one-bag 10s ease-in-out infinite/);
-  assert.match(styles, /animation: conversation-focus 8s ease-in-out infinite/);
-  assert.match(styles, /animation: boundary-speaks 9s ease-in-out infinite/);
-  assert.match(styles, /animation: support-ring-breathe 8s ease-in-out infinite/);
-  assert.match(styles, /animation: support-signal-pulse 3\.4s ease-in-out infinite/);
+  assert.ok(
+    (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 20,
+    "expected independently looping gestures across the four human scenes",
+  );
   assert.match(styles, /prefers-reduced-motion: reduce/);
-  assert.doesNotMatch(experience, /<svg|animateMotion|lighthouse|lantern|weave|bridge/i);
+  assert.doesNotMatch(experience, /lighthouse|lantern|weave|bridge/i);
 });
 
-test("Day 13 keeps explanatory motion clear at every motion preference", () => {
-  assert.doesNotMatch(experience, /conversationLine/);
-  assert.doesNotMatch(styles, /\.conversationLine/);
-  assert.doesNotMatch(experience, /boundarySpace/);
-  assert.doesNotMatch(styles, /\.boundarySpace/);
-  assert.match(styles, /\.boundaryScene\s*\{[\s\S]*?display: grid;[\s\S]*?grid-template-columns:/);
-  assert.match(
-    styles,
-    /\.boundaryComment,\s*\.boundaryReply,\s*\.boundaryRepair\s*\{[\s\S]*?position: relative;/,
-  );
-  assert.match(experience, /Support map key/);
-  assert.match(experience, /every circle can contribute something different/);
-  assert.doesNotMatch(experience, /<span>COMMUNITY<\/span>|<span>CARE TEAM<\/span>/);
-  assert.doesNotMatch(styles, /\.mapRing > span/);
+test("Day 13 gives every animated scene an explanation and removes abstract diagrams", () => {
+  assert.equal((experience.match(/aria-labelledby=/g) ?? []).length, 4);
+  assert.match(experience, /One chosen task becomes shared/);
+  assert.match(experience, /A permission-first conversation at a kitchen table/);
+  assert.match(experience, /A family meal changes after a clear boundary/);
+  assert.match(experience, /A support table with different invited people/);
+  assert.match(experience, /boundaryTranscript/);
+  assert.match(experience, /motionTranscript/);
+  assert.doesNotMatch(experience, /SupportMapAnimation|mapRing|sortingBoard|mythGrid/);
+  assert.doesNotMatch(styles, /\.mapRing|\.sortingBoard|\.mythGrid/);
 });
 
 test("Day 13 grounds support in two warm, emotionally clear human scenes", () => {
@@ -70,24 +66,29 @@ test("Day 13 grounds support in two warm, emotionally clear human scenes", () =>
   }
 });
 
-test("Day 13 keeps controls softly squared and text in the muted lesson palette", () => {
-  assert.match(styles, /\.answerChoice[\s\S]*border-radius: 6px/);
-  assert.match(styles, /\.requestStudio[\s\S]*border-radius: 6px/);
-  assert.match(styles, /\.sortButton[\s\S]*border-radius: 5px/);
-  assert.match(styles, /\.progressTrack[\s\S]*border-radius: 3px/);
-  assert.match(styles, /--lesson-ink: #405750/);
+test("Day 13 adopts Day 11's editorial hierarchy with softly squared controls", () => {
+  assert.match(experience, /ProgressBar/);
+  assert.match(experience, /max-w-\[1020px\]/);
+  assert.match(experience, /text-\[length:var\(--text-page-title\)\]/);
+  assert.match(styles, /\.answerChoice[\s\S]*border-radius: 9px/);
+  assert.match(styles, /\.motionFigure[\s\S]*border-radius: 12px/);
+  assert.match(styles, /color: #405750/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.doesNotMatch(experience, /rounded-full/);
 });
 
-test("Day 13 turns the curriculum activities into meaningful user input", () => {
-  assert.match(experience, /supportClassifications/);
+test("Day 13 makes interactions meaningful without turning them into completion gates", () => {
+  assert.match(experience, /stigmaMoment/);
+  assert.match(experience, /supportMode/);
   assert.match(experience, /supportRequest/);
   assert.match(experience, /boundaryScenario/);
-  assert.match(experience, /mapChoices/);
-  assert.match(experience, /confidence/);
+  assert.match(experience, /supportSeat/);
+  assert.match(experience, /repairStep/);
   assert.match(experience, /reflection/);
   assert.match(experience, /Define support without control/);
+  assert.match(experience, /The interactions are invitations, not gates/);
+  assert.doesNotMatch(experience, /function canContinue|stageRequirement/);
+  assert.doesNotMatch(experience, /supportClassifications|mapChoices|openedMyths/);
 });
 
 test("Day 13 directly teaches stigma, consent, privacy, and emotional support", () => {
@@ -96,8 +97,9 @@ test("Day 13 directly teaches stigma, consent, privacy, and emotional support", 
   assert.match(experience, /Disclosure belongs to you/);
   assert.match(experience, /diabetes distress persists/);
   assert.match(experience, /not saved as health information/);
-  assert.match(experience, /Concern gives family permission to monitor food and numbers/);
-  assert.match(experience, /A joke is harmless if the speaker did not mean it badly/);
+  assert.match(experience, /Concern still needs consent/);
+  assert.match(experience, /Intent and impact are different/);
+  assert.match(experience, /repair without pretending nothing happened/);
 });
 
 test("Day 13 evaluation is authenticated and does not store private written input", () => {
