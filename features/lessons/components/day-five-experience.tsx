@@ -483,7 +483,8 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
               <div className="border-l-2 border-success pl-6">
                 <p className="editorial-number text-success">05</p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  No gym test. No food debt. One body mechanism and one realistic opening.
+                  Why can a short, ordinary walk change what happens inside your body? No gym test.
+                  No food debt. Just one body mechanism and one realistic opening.
                 </p>
               </div>
             </div>
