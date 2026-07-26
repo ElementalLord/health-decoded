@@ -1,37 +1,13 @@
 "use client";
 
-import {
-  Activity,
-  ArrowLeft,
-  BookOpen,
-  CalendarCheck2,
-  Check,
-  Footprints,
-  HeartHandshake,
-  Lightbulb,
-  MessageCircleHeart,
-  Pill,
-  RefreshCcw,
-  ShieldCheck,
-  Sparkles,
-  Stethoscope,
-  Utensils,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowLeft, BookOpen, MessageCircleHeart } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-  type CSSProperties,
-  type DragEvent,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
+import { ProgressBar } from "@/components/ui/progress-bar";
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
@@ -40,464 +16,399 @@ import { cn } from "@/lib/utils";
 
 import styles from "./day-fourteen-experience.module.css";
 
-const stageCount = 12;
+const stageCount = 11;
 
 const arrivalFeelings = [
-  ["different", "Diabetes feels different than it did on Day 1"],
-  ["steadier", "I feel steadier, even when I still have questions"],
+  ["quieter", "The diagnosis feels a little less loud"],
+  ["steadier", "I feel steadier, even with questions"],
   ["surprised", "I know more than I realized"],
-  ["still_learning", "I am still finding my footing, and I kept showing up"],
+  ["tender", "I am proud I kept coming back"],
 ] as const;
 
-const toolkitItems = [
-  {
-    description: "Explain what is happening without blame.",
-    foundation: "Understand your body",
-    icon: Lightbulb,
-    id: "understanding",
-    label: "Understanding",
-  },
-  {
-    description: "Make room for nourishment, culture, and balance.",
-    foundation: "Make everyday decisions",
-    icon: Utensils,
-    id: "food",
-    label: "Food",
-  },
-  {
-    description: "Use activity as an approachable body tool.",
-    foundation: "Make everyday decisions",
-    icon: Footprints,
-    id: "movement",
-    label: "Movement",
-  },
-  {
-    description: "Know why treatment can help and what to ask.",
-    foundation: "Make everyday decisions",
-    icon: Pill,
-    id: "medication",
-    label: "Medication",
-  },
-  {
-    description: "Turn readings into context and useful questions.",
-    foundation: "Understand your body",
-    icon: Activity,
-    id: "monitoring",
-    label: "Monitoring",
-  },
-  {
-    description: "Pause, understand, choose, and adjust.",
-    foundation: "Make everyday decisions",
-    icon: RefreshCcw,
-    id: "problem_solving",
-    label: "Problem solving",
-  },
-  {
-    description: "Make one helpful action easier to repeat.",
-    foundation: "Make everyday decisions",
-    icon: CalendarCheck2,
-    id: "routine",
-    label: "Routine",
-  },
-  {
-    description: "Ask for help without giving away your choices.",
-    foundation: "Protect your future",
-    icon: HeartHandshake,
-    id: "support",
-    label: "Support",
-  },
-  {
-    description: "Bring questions, patterns, and decisions into partnership.",
-    foundation: "Protect your future",
-    icon: Stethoscope,
-    id: "care_team",
-    label: "Healthcare team",
-  },
-  {
-    description: "Use screening and early action without fear.",
-    foundation: "Protect your future",
-    icon: ShieldCheck,
-    id: "prevention",
-    label: "Prevention",
-  },
-] as const;
-
-type ToolId = (typeof toolkitItems)[number]["id"];
-
-const foundations = [
-  {
-    id: "body",
-    label: "01",
-    points: [
-      "Explain Type 2 diabetes without turning it into a character judgment.",
-      "Read A1C and glucose information as different views, not grades.",
-      "Notice context before deciding what one number means.",
-    ],
-    title: "Understanding your body",
-  },
-  {
-    id: "decisions",
-    label: "02",
-    points: [
-      "Use food, movement, medication, and monitoring as connected tools.",
-      "Build routines that reduce decision fatigue.",
-      "Adjust the next choice when a day does not go to plan.",
-    ],
-    title: "Making everyday decisions",
-  },
-  {
-    id: "future",
-    label: "03",
-    points: [
-      "Use prevention to find quiet changes early.",
-      "Know when a situation needs routine care, a call, or urgent help.",
-      "Work with a care team and chosen support without surrendering independence.",
-    ],
-    title: "Protecting your future",
-  },
-] as const;
-
-type FoundationId = (typeof foundations)[number]["id"];
-
-const growthShifts = [
-  {
-    after: "Food is one of many tools, and familiar food can stay.",
-    before: "Food was the enemy.",
-    id: "food",
-  },
-  {
-    after: "Medication can be one useful part of an individualized plan.",
-    before: "Medication meant I had failed.",
-    id: "medicine",
-  },
-  {
-    after: "One reading is information that needs context.",
-    before: "A high reading meant I had failed.",
-    id: "numbers",
-  },
-  {
-    after: "Early care and daily habits can influence what happens next.",
-    before: "Complications were inevitable.",
-    id: "future",
-  },
-] as const;
-
-const confidenceScenarios = [
-  {
-    id: "restaurant",
-    prompt: "A restaurant menu has no nutrition information.",
-    skill: "Use the plate idea, choose what fits, and let one meal be one meal.",
-    title: "Eating out",
-  },
-  {
-    id: "busy_day",
-    prompt: "A busy workday disrupts the routine you planned.",
-    skill: "Choose the best available next step instead of abandoning the day.",
-    title: "A crowded day",
-  },
-  {
-    id: "glucose",
-    prompt: "A glucose reading is different from what you expected.",
-    skill: "Add timing and context before turning the reading into a conclusion.",
-    title: "A surprising number",
-  },
-  {
-    id: "appointment",
-    prompt: "You have ten minutes with a healthcare professional.",
-    skill: "Bring one pattern, one question, and the exact issue you want help with.",
-    title: "A short appointment",
-  },
-  {
-    id: "missed_walk",
-    prompt: "You miss the walk you hoped to take.",
-    skill: "The next movement opportunity still counts; no punishment is required.",
-    title: "A missed plan",
-  },
-] as const;
-
-type ScenarioId = (typeof confidenceScenarios)[number]["id"];
-type ConfidenceLevel = "practice" | "prompt" | "ready";
-
-const checklistSkills = [
-  ["body", "I can explain what happens inside the body in plain language."],
-  ["a1c", "I understand what A1C can and cannot tell me."],
-  ["food", "I can identify the carbohydrate part of a meal without banning it."],
-  ["movement", "I know why movement helps and how to choose a safe starting point."],
-  ["medication", "I understand why medication may be useful in a care plan."],
-  ["patterns", "I can look for context and patterns instead of grading one reading."],
-  ["safety", "I know when to follow my plan, call for help, or seek urgent care."],
-  ["prevention", "I understand why screening matters even when I feel well."],
-  ["setbacks", "I can recover from a disrupted day without starting over."],
-  ["support", "I can name one person or professional I could ask for help."],
-] as const;
-
-type SkillId = (typeof checklistSkills)[number][0];
-type SkillComfort = "comfortable" | "practice";
-
-const planAreas = [
-  {
-    id: "food",
-    label: "Food rhythm",
-    options: [
-      "Add one balanced breakfast I can repeat.",
-      "Keep water available with lunch.",
-      "Use the plate idea for one dinner each week.",
-    ],
-  },
-  {
-    id: "movement",
-    label: "Movement",
-    options: [
-      "Take a 10-minute walk after one meal.",
-      "Break up one long sitting stretch.",
-      "Choose one enjoyable strength activity.",
-    ],
-  },
-  {
-    id: "care",
-    label: "Healthcare",
-    options: [
-      "Write down one question before my next visit.",
-      "Schedule one recommended follow-up.",
-      "Review my exact medicine instructions.",
-    ],
-  },
-  {
-    id: "mindset",
-    label: "Mindset",
-    options: [
-      "Call a reading information, not judgment.",
-      "Let the next choice be a fresh choice.",
-      "Notice one thing I handled well each week.",
-    ],
-  },
-  {
-    id: "support",
-    label: "Support",
-    options: [
-      "Make one small, specific request.",
-      "Tell one person what encouragement looks like.",
-      "Bring one concern to my care team.",
-    ],
-  },
-] as const;
-
-type PlanAreaId = (typeof planAreas)[number]["id"];
-
-const futureFeelings = [
-  "More confident",
-  "Less overwhelmed",
-  "More energetic",
-  "Less worried",
-  "More independent",
-  "Hopeful",
+const nextSteps = [
+  ["food", "Make one familiar meal feel more balanced"],
+  ["movement", "Choose one movement moment that feels good"],
+  ["care", "Write one question for my next care visit"],
+  ["support", "Ask one person for one specific kind of help"],
+  ["return", "Practice returning after one interrupted day"],
 ] as const;
 
 type MilestoneDraft = {
   arrivalFeeling: string | null;
-  checklist: Partial<Record<SkillId, SkillComfort>>;
-  confidence: Partial<Record<ScenarioId, ConfidenceLevel>>;
-  futureFeeling: string | null;
-  futureWords: string;
-  nextStep: string;
-  openedFoundations: FoundationId[];
-  plan: Partial<Record<PlanAreaId, string>>;
+  nextStep: string | null;
   promise: string;
-  reflection: string;
-  selectedShift: string | null;
-  stepCue: string;
-  toolkit: ToolId[];
 };
 
 const initialDraft: MilestoneDraft = {
   arrivalFeeling: null,
-  checklist: {},
-  confidence: {},
-  futureFeeling: null,
-  futureWords: "",
-  nextStep: "",
-  openedFoundations: [],
-  plan: {},
+  nextStep: null,
   promise: "",
-  reflection: "",
-  selectedShift: null,
-  stepCue: "",
-  toolkit: [],
 };
 
-function LessonHeading({
-  centered = false,
-  children,
-  label,
-}: {
-  centered?: boolean;
-  children: ReactNode;
-  label?: string;
-}) {
+function LessonHeading({ children, label }: { children: ReactNode; label?: string }) {
   return (
-    <div className={cn("space-y-3", centered && "mx-auto max-w-4xl text-center")}>
+    <div className="space-y-3">
       {label ? <p className="editorial-eyebrow">{label}</p> : null}
-      <h1 className={cn(styles.lessonTitle, centered && "mx-auto")}>{children}</h1>
+      <h1 className="max-w-4xl font-serif-display text-[length:var(--text-page-title)] font-normal leading-[0.96] text-balance">
+        {children}
+      </h1>
     </div>
   );
 }
 
-function AnswerChoice({
+function EditorialChoice({
   children,
+  index,
   onClick,
   selected,
 }: {
   children: ReactNode;
+  index: number;
   onClick: () => void;
   selected: boolean;
 }) {
   return (
     <button
       aria-pressed={selected}
-      className={cn(styles.answerChoice, selected && styles.answerChoiceSelected)}
+      className={cn(styles.editorialChoice, selected && styles.editorialChoiceSelected)}
       onClick={onClick}
       type="button"
     >
-      <span className={styles.choiceMark}>{selected ? <Check aria-hidden="true" /> : null}</span>
-      <span>{children}</span>
+      <span>{String(index + 1).padStart(2, "0")}</span>
+      <strong>{children}</strong>
+      <small>{selected ? "This feels closest" : "Optional"}</small>
     </button>
   );
 }
 
-function FoundationHomeAnimation() {
-  const rooms: Array<{ icon: LucideIcon; label: string; note: string }> = [
-    { icon: Lightbulb, label: "Understand", note: "Make sense of the body" },
-    { icon: CalendarCheck2, label: "Decide", note: "Use one tool in real life" },
-    { icon: ShieldCheck, label: "Protect", note: "Notice and act early" },
-  ];
-
+function MotionFigure({
+  children,
+  cue,
+  description,
+  label,
+  title,
+}: {
+  children: ReactNode;
+  cue: string;
+  description: string;
+  label: string;
+  title: string;
+}) {
   return (
-    <figure
-      aria-label="A continuously looping cutaway home where three rooms light in sequence for understanding, everyday decisions, and protecting the future"
-      className={styles.motionFigure}
-      data-motion-loop="continuous"
-      role="img"
-    >
-      <div className={styles.motionIntro}>
-        <p className="editorial-eyebrow">One life · three foundations</p>
-        <h2>The knowledge belongs in ordinary rooms.</h2>
-        <p>Understanding, decisions, and future care support one another through the same day.</p>
+    <figure className={styles.motionFigure} data-motion-loop="continuous">
+      <div className={styles.motionHeading}>
+        <p className="editorial-eyebrow">{cue}</p>
+        <h2>{title}</h2>
       </div>
-      <div className={styles.homeScene}>
-        <div aria-hidden="true" className={styles.homeRoof} />
-        <div className={styles.homeRooms}>
-          {rooms.map(({ icon: Icon, label, note }, index) => (
-            <section
-              className={styles.homeRoom}
-              key={label}
-              style={{ "--room": index } as CSSProperties}
-            >
-              <span className={styles.roomWindow} />
-              <Icon aria-hidden="true" />
-              <strong>{label}</strong>
-              <small>{note}</small>
-              <span aria-hidden="true" className={styles.roomPerson}>
-                <span />
-                <i />
-              </span>
-              <span aria-hidden="true" className={styles.roomPulse} />
-            </section>
-          ))}
-        </div>
-        <div aria-hidden="true" className={styles.homeFoundation}>
-          <span />
-        </div>
+      <div className={styles.motionViewport} role="img" aria-label={label}>
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 320"
+        >
+          {children}
+        </svg>
       </div>
       <figcaption>
-        <strong>What to notice:</strong> no room carries the whole house. Diabetes care works the
-        same way: several small skills share the load.
+        <strong>What to notice:</strong> {description}
       </figcaption>
     </figure>
   );
 }
 
-function PracticeLoopAnimation() {
-  const stations: Array<{ icon: LucideIcon; label: string; note: string }> = [
-    { icon: Utensils, label: "Know", note: "A balanced meal can include familiar food." },
-    { icon: Footprints, label: "Try", note: "Choose one movement moment that fits." },
-    { icon: RefreshCcw, label: "Adjust", note: "Use what happened to shape the next choice." },
-  ];
-
+function OrdinaryLifeMotion() {
   return (
-    <figure
-      aria-label="A continuously looping practice sequence that moves from knowing an idea to trying it and adjusting the next choice"
-      className={styles.motionFigure}
-      data-motion-loop="continuous"
-      role="img"
+    <MotionFigure
+      cue="Knowledge in ordinary life"
+      description="no moment asks for every skill at once. Breakfast, friendship, and a care conversation each call for one useful part of what you know."
+      label="A continuously moving illustrated day: breakfast steams, two friends walk together, and a patient and clinician exchange a question"
+      title="What you learned can travel through an ordinary day."
     >
-      <div className={styles.motionIntro}>
-        <p className="editorial-eyebrow">The next 76 days</p>
-        <h2>Confidence grows in a practice loop.</h2>
-        <p>Knowing matters. Trying, noticing, and adjusting are what make the knowledge usable.</p>
-      </div>
-      <div className={styles.practiceScene}>
-        {stations.map(({ icon: Icon, label, note }) => (
-          <section className={styles.practiceStation} key={label}>
-            <span>
-              <Icon aria-hidden="true" />
-            </span>
-            <strong>{label}</strong>
-            <small>{note}</small>
-          </section>
+      <rect className={styles.skyWash} height="320" width="720" />
+      <path className={styles.groundLine} d="M28 260H692" />
+
+      <g className={styles.morningScene}>
+        <circle className={styles.sunShape} cx="78" cy="62" r="24">
+          <animate attributeName="r" dur="4s" repeatCount="indefinite" values="22;27;22" />
+          <animate attributeName="opacity" dur="4s" repeatCount="indefinite" values="0.62;1;0.62" />
+        </circle>
+        <path className={styles.tableShape} d="M44 210H215M62 210V263M196 210V263" />
+        <ellipse className={styles.plateShape} cx="130" cy="204" rx="31" ry="8" />
+        <path className={styles.cupShape} d="M162 174h24v27h-24zM186 180c16 0 16 17 0 17" />
+        <path className={styles.steamShape} d="M170 166c-8-10 9-15 0-27">
+          <animateTransform
+            attributeName="transform"
+            dur="3.2s"
+            repeatCount="indefinite"
+            type="translate"
+            values="0 8;0 -8;0 8"
+          />
+          <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values="0;0.9;0" />
+        </path>
+        <g className={styles.personWarm}>
+          <circle cx="102" cy="122" r="20" />
+          <path d="M75 198v-43c0-22 11-34 27-34s27 12 27 34v43z" />
+          <path className={styles.personLine} d="M122 153c18 6 29 17 40 30" />
+          <animateTransform
+            attributeName="transform"
+            dur="4.8s"
+            repeatCount="indefinite"
+            type="rotate"
+            values="0 102 198;-2 102 198;0 102 198"
+          />
+        </g>
+      </g>
+
+      <g className={styles.walkingScene}>
+        <path className={styles.treeTrunk} d="M350 110v150" />
+        <circle className={styles.treeLeaf} cx="350" cy="91" r="49">
+          <animateTransform
+            attributeName="transform"
+            dur="5s"
+            repeatCount="indefinite"
+            type="rotate"
+            values="-2 350 140;2 350 140;-2 350 140"
+          />
+        </circle>
+        <g className={styles.walkingPair}>
+          <g className={styles.personSage}>
+            <circle cx="270" cy="169" r="17" />
+            <path d="M247 238v-39c0-20 10-31 23-31s23 11 23 31v39z" />
+            <path className={styles.personLine} d="M255 235l-13 28M282 235l17 28" />
+          </g>
+          <g className={styles.personBlue}>
+            <circle cx="315" cy="164" r="18" />
+            <path d="M291 238v-42c0-21 10-33 24-33s24 12 24 33v42z" />
+            <path className={styles.personLine} d="M300 235l-10 28M327 235l16 28" />
+          </g>
+          <path className={styles.friendLine} d="M287 201c9-8 16-8 25 0" />
+          <animateTransform
+            attributeName="transform"
+            dur="7s"
+            keyTimes="0;0.42;0.65;1"
+            repeatCount="indefinite"
+            type="translate"
+            values="-42 0;28 0;28 0;-42 0"
+          />
+        </g>
+      </g>
+
+      <g className={styles.careScene}>
+        <path className={styles.deskShape} d="M495 215H680M520 215v48M657 215v48" />
+        <g className={styles.personSage}>
+          <circle cx="536" cy="140" r="20" />
+          <path d="M509 211v-42c0-22 11-33 27-33s27 11 27 33v42z" />
+        </g>
+        <g className={styles.personBlue}>
+          <circle cx="636" cy="139" r="20" />
+          <path d="M609 211v-43c0-22 11-33 27-33s27 11 27 33v43z" />
+        </g>
+        <g className={styles.questionLines}>
+          <path d="M556 102h66" />
+          <path d="M566 86h46" />
+          <animate
+            attributeName="opacity"
+            dur="4s"
+            keyTimes="0;0.25;0.7;1"
+            repeatCount="indefinite"
+            values="0.15;1;1;0.15"
+          />
+          <animateTransform
+            attributeName="transform"
+            dur="4s"
+            repeatCount="indefinite"
+            type="translate"
+            values="-8 0;6 0;-8 0"
+          />
+        </g>
+      </g>
+    </MotionFigure>
+  );
+}
+
+function ReturnAfterRainMotion() {
+  return (
+    <MotionFigure
+      cue="Confidence in real life"
+      description="confidence is not controlling the weather. It is knowing that a changed moment does not have to become an abandoned plan."
+      label="A continuously moving park scene where a rain cloud passes, two friends pause together, and then resume their walk"
+      title="A pause can belong inside the plan."
+    >
+      <rect className={styles.rainWash} height="320" width="720" />
+      <circle className={styles.sunShape} cx="630" cy="62" r="28">
+        <animate
+          attributeName="opacity"
+          dur="9s"
+          keyTimes="0;0.35;0.6;1"
+          repeatCount="indefinite"
+          values="1;0.25;1;1"
+        />
+      </circle>
+      <path className={styles.parkPath} d="M18 258c164-26 307 18 450 0 86-11 154-3 234 9" />
+      <path className={styles.treeTrunk} d="M595 126v137" />
+      <circle className={styles.treeLeaf} cx="595" cy="103" r="55" />
+      <path className={styles.benchShape} d="M326 217h135M338 232h112M348 232l-9 31M440 232l9 31" />
+
+      <g className={styles.rainCloud}>
+        <ellipse cx="250" cy="75" rx="65" ry="27" />
+        <circle cx="219" cy="65" r="28" />
+        <circle cx="266" cy="55" r="36" />
+        <circle cx="301" cy="70" r="24" />
+        <animateTransform
+          attributeName="transform"
+          dur="9s"
+          keyTimes="0;0.5;1"
+          repeatCount="indefinite"
+          type="translate"
+          values="-180 0;150 0;510 0"
+        />
+        <animate
+          attributeName="opacity"
+          dur="9s"
+          keyTimes="0;0.15;0.72;1"
+          repeatCount="indefinite"
+          values="0;0.9;0.9;0"
+        />
+      </g>
+      <g className={styles.rainDrops}>
+        {[0, 1, 2, 3, 4].map((drop) => (
+          <path d={`M${172 + drop * 31} 108l-8 25`} key={drop}>
+            <animateTransform
+              attributeName="transform"
+              begin={`${drop * -0.28}s`}
+              dur="1.4s"
+              repeatCount="indefinite"
+              type="translate"
+              values="0 -10;70 86"
+            />
+            <animate
+              attributeName="opacity"
+              begin={`${drop * -0.28}s`}
+              dur="1.4s"
+              repeatCount="indefinite"
+              values="0;0.85;0"
+            />
+          </path>
         ))}
-        <span aria-hidden="true" className={styles.practiceTrack}>
-          <i />
-        </span>
-      </div>
-      <figcaption>
-        <strong>What to notice:</strong> the loop returns to the beginning without erasing what you
-        learned. Repetition is not starting over.
-      </figcaption>
-    </figure>
+        <animate
+          attributeName="opacity"
+          dur="9s"
+          keyTimes="0;0.22;0.63;0.76;1"
+          repeatCount="indefinite"
+          values="0;1;1;0;0"
+        />
+      </g>
+
+      <g className={styles.returningPair}>
+        <g className={styles.personWarm}>
+          <circle cx="220" cy="160" r="19" />
+          <path d="M194 231v-42c0-22 11-33 26-33s26 11 26 33v42z" />
+          <path className={styles.personLine} d="M205 228l-12 32M234 228l15 32" />
+        </g>
+        <g className={styles.personSage}>
+          <circle cx="267" cy="157" r="20" />
+          <path d="M240 231v-43c0-22 11-34 27-34s27 12 27 34v43z" />
+          <path className={styles.personLine} d="M253 228l-10 32M281 228l17 32" />
+        </g>
+        <path className={styles.friendLine} d="M238 193c11-9 18-9 30 0" />
+        <animateTransform
+          attributeName="transform"
+          dur="9s"
+          keyTimes="0;0.28;0.62;0.74;1"
+          repeatCount="indefinite"
+          type="translate"
+          values="-150 0;120 0;120 0;120 0;365 0"
+        />
+      </g>
+    </MotionFigure>
   );
 }
 
-function NextStepCalendarAnimation() {
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
+function FullLifePicnicMotion() {
   return (
-    <figure
-      aria-label="A continuously looping weekly paper calendar where small check marks continue after one open day"
-      className={styles.motionFigure}
-      data-motion-loop="continuous"
-      role="img"
+    <MotionFigure
+      cue="What the foundation is for"
+      description="diabetes is present, but it is not the center of the afternoon. The purpose of the plan is a fuller ordinary life."
+      label="A continuously moving picnic scene where friends share food, wave, and gently toss a ball"
+      title="Care should make more room for life."
     >
-      <div className={styles.motionIntro}>
-        <p className="editorial-eyebrow">Consistency without perfection</p>
-        <h2>One open square does not cancel the week.</h2>
-        <p>A routine becomes durable when it knows how to continue after life interrupts.</p>
-      </div>
-      <div className={styles.calendarDesk}>
-        <div className={styles.weekSheet}>
-          <div className={styles.weekHeader}>
-            <CalendarCheck2 aria-hidden="true" />
-            <span>One small step this week</span>
-          </div>
-          <div className={styles.weekGrid}>
-            {days.map((day, index) => (
-              <div className={styles.daySquare} key={day}>
-                <span>{day}</span>
-                {index === 3 ? (
-                  <i className={styles.openDay}>Rest</i>
-                ) : (
-                  <Check aria-hidden="true" />
-                )}
-              </div>
-            ))}
-          </div>
-          <Footprints aria-hidden="true" className={styles.calendarWalker} />
-        </div>
-      </div>
-      <figcaption>
-        <strong>What to notice:</strong> Thursday stays open, and Friday still receives a mark. The
-        useful skill is returning, not producing a flawless row.
-      </figcaption>
-    </figure>
+      <rect className={styles.picnicWash} height="320" width="720" />
+      <circle className={styles.sunShape} cx="620" cy="60" r="27">
+        <animate attributeName="r" dur="4.5s" repeatCount="indefinite" values="25;30;25" />
+      </circle>
+      <path className={styles.groundLine} d="M20 266H700" />
+      <path className={styles.treeTrunk} d="M105 105v162" />
+      <g className={styles.picnicLeaves}>
+        <circle cx="105" cy="86" r="53" />
+        <circle cx="66" cy="103" r="32" />
+        <circle cx="145" cy="105" r="35" />
+        <animateTransform
+          attributeName="transform"
+          dur="5.4s"
+          repeatCount="indefinite"
+          type="rotate"
+          values="-2 105 135;2 105 135;-2 105 135"
+        />
+      </g>
+      <path className={styles.blanketShape} d="M240 222l204 0 50 46H193z" />
+      <path className={styles.basketShape} d="M323 209h54l-5 38h-44zM334 209c0-19 32-19 32 0" />
+
+      <g className={styles.personWarm}>
+        <circle cx="238" cy="159" r="20" />
+        <path d="M211 232v-43c0-22 11-34 27-34s27 12 27 34v43z" />
+        <path className={styles.personLine} d="M252 187l34-35">
+          <animateTransform
+            attributeName="transform"
+            dur="3.6s"
+            repeatCount="indefinite"
+            type="rotate"
+            values="-8 252 187;10 252 187;-8 252 187"
+          />
+        </path>
+      </g>
+      <g className={styles.personSage}>
+        <circle cx="430" cy="161" r="20" />
+        <path d="M403 233v-43c0-22 11-34 27-34s27 12 27 34v43z" />
+        <path className={styles.personLine} d="M415 189l-32-34">
+          <animateTransform
+            attributeName="transform"
+            dur="3.6s"
+            repeatCount="indefinite"
+            type="rotate"
+            values="8 415 189;-10 415 189;8 415 189"
+          />
+        </path>
+      </g>
+      <g className={styles.personBlue}>
+        <circle cx="545" cy="177" r="18" />
+        <path d="M521 238v-39c0-20 10-31 24-31s24 11 24 31v39z" />
+        <animateTransform
+          attributeName="transform"
+          dur="4.4s"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0;0 -5;0 0"
+        />
+      </g>
+      <circle className={styles.picnicBall} cx="0" cy="0" r="12">
+        <animateMotion
+          calcMode="spline"
+          dur="3.6s"
+          keySplines="0.4 0 0.2 1;0.4 0 0.2 1"
+          keyTimes="0;0.5;1"
+          path="M277 150 Q337 72 397 150 Q337 72 277 150"
+          repeatCount="indefinite"
+        />
+        <animateTransform
+          attributeName="transform"
+          dur="1.2s"
+          repeatCount="indefinite"
+          type="rotate"
+          values="0;360"
+        />
+      </circle>
+    </MotionFigure>
   );
 }
 
@@ -511,8 +422,8 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const stageRef = useRef<HTMLDivElement>(null);
-  const positionKey = "health-decoded:day-fourteen-position:" + experience.lessonProgressId;
-  const draftKey = "health-decoded:day-fourteen-foundation:" + experience.lessonProgressId;
+  const positionKey = `health-decoded:day-fourteen-position:${experience.lessonProgressId}`;
+  const draftKey = `health-decoded:day-fourteen-foundation:${experience.lessonProgressId}`;
 
   useEffect(() => {
     try {
@@ -520,15 +431,9 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
       if (savedDraft) {
         const parsed = JSON.parse(savedDraft) as Partial<MilestoneDraft>;
         setDraft({
-          ...initialDraft,
-          ...parsed,
-          checklist: parsed.checklist ?? {},
-          confidence: parsed.confidence ?? {},
-          openedFoundations: Array.isArray(parsed.openedFoundations)
-            ? parsed.openedFoundations
-            : [],
-          plan: parsed.plan ?? {},
-          toolkit: Array.isArray(parsed.toolkit) ? parsed.toolkit : [],
+          arrivalFeeling: typeof parsed.arrivalFeeling === "string" ? parsed.arrivalFeeling : null,
+          nextStep: typeof parsed.nextStep === "string" ? parsed.nextStep : null,
+          promise: typeof parsed.promise === "string" ? parsed.promise : "",
         });
       }
 
@@ -539,7 +444,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         }
       }
     } catch {
-      setMessage("Your private milestone draft could not be restored in this browser.");
+      setMessage("Your private milestone note could not be restored in this browser.");
     } finally {
       setHydrated(true);
     }
@@ -550,7 +455,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
     try {
       window.localStorage.setItem(draftKey, JSON.stringify(draft));
     } catch {
-      setMessage("Your private milestone draft could not be saved in this browser.");
+      setMessage("Your private milestone note could not be saved in this browser.");
     }
   }, [draft, draftKey, hydrated]);
 
@@ -589,84 +494,18 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
     window.scrollTo({ behavior: reduced ? "auto" : "smooth", top: 0 });
   }
 
-  function addTool(id: ToolId) {
-    if (draft.toolkit.includes(id)) return;
-    updateDraft({ toolkit: [...draft.toolkit, id] });
-  }
-
-  function removeTool(id: ToolId) {
-    updateDraft({ toolkit: draft.toolkit.filter((item) => item !== id) });
-  }
-
-  function handleDragStart(event: DragEvent<HTMLButtonElement>, id: ToolId) {
-    event.dataTransfer.setData("text/plain", id);
-    event.dataTransfer.effectAllowed = "move";
-  }
-
-  function handleToolDrop(event: DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    const id = event.dataTransfer.getData("text/plain") as ToolId;
-    if (toolkitItems.some((tool) => tool.id === id)) addTool(id);
-  }
-
-  function toggleFoundation(id: FoundationId) {
-    const opened = draft.openedFoundations.includes(id);
-    updateDraft({
-      openedFoundations: opened
-        ? draft.openedFoundations.filter((item) => item !== id)
-        : [...draft.openedFoundations, id],
-    });
-  }
-
-  function canContinue() {
-    if (stage === 0) return draft.arrivalFeeling !== null;
-    if (stage === 1) return true;
-    if (stage === 2) return draft.toolkit.length === toolkitItems.length;
-    if (stage === 3) return draft.openedFoundations.length === foundations.length;
-    if (stage === 4) return draft.selectedShift !== null && draft.reflection.trim().length >= 4;
-    if (stage === 5) return Object.keys(draft.confidence).length === confidenceScenarios.length;
-    if (stage === 6) return true;
-    if (stage === 7) return Object.keys(draft.checklist).length === checklistSkills.length;
-    if (stage === 8) return Object.keys(draft.plan).length === planAreas.length;
-    if (stage === 9) return draft.nextStep.trim().length >= 4 && draft.stepCue !== "";
-    if (stage === 10) {
-      return (
-        (draft.futureFeeling !== null || draft.futureWords.trim().length >= 3) &&
-        draft.promise.trim().length >= 4
-      );
-    }
-    return true;
-  }
-
-  function stageRequirement() {
-    return [
-      "Choose the sentence that feels closest today.",
-      "",
-      "Move all ten tools into your toolkit. You can drag or select each one.",
-      "Open all three foundations.",
-      "Choose one shift and write a few honest words about what changed.",
-      "Answer all five confidence check-ins. Nothing here is graded.",
-      "",
-      "Mark every skill as comfortable or something you want to practice.",
-      "Choose one small support in each area.",
-      "Choose one priority and when it could begin.",
-      "Name how you hope to feel and write one promise to your future self.",
-    ][stage];
-  }
-
   function continueLabel() {
     return (
       [
-        "See how the learning connects",
-        "Build my diabetes toolkit",
-        "See the three foundations",
-        "Notice what changed",
-        "Try real-life confidence",
-        "Look toward the next 76 days",
-        "Check my foundation",
-        "Build my month-one plan",
-        "Choose my next small step",
-        "Write to my future self",
+        "Look back at the beginning",
+        "See what changed",
+        "Revisit the body story",
+        "Read numbers with context",
+        "Bring the tools together",
+        "Protect without fear",
+        "Practice the return",
+        "Let support in",
+        "Look toward the next phase",
         "See the milestone",
       ][stage] ?? "Continue"
     );
@@ -700,653 +539,470 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   function clearPrivateDraft() {
     window.localStorage.removeItem(draftKey);
     setDraft(initialDraft);
-    setMessage("Your private Day 14 draft was cleared from this browser.");
+    setMessage("Your private Day 14 note was cleared from this browser.");
   }
 
-  const confidentCount = Object.values(draft.confidence).filter(
-    (value) => value === "ready",
-  ).length;
-  const promptCount = Object.values(draft.confidence).filter((value) => value === "prompt").length;
-  const practiceCount = Object.values(draft.confidence).filter(
-    (value) => value === "practice",
-  ).length;
-  const comfortableCount = Object.values(draft.checklist).filter(
-    (value) => value === "comfortable",
-  ).length;
-  const selectedShift = growthShifts.find((shift) => shift.id === draft.selectedShift);
+  const selectedStep = nextSteps.find(([id]) => id === draft.nextStep);
 
   function renderStage() {
     switch (stage) {
       case 0:
         return (
-          <div className="space-y-10">
-            <div className="grid gap-8 lg:grid-cols-[1fr_18rem] lg:items-end">
-              <LessonHeading label="Day 14 · Your foundation is built">
-                This is not the finish line. It is the moment you notice what you can carry.
-              </LessonHeading>
-              <div className={styles.dayNote}>
-                <p className="editorial-number">14</p>
-                <p>
-                  Today introduces no major medical idea. It gathers what you already know and
-                  points it toward real life.
-                </p>
-              </div>
-            </div>
+          <div className={styles.chapter}>
+            <LessonHeading label="Day 14 · Your foundation is built">
+              You know more than you did fourteen days ago.
+            </LessonHeading>
+            <p className={styles.lede}>
+              Today is not an exam and it is not a finale. It is a quiet place to notice what has
+              become clearer—and what you can now carry into real life.
+            </p>
+
             <LessonStoryImage
               alt="Two sisters sit at a warm dining table, quietly looking back through a learning notebook and weekly calendar"
-              caption="Recognition can be quiet: a question that now has words, a decision that no longer feels impossible, a little less fear around what comes next."
-              emphasis="Fourteen days can change the shape of uncertainty."
+              caption="Recognition does not have to look dramatic. It may be a question that now has words, a number that feels less frightening, or one decision that no longer feels impossible."
+              emphasis="Some kinds of confidence arrive quietly."
               height={941}
               priority
               src="/lessons/day-14/quiet-recognition.jpg"
               width={1672}
             />
-            <div>
-              <p className={styles.promptTitle}>What feels closest as you arrive today?</p>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {arrivalFeelings.map(([id, label]) => (
-                  <AnswerChoice
+
+            <blockquote className={styles.pullQuote}>
+              A foundation is not proof that you will never feel uncertain. It is something steady
+              to stand on when uncertainty returns.
+            </blockquote>
+
+            <section className={styles.optionalReflection}>
+              <div>
+                <p className="editorial-eyebrow">Optional reflection</p>
+                <h2>What feels closest as you arrive?</h2>
+                <p>You can choose one, or simply keep reading.</p>
+              </div>
+              <div>
+                {arrivalFeelings.map(([id, label], index) => (
+                  <EditorialChoice
+                    index={index}
                     key={id}
                     onClick={() => updateDraft({ arrivalFeeling: id })}
                     selected={draft.arrivalFeeling === id}
                   >
                     {label}
-                  </AnswerChoice>
+                  </EditorialChoice>
                 ))}
               </div>
-            </div>
-            {draft.arrivalFeeling ? (
-              <p className={styles.reassurance}>
-                Whatever you chose belongs here. Readiness is not the absence of questions. It is
-                knowing that you have ways to meet the next one.
-              </p>
-            ) : null}
+            </section>
           </div>
         );
+
       case 1:
         return (
-          <div className="space-y-9">
-            <LessonHeading label="The first fortnight had a shape">
-              First came meaning. Then choices. Then a future you could influence.
+          <div className={styles.chapter}>
+            <LessonHeading label="Where you began">
+              The first day asked you to understand, not to become perfect.
             </LessonHeading>
-            <FoundationHomeAnimation />
-            <div className={styles.journeySequence}>
-              {[
-                ["01", "Diagnosis", "What is happening to me?"],
-                ["02", "Body & numbers", "How do I understand the signals?"],
-                ["03", "Daily tools", "What can I do in ordinary life?"],
-                ["04", "Safety & prevention", "How do I respond without fear?"],
-                ["05", "Adaptation & support", "How do I keep care workable?"],
-              ].map(([number, title, question]) => (
-                <div key={number}>
-                  <span>{number}</span>
-                  <strong>{title}</strong>
-                  <p>{question}</p>
-                </div>
-              ))}
+            <div className={styles.beforeAfter}>
+              <section>
+                <p className="editorial-eyebrow">Then</p>
+                <h2>The diagnosis may have sounded larger than your life.</h2>
+                <p>
+                  New words, new numbers, and new decisions can arrive all at once. It can be hard
+                  to know which question belongs first or whether a single meal, reading, or missed
+                  routine has already decided the future.
+                </p>
+              </section>
+              <section>
+                <p className="editorial-eyebrow">Now</p>
+                <h2>You have a way to make the moment smaller.</h2>
+                <p>
+                  Name what is happening. Add timing and context. Choose one useful tool. Ask for
+                  help when the question belongs with someone else. That sequence is knowledge you
+                  can use.
+                </p>
+              </section>
             </div>
-            <p className={styles.reassurance}>
-              The lessons did not ask you to memorize fourteen separate subjects. They built one
-              system: understand, decide, notice, adjust, and ask for help when you need it.
+            <p className={styles.handwrittenLine}>
+              The first change may be simple: the question in front of you no longer feels
+              impossible to enter.
             </p>
           </div>
         );
+
       case 2:
         return (
-          <div className="space-y-9">
-            <LessonHeading label="Build your diabetes toolkit">
-              No single tool manages diabetes. Confidence comes from knowing how they work together.
+          <div className={styles.chapter}>
+            <LessonHeading label="Knowledge that travels">
+              The lessons were never meant to stay in separate boxes.
             </LessonHeading>
-            <div className={styles.toolkitStudio}>
-              <section>
-                <div className={styles.studioHeading}>
-                  <p className="editorial-eyebrow">Tools you have practiced</p>
-                  <span>
-                    {draft.toolkit.length} of {toolkitItems.length} packed
-                  </span>
-                </div>
-                <div className={styles.toolGrid}>
-                  {toolkitItems.map(({ description, icon: Icon, id, label }) => {
-                    const selected = draft.toolkit.includes(id);
-                    return (
-                      <button
-                        aria-pressed={selected}
-                        className={cn(styles.toolCard, selected && styles.toolCardPacked)}
-                        draggable={!selected}
-                        key={id}
-                        onClick={() => (selected ? removeTool(id) : addTool(id))}
-                        onDragStart={(event) => handleDragStart(event, id)}
-                        type="button"
-                      >
-                        <Icon aria-hidden="true" />
-                        <strong>{label}</strong>
-                        <span>{description}</span>
-                        <small>
-                          {selected ? "In your toolkit · select to remove" : "Drag or select"}
-                        </small>
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-              <div
-                aria-label="Your personal diabetes toolkit drop area"
-                className={cn(
-                  styles.toolkitBag,
-                  draft.toolkit.length === toolkitItems.length && styles.toolkitBagComplete,
-                )}
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={handleToolDrop}
-                role="region"
-              >
-                <span aria-hidden="true" className={styles.bagHandle} />
-                <div className={styles.bagLabel}>
-                  <p className="editorial-eyebrow">My toolkit</p>
-                  <strong>
-                    {draft.toolkit.length
-                      ? toolkitItems
-                          .filter((tool) => draft.toolkit.includes(tool.id))
-                          .map((tool) => tool.label)
-                          .join(" · ")
-                      : "Place the first tool here"}
-                  </strong>
-                </div>
-                <div className={styles.bagSlots}>
-                  {toolkitItems.map((tool) => (
-                    <span
-                      className={cn(
-                        styles.bagSlot,
-                        draft.toolkit.includes(tool.id) && styles.bagSlotFilled,
-                      )}
-                      key={tool.id}
-                      title={tool.label}
-                    >
-                      {draft.toolkit.includes(tool.id) ? <Check aria-hidden="true" /> : null}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {draft.toolkit.length === toolkitItems.length ? (
-              <p className={styles.reassurance}>
-                Your toolkit is full, but it is not heavy. You will rarely need every tool at once.
-                The skill is knowing that another one is available.
+            <OrdinaryLifeMotion />
+            <div className={styles.editorialColumns}>
+              <p>
+                <span>Y</span>ou learned what insulin resistance means so the diagnosis could become
+                understandable instead of mysterious. You learned to see food, movement, medication,
+                and monitoring as tools—not tests of character.
               </p>
-            ) : null}
+              <p>
+                Then the circle widened: safety, prevention, problem solving, support, and the
+                people around you. The point was never to memorize fourteen lessons. It was to make
+                the next real moment easier to meet.
+              </p>
+            </div>
           </div>
         );
+
       case 3:
         return (
-          <div className="space-y-9">
-            <LessonHeading label="Three foundations">
-              Fourteen days can fit inside three ideas you can remember.
+          <div className={styles.chapter}>
+            <LessonHeading label="Your body makes more sense">
+              An explanation can take the place of blame.
             </LessonHeading>
-            <div className={styles.foundationGrid}>
-              {foundations.map((foundation) => {
-                const opened = draft.openedFoundations.includes(foundation.id);
-                return (
-                  <article
-                    className={cn(styles.foundationCard, opened && styles.foundationCardOpen)}
-                    key={foundation.id}
-                  >
-                    <button
-                      aria-expanded={opened}
-                      onClick={() => toggleFoundation(foundation.id)}
-                      type="button"
-                    >
-                      <span>{foundation.label}</span>
-                      <h2>{foundation.title}</h2>
-                      <small>{opened ? "Close this foundation" : "Open this foundation"}</small>
-                    </button>
-                    {opened ? (
-                      <ul className="animate-slide-up">
-                        {foundation.points.map((point) => (
-                          <li key={point}>
-                            <Check aria-hidden="true" />
-                            <span>{point}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </article>
-                );
-              })}
-            </div>
-            {draft.openedFoundations.length === foundations.length ? (
-              <div className={styles.foundationEquation}>
-                <span>Understand</span>
-                <i>+</i>
-                <span>Decide</span>
-                <i>+</i>
-                <span>Protect</span>
-                <strong>Confidence through practice</strong>
-              </div>
-            ) : null}
-          </div>
-        );
-      case 4:
-        return (
-          <div className="space-y-9">
-            <LessonHeading label="What changed?">
-              Growth often sounds like a kinder, more accurate sentence.
-            </LessonHeading>
-            <div className={styles.shiftGrid}>
-              {growthShifts.map((shift) => {
-                const selected = draft.selectedShift === shift.id;
-                return (
-                  <button
-                    aria-pressed={selected}
-                    className={cn(styles.shiftCard, selected && styles.shiftCardSelected)}
-                    key={shift.id}
-                    onClick={() => updateDraft({ selectedShift: shift.id })}
-                    type="button"
-                  >
-                    <span>Before</span>
-                    <p>“{shift.before}”</p>
-                    <ArrowLeft aria-hidden="true" />
-                    <span>Now</span>
-                    <strong>“{shift.after}”</strong>
-                    <small>{selected ? "This shift feels closest" : "Choose this shift"}</small>
-                  </button>
-                );
-              })}
-            </div>
-            {selectedShift ? (
-              <div className={styles.selectedShift}>
-                <p className="editorial-eyebrow">The shift you noticed</p>
-                <blockquote>“{selectedShift.after}”</blockquote>
-              </div>
-            ) : null}
-            <label className={styles.writingField}>
-              <span>
-                What is the biggest thing you understand today that you did not understand two weeks
-                ago?
-              </span>
-              <textarea
-                maxLength={320}
-                onChange={(event) => updateDraft({ reflection: event.target.value })}
-                placeholder="Today I understand…"
-                rows={4}
-                value={draft.reflection}
-              />
-              <small>There is no ideal answer. Recognition is the work here.</small>
-            </label>
-          </div>
-        );
-      case 5:
-        return (
-          <div className="space-y-9">
-            <LessonHeading label="Real-life confidence check">
-              You do not need a perfect answer. Notice whether you have a way to begin.
-            </LessonHeading>
-            <div className={styles.scenarioList}>
-              {confidenceScenarios.map((scenario, index) => (
-                <article className={styles.scenarioRow} key={scenario.id}>
-                  <div className={styles.scenarioCopy}>
-                    <span>0{index + 1}</span>
-                    <div>
-                      <p className="editorial-eyebrow">{scenario.title}</p>
-                      <h2>{scenario.prompt}</h2>
-                      <small>{scenario.skill}</small>
-                    </div>
-                  </div>
-                  <div
-                    aria-label={`Confidence for ${scenario.title}`}
-                    className={styles.confidenceScale}
-                  >
-                    {(
-                      [
-                        ["practice", "I want more practice"],
-                        ["prompt", "I could begin with a prompt"],
-                        ["ready", "I feel ready to handle this"],
-                      ] as const
-                    ).map(([value, label]) => (
-                      <button
-                        aria-pressed={draft.confidence[scenario.id] === value}
-                        className={cn(
-                          styles.scaleButton,
-                          draft.confidence[scenario.id] === value && styles.scaleButtonSelected,
-                        )}
-                        key={value}
-                        onClick={() =>
-                          updateDraft({
-                            confidence: { ...draft.confidence, [scenario.id]: value },
-                          })
-                        }
-                        type="button"
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </article>
-              ))}
-            </div>
-            {Object.keys(draft.confidence).length === confidenceScenarios.length ? (
-              <div aria-live="polite" className={styles.confidenceSummary}>
-                <Sparkles aria-hidden="true" />
+            <div className={styles.numberedEssay}>
+              <section>
+                <span>01</span>
                 <div>
-                  <p className="editorial-eyebrow">Your honest readiness map</p>
-                  <h2>
-                    {confidentCount} ready · {promptCount} with a prompt · {practiceCount} to
-                    practice
-                  </h2>
+                  <h2>Insulin is a signal.</h2>
                   <p>
-                    Every result is useful. Confidence can mean “I know what to do” or “I know where
-                    to look and who to ask.”
+                    It helps glucose move from the bloodstream into cells that can use it for
+                    energy. In insulin resistance, cells do not respond to that signal as
+                    effectively, so the body may need to send more.
                   </p>
                 </div>
-              </div>
-            ) : null}
+              </section>
+              <section>
+                <span>02</span>
+                <div>
+                  <h2>Type 2 diabetes develops over time.</h2>
+                  <p>
+                    It is shaped by biology, genetics, environment, age, stress, sleep, access to
+                    care, and many other influences. It is not a moral verdict and it is not proof
+                    that you failed.
+                  </p>
+                </div>
+              </section>
+              <section>
+                <span>03</span>
+                <div>
+                  <h2>Understanding creates choices.</h2>
+                  <p>
+                    Food, movement, medicines, sleep, monitoring, and support can influence
+                    different parts of the system. No single tool has to carry the whole plan.
+                  </p>
+                </div>
+              </section>
+            </div>
+            <blockquote className={styles.pullQuote}>
+              Your body is not an enemy to defeat. It is a living system you can learn to support.
+            </blockquote>
           </div>
         );
+
+      case 4:
+        return (
+          <div className={styles.chapter}>
+            <LessonHeading label="Numbers without judgment">
+              A reading is a clue. Context helps it speak.
+            </LessonHeading>
+            <div className={styles.contextSequence}>
+              <section>
+                <span>First</span>
+                <h2>Name the measure.</h2>
+                <p>
+                  Is it a glucose reading from one moment, or an A1C view across several months?
+                </p>
+              </section>
+              <section>
+                <span>Then</span>
+                <h2>Add the conditions.</h2>
+                <p>
+                  Timing, food, movement, medicines, stress, sleep, and illness can help explain
+                  what the number can—and cannot—say.
+                </p>
+              </section>
+              <section>
+                <span>Next</span>
+                <h2>Look for a pattern.</h2>
+                <p>
+                  One unexpected result can be worth noticing without becoming a verdict. Repeated
+                  patterns and symptoms give the care team more useful information.
+                </p>
+              </section>
+              <section>
+                <span>When needed</span>
+                <h2>Bring the question to care.</h2>
+                <p>
+                  Ask what range applies to you, what might be influencing a pattern, and what next
+                  step is safe. Personal targets belong in a personal care plan.
+                </p>
+              </section>
+            </div>
+            <p className={styles.closingSentence}>
+              The skill is not forcing every number to behave. The skill is knowing how to respond
+              without turning information into shame.
+            </p>
+          </div>
+        );
+
+      case 5:
+        return (
+          <div className={styles.chapter}>
+            <LessonHeading label="Tools that can work together">
+              A plan can be flexible without becoming careless.
+            </LessonHeading>
+            <div className={styles.toolLines}>
+              <section>
+                <h2>Food can be balanced, familiar, and meaningful.</h2>
+                <p>
+                  Carbohydrate is not forbidden. Fiber, protein, fat, portions, preferences,
+                  culture, access, and the rest of the meal all add context. One plate does not
+                  define your health.
+                </p>
+              </section>
+              <section>
+                <h2>Movement can be ordinary and adapted.</h2>
+                <p>
+                  Working muscles can use glucose. Walking, chores, dancing, gardening, water
+                  movement, strength work, and seated options can all count when they fit your body
+                  and safety needs.
+                </p>
+              </section>
+              <section>
+                <h2>Medicine is a tool, not a failure.</h2>
+                <p>
+                  A medication can support what the body needs. Knowing its name, purpose, timing,
+                  possible side effects, and what to do when a dose is missed makes the tool safer
+                  and easier to use.
+                </p>
+              </section>
+              <section>
+                <h2>Monitoring can answer a question.</h2>
+                <p>
+                  A reading is most useful when you know why you are checking and what you plan to
+                  do with the result. More checking is not automatically better checking.
+                </p>
+              </section>
+            </div>
+          </div>
+        );
+
       case 6:
         return (
-          <div className="space-y-10">
-            <LessonHeading label="Your journey is just beginning">
-              The next chapter turns knowledge into something that feels natural.
+          <div className={styles.chapter}>
+            <LessonHeading label="Protection without fear">
+              Prevention is care showing up before a problem becomes loud.
+            </LessonHeading>
+            <div className={styles.protectionSpread}>
+              <div>
+                <p>
+                  Eyes, kidneys, nerves, feet, heart, and blood vessels deserve attention without
+                  becoming a catalogue of things to fear. Screening and regular care are ways to
+                  notice change early, when there may be more options.
+                </p>
+                <p>
+                  Bring your questions. Know which checks are due. Share new symptoms, wounds,
+                  vision changes, chest symptoms, or unusual lows and highs with the right member of
+                  your care team.
+                </p>
+              </div>
+              <blockquote>
+                Risk is not destiny. Early attention is not pessimism; it is protection.
+              </blockquote>
+            </div>
+            <div className={styles.safetyNotes}>
+              <section>
+                <span>For an urgent moment</span>
+                <p>
+                  Follow the safety plan you made with your clinician. Know who to call, when to
+                  seek urgent help, and where fast-acting glucose or other supplies belong if they
+                  are part of your plan.
+                </p>
+              </section>
+              <section>
+                <span>For a routine visit</span>
+                <p>
+                  A short note with the pattern, timing, symptoms, medicines, and your question can
+                  make a conversation more useful than trying to remember everything in the room.
+                </p>
+              </section>
+            </div>
+          </div>
+        );
+
+      case 7:
+        return (
+          <div className={styles.chapter}>
+            <LessonHeading label="Problem solving for real life">
+              Confidence is knowing how to return, not knowing every answer.
+            </LessonHeading>
+            <ReturnAfterRainMotion />
+            <div className={styles.returnStories}>
+              <section>
+                <span>At a restaurant</span>
+                <p>
+                  Use what you recognize, choose what fits, and let one uncertain meal remain one
+                  meal. You do not need perfect information to make a reasonable choice.
+                </p>
+              </section>
+              <section>
+                <span>After a surprising reading</span>
+                <p>
+                  Add timing and context, look for a pattern, and bring a useful question to your
+                  care team. Curiosity gives the number a smaller job.
+                </p>
+              </section>
+              <section>
+                <span>When the plan changes</span>
+                <p>
+                  Repair the next available moment instead of the whole day. A smaller Plan B can
+                  protect continuity without pretending life went as expected.
+                </p>
+              </section>
+            </div>
+          </div>
+        );
+
+      case 8:
+        return (
+          <div className={styles.chapter}>
+            <LessonHeading label="Care can be shared">
+              Support works best when people know what helpful means.
+            </LessonHeading>
+            <div className={styles.conversationEssay}>
+              <p>
+                Support is not supervision. A useful person may listen without fixing, join a walk,
+                learn what a low blood glucose plan looks like, help make an appointment, or simply
+                keep diabetes from becoming the only subject in the room.
+              </p>
+              <div className={styles.conversationLines}>
+                <p>
+                  <span>Ask</span> “What would help today?”
+                </p>
+                <p>
+                  <span>Listen</span> “I can stay with this before offering ideas.”
+                </p>
+                <p>
+                  <span>Offer</span> “I can do that. Would company or practical help fit better?”
+                </p>
+                <p>
+                  <span>Check</span> “Does this still feel helpful?”
+                </p>
+              </div>
+              <p>
+                You can also set a calm boundary: “I am following my care plan. Please do not
+                comment on my plate.” Clear limits protect dignity and make room for the kinds of
+                support you actually choose.
+              </p>
+            </div>
+            <blockquote className={styles.pullQuote}>
+              Needing support does not make the foundation weaker. It gives the foundation more
+              places to stand.
+            </blockquote>
+          </div>
+        );
+
+      case 9:
+        return (
+          <div className={styles.chapter}>
+            <LessonHeading label="The next 76 days">
+              Knowledge becomes yours through practice, not pressure.
             </LessonHeading>
             <LessonStoryImage
-              alt="A grandfather and his teenage granddaughter laugh together while planting herbs in a community garden"
-              caption="The purpose of diabetes knowledge is not to make every day about diabetes. It is to support energy, connection, plans, and a life that stays larger than care."
-              emphasis="Health skills make more living possible."
+              alt="A grandfather and his teenage granddaughter laugh together while planting herbs in a neighborhood garden"
+              caption="Health knowledge matters because it supports a life with people, plans, ordinary pleasures, and new seasons—not because health must become the center of every day."
+              emphasis="The goal is more life, not more diabetes."
               height={941}
               src="/lessons/day-14/life-keeps-growing.jpg"
               width={1672}
             />
-            <PracticeLoopAnimation />
-            <div className={styles.nextPhaseNote}>
-              <p className="editorial-eyebrow">What the next 76 days will strengthen</p>
-              <div>
-                {[
-                  "Routines that can bend with real life",
-                  "Deeper questions without information overload",
-                  "Confidence in more complicated situations",
-                  "Habits that feel increasingly ordinary and independent",
-                ].map((item) => (
-                  <span key={item}>
-                    <Check aria-hidden="true" />
-                    {item}
-                  </span>
-                ))}
-              </div>
+            <FullLifePicnicMotion />
+            <div className={styles.nextPhase}>
               <p>
-                You are not expected to know everything before that phase begins. Practice is the
-                next teacher.
+                The first fourteen days built language and structure. The next seventy-six are for
+                trying, noticing, repeating, asking, and adjusting. Some weeks will feel smooth.
+                Others will be crowded or uncertain. Both belong in the learning.
               </p>
+              <blockquote>
+                Practice is not the part after learning. Practice is how learning becomes yours.
+              </blockquote>
             </div>
-          </div>
-        );
-      case 7:
-        return (
-          <div className="space-y-9">
-            <LessonHeading label="My foundation checklist">
-              Mark what feels comfortable and what you would like to practice next.
-            </LessonHeading>
-            <p className={styles.reassurance}>
-              “Practice next” is not a wrong answer. It is a useful direction for the weeks ahead.
-            </p>
-            <div className={styles.checklistBoard}>
-              {checklistSkills.map(([id, label], index) => (
-                <div className={styles.checklistRow} key={id}>
-                  <span>0{index + 1}</span>
-                  <p>{label}</p>
-                  <div>
-                    {(
-                      [
-                        ["comfortable", "Comfortable"],
-                        ["practice", "Practice next"],
-                      ] as const
-                    ).map(([value, buttonLabel]) => (
-                      <button
-                        aria-pressed={draft.checklist[id] === value}
-                        className={cn(
-                          styles.checkButton,
-                          draft.checklist[id] === value && styles.checkButtonSelected,
-                        )}
-                        key={value}
-                        onClick={() =>
-                          updateDraft({
-                            checklist: { ...draft.checklist, [id]: value },
-                          })
-                        }
-                        type="button"
-                      >
-                        {draft.checklist[id] === value ? <Check aria-hidden="true" /> : null}
-                        {buttonLabel}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-            {Object.keys(draft.checklist).length === checklistSkills.length ? (
-              <div className={styles.checklistSummary}>
-                <p className="editorial-number">{comfortableCount}</p>
-                <div>
-                  <h2>skills feel comfortable today</h2>
-                  <p>
-                    The others are not gaps in your worth. They are places the next phase can
-                    strengthen through repetition and support.
-                  </p>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        );
-      case 8:
-        return (
-          <div className="space-y-9">
-            <LessonHeading label="Your personal foundation plan">
-              Five small supports are stronger than one dramatic promise.
-            </LessonHeading>
-            <p className={styles.reassurance}>
-              Choose one option in each area. These are flexible supports, not contracts. Change
-              them when your life or care plan changes.
-            </p>
-            <div className={styles.planGrid}>
-              {planAreas.map((area, index) => (
-                <section className={styles.planArea} key={area.id}>
-                  <div>
-                    <span>0{index + 1}</span>
-                    <h2>{area.label}</h2>
-                  </div>
-                  <div className="grid gap-2">
-                    {area.options.map((option) => (
-                      <AnswerChoice
-                        key={option}
-                        onClick={() => updateDraft({ plan: { ...draft.plan, [area.id]: option } })}
-                        selected={draft.plan[area.id] === option}
-                      >
-                        {option}
-                      </AnswerChoice>
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
-            {Object.keys(draft.plan).length === planAreas.length ? (
-              <div className={styles.planSummary}>
-                <p className="editorial-eyebrow">Your next-month foundation</p>
-                <ol>
-                  {planAreas.map((area) => (
-                    <li key={area.id}>
-                      <span>{area.label}</span>
-                      <p>{draft.plan[area.id]}</p>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            ) : null}
-          </div>
-        );
-      case 9:
-        return (
-          <div className="space-y-9">
-            <LessonHeading label="My next small step">
-              Give one action the first turn. The others can wait.
-            </LessonHeading>
-            <NextStepCalendarAnimation />
-            <div className={styles.priorityStudio}>
-              <section>
-                <p className={styles.promptTitle}>Which plan item gets the first turn?</p>
-                <div className="mt-5 grid gap-3">
-                  {planAreas.flatMap((area) => {
-                    const option = draft.plan[area.id];
 
-                    return option
-                      ? [
-                          <AnswerChoice
-                            key={area.id}
-                            onClick={() => updateDraft({ nextStep: option })}
-                            selected={draft.nextStep === option}
-                          >
-                            <span>
-                              <strong>{area.label}:</strong> {option}
-                            </span>
-                          </AnswerChoice>,
-                        ]
-                      : [];
-                  })}
-                </div>
-              </section>
-              <section>
-                <p className={styles.promptTitle}>When could it begin?</p>
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {[
-                    "After breakfast",
-                    "At lunch",
-                    "After dinner",
-                    "Before bed",
-                    "Before my next appointment",
-                    "At the next useful opening",
-                  ].map((cue) => (
-                    <AnswerChoice
-                      key={cue}
-                      onClick={() => updateDraft({ stepCue: cue })}
-                      selected={draft.stepCue === cue}
-                    >
-                      {cue}
-                    </AnswerChoice>
-                  ))}
-                </div>
-              </section>
-            </div>
-            {draft.nextStep && draft.stepCue ? (
-              <div className={styles.nextStepCard}>
-                <Footprints aria-hidden="true" />
-                <div>
-                  <p className="editorial-eyebrow">Your first step</p>
-                  <blockquote>{draft.nextStep}</blockquote>
-                  <span>{draft.stepCue}</span>
-                </div>
+            <section className={styles.nextStepSection}>
+              <div>
+                <p className="editorial-eyebrow">One gentle next step</p>
+                <h2>Choose one thing to carry into the next month.</h2>
+                <p>Choosing is optional. This is not a five-part plan.</p>
               </div>
-            ) : null}
-          </div>
-        );
-      case 10:
-        return (
-          <div className="space-y-10">
-            <LessonHeading label="A note to the person you are becoming">
-              Look forward without asking your future self to be perfect.
-            </LessonHeading>
-            <div>
-              <p className={styles.promptTitle}>
-                When you think about living with diabetes one year from today, how do you hope to
-                feel?
-              </p>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {futureFeelings.map((feeling) => (
-                  <AnswerChoice
-                    key={feeling}
-                    onClick={() => updateDraft({ futureFeeling: feeling })}
-                    selected={draft.futureFeeling === feeling}
+              <div className={styles.nextStepChoices}>
+                {nextSteps.map(([id, label], index) => (
+                  <EditorialChoice
+                    index={index}
+                    key={id}
+                    onClick={() => updateDraft({ nextStep: id })}
+                    selected={draft.nextStep === id}
                   >
-                    {feeling}
-                  </AnswerChoice>
+                    {label}
+                  </EditorialChoice>
                 ))}
               </div>
-              <label className={styles.shortField}>
-                <span>Or add your own words</span>
-                <input
-                  maxLength={100}
-                  onChange={(event) => updateDraft({ futureWords: event.target.value })}
-                  placeholder="I hope to feel…"
-                  type="text"
-                  value={draft.futureWords}
-                />
-              </label>
-            </div>
-            <label className={styles.writingField}>
-              <span>What is one promise you would like to make to your future self?</span>
+            </section>
+
+            <label className={styles.promiseField}>
+              <span>A few private words to your future self, if you want to leave them</span>
               <textarea
                 maxLength={280}
                 onChange={(event) => updateDraft({ promise: event.target.value })}
-                placeholder="I will keep…"
+                placeholder="When things feel difficult, I hope I remember…"
                 rows={4}
                 value={draft.promise}
               />
               <small>
-                Your plan and reflections are saved only in this browser so you can revisit Day 14.
-                They are not sent to Health Decoded as health information.
+                This note is saved only in this browser. It is not sent to Health Decoded as health
+                information.
               </small>
             </label>
-            {draft.promise.trim().length >= 4 ? (
-              <div className={styles.promiseCard}>
-                <MessageCircleHeart aria-hidden="true" />
-                <p className="editorial-eyebrow">A promise worth returning to</p>
-                <blockquote>“{draft.promise.trim()}”</blockquote>
-                <span>Signed by the person who kept learning through the first fourteen days.</span>
-              </div>
-            ) : null}
           </div>
         );
+
       default:
         return (
-          <div className="space-y-12">
-            <div className={styles.milestoneCard}>
-              <div>
-                <p className="editorial-eyebrow">Foundation complete · Days 1–14</p>
-                <LessonHeading>Your foundation is built.</LessonHeading>
-                <p>
-                  You now have the knowledge to understand your diagnosis, make informed daily
-                  decisions, notice when something needs attention, and ask for useful help.
-                </p>
-              </div>
-              <div className={styles.milestoneCount}>
-                <span>14</span>
-                <p>days of foundation</p>
-                <small>76 days of practice ahead</small>
-              </div>
-              <div className={styles.milestoneLine}>
-                <span />
-              </div>
+          <div className={styles.chapter}>
+            <div className={styles.milestoneOpening}>
+              <p className="editorial-eyebrow">Foundation complete · Days 1–14</p>
+              <p aria-hidden="true" className={styles.milestoneNumber}>
+                14
+              </p>
+              <LessonHeading>Your foundation is built.</LessonHeading>
+              <p>
+                You can understand more of what is happening, make an informed next choice, notice
+                when something needs attention, and ask for useful help. That is a real beginning.
+              </p>
             </div>
 
-            <div className={styles.successDefinition}>
-              <div>
-                <p className="editorial-eyebrow">Success is not</p>
+            <div className={styles.milestoneSpread}>
+              <section>
+                <span>What can stay behind</span>
                 <p>
-                  Perfect blood sugar · perfect meals · perfect exercise · never missing a routine
+                  The idea that success means perfect numbers, perfect meals, perfect routines, or
+                  never needing support.
                 </p>
-              </div>
-              <div>
-                <p className="editorial-eyebrow">Success can look like</p>
+              </section>
+              <section>
+                <span>What moves forward</span>
                 <p>
-                  Understanding · choosing · adjusting · asking · returning · staying patient with
-                  yourself
+                  Understanding, choosing, adjusting, asking, returning, and treating yourself like
+                  someone worth caring for.
                 </p>
-              </div>
+              </section>
             </div>
 
-            {draft.promise ? (
-              <div className={styles.finalPromise}>
-                <p className="editorial-eyebrow">Your promise for the next chapter</p>
-                <blockquote>“{draft.promise}”</blockquote>
+            {selectedStep || draft.promise.trim() ? (
+              <div className={styles.whatYouCarry}>
+                <p className="editorial-eyebrow">A note for the road ahead</p>
+                {selectedStep ? <p>{selectedStep[1]}</p> : null}
+                {draft.promise.trim() ? <blockquote>“{draft.promise.trim()}”</blockquote> : null}
               </div>
             ) : null}
 
-            <div className={styles.closingReflection}>
+            <div className={styles.closingWords}>
+              <MessageCircleHeart aria-hidden="true" />
               <p>
                 You do not need to know everything today. You do not need to be perfect tomorrow.
                 The foundation has done its job when it helps you recognize the next useful step—and
@@ -1355,7 +1011,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               <span>Day 15 begins with understanding behind you and practice in front of you.</span>
             </div>
 
-            <div className="flex flex-col items-center gap-3 text-center">
+            <div className={styles.completionActions}>
               <Button disabled={isPending} fullWidth={false} onClick={finishExperience}>
                 {isPending
                   ? "Saving your progress…"
@@ -1364,7 +1020,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
                     : "Complete the Foundation Phase"}
               </Button>
               <button className={styles.clearDraft} onClick={clearPrivateDraft} type="button">
-                Clear my private Day 14 draft from this browser
+                Clear my private Day 14 note from this browser
               </button>
             </div>
           </div>
@@ -1372,15 +1028,8 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
     }
   }
 
-  const progressValue = ((stage + 1) / stageCount) * 100;
-
   return (
-    <section
-      className={cn(
-        styles.experience,
-        "mx-auto flex min-h-[calc(100dvh-10rem)] max-w-[1020px] flex-col py-1 sm:py-4",
-      )}
-    >
+    <section className="mx-auto flex min-h-[calc(100dvh-10rem)] max-w-[980px] flex-col py-1 sm:py-4">
       <header className="border-b border-border pb-5">
         <div className="flex items-center justify-between gap-3">
           {stage > 0 ? (
@@ -1396,8 +1045,10 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </Link>
           )}
           <div className="text-center">
-            <p className={styles.dayLabel}>Day 14 · Foundation milestone</p>
-            <p className="hidden text-xs sm:block">Your Foundation Is Built</p>
+            <p className="text-sm font-semibold text-accent-warm">Day 14</p>
+            <p className="hidden text-xs text-muted-foreground sm:block">
+              Your Foundation Is Built
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -1407,7 +1058,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               variant="text"
             >
               <BookOpen className="size-4" />
-              <span className="hidden sm:inline">Lesson map</span>
+              <span className="hidden sm:inline">Map</span>
             </Button>
             <Button fullWidth={false} onClick={() => setExitOpen(true)} variant="text">
               Save &amp; exit
@@ -1415,20 +1066,14 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
           </div>
         </div>
         <div className="mt-4 space-y-2">
-          <div className="flex justify-between text-xs">
+          <div className="flex justify-between text-xs text-muted-foreground">
             <span>Chapter {stage + 1}</span>
             <span>{stageCount} chapters</span>
           </div>
-          <div
-            aria-label={"Day 14 chapter " + String(stage + 1) + " of " + String(stageCount)}
-            aria-valuemax={100}
-            aria-valuemin={0}
-            aria-valuenow={progressValue}
-            className={styles.progressTrack}
-            role="progressbar"
-          >
-            <span className={styles.progressFill} style={{ width: String(progressValue) + "%" }} />
-          </div>
+          <ProgressBar
+            label={`Day 14 chapter ${stage + 1} of ${stageCount}`}
+            value={((stage + 1) / stageCount) * 100}
+          />
         </div>
       </header>
 
@@ -1440,6 +1085,9 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
 
       {stage < stageCount - 1 ? (
         <footer className="border-t border-border pt-5">
+          <p className="mb-4 text-sm text-muted-foreground">
+            Reflections on this lesson are optional.
+          </p>
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <Button
               disabled={stage === 0 || isPending}
@@ -1448,15 +1096,10 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             >
               Previous
             </Button>
-            <Button disabled={!canContinue() || isPending} onClick={() => goToStage(stage + 1)}>
+            <Button disabled={isPending} onClick={() => goToStage(stage + 1)}>
               {continueLabel()}
             </Button>
           </div>
-          {!canContinue() ? (
-            <p aria-live="polite" className="mt-3 text-sm" role="status">
-              To continue: {stageRequirement()}
-            </p>
-          ) : null}
         </footer>
       ) : null}
 
@@ -1469,14 +1112,14 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
       </p>
 
       <Modal
-        description="Your chapter is saved to your learning record. Your plan and written reflections stay privately in this browser."
+        description="Your chapter is saved to your learning record. Optional choices and writing stay privately in this browser."
         onOpenChange={setExitOpen}
         open={exitOpen}
         title="Leave Day 14 for now?"
       >
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button fullWidth={false} onClick={() => setExitOpen(false)} variant="secondary">
-            Keep exploring
+            Keep reading
           </Button>
           <Link className={buttonVariants({ fullWidth: false })} href="/journey">
             Save and exit
@@ -1485,27 +1128,31 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
       </Modal>
 
       <Modal
-        description="The emotional path and three ideas that organize this milestone."
+        description="Eleven short chapters through recognition, practical knowledge, confidence, and the next phase."
         onOpenChange={setMapOpen}
         open={mapOpen}
         title="Day 14 lesson map"
       >
-        <div className="max-h-[58dvh] space-y-6 overflow-y-auto pr-2">
-          <ol className={styles.lessonMap}>
-            {["Reflection", "Recognition", "Confidence", "Readiness", "Optimism"].map(
-              (item, index) => (
-                <li key={item}>
-                  <span>0{index + 1}</span>
-                  <p>{item}</p>
-                </li>
-              ),
-            )}
-          </ol>
-          <div className={styles.mapFoundation}>
-            <p className="editorial-eyebrow">Three foundations</p>
-            <p>Understand your body · Make everyday decisions · Protect your future</p>
-          </div>
-        </div>
+        <ol className={styles.lessonMap}>
+          {[
+            "Quiet recognition",
+            "Where you began",
+            "Knowledge that travels",
+            "Your body makes more sense",
+            "Numbers without judgment",
+            "Tools working together",
+            "Protection without fear",
+            "Problem solving and returning",
+            "Care can be shared",
+            "The next 76 days",
+            "Foundation milestone",
+          ].map((item, index) => (
+            <li key={item}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <p>{item}</p>
+            </li>
+          ))}
+        </ol>
       </Modal>
     </section>
   );
