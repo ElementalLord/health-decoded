@@ -4,17 +4,19 @@
   border-radius: 6px;
   background: #fffdf8;
   box-shadow: 0 20px 54px rgb(41 72 64 / 8%);
+  /* Rescale the whole photo down to a supporting size (never full-bleed) so it
+     no longer crowds out the lesson's animations. The image is only made
+     smaller and centered; its full content is always shown, never cropped. */
+  max-width: 36rem;
+  margin-inline: auto;
 }
 
 .image {
   display: block;
   width: 100%;
-  /* A supporting banner, not a hero slab. Capping the height (and keeping it
-     viewport-relative) leaves room for the lesson's animations and text to be
-     seen alongside the photo instead of being crowded off-screen. */
-  height: clamp(11rem, 28vh, 18rem);
-  object-fit: cover;
-  object-position: center;
+  /* Preserve the photo's natural proportions so the entire image is visible.
+     No fixed height and no object-fit cropping: the picture is scaled, not cut. */
+  height: auto;
 }
 
 .caption {

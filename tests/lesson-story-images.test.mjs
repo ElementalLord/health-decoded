@@ -91,9 +91,11 @@ test("The shared story treatment is accessible, responsive, and only slightly ro
   assert.match(storyComponent, /<figcaption/);
   assert.match(storyComponent, /sizes="\(max-width: 1100px\) 100vw, 1020px"/);
   assert.match(storyStyles, /border-radius: 6px/);
-  // The photo is a supporting banner with a viewport-relative capped height so it
-  // never crowds out the lesson's animations; object-fit keeps it undistorted.
-  assert.match(storyStyles, /height:\s*clamp\([^)]*vh[^)]*\)/);
-  assert.match(storyStyles, /object-fit: cover/);
+  // The photo is rescaled to a supporting size (max-width, centered) so it no
+  // longer crowds the animations, with height:auto and no object-fit cropping so
+  // the entire image is always shown, never cut off.
+  assert.match(storyStyles, /max-width: 36rem/);
+  assert.match(storyStyles, /height: auto/);
+  assert.doesNotMatch(storyStyles, /object-fit:\s*cover/);
   assert.doesNotMatch(storyStyles, /border-radius:\s*(?:9999px|999px|50%)/);
 });
