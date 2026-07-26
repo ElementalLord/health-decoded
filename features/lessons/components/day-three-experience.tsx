@@ -735,8 +735,9 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
               <div className="border-l-2 border-accent-warm pl-6">
                 <p className="editorial-number">03</p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Today we move from what is happening inside your body to how clinicians can see
-                  part of that story.
+                  Why can one lab number carry so much weight? Today we move from what is happening
+                  inside your body to how clinicians read part of that story in a single
+                  measurement.
                 </p>
               </div>
             </div>

@@ -842,8 +842,9 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
               <div className={styles.dayNote}>
                 <p className="editorial-number text-accent-warm">11</p>
                 <p>
-                  Today is not a tour of everything that could go wrong. It is a map of the many
-                  places where care can go right.
+                  How do you protect your future without living in fear of it? Today is not a tour
+                  of everything that could go wrong. It is a map of the many places where care can
+                  go right.
                 </p>
               </div>
             </div>

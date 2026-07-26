@@ -1112,7 +1112,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               <div>
                 <p className="editorial-eyebrow">The skill you built</p>
                 <p className="mt-3 font-serif-display text-2xl">
-                  A backup plan that keeps care moving without demanding perfection.
+                  A backup plan that keeps care moving when the day changes.
                 </p>
               </div>
             </div>
