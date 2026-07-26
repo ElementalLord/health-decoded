@@ -1299,8 +1299,9 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                   Preventing complications without fear
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  Learn why diabetes eye exams, kidney tests, foot checks, and the ABCs create
-                  opportunities to notice change early and plan care with less fear.
+                  Your habits are starting to carry themselves. Tomorrow, how those same small
+                  choices quietly protect your eyes, kidneys, heart, and feet, prevention as care,
+                  never fear.
                 </p>
               </div>
               <div>

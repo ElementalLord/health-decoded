@@ -1543,9 +1543,9 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                       How movement helps the body
                     </h2>
                     <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
-                      You will see how working muscles use glucose, why activity can improve insulin
-                      sensitivity, and how ordinary movement can support more than one part of
-                      health.
+                      You have made peace with the plate. Tomorrow, movement, not as punishment or
+                      penance, but as a tool your working muscles already know how to use to move
+                      glucose.
                     </p>
                   </div>
                 </div>

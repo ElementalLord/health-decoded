@@ -1394,8 +1394,9 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
                   Routines that make diabetes easier
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  Small, consistent habits reduce decision fatigue and help diabetes fit into your
-                  life, rather than take it over.
+                  You know what to watch for and when to act. Tomorrow, how to make all of this take
+                  less effort, turning good intentions into small routines that mostly run
+                  themselves.
                 </p>
               </div>
               <div>

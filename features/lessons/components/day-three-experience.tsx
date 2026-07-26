@@ -1598,8 +1598,9 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                       Food and blood sugar basics
                     </h2>
                     <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
-                      You will use today’s time windows to understand what can change after eating,
-                      without turning food into fear or a list of forbidden choices.
+                      You can now place a number inside its time window. Tomorrow, the thing most
+                      people worry about first: food, and how carbohydrates, fiber, and portions
+                      shape those readings without any food becoming forbidden.
                     </p>
                   </div>
                   <Utensils

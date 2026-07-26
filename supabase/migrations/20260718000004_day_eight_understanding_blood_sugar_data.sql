@@ -4,7 +4,7 @@ insert into public.lessons (
 ) values (
   '20000000-0000-0000-0000-000000000008',
   'understanding-your-blood-sugar-data',
-  'Understanding Your Blood Sugar Data',
+  'Making Sense of Your Glucose',
   'Learn what different glucose views can, and cannot, tell you',
   'A1C, finger-stick readings, continuous glucose monitoring, context, patterns, and nonjudgmental data interpretation',
   'Distinguish the longer A1C view from one-moment finger-stick readings and many-moment CGM data, explain why context and repeated patterns are more useful than judgment, and prepare one monitoring question for the care team.',

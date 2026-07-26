@@ -1400,10 +1400,11 @@ export function DaySevenExperience({ lesson: experience }: { lesson: LessonPlaye
             <div className="mx-auto grid max-w-3xl gap-6 text-left md:grid-cols-2">
               <div>
                 <p className="editorial-eyebrow">Tomorrow</p>
-                <h2 className="mt-3 font-serif-display text-3xl">Monitoring and data</h2>
+                <h2 className="mt-3 font-serif-display text-3xl">Making sense of your glucose</h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  Learn which question each monitoring tool can answer and how context turns a
-                  reading into a useful care conversation.
+                  You know medicines are tools, not verdicts. Tomorrow, how to read what your
+                  glucose is actually telling you, so a single reading becomes a story with context
+                  instead of a grade.
                 </p>
               </div>
               <div>
