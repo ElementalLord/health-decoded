@@ -1104,8 +1104,9 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                   Support, stigma, and speaking up
                 </h2>
                 <p className="mt-2 leading-7">
-                  Practice asking for useful support, handling unhelpful comments, and making your
-                  needs easier to understand.
+                  You have a way through the messy days. Tomorrow, the people around you: how to ask
+                  for help that actually helps, set a kind boundary, and let others in without
+                  losing your independence.
                 </p>
               </div>
               <div>

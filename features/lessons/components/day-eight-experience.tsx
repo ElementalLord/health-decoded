@@ -924,7 +924,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
         return (
           <div className="space-y-10">
             <div className="grid gap-8 lg:grid-cols-[1fr_17rem] lg:items-end">
-              <LessonHeading label="Day 08 · Understanding your blood sugar data">
+              <LessonHeading label="Day 08 · Making sense of your glucose">
                 A number is useful when it helps answer a care question.
               </LessonHeading>
               <div className="border-l-2 border-accent-warm pl-6">
@@ -1284,7 +1284,9 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
                   Recognizing high and low glucose
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  Learn the safety signals and when to use the action plan your care team gives you.
+                  You can read patterns now, not just single numbers. Tomorrow, the question
+                  everyone worries about: when a high or low actually needs action, so fear gives
+                  way to a calm, clear plan.
                 </p>
               </div>
               <div>
@@ -1325,7 +1327,7 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
           <div className="text-center">
             <p className="text-sm font-semibold text-accent-warm">Day 8</p>
             <p className="hidden text-xs text-muted-foreground sm:block">
-              Understanding Your Blood Sugar Data
+              Making Sense of Your Glucose
             </p>
           </div>
           <div className="flex items-center gap-2">

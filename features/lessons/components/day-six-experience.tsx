@@ -1782,7 +1782,8 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
                   A tool is allowed to fit the person using it.
                 </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Tomorrow: medicines as tools, not judgments.
+                  You have seen how food and movement move your glucose. Tomorrow, where medication
+                  fits alongside them, and why needing it is never a sign of failure.
                 </p>
                 <Button disabled={isPending} onClick={finishExperience}>
                   {isPending

@@ -90,9 +90,12 @@ test("lesson handoffs match the published thirteen-day journey", () => {
   assert.match(lessons["day-four-experience.tsx"], /How movement helps the body/);
   assert.match(
     lessons["day-seven-experience.tsx"],
-    /which question each monitoring tool can answer/i,
+    /read\s+what\s+your\s+glucose\s+is\s+actually\s+telling\s+you/i,
   );
-  assert.match(lessons["day-ten-experience.tsx"], /diabetes eye exams, kidney tests, foot checks/i);
+  assert.match(
+    lessons["day-ten-experience.tsx"],
+    /protect\s+your\s+eyes,\s+kidneys,\s+heart,\s+and\s+feet/i,
+  );
   assert.doesNotMatch(lessons["day-thirteen-experience.tsx"], /Tomorrow · The final lesson/);
   assert.match(lessons["day-thirteen-experience.tsx"], /Try one small, specific ask/);
 });

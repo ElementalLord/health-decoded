@@ -1307,7 +1307,9 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
                 <p className="editorial-eyebrow">Tomorrow</p>
                 <h2 className="mt-3 font-serif-display text-3xl">Problem solving for real life</h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  Use a four-step solver to respond when a real-life situation changes.
+                  You know which checks protect your future. Tomorrow, what to do when real life
+                  gets messy, sick days, travel, a missed dose, so a disruption becomes a problem
+                  you can solve instead of a failure.
                 </p>
               </div>
               <div>

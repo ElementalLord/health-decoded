@@ -1674,7 +1674,8 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                   Movement can be useful before it ever looks like a workout.
                 </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Tomorrow: fitting movement into a real day.
+                  You know why movement works. Tomorrow, the harder part: fitting it into a real day
+                  of work, weather, and tiredness, a few minutes at a time.
                 </p>
                 <Button disabled={isPending} onClick={finishExperience}>
                   {isPending

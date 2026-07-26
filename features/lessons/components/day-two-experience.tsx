@@ -1415,7 +1415,9 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
                     behind it.
                   </p>
                   <p className="mt-2">
-                    Tomorrow, you will learn what your test results can and cannot tell you.
+                    Today you saw why glucose can stay high even when your body still makes insulin.
+                    Tomorrow, the numbers that measure it: what your A1C and daily readings really
+                    mean, and why they are information, not a grade.
                   </p>
                 </div>
                 <Button disabled={isPending} onClick={finishExperience} size="lg">
