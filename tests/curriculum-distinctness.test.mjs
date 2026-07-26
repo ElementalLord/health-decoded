@@ -42,7 +42,7 @@ test("each lesson has a distinct instructional owner", () => {
     ["day-eleven-experience.tsx", /quiet changes/i],
     ["day-twelve-experience.tsx", /Pause · Understand · Choose · Adjust/],
     ["day-thirteen-experience.tsx", /Stigma writes social rules/],
-    ["day-fourteen-experience.tsx", /This is not the finish line/],
+    ["day-fourteen-experience.tsx", /You know more than you did fourteen days ago/],
   ];
 
   for (const [file, marker] of ownershipMarkers) {
@@ -100,7 +100,7 @@ test("lesson handoffs match the published fourteen-day foundation journey", () =
   );
   assert.doesNotMatch(lessons["day-thirteen-experience.tsx"], /Tomorrow · The final lesson/);
   assert.match(lessons["day-thirteen-experience.tsx"], /Try one small, specific ask/);
-  assert.match(lessons["day-fourteen-experience.tsx"], /76 days of practice ahead/);
+  assert.match(lessons["day-fourteen-experience.tsx"], /The next 76 days/);
   assert.doesNotMatch(lessons["day-fourteen-experience.tsx"], /graduation|journey is complete/i);
 });
 
