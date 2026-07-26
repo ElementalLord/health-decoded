@@ -25,6 +25,26 @@ const arrivalFeelings = [
   ["tender", "I am proud I kept coming back"],
 ] as const;
 
+const ordinaryMoments = [
+  {
+    id: "breakfast",
+    label: "Breakfast",
+    prompt: "At the table, balance can be an addition—not a punishment or a brand-new identity.",
+  },
+  {
+    id: "friendship",
+    label: "A walk with someone",
+    prompt: "Movement can hold conversation, fresh air, adaptation, and company at the same time.",
+  },
+  {
+    id: "care",
+    label: "A care conversation",
+    prompt: "A short question can turn a visit from information overload into a shared next step.",
+  },
+] as const;
+
+type OrdinaryMomentId = (typeof ordinaryMoments)[number]["id"];
+
 const nextSteps = [
   ["food", "Make one familiar meal feel more balanced"],
   ["movement", "Choose one movement moment that feels good"],
@@ -65,6 +85,157 @@ const everydayTools = [
 ] as const;
 
 type EverydayToolId = (typeof everydayTools)[number]["id"];
+
+const bodySystems = [
+  {
+    body: "The stomach mixes food, then the small intestine finishes much of the breakdown and absorbs simple sugars into the bloodstream. The animation follows that journey without pretending the stomach works alone.",
+    id: "digestion",
+    label: "Stomach + intestine",
+    notice: "Food moves, mixes, and becomes nutrients the body can absorb.",
+    title: "Digestion turns a meal into usable parts.",
+  },
+  {
+    body: "The pancreas makes insulin. As glucose rises, insulin enters the bloodstream and signals cells. In type 2 diabetes, the body may not respond as effectively and the pancreas may not make enough insulin to keep up.",
+    id: "pancreas",
+    label: "Pancreas",
+    notice: "The signal leaves the pancreas before cells can respond to it.",
+    title: "The pancreas sends the insulin signal.",
+  },
+  {
+    body: "The liver receives, processes, stores, and releases nutrients. Insulin helps regulate that traffic. With insulin resistance, liver cells may not respond well to the signal, contributing to more glucose remaining in the blood.",
+    id: "liver",
+    label: "Liver",
+    notice: "The liver is an active traffic manager, not a passive container.",
+    title: "The liver stores and releases fuel.",
+  },
+  {
+    body: "Muscle cells use glucose for energy. When muscles work, they can take up glucose through more than one pathway—which is why comfortable, adapted movement can be one useful tool.",
+    id: "muscle",
+    label: "Muscle",
+    notice: "Working muscle pulls fuel from the bloodstream.",
+    title: "Muscle turns glucose into motion.",
+  },
+] as const;
+
+type BodySystemId = (typeof bodySystems)[number]["id"];
+
+const numberMoments = [
+  {
+    context: "This is one point in time after a night without food.",
+    id: "fasting",
+    label: "Before breakfast",
+    question: "What pattern do my clinician and I see across mornings?",
+    window: "One fasting moment",
+  },
+  {
+    context: "Timing, the meal, movement, medicine, stress, and illness can all matter.",
+    id: "meal",
+    label: "After a meal",
+    question: "What question was this check meant to answer?",
+    window: "One timed moment",
+  },
+  {
+    context: "A1C estimates average glucose exposure across roughly two to three months.",
+    id: "a1c",
+    label: "A1C result",
+    question: "What personal goal and next step fit my care plan?",
+    window: "A longer window",
+  },
+  {
+    context: "A repeated pattern can be more useful than treating one result as a verdict.",
+    id: "pattern",
+    label: "Something unexpected",
+    question: "What timing, symptoms, or changes should I bring to my care team?",
+    window: "A pattern to investigate",
+  },
+] as const;
+
+type NumberMomentId = (typeof numberMoments)[number]["id"];
+
+const protectionAreas = [
+  {
+    body: "Eye care can notice changes before vision feels different. Ask which eye examination and timing belong in your personal care plan.",
+    id: "eyes",
+    label: "Eyes",
+    prompt: "Bring: vision changes and the date of your last eye care visit.",
+    title: "Protect sight by noticing early.",
+  },
+  {
+    body: "Kidney changes can be quiet. Blood and urine testing, blood pressure care, and a clinician’s interpretation help show how the kidneys are doing.",
+    id: "kidneys",
+    label: "Kidneys",
+    prompt: "Ask: which kidney checks are due for me?",
+    title: "Quiet organs still deserve regular attention.",
+  },
+  {
+    body: "Heart and blood-vessel care includes the whole pattern: blood pressure, cholesterol, smoking, movement, medicines, symptoms, and your individual risks.",
+    id: "heart",
+    label: "Heart",
+    prompt: "Share urgent chest symptoms through the emergency plan for your location.",
+    title: "Protection includes circulation, not glucose alone.",
+  },
+  {
+    body: "Reduced feeling or circulation can make a small foot problem easier to miss. Notice skin changes, injuries, warmth, swelling, or wounds and follow your care plan for prompt help.",
+    id: "feet",
+    label: "Feet",
+    prompt: "Notice: what is new, where it is, and when it began.",
+    title: "A small observation can lead to earlier care.",
+  },
+] as const;
+
+type ProtectionAreaId = (typeof protectionAreas)[number]["id"];
+
+const returnScenarios = [
+  {
+    id: "restaurant",
+    label: "An unfamiliar meal",
+    next: "Use what you recognize, choose what fits, and let one uncertain meal remain one meal.",
+    release: "You do not need perfect ingredient information to make a reasonable choice.",
+  },
+  {
+    id: "reading",
+    label: "A surprising reading",
+    next: "Add timing and context, notice whether it repeats, and bring a useful question to care.",
+    release: "Curiosity gives the number a smaller job than judgment does.",
+  },
+  {
+    id: "routine",
+    label: "A disrupted plan",
+    next: "Repair the next available moment instead of trying to repair the entire day.",
+    release: "A smaller Plan B protects continuity without pretending life went as expected.",
+  },
+] as const;
+
+type ReturnScenarioId = (typeof returnScenarios)[number]["id"];
+
+const supportOptions = [
+  {
+    id: "listen",
+    label: "I need someone to listen",
+    response: "I can stay with you for a minute. I will not rush to fix it.",
+    title: "Listening can lower the weight without taking over.",
+  },
+  {
+    id: "company",
+    label: "I want company",
+    response: "Would it help if I joined you and we talked about something else?",
+    title: "Support can be ordinary companionship.",
+  },
+  {
+    id: "practical",
+    label: "One practical thing would help",
+    response: "Tell me the one task that would make today easier. I can start there.",
+    title: "Specific help is easier to give and receive.",
+  },
+  {
+    id: "boundary",
+    label: "I need a boundary respected",
+    response: "Understood. I will not comment on your plate or turn this into a medical lecture.",
+    title: "Respect is a form of support too.",
+  },
+] as const;
+
+type SupportOptionId = (typeof supportOptions)[number]["id"];
 
 type MilestoneDraft = {
   arrivalFeeling: string | null;
@@ -151,112 +322,150 @@ function MotionFigure({
 }
 
 function OrdinaryLifeMotion() {
+  const [activeMoment, setActiveMoment] = useState<OrdinaryMomentId>("breakfast");
+  const active = ordinaryMoments.find((moment) => moment.id === activeMoment) ?? ordinaryMoments[0];
+
   return (
-    <MotionFigure
-      cue="Knowledge in ordinary life"
-      description="no moment asks for every skill at once. Breakfast, friendship, and a care conversation each call for one useful part of what you know."
-      label="A continuously moving illustrated day: breakfast steams, two friends walk together, and a patient and clinician exchange a question"
-      title="What you learned can travel through an ordinary day."
-    >
-      <rect className={styles.skyWash} height="320" width="720" />
-      <path className={styles.groundLine} d="M28 260H692" />
+    <section className={styles.ordinaryExplorer}>
+      <MotionFigure
+        cue="Knowledge in ordinary life"
+        description="no moment asks for every skill at once. Breakfast, friendship, and a care conversation each call for one useful part of what you know."
+        label="A continuously moving illustrated day: breakfast steams, two friends walk together, and a patient and clinician exchange a question"
+        title="What you learned can travel through an ordinary day."
+      >
+        <rect className={styles.skyWash} height="320" width="720" />
+        <path className={styles.groundLine} d="M28 260H692" />
 
-      <g className={styles.morningScene}>
-        <circle className={styles.sunShape} cx="78" cy="62" r="24">
-          <animate attributeName="r" dur="4s" repeatCount="indefinite" values="22;27;22" />
-          <animate attributeName="opacity" dur="4s" repeatCount="indefinite" values="0.62;1;0.62" />
-        </circle>
-        <path className={styles.tableShape} d="M44 210H215M62 210V263M196 210V263" />
-        <ellipse className={styles.plateShape} cx="130" cy="204" rx="31" ry="8" />
-        <path className={styles.cupShape} d="M162 174h24v27h-24zM186 180c16 0 16 17 0 17" />
-        <path className={styles.steamShape} d="M170 166c-8-10 9-15 0-27">
-          <animateTransform
-            attributeName="transform"
-            dur="3.2s"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 8;0 -8;0 8"
-          />
-          <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values="0;0.9;0" />
-        </path>
-        <g className={styles.personWarm}>
-          <circle cx="102" cy="122" r="20" />
-          <path d="M75 198v-43c0-22 11-34 27-34s27 12 27 34v43z" />
-          <path className={styles.personLine} d="M122 153c18 6 29 17 40 30" />
-          <animateTransform
-            attributeName="transform"
-            dur="4.8s"
-            repeatCount="indefinite"
-            type="rotate"
-            values="0 102 198;-2 102 198;0 102 198"
-          />
+        <g
+          className={cn(
+            styles.morningScene,
+            activeMoment !== "breakfast" && styles.ordinaryMomentMuted,
+          )}
+        >
+          <circle className={styles.sunShape} cx="78" cy="62" r="24">
+            <animate attributeName="r" dur="4s" repeatCount="indefinite" values="22;27;22" />
+            <animate
+              attributeName="opacity"
+              dur="4s"
+              repeatCount="indefinite"
+              values="0.62;1;0.62"
+            />
+          </circle>
+          <path className={styles.tableShape} d="M44 210H215M62 210V263M196 210V263" />
+          <ellipse className={styles.plateShape} cx="130" cy="204" rx="31" ry="8" />
+          <path className={styles.cupShape} d="M162 174h24v27h-24zM186 180c16 0 16 17 0 17" />
+          <path className={styles.steamShape} d="M170 166c-8-10 9-15 0-27">
+            <animateTransform
+              attributeName="transform"
+              dur="3.2s"
+              repeatCount="indefinite"
+              type="translate"
+              values="0 8;0 -8;0 8"
+            />
+            <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values="0;0.9;0" />
+          </path>
+          <g className={styles.personWarm}>
+            <circle cx="102" cy="122" r="20" />
+            <path d="M75 198v-43c0-22 11-34 27-34s27 12 27 34v43z" />
+            <path className={styles.personLine} d="M122 153c18 6 29 17 40 30" />
+            <animateTransform
+              attributeName="transform"
+              dur="4.8s"
+              repeatCount="indefinite"
+              type="rotate"
+              values="0 102 198;-2 102 198;0 102 198"
+            />
+          </g>
         </g>
-      </g>
 
-      <g className={styles.walkingScene}>
-        <path className={styles.treeTrunk} d="M350 110v150" />
-        <circle className={styles.treeLeaf} cx="350" cy="91" r="49">
-          <animateTransform
-            attributeName="transform"
-            dur="5s"
-            repeatCount="indefinite"
-            type="rotate"
-            values="-2 350 140;2 350 140;-2 350 140"
-          />
-        </circle>
-        <g className={styles.walkingPair}>
+        <g
+          className={cn(
+            styles.walkingScene,
+            activeMoment !== "friendship" && styles.ordinaryMomentMuted,
+          )}
+        >
+          <path className={styles.treeTrunk} d="M350 110v150" />
+          <circle className={styles.treeLeaf} cx="350" cy="91" r="49">
+            <animateTransform
+              attributeName="transform"
+              dur="5s"
+              repeatCount="indefinite"
+              type="rotate"
+              values="-2 350 140;2 350 140;-2 350 140"
+            />
+          </circle>
+          <g className={styles.walkingPair}>
+            <g className={styles.personSage}>
+              <circle cx="270" cy="169" r="17" />
+              <path d="M247 238v-39c0-20 10-31 23-31s23 11 23 31v39z" />
+              <path className={styles.personLine} d="M255 235l-13 28M282 235l17 28" />
+            </g>
+            <g className={styles.personBlue}>
+              <circle cx="315" cy="164" r="18" />
+              <path d="M291 238v-42c0-21 10-33 24-33s24 12 24 33v42z" />
+              <path className={styles.personLine} d="M300 235l-10 28M327 235l16 28" />
+            </g>
+            <path className={styles.friendLine} d="M287 201c9-8 16-8 25 0" />
+            <animateTransform
+              attributeName="transform"
+              dur="7s"
+              keyTimes="0;0.42;0.65;1"
+              repeatCount="indefinite"
+              type="translate"
+              values="-42 0;28 0;28 0;-42 0"
+            />
+          </g>
+        </g>
+
+        <g className={cn(styles.careScene, activeMoment !== "care" && styles.ordinaryMomentMuted)}>
+          <path className={styles.deskShape} d="M495 215H680M520 215v48M657 215v48" />
           <g className={styles.personSage}>
-            <circle cx="270" cy="169" r="17" />
-            <path d="M247 238v-39c0-20 10-31 23-31s23 11 23 31v39z" />
-            <path className={styles.personLine} d="M255 235l-13 28M282 235l17 28" />
+            <circle cx="536" cy="140" r="20" />
+            <path d="M509 211v-42c0-22 11-33 27-33s27 11 27 33v42z" />
           </g>
           <g className={styles.personBlue}>
-            <circle cx="315" cy="164" r="18" />
-            <path d="M291 238v-42c0-21 10-33 24-33s24 12 24 33v42z" />
-            <path className={styles.personLine} d="M300 235l-10 28M327 235l16 28" />
+            <circle cx="636" cy="139" r="20" />
+            <path d="M609 211v-43c0-22 11-33 27-33s27 11 27 33v43z" />
           </g>
-          <path className={styles.friendLine} d="M287 201c9-8 16-8 25 0" />
-          <animateTransform
-            attributeName="transform"
-            dur="7s"
-            keyTimes="0;0.42;0.65;1"
-            repeatCount="indefinite"
-            type="translate"
-            values="-42 0;28 0;28 0;-42 0"
-          />
+          <g className={styles.questionLines}>
+            <path d="M556 102h66" />
+            <path d="M566 86h46" />
+            <animate
+              attributeName="opacity"
+              dur="4s"
+              keyTimes="0;0.25;0.7;1"
+              repeatCount="indefinite"
+              values="0.15;1;1;0.15"
+            />
+            <animateTransform
+              attributeName="transform"
+              dur="4s"
+              repeatCount="indefinite"
+              type="translate"
+              values="-8 0;6 0;-8 0"
+            />
+          </g>
         </g>
-      </g>
+      </MotionFigure>
 
-      <g className={styles.careScene}>
-        <path className={styles.deskShape} d="M495 215H680M520 215v48M657 215v48" />
-        <g className={styles.personSage}>
-          <circle cx="536" cy="140" r="20" />
-          <path d="M509 211v-42c0-22 11-33 27-33s27 11 27 33v42z" />
-        </g>
-        <g className={styles.personBlue}>
-          <circle cx="636" cy="139" r="20" />
-          <path d="M609 211v-43c0-22 11-33 27-33s27 11 27 33v43z" />
-        </g>
-        <g className={styles.questionLines}>
-          <path d="M556 102h66" />
-          <path d="M566 86h46" />
-          <animate
-            attributeName="opacity"
-            dur="4s"
-            keyTimes="0;0.25;0.7;1"
-            repeatCount="indefinite"
-            values="0.15;1;1;0.15"
-          />
-          <animateTransform
-            attributeName="transform"
-            dur="4s"
-            repeatCount="indefinite"
-            type="translate"
-            values="-8 0;6 0;-8 0"
-          />
-        </g>
-      </g>
-    </MotionFigure>
+      <div aria-label="Choose an ordinary moment" className={styles.ordinaryChoices} role="group">
+        {ordinaryMoments.map((moment, index) => (
+          <button
+            aria-pressed={activeMoment === moment.id}
+            className={cn(activeMoment === moment.id && styles.ordinaryChoiceActive)}
+            key={moment.id}
+            onClick={() => setActiveMoment(moment.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {moment.label}
+          </button>
+        ))}
+      </div>
+      <p aria-live="polite" className={styles.ordinaryPrompt} key={activeMoment}>
+        {active.prompt}
+      </p>
+    </section>
   );
 }
 
@@ -803,6 +1012,509 @@ function ToolPracticeStudio() {
   );
 }
 
+function BodySystemLab() {
+  const [activeSystem, setActiveSystem] = useState<BodySystemId>("digestion");
+  const active = bodySystems.find((system) => system.id === activeSystem) ?? bodySystems[0];
+
+  return (
+    <section className={styles.bodyLab}>
+      <div
+        aria-label={`Animated body system showing ${active.label.toLowerCase()}`}
+        className={styles.organVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 430"
+        >
+          <rect className={styles.organWash} height="430" width="720" />
+          <circle className={styles.organHalo} cx="360" cy="203" r="170" />
+          <path
+            className={styles.bodyOutline}
+            d="M318 62c0-25 18-43 42-43s42 18 42 43c0 22-13 37-30 42v25c48 6 91 37 109 83l25 65-39 14-30-63v179h-57l-20-122-20 122h-57V228l-30 63-39-14 25-65c18-46 61-77 109-83v-25c-17-5-30-20-30-42z"
+          />
+          <path className={styles.esophagusShape} d="M360 105v79" />
+          <path
+            className={cn(styles.liverShape, activeSystem === "liver" && styles.organShapeActive)}
+            d="M286 164c13-28 52-38 100-23 22 7 35 22 34 43-1 27-22 43-60 44-35 1-69-10-78-29-6-12-4-24 4-35z"
+          >
+            {activeSystem === "liver" ? (
+              <animate
+                attributeName="opacity"
+                dur="3.6s"
+                repeatCount="indefinite"
+                values="0.72;1;0.72"
+              />
+            ) : null}
+          </path>
+          <path
+            className={cn(
+              styles.stomachShape,
+              activeSystem === "digestion" && styles.organShapeActive,
+            )}
+            d="M372 177c24-11 51 5 49 35-2 26-23 31-35 48-9 13-7 27-3 40-31 0-58-22-58-53 0-23 15-39 30-48 11-7 12-17 17-22z"
+          >
+            {activeSystem === "digestion" ? (
+              <animateTransform
+                attributeName="transform"
+                dur="3.8s"
+                repeatCount="indefinite"
+                type="scale"
+                values="1;1.025;1"
+              />
+            ) : null}
+          </path>
+          <path
+            className={cn(
+              styles.pancreasShape,
+              activeSystem === "pancreas" && styles.organShapeActive,
+            )}
+            d="M300 244c30-20 82-22 126-5 13 5 18 17 10 26-9 10-29 9-45 6-37-7-68-2-89 8-13 6-26-2-26-13 0-8 9-15 24-22z"
+          >
+            {activeSystem === "pancreas" ? (
+              <animate
+                attributeName="opacity"
+                dur="3.4s"
+                repeatCount="indefinite"
+                values="0.65;1;0.65"
+              />
+            ) : null}
+          </path>
+          <path
+            className={cn(
+              styles.intestineShape,
+              activeSystem === "digestion" && styles.organShapeActive,
+            )}
+            d="M316 292c15-18 73-18 88 0 15 19-7 31-23 25-18-7-41-7-48 5-8 14 17 21 42 14 24-7 43 5 35 22-9 19-78 21-98 0-17-18 8-31 24-22 17 10 40 8 44-4"
+          />
+          <path
+            className={cn(styles.muscleShape, activeSystem === "muscle" && styles.organShapeActive)}
+            d="M286 286h48l-16 121h-45zM386 286h48l13 121h-45z"
+          >
+            {activeSystem === "muscle" ? (
+              <animate
+                attributeName="opacity"
+                dur="2.4s"
+                repeatCount="indefinite"
+                values="0.55;1;0.55"
+              />
+            ) : null}
+          </path>
+          <path
+            className={styles.bloodRoute}
+            d="M548 118c-45 41-79 96-104 161-20 52-34 91-48 123"
+          />
+
+          {activeSystem === "digestion" ? (
+            <g className={styles.digestionMotion} key="digestion">
+              {[0, 1, 2].map((dot) => (
+                <circle cx="0" cy="0" key={dot} r={9 - dot}>
+                  <animateMotion
+                    begin={`${dot * -1.4}s`}
+                    dur="5.2s"
+                    path="M360 92 L360 176 C390 193 395 225 367 252 C342 278 340 316 383 338"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${dot * -1.4}s`}
+                    dur="5.2s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+            </g>
+          ) : null}
+
+          {activeSystem === "pancreas" ? (
+            <g className={styles.insulinMotion} key="pancreas">
+              {[0, 1, 2, 3].map((signal) => (
+                <circle cx="0" cy="0" key={signal} r="7">
+                  <animateMotion
+                    begin={`${signal * -0.9}s`}
+                    dur="4.2s"
+                    path="M384 258 C438 244 486 205 550 160"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${signal * -0.9}s`}
+                    dur="4.2s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+            </g>
+          ) : null}
+
+          {activeSystem === "liver" ? (
+            <g className={styles.liverMotion} key="liver">
+              {[0, 1, 2].map((fuel) => (
+                <circle cx="0" cy="0" key={`store-${fuel}`} r="8">
+                  <animateMotion
+                    begin={`${fuel * -1.1}s`}
+                    dur="4.8s"
+                    path="M542 143 C485 161 435 172 375 184"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${fuel * -1.1}s`}
+                    dur="4.8s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+              <circle cx="0" cy="0" r="7">
+                <animateMotion
+                  begin="-1.4s"
+                  dur="5.6s"
+                  path="M333 202 C410 225 470 210 542 175"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  dur="5.6s"
+                  repeatCount="indefinite"
+                  values="0;0;1;1;0"
+                />
+              </circle>
+            </g>
+          ) : null}
+
+          {activeSystem === "muscle" ? (
+            <g className={styles.muscleMotion} key="muscle">
+              {[0, 1, 2, 3].map((fuel) => (
+                <circle cx="0" cy="0" key={fuel} r="8">
+                  <animateMotion
+                    begin={`${fuel * -0.9}s`}
+                    dur="4s"
+                    path={
+                      fuel % 2 === 0
+                        ? "M542 175 C474 223 411 279 411 354"
+                        : "M542 175 C462 229 328 279 301 354"
+                    }
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${fuel * -0.9}s`}
+                    dur="4s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+              <path className={styles.musclePulse} d="M286 323h42M392 323h42">
+                <animate
+                  attributeName="stroke-width"
+                  dur="2.4s"
+                  repeatCount="indefinite"
+                  values="5;11;5"
+                />
+              </path>
+            </g>
+          ) : null}
+        </svg>
+      </div>
+
+      <div aria-label="Choose a body system" className={styles.organChoices} role="group">
+        {bodySystems.map((system, index) => (
+          <button
+            aria-pressed={activeSystem === system.id}
+            className={cn(activeSystem === system.id && styles.organChoiceActive)}
+            key={system.id}
+            onClick={() => setActiveSystem(system.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {system.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.organCopy} key={activeSystem}>
+        <p className="editorial-eyebrow">Follow this part of the system</p>
+        <h2>{active.title}</h2>
+        <p>{active.body}</p>
+        <em>Watch for: {active.notice}</em>
+      </div>
+    </section>
+  );
+}
+
+function NumberContextExplorer() {
+  const [activeMoment, setActiveMoment] = useState<NumberMomentId>("fasting");
+  const active = numberMoments.find((moment) => moment.id === activeMoment) ?? numberMoments[0];
+
+  return (
+    <section className={styles.numberExplorer}>
+      <div aria-label="Choose a reading context" className={styles.numberChoices} role="group">
+        {numberMoments.map((moment, index) => (
+          <button
+            aria-pressed={activeMoment === moment.id}
+            className={cn(activeMoment === moment.id && styles.numberChoiceActive)}
+            key={moment.id}
+            onClick={() => setActiveMoment(moment.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {moment.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.numberReading} key={activeMoment}>
+        <div className={styles.numberWindow}>
+          <span>Time window</span>
+          <strong>{active.window}</strong>
+        </div>
+        <div>
+          <p className="editorial-eyebrow">Add context</p>
+          <h2>{active.context}</h2>
+        </div>
+        <div>
+          <p className="editorial-eyebrow">Ask a useful question</p>
+          <p>{active.question}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProtectionExplorer() {
+  const [activeArea, setActiveArea] = useState<ProtectionAreaId>("eyes");
+  const active = protectionAreas.find((area) => area.id === activeArea) ?? protectionAreas[0];
+  const point: Record<ProtectionAreaId, { x: number; y: number }> = {
+    eyes: { x: 360, y: 60 },
+    feet: { x: 360, y: 388 },
+    heart: { x: 388, y: 157 },
+    kidneys: { x: 360, y: 232 },
+  };
+  const activePoint = point[activeArea];
+
+  return (
+    <section className={styles.protectionExplorer}>
+      <div
+        aria-label={`Animated body map highlighting the ${active.label.toLowerCase()}`}
+        className={styles.protectionVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 430"
+        >
+          <rect className={styles.protectionWash} height="430" width="720" />
+          <path
+            className={styles.protectionBody}
+            d="M323 55c0-23 16-39 37-39s37 16 37 39c0 20-11 33-26 39v28c45 6 77 37 90 79l20 66-38 11-27-65v193h-48l-8-121-8 121h-48V213l-27 65-38-11 20-66c13-42 45-73 90-79V94c-15-6-26-19-26-39z"
+          />
+          <g className={styles.eyeShapes}>
+            <ellipse cx="347" cy="57" rx="8" ry="5" />
+            <ellipse cx="373" cy="57" rx="8" ry="5" />
+          </g>
+          <path
+            className={styles.heartShape}
+            d="M388 174c-31-19-39-39-23-50 12-8 23-2 28 7 6-9 17-15 29-7 16 11 8 31-34 50z"
+          />
+          <g className={styles.kidneyShapes}>
+            <path d="M329 214c-19-4-30 12-27 34 3 24 23 31 39 15 11-11 8-42-12-49z" />
+            <path d="M391 214c19-4 30 12 27 34-3 24-23 31-39 15-11-11-8-42 12-49z" />
+          </g>
+          <g className={styles.footShapes}>
+            <ellipse cx="327" cy="393" rx="27" ry="10" />
+            <ellipse cx="393" cy="393" rx="27" ry="10" />
+          </g>
+          <circle className={styles.protectionPulse} cx={activePoint.x} cy={activePoint.y} r="24">
+            <animate attributeName="r" dur="2.8s" repeatCount="indefinite" values="18;38;18" />
+            <animate
+              attributeName="opacity"
+              dur="2.8s"
+              repeatCount="indefinite"
+              values="0.8;0.12;0.8"
+            />
+          </circle>
+        </svg>
+      </div>
+
+      <div aria-label="Choose an area to protect" className={styles.protectionChoices} role="group">
+        {protectionAreas.map((area, index) => (
+          <button
+            aria-pressed={activeArea === area.id}
+            className={cn(activeArea === area.id && styles.protectionChoiceActive)}
+            key={area.id}
+            onClick={() => setActiveArea(area.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {area.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.protectionCopy} key={activeArea}>
+        <p className="editorial-eyebrow">Protect without predicting the worst</p>
+        <h2>{active.title}</h2>
+        <p>{active.body}</p>
+        <em>{active.prompt}</em>
+      </div>
+    </section>
+  );
+}
+
+function ReturnScenarioExplorer() {
+  const [activeScenario, setActiveScenario] = useState<ReturnScenarioId>("restaurant");
+  const active =
+    returnScenarios.find((scenario) => scenario.id === activeScenario) ?? returnScenarios[0];
+
+  return (
+    <section className={styles.returnExplorer}>
+      <div aria-label="Choose a changed moment" className={styles.returnChoices} role="group">
+        {returnScenarios.map((scenario, index) => (
+          <button
+            aria-pressed={activeScenario === scenario.id}
+            className={cn(activeScenario === scenario.id && styles.returnChoiceActive)}
+            key={scenario.id}
+            onClick={() => setActiveScenario(scenario.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {scenario.label}
+          </button>
+        ))}
+      </div>
+      <div aria-live="polite" className={styles.returnCopy} key={activeScenario}>
+        <p className="editorial-eyebrow">The next useful move</p>
+        <h2>{active.next}</h2>
+        <p>{active.release}</p>
+      </div>
+    </section>
+  );
+}
+
+function SupportPractice() {
+  const [activeSupport, setActiveSupport] = useState<SupportOptionId>("listen");
+  const active = supportOptions.find((option) => option.id === activeSupport) ?? supportOptions[0];
+  const isBoundary = activeSupport === "boundary";
+
+  return (
+    <section className={styles.supportPractice}>
+      <div
+        aria-label={
+          isBoundary
+            ? "Two people respectfully make more room after a boundary is stated"
+            : "Two people move closer for a calm supportive conversation"
+        }
+        className={styles.supportVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 320"
+        >
+          <rect className={styles.supportWash} height="320" width="720" />
+          <path className={styles.storyFloor} d="M42 264c205-8 432-8 636 0" />
+          <g className={styles.personWarm}>
+            <circle cx="275" cy="135" r="25" />
+            <path d="M240 232v-59c0-30 15-45 35-45s35 15 35 45v59z" />
+            <path className={styles.personLine} d="M295 175c26 8 42 24 52 47" />
+            <animateTransform
+              attributeName="transform"
+              dur="5s"
+              repeatCount="indefinite"
+              type="translate"
+              values="0 0;0 -3;0 0"
+            />
+          </g>
+          <g className={styles.personSage}>
+            <circle cx="445" cy="135" r="25" />
+            <path d="M410 232v-59c0-30 15-45 35-45s35 15 35 45v59z" />
+            <path className={styles.personLine} d="M425 175c-26 8-42 24-52 47" />
+            <animateTransform
+              attributeName="transform"
+              dur="5s"
+              repeatCount="indefinite"
+              type="translate"
+              values={isBoundary ? "0 0;38 0;38 0;0 0" : "25 0;-18 0;-18 0;25 0"}
+            />
+          </g>
+          {activeSupport === "practical" ? (
+            <g className={styles.supportBasket}>
+              <path d="M335 215h55l-5 38h-45zM346 215c0-18 31-18 31 0" />
+              <animateTransform
+                attributeName="transform"
+                dur="4s"
+                repeatCount="indefinite"
+                type="translate"
+                values="-12 0;12 0;-12 0"
+              />
+            </g>
+          ) : null}
+          {isBoundary ? (
+            <path className={styles.boundaryHand} d="M377 168v49M361 181c9-9 23-9 32 0">
+              <animate
+                attributeName="opacity"
+                dur="3.8s"
+                repeatCount="indefinite"
+                values="0.45;1;0.45"
+              />
+            </path>
+          ) : (
+            <g className={styles.supportWarmth}>
+              <circle cx="360" cy="92" r="18">
+                <animate attributeName="r" dur="3.8s" repeatCount="indefinite" values="15;23;15" />
+                <animate
+                  attributeName="opacity"
+                  dur="3.8s"
+                  repeatCount="indefinite"
+                  values="0.35;0.85;0.35"
+                />
+              </circle>
+            </g>
+          )}
+        </svg>
+      </div>
+
+      <div
+        aria-label="Choose what support means today"
+        className={styles.supportChoices}
+        role="group"
+      >
+        {supportOptions.map((option, index) => (
+          <button
+            aria-pressed={activeSupport === option.id}
+            className={cn(activeSupport === option.id && styles.supportChoiceActive)}
+            key={option.id}
+            onClick={() => setActiveSupport(option.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.supportCopy} key={activeSupport}>
+        <p className="editorial-eyebrow">A response that respects the request</p>
+        <h2>{active.title}</h2>
+        <blockquote>“{active.response}”</blockquote>
+      </div>
+    </section>
+  );
+}
+
 export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -1027,40 +1739,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Your body makes more sense">
               An explanation can take the place of blame.
             </LessonHeading>
-            <div className={styles.numberedEssay}>
-              <section>
-                <span>01</span>
-                <div>
-                  <h2>Insulin is a signal.</h2>
-                  <p>
-                    It helps glucose move from the bloodstream into cells that can use it for
-                    energy. In insulin resistance, cells do not respond to that signal as
-                    effectively, so the body may need to send more.
-                  </p>
-                </div>
-              </section>
-              <section>
-                <span>02</span>
-                <div>
-                  <h2>Type 2 diabetes develops over time.</h2>
-                  <p>
-                    It is shaped by biology, genetics, environment, age, stress, sleep, access to
-                    care, and many other influences. It is not a moral verdict and it is not proof
-                    that you failed.
-                  </p>
-                </div>
-              </section>
-              <section>
-                <span>03</span>
-                <div>
-                  <h2>Understanding creates choices.</h2>
-                  <p>
-                    Food, movement, medicines, sleep, monitoring, and support can influence
-                    different parts of the system. No single tool has to carry the whole plan.
-                  </p>
-                </div>
-              </section>
-            </div>
+            <p className={styles.lede}>
+              Choose a body system and follow what it does. Each organ stays visible so the
+              animation feels like one connected body—not four unrelated diagrams.
+            </p>
+            <BodySystemLab />
             <blockquote className={styles.pullQuote}>
               Your body is not an enemy to defeat. It is a living system you can learn to support.
             </blockquote>
@@ -1073,39 +1756,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Numbers without judgment">
               A reading is a clue. Context helps it speak.
             </LessonHeading>
-            <div className={styles.contextSequence}>
-              <section>
-                <span>First</span>
-                <h2>Name the measure.</h2>
-                <p>
-                  Is it a glucose reading from one moment, or an A1C view across several months?
-                </p>
-              </section>
-              <section>
-                <span>Then</span>
-                <h2>Add the conditions.</h2>
-                <p>
-                  Timing, food, movement, medicines, stress, sleep, and illness can help explain
-                  what the number can—and cannot—say.
-                </p>
-              </section>
-              <section>
-                <span>Next</span>
-                <h2>Look for a pattern.</h2>
-                <p>
-                  One unexpected result can be worth noticing without becoming a verdict. Repeated
-                  patterns and symptoms give the care team more useful information.
-                </p>
-              </section>
-              <section>
-                <span>When needed</span>
-                <h2>Bring the question to care.</h2>
-                <p>
-                  Ask what range applies to you, what might be influencing a pattern, and what next
-                  step is safe. Personal targets belong in a personal care plan.
-                </p>
-              </section>
-            </div>
+            <p className={styles.lede}>
+              Pick a moment. Watch how the meaning changes when the time window and a useful
+              question travel beside the result.
+            </p>
+            <NumberContextExplorer />
             <p className={styles.closingSentence}>
               The skill is not forcing every number to behave. The skill is knowing how to respond
               without turning information into shame.
@@ -1133,40 +1788,14 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Protection without fear">
               Prevention is care showing up before a problem becomes loud.
             </LessonHeading>
-            <div className={styles.protectionSpread}>
-              <div>
-                <p>
-                  Eyes, kidneys, nerves, feet, heart, and blood vessels deserve attention without
-                  becoming a catalogue of things to fear. Screening and regular care are ways to
-                  notice change early, when there may be more options.
-                </p>
-                <p>
-                  Bring your questions. Know which checks are due. Share new symptoms, wounds,
-                  vision changes, chest symptoms, or unusual lows and highs with the right member of
-                  your care team.
-                </p>
-              </div>
-              <blockquote>
-                Risk is not destiny. Early attention is not pessimism; it is protection.
-              </blockquote>
-            </div>
-            <div className={styles.safetyNotes}>
-              <section>
-                <span>For an urgent moment</span>
-                <p>
-                  Follow the safety plan you made with your clinician. Know who to call, when to
-                  seek urgent help, and where fast-acting glucose or other supplies belong if they
-                  are part of your plan.
-                </p>
-              </section>
-              <section>
-                <span>For a routine visit</span>
-                <p>
-                  A short note with the pattern, timing, symptoms, medicines, and your question can
-                  make a conversation more useful than trying to remember everything in the room.
-                </p>
-              </section>
-            </div>
+            <p className={styles.lede}>
+              Explore an area of the body. The point is not to predict a complication; it is to see
+              how early attention can make care calmer and more useful.
+            </p>
+            <ProtectionExplorer />
+            <blockquote className={styles.pullQuote}>
+              Risk is not destiny. Early attention is not pessimism; it is protection.
+            </blockquote>
           </div>
         );
 
@@ -1177,29 +1806,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               Confidence is knowing how to return, not knowing every answer.
             </LessonHeading>
             <ReturnAfterRainMotion />
-            <div className={styles.returnStories}>
-              <section>
-                <span>At a restaurant</span>
-                <p>
-                  Use what you recognize, choose what fits, and let one uncertain meal remain one
-                  meal. You do not need perfect information to make a reasonable choice.
-                </p>
-              </section>
-              <section>
-                <span>After a surprising reading</span>
-                <p>
-                  Add timing and context, look for a pattern, and bring a useful question to your
-                  care team. Curiosity gives the number a smaller job.
-                </p>
-              </section>
-              <section>
-                <span>When the plan changes</span>
-                <p>
-                  Repair the next available moment instead of the whole day. A smaller Plan B can
-                  protect continuity without pretending life went as expected.
-                </p>
-              </section>
-            </div>
+            <ReturnScenarioExplorer />
           </div>
         );
 
@@ -1209,32 +1816,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Care can be shared">
               Support works best when people know what helpful means.
             </LessonHeading>
-            <div className={styles.conversationEssay}>
-              <p>
-                Support is not supervision. A useful person may listen without fixing, join a walk,
-                learn what a low blood glucose plan looks like, help make an appointment, or simply
-                keep diabetes from becoming the only subject in the room.
-              </p>
-              <div className={styles.conversationLines}>
-                <p>
-                  <span>Ask</span> “What would help today?”
-                </p>
-                <p>
-                  <span>Listen</span> “I can stay with this before offering ideas.”
-                </p>
-                <p>
-                  <span>Offer</span> “I can do that. Would company or practical help fit better?”
-                </p>
-                <p>
-                  <span>Check</span> “Does this still feel helpful?”
-                </p>
-              </div>
-              <p>
-                You can also set a calm boundary: “I am following my care plan. Please do not
-                comment on my plate.” Clear limits protect dignity and make room for the kinds of
-                support you actually choose.
-              </p>
-            </div>
+            <p className={styles.lede}>
+              Choose what would actually help today. The scene and response change because support
+              should follow the person’s request—not the helper’s guess.
+            </p>
+            <SupportPractice />
             <blockquote className={styles.pullQuote}>
               Needing support does not make the foundation weaker. It gives the foundation more
               places to stand.

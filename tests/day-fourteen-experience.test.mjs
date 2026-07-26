@@ -77,6 +77,44 @@ test("Day 14 replaces static recap blocks with emotional user-controlled scenes"
   assert.doesNotMatch(experience, /beforeAfter|toolLines/);
 });
 
+test("Day 14 includes a connected interactive organ lab with distinct physiology", () => {
+  assert.match(experience, /function BodySystemLab/);
+  assert.match(experience, /useState<BodySystemId>\("digestion"\)/);
+  assert.match(experience, /Stomach \+ intestine/);
+  assert.match(experience, /Pancreas/);
+  assert.match(experience, /Liver/);
+  assert.match(experience, /Muscle/);
+  assert.match(experience, /styles\.stomachShape/);
+  assert.match(experience, /styles\.pancreasShape/);
+  assert.match(experience, /styles\.liverShape/);
+  assert.match(experience, /styles\.muscleShape/);
+  assert.match(experience, /path="M360 92 L360 176 C390 193 395 225 367 252/);
+  assert.match(experience, /path="M384 258 C438 244 486 205 550 160"/);
+  assert.match(experience, /path="M542 143 C485 161 435 172 375 184"/);
+  assert.match(experience, /Working muscle pulls fuel from the bloodstream/);
+});
+
+test("Day 14 converts every formerly static recap into an optional exploration", () => {
+  assert.match(experience, /useState<OrdinaryMomentId>\("breakfast"\)/);
+  assert.match(experience, /Choose an ordinary moment/);
+  assert.match(experience, /function NumberContextExplorer/);
+  assert.match(experience, /useState<NumberMomentId>\("fasting"\)/);
+  assert.match(experience, /Choose a reading context/);
+  assert.match(experience, /function ProtectionExplorer/);
+  assert.match(experience, /useState<ProtectionAreaId>\("eyes"\)/);
+  assert.match(experience, /Choose an area to protect/);
+  assert.match(experience, /function ReturnScenarioExplorer/);
+  assert.match(experience, /useState<ReturnScenarioId>\("restaurant"\)/);
+  assert.match(experience, /Choose a changed moment/);
+  assert.match(experience, /function SupportPractice/);
+  assert.match(experience, /useState<SupportOptionId>\("listen"\)/);
+  assert.match(experience, /Choose what support means today/);
+  assert.doesNotMatch(
+    experience,
+    /styles\.(?:numberedEssay|contextSequence|protectionSpread|safetyNotes|returnStories|conversationEssay|conversationLines)/,
+  );
+});
+
 test("Day 14 grounds recognition and optimism in two unique human scenes", () => {
   assert.match(experience, /quiet-recognition\.jpg/);
   assert.match(experience, /life-keeps-growing\.jpg/);
@@ -115,7 +153,7 @@ test("Day 14 keeps the optional personal note private and revisitable on the sam
 
 test("Day 14 uses an open editorial layout instead of a modern card dashboard", () => {
   assert.match(styles, /\.editorialChoice[\s\S]*border-top: 1px solid/);
-  assert.match(styles, /\.numberedEssay[\s\S]*border-top: 1px solid/);
+  assert.match(styles, /\.organChoices,[\s\S]*display: flex/);
   assert.match(styles, /\.motionFigure[\s\S]*border-block: 1px solid/);
   assert.match(styles, /--lesson-ink: #50665f/);
   assert.doesNotMatch(styles, /box-shadow:/);
