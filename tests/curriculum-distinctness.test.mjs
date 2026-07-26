@@ -16,6 +16,7 @@ const lessonFiles = [
   "day-eleven-experience.tsx",
   "day-twelve-experience.tsx",
   "day-thirteen-experience.tsx",
+  "day-fourteen-experience.tsx",
 ];
 
 const lessons = Object.fromEntries(
@@ -41,6 +42,7 @@ test("each lesson has a distinct instructional owner", () => {
     ["day-eleven-experience.tsx", /quiet changes/i],
     ["day-twelve-experience.tsx", /Pause · Understand · Choose · Adjust/],
     ["day-thirteen-experience.tsx", /Stigma writes social rules/],
+    ["day-fourteen-experience.tsx", /This is not the finish line/],
   ];
 
   for (const [file, marker] of ownershipMarkers) {
@@ -85,7 +87,7 @@ test("later lessons do not reteach earlier lesson exercises", () => {
   assert.match(lessons["day-thirteen-experience.tsx"], /Encouragement is not surveillance/);
 });
 
-test("lesson handoffs match the published thirteen-day journey", () => {
+test("lesson handoffs match the published fourteen-day foundation journey", () => {
   assert.match(lessons["day-four-experience.tsx"], /Tomorrow · Day 5/);
   assert.match(lessons["day-four-experience.tsx"], /How movement helps the body/);
   assert.match(
@@ -98,6 +100,8 @@ test("lesson handoffs match the published thirteen-day journey", () => {
   );
   assert.doesNotMatch(lessons["day-thirteen-experience.tsx"], /Tomorrow · The final lesson/);
   assert.match(lessons["day-thirteen-experience.tsx"], /Try one small, specific ask/);
+  assert.match(lessons["day-fourteen-experience.tsx"], /76 days of practice ahead/);
+  assert.doesNotMatch(lessons["day-fourteen-experience.tsx"], /graduation|journey is complete/i);
 });
 
 test("database summaries preserve the revised instructional ownership", () => {
@@ -124,6 +128,7 @@ test("lesson recaps have topic-specific labels", () => {
     "Prevention calendar",
     "Problem-solving sequence",
     "Relationship agreements",
+    "Foundation complete · Days 1–14",
   ];
   const curriculum = Object.values(lessons).join("\n");
 

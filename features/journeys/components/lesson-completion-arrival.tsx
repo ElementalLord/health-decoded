@@ -28,7 +28,7 @@ export function LessonCompletionArrival({
         </h2>
         <p className="mt-1.5 max-w-3xl text-sm leading-6 text-muted-foreground">
           {journeyComplete
-            ? "You finished the full journey. Let that settle before deciding what comes next."
+            ? "Your fourteen-day foundation is complete. Let that recognition settle: the next phase is about practice, not starting over."
             : `You have completed ${completedLessons} ${completedLessons === 1 ? "lesson" : "lessons"}. The next step is ready below, with no rush to begin it.`}
         </p>
       </div>

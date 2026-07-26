@@ -23,15 +23,16 @@ const customLessons = [
   [11, "day-eleven-experience.tsx", "DayElevenExperience", /const stageCount = (\d+)/],
   [12, "day-twelve-experience.tsx", "DayTwelveExperience", /const stageCount = (\d+)/],
   [13, "day-thirteen-experience.tsx", "DayThirteenExperience", /const stageCount = (\d+)/],
+  [14, "day-fourteen-experience.tsx", "DayFourteenExperience", /const stageCount = (\d+)/],
 ];
 
-test("the player dispatches all thirteen custom lesson days", () => {
+test("the player dispatches all fourteen custom lesson days", () => {
   for (const [day, file, exportName] of customLessons) {
     assert.match(player, new RegExp(`components/${file.replace(".tsx", "")}`));
     assert.match(player, new RegExp(`lesson\\.dayNumber === ${day}\\) return <${exportName}`));
   }
 
-  assert.equal((player.match(/lesson\.dayNumber === \d+/g) ?? []).length, 13);
+  assert.equal((player.match(/lesson\.dayNumber === \d+/g) ?? []).length, 14);
 });
 
 test("every custom lesson has a navigable multi-chapter experience and completion path", () => {
