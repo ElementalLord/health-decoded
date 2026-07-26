@@ -9,9 +9,12 @@
 .image {
   display: block;
   width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 8.9;
+  /* A supporting banner, not a hero slab. Capping the height (and keeping it
+     viewport-relative) leaves room for the lesson's animations and text to be
+     seen alongside the photo instead of being crowded off-screen. */
+  height: clamp(11rem, 28vh, 18rem);
   object-fit: cover;
+  object-position: center;
 }
 
 .caption {
