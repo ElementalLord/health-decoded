@@ -176,6 +176,7 @@
   gap: 0.6rem;
   align-items: baseline;
   border: 0;
+  border-bottom: 2px solid transparent;
   background: transparent;
   padding: 0.55rem 0;
   color: var(--muted-foreground);
@@ -198,14 +199,9 @@
   color: var(--lesson-ink) !important;
 }
 
-.storyChoiceActive::after,
-.toolChoiceActive::after {
-  width: 0.42rem;
-  height: 0.42rem;
-  align-self: center;
-  border-radius: 50%;
-  background: var(--accent-warm);
-  content: "";
+.storyChoiceActive,
+.toolChoiceActive {
+  border-bottom-color: var(--accent-warm) !important;
 }
 
 .storyCopy,
@@ -345,6 +341,7 @@
   gap: 0.55rem;
   align-items: baseline;
   border: 0;
+  border-bottom: 2px solid transparent;
   background: transparent;
   padding: 0.55rem 0;
   color: var(--muted-foreground);
@@ -364,13 +361,8 @@
   color: var(--lesson-ink) !important;
 }
 
-.ordinaryChoiceActive::after {
-  width: 0.42rem;
-  height: 0.42rem;
-  align-self: center;
-  border-radius: 50%;
-  background: var(--accent-warm);
-  content: "";
+.ordinaryChoiceActive {
+  border-bottom-color: var(--accent-warm) !important;
 }
 
 .ordinaryPrompt {
@@ -623,6 +615,7 @@
   background: #edf1ee;
 }
 
+.returnVisual,
 .supportVisual {
   overflow: hidden;
   aspect-ratio: 720 / 320;
@@ -748,6 +741,7 @@
   gap: 0.55rem;
   align-items: baseline;
   border: 0;
+  border-bottom: 2px solid transparent;
   background: transparent;
   padding: 0.55rem 0;
   color: var(--muted-foreground);
@@ -779,17 +773,13 @@
   color: var(--lesson-ink) !important;
 }
 
-.organChoiceActive::after,
-.numberChoiceActive::after,
-.protectionChoiceActive::after,
-.returnChoiceActive::after,
-.supportChoiceActive::after {
-  width: 0.42rem;
-  height: 0.42rem;
-  align-self: center;
-  border-radius: 50%;
-  background: var(--accent-warm);
-  content: "";
+.organChoiceActive,
+.numberChoiceActive,
+.protectionChoiceActive,
+.returnChoiceActive,
+.supportChoiceActive {
+  border-bottom-color: var(--accent-warm) !important;
+  background: color-mix(in srgb, var(--accent-warm) 7%, transparent) !important;
 }
 
 .organCopy,
@@ -871,6 +861,10 @@
 
 .protectionWash {
   fill: #eef1eb;
+}
+
+.returnWash {
+  fill: #edf2ee;
 }
 
 .eyeShapes {

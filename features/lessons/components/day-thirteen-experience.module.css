@@ -806,8 +806,7 @@
   }
 
   .motionCanvas {
-    min-height: 17rem;
-    object-fit: cover;
+    min-height: 0;
   }
 
   .supportMode,

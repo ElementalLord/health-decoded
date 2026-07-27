@@ -24,6 +24,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
+import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-person";
 import styles from "@/features/lessons/components/day-twelve-experience.module.css";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
@@ -281,159 +282,216 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
       >
         <title id="changed-day-title">A late meeting changes lunch without erasing the day</title>
         <desc id="changed-day-description">
-          A person works at a desk while a clock moves past lunch. They pause, bring the available
-          meal to the desk, eat, and return calmly to the rest of the afternoon.
+          The selected problem-solving step changes the person’s visible action: breathing before
+          reacting, checking what changed, eating an available meal, or revising the afternoon.
         </desc>
         <rect fill="#eef4f0" height="420" width="900" />
-        <rect fill="#f8ead7" height="134" rx="8" stroke="#d3b79c" width="205" x="82" y="48" />
-        <circle cx="177" cy="111" fill="#edca8c" r="35">
-          <animate attributeName="opacity" dur="5s" repeatCount="indefinite" values=".55;.86;.55" />
-        </circle>
-        <path d="M102 162 Q178 111 267 159" fill="#b7c9bc" opacity=".7" />
+        <path d="M48 370 H852" stroke="#a9bdb1" strokeLinecap="round" strokeWidth="5" />
+        <rect fill="#f8ead7" height="150" rx="7" stroke="#d3b79c" width="225" x="68" y="52" />
+        <circle cx="181" cy="118" fill="#edca8c" r="39" />
+        <path d="M91 184 Q181 125 270 183" fill="#b7c9bc" opacity=".75" />
 
-        <circle cx="420" cy="102" fill="#fffaf2" r="54" stroke="#789185" strokeWidth="5" />
+        <circle cx="428" cy="108" fill="#fffaf2" r="57" stroke="#789185" strokeWidth="5" />
+        {[0, 1, 2, 3].map((mark) => {
+          const angle = (mark * Math.PI) / 2;
+          const x1 = 428 + Math.cos(angle) * 42;
+          const y1 = 108 + Math.sin(angle) * 42;
+          const x2 = 428 + Math.cos(angle) * 49;
+          const y2 = 108 + Math.sin(angle) * 49;
+          return (
+            <line
+              key={mark}
+              stroke="#789185"
+              strokeLinecap="round"
+              strokeWidth="3"
+              x1={x1}
+              x2={x2}
+              y1={y1}
+              y2={y2}
+            />
+          );
+        })}
         <line
           stroke="#566f65"
           strokeLinecap="round"
           strokeWidth="6"
-          x1="420"
-          x2="420"
-          y1="102"
-          y2="70"
+          x1="428"
+          x2="428"
+          y1="108"
+          y2="75"
         >
           <animateTransform
             attributeName="transform"
-            dur="9s"
-            keyTimes="0;0.25;0.62;1"
+            dur="8s"
             repeatCount="indefinite"
             type="rotate"
-            values="0 420 102;0 420 102;60 420 102;60 420 102"
+            values="0 428 108;30 428 108;0 428 108"
           />
         </line>
         <line
           stroke="#c7785f"
           strokeLinecap="round"
           strokeWidth="5"
-          x1="420"
-          x2="442"
-          y1="102"
-          y2="102"
+          x1="428"
+          x2="451"
+          y1="108"
+          y2="108"
         >
           <animateTransform
             attributeName="transform"
-            dur="9s"
-            keyTimes="0;0.25;0.62;1"
+            dur="8s"
             repeatCount="indefinite"
             type="rotate"
-            values="0 420 102;0 420 102;120 420 102;120 420 102"
+            values="0 428 108;120 428 108;0 428 108"
           />
         </line>
-        <circle cx="420" cy="102" fill="#566f65" r="5" />
+        <circle cx="428" cy="108" fill="#566f65" r="5" />
 
-        <path d="M505 287 H800" stroke="#876f5d" strokeLinecap="round" strokeWidth="15" />
-        <path
-          d="M548 290 L530 382 M758 290 L776 382"
-          stroke="#876f5d"
-          strokeLinecap="round"
-          strokeWidth="12"
-        />
-        <rect fill="#f9f4eb" height="70" rx="7" stroke="#91aa9d" width="108" x="665" y="203" />
-        <path
-          d="M688 231 H749 M688 247 H735"
-          stroke="#a8b7ae"
-          strokeLinecap="round"
-          strokeWidth="5"
+        <path d="M545 278 H822" stroke="#876f5d" strokeLinecap="round" strokeWidth="14" />
+        <path d="M579 281 L568 370 M785 281 L797 370" stroke="#876f5d" strokeWidth="11" />
+        <rect fill="#fffaf2" height="61" rx="6" stroke="#91aa9d" width="103" x="695" y="207" />
+        <rect fill="#c8dad2" height="10" rx="3" width="65" x="714" y="225" />
+        <rect fill="#e5d4bd" height="8" rx="3" width="49" x="714" y="243" />
+        <LessonMotionPerson
+          action={activeStep === "choose" ? "reach-right" : "rest"}
+          motion={activeStep === "pause" ? "breathe" : "nod"}
+          palette="warm"
+          scale={0.98}
+          seated
+          x={625}
+          y={356}
         />
 
-        <g>
-          <animateTransform
-            attributeName="transform"
-            dur="4.6s"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 0;0 -3;0 0"
-          />
-          <circle cx="590" cy="181" fill="#dba27b" r="31" />
-          <path d="M552 181 Q587 123 629 182" fill="#50675f" />
-          <path d="M548 304 Q553 216 590 216 Q627 216 633 304" fill="#c97961" />
-          <path
-            d="M562 298 L546 382 M614 298 L633 382"
-            stroke="#7a5b4d"
-            strokeLinecap="round"
-            strokeWidth="12"
-          />
-          <g>
-            <animateTransform
-              attributeName="transform"
-              dur="9s"
-              keyTimes="0;0.32;0.48;0.7;1"
-              repeatCount="indefinite"
-              type="rotate"
-              values="0 623 239;0 623 239;-16 623 239;-16 623 239;0 623 239"
+        {activeStep === "pause" ? (
+          <g key="pause">
+            <path
+              d="M622 215 C606 201 605 186 620 174"
+              fill="none"
+              stroke="#7ba08d"
+              strokeWidth="5"
+            >
+              <animate
+                attributeName="opacity"
+                dur="3.6s"
+                repeatCount="indefinite"
+                values=".15;1;.15"
+              />
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 7;0 -7;0 7"
+              />
+            </path>
+            <path
+              d="M644 215 C660 201 661 186 646 174"
+              fill="none"
+              stroke="#7ba08d"
+              strokeWidth="5"
+            >
+              <animate
+                attributeName="opacity"
+                dur="3.6s"
+                repeatCount="indefinite"
+                values=".15;1;.15"
+              />
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 7;0 -7;0 7"
+              />
+            </path>
+          </g>
+        ) : null}
+
+        {activeStep === "understand" ? (
+          <g key="understand">
+            <rect
+              fill="#fffaf2"
+              height="84"
+              rx="6"
+              stroke="#c37a61"
+              strokeWidth="4"
+              width="104"
+              x="310"
+              y="231"
+            />
+            <path d="M310 255 H414 M334 218 V245 M390 218 V245" stroke="#c37a61" strokeWidth="5" />
+            <circle cx="342" cy="278" fill="#e7b77b" r="8">
+              <animate
+                attributeName="opacity"
+                dur="2.4s"
+                repeatCount="indefinite"
+                values=".3;1;.3"
+              />
+            </circle>
+            <path d="M361 278 H393" stroke="#91aa9d" strokeLinecap="round" strokeWidth="6" />
+          </g>
+        ) : null}
+
+        {activeStep === "choose" ? (
+          <g key="choose">
+            <ellipse
+              cx="705"
+              cy="275"
+              fill="#fffaf2"
+              rx="53"
+              ry="13"
+              stroke="#c7785f"
+              strokeWidth="4"
+            />
+            <path d="M670 266 Q706 236 742 266" fill="#eac789" />
+            <path d="M680 262 Q706 245 732 262" fill="#789b88" opacity=".85" />
+            <path d="M663 233 V267" stroke="#789185" strokeLinecap="round" strokeWidth="5">
+              <animateTransform
+                attributeName="transform"
+                dur="2.8s"
+                repeatCount="indefinite"
+                type="rotate"
+                values="0 663 267;-8 663 267;0 663 267"
+              />
+            </path>
+          </g>
+        ) : null}
+
+        {activeStep === "adjust" ? (
+          <g key="adjust">
+            <rect
+              fill="#fffaf2"
+              height="96"
+              rx="6"
+              stroke="#7b9b8b"
+              strokeWidth="4"
+              width="128"
+              x="316"
+              y="225"
             />
             <path
-              d="M624 239 Q655 254 674 269"
-              fill="none"
-              stroke="#c97961"
+              d="M337 251 H419 M337 273 H394 M337 295 H412"
+              stroke="#a1b5aa"
               strokeLinecap="round"
-              strokeWidth="12"
+              strokeWidth="6"
             />
+            <path
+              d="M391 293 l10 10 22-27"
+              fill="none"
+              stroke="#c7785f"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="6"
+            >
+              <animate
+                attributeName="stroke-dasharray"
+                dur="3s"
+                repeatCount="indefinite"
+                values="0 55;55 0;55 0"
+              />
+            </path>
           </g>
-        </g>
-
-        <g>
-          <animateTransform
-            attributeName="transform"
-            dur="9s"
-            keyTimes="0;0.34;0.55;0.8;1"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 0;0 0;230 -57;230 -57;0 0"
-          />
-          <rect fill="#e7b77b" height="67" rx="7" stroke="#9b714e" width="78" x="235" y="282" />
-          <path d="M250 289 Q274 255 298 289" fill="none" stroke="#9b714e" strokeWidth="6" />
-        </g>
-
-        <g>
-          <animate
-            attributeName="opacity"
-            dur="9s"
-            keyTimes="0;0.14;0.32;0.43;1"
-            repeatCount="indefinite"
-            values="0;1;1;0;0"
-          />
-          <rect fill="#fffaf2" height="55" rx="8" stroke="#d0af93" width="218" x="485" y="76" />
-          <text
-            fill="#6f5144"
-            fontFamily="sans-serif"
-            fontSize="16"
-            fontWeight="700"
-            x="514"
-            y="109"
-          >
-            The meeting ran long.
-          </text>
-        </g>
-        <g>
-          <animate
-            attributeName="opacity"
-            dur="9s"
-            keyTimes="0;0.45;0.56;0.82;0.92;1"
-            repeatCount="indefinite"
-            values="0;0;1;1;0;0"
-          />
-          <rect fill="#fffaf2" height="55" rx="8" stroke="#9eb5a8" width="235" x="521" y="76" />
-          <text
-            fill="#405750"
-            fontFamily="sans-serif"
-            fontSize="16"
-            fontWeight="700"
-            x="547"
-            y="109"
-          >
-            The next choice still counts.
-          </text>
-        </g>
+        ) : null}
       </svg>
       <div aria-live="polite" className={styles.motionTranscript}>
         <span>
@@ -470,116 +528,217 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
       >
         <title id="sick-body-title">Illness changes glucose and hydration inside the body</title>
         <desc id="sick-body-description">
-          A simplified body shows illness signals reaching the liver. The liver releases glucose
-          into a blood vessel while a nearby glass and droplet represent hydration.
+          A coherent torso shows stress signals reaching the liver and glucose entering a blood
+          vessel. The selected sick-day priority changes the practical action shown beside it.
         </desc>
         <rect fill="#edf3f0" height="450" width="900" />
-        <circle cx="435" cy="91" fill="#ddb08d" r="47" />
+        <circle cx="398" cy="74" fill="#ddb08d" r="42" stroke="#789185" strokeWidth="4" />
         <path
-          d="M312 393 Q314 172 435 151 Q556 172 558 393 Z"
+          d="M291 405 Q295 155 398 135 Q501 155 505 405 Z"
           fill="#f7ede1"
           stroke="#8da99a"
           strokeWidth="6"
         />
+        <path d="M398 115 V180" stroke="#c98b76" strokeLinecap="round" strokeWidth="7" />
         <path
-          d="M377 221 Q429 187 488 219 Q486 282 423 289 Q378 273 377 221 Z"
-          fill="#c7785f"
+          d="M321 192 Q364 155 425 179 Q454 190 456 217 Q457 249 423 266 Q376 280 336 258 Q309 242 321 192 Z"
+          fill="#b87361"
           stroke="#955645"
           strokeWidth="4"
         >
           <animate attributeName="opacity" dur="3.8s" repeatCount="indefinite" values=".72;1;.72" />
         </path>
-        <text fill="#fffaf2" fontFamily="sans-serif" fontSize="13" fontWeight="800" x="420" y="244">
-          LIVER
-        </text>
         <path
-          d="M459 299 Q513 269 511 322 Q507 367 463 351 Q433 339 459 299 Z"
-          fill="#e3bd99"
+          d="M420 222 Q470 200 481 244 Q488 273 463 300 Q449 315 455 341 Q420 335 404 309 Q391 287 409 264 Q423 247 420 222 Z"
+          fill="#d9a184"
           stroke="#a57d61"
           strokeWidth="4"
         />
-        <text fill="#77594a" fontFamily="sans-serif" fontSize="11" fontWeight="800" x="461" y="327">
-          STOMACH
-        </text>
+        <path
+          d="M337 311 Q367 288 399 310 Q427 328 401 347 Q374 365 343 348 Q318 334 337 311 Z"
+          fill="none"
+          stroke="#c9826d"
+          strokeLinecap="round"
+          strokeWidth="11"
+        />
 
         <path
-          d="M256 382 H703"
+          d="M255 390 H625"
           fill="none"
           stroke="#8ba9aa"
           strokeLinecap="round"
-          strokeWidth="25"
+          strokeWidth="24"
         />
         <path
-          d="M256 382 H703"
+          d="M255 390 H625"
           fill="none"
           stroke="#dceaea"
           strokeLinecap="round"
-          strokeWidth="13"
+          strokeWidth="12"
         />
-        {[0, 1, 2, 3].map((index) => (
+        {[0, 1, 2].map((index) => (
           <circle fill="#e5b56f" key={index} r="8">
             <animateMotion
-              begin={String(index * 0.7) + "s"}
+              begin={`${index * -1.1}s`}
               dur="4.6s"
-              path="M423 272 C455 310 505 375 690 382"
+              path="M382 243 C410 288 447 362 615 390"
               repeatCount="indefinite"
             />
             <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
           </circle>
         ))}
 
-        {[0, 1, 2].map((index) => (
-          <g key={index}>
-            <circle cx={177 + index * 30} cy={142 + index * 22} fill="#c97b67" r="10">
-              <animate attributeName="r" dur="2.8s" repeatCount="indefinite" values="8;12;8" />
-            </circle>
-            <path
-              d={`M${170 + index * 30} ${132 + index * 22} l-8 -10 M${185 + index * 30} ${132 + index * 22} l8 -10`}
-              stroke="#9f5c51"
-              strokeLinecap="round"
-              strokeWidth="4"
+        <g>
+          <circle cx="176" cy="185" fill="#c97b67" r="13" />
+          <path
+            d="M166 173 l-14 -16 M187 173 l15 -16"
+            stroke="#9f5c51"
+            strokeLinecap="round"
+            strokeWidth="5"
+          />
+          <path
+            d="M186 191 C228 185 277 190 323 208"
+            fill="none"
+            stroke="#c97b67"
+            strokeLinecap="round"
+            strokeWidth="3"
+            opacity=".45"
+          />
+          <circle fill="#d57e63" r="7">
+            <animateMotion
+              dur="4.6s"
+              path="M187 191 C228 185 277 190 323 208"
+              repeatCount="indefinite"
             />
-          </g>
-        ))}
-        <circle fill="#d57e63" r="7">
-          <animateMotion
-            dur="5.5s"
-            path="M229 180 C280 170 335 190 394 224"
-            repeatCount="indefinite"
-          />
-          <animate attributeName="opacity" dur="5.5s" repeatCount="indefinite" values="0;1;1;0" />
-        </circle>
-        <circle fill="#d57e63" r="6">
-          <animateMotion
-            begin="1.1s"
-            dur="5.5s"
-            path="M229 180 C280 170 335 190 394 224"
-            repeatCount="indefinite"
-          />
-          <animate attributeName="opacity" dur="5.5s" repeatCount="indefinite" values="0;1;1;0" />
-        </circle>
+            <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
+          </circle>
+        </g>
 
-        <path d="M700 151 H793 L778 303 H715 Z" fill="#fffaf2" stroke="#6f9485" strokeWidth="5" />
-        <path d="M710 234 H783 L778 303 H715 Z" fill="#8db8c1" opacity=".85">
-          <animate
-            attributeName="d"
-            dur="4s"
-            repeatCount="indefinite"
-            values="M710 252 H783 L778 303 H715 Z;M710 224 H783 L778 303 H715 Z;M710 252 H783 L778 303 H715 Z"
-          />
-        </path>
-        <path d="M747 95 C727 121 728 136 747 146 C766 136 767 121 747 95 Z" fill="#78aeb9">
-          <animateTransform
-            attributeName="transform"
-            dur="3.6s"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 -8;0 12;0 -8"
-          />
-        </path>
-        <text fill="#52766d" fontFamily="sans-serif" fontSize="13" fontWeight="800" x="715" y="333">
-          HYDRATION
-        </text>
+        <rect
+          fill="#fffaf2"
+          height="238"
+          rx="8"
+          stroke="#a8bbb0"
+          strokeWidth="4"
+          width="226"
+          x="636"
+          y="101"
+        />
+        {priority === "fluids" ? (
+          <g key="fluids">
+            <path
+              d="M696 166 H803 L791 305 H708 Z"
+              fill="#fffaf2"
+              stroke="#6f9485"
+              strokeWidth="5"
+            />
+            <path d="M705 242 H795 L791 305 H708 Z" fill="#8db8c1">
+              <animate
+                attributeName="d"
+                dur="4s"
+                repeatCount="indefinite"
+                values="M705 269 H795 L791 305 H708 Z;M705 224 H795 L791 305 H708 Z;M705 269 H795 L791 305 H708 Z"
+              />
+            </path>
+            <path d="M750 118 C731 143 732 157 750 166 C768 157 769 143 750 118 Z" fill="#78aeb9">
+              <animateTransform
+                attributeName="transform"
+                dur="3.4s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 -6;0 10;0 -6"
+              />
+            </path>
+          </g>
+        ) : null}
+        {priority === "monitor" ? (
+          <g key="monitor">
+            <rect
+              fill="#f9f4eb"
+              height="122"
+              rx="9"
+              stroke="#5f8273"
+              strokeWidth="5"
+              width="88"
+              x="705"
+              y="146"
+            />
+            <rect fill="#b8d3c7" height="38" rx="4" width="58" x="720" y="165" />
+            <path
+              d="M722 236 C736 219 748 251 760 230 C770 216 779 225 789 211"
+              fill="none"
+              stroke="#c7785f"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="5"
+            >
+              <animate
+                attributeName="stroke-dasharray"
+                dur="3.2s"
+                repeatCount="indefinite"
+                values="0 100;100 0;100 0"
+              />
+            </path>
+            <circle cx="749" cy="287" fill="#e6b675" r="10">
+              <animate
+                attributeName="opacity"
+                dur="2.6s"
+                repeatCount="indefinite"
+                values=".35;1;.35"
+              />
+            </circle>
+          </g>
+        ) : null}
+        {priority === "medicine" ? (
+          <g key="medicine">
+            <rect
+              fill="#fffaf2"
+              height="137"
+              rx="7"
+              stroke="#6f9485"
+              strokeWidth="5"
+              width="86"
+              x="704"
+              y="157"
+            />
+            <rect
+              fill="#fffaf2"
+              height="30"
+              rx="4"
+              stroke="#6f9485"
+              strokeWidth="5"
+              width="56"
+              x="719"
+              y="128"
+            />
+            <rect fill="#c8dacf" height="39" rx="4" width="64" x="715" y="204">
+              <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values=".5;1;.5" />
+            </rect>
+            <path d="M676 296 H816" stroke="#c99b73" strokeLinecap="round" strokeWidth="6" />
+            <path d="M687 310 H775" stroke="#a5b8ae" strokeLinecap="round" strokeWidth="5" />
+          </g>
+        ) : null}
+        {priority === "help" ? (
+          <g key="help">
+            <rect fill="#4c675d" height="130" rx="14" width="72" x="714" y="157" />
+            <circle cx="750" cy="267" fill="#dce9e2" r="6" />
+            <path
+              d="M732 181 H768 M732 198 H760"
+              stroke="#dce9e2"
+              strokeLinecap="round"
+              strokeWidth="5"
+            />
+            <path
+              d="M698 145 Q750 98 802 145"
+              fill="none"
+              stroke="#c7785f"
+              strokeLinecap="round"
+              strokeWidth="5"
+            >
+              <animate attributeName="opacity" dur="2.5s" repeatCount="indefinite" values="0;1;0" />
+            </path>
+          </g>
+        ) : null}
       </svg>
       <div aria-live="polite" className={styles.motionTranscript}>
         <span>{active.title}</span>
@@ -611,105 +770,156 @@ function CareCallAnimation({ focus }: { focus: CallDetailId }) {
       >
         <title id="care-call-title">A friend helps make a care-team call during illness</title>
         <desc id="care-call-description">
-          One person rests on a sofa while a friend offers water, reads the written sick-day plan,
-          and calls a clinician with the relevant details.
+          One person rests on a sofa while a friend keeps water and the written sick-day plan within
+          reach. The selected call detail changes what the friend gathers for the clinician.
         </desc>
         <rect fill="#f2eee6" height="420" width="900" />
-        <rect fill="#d9e7e1" height="135" rx="8" stroke="#9fb5a9" width="185" x="67" y="48" />
-        <circle cx="159" cy="105" fill="#edca8c" r="30">
-          <animate attributeName="opacity" dur="5s" repeatCount="indefinite" values=".55;.85;.55" />
-        </circle>
-        <rect fill="#83a18f" height="86" rx="10" width="345" x="118" y="273" />
-        <rect fill="#a8c0b3" height="68" rx="9" width="102" x="86" y="248" />
+        <path d="M42 381 H858" stroke="#b3bcae" strokeLinecap="round" strokeWidth="5" />
+        <rect
+          fill="#d9e7e1"
+          height="145"
+          rx="7"
+          stroke="#9fb5a9"
+          strokeWidth="4"
+          width="205"
+          x="64"
+          y="47"
+        />
+        <circle cx="166" cy="110" fill="#edca8c" r="34" />
+        <path d="M89 178 Q166 132 244 178" fill="#abc0b3" />
+
         <path
-          d="M130 358 V395 M430 358 V395"
+          d="M90 304 H389 Q407 304 407 323 V353 H90 Z"
+          fill="#83a18f"
           stroke="#607b6c"
+          strokeWidth="4"
+        />
+        <rect fill="#a8c0b3" height="76" rx="8" width="104" x="78" y="275" />
+        <path
+          d="M119 353 V381 M376 353 V381"
+          stroke="#607b6c"
+          strokeLinecap="round"
+          strokeWidth="10"
+        />
+        <LessonMotionPerson
+          action="rest"
+          motion="breathe"
+          palette="warm"
+          scale={0.9}
+          seated
+          x={268}
+          y={344}
+        />
+
+        <path
+          d="M442 311 H657 M466 313 L456 381 M632 313 L642 381"
+          stroke="#866f5e"
           strokeLinecap="round"
           strokeWidth="12"
         />
+        <ellipse
+          cx="526"
+          cy="304"
+          fill="#fffaf2"
+          rx="39"
+          ry="10"
+          stroke="#c58a70"
+          strokeWidth="4"
+        />
+        <path d="M494 252 H522 L520 296 H496 Z" fill="#fffaf2" stroke="#6f9485" strokeWidth="4" />
+        <path d="M497 278 H520 L520 296 H496 Z" fill="#8db8c1" />
+        <LessonMotionPerson
+          action={focus === "followed" ? "reach-left" : "listen"}
+          motion="nod"
+          palette="sage"
+          scale={0.9}
+          seated
+          x={600}
+          y={344}
+        />
 
-        <g>
-          <circle cx="285" cy="211" fill="#dca27a" r="30" />
-          <path d="M249 210 Q284 154 322 211" fill="#50675f" />
-          <path d="M250 299 Q257 242 288 242 Q327 243 361 292" fill="#c87961" />
-          <path
-            d="M336 277 Q371 289 398 272"
-            fill="none"
-            stroke="#c87961"
-            strokeLinecap="round"
-            strokeWidth="12"
-          />
-          <animateTransform
-            attributeName="transform"
-            dur="4.8s"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 2;0 -2;0 2"
-          />
-        </g>
-
-        <g>
-          <circle cx="530" cy="203" fill="#d5a079" r="30" />
-          <path d="M493 204 Q528 145 569 205" fill="#76513f" />
-          <path d="M488 319 Q494 237 530 237 Q566 237 573 319" fill="#719681" />
-          <path
-            d="M499 273 Q462 276 432 288"
-            fill="none"
-            stroke="#719681"
-            strokeLinecap="round"
-            strokeWidth="12"
-          >
-            <animate
-              attributeName="d"
-              dur="5s"
-              repeatCount="indefinite"
-              values="M499 273 Q462 276 432 288;M499 269 Q463 264 432 278;M499 273 Q462 276 432 288"
-            />
-          </path>
-        </g>
-
-        <g>
-          <rect fill="#fffaf2" height="116" rx="7" stroke="#b7a58f" width="102" x="562" y="249" />
-          <path
-            d="M582 278 H644 M582 296 H638 M582 314 H645 M582 332 H624"
-            stroke="#9bad9f"
-            strokeLinecap="round"
-            strokeWidth="5"
-          />
-          <animate attributeName="opacity" dur="4s" repeatCount="indefinite" values=".68;1;.68" />
-        </g>
-
-        <g>
-          <rect fill="#405750" height="75" rx="12" width="42" x="714" y="217" />
-          <circle cx="735" cy="279" fill="#dce8e1" r="4" />
-          <animateTransform
-            attributeName="transform"
-            dur="4.2s"
-            repeatCount="indefinite"
-            type="rotate"
-            values="-2 735 254;3 735 254;-2 735 254"
-          />
-        </g>
-        <circle cx="735" cy="178" fill="none" r="17" stroke="#c87860" strokeWidth="4">
-          <animate attributeName="r" dur="2.6s" repeatCount="indefinite" values="12;28;12" />
-          <animate attributeName="opacity" dur="2.6s" repeatCount="indefinite" values="1;0;1" />
-        </circle>
-        <circle cx="735" cy="178" fill="#ddb08a" r="23" />
-        <path d="M707 211 Q735 177 763 211" fill="#7d9da4" />
+        <rect
+          fill="#fffaf2"
+          height="142"
+          rx="7"
+          stroke="#a79582"
+          strokeWidth="4"
+          width="112"
+          x="658"
+          y="203"
+        />
         <path
-          d="M724 177 Q735 187 746 177"
-          fill="none"
-          stroke="#7c5b4c"
+          d="M679 234 H749 M679 255 H735 M679 276 H748 M679 297 H726"
+          stroke="#9bad9f"
           strokeLinecap="round"
-          strokeWidth="3"
-        >
-          <animate
-            attributeName="d"
-            dur="3.8s"
-            repeatCount="indefinite"
-            values="M724 177 Q735 187 746 177;M724 179 Q735 190 746 179;M724 177 Q735 187 746 177"
-          />
-        </path>
+          strokeWidth="5"
+        />
+
+        {focus === "change" ? (
+          <g key="change">
+            <circle cx="218" cy="222" fill="#fffaf2" r="34" stroke="#c7785f" strokeWidth="4" />
+            <path
+              d="M218 222 V200 M218 222 L235 229"
+              stroke="#6b8177"
+              strokeLinecap="round"
+              strokeWidth="5"
+            />
+            <path d="M332 218 V264" stroke="#c7785f" strokeLinecap="round" strokeWidth="7" />
+            <circle cx="332" cy="275" fill="#c7785f" r="12">
+              <animate
+                attributeName="opacity"
+                dur="2.8s"
+                repeatCount="indefinite"
+                values=".5;1;.5"
+              />
+            </circle>
+          </g>
+        ) : null}
+        {focus === "followed" ? (
+          <g key="followed">
+            <path d="M674 231 H748" stroke="#c7785f" strokeLinecap="round" strokeWidth="6">
+              <animate
+                attributeName="stroke-dasharray"
+                dur="3s"
+                repeatCount="indefinite"
+                values="0 80;80 0;80 0"
+              />
+            </path>
+            <path d="M486 272 Q505 254 523 272" fill="none" stroke="#79a7b1" strokeWidth="4">
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 5;0 -4;0 5"
+              />
+            </path>
+          </g>
+        ) : null}
+        {focus === "question" ? (
+          <g key="question">
+            <rect fill="#405750" height="82" rx="10" width="48" x="791" y="224" />
+            <circle cx="815" cy="290" fill="#dce8e1" r="4" />
+            <path
+              d="M780 207 Q815 179 850 207 M788 216 Q815 195 842 216"
+              fill="none"
+              stroke="#c87860"
+              strokeLinecap="round"
+              strokeWidth="4"
+            >
+              <animate attributeName="opacity" dur="2.4s" repeatCount="indefinite" values="0;1;0" />
+            </path>
+            <circle cx="815" cy="160" fill="#ddb08a" r="25" stroke="#5b7e89" strokeWidth="4" />
+            <path d="M782 199 Q815 164 848 199" fill="#7d9da4" />
+            <path
+              d="M805 162 Q815 170 825 162"
+              fill="none"
+              stroke="#7c5b4c"
+              strokeLinecap="round"
+              strokeWidth="3"
+            />
+          </g>
+        ) : null}
       </svg>
       <div aria-live="polite" className={styles.motionTranscript}>
         <span>{active.label}</span>
@@ -750,10 +960,11 @@ function PlanBAnimation({
       >
         <title id="plan-b-title">Friends turn a rainy outdoor plan into indoor movement</title>
         <desc id="plan-b-description">
-          Rain falls directly beneath a cloud outside a window. Indoors, two friends put music on,
-          dance, and share a hug. The purpose of connection continues in a different form.
+          The left side shows the selected disruption. The right side visibly changes to the chosen
+          backup: a short movement break, a supportive next meal, a call for help, or a quiet reset.
         </desc>
         <rect fill="#f4eee5" height="420" width="900" />
+        <path d="M44 376 H856" stroke="#b3bcae" strokeLinecap="round" strokeWidth="5" />
         <rect
           fill="#dce9eb"
           height="235"
@@ -765,146 +976,284 @@ function PlanBAnimation({
           y="55"
         />
         <path d="M64 294 H309" stroke="#8eaaa8" strokeWidth="8" />
-        <g>
-          <ellipse cx="187" cy="111" fill="#8ba0a4" rx="60" ry="25" />
-          <circle cx="152" cy="106" fill="#8ba0a4" r="29" />
-          <circle cx="202" cy="93" fill="#8ba0a4" r="36" />
-          <circle cx="229" cy="111" fill="#8ba0a4" r="27" />
-          <animateTransform
-            attributeName="transform"
-            dur="6s"
-            repeatCount="indefinite"
-            type="translate"
-            values="-7 0;7 0;-7 0"
-          />
-        </g>
-        {[130, 166, 202, 238].map((x, index) => (
-          <line
-            key={x}
-            stroke="#78a8b1"
-            strokeLinecap="round"
-            strokeWidth="7"
-            x1={x}
-            x2={x - 10}
-            y1="151"
-            y2="192"
-          >
-            <animate
-              attributeName="opacity"
-              begin={String(index * 0.3) + "s"}
-              dur="2.2s"
-              repeatCount="indefinite"
-              values=".2;1;.2"
+        {planTrigger === "walk" ? (
+          <g key="walk">
+            <g>
+              <ellipse cx="184" cy="111" fill="#8ba0a4" rx="59" ry="24" />
+              <circle cx="151" cy="105" fill="#8ba0a4" r="28" />
+              <circle cx="201" cy="92" fill="#8ba0a4" r="35" />
+              <circle cx="227" cy="110" fill="#8ba0a4" r="26" />
+              <animateTransform
+                attributeName="transform"
+                dur="6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="-5 0;5 0;-5 0"
+              />
+            </g>
+            {[136, 173, 210, 247].map((x, index) => (
+              <line
+                key={x}
+                stroke="#78a8b1"
+                strokeLinecap="round"
+                strokeWidth="7"
+                x1={x}
+                x2={x - 10}
+                y1="150"
+                y2="193"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  begin={`${index * -0.22}s`}
+                  dur="1.4s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 -5;0 18"
+                />
+                <animate
+                  attributeName="opacity"
+                  begin={`${index * -0.22}s`}
+                  dur="1.4s"
+                  repeatCount="indefinite"
+                  values="0;1;0"
+                />
+              </line>
+            ))}
+            <path
+              d="M96 251 Q184 218 277 251"
+              fill="none"
+              stroke="#9bb1a2"
+              strokeLinecap="round"
+              strokeWidth="8"
             />
-            <animateTransform
-              attributeName="transform"
-              begin={String(index * 0.3) + "s"}
-              dur="2.2s"
-              repeatCount="indefinite"
-              type="translate"
-              values="0 -7;0 14;0 -7"
+          </g>
+        ) : null}
+        {planTrigger === "dinner" ? (
+          <g key="dinner">
+            <circle cx="184" cy="145" fill="#fffaf2" r="66" stroke="#789185" strokeWidth="5" />
+            <path
+              d="M184 145 V105 M184 145 L220 163"
+              stroke="#c7785f"
+              strokeLinecap="round"
+              strokeWidth="7"
+            >
+              <animateTransform
+                attributeName="transform"
+                dur="6s"
+                repeatCount="indefinite"
+                type="rotate"
+                values="0 184 145;35 184 145;0 184 145"
+              />
+            </path>
+            <ellipse
+              cx="184"
+              cy="255"
+              fill="#fffaf2"
+              rx="59"
+              ry="15"
+              stroke="#c9896f"
+              strokeWidth="4"
             />
-          </line>
-        ))}
-        <path d="M89 259 Q185 217 285 258" fill="#afc5b6" />
+          </g>
+        ) : null}
+        {planTrigger === "work" ? (
+          <g key="work">
+            <rect
+              fill="#fffaf2"
+              height="100"
+              rx="7"
+              stroke="#789185"
+              strokeWidth="5"
+              width="145"
+              x="111"
+              y="95"
+            />
+            <rect fill="#b8d1c2" height="45" rx="4" width="104" x="131" y="118" />
+            <rect
+              fill="#fffaf2"
+              height="68"
+              rx="8"
+              stroke="#c7785f"
+              strokeWidth="5"
+              width="114"
+              x="128"
+              y="221"
+            />
+            <rect fill="#dca27a" height="34" rx="3" width="48" x="143" y="238">
+              <animate attributeName="width" dur="4s" repeatCount="indefinite" values="48;15;48" />
+            </rect>
+            <path d="M242 241 H256 V269 H242" fill="none" stroke="#c7785f" strokeWidth="5" />
+          </g>
+        ) : null}
+        {planTrigger === "restaurant" ? (
+          <g key="restaurant">
+            <path d="M110 274 V128 H259 V274" fill="#fffaf2" stroke="#789185" strokeWidth="6" />
+            <path
+              d="M127 128 L143 93 H226 L242 128"
+              fill="#e2ae78"
+              stroke="#a37250"
+              strokeLinejoin="round"
+              strokeWidth="5"
+            />
+            <path d="M148 274 V204 H221 V274" fill="#d6e3dd" stroke="#789185" strokeWidth="5" />
+            <path d="M128 183 H240" stroke="#c7785f" strokeLinecap="round" strokeWidth="8">
+              <animate
+                attributeName="opacity"
+                dur="2.8s"
+                repeatCount="indefinite"
+                values=".45;1;.45"
+              />
+            </path>
+          </g>
+        ) : null}
 
-        <rect fill="#6f8f80" height="86" rx="8" width="94" x="681" y="260" />
-        <circle cx="728" cy="302" fill="#f1ddbd" r="24">
-          <animate attributeName="r" dur="2.3s" repeatCount="indefinite" values="21;27;21" />
-        </circle>
+        <path d="M349 325 H835" stroke="#876f5d" strokeLinecap="round" strokeWidth="14" />
         <path
-          d="M703 250 Q728 226 753 250"
-          fill="none"
-          stroke="#c87860"
+          d="M388 328 L380 376 M798 328 L807 376"
+          stroke="#876f5d"
           strokeLinecap="round"
-          strokeWidth="6"
-        >
-          <animate
-            attributeName="d"
-            dur="3.5s"
-            repeatCount="indefinite"
-            values="M703 250 Q728 226 753 250;M697 246 Q728 214 759 246;M703 250 Q728 226 753 250"
-          />
-        </path>
+          strokeWidth="10"
+        />
 
-        <g>
-          <animateTransform
-            attributeName="transform"
-            dur="3.8s"
-            repeatCount="indefinite"
-            type="rotate"
-            values="-3 471 207;5 471 207;-3 471 207"
-          />
-          <circle cx="471" cy="164" fill="#dda27a" r="30" />
-          <path d="M435 164 Q469 109 508 166" fill="#4f675e" />
-          <path d="M427 313 Q434 197 471 197 Q508 197 515 313" fill="#c87961" />
-          <path
-            d="M445 307 L426 389 M496 307 L520 389"
-            stroke="#7d5c4d"
-            strokeLinecap="round"
-            strokeWidth="12"
-          />
-          <path
-            d="M435 228 Q397 211 378 183"
-            fill="none"
-            stroke="#c87961"
-            strokeLinecap="round"
-            strokeWidth="12"
-          />
-          <path
-            d="M507 228 Q545 211 564 184"
-            fill="none"
-            stroke="#c87961"
-            strokeLinecap="round"
-            strokeWidth="12"
-          />
-        </g>
-        <g>
-          <animateTransform
-            attributeName="transform"
-            dur="3.8s"
-            repeatCount="indefinite"
-            type="rotate"
-            values="4 592 207;-5 592 207;4 592 207"
-          />
-          <circle cx="592" cy="164" fill="#d3a078" r="30" />
-          <path d="M555 164 Q590 107 630 166" fill="#76513f" />
-          <path d="M548 313 Q554 197 592 197 Q630 197 636 313" fill="#709582" />
-          <path
-            d="M567 307 L549 389 M617 307 L640 389"
-            stroke="#4e6a5d"
-            strokeLinecap="round"
-            strokeWidth="12"
-          />
-          <path
-            d="M556 228 Q536 221 519 213"
-            fill="none"
-            stroke="#709582"
-            strokeLinecap="round"
-            strokeWidth="12"
-          />
-          <path
-            d="M628 228 Q653 202 664 174"
-            fill="none"
-            stroke="#709582"
-            strokeLinecap="round"
-            strokeWidth="12"
-          />
-        </g>
-        <path
-          d="M513 224 Q531 239 549 224"
-          fill="none"
-          stroke="#e9b48f"
-          strokeLinecap="round"
-          strokeWidth="8"
-        >
-          <animate
-            attributeName="d"
-            dur="3.2s"
-            repeatCount="indefinite"
-            values="M513 224 Q531 239 549 224;M509 220 Q531 247 553 220;M513 224 Q531 239 549 224"
-          />
-        </path>
+        {planBackup === "minutes" ? (
+          <g key="minutes">
+            <rect
+              fill="#6f8f80"
+              height="74"
+              rx="7"
+              stroke="#58756a"
+              strokeWidth="4"
+              width="84"
+              x="722"
+              y="236"
+            />
+            <circle cx="764" cy="273" fill="#f1ddbd" r="20">
+              <animate attributeName="r" dur="2.2s" repeatCount="indefinite" values="18;23;18" />
+            </circle>
+            <LessonMotionPerson
+              action="wave-right"
+              motion="dance"
+              palette="warm"
+              scale={0.92}
+              x={500}
+              y={368}
+            />
+            <LessonMotionPerson
+              action="celebrate"
+              motion="dance"
+              palette="sage"
+              scale={0.92}
+              x={625}
+              y={368}
+            />
+          </g>
+        ) : null}
+        {planBackup === "next" ? (
+          <g key="next">
+            <ellipse
+              cx="590"
+              cy="316"
+              fill="#fffaf2"
+              rx="57"
+              ry="13"
+              stroke="#c9896f"
+              strokeWidth="4"
+            />
+            <path d="M555 307 Q590 276 625 307" fill="#e7bb7c" />
+            <LessonMotionPerson
+              action="reach-right"
+              motion="breathe"
+              palette="warm"
+              scale={0.87}
+              seated
+              x={478}
+              y={367}
+            />
+            <LessonMotionPerson
+              action="reach-left"
+              motion="nod"
+              palette="sage"
+              scale={0.87}
+              seated
+              x={705}
+              y={367}
+            />
+          </g>
+        ) : null}
+        {planBackup === "ask" ? (
+          <g key="ask">
+            <rect fill="#405750" height="83" rx="11" width="49" x="587" y="241" />
+            <circle cx="611" cy="307" fill="#dce8e1" r="4" />
+            <path
+              d="M574 225 Q611 195 648 225 M582 235 Q611 212 640 235"
+              fill="none"
+              stroke="#c87860"
+              strokeLinecap="round"
+              strokeWidth="5"
+            >
+              <animate attributeName="opacity" dur="2.5s" repeatCount="indefinite" values="0;1;0" />
+            </path>
+            <LessonMotionPerson
+              action="reach-right"
+              motion="nod"
+              palette="warm"
+              scale={0.9}
+              x={470}
+              y={368}
+            />
+            <LessonMotionPerson
+              action="wave-left"
+              motion="breathe"
+              palette="sage"
+              scale={0.9}
+              x={740}
+              y={368}
+            />
+          </g>
+        ) : null}
+        {planBackup === "reset" ? (
+          <g key="reset">
+            <LessonMotionPerson
+              action="rest"
+              motion="breathe"
+              palette="warm"
+              scale={0.92}
+              seated
+              x={548}
+              y={367}
+            />
+            <LessonMotionPerson
+              action="listen"
+              motion="nod"
+              palette="sage"
+              scale={0.92}
+              seated
+              x={680}
+              y={367}
+            />
+            <path
+              d="M600 225 C584 209 584 191 600 176 M624 225 C640 209 640 191 624 176"
+              fill="none"
+              stroke="#7ba08d"
+              strokeLinecap="round"
+              strokeWidth="5"
+            >
+              <animate
+                attributeName="opacity"
+                dur="3.4s"
+                repeatCount="indefinite"
+                values=".15;1;.15"
+              />
+              <animateTransform
+                attributeName="transform"
+                dur="3.4s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 7;0 -7;0 7"
+              />
+            </path>
+          </g>
+        ) : null}
       </svg>
       <div aria-live="polite" className={styles.planTranscript}>
         <div>
