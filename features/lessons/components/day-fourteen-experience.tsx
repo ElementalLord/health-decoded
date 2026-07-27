@@ -346,8 +346,8 @@ function OrdinaryLifeMotion() {
           <circle className={styles.sunShape} cx="58" cy="49" r="22" />
           <path className={styles.tableShape} d="M32 228H215M51 228V273M197 228V273" />
           <ellipse className={styles.plateShape} cx="146" cy="220" rx="29" ry="8" />
-          <path className={styles.cupShape} d="M166 190h24v27h-24zM190 196c15 0 15 16 0 16" />
-          <path className={styles.steamShape} d="M174 183c-8-10 9-15 0-27M186 183c-8-10 9-15 0-27">
+          <path className={styles.cupShape} d="M134 188h24v27h-24zM158 194c15 0 15 16 0 16" />
+          <path className={styles.steamShape} d="M142 181c-8-10 9-15 0-27M154 181c-8-10 9-15 0-27">
             <animateTransform
               attributeName="transform"
               dur="3.2s"
@@ -1135,7 +1135,7 @@ function BodySystemLab() {
               <path className={styles.esophagusShape} d="M245 47 V135" />
               <path
                 className={cn(styles.stomachShape, styles.organShapeActive)}
-                d="M255 118 C225 123 197 158 197 213 C197 258 230 296 283 293 C313 291 335 276 337 256 C335 240 317 236 307 228 C303 203 301 158 289 142 C279 132 269 124 255 118 Z"
+                d="M250 120 C214 108 185 130 182 172 C179 210 189 244 214 263 C234 278 258 282 280 274 C300 267 312 248 308 226 C304 198 296 168 280 150 C268 137 260 128 250 120 Z"
               />
               <path
                 className={cn(styles.intestineShape, styles.organShapeActive)}
@@ -2052,22 +2052,6 @@ function SupportPractice() {
                 y={264}
               />
               <ellipse className={styles.plateShape} cx="377" cy="217" rx="47" ry="10" />
-              <path
-                d="M327 179 Q359 166 382 193"
-                fill="none"
-                stroke="#a7614e"
-                strokeLinecap="round"
-                strokeWidth="8"
-              >
-                <animate
-                  attributeName="d"
-                  dur="6s"
-                  keyTimes="0;0.35;0.65;1"
-                  repeatCount="indefinite"
-                  values="M327 179 Q359 166 382 193;M327 179 Q359 166 382 193;M327 179 Q337 205 327 222;M327 179 Q337 205 327 222"
-                />
-              </path>
-              <path className={styles.boundaryHand} d="M426 157 V199 M412 172 Q426 157 440 172" />
             </g>
           ) : null}
         </svg>
