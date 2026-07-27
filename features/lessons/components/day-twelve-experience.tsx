@@ -4,9 +4,6 @@ import {
   ArrowLeft,
   BookOpen,
   Check,
-  CloudRain,
-  Droplets,
-  HeartHandshake,
   RotateCcw,
   ShieldAlert,
   Sparkles,
@@ -19,6 +16,7 @@ import { useEffect, useRef, useState, useTransition, type ReactNode } from "reac
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
+import { ProgressBar } from "@/components/ui/progress-bar";
 import {
   evaluateDayTwelveAction,
   type DayTwelveEvaluationFeedback,
@@ -26,6 +24,7 @@ import {
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
+import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-person";
 import styles from "@/features/lessons/components/day-twelve-experience.module.css";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
@@ -41,7 +40,7 @@ const openingFeelings = [
 
 const solverSteps = [
   {
-    body: "Take one breath and interrupt the all-or-nothing story. Nothing has to be solved in the first second.",
+    body: "Take one breath and interrupt the all-or-nothing story. The whole day does not need to be solved in the first second.",
     id: "pause",
     number: "01",
     title: "Pause",
@@ -53,13 +52,13 @@ const solverSteps = [
     title: "Understand",
   },
   {
-    body: "Pick one useful option that is available now. It can be smaller or different from the original plan.",
+    body: "Choose one useful option that is available now. It can be smaller or different from the original plan.",
     id: "choose",
     number: "03",
     title: "Choose",
   },
   {
-    body: "Notice what happened and revise again if needed. Adjustment is the feedback step that keeps the plan usable.",
+    body: "Notice what happened and revise again if needed. Adjustment keeps the plan connected to real life.",
     id: "adjust",
     number: "04",
     title: "Adjust",
@@ -68,63 +67,110 @@ const solverSteps = [
 type SolverStepId = (typeof solverSteps)[number]["id"];
 
 const lifeSituations = [
-  ["late_meal", "Lunch moves two hours later than expected"],
-  ["restaurant", "The restaurant has nothing you planned for"],
-  ["long_shift", "A workday stretches longer than usual"],
-  ["celebration", "A celebration changes the whole evening"],
+  {
+    id: "late_meal",
+    label: "Lunch moves two hours later",
+    truth: "The timing changed. The next meal can still be a useful choice.",
+  },
+  {
+    id: "restaurant",
+    label: "The restaurant has different options",
+    truth: "The available meal does not have to look like the imagined meal to count.",
+  },
+  {
+    id: "long_shift",
+    label: "A workday uses the energy you expected",
+    truth: "Rest, a shorter action, or asking for help can protect the purpose of the plan.",
+  },
+  {
+    id: "celebration",
+    label: "A celebration changes the evening",
+    truth:
+      "Belonging is part of health. One event does not need punishment or a ceremonial restart.",
+  },
 ] as const;
-type LifeSituationId = (typeof lifeSituations)[number][0];
+type LifeSituationId = (typeof lifeSituations)[number]["id"];
 
 const lifeTools = [
-  ["notice", "Notice what changed before choosing the next response"],
-  ["available", "Choose the most supportive option that is actually available"],
-  ["small", "Protect one small routine: water, a pause, movement, or rest"],
-  ["support", "Ask someone for practical help or more time"],
-  ["return", "Let the next decision be a fresh decision"],
+  {
+    id: "notice",
+    label: "Name the change",
+    note: "Respond to what happened—not to the fear that the whole day is ruined.",
+  },
+  {
+    id: "available",
+    label: "Use what is available",
+    note: "A workable choice can be genuinely useful without being the original choice.",
+  },
+  {
+    id: "small",
+    label: "Protect one small anchor",
+    note: "Water, rest, a short movement moment, a meal, or one phone call may be enough for now.",
+  },
+  {
+    id: "return",
+    label: "Let the next choice be new",
+    note: "The next decision does not have to repay or punish the one before it.",
+  },
 ] as const;
-type LifeToolId = (typeof lifeTools)[number][0];
+type LifeToolId = (typeof lifeTools)[number]["id"];
 
 const sickDayPriorities = [
   {
     body: "Drink fluids as you are able. If you cannot keep liquids down or show signs of severe dehydration, seek medical help rather than trying to push through alone.",
     id: "fluids",
     title: "Protect hydration",
-    Icon: Droplets,
   },
   {
     body: "Illness and stress hormones can raise glucose even when you eat less. Follow your personal sick-day plan for when and how often to check.",
     id: "monitor",
     title: "Follow the monitoring plan",
-    Icon: CloudRain,
   },
   {
-    body: "Keep taking medicines as prescribed unless your clinician's written sick-day plan tells you otherwise. If you are unsure, call your care team or pharmacist.",
+    body: "Keep taking medicines as prescribed unless your clinician’s written sick-day plan tells you otherwise. If you are unsure, call your care team or pharmacist.",
     id: "medicine",
     title: "Use medicine-specific guidance",
-    Icon: Stethoscope,
   },
   {
     body: "Write down who to call and which symptoms mean urgent or emergency help. Asking early is a protective action, not an overreaction.",
     id: "help",
     title: "Know the help signals",
-    Icon: HeartHandshake,
   },
 ] as const;
 type SickPriorityId = (typeof sickDayPriorities)[number]["id"];
 
+const callDetails = [
+  {
+    id: "change",
+    label: "What changed",
+    note: "Symptoms, when they began, ability to drink or eat, and whether anything is worsening.",
+  },
+  {
+    id: "followed",
+    label: "What you already followed",
+    note: "The written plan, fluids, exact medicine names, and requested readings or ketones.",
+  },
+  {
+    id: "question",
+    label: "What needs an answer",
+    note: "The specific instruction that is unclear and what change should prompt another call.",
+  },
+] as const;
+type CallDetailId = (typeof callDetails)[number]["id"];
+
 const planTriggers = [
-  ["walk", "My planned walk does not happen"],
-  ["dinner", "Dinner is delayed or different"],
-  ["work", "Work uses all the energy I expected to have"],
-  ["restaurant", "A restaurant plan changes at the last minute"],
+  ["walk", "my planned walk does not happen"],
+  ["dinner", "dinner is delayed or different"],
+  ["work", "work uses the energy I expected to have"],
+  ["restaurant", "a restaurant plan changes at the last minute"],
 ] as const;
 type PlanTriggerId = (typeof planTriggers)[number][0];
 
 const planBackups = [
-  ["minutes", "I will choose five useful minutes instead of abandoning the whole idea"],
-  ["next", "I will make the next meal or decision supportive without punishing this one"],
-  ["ask", "I will ask for help, more time, or the information I need"],
-  ["reset", "I will pause, check what is possible now, and choose one small anchor"],
+  ["minutes", "choose five useful minutes instead of abandoning the whole idea"],
+  ["next", "let the next meal or decision be supportive without punishing this one"],
+  ["ask", "ask for help, more time, or the information I need"],
+  ["reset", "pause, check what is possible now, and choose one small anchor"],
 ] as const;
 type PlanBackupId = (typeof planBackups)[number][0];
 
@@ -136,7 +182,7 @@ const glossary = [
   },
   {
     definition:
-      "Chemicals produced when the body breaks down fat for energy. Whether and when to check them depends on a person's diabetes type, medicines, symptoms, and clinician's sick-day plan.",
+      "Chemicals produced when the body breaks down fat for energy. Whether and when to check them depends on a person’s diabetes type, medicines, symptoms, and clinician’s sick-day plan.",
     term: "Ketones",
   },
   {
@@ -163,7 +209,14 @@ function LessonHeading({
   return (
     <div className={cn("space-y-3", centered && "mx-auto max-w-4xl text-center")}>
       {label ? <p className="editorial-eyebrow">{label}</p> : null}
-      <h1 className={cn(styles.lessonTitle, centered && "mx-auto")}>{children}</h1>
+      <h1
+        className={cn(
+          "max-w-4xl font-serif-display text-[length:var(--text-page-title)] font-normal leading-[0.96] text-balance",
+          centered && "mx-auto",
+        )}
+      >
+        {children}
+      </h1>
     </div>
   );
 }
@@ -211,153 +264,1010 @@ function Feedback({ feedback }: { feedback: DayTwelveEvaluationFeedback }) {
   );
 }
 
-function AdaptiveDayTimeline() {
-  const originalPlan = [
-    ["Morning", "Usual start"],
-    ["12:00", "Planned lunch"],
-    ["After work", "Planned walk"],
-    ["Evening", "Dinner at home"],
-  ] as const;
-  const changedDay = [
-    ["Morning", "Usual start"],
-    ["12:00", "Meeting runs long"],
-    ["2:00", "Best available lunch"],
-    ["Evening", "Return to the next routine"],
-  ] as const;
+function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
+  const step = solverSteps.find((item) => item.id === activeStep) ?? solverSteps[0];
 
   return (
-    <figure className={styles.teachingFigure}>
-      <div className={styles.visualIntro}>
-        <p className="editorial-eyebrow">One day · two valid routes</p>
-        <h2>The plan changed. Care did not disappear.</h2>
-        <p>Follow the lower timeline: the interruption changes two steps, not the whole day.</p>
+    <figure className={styles.motionFigure} data-motion-loop="continuous">
+      <div className={styles.motionIntro}>
+        <p className="editorial-eyebrow">One afternoon · a plan changes</p>
+        <h2>The interruption changes the route, not the worth of the day.</h2>
+        <p>Watch the person notice the delay, pause, eat what is available, and keep going.</p>
       </div>
-      <div className={styles.timelineComparison}>
-        <section className={styles.timelineLane}>
-          <div className={styles.timelineLaneLabel}>
-            <span>Plan A</span>
-            <strong>What I expected</strong>
-          </div>
-          <ol className={styles.timelineSteps} data-route="original">
-            {originalPlan.map(([time, event]) => (
-              <li key={`${time}-${event}`}>
-                <span>{time}</span>
-                <strong>{event}</strong>
-              </li>
-            ))}
-          </ol>
-        </section>
-        <section className={styles.timelineLane}>
-          <div className={styles.timelineLaneLabel}>
-            <span>Real life</span>
-            <strong>What actually happened</strong>
-          </div>
-          <ol className={styles.timelineSteps} data-route="adapted">
-            {changedDay.map(([time, event], index) => (
-              <li
-                data-kind={index === 1 ? "change" : index > 1 ? "response" : "steady"}
-                key={`${time}-${event}`}
-              >
-                <span>{time}</span>
-                <strong>{event}</strong>
-              </li>
-            ))}
-          </ol>
-        </section>
+      <svg
+        aria-labelledby="changed-day-title changed-day-description"
+        className={styles.motionCanvas}
+        role="img"
+        viewBox="0 0 900 420"
+      >
+        <title id="changed-day-title">A late meeting changes lunch without erasing the day</title>
+        <desc id="changed-day-description">
+          The selected problem-solving step changes the person’s visible action: breathing before
+          reacting, checking what changed, eating an available meal, or revising the afternoon.
+        </desc>
+        <rect fill="#eef4f0" height="420" width="900" />
+        <path d="M48 370 H852" stroke="#a9bdb1" strokeLinecap="round" strokeWidth="5" />
+        <rect fill="#f8ead7" height="150" rx="7" stroke="#d3b79c" width="225" x="68" y="52" />
+        <circle cx="181" cy="118" fill="#edca8c" r="39" />
+        <path d="M91 184 Q181 125 270 183" fill="#b7c9bc" opacity=".75" />
+
+        <circle cx="428" cy="108" fill="#fffaf2" r="57" stroke="#789185" strokeWidth="5" />
+        {[0, 1, 2, 3].map((mark) => {
+          const angle = (mark * Math.PI) / 2;
+          const x1 = 428 + Math.cos(angle) * 42;
+          const y1 = 108 + Math.sin(angle) * 42;
+          const x2 = 428 + Math.cos(angle) * 49;
+          const y2 = 108 + Math.sin(angle) * 49;
+          return (
+            <line
+              key={mark}
+              stroke="#789185"
+              strokeLinecap="round"
+              strokeWidth="3"
+              x1={x1}
+              x2={x2}
+              y1={y1}
+              y2={y2}
+            />
+          );
+        })}
+        <line
+          stroke="#566f65"
+          strokeLinecap="round"
+          strokeWidth="6"
+          x1="428"
+          x2="428"
+          y1="108"
+          y2="75"
+        >
+          <animateTransform
+            attributeName="transform"
+            dur="8s"
+            repeatCount="indefinite"
+            type="rotate"
+            values="0 428 108;30 428 108;0 428 108"
+          />
+        </line>
+        <line
+          stroke="#c7785f"
+          strokeLinecap="round"
+          strokeWidth="5"
+          x1="428"
+          x2="451"
+          y1="108"
+          y2="108"
+        >
+          <animateTransform
+            attributeName="transform"
+            dur="8s"
+            repeatCount="indefinite"
+            type="rotate"
+            values="0 428 108;120 428 108;0 428 108"
+          />
+        </line>
+        <circle cx="428" cy="108" fill="#566f65" r="5" />
+
+        <path d="M545 310 H822" stroke="#876f5d" strokeLinecap="round" strokeWidth="14" />
+        <path d="M579 313 L568 370 M785 313 L797 370" stroke="#876f5d" strokeWidth="11" />
+        <rect fill="#fffaf2" height="61" rx="6" stroke="#91aa9d" width="103" x="695" y="239" />
+        <rect fill="#c8dad2" height="10" rx="3" width="65" x="714" y="257" />
+        <rect fill="#e5d4bd" height="8" rx="3" width="49" x="714" y="275" />
+        <LessonMotionPerson
+          action={activeStep === "choose" ? "reach-right" : "rest"}
+          motion={activeStep === "pause" ? "breathe" : "nod"}
+          palette="warm"
+          scale={0.98}
+          seated
+          x={625}
+          y={356}
+        />
+
+        {activeStep === "pause" ? (
+          <g key="pause">
+            <path
+              d="M622 215 C606 201 605 186 620 174"
+              fill="none"
+              stroke="#7ba08d"
+              strokeWidth="5"
+            >
+              <animate
+                attributeName="opacity"
+                dur="3.6s"
+                repeatCount="indefinite"
+                values=".15;1;.15"
+              />
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 7;0 -7;0 7"
+              />
+            </path>
+            <path
+              d="M644 215 C660 201 661 186 646 174"
+              fill="none"
+              stroke="#7ba08d"
+              strokeWidth="5"
+            >
+              <animate
+                attributeName="opacity"
+                dur="3.6s"
+                repeatCount="indefinite"
+                values=".15;1;.15"
+              />
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 7;0 -7;0 7"
+              />
+            </path>
+          </g>
+        ) : null}
+
+        {activeStep === "understand" ? (
+          <g key="understand">
+            <rect
+              fill="#fffaf2"
+              height="84"
+              rx="6"
+              stroke="#c37a61"
+              strokeWidth="4"
+              width="104"
+              x="310"
+              y="231"
+            />
+            <path d="M310 255 H414 M334 218 V245 M390 218 V245" stroke="#c37a61" strokeWidth="5" />
+            <circle cx="342" cy="278" fill="#e7b77b" r="8">
+              <animate
+                attributeName="opacity"
+                dur="2.4s"
+                repeatCount="indefinite"
+                values=".3;1;.3"
+              />
+            </circle>
+            <path d="M361 278 H393" stroke="#91aa9d" strokeLinecap="round" strokeWidth="6" />
+          </g>
+        ) : null}
+
+        {activeStep === "choose" ? (
+          <g key="choose">
+            <ellipse
+              cx="705"
+              cy="307"
+              fill="#fffaf2"
+              rx="53"
+              ry="13"
+              stroke="#c7785f"
+              strokeWidth="4"
+            />
+            <path d="M670 298 Q706 268 742 298" fill="#eac789" />
+            <path d="M680 294 Q706 277 732 294" fill="#789b88" opacity=".85" />
+            <path d="M663 265 V299" stroke="#789185" strokeLinecap="round" strokeWidth="5">
+              <animateTransform
+                attributeName="transform"
+                dur="2.8s"
+                repeatCount="indefinite"
+                type="rotate"
+                values="0 663 299;-8 663 299;0 663 299"
+              />
+            </path>
+          </g>
+        ) : null}
+
+        {activeStep === "adjust" ? (
+          <g key="adjust">
+            <rect
+              fill="#fffaf2"
+              height="96"
+              rx="6"
+              stroke="#7b9b8b"
+              strokeWidth="4"
+              width="128"
+              x="316"
+              y="225"
+            />
+            <path
+              d="M337 251 H419 M337 273 H394 M337 295 H412"
+              stroke="#a1b5aa"
+              strokeLinecap="round"
+              strokeWidth="6"
+            />
+            <path
+              d="M391 293 l10 10 22-27"
+              fill="none"
+              stroke="#c7785f"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="6"
+            >
+              <animate
+                attributeName="stroke-dasharray"
+                dur="3s"
+                repeatCount="indefinite"
+                values="0 55;55 0;55 0"
+              />
+            </path>
+          </g>
+        ) : null}
+      </svg>
+      <div aria-live="polite" className={styles.motionTranscript}>
+        <span>
+          {step.number} · {step.title}
+        </span>
+        <strong>{step.body}</strong>
       </div>
       <figcaption className={styles.figureCaption}>
-        <strong>Find the exact point where conditions changed.</strong> The animation highlights the
-        response sequence: notice the change, make the next workable choice, then reconnect with the
-        routine that is still available.
+        <strong>What to notice:</strong> the person responds to the changed condition. They do not
+        punish the delay or declare the day ruined.
       </figcaption>
     </figure>
   );
 }
 
-function SickDayCauseAndResponse() {
+function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
+  const active = sickDayPriorities.find((item) => item.id === priority) ?? sickDayPriorities[0];
+
   return (
-    <figure className={styles.teachingFigure}>
-      <div className={styles.visualIntro}>
-        <p className="editorial-eyebrow">What illness changes</p>
-        <h2>New conditions need a different response.</h2>
-        <p>The highlight moves from cause to body changes to the actions that protect you.</p>
+    <figure className={styles.motionFigure} data-motion-loop="continuous">
+      <div className={styles.motionIntro}>
+        <p className="editorial-eyebrow">Inside a sick day</p>
+        <h2>Eating less does not always mean glucose will fall.</h2>
+        <p>
+          Illness can release stress hormones. The liver may release more glucose while fever,
+          vomiting, or diarrhea can make hydration harder to protect.
+        </p>
       </div>
-      <div className={styles.causeFlow}>
-        <section className={styles.flowPanel}>
-          <CloudRain aria-hidden="true" />
-          <p className="editorial-eyebrow">1 · Illness begins</p>
-          <h3>The body releases stress hormones.</h3>
-          <p>This response helps fight illness, but it can also change diabetes management.</p>
-        </section>
-        <span aria-hidden="true" className={styles.flowConnector} />
-        <section className={styles.flowPanel}>
-          <Waypoints aria-hidden="true" />
-          <p className="editorial-eyebrow">2 · What may change</p>
-          <h3>Glucose may rise even when you eat less.</h3>
-          <p>Vomiting, diarrhea, or fever can also increase fluid loss and dehydration risk.</p>
-        </section>
-        <span aria-hidden="true" className={styles.flowConnector} />
-        <section className={styles.flowPanel}>
-          <Droplets aria-hidden="true" />
-          <p className="editorial-eyebrow">3 · What protects</p>
-          <h3>Use the written sick-day plan.</h3>
-          <p>
-            Follow personal monitoring and medicine guidance, drink as able, and call early for
-            warning signs.
-          </p>
-        </section>
+      <svg
+        aria-labelledby="sick-body-title sick-body-description"
+        className={styles.motionCanvas}
+        role="img"
+        viewBox="0 0 900 450"
+      >
+        <title id="sick-body-title">Illness changes glucose and hydration inside the body</title>
+        <desc id="sick-body-description">
+          A coherent torso shows stress signals reaching the liver and glucose entering a blood
+          vessel. The selected sick-day priority changes the practical action shown beside it.
+        </desc>
+        <rect fill="#edf3f0" height="450" width="900" />
+        <circle cx="398" cy="74" fill="#ddb08d" r="42" stroke="#789185" strokeWidth="4" />
+        <path
+          d="M291 405 Q295 155 398 135 Q501 155 505 405 Z"
+          fill="#f7ede1"
+          stroke="#8da99a"
+          strokeWidth="6"
+        />
+        <path d="M398 115 V180" stroke="#c98b76" strokeLinecap="round" strokeWidth="7" />
+        <path
+          d="M321 192 Q364 155 425 179 Q454 190 456 217 Q457 249 423 266 Q376 280 336 258 Q309 242 321 192 Z"
+          fill="#b87361"
+          stroke="#955645"
+          strokeWidth="4"
+        >
+          <animate attributeName="opacity" dur="3.8s" repeatCount="indefinite" values=".72;1;.72" />
+        </path>
+        <path
+          d="M420 222 Q470 200 481 244 Q488 273 463 300 Q449 315 455 341 Q420 335 404 309 Q391 287 409 264 Q423 247 420 222 Z"
+          fill="#d9a184"
+          stroke="#a57d61"
+          strokeWidth="4"
+        />
+        <path
+          d="M337 311 Q367 288 399 310 Q427 328 401 347 Q374 365 343 348 Q318 334 337 311 Z"
+          fill="none"
+          stroke="#c9826d"
+          strokeLinecap="round"
+          strokeWidth="11"
+        />
+
+        <path
+          d="M255 390 H625"
+          fill="none"
+          stroke="#8ba9aa"
+          strokeLinecap="round"
+          strokeWidth="24"
+        />
+        <path
+          d="M255 390 H625"
+          fill="none"
+          stroke="#dceaea"
+          strokeLinecap="round"
+          strokeWidth="12"
+        />
+        {[0, 1, 2].map((index) => (
+          <circle fill="#e5b56f" key={index} r="8">
+            <animateMotion
+              begin={`${index * -1.1}s`}
+              dur="4.6s"
+              path="M382 243 C410 288 447 362 615 390"
+              repeatCount="indefinite"
+            />
+            <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
+          </circle>
+        ))}
+
+        <g>
+          <circle cx="176" cy="185" fill="#c97b67" r="13" />
+          <path
+            d="M166 173 l-14 -16 M187 173 l15 -16"
+            stroke="#9f5c51"
+            strokeLinecap="round"
+            strokeWidth="5"
+          />
+          <path
+            d="M186 191 C228 185 277 190 323 208"
+            fill="none"
+            stroke="#c97b67"
+            strokeLinecap="round"
+            strokeWidth="3"
+            opacity=".45"
+          />
+          <circle fill="#d57e63" r="7">
+            <animateMotion
+              dur="4.6s"
+              path="M187 191 C228 185 277 190 323 208"
+              repeatCount="indefinite"
+            />
+            <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
+          </circle>
+        </g>
+
+        <rect
+          fill="#fffaf2"
+          height="238"
+          rx="8"
+          stroke="#a8bbb0"
+          strokeWidth="4"
+          width="226"
+          x="636"
+          y="101"
+        />
+        {priority === "fluids" ? (
+          <g key="fluids">
+            <path
+              d="M696 166 H803 L791 305 H708 Z"
+              fill="#fffaf2"
+              stroke="#6f9485"
+              strokeWidth="5"
+            />
+            <path d="M705 242 H795 L791 305 H708 Z" fill="#8db8c1">
+              <animate
+                attributeName="d"
+                dur="4s"
+                repeatCount="indefinite"
+                values="M705 269 H795 L791 305 H708 Z;M705 224 H795 L791 305 H708 Z;M705 269 H795 L791 305 H708 Z"
+              />
+            </path>
+            <path d="M750 118 C731 143 732 157 750 166 C768 157 769 143 750 118 Z" fill="#78aeb9">
+              <animateTransform
+                attributeName="transform"
+                dur="3.4s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 -6;0 10;0 -6"
+              />
+            </path>
+          </g>
+        ) : null}
+        {priority === "monitor" ? (
+          <g key="monitor">
+            <rect
+              fill="#f9f4eb"
+              height="122"
+              rx="9"
+              stroke="#5f8273"
+              strokeWidth="5"
+              width="88"
+              x="705"
+              y="146"
+            />
+            <rect fill="#b8d3c7" height="38" rx="4" width="58" x="720" y="165" />
+            <path
+              d="M722 236 C736 219 748 251 760 230 C770 216 779 225 789 211"
+              fill="none"
+              stroke="#c7785f"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="5"
+            >
+              <animate
+                attributeName="stroke-dasharray"
+                dur="3.2s"
+                repeatCount="indefinite"
+                values="0 100;100 0;100 0"
+              />
+            </path>
+            <circle cx="749" cy="287" fill="#e6b675" r="10">
+              <animate
+                attributeName="opacity"
+                dur="2.6s"
+                repeatCount="indefinite"
+                values=".35;1;.35"
+              />
+            </circle>
+          </g>
+        ) : null}
+        {priority === "medicine" ? (
+          <g key="medicine">
+            <rect
+              fill="#fffaf2"
+              height="137"
+              rx="7"
+              stroke="#6f9485"
+              strokeWidth="5"
+              width="86"
+              x="704"
+              y="157"
+            />
+            <rect
+              fill="#fffaf2"
+              height="30"
+              rx="4"
+              stroke="#6f9485"
+              strokeWidth="5"
+              width="56"
+              x="719"
+              y="128"
+            />
+            <rect fill="#c8dacf" height="39" rx="4" width="64" x="715" y="204">
+              <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values=".5;1;.5" />
+            </rect>
+            <path d="M676 296 H816" stroke="#c99b73" strokeLinecap="round" strokeWidth="6" />
+            <path d="M687 310 H775" stroke="#a5b8ae" strokeLinecap="round" strokeWidth="5" />
+          </g>
+        ) : null}
+        {priority === "help" ? (
+          <g key="help">
+            <rect fill="#4c675d" height="130" rx="14" width="72" x="714" y="157" />
+            <circle cx="750" cy="267" fill="#dce9e2" r="6" />
+            <path
+              d="M732 181 H768 M732 198 H760"
+              stroke="#dce9e2"
+              strokeLinecap="round"
+              strokeWidth="5"
+            />
+            <path
+              d="M698 145 Q750 98 802 145"
+              fill="none"
+              stroke="#c7785f"
+              strokeLinecap="round"
+              strokeWidth="5"
+            >
+              <animate attributeName="opacity" dur="2.5s" repeatCount="indefinite" values="0;1;0" />
+            </path>
+          </g>
+        ) : null}
+      </svg>
+      <div aria-live="polite" className={styles.motionTranscript}>
+        <span>{active.title}</span>
+        <strong>{active.body}</strong>
       </div>
       <figcaption className={styles.figureCaption}>
-        <strong>Eating less does not guarantee that glucose will fall during illness.</strong> The
-        useful response is preparation: personal instructions, hydration when possible, and clear
-        thresholds for getting help.
+        <strong>What to notice:</strong> the body’s illness response and fluid loss can change the
+        plan at the same time. Personal instructions matter more than a universal rule.
       </figcaption>
     </figure>
   );
 }
 
-function BackupPlanSequence({
+function CareCallAnimation({ focus }: { focus: CallDetailId }) {
+  const active = callDetails.find((item) => item.id === focus) ?? callDetails[0];
+
+  return (
+    <figure className={styles.motionFigure} data-motion-loop="continuous">
+      <div className={styles.motionIntro}>
+        <p className="editorial-eyebrow">A useful handoff</p>
+        <h2>A friend can help carry the details when thinking feels harder.</h2>
+        <p>The written plan stays open. The call names what changed and asks one clear question.</p>
+      </div>
+      <svg
+        aria-labelledby="care-call-title care-call-description"
+        className={styles.motionCanvas}
+        role="img"
+        viewBox="0 0 900 420"
+      >
+        <title id="care-call-title">A friend helps make a care-team call during illness</title>
+        <desc id="care-call-description">
+          One person rests on a sofa while a friend keeps water and the written sick-day plan within
+          reach. The selected call detail changes what the friend gathers for the clinician.
+        </desc>
+        <rect fill="#f2eee6" height="420" width="900" />
+        <path d="M42 381 H858" stroke="#b3bcae" strokeLinecap="round" strokeWidth="5" />
+        <rect
+          fill="#d9e7e1"
+          height="145"
+          rx="7"
+          stroke="#9fb5a9"
+          strokeWidth="4"
+          width="205"
+          x="64"
+          y="47"
+        />
+        <circle cx="166" cy="110" fill="#edca8c" r="34" />
+        <path d="M89 178 Q166 132 244 178" fill="#abc0b3" />
+
+        <path
+          d="M90 304 H389 Q407 304 407 323 V353 H90 Z"
+          fill="#83a18f"
+          stroke="#607b6c"
+          strokeWidth="4"
+        />
+        <rect fill="#a8c0b3" height="76" rx="8" width="104" x="78" y="275" />
+        <path
+          d="M119 353 V381 M376 353 V381"
+          stroke="#607b6c"
+          strokeLinecap="round"
+          strokeWidth="10"
+        />
+        <LessonMotionPerson
+          action="rest"
+          motion="breathe"
+          palette="warm"
+          scale={0.9}
+          seated
+          x={268}
+          y={344}
+        />
+
+        <path
+          d="M442 311 H657 M466 313 L456 381 M632 313 L642 381"
+          stroke="#866f5e"
+          strokeLinecap="round"
+          strokeWidth="12"
+        />
+        <ellipse
+          cx="526"
+          cy="304"
+          fill="#fffaf2"
+          rx="39"
+          ry="10"
+          stroke="#c58a70"
+          strokeWidth="4"
+        />
+        <path d="M494 252 H522 L520 296 H496 Z" fill="#fffaf2" stroke="#6f9485" strokeWidth="4" />
+        <path d="M497 278 H520 L520 296 H496 Z" fill="#8db8c1" />
+        <LessonMotionPerson
+          action={focus === "followed" ? "reach-left" : "listen"}
+          motion="nod"
+          palette="sage"
+          scale={0.9}
+          seated
+          x={600}
+          y={344}
+        />
+
+        <rect
+          fill="#fffaf2"
+          height="142"
+          rx="7"
+          stroke="#a79582"
+          strokeWidth="4"
+          width="112"
+          x="658"
+          y="203"
+        />
+        <path
+          d="M679 234 H749 M679 255 H735 M679 276 H748 M679 297 H726"
+          stroke="#9bad9f"
+          strokeLinecap="round"
+          strokeWidth="5"
+        />
+
+        {focus === "change" ? (
+          <g key="change">
+            <circle cx="218" cy="222" fill="#fffaf2" r="34" stroke="#c7785f" strokeWidth="4" />
+            <path
+              d="M218 222 V200 M218 222 L235 229"
+              stroke="#6b8177"
+              strokeLinecap="round"
+              strokeWidth="5"
+            />
+            <path d="M458 248 V292" stroke="#c7785f" strokeLinecap="round" strokeWidth="7" />
+            <circle cx="458" cy="303" fill="#c7785f" r="12">
+              <animate
+                attributeName="opacity"
+                dur="2.8s"
+                repeatCount="indefinite"
+                values=".5;1;.5"
+              />
+            </circle>
+          </g>
+        ) : null}
+        {focus === "followed" ? (
+          <g key="followed">
+            <path d="M674 231 H748" stroke="#c7785f" strokeLinecap="round" strokeWidth="6">
+              <animate
+                attributeName="stroke-dasharray"
+                dur="3s"
+                repeatCount="indefinite"
+                values="0 80;80 0;80 0"
+              />
+            </path>
+            <path d="M486 272 Q505 254 523 272" fill="none" stroke="#79a7b1" strokeWidth="4">
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 5;0 -4;0 5"
+              />
+            </path>
+          </g>
+        ) : null}
+        {focus === "question" ? (
+          <g key="question">
+            <rect fill="#405750" height="82" rx="10" width="48" x="791" y="224" />
+            <circle cx="815" cy="290" fill="#dce8e1" r="4" />
+            <path
+              d="M780 207 Q815 179 850 207 M788 216 Q815 195 842 216"
+              fill="none"
+              stroke="#c87860"
+              strokeLinecap="round"
+              strokeWidth="4"
+            >
+              <animate attributeName="opacity" dur="2.4s" repeatCount="indefinite" values="0;1;0" />
+            </path>
+            <circle cx="815" cy="160" fill="#ddb08a" r="25" stroke="#5b7e89" strokeWidth="4" />
+            <path d="M782 199 Q815 164 848 199" fill="#7d9da4" />
+            <path
+              d="M805 162 Q815 170 825 162"
+              fill="none"
+              stroke="#7c5b4c"
+              strokeLinecap="round"
+              strokeWidth="3"
+            />
+          </g>
+        ) : null}
+      </svg>
+      <div aria-live="polite" className={styles.motionTranscript}>
+        <span>{active.label}</span>
+        <strong>{active.note}</strong>
+      </div>
+      <figcaption className={styles.figureCaption}>
+        <strong>What to notice:</strong> support does not invent an answer. It helps gather the
+        exact information so the care team can answer the right question.
+      </figcaption>
+    </figure>
+  );
+}
+
+function PlanBAnimation({
   planBackup,
   planTrigger,
 }: {
-  planBackup: PlanBackupId | null;
-  planTrigger: PlanTriggerId | null;
+  planBackup: PlanBackupId;
+  planTrigger: PlanTriggerId;
 }) {
-  const change =
-    planTriggers.find(([id]) => id === planTrigger)?.[1] ??
-    "A long workday uses the time I planned";
-  const response =
-    planBackups.find(([id]) => id === planBackup)?.[1] ??
-    "I will choose five useful minutes instead of abandoning the whole idea";
+  const trigger = planTriggers.find(([id]) => id === planTrigger)?.[1] ?? planTriggers[0][1];
+  const backup = planBackups.find(([id]) => id === planBackup)?.[1] ?? planBackups[0][1];
 
   return (
-    <figure className={styles.teachingFigure}>
-      <div className={styles.visualIntro}>
+    <figure className={styles.motionFigure} data-motion-loop="continuous">
+      <div className={styles.motionIntro}>
         <p className="editorial-eyebrow">Plan B keeps the purpose</p>
-        <h2>The action changes. The care still counts.</h2>
-        <p>This sequence updates as you make your choices below.</p>
+        <h2>The activity changes. Connection and care can stay.</h2>
+        <p>
+          Rain closes the outdoor plan; two friends make room for movement and laughter indoors.
+        </p>
       </div>
-      <ol className={styles.planSequence}>
-        <li>
-          <span>1 · Plan A</span>
-          <strong>Protect one supportive routine today</strong>
-        </li>
-        <li data-kind="change">
-          <span>2 · Life changes</span>
-          <strong>{change}</strong>
-        </li>
-        <li data-kind="response">
-          <span>3 · Plan B</span>
-          <strong>{response}</strong>
-        </li>
-        <li data-kind="continue">
-          <span>4 · What remains true</span>
-          <strong>I am still practicing care</strong>
-        </li>
-      </ol>
+      <svg
+        aria-labelledby="plan-b-title plan-b-description"
+        className={styles.motionCanvas}
+        role="img"
+        viewBox="0 0 900 420"
+      >
+        <title id="plan-b-title">Friends turn a rainy outdoor plan into indoor movement</title>
+        <desc id="plan-b-description">
+          The left side shows the selected disruption. The right side visibly changes to the chosen
+          backup: a short movement break, a supportive next meal, a call for help, or a quiet reset.
+        </desc>
+        <rect fill="#f4eee5" height="420" width="900" />
+        <path d="M44 376 H856" stroke="#b3bcae" strokeLinecap="round" strokeWidth="5" />
+        <rect
+          fill="#dce9eb"
+          height="235"
+          rx="8"
+          stroke="#8eaaa8"
+          strokeWidth="5"
+          width="245"
+          x="64"
+          y="55"
+        />
+        <path d="M64 294 H309" stroke="#8eaaa8" strokeWidth="8" />
+        {planTrigger === "walk" ? (
+          <g key="walk">
+            <g>
+              <ellipse cx="184" cy="111" fill="#8ba0a4" rx="59" ry="24" />
+              <circle cx="151" cy="105" fill="#8ba0a4" r="28" />
+              <circle cx="201" cy="92" fill="#8ba0a4" r="35" />
+              <circle cx="227" cy="110" fill="#8ba0a4" r="26" />
+              <animateTransform
+                attributeName="transform"
+                dur="6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="-5 0;5 0;-5 0"
+              />
+            </g>
+            {[136, 173, 210, 247].map((x, index) => (
+              <line
+                key={x}
+                stroke="#78a8b1"
+                strokeLinecap="round"
+                strokeWidth="7"
+                x1={x}
+                x2={x - 10}
+                y1="150"
+                y2="193"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  begin={`${index * -0.22}s`}
+                  dur="1.4s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 -5;0 18"
+                />
+                <animate
+                  attributeName="opacity"
+                  begin={`${index * -0.22}s`}
+                  dur="1.4s"
+                  repeatCount="indefinite"
+                  values="0;1;0"
+                />
+              </line>
+            ))}
+            <path
+              d="M96 251 Q184 218 277 251"
+              fill="none"
+              stroke="#9bb1a2"
+              strokeLinecap="round"
+              strokeWidth="8"
+            />
+          </g>
+        ) : null}
+        {planTrigger === "dinner" ? (
+          <g key="dinner">
+            <circle cx="184" cy="145" fill="#fffaf2" r="66" stroke="#789185" strokeWidth="5" />
+            <path
+              d="M184 145 V105 M184 145 L220 163"
+              stroke="#c7785f"
+              strokeLinecap="round"
+              strokeWidth="7"
+            >
+              <animateTransform
+                attributeName="transform"
+                dur="6s"
+                repeatCount="indefinite"
+                type="rotate"
+                values="0 184 145;35 184 145;0 184 145"
+              />
+            </path>
+            <ellipse
+              cx="184"
+              cy="255"
+              fill="#fffaf2"
+              rx="59"
+              ry="15"
+              stroke="#c9896f"
+              strokeWidth="4"
+            />
+          </g>
+        ) : null}
+        {planTrigger === "work" ? (
+          <g key="work">
+            <rect
+              fill="#fffaf2"
+              height="100"
+              rx="7"
+              stroke="#789185"
+              strokeWidth="5"
+              width="145"
+              x="111"
+              y="95"
+            />
+            <rect fill="#b8d1c2" height="45" rx="4" width="104" x="131" y="118" />
+            <rect
+              fill="#fffaf2"
+              height="68"
+              rx="8"
+              stroke="#c7785f"
+              strokeWidth="5"
+              width="114"
+              x="128"
+              y="221"
+            />
+            <rect fill="#dca27a" height="34" rx="3" width="48" x="143" y="238">
+              <animate attributeName="width" dur="4s" repeatCount="indefinite" values="48;15;48" />
+            </rect>
+            <path d="M242 241 H256 V269 H242" fill="none" stroke="#c7785f" strokeWidth="5" />
+          </g>
+        ) : null}
+        {planTrigger === "restaurant" ? (
+          <g key="restaurant">
+            <path d="M110 274 V128 H259 V274" fill="#fffaf2" stroke="#789185" strokeWidth="6" />
+            <path
+              d="M127 128 L143 93 H226 L242 128"
+              fill="#e2ae78"
+              stroke="#a37250"
+              strokeLinejoin="round"
+              strokeWidth="5"
+            />
+            <path d="M148 274 V204 H221 V274" fill="#d6e3dd" stroke="#789185" strokeWidth="5" />
+            <path d="M128 183 H240" stroke="#c7785f" strokeLinecap="round" strokeWidth="8">
+              <animate
+                attributeName="opacity"
+                dur="2.8s"
+                repeatCount="indefinite"
+                values=".45;1;.45"
+              />
+            </path>
+          </g>
+        ) : null}
+
+        <path d="M349 325 H835" stroke="#876f5d" strokeLinecap="round" strokeWidth="14" />
+        <path
+          d="M388 328 L380 376 M798 328 L807 376"
+          stroke="#876f5d"
+          strokeLinecap="round"
+          strokeWidth="10"
+        />
+
+        {planBackup === "minutes" ? (
+          <g key="minutes">
+            <rect
+              fill="#6f8f80"
+              height="74"
+              rx="7"
+              stroke="#58756a"
+              strokeWidth="4"
+              width="84"
+              x="722"
+              y="236"
+            />
+            <circle cx="764" cy="273" fill="#f1ddbd" r="20">
+              <animate attributeName="r" dur="2.2s" repeatCount="indefinite" values="18;23;18" />
+            </circle>
+            <LessonMotionPerson
+              action="wave-right"
+              motion="dance"
+              palette="warm"
+              scale={0.92}
+              x={500}
+              y={368}
+            />
+            <LessonMotionPerson
+              action="celebrate"
+              motion="dance"
+              palette="sage"
+              scale={0.92}
+              x={625}
+              y={368}
+            />
+          </g>
+        ) : null}
+        {planBackup === "next" ? (
+          <g key="next">
+            <ellipse
+              cx="590"
+              cy="316"
+              fill="#fffaf2"
+              rx="57"
+              ry="13"
+              stroke="#c9896f"
+              strokeWidth="4"
+            />
+            <path d="M555 307 Q590 276 625 307" fill="#e7bb7c" />
+            <LessonMotionPerson
+              action="reach-right"
+              motion="breathe"
+              palette="warm"
+              scale={0.87}
+              seated
+              x={478}
+              y={367}
+            />
+            <LessonMotionPerson
+              action="reach-left"
+              motion="nod"
+              palette="sage"
+              scale={0.87}
+              seated
+              x={705}
+              y={367}
+            />
+          </g>
+        ) : null}
+        {planBackup === "ask" ? (
+          <g key="ask">
+            <rect fill="#405750" height="83" rx="11" width="49" x="587" y="241" />
+            <circle cx="611" cy="307" fill="#dce8e1" r="4" />
+            <path
+              d="M574 225 Q611 195 648 225 M582 235 Q611 212 640 235"
+              fill="none"
+              stroke="#c87860"
+              strokeLinecap="round"
+              strokeWidth="5"
+            >
+              <animate attributeName="opacity" dur="2.5s" repeatCount="indefinite" values="0;1;0" />
+            </path>
+            <LessonMotionPerson
+              action="reach-right"
+              motion="nod"
+              palette="warm"
+              scale={0.9}
+              x={470}
+              y={368}
+            />
+            <LessonMotionPerson
+              action="wave-left"
+              motion="breathe"
+              palette="sage"
+              scale={0.9}
+              x={740}
+              y={368}
+            />
+          </g>
+        ) : null}
+        {planBackup === "reset" ? (
+          <g key="reset">
+            <LessonMotionPerson
+              action="rest"
+              motion="breathe"
+              palette="warm"
+              scale={0.92}
+              seated
+              x={548}
+              y={367}
+            />
+            <LessonMotionPerson
+              action="listen"
+              motion="nod"
+              palette="sage"
+              scale={0.92}
+              seated
+              x={680}
+              y={367}
+            />
+            <path
+              d="M600 225 C584 209 584 191 600 176 M624 225 C640 209 640 191 624 176"
+              fill="none"
+              stroke="#7ba08d"
+              strokeLinecap="round"
+              strokeWidth="5"
+            >
+              <animate
+                attributeName="opacity"
+                dur="3.4s"
+                repeatCount="indefinite"
+                values=".15;1;.15"
+              />
+              <animateTransform
+                attributeName="transform"
+                dur="3.4s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 7;0 -7;0 7"
+              />
+            </path>
+          </g>
+        ) : null}
+      </svg>
+      <div aria-live="polite" className={styles.planTranscript}>
+        <div>
+          <span>When real life says</span>
+          <strong>{trigger}</strong>
+        </div>
+        <div>
+          <span>Plan B can</span>
+          <strong>{backup}</strong>
+        </div>
+      </div>
       <figcaption className={styles.figureCaption}>
-        <strong>Plan B is a prepared response, not a lesser plan.</strong> It keeps the reason
-        behind the routine while changing the action to fit the day you actually have.
+        <strong>What to notice:</strong> Plan B is not a lesser plan. It keeps the reason behind the
+        routine while changing the action to fit the day that actually arrived.
       </figcaption>
     </figure>
   );
@@ -367,18 +1277,15 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
   const router = useRouter();
   const [stage, setStage] = useState(0);
   const [openingFeeling, setOpeningFeeling] = useState<string | null>(null);
-  const [openedSolverSteps, setOpenedSolverSteps] = useState<Set<SolverStepId>>(() => new Set());
-  const [activeSolverStep, setActiveSolverStep] = useState<SolverStepId | null>(null);
-  const [lifeSituation, setLifeSituation] = useState<LifeSituationId | null>(null);
-  const [lifeToolChoices, setLifeToolChoices] = useState<Set<LifeToolId>>(() => new Set());
-  const [sickPriorities, setSickPriorities] = useState<Set<SickPriorityId>>(() => new Set());
-  const [activeSickPriority, setActiveSickPriority] = useState<SickPriorityId | null>(null);
-  const [planTrigger, setPlanTrigger] = useState<PlanTriggerId | null>(null);
-  const [planBackup, setPlanBackup] = useState<PlanBackupId | null>(null);
+  const [activeSolverStep, setActiveSolverStep] = useState<SolverStepId>("pause");
+  const [lifeSituation, setLifeSituation] = useState<LifeSituationId>("late_meal");
+  const [lifeTool, setLifeTool] = useState<LifeToolId>("notice");
+  const [sickPriority, setSickPriority] = useState<SickPriorityId>("fluids");
+  const [callFocus, setCallFocus] = useState<CallDetailId>("change");
+  const [planTrigger, setPlanTrigger] = useState<PlanTriggerId>("walk");
+  const [planBackup, setPlanBackup] = useState<PlanBackupId>("minutes");
   const [scriptSituation, setScriptSituation] = useState("");
   const [scriptAction, setScriptAction] = useState("");
-  const [scriptWarning, setScriptWarning] = useState("");
-  const [scriptCall, setScriptCall] = useState("");
   const [evaluations, setEvaluations] = useState<
     Partial<
       Record<
@@ -445,61 +1352,26 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
     else setMessage(result.message);
   }
 
-  function toggleLifeTool(id: LifeToolId) {
-    setLifeToolChoices((current) => {
-      const next = new Set(current);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }
-
-  function canContinue() {
-    if (stage === 0) return openingFeeling !== null;
-    if (stage === 1) return openedSolverSteps.size === solverSteps.length;
-    if (stage === 2) return Boolean(evaluations.lateLunch);
-    if (stage === 3) return lifeSituation !== null && lifeToolChoices.size >= 2;
-    if (stage === 4) return sickPriorities.size === sickDayPriorities.length;
-    if (stage === 5) return Boolean(evaluations.sickDay);
-    if (stage === 6) return Boolean(evaluations.missedMedication);
-    if (stage === 7) return planTrigger !== null && planBackup !== null;
-    if (stage === 8) {
-      return (
-        scriptSituation.trim().length >= 4 &&
-        scriptAction.trim().length >= 4 &&
-        scriptWarning.trim().length >= 4 &&
-        scriptCall.trim().length >= 4 &&
-        Boolean(evaluations.teachBack)
-      );
-    }
-    return true;
-  }
-
-  function stageRequirement() {
-    return [
-      "Choose how real-life disruptions feel as you begin.",
-      "Open all four parts of the problem-solving cycle.",
-      "Choose the most useful response to the late-lunch scenario.",
-      "Choose one interruption and at least two tools that could help.",
-      "Open all four sick-day priorities.",
-      "Choose the safe response to Jordan's symptoms.",
-      "Choose the safe response to a missed medication dose.",
-      "Choose a Plan A disruption and a Plan B response.",
-      "Complete the three-part script and run the solver once more.",
-    ][stage];
-  }
+  const activeSituation =
+    lifeSituations.find((item) => item.id === lifeSituation) ?? lifeSituations[0];
+  const activeTool = lifeTools.find((item) => item.id === lifeTool) ?? lifeTools[0];
+  const selectedTrigger =
+    planTriggers.find(([id]) => id === planTrigger)?.[1] ?? planTriggers[0][1];
+  const selectedBackup = planBackups.find(([id]) => id === planBackup)?.[1] ?? planBackups[0][1];
+  const personalSituation = scriptSituation.trim() || selectedTrigger;
+  const personalAction = scriptAction.trim() || selectedBackup;
 
   function continueLabel() {
     return (
       [
         "Meet the four-step solver",
         "Practice a changed meal",
-        "Build a flexible day",
+        "Design for a real day",
         "Prepare for sick days",
-        "Learn when to get help",
+        "Make the call usable",
         "Handle a missed dose safely",
-        "Build Plan B",
-        "Write your real-life script",
+        "Build a kinder Plan B",
+        "Write one sentence to carry",
         "Review the problem-solving sequence",
       ][stage] ?? "Continue"
     );
@@ -540,7 +1412,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 A changed plan can still carry you forward.
               </LessonHeading>
               <div className={styles.dayNote}>
-                <p className="editorial-number">12</p>
+                <p className="editorial-number text-accent-warm">12</p>
                 <p>
                   Today is a practice space for late meals, long days, illness, missed routines, and
                   the next useful choice.
@@ -558,7 +1430,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               <p className={styles.promptTitle}>
                 When a careful plan changes, what feels most true?
               </p>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {openingFeelings.map(([id, label]) => (
                   <AnswerChoice
                     key={id}
@@ -570,58 +1442,47 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 ))}
               </div>
             </div>
-            {openingFeeling ? (
-              <div className={styles.reassurance}>
-                <Sparkles aria-hidden="true" />
-                <p>
-                  Real life is allowed in this room. Diabetes care is not an exam, and one meal,
-                  missed routine, or difficult day does not decide your health. Today you will
-                  practice staying connected to care when the original plan no longer fits.
-                </p>
-              </div>
-            ) : null}
+            <div className={styles.reassurance}>
+              <Sparkles aria-hidden="true" />
+              <p>
+                {openingFeeling
+                  ? "Real life is allowed in this room. One changed meal, missed routine, or difficult day does not decide your health."
+                  : "Choose an answer if it helps, or keep going. This lesson is practice—not another plan you have to perform perfectly."}
+              </p>
+            </div>
           </div>
         );
       case 1:
         return (
           <div className="space-y-9">
             <LessonHeading label="A reusable way through">
-              Four small moves can make a difficult moment feel workable.
+              Four small moves can make a changed moment feel workable.
             </LessonHeading>
-            <AdaptiveDayTimeline />
-            <p className={styles.lede}>
-              Open each move. They happen in order, but the cycle stays flexible: new information
-              may send you back around.
-            </p>
-            <div className={styles.solverGrid}>
-              {solverSteps.map((item) => {
-                const active = activeSolverStep === item.id;
-                const opened = openedSolverSteps.has(item.id);
-                return (
+            <ChangedDayAnimation activeStep={activeSolverStep} />
+            <div>
+              <p className={styles.promptTitle}>Move through the moment at your own pace.</p>
+              <div className={styles.solverTabs}>
+                {solverSteps.map((item) => (
                   <button
-                    aria-expanded={active}
+                    aria-pressed={activeSolverStep === item.id}
                     className={cn(
-                      styles.solverCard,
-                      opened && styles.solverCardOpened,
-                      active && styles.solverCardActive,
+                      styles.solverTab,
+                      activeSolverStep === item.id && styles.solverTabActive,
                     )}
                     key={item.id}
-                    onClick={() => {
-                      setOpenedSolverSteps((current) => new Set(current).add(item.id));
-                      setActiveSolverStep((current) => (current === item.id ? null : item.id));
-                    }}
+                    onClick={() => setActiveSolverStep(item.id)}
                     type="button"
                   >
-                    <span className={styles.stepNumber}>{item.number}</span>
-                    <span>
-                      <strong>{item.title}</strong>
-                      {active ? <span className={styles.stepBody}>{item.body}</span> : null}
-                    </span>
-                    {opened ? <Check aria-hidden="true" className="size-5" /> : null}
+                    <span>{item.number}</span>
+                    <strong>{item.title}</strong>
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
+            <p className={styles.quietNote}>
+              Pause · Understand · Choose · Adjust is a cycle, not a score. New information can send
+              you back around without erasing what you already learned.
+            </p>
           </div>
         );
       case 2:
@@ -630,23 +1491,25 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="Practice: lunch moved">
               The best available choice is not a consolation prize.
             </LessonHeading>
-            <div className={styles.scenarioPanel}>
-              <p className="editorial-eyebrow">The interruption</p>
-              <h2>A meeting runs long. Lunch is late.</h2>
-              <p>
-                The nearby option is a sandwich, chips, and a cookie. It is not what you planned,
-                and you still need to decide what happens next.
-              </p>
+            <div className={styles.scenarioStory}>
+              <div>
+                <p className="editorial-eyebrow">What changed</p>
+                <h2>A meeting runs long. Lunch is late.</h2>
+                <p>
+                  The nearby option is a sandwich, chips, and a cookie. It is not what you planned,
+                  and you still need to decide what happens next.
+                </p>
+              </div>
+              <div>
+                <p className="editorial-eyebrow text-success">What remains available</p>
+                <h2>The day still has another decision in it.</h2>
+                <p>
+                  The useful response is based on the meal and timing that actually exist—not on
+                  making the interruption disappear.
+                </p>
+              </div>
             </div>
-            <div className={styles.solverLine} aria-label="Four-step real-life solver">
-              {solverSteps.map((item) => (
-                <div key={item.id}>
-                  <span>{item.number}</span>
-                  <strong>{item.title}</strong>
-                </div>
-              ))}
-            </div>
-            <div className="border-y border-border py-8">
+            <div className={styles.teachBack}>
               <p className={styles.promptTitle}>Which response uses the four-step solver?</p>
               <div className="mt-6 grid gap-3">
                 {(
@@ -655,16 +1518,15 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                       "best_available",
                       "Choose the best available meal, notice what is in it, and return to the usual pattern at the next opportunity.",
                     ],
-                    [
-                      "skip_to_compensate",
-                      "Skip food now to make up for the options not being ideal.",
-                    ],
+                    ["skip_to_compensate", "Skip food now to make up for options not being ideal."],
                     ["day_is_ruined", "Treat the whole day as ruined and stop paying attention."],
                   ] as const
                 ).map(([answer, label]) => (
                   <AnswerChoice
                     key={answer}
-                    onClick={() => evaluate({ answer, stage: "late_lunch" }, "lateLunch", answer)}
+                    onClick={() =>
+                      void evaluate({ answer, stage: "late_lunch" }, "lateLunch", answer)
+                    }
                     selected={selectedAnswers.lateLunch === answer}
                   >
                     {label}
@@ -686,48 +1548,56 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="Design for the day you actually have">
               Protect one helpful action instead of demanding the whole plan.
             </LessonHeading>
-            <div className={styles.builderBoard}>
+            <div className={styles.adaptationReader}>
+              <nav aria-label="Choose a real-life interruption">
+                {lifeSituations.map((item) => (
+                  <button
+                    aria-pressed={lifeSituation === item.id}
+                    className={cn(
+                      styles.textTab,
+                      lifeSituation === item.id && styles.textTabActive,
+                    )}
+                    key={item.id}
+                    onClick={() => setLifeSituation(item.id)}
+                    type="button"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </nav>
+              <article aria-live="polite">
+                <p className="editorial-eyebrow text-accent-warm">What remains true</p>
+                <h2>{activeSituation.truth}</h2>
+                <p>
+                  Choose one tool below. You are not building a perfect rescue plan—just making the
+                  next moment more usable.
+                </p>
+              </article>
+            </div>
+            <div className={styles.toolList}>
+              {lifeTools.map((item) => (
+                <button
+                  aria-pressed={lifeTool === item.id}
+                  className={cn(styles.toolChoice, lifeTool === item.id && styles.toolChoiceActive)}
+                  key={item.id}
+                  onClick={() => setLifeTool(item.id)}
+                  type="button"
+                >
+                  <strong>{item.label}</strong>
+                  <span>{item.note}</span>
+                </button>
+              ))}
+            </div>
+            <div className={styles.fieldNote}>
+              <RotateCcw aria-hidden="true" />
               <div>
-                <p className="editorial-eyebrow">1 · Choose an interruption</p>
-                <div className="mt-4 space-y-3">
-                  {lifeSituations.map(([id, label]) => (
-                    <AnswerChoice
-                      key={id}
-                      onClick={() => setLifeSituation(id)}
-                      selected={lifeSituation === id}
-                    >
-                      {label}
-                    </AnswerChoice>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="editorial-eyebrow">2 · Choose at least two useful tools</p>
-                <div className="mt-4 space-y-3">
-                  {lifeTools.map(([id, label]) => (
-                    <AnswerChoice
-                      key={id}
-                      onClick={() => toggleLifeTool(id)}
-                      selected={lifeToolChoices.has(id)}
-                    >
-                      {label}
-                    </AnswerChoice>
-                  ))}
-                </div>
+                <p className="editorial-eyebrow">Your flexible-day note</p>
+                <p>
+                  When {activeSituation.label.toLowerCase()}, I can {activeTool.label.toLowerCase()}
+                  .{` ${activeTool.note}`}
+                </p>
               </div>
             </div>
-            {lifeSituation && lifeToolChoices.size >= 2 ? (
-              <div className={styles.fieldNote}>
-                <RotateCcw aria-hidden="true" />
-                <div>
-                  <p className="editorial-eyebrow">Your flexible-day note</p>
-                  <p>
-                    When {lifeSituations.find(([id]) => id === lifeSituation)?.[1].toLowerCase()}, I
-                    can use {lifeToolChoices.size} tools to keep the next decision workable.
-                  </p>
-                </div>
-              </div>
-            ) : null}
           </div>
         );
       case 4:
@@ -742,35 +1612,25 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               emphasis="A sick-day plan can include people."
               src="/lessons/day-12/sick-day-support.jpg"
             />
-            <SickDayCauseAndResponse />
+            <SickDayBodyAnimation priority={sickPriority} />
             <div>
-              <p className={styles.promptTitle}>
-                Open the four anchors of a personal sick-day plan.
-              </p>
-              <div className={styles.priorityGrid}>
-                {sickDayPriorities.map(({ body, id, title, Icon }) => {
-                  const active = activeSickPriority === id;
-                  const opened = sickPriorities.has(id);
-                  return (
-                    <button
-                      aria-expanded={active}
-                      className={cn(styles.priorityCard, opened && styles.priorityCardOpened)}
-                      key={id}
-                      onClick={() => {
-                        setSickPriorities((current) => new Set(current).add(id));
-                        setActiveSickPriority((current) => (current === id ? null : id));
-                      }}
-                      type="button"
-                    >
-                      <Icon aria-hidden="true" />
-                      <span>
-                        <strong>{title}</strong>
-                        {active ? <span>{body}</span> : null}
-                      </span>
-                      {opened ? <Check aria-hidden="true" className="size-5" /> : null}
-                    </button>
-                  );
-                })}
+              <p className={styles.promptTitle}>Explore the anchors of a personal sick-day plan.</p>
+              <div className={styles.priorityList}>
+                {sickDayPriorities.map((item, index) => (
+                  <button
+                    aria-pressed={sickPriority === item.id}
+                    className={cn(
+                      styles.priorityChoice,
+                      sickPriority === item.id && styles.priorityChoiceActive,
+                    )}
+                    key={item.id}
+                    onClick={() => setSickPriority(item.id)}
+                    type="button"
+                  >
+                    <span>0{index + 1}</span>
+                    <strong>{item.title}</strong>
+                  </button>
+                ))}
               </div>
             </div>
             <p className={styles.careNote}>
@@ -785,38 +1645,27 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <LessonHeading label="Make the call usable">
               A clear handoff helps the care team answer the real question.
             </LessonHeading>
-            <div className={styles.signalBoard}>
-              <div>
-                <span className={styles.signalMark} data-tone="steady" />
-                <p className="editorial-eyebrow">What changed</p>
-                <p>
-                  Symptoms, when they began, ability to drink or eat, and whether anything is
-                  worsening.
-                </p>
-              </div>
-              <div>
-                <span className={styles.signalMark} data-tone="call" />
-                <p className="editorial-eyebrow">What you already followed</p>
-                <p>
-                  The written sick-day instructions, fluids, exact medicine names, and readings or
-                  ketones only when the personal plan asks for them.
-                </p>
-              </div>
-              <div>
-                <span className={styles.signalMark} data-tone="urgent" />
-                <p className="editorial-eyebrow">What you need answered</p>
-                <p>
-                  What to do next, which written instruction applies, and what change should prompt
-                  another call or urgent help.
-                </p>
-              </div>
+            <CareCallAnimation focus={callFocus} />
+            <div className={styles.callFocusList}>
+              {callDetails.map((item) => (
+                <button
+                  aria-pressed={callFocus === item.id}
+                  className={cn(styles.callFocus, callFocus === item.id && styles.callFocusActive)}
+                  key={item.id}
+                  onClick={() => setCallFocus(item.id)}
+                  type="button"
+                >
+                  <strong>{item.label}</strong>
+                  <span>{item.note}</span>
+                </button>
+              ))}
             </div>
-            <div className={styles.scenarioPanel}>
-              <p className="editorial-eyebrow">Jordan&apos;s sick day</p>
+            <div className={styles.scenarioPrompt}>
+              <p className="editorial-eyebrow">Jordan’s sick day</p>
               <h2>Jordan has a fever, can drink, and is thinking clearly, but is eating less.</h2>
               <p>Jordan has the written plan nearby but is unsure how one instruction applies.</p>
             </div>
-            <div className="border-y border-border py-8">
+            <div className={styles.teachBack}>
               <p className={styles.promptTitle}>What makes the care-team call most useful?</p>
               <div className="mt-6 grid gap-3">
                 {(
@@ -837,7 +1686,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 ).map(([answer, label]) => (
                   <AnswerChoice
                     key={answer}
-                    onClick={() => evaluate({ answer, stage: "sick_day" }, "sickDay", answer)}
+                    onClick={() => void evaluate({ answer, stage: "sick_day" }, "sickDay", answer)}
                     selected={selectedAnswers.sickDay === answer}
                   >
                     {label}
@@ -849,9 +1698,9 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             <div className={styles.urgentNote}>
               <ShieldAlert aria-hidden="true" />
               <p>
-                Day 9 owns emergency-signal practice. Keep that action plan available: severe
-                trouble breathing, new confusion, difficulty waking, or another immediate danger
-                needs emergency help rather than a routine message.
+                Keep the Day 9 action plan available: severe trouble breathing, new confusion,
+                difficulty waking, or another immediate danger needs emergency help rather than a
+                routine message.
               </p>
             </div>
           </div>
@@ -860,27 +1709,27 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-9">
             <LessonHeading label="Medication details are specific">
-              A missed dose needs the right instruction, not a guessed correction.
+              A missed dose needs the right instruction—not a guessed correction.
             </LessonHeading>
             <div className={styles.medicineEditorial}>
               <div>
-                <p className="editorial-eyebrow">What stays true</p>
-                <h2>Pause before trying to “make up” a dose.</h2>
+                <p className="editorial-eyebrow">Pause before acting</p>
+                <h2>Different medicines have different missed-dose instructions.</h2>
                 <p>
-                  Different medicines stay in the body for different lengths of time and have
-                  different missed-dose instructions.
+                  Timing, dose, and how long a medicine stays in the body can change what the safe
+                  next step is.
                 </p>
               </div>
               <div>
-                <p className="editorial-eyebrow">Where to look</p>
-                <ul>
-                  <li>The instructions that came with the exact medicine</li>
-                  <li>Your written plan from the prescriber</li>
-                  <li>A pharmacist or diabetes care team</li>
-                </ul>
+                <p className="editorial-eyebrow text-success">Where the answer lives</p>
+                <h2>Use the instructions for the exact medicine.</h2>
+                <p>
+                  Check the medicine information or written prescriber plan. If the answer is
+                  unclear, ask a pharmacist or diabetes care team.
+                </p>
               </div>
             </div>
-            <div className="border-y border-border py-8">
+            <div className={styles.teachBack}>
               <p className={styles.promptTitle}>
                 You remember a missed diabetes-medicine dose later in the day. What is the safest
                 general response?
@@ -899,7 +1748,11 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                   <AnswerChoice
                     key={answer}
                     onClick={() =>
-                      evaluate({ answer, stage: "missed_medication" }, "missedMedication", answer)
+                      void evaluate(
+                        { answer, stage: "missed_medication" },
+                        "missedMedication",
+                        answer,
+                      )
                     }
                     selected={selectedAnswers.missedMedication === answer}
                   >
@@ -911,10 +1764,13 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             {evaluations.missedMedication ? (
               <Feedback feedback={evaluations.missedMedication} />
             ) : null}
-            <p className={styles.careNote}>
-              Do not double a dose unless the medicine instructions or a qualified clinician
-              specifically tell you to do so.
-            </p>
+            <div className={styles.reassurance}>
+              <Stethoscope aria-hidden="true" />
+              <p>
+                Do not double a dose unless the medicine instructions or a qualified clinician
+                specifically tell you to do so.
+              </p>
+            </div>
           </div>
         );
       case 7:
@@ -929,11 +1785,11 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               emphasis="A changed plan can still be a good time."
               src="/lessons/day-12/plan-b-together.jpg"
             />
-            <BackupPlanSequence planBackup={planBackup} planTrigger={planTrigger} />
-            <div className={styles.builderBoard}>
-              <div>
-                <p className="editorial-eyebrow">Plan A changes when…</p>
-                <div className="mt-4 space-y-3">
+            <PlanBAnimation planBackup={planBackup} planTrigger={planTrigger} />
+            <div className={styles.planBuilder}>
+              <section>
+                <p className="editorial-eyebrow">When this changes…</p>
+                <div className="mt-4 grid gap-3">
                   {planTriggers.map(([id, label]) => (
                     <AnswerChoice
                       key={id}
@@ -944,10 +1800,10 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                     </AnswerChoice>
                   ))}
                 </div>
-              </div>
-              <div>
-                <p className="editorial-eyebrow">My Plan B is…</p>
-                <div className="mt-4 space-y-3">
+              </section>
+              <section>
+                <p className="editorial-eyebrow">I can…</p>
+                <div className="mt-4 grid gap-3">
                   {planBackups.map(([id, label]) => (
                     <AnswerChoice
                       key={id}
@@ -958,76 +1814,58 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                     </AnswerChoice>
                   ))}
                 </div>
-              </div>
+              </section>
             </div>
-            {planTrigger && planBackup ? (
-              <div className={styles.planTicket}>
-                <p className="editorial-eyebrow">Your Plan B</p>
-                <p>
-                  If {planTriggers.find(([id]) => id === planTrigger)?.[1].toLowerCase()},{" "}
-                  {planBackups.find(([id]) => id === planBackup)?.[1].toLowerCase()}.
-                </p>
-              </div>
-            ) : null}
+            <div className={styles.planTicket}>
+              <p className="editorial-eyebrow">Your Plan B</p>
+              <p>
+                If {selectedTrigger}, I will {selectedBackup}.
+              </p>
+            </div>
           </div>
         );
       case 8:
         return (
           <div className="space-y-9">
             <LessonHeading label="Make the skill yours">
-              Write one script you can use when real life gets loud.
+              One sentence can be enough to find the next step.
             </LessonHeading>
-            <p className={styles.lede}>
-              Use everyday language. Your entries stay on this page and are not saved as health
-              information.
+            <p className="max-w-3xl text-lg leading-8 text-foreground/80">
+              Your Plan B already works as a script. If you want, replace either half with words
+              that sound more like your life. Both fields are optional.
             </p>
-            <div className={styles.scriptBuilder}>
-              <label>
-                <span>If this happens…</span>
-                <input
-                  maxLength={120}
-                  onChange={(event) => setScriptSituation(event.target.value)}
-                  placeholder="Example: my workday runs late"
-                  value={scriptSituation}
-                />
-              </label>
-              <label>
-                <span>I will…</span>
-                <input
-                  maxLength={160}
-                  onChange={(event) => setScriptAction(event.target.value)}
-                  placeholder="Example: pause and choose the smallest useful next step"
-                  value={scriptAction}
-                />
-              </label>
-              <label>
-                <span>If this warning appears…</span>
-                <input
-                  maxLength={180}
-                  onChange={(event) => setScriptWarning(event.target.value)}
-                  placeholder="Example: I cannot keep fluids down"
-                  value={scriptWarning}
-                />
-              </label>
-              <label>
-                <span>I will call…</span>
-                <input
-                  maxLength={120}
-                  onChange={(event) => setScriptCall(event.target.value)}
-                  placeholder="Example: my care team, pharmacist, or emergency services"
-                  value={scriptCall}
-                />
-              </label>
+            <div className={styles.scriptStudio}>
+              <div>
+                <p className="editorial-eyebrow">The sentence you already built</p>
+                <blockquote>
+                  “If {selectedTrigger}, I will {selectedBackup}.”
+                </blockquote>
+              </div>
+              <div className={styles.writingFields}>
+                <label>
+                  <span>If this happens…</span>
+                  <input
+                    maxLength={120}
+                    onChange={(event) => setScriptSituation(event.target.value)}
+                    placeholder={selectedTrigger}
+                    value={scriptSituation}
+                  />
+                </label>
+                <label>
+                  <span>I will…</span>
+                  <input
+                    maxLength={160}
+                    onChange={(event) => setScriptAction(event.target.value)}
+                    placeholder={selectedBackup}
+                    value={scriptAction}
+                  />
+                </label>
+                <small>Your words stay on this page and are not saved as health information.</small>
+              </div>
             </div>
-            {scriptSituation.trim() &&
-            scriptAction.trim() &&
-            scriptWarning.trim() &&
-            scriptCall.trim() ? (
-              <blockquote className={styles.scriptPreview}>
-                “If {scriptSituation.trim()}, I will {scriptAction.trim()}. If{" "}
-                {scriptWarning.trim()}, I will call {scriptCall.trim()}.”
-              </blockquote>
-            ) : null}
+            <blockquote className={styles.scriptPreview}>
+              “If {personalSituation}, I will {personalAction}.”
+            </blockquote>
             <div className={styles.teachBack}>
               <p className="editorial-eyebrow">Run the solver</p>
               <h2>
@@ -1041,10 +1879,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                       "adapt_next",
                       "You do not need a perfect restart. Pause, see what changed, and choose the next useful thing available now.",
                     ],
-                    [
-                      "restart_monday",
-                      "Yes. A fresh week is the only time a routine can count again.",
-                    ],
+                    ["restart_monday", "A fresh week is the only time a routine can count again."],
                     [
                       "make_up_for_it",
                       "The best response is to punish the mistake with stricter rules today.",
@@ -1053,7 +1888,9 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 ).map(([answer, label]) => (
                   <AnswerChoice
                     key={answer}
-                    onClick={() => evaluate({ answer, stage: "teach_back" }, "teachBack", answer)}
+                    onClick={() =>
+                      void evaluate({ answer, stage: "teach_back" }, "teachBack", answer)
+                    }
                     selected={selectedAnswers.teachBack === answer}
                   >
                     {label}
@@ -1075,7 +1912,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               <span>Pause · Understand · Choose · Adjust</span>
             </div>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
-              <p className="editorial-eyebrow">Problem-solving sequence</p>
+              <p className="editorial-eyebrow text-success">Problem-solving sequence</p>
               <ol className={styles.takeawayList}>
                 {[
                   "One meal, missed routine, or difficult day does not decide your health. Adaptability is a diabetes skill.",
@@ -1089,24 +1926,21 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 ))}
               </ol>
             </div>
-            {scriptSituation.trim() && scriptAction.trim() ? (
-              <div className={styles.finalScript}>
-                <p className="editorial-eyebrow">Your real-life script</p>
-                <p>
-                  If {scriptSituation.trim()}, I will {scriptAction.trim()}.
-                </p>
-              </div>
-            ) : null}
-            <div className="mx-auto grid max-w-3xl gap-6 text-left md:grid-cols-2">
+            <div className={styles.finalScript}>
+              <p className="editorial-eyebrow">One sentence to carry</p>
+              <p>
+                If {personalSituation}, I will {personalAction}.
+              </p>
+            </div>
+            <div className="mx-auto grid max-w-3xl gap-8 text-left md:grid-cols-2">
               <div>
                 <p className="editorial-eyebrow">Tomorrow</p>
                 <h2 className="mt-3 font-serif-display text-3xl">
                   Support, stigma, and speaking up
                 </h2>
-                <p className="mt-2 leading-7">
-                  You have a way through the messy days. Tomorrow, the people around you: how to ask
-                  for help that actually helps, set a kind boundary, and let others in without
-                  losing your independence.
+                <p className="mt-2 leading-7 text-muted-foreground">
+                  Tomorrow turns toward the people around you: asking for help that actually helps,
+                  protecting privacy, and setting a calm boundary.
                 </p>
               </div>
               <div>
@@ -1128,15 +1962,8 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
     }
   }
 
-  const progressValue = ((stage + 1) / stageCount) * 100;
-
   return (
-    <section
-      className={cn(
-        styles.experience,
-        "mx-auto flex min-h-[calc(100dvh-10rem)] max-w-[1020px] flex-col py-1 sm:py-4",
-      )}
-    >
+    <section className="mx-auto flex min-h-[calc(100dvh-10rem)] max-w-[1020px] flex-col py-1 sm:py-4">
       <header className="border-b border-border pb-5">
         <div className="flex items-center justify-between gap-3">
           {stage > 0 ? (
@@ -1152,8 +1979,10 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             </Link>
           )}
           <div className="text-center">
-            <p className={styles.dayLabel}>Day 12</p>
-            <p className="hidden text-xs sm:block">Problem Solving for Real Life</p>
+            <p className="text-sm font-semibold text-accent-warm">Day 12</p>
+            <p className="hidden text-xs text-muted-foreground sm:block">
+              Problem Solving for Real Life
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -1171,20 +2000,14 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
           </div>
         </div>
         <div className="mt-4 space-y-2">
-          <div className="flex justify-between text-xs">
+          <div className="flex justify-between text-xs text-muted-foreground">
             <span>Chapter {stage + 1}</span>
             <span>{stageCount} chapters</span>
           </div>
-          <div
-            aria-label={`Day 12 chapter ${stage + 1} of ${stageCount}`}
-            aria-valuemax={100}
-            aria-valuemin={0}
-            aria-valuenow={progressValue}
-            className={styles.progressTrack}
-            role="progressbar"
-          >
-            <span className={styles.progressFill} style={{ width: `${progressValue}%` }} />
-          </div>
+          <ProgressBar
+            label={`Day 12 chapter ${stage + 1} of ${stageCount}`}
+            value={((stage + 1) / stageCount) * 100}
+          />
         </div>
       </header>
       <div className="flex-1 py-8 sm:py-12" ref={stageRef} tabIndex={-1}>
@@ -1202,15 +2025,13 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             >
               Previous
             </Button>
-            <Button disabled={!canContinue() || isPending} onClick={() => goToStage(stage + 1)}>
+            <Button disabled={isPending} onClick={() => goToStage(stage + 1)}>
               {continueLabel()}
             </Button>
           </div>
-          {!canContinue() ? (
-            <p aria-live="polite" className="mt-3 text-sm" role="status">
-              To continue: {stageRequirement()}
-            </p>
-          ) : null}
+          <p className="mt-3 text-sm text-muted-foreground">
+            The interactions are invitations, not gates. Continue whenever you are ready.
+          </p>
         </footer>
       ) : null}
       <p
@@ -1245,7 +2066,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
           {glossary.map((item) => (
             <div className="border-b border-border pb-4 last:border-0" key={item.term}>
               <dt className="font-serif-display text-xl">{item.term}</dt>
-              <dd className="mt-1 leading-7">{item.definition}</dd>
+              <dd className="mt-1 leading-7 text-muted-foreground">{item.definition}</dd>
             </div>
           ))}
         </dl>

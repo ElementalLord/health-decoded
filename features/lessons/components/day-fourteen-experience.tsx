@@ -11,6 +11,7 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { completeLessonAction } from "@/features/lessons/actions/lesson-completion.actions";
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
+import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-person";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,26 @@ const arrivalFeelings = [
   ["tender", "I am proud I kept coming back"],
 ] as const;
 
+const ordinaryMoments = [
+  {
+    id: "breakfast",
+    label: "Breakfast",
+    prompt: "At the table, balance can be an addition—not a punishment or a brand-new identity.",
+  },
+  {
+    id: "friendship",
+    label: "A walk with someone",
+    prompt: "Movement can hold conversation, fresh air, adaptation, and company at the same time.",
+  },
+  {
+    id: "care",
+    label: "A care conversation",
+    prompt: "A short question can turn a visit from information overload into a shared next step.",
+  },
+] as const;
+
+type OrdinaryMomentId = (typeof ordinaryMoments)[number]["id"];
+
 const nextSteps = [
   ["food", "Make one familiar meal feel more balanced"],
   ["movement", "Choose one movement moment that feels good"],
@@ -32,6 +53,190 @@ const nextSteps = [
   ["support", "Ask one person for one specific kind of help"],
   ["return", "Practice returning after one interrupted day"],
 ] as const;
+
+const everydayTools = [
+  {
+    body: "Build around a familiar meal instead of replacing your life with a rulebook. Add balance where it helps, keep culture and enjoyment in the room, and let one plate remain one plate.",
+    id: "food",
+    invitation: "What could join a meal you already love?",
+    label: "At the table",
+    title: "Food can feel familiar and supportive.",
+  },
+  {
+    body: "Let movement meet the body and day you actually have. A friend, a favorite song, a garden, or a chair can turn a health task into a human moment.",
+    id: "movement",
+    invitation: "Where could movement feel more like living?",
+    label: "In motion",
+    title: "Movement can carry company and joy.",
+  },
+  {
+    body: "Knowing a medicine’s name, purpose, timing, and safety notes makes it a tool you can understand—not a symbol of failure or a mystery you must quietly manage.",
+    id: "medicine",
+    invitation: "Which medicine question would bring relief?",
+    label: "With medicine",
+    title: "Understanding can make medicine feel lighter.",
+  },
+  {
+    body: "Use a reading to answer a real question. Timing, context, and patterns make the number useful; judgment only makes it louder.",
+    id: "monitoring",
+    invitation: "What would you want a reading to help you learn?",
+    label: "With a reading",
+    title: "A number can become information again.",
+  },
+] as const;
+
+type EverydayToolId = (typeof everydayTools)[number]["id"];
+
+const bodySystems = [
+  {
+    body: "The stomach mixes food, then the small intestine finishes much of the breakdown and absorbs simple sugars into the bloodstream. The animation follows that journey without pretending the stomach works alone.",
+    id: "digestion",
+    label: "Stomach + intestine",
+    notice: "Food moves, mixes, and becomes nutrients the body can absorb.",
+    title: "Digestion turns a meal into usable parts.",
+  },
+  {
+    body: "The pancreas makes insulin. As glucose rises, insulin enters the bloodstream and signals cells. In type 2 diabetes, the body may not respond as effectively and the pancreas may not make enough insulin to keep up.",
+    id: "pancreas",
+    label: "Pancreas",
+    notice: "The signal leaves the pancreas before cells can respond to it.",
+    title: "The pancreas sends the insulin signal.",
+  },
+  {
+    body: "The liver receives, processes, stores, and releases nutrients. Insulin helps regulate that traffic. With insulin resistance, liver cells may not respond well to the signal, contributing to more glucose remaining in the blood.",
+    id: "liver",
+    label: "Liver",
+    notice: "The liver is an active traffic manager, not a passive container.",
+    title: "The liver stores and releases fuel.",
+  },
+  {
+    body: "Muscle cells use glucose for energy. When muscles work, they can take up glucose through more than one pathway—which is why comfortable, adapted movement can be one useful tool.",
+    id: "muscle",
+    label: "Muscle",
+    notice: "Working muscle pulls fuel from the bloodstream.",
+    title: "Muscle turns glucose into motion.",
+  },
+] as const;
+
+type BodySystemId = (typeof bodySystems)[number]["id"];
+
+const numberMoments = [
+  {
+    context: "This is one point in time after a night without food.",
+    id: "fasting",
+    label: "Before breakfast",
+    question: "What pattern do my clinician and I see across mornings?",
+    window: "One fasting moment",
+  },
+  {
+    context: "Timing, the meal, movement, medicine, stress, and illness can all matter.",
+    id: "meal",
+    label: "After a meal",
+    question: "What question was this check meant to answer?",
+    window: "One timed moment",
+  },
+  {
+    context: "A1C estimates average glucose exposure across roughly two to three months.",
+    id: "a1c",
+    label: "A1C result",
+    question: "What personal goal and next step fit my care plan?",
+    window: "A longer window",
+  },
+  {
+    context: "A repeated pattern can be more useful than treating one result as a verdict.",
+    id: "pattern",
+    label: "Something unexpected",
+    question: "What timing, symptoms, or changes should I bring to my care team?",
+    window: "A pattern to investigate",
+  },
+] as const;
+
+type NumberMomentId = (typeof numberMoments)[number]["id"];
+
+const protectionAreas = [
+  {
+    body: "Eye care can notice changes before vision feels different. Ask which eye examination and timing belong in your personal care plan.",
+    id: "eyes",
+    label: "Eyes",
+    prompt: "Bring: vision changes and the date of your last eye care visit.",
+    title: "Protect sight by noticing early.",
+  },
+  {
+    body: "Kidney changes can be quiet. Blood and urine testing, blood pressure care, and a clinician’s interpretation help show how the kidneys are doing.",
+    id: "kidneys",
+    label: "Kidneys",
+    prompt: "Ask: which kidney checks are due for me?",
+    title: "Quiet organs still deserve regular attention.",
+  },
+  {
+    body: "Heart and blood-vessel care includes the whole pattern: blood pressure, cholesterol, smoking, movement, medicines, symptoms, and your individual risks.",
+    id: "heart",
+    label: "Heart",
+    prompt: "Share urgent chest symptoms through the emergency plan for your location.",
+    title: "Protection includes circulation, not glucose alone.",
+  },
+  {
+    body: "Reduced feeling or circulation can make a small foot problem easier to miss. Notice skin changes, injuries, warmth, swelling, or wounds and follow your care plan for prompt help.",
+    id: "feet",
+    label: "Feet",
+    prompt: "Notice: what is new, where it is, and when it began.",
+    title: "A small observation can lead to earlier care.",
+  },
+] as const;
+
+type ProtectionAreaId = (typeof protectionAreas)[number]["id"];
+
+const returnScenarios = [
+  {
+    id: "restaurant",
+    label: "An unfamiliar meal",
+    next: "Use what you recognize, choose what fits, and let one uncertain meal remain one meal.",
+    release: "You do not need perfect ingredient information to make a reasonable choice.",
+  },
+  {
+    id: "reading",
+    label: "A surprising reading",
+    next: "Add timing and context, notice whether it repeats, and bring a useful question to care.",
+    release: "Curiosity gives the number a smaller job than judgment does.",
+  },
+  {
+    id: "routine",
+    label: "A disrupted plan",
+    next: "Repair the next available moment instead of trying to repair the entire day.",
+    release: "A smaller Plan B protects continuity without pretending life went as expected.",
+  },
+] as const;
+
+type ReturnScenarioId = (typeof returnScenarios)[number]["id"];
+
+const supportOptions = [
+  {
+    id: "listen",
+    label: "I need someone to listen",
+    response: "I can stay with you for a minute. I will not rush to fix it.",
+    title: "Listening can lower the weight without taking over.",
+  },
+  {
+    id: "company",
+    label: "I want company",
+    response: "Would it help if I joined you and we talked about something else?",
+    title: "Support can be ordinary companionship.",
+  },
+  {
+    id: "practical",
+    label: "One practical thing would help",
+    response: "Tell me the one task that would make today easier. I can start there.",
+    title: "Specific help is easier to give and receive.",
+  },
+  {
+    id: "boundary",
+    label: "I need a boundary respected",
+    response: "Understood. I will not comment on your plate or turn this into a medical lecture.",
+    title: "Respect is a form of support too.",
+  },
+] as const;
+
+type SupportOptionId = (typeof supportOptions)[number]["id"];
 
 type MilestoneDraft = {
   arrivalFeeling: string | null;
@@ -118,112 +323,161 @@ function MotionFigure({
 }
 
 function OrdinaryLifeMotion() {
+  const [activeMoment, setActiveMoment] = useState<OrdinaryMomentId>("breakfast");
+  const active = ordinaryMoments.find((moment) => moment.id === activeMoment) ?? ordinaryMoments[0];
+
   return (
-    <MotionFigure
-      cue="Knowledge in ordinary life"
-      description="no moment asks for every skill at once. Breakfast, friendship, and a care conversation each call for one useful part of what you know."
-      label="A continuously moving illustrated day: breakfast steams, two friends walk together, and a patient and clinician exchange a question"
-      title="What you learned can travel through an ordinary day."
-    >
-      <rect className={styles.skyWash} height="320" width="720" />
-      <path className={styles.groundLine} d="M28 260H692" />
+    <section className={styles.ordinaryExplorer}>
+      <MotionFigure
+        cue="Knowledge in ordinary life"
+        description="no moment asks for every skill at once. Breakfast, friendship, and a care conversation each call for one useful part of what you know."
+        label="A continuously moving illustrated day: breakfast steams, two friends walk together, and a patient and clinician exchange a question"
+        title="What you learned can travel through an ordinary day."
+      >
+        <rect className={styles.skyWash} height="320" width="720" />
+        <path className={styles.groundLine} d="M24 273H696" />
 
-      <g className={styles.morningScene}>
-        <circle className={styles.sunShape} cx="78" cy="62" r="24">
-          <animate attributeName="r" dur="4s" repeatCount="indefinite" values="22;27;22" />
-          <animate attributeName="opacity" dur="4s" repeatCount="indefinite" values="0.62;1;0.62" />
-        </circle>
-        <path className={styles.tableShape} d="M44 210H215M62 210V263M196 210V263" />
-        <ellipse className={styles.plateShape} cx="130" cy="204" rx="31" ry="8" />
-        <path className={styles.cupShape} d="M162 174h24v27h-24zM186 180c16 0 16 17 0 17" />
-        <path className={styles.steamShape} d="M170 166c-8-10 9-15 0-27">
-          <animateTransform
-            attributeName="transform"
-            dur="3.2s"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 8;0 -8;0 8"
-          />
-          <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values="0;0.9;0" />
-        </path>
-        <g className={styles.personWarm}>
-          <circle cx="102" cy="122" r="20" />
-          <path d="M75 198v-43c0-22 11-34 27-34s27 12 27 34v43z" />
-          <path className={styles.personLine} d="M122 153c18 6 29 17 40 30" />
-          <animateTransform
-            attributeName="transform"
-            dur="4.8s"
-            repeatCount="indefinite"
-            type="rotate"
-            values="0 102 198;-2 102 198;0 102 198"
+        <g
+          className={cn(
+            styles.morningScene,
+            activeMoment !== "breakfast" && styles.ordinaryMomentMuted,
+          )}
+        >
+          <circle className={styles.sunShape} cx="58" cy="49" r="22" />
+          <path className={styles.tableShape} d="M32 228H215M51 228V273M197 228V273" />
+          <ellipse className={styles.plateShape} cx="146" cy="220" rx="29" ry="8" />
+          <path className={styles.cupShape} d="M166 190h24v27h-24zM190 196c15 0 15 16 0 16" />
+          <path className={styles.steamShape} d="M174 183c-8-10 9-15 0-27M186 183c-8-10 9-15 0-27">
+            <animateTransform
+              attributeName="transform"
+              dur="3.2s"
+              repeatCount="indefinite"
+              type="translate"
+              values="0 8;0 -8;0 8"
+            />
+            <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values="0;0.9;0" />
+          </path>
+          <LessonMotionPerson
+            action="reach-right"
+            motion="breathe"
+            palette="warm"
+            scale={0.62}
+            seated
+            x={91}
+            y={267}
           />
         </g>
-      </g>
 
-      <g className={styles.walkingScene}>
-        <path className={styles.treeTrunk} d="M350 110v150" />
-        <circle className={styles.treeLeaf} cx="350" cy="91" r="49">
-          <animateTransform
-            attributeName="transform"
-            dur="5s"
-            repeatCount="indefinite"
-            type="rotate"
-            values="-2 350 140;2 350 140;-2 350 140"
-          />
-        </circle>
-        <g className={styles.walkingPair}>
-          <g className={styles.personSage}>
-            <circle cx="270" cy="169" r="17" />
-            <path d="M247 238v-39c0-20 10-31 23-31s23 11 23 31v39z" />
-            <path className={styles.personLine} d="M255 235l-13 28M282 235l17 28" />
+        <g
+          className={cn(
+            styles.walkingScene,
+            activeMoment !== "friendship" && styles.ordinaryMomentMuted,
+          )}
+        >
+          <path className={styles.treeTrunk} d="M462 104v168" />
+          <circle className={styles.treeLeaf} cx="462" cy="82" r="48">
+            <animateTransform
+              attributeName="transform"
+              dur="5s"
+              repeatCount="indefinite"
+              type="rotate"
+              values="-2 462 150;2 462 150;-2 462 150"
+            />
+          </circle>
+          <g>
+            <LessonMotionPerson
+              action="wave-right"
+              motion="walk"
+              palette="sage"
+              scale={0.64}
+              x={318}
+              y={269}
+            />
+            <LessonMotionPerson
+              action="wave-left"
+              motion="walk"
+              palette="blue"
+              scale={0.64}
+              x={386}
+              y={269}
+            />
+            <path className={styles.friendLine} d="M338 213 Q352 203 367 213" />
+            <animateTransform
+              attributeName="transform"
+              dur="6.5s"
+              repeatCount="indefinite"
+              type="translate"
+              values="-24 0;24 0;-24 0"
+            />
           </g>
-          <g className={styles.personBlue}>
-            <circle cx="315" cy="164" r="18" />
-            <path d="M291 238v-42c0-21 10-33 24-33s24 12 24 33v42z" />
-            <path className={styles.personLine} d="M300 235l-10 28M327 235l16 28" />
-          </g>
-          <path className={styles.friendLine} d="M287 201c9-8 16-8 25 0" />
-          <animateTransform
-            attributeName="transform"
-            dur="7s"
-            keyTimes="0;0.42;0.65;1"
-            repeatCount="indefinite"
-            type="translate"
-            values="-42 0;28 0;28 0;-42 0"
-          />
         </g>
-      </g>
 
-      <g className={styles.careScene}>
-        <path className={styles.deskShape} d="M495 215H680M520 215v48M657 215v48" />
-        <g className={styles.personSage}>
-          <circle cx="536" cy="140" r="20" />
-          <path d="M509 211v-42c0-22 11-33 27-33s27 11 27 33v42z" />
-        </g>
-        <g className={styles.personBlue}>
-          <circle cx="636" cy="139" r="20" />
-          <path d="M609 211v-43c0-22 11-33 27-33s27 11 27 33v43z" />
-        </g>
-        <g className={styles.questionLines}>
-          <path d="M556 102h66" />
-          <path d="M566 86h46" />
-          <animate
-            attributeName="opacity"
-            dur="4s"
-            keyTimes="0;0.25;0.7;1"
-            repeatCount="indefinite"
-            values="0.15;1;1;0.15"
+        <g className={cn(styles.careScene, activeMoment !== "care" && styles.ordinaryMomentMuted)}>
+          <path className={styles.deskShape} d="M512 228H696M532 228v45M676 228v45" />
+          <LessonMotionPerson
+            action="reach-right"
+            motion="breathe"
+            palette="sage"
+            scale={0.62}
+            seated
+            x={552}
+            y={268}
           />
-          <animateTransform
-            attributeName="transform"
-            dur="4s"
-            repeatCount="indefinite"
-            type="translate"
-            values="-8 0;6 0;-8 0"
+          <LessonMotionPerson
+            action="reach-left"
+            motion="nod"
+            palette="blue"
+            scale={0.62}
+            seated
+            x={655}
+            y={268}
           />
+          <rect className={styles.storyNotebook} height="45" rx="3" width="57" x="575" y="174" />
+          <path
+            d="M586 187 H621 M586 201 H613"
+            stroke="#9bad9f"
+            strokeLinecap="round"
+            strokeWidth="3"
+          />
+          <g className={styles.questionLines}>
+            <path d="M581 116h54" />
+            <path d="M591 102h34" />
+            <animate
+              attributeName="opacity"
+              dur="4s"
+              keyTimes="0;0.25;0.7;1"
+              repeatCount="indefinite"
+              values="0.15;1;1;0.15"
+            />
+            <animateTransform
+              attributeName="transform"
+              dur="4s"
+              repeatCount="indefinite"
+              type="translate"
+              values="-5 0;5 0;-5 0"
+            />
+          </g>
         </g>
-      </g>
-    </MotionFigure>
+      </MotionFigure>
+
+      <div aria-label="Choose an ordinary moment" className={styles.ordinaryChoices} role="group">
+        {ordinaryMoments.map((moment, index) => (
+          <button
+            aria-pressed={activeMoment === moment.id}
+            className={cn(activeMoment === moment.id && styles.ordinaryChoiceActive)}
+            key={moment.id}
+            onClick={() => setActiveMoment(moment.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {moment.label}
+          </button>
+        ))}
+      </div>
+      <p aria-live="polite" className={styles.ordinaryPrompt} key={activeMoment}>
+        {active.prompt}
+      </p>
+    </section>
   );
 }
 
@@ -250,11 +504,41 @@ function ReturnAfterRainMotion() {
       <circle className={styles.treeLeaf} cx="595" cy="103" r="55" />
       <path className={styles.benchShape} d="M326 217h135M338 232h112M348 232l-9 31M440 232l9 31" />
 
-      <g className={styles.rainCloud}>
-        <ellipse cx="250" cy="75" rx="65" ry="27" />
-        <circle cx="219" cy="65" r="28" />
-        <circle cx="266" cy="55" r="36" />
-        <circle cx="301" cy="70" r="24" />
+      <g className={styles.weatherSystem}>
+        <g className={styles.rainCloud}>
+          <ellipse cx="250" cy="75" rx="65" ry="27" />
+          <circle cx="219" cy="65" r="28" />
+          <circle cx="266" cy="55" r="36" />
+          <circle cx="301" cy="70" r="24" />
+        </g>
+        <g className={styles.rainDrops}>
+          {[0, 1, 2, 3, 4].map((drop) => (
+            <path d={`M${202 + drop * 23} 112l-7 24`} key={drop}>
+              <animateTransform
+                attributeName="transform"
+                begin={`${drop * -0.24}s`}
+                dur="1.2s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 -5;0 70"
+              />
+              <animate
+                attributeName="opacity"
+                begin={`${drop * -0.24}s`}
+                dur="1.2s"
+                repeatCount="indefinite"
+                values="0;0.9;0"
+              />
+            </path>
+          ))}
+          <animate
+            attributeName="opacity"
+            dur="9s"
+            keyTimes="0;0.22;0.63;0.76;1"
+            repeatCount="indefinite"
+            values="0;1;1;0;0"
+          />
+        </g>
         <animateTransform
           attributeName="transform"
           dur="9s"
@@ -269,34 +553,6 @@ function ReturnAfterRainMotion() {
           keyTimes="0;0.15;0.72;1"
           repeatCount="indefinite"
           values="0;0.9;0.9;0"
-        />
-      </g>
-      <g className={styles.rainDrops}>
-        {[0, 1, 2, 3, 4].map((drop) => (
-          <path d={`M${172 + drop * 31} 108l-8 25`} key={drop}>
-            <animateTransform
-              attributeName="transform"
-              begin={`${drop * -0.28}s`}
-              dur="1.4s"
-              repeatCount="indefinite"
-              type="translate"
-              values="0 -10;70 86"
-            />
-            <animate
-              attributeName="opacity"
-              begin={`${drop * -0.28}s`}
-              dur="1.4s"
-              repeatCount="indefinite"
-              values="0;0.85;0"
-            />
-          </path>
-        ))}
-        <animate
-          attributeName="opacity"
-          dur="9s"
-          keyTimes="0;0.22;0.63;0.76;1"
-          repeatCount="indefinite"
-          values="0;1;1;0;0"
         />
       </g>
 
@@ -409,6 +665,1466 @@ function FullLifePicnicMotion() {
         />
       </circle>
     </MotionFigure>
+  );
+}
+
+function ThenNowStory() {
+  const [view, setView] = useState<"then" | "now">("then");
+  const isNow = view === "now";
+
+  return (
+    <section className={styles.thenNowStory}>
+      <div
+        aria-label={
+          isNow
+            ? "Two people sit together at a table as a question becomes easier to share"
+            : "One person sits with a new diagnosis while many unanswered thoughts gather nearby"
+        }
+        className={styles.thenNowVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 330"
+        >
+          <rect className={isNow ? styles.nowWash : styles.thenWash} height="330" width="720" />
+          <circle
+            className={styles.storySun}
+            cx="620"
+            cy="66"
+            opacity={isNow ? "0.85" : "0.18"}
+            r="34"
+          >
+            <animate attributeName="r" dur="4.8s" repeatCount="indefinite" values="31;37;31" />
+          </circle>
+          <path className={styles.storyFloor} d="M36 268c198-8 444-8 648 0" />
+
+          {isNow ? (
+            <g className={styles.storyMoment} key="now">
+              <path className={styles.storyTable} d="M205 232h318M238 232v44M490 232v44" />
+              <LessonMotionPerson
+                action="reach-right"
+                motion="breathe"
+                palette="warm"
+                scale={0.76}
+                seated
+                x={288}
+                y={272}
+              />
+              <LessonMotionPerson
+                action="reach-left"
+                motion="nod"
+                palette="sage"
+                scale={0.76}
+                seated
+                x={450}
+                y={272}
+              />
+              <rect
+                className={styles.storyNotebook}
+                height="67"
+                rx="4"
+                width="88"
+                x="326"
+                y="157"
+              />
+              <path
+                d="M344 177 H395 M344 194 H383 M344 211 H399"
+                stroke="#9bad9f"
+                strokeLinecap="round"
+                strokeWidth="4"
+              />
+              <path d="M388 211 L418 169" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
+                <animateTransform
+                  attributeName="transform"
+                  dur="2.6s"
+                  repeatCount="indefinite"
+                  type="rotate"
+                  values="-4 388 211;5 388 211;-4 388 211"
+                />
+              </path>
+              <path d="M326 111 H412 M342 94 H396" className={styles.sharedQuestion}>
+                <animate
+                  attributeName="opacity"
+                  dur="4s"
+                  repeatCount="indefinite"
+                  values=".25;1;.25"
+                />
+              </path>
+            </g>
+          ) : (
+            <g className={styles.storyMoment} key="then">
+              <path className={styles.storyTable} d="M213 232h294M244 232v44M478 232v44" />
+              <LessonMotionPerson
+                action="listen"
+                motion="breathe"
+                palette="blue"
+                scale={0.8}
+                seated
+                x={360}
+                y={273}
+              />
+              <g>
+                <rect
+                  fill="#fffaf2"
+                  height="74"
+                  rx="4"
+                  stroke="#8fa2a5"
+                  strokeWidth="3"
+                  width="82"
+                  x="224"
+                  y="120"
+                  transform="rotate(-8 265 157)"
+                />
+                <path
+                  d="M240 144 H287 M240 159 H279 M240 174 H291"
+                  stroke="#a6b5b6"
+                  strokeLinecap="round"
+                  strokeWidth="4"
+                />
+                <rect
+                  fill="#fffaf2"
+                  height="75"
+                  rx="4"
+                  stroke="#c47b61"
+                  strokeWidth="3"
+                  width="84"
+                  x="414"
+                  y="116"
+                  transform="rotate(8 456 153)"
+                />
+                <path
+                  d="M430 140 H478 M430 155 H470 M430 170 H482"
+                  stroke="#cda28f"
+                  strokeLinecap="round"
+                  strokeWidth="4"
+                />
+                <rect
+                  fill="#fffaf2"
+                  height="79"
+                  rx="4"
+                  stroke="#7f9fa8"
+                  strokeWidth="3"
+                  width="88"
+                  x="316"
+                  y="86"
+                />
+                <path
+                  d="M333 111 H386 M333 127 H377 M333 143 H389"
+                  stroke="#a5b7bb"
+                  strokeLinecap="round"
+                  strokeWidth="4"
+                />
+                <animateTransform
+                  attributeName="transform"
+                  dur="4.6s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 2;0 -3;0 2"
+                />
+              </g>
+            </g>
+          )}
+        </svg>
+      </div>
+
+      <div aria-label="Choose a point in the story" className={styles.storyChoices} role="group">
+        <button
+          aria-pressed={!isNow}
+          className={cn(!isNow && styles.storyChoiceActive)}
+          onClick={() => setView("then")}
+          type="button"
+        >
+          <span>01</span>
+          At the beginning
+        </button>
+        <button
+          aria-pressed={isNow}
+          className={cn(isNow && styles.storyChoiceActive)}
+          onClick={() => setView("now")}
+          type="button"
+        >
+          <span>02</span>
+          Fourteen days later
+        </button>
+      </div>
+
+      <div aria-live="polite" className={styles.storyCopy} key={view}>
+        <p className="editorial-eyebrow">{isNow ? "Now" : "Then"}</p>
+        <h2>
+          {isNow
+            ? "You have a way to make the moment smaller."
+            : "The diagnosis may have sounded larger than your life."}
+        </h2>
+        <p>
+          {isNow
+            ? "You can name what is happening, add timing and context, choose one useful tool, and ask for help when the question belongs with someone else."
+            : "New words, new numbers, and new decisions can arrive all at once. It can be hard to know which question belongs first—or whether one moment has already decided the future."}
+        </p>
+        <em>
+          {isNow
+            ? "The questions did not disappear. You became less alone inside them."
+            : "Feeling overwhelmed was not a failure. It was a human response to carrying too much at once."}
+        </em>
+      </div>
+    </section>
+  );
+}
+
+function ToolPracticeStudio() {
+  const [activeTool, setActiveTool] = useState<EverydayToolId>("food");
+  const active = everydayTools.find((tool) => tool.id === activeTool) ?? everydayTools[0];
+
+  return (
+    <section className={styles.toolPractice}>
+      <div
+        aria-label={`An animated ordinary-life scene for ${active.label.toLowerCase()}`}
+        className={styles.toolVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 320"
+        >
+          <rect className={styles.toolWash} height="320" width="720" />
+          <circle className={styles.storySun} cx="650" cy="54" r="26" />
+          <path className={styles.storyFloor} d="M28 264c220-8 448-8 664 0" />
+
+          {activeTool === "food" ? (
+            <g className={styles.toolMoment} key="food">
+              <path className={styles.storyTable} d="M125 226h472M168 226v43M554 226v43" />
+              <LessonMotionPerson
+                action="reach-right"
+                motion="breathe"
+                palette="warm"
+                scale={0.76}
+                seated
+                x={232}
+                y={265}
+              />
+              <LessonMotionPerson
+                action="reach-left"
+                motion="nod"
+                palette="sage"
+                scale={0.76}
+                seated
+                x={493}
+                y={265}
+              />
+              <ellipse className={styles.plateShape} cx="362" cy="218" rx="62" ry="13" />
+              <path d="M320 210 Q362 172 404 210" fill="#e6b774" />
+              <path d="M334 206 Q362 184 390 206" fill="#789b88" opacity=".88" />
+              <path
+                className={styles.foodSteam}
+                d="M348 192c-10-11 10-17 0-31M376 192c-10-11 10-17 0-31"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.4s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 8;0 -7;0 8"
+                />
+                <animate
+                  attributeName="opacity"
+                  dur="3.4s"
+                  repeatCount="indefinite"
+                  values="0.1;0.9;0.1"
+                />
+              </path>
+            </g>
+          ) : null}
+
+          {activeTool === "movement" ? (
+            <g className={styles.toolMoment} key="movement">
+              <path className={styles.treeTrunk} d="M596 107v157" />
+              <circle className={styles.treeLeaf} cx="596" cy="86" r="51">
+                <animateTransform
+                  attributeName="transform"
+                  dur="5s"
+                  repeatCount="indefinite"
+                  type="rotate"
+                  values="-2 596 140;2 596 140;-2 596 140"
+                />
+              </circle>
+              <LessonMotionPerson
+                action="wave-right"
+                motion="dance"
+                palette="warm"
+                scale={0.79}
+                x={215}
+                y={266}
+              />
+              <LessonMotionPerson
+                action="wave-left"
+                motion="dance"
+                palette="sage"
+                scale={0.79}
+                x={465}
+                y={266}
+              />
+              <circle className={styles.picnicBall} cx="0" cy="0" r="12">
+                <animateMotion
+                  calcMode="spline"
+                  dur="3s"
+                  keySplines="0.4 0 0.2 1;0.4 0 0.2 1"
+                  keyTimes="0;0.5;1"
+                  path="M260 174 Q340 74 420 174 Q340 74 260 174"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </g>
+          ) : null}
+
+          {activeTool === "medicine" ? (
+            <g className={styles.toolMoment} key="medicine">
+              <path className={styles.storyTable} d="M125 226h470M169 226v43M552 226v43" />
+              <LessonMotionPerson
+                action="reach-right"
+                motion="breathe"
+                palette="sage"
+                scale={0.76}
+                seated
+                x={224}
+                y={265}
+              />
+              <LessonMotionPerson
+                action="reach-left"
+                motion="nod"
+                palette="blue"
+                scale={0.76}
+                seated
+                x={500}
+                y={265}
+              />
+              <path className={styles.medicineBottle} d="M341 151h52v68h-52zM351 136h32v15h-32z" />
+              <rect
+                className={styles.storyNotebook}
+                height="68"
+                rx="4"
+                width="70"
+                x="408"
+                y="150"
+              />
+              <path
+                d="M421 170 H465 M421 187 H459 M421 204 H468"
+                stroke="#9bad9f"
+                strokeLinecap="round"
+                strokeWidth="4"
+              />
+              <path d="M460 210 L484 169" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
+                <animateTransform
+                  attributeName="transform"
+                  dur="2.6s"
+                  repeatCount="indefinite"
+                  type="rotate"
+                  values="-4 460 210;5 460 210;-4 460 210"
+                />
+              </path>
+              <path d="M344 179 H390" stroke="#b8d1c2" strokeLinecap="round" strokeWidth="9">
+                <animate
+                  attributeName="opacity"
+                  dur="3s"
+                  repeatCount="indefinite"
+                  values=".45;1;.45"
+                />
+              </path>
+            </g>
+          ) : null}
+
+          {activeTool === "monitoring" ? (
+            <g className={styles.toolMoment} key="monitoring">
+              <path className={styles.storyTable} d="M122 226h478M166 226v43M557 226v43" />
+              <LessonMotionPerson
+                action="reach-right"
+                motion="breathe"
+                palette="blue"
+                scale={0.76}
+                seated
+                x={222}
+                y={265}
+              />
+              <LessonMotionPerson
+                action="reach-left"
+                motion="nod"
+                palette="sage"
+                scale={0.76}
+                seated
+                x={505}
+                y={265}
+              />
+              <rect className={styles.meterShape} height="78" rx="5" width="64" x="327" y="141" />
+              <rect className={styles.meterScreen} height="27" rx="2" width="42" x="338" y="155">
+                <animate
+                  attributeName="opacity"
+                  dur="3s"
+                  repeatCount="indefinite"
+                  values=".45;1;.45"
+                />
+              </rect>
+              <rect
+                className={styles.storyNotebook}
+                height="69"
+                rx="4"
+                width="72"
+                x="410"
+                y="149"
+              />
+              <path
+                d="M422 169 H470 M422 187 H463 M422 204 H472"
+                stroke="#9bad9f"
+                strokeLinecap="round"
+                strokeWidth="4"
+              />
+              <path
+                d="M392 181 C402 173 408 173 416 181"
+                fill="none"
+                stroke="#c47b61"
+                strokeLinecap="round"
+                strokeWidth="5"
+              >
+                <animate
+                  attributeName="stroke-dasharray"
+                  dur="2.8s"
+                  repeatCount="indefinite"
+                  values="0 45;45 0;45 0"
+                />
+              </path>
+            </g>
+          ) : null}
+        </svg>
+      </div>
+
+      <div aria-label="Choose a tool to explore" className={styles.toolChoices} role="group">
+        {everydayTools.map((tool, index) => (
+          <button
+            aria-pressed={activeTool === tool.id}
+            className={cn(activeTool === tool.id && styles.toolChoiceActive)}
+            key={tool.id}
+            onClick={() => setActiveTool(tool.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {tool.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.toolCopy} key={activeTool}>
+        <p className="editorial-eyebrow">One tool, inside one real moment</p>
+        <h2>{active.title}</h2>
+        <p>{active.body}</p>
+        <em>{active.invitation}</em>
+      </div>
+    </section>
+  );
+}
+
+function BodySystemLab() {
+  const [activeSystem, setActiveSystem] = useState<BodySystemId>("digestion");
+  const active = bodySystems.find((system) => system.id === activeSystem) ?? bodySystems[0];
+
+  return (
+    <section className={styles.bodyLab}>
+      <div
+        aria-label={`Animated body system showing ${active.label.toLowerCase()}`}
+        className={styles.organVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 430"
+        >
+          <rect className={styles.organWash} height="430" width="720" />
+          <circle className={styles.organHalo} cx="250" cy="214" r="178" />
+          <path d="M448 84 H448 V352" stroke="#bdd0c7" strokeLinecap="round" strokeWidth="2" />
+
+          {activeSystem === "digestion" ? (
+            <g className={styles.digestionMotion} key="digestion">
+              <path className={styles.esophagusShape} d="M245 47 V135" />
+              <path
+                className={cn(styles.stomachShape, styles.organShapeActive)}
+                d="M245 121 C293 102 328 135 315 181 C306 214 272 219 260 250 C250 274 258 292 267 309 C209 300 179 267 184 226 C188 193 214 181 231 166 C244 155 238 136 245 121 Z"
+              />
+              <path
+                className={cn(styles.intestineShape, styles.organShapeActive)}
+                d="M183 310 C207 282 292 283 316 309 C338 333 305 350 276 338 C240 323 199 330 193 352 C187 378 236 385 272 367 C308 349 337 368 321 392"
+              />
+              {[0, 1, 2].map((dot) => (
+                <circle key={dot} r={8 - dot} fill="#d8955c" stroke="#fff9ef" strokeWidth="3">
+                  <animateMotion
+                    begin={`${dot * -1.35}s`}
+                    dur="5.4s"
+                    path="M245 42 L245 126 C296 141 298 181 265 215 C230 250 214 292 266 317 C308 337 293 369 245 374"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${dot * -1.35}s`}
+                    dur="5.4s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+              <path d="M500 168 H650" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="24" />
+              <path d="M500 168 H650" stroke="#dceaea" strokeLinecap="round" strokeWidth="12" />
+              {[0, 1, 2].map((dot) => (
+                <circle key={`absorbed-${dot}`} r="7" fill="#d8955c">
+                  <animateMotion
+                    begin={`${dot * -1.1}s`}
+                    dur="4s"
+                    path="M321 350 C412 350 437 168 645 168"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${dot * -1.1}s`}
+                    dur="4s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+            </g>
+          ) : null}
+
+          {activeSystem === "pancreas" ? (
+            <g className={styles.insulinMotion} key="pancreas">
+              <path
+                className={styles.stomachShape}
+                d="M256 103 C300 92 329 124 315 165 C303 198 275 204 259 231 C241 260 248 279 257 300 C205 292 180 257 187 219 C193 184 220 173 238 157 C250 146 248 119 256 103 Z"
+                opacity=".24"
+              />
+              <path
+                className={cn(styles.pancreasShape, styles.organShapeActive)}
+                d="M128 251 C173 213 259 204 329 225 C365 236 375 261 349 278 C325 294 287 281 255 282 C216 283 183 306 151 298 C117 290 104 270 128 251 Z"
+              />
+              <path d="M439 214 H662" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
+              <path d="M439 214 H662" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
+              <rect
+                fill="#fffaf2"
+                height="112"
+                rx="35"
+                stroke="#789083"
+                strokeWidth="5"
+                width="93"
+                x="523"
+                y="270"
+              />
+              <path
+                d="M550 270 V245 H589 V270"
+                fill="none"
+                stroke="#5f947b"
+                strokeLinejoin="round"
+                strokeWidth="7"
+              />
+              {[0, 1, 2, 3].map((signal) => (
+                <circle key={signal} r="7" fill="#5f947b" stroke="#f5faf6" strokeWidth="3">
+                  <animateMotion
+                    begin={`${signal * -0.9}s`}
+                    dur="4.1s"
+                    path="M316 249 C395 240 436 215 520 214 C565 214 570 241 570 270"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${signal * -0.9}s`}
+                    dur="4.1s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+            </g>
+          ) : null}
+
+          {activeSystem === "liver" ? (
+            <g className={styles.liverMotion} key="liver">
+              <path
+                className={cn(styles.liverShape, styles.organShapeActive)}
+                d="M114 157 C133 94 225 70 327 108 C383 129 407 172 384 218 C362 264 300 280 223 266 C157 255 105 221 105 184 C105 174 108 165 114 157 Z"
+              />
+              <path d="M455 197 H665" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
+              <path d="M455 197 H665" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
+              <g fill="none" stroke="#e4b878" strokeWidth="5">
+                <path d="M180 180 l18-11 18 11v22l-18 11-18-11z" />
+                <path d="M218 180 l18-11 18 11v22l-18 11-18-11z" />
+                <path d="M199 213 l18-11 18 11v22l-18 11-18-11z" />
+              </g>
+              {[0, 1, 2].map((fuel) => (
+                <circle key={fuel} r="8" fill="#d5a356" stroke="#fff7e7" strokeWidth="3">
+                  <animateMotion
+                    begin={`${fuel * -1.05}s`}
+                    dur="4.5s"
+                    path="M652 197 C508 197 426 201 346 211 C293 218 253 205 215 190"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${fuel * -1.05}s`}
+                    dur="4.5s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+              <circle r="8" fill="#c87860" stroke="#fff7e7" strokeWidth="3">
+                <animateMotion
+                  dur="5.2s"
+                  path="M217 228 C315 271 372 229 456 197 C520 172 584 182 652 197"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  dur="5.2s"
+                  repeatCount="indefinite"
+                  values="0;0;1;1;0"
+                />
+              </circle>
+            </g>
+          ) : null}
+
+          {activeSystem === "muscle" ? (
+            <g className={styles.muscleMotion} key="muscle">
+              <path d="M75 116 H645" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
+              <path d="M75 116 H645" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
+              {[0, 1, 2].map((fiber) => (
+                <g key={fiber}>
+                  <rect
+                    className={cn(styles.muscleShape, styles.organShapeActive)}
+                    height="62"
+                    rx="31"
+                    width="360"
+                    x="180"
+                    y={190 + fiber * 72}
+                  />
+                  <path
+                    d={`M218 ${221 + fiber * 72} H502`}
+                    fill="none"
+                    stroke="#d9e8df"
+                    strokeLinecap="round"
+                    strokeWidth="8"
+                  >
+                    <animate
+                      attributeName="stroke-width"
+                      begin={`${fiber * -0.5}s`}
+                      dur="2.4s"
+                      repeatCount="indefinite"
+                      values="7;11;7"
+                    />
+                  </path>
+                </g>
+              ))}
+              {[0, 1, 2, 3].map((fuel) => (
+                <circle key={fuel} r="8" fill="#d5a356" stroke="#fff7e7" strokeWidth="3">
+                  <animateMotion
+                    begin={`${fuel * -0.8}s`}
+                    dur="3.8s"
+                    path={`M${115 + fuel * 115} 116 C${150 + fuel * 85} 148 ${220 + fuel * 65} ${206 + (fuel % 3) * 72} ${265 + fuel * 55} ${221 + (fuel % 3) * 72}`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${fuel * -0.8}s`}
+                    dur="3.8s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+            </g>
+          ) : null}
+        </svg>
+      </div>
+
+      <div aria-label="Choose a body system" className={styles.organChoices} role="group">
+        {bodySystems.map((system, index) => (
+          <button
+            aria-pressed={activeSystem === system.id}
+            className={cn(activeSystem === system.id && styles.organChoiceActive)}
+            key={system.id}
+            onClick={() => setActiveSystem(system.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {system.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.organCopy} key={activeSystem}>
+        <p className="editorial-eyebrow">Follow this part of the system</p>
+        <h2>{active.title}</h2>
+        <p>{active.body}</p>
+        <em>Watch for: {active.notice}</em>
+      </div>
+    </section>
+  );
+}
+
+function NumberContextExplorer() {
+  const [activeMoment, setActiveMoment] = useState<NumberMomentId>("fasting");
+  const active = numberMoments.find((moment) => moment.id === activeMoment) ?? numberMoments[0];
+
+  return (
+    <section className={styles.numberExplorer}>
+      <div aria-label="Choose a reading context" className={styles.numberChoices} role="group">
+        {numberMoments.map((moment, index) => (
+          <button
+            aria-pressed={activeMoment === moment.id}
+            className={cn(activeMoment === moment.id && styles.numberChoiceActive)}
+            key={moment.id}
+            onClick={() => setActiveMoment(moment.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {moment.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.numberReading} key={activeMoment}>
+        <div className={styles.numberWindow}>
+          <span>Time window</span>
+          <strong>{active.window}</strong>
+        </div>
+        <div>
+          <p className="editorial-eyebrow">Add context</p>
+          <h2>{active.context}</h2>
+        </div>
+        <div>
+          <p className="editorial-eyebrow">Ask a useful question</p>
+          <p>{active.question}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProtectionExplorer() {
+  const [activeArea, setActiveArea] = useState<ProtectionAreaId>("eyes");
+  const active = protectionAreas.find((area) => area.id === activeArea) ?? protectionAreas[0];
+
+  return (
+    <section className={styles.protectionExplorer}>
+      <div
+        aria-label={`Animated body map highlighting the ${active.label.toLowerCase()}`}
+        className={styles.protectionVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 430"
+        >
+          <rect className={styles.protectionWash} height="430" width="720" />
+          <circle className={styles.organHalo} cx="360" cy="215" r="185" />
+
+          {activeArea === "eyes" ? (
+            <g key="eyes">
+              <path
+                d="M116 216 Q222 104 328 216 Q222 328 116 216 Z"
+                fill="#fffaf2"
+                stroke="#789083"
+                strokeWidth="6"
+              />
+              <circle cx="222" cy="216" fill="#7f9fa8" r="63" stroke="#58737b" strokeWidth="5" />
+              <circle cx="222" cy="216" fill="#405750" r="24" />
+              <circle cx="203" cy="193" fill="#fffaf2" opacity=".85" r="10" />
+              <path
+                d="M399 103 Q525 113 599 216 Q525 319 399 329"
+                fill="#fffaf2"
+                stroke="#789083"
+                strokeWidth="6"
+              />
+              <path d="M399 103 Q481 121 503 216 Q481 311 399 329" fill="#c97866" opacity=".45" />
+              <path d="M587 154 L587 278" stroke="#7b9ea8" strokeLinecap="round" strokeWidth="12">
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.8s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="-30 0;30 0;-30 0"
+                />
+                <animate
+                  attributeName="opacity"
+                  dur="3.8s"
+                  repeatCount="indefinite"
+                  values=".25;1;.25"
+                />
+              </path>
+            </g>
+          ) : null}
+
+          {activeArea === "kidneys" ? (
+            <g key="kidneys">
+              <path
+                d="M218 104 C146 97 115 171 131 244 C149 327 221 351 276 302 C315 268 302 165 260 123 C248 111 234 105 218 104 Z"
+                fill="#a87868"
+                stroke="#80594f"
+                strokeWidth="6"
+              />
+              <path
+                d="M502 104 C574 97 605 171 589 244 C571 327 499 351 444 302 C405 268 418 165 460 123 C472 111 486 105 502 104 Z"
+                fill="#a87868"
+                stroke="#80594f"
+                strokeWidth="6"
+              />
+              <path
+                d="M272 191 C321 177 399 177 448 191 M276 222 C324 208 396 208 444 222"
+                fill="none"
+                stroke="#c77866"
+                strokeLinecap="round"
+                strokeWidth="12"
+              />
+              <path
+                d="M273 244 C323 258 397 258 447 244"
+                fill="none"
+                stroke="#7b9ea8"
+                strokeLinecap="round"
+                strokeWidth="12"
+              />
+              <path
+                d="M258 290 C287 320 316 344 329 395 M462 290 C433 320 404 344 391 395"
+                fill="none"
+                stroke="#d5a879"
+                strokeLinecap="round"
+                strokeWidth="7"
+              />
+              {[0, 1, 2].map((cell) => (
+                <circle key={cell} r="8" fill="#d5a356" stroke="#fff7e7" strokeWidth="3">
+                  <animateMotion
+                    begin={`${cell * -1}s`}
+                    dur="4.2s"
+                    path={
+                      cell % 2 === 0
+                        ? "M282 190 C225 207 211 261 258 290 C294 312 315 346 329 395"
+                        : "M438 190 C495 207 509 261 462 290 C426 312 405 346 391 395"
+                    }
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${cell * -1}s`}
+                    dur="4.2s"
+                    repeatCount="indefinite"
+                    values="0;1;1;0"
+                  />
+                </circle>
+              ))}
+            </g>
+          ) : null}
+
+          {activeArea === "heart" ? (
+            <g key="heart">
+              <path
+                d="M350 103 C314 52 240 79 239 147 C238 205 304 239 354 302 C409 238 481 207 480 145 C479 78 405 53 369 104 C362 114 358 123 354 135 C351 123 356 113 350 103 Z"
+                fill="#c97866"
+                stroke="#9f5b50"
+                strokeWidth="7"
+              >
+                <animate
+                  attributeName="stroke-width"
+                  dur="1.6s"
+                  repeatCount="indefinite"
+                  values="7;11;7"
+                />
+              </path>
+              <path
+                d="M351 105 V44 M370 107 C399 72 417 58 449 52 M337 109 C307 78 284 66 252 61"
+                fill="none"
+                stroke="#c97866"
+                strokeLinecap="round"
+                strokeWidth="17"
+              />
+              <path
+                d="M353 137 C313 158 310 205 354 249 C397 206 397 159 353 137 Z"
+                fill="#e7a28e"
+                opacity=".75"
+              />
+              <path
+                d="M104 347 C198 304 254 315 319 348 C381 379 460 380 616 325"
+                fill="none"
+                stroke="#8ca9aa"
+                strokeLinecap="round"
+                strokeWidth="24"
+              />
+              <path
+                d="M104 347 C198 304 254 315 319 348 C381 379 460 380 616 325"
+                fill="none"
+                stroke="#dceaea"
+                strokeLinecap="round"
+                strokeWidth="12"
+              />
+              {[0, 1, 2, 3].map((cell) => (
+                <circle
+                  key={cell}
+                  r="8"
+                  fill={cell % 2 === 0 ? "#c97866" : "#7b9ea8"}
+                  stroke="#fffaf2"
+                  strokeWidth="3"
+                >
+                  <animateMotion
+                    begin={`${cell * -0.75}s`}
+                    dur="3.7s"
+                    path="M104 347 C198 304 254 315 319 348 C381 379 460 380 616 325"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              ))}
+            </g>
+          ) : null}
+
+          {activeArea === "feet" ? (
+            <g key="feet">
+              <path
+                d="M160 152 C191 91 262 92 287 148 C305 188 285 235 249 266 C215 295 164 279 145 242 C131 214 143 184 160 152 Z"
+                fill="#d8aa89"
+                stroke="#8d6c5e"
+                strokeWidth="6"
+              />
+              <path
+                d="M433 148 C459 92 529 91 560 152 C577 184 589 214 575 242 C556 279 505 295 471 266 C435 235 415 188 433 148 Z"
+                fill="#d8aa89"
+                stroke="#8d6c5e"
+                strokeWidth="6"
+              />
+              {[0, 1, 2, 3, 4].map((toe) => (
+                <g key={toe}>
+                  <circle
+                    cx={176 + toe * 23}
+                    cy={130 - Math.abs(2 - toe) * 6}
+                    fill="#d8aa89"
+                    r={14 - Math.abs(2 - toe)}
+                    stroke="#8d6c5e"
+                    strokeWidth="4"
+                  />
+                  <circle
+                    cx={544 - toe * 23}
+                    cy={130 - Math.abs(2 - toe) * 6}
+                    fill="#d8aa89"
+                    r={14 - Math.abs(2 - toe)}
+                    stroke="#8d6c5e"
+                    strokeWidth="4"
+                  />
+                </g>
+              ))}
+              <path d="M130 335 H590" stroke="#789083" strokeLinecap="round" strokeWidth="7" />
+              <g>
+                <circle
+                  cx="185"
+                  cy="235"
+                  fill="#fffaf2"
+                  opacity=".7"
+                  r="29"
+                  stroke="#c77962"
+                  strokeWidth="5"
+                />
+                <path
+                  d="M185 207 V263 M157 235 H213"
+                  stroke="#c77962"
+                  strokeLinecap="round"
+                  strokeWidth="4"
+                />
+                <animateMotion
+                  dur="5.2s"
+                  path="M0 0 C75 -100 230 -110 348 0 C230 -110 75 -100 0 0"
+                  repeatCount="indefinite"
+                />
+              </g>
+            </g>
+          ) : null}
+        </svg>
+      </div>
+
+      <div aria-label="Choose an area to protect" className={styles.protectionChoices} role="group">
+        {protectionAreas.map((area, index) => (
+          <button
+            aria-pressed={activeArea === area.id}
+            className={cn(activeArea === area.id && styles.protectionChoiceActive)}
+            key={area.id}
+            onClick={() => setActiveArea(area.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {area.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.protectionCopy} key={activeArea}>
+        <p className="editorial-eyebrow">Protect without predicting the worst</p>
+        <h2>{active.title}</h2>
+        <p>{active.body}</p>
+        <em>{active.prompt}</em>
+      </div>
+    </section>
+  );
+}
+
+function ReturnScenarioExplorer() {
+  const [activeScenario, setActiveScenario] = useState<ReturnScenarioId>("restaurant");
+  const active =
+    returnScenarios.find((scenario) => scenario.id === activeScenario) ?? returnScenarios[0];
+
+  return (
+    <section className={styles.returnExplorer}>
+      <div
+        aria-label={`Animated next step for ${active.label.toLowerCase()}`}
+        className={styles.returnVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 320"
+        >
+          <rect className={styles.returnWash} height="320" width="720" />
+          <path className={styles.storyFloor} d="M38 268 H682" />
+
+          {activeScenario === "restaurant" ? (
+            <g key="restaurant">
+              <path className={styles.storyTable} d="M171 224 H574 M210 224 V270 M535 224 V270" />
+              <LessonMotionPerson
+                action="reach-right"
+                motion="breathe"
+                palette="warm"
+                scale={0.76}
+                seated
+                x={250}
+                y={266}
+              />
+              <LessonMotionPerson
+                action="reach-left"
+                motion="nod"
+                palette="sage"
+                scale={0.76}
+                seated
+                x={506}
+                y={266}
+              />
+              <rect
+                fill="#fffaf2"
+                height="98"
+                rx="5"
+                stroke="#7b9ea8"
+                strokeWidth="4"
+                width="79"
+                x="323"
+                y="112"
+              />
+              <path
+                d="M339 135 H386 M339 152 H377 M339 169 H388 M339 186 H371"
+                stroke="#a6b6b7"
+                strokeLinecap="round"
+                strokeWidth="4"
+              />
+              <ellipse className={styles.plateShape} cx="439" cy="216" rx="44" ry="10" />
+              <path d="M410 209 Q439 183 468 209" fill="#e7b879">
+                <animate
+                  attributeName="opacity"
+                  dur="3.4s"
+                  repeatCount="indefinite"
+                  values=".55;1;.55"
+                />
+              </path>
+            </g>
+          ) : null}
+
+          {activeScenario === "reading" ? (
+            <g key="reading">
+              <path className={styles.storyTable} d="M142 226 H596 M181 226 V270 M557 226 V270" />
+              <LessonMotionPerson
+                action="reach-right"
+                motion="breathe"
+                palette="blue"
+                scale={0.76}
+                seated
+                x={232}
+                y={266}
+              />
+              <LessonMotionPerson
+                action="reach-left"
+                motion="nod"
+                palette="sage"
+                scale={0.76}
+                seated
+                x={520}
+                y={266}
+              />
+              <rect className={styles.meterShape} height="83" rx="6" width="66" x="323" y="134" />
+              <rect className={styles.meterScreen} height="29" rx="3" width="44" x="334" y="150">
+                <animate
+                  attributeName="opacity"
+                  dur="2.8s"
+                  repeatCount="indefinite"
+                  values=".45;1;.45"
+                />
+              </rect>
+              <rect
+                className={styles.storyNotebook}
+                height="81"
+                rx="4"
+                width="76"
+                x="414"
+                y="135"
+              />
+              <path
+                d="M427 156 H478 M427 174 H468 M427 192 H481"
+                stroke="#9bad9f"
+                strokeLinecap="round"
+                strokeWidth="4"
+              />
+              <path
+                d="M390 176 C403 166 409 166 417 176"
+                fill="none"
+                stroke="#c47b61"
+                strokeLinecap="round"
+                strokeWidth="5"
+              >
+                <animate
+                  attributeName="stroke-dasharray"
+                  dur="3s"
+                  repeatCount="indefinite"
+                  values="0 50;50 0;50 0"
+                />
+              </path>
+            </g>
+          ) : null}
+
+          {activeScenario === "routine" ? (
+            <g key="routine">
+              <rect
+                fill="#fffaf2"
+                height="115"
+                rx="6"
+                stroke="#7b9ea8"
+                strokeWidth="4"
+                width="128"
+                x="105"
+                y="83"
+              />
+              <path d="M105 112 H233 M135 69 V101 M205 69 V101" stroke="#7b9ea8" strokeWidth="6" />
+              <path
+                d="M132 135 L205 177 M205 135 L132 177"
+                stroke="#c77962"
+                strokeLinecap="round"
+                strokeWidth="7"
+              >
+                <animate
+                  attributeName="opacity"
+                  dur="3.2s"
+                  repeatCount="indefinite"
+                  values=".45;1;.45"
+                />
+              </path>
+              <path
+                d="M334 243 H636 M368 246 V270 M601 246 V270"
+                stroke="#826e5e"
+                strokeLinecap="round"
+                strokeWidth="12"
+              />
+              <LessonMotionPerson
+                action="celebrate"
+                motion="dance"
+                palette="warm"
+                scale={0.8}
+                x={450}
+                y={266}
+              />
+              <LessonMotionPerson
+                action="wave-left"
+                motion="dance"
+                palette="sage"
+                scale={0.8}
+                x={557}
+                y={266}
+              />
+              <rect
+                fill="#6f8f80"
+                height="56"
+                rx="7"
+                stroke="#58756a"
+                strokeWidth="4"
+                width="65"
+                x="648"
+                y="184"
+              />
+              <circle cx="681" cy="212" fill="#f1ddbd" r="17">
+                <animate attributeName="r" dur="2.2s" repeatCount="indefinite" values="15;20;15" />
+              </circle>
+            </g>
+          ) : null}
+        </svg>
+      </div>
+      <div aria-label="Choose a changed moment" className={styles.returnChoices} role="group">
+        {returnScenarios.map((scenario, index) => (
+          <button
+            aria-pressed={activeScenario === scenario.id}
+            className={cn(activeScenario === scenario.id && styles.returnChoiceActive)}
+            key={scenario.id}
+            onClick={() => setActiveScenario(scenario.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {scenario.label}
+          </button>
+        ))}
+      </div>
+      <div aria-live="polite" className={styles.returnCopy} key={activeScenario}>
+        <p className="editorial-eyebrow">The next useful move</p>
+        <h2>{active.next}</h2>
+        <p>{active.release}</p>
+      </div>
+    </section>
+  );
+}
+
+function SupportPractice() {
+  const [activeSupport, setActiveSupport] = useState<SupportOptionId>("listen");
+  const active = supportOptions.find((option) => option.id === activeSupport) ?? supportOptions[0];
+  const isBoundary = activeSupport === "boundary";
+
+  return (
+    <section className={styles.supportPractice}>
+      <div
+        aria-label={
+          isBoundary
+            ? "Two people respectfully make more room after a boundary is stated"
+            : "Two people move closer for a calm supportive conversation"
+        }
+        className={styles.supportVisual}
+        data-motion-loop="continuous"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          className={styles.motionArt}
+          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 720 320"
+        >
+          <rect className={styles.supportWash} height="320" width="720" />
+          <path className={styles.storyFloor} d="M42 264c205-8 432-8 636 0" />
+
+          {activeSupport === "listen" ? (
+            <g key="listen">
+              <path className={styles.storyTable} d="M180 224 H548 M218 224 V270 M510 224 V270" />
+              <LessonMotionPerson
+                action="reach-right"
+                motion="breathe"
+                palette="warm"
+                scale={0.78}
+                seated
+                x={266}
+                y={264}
+              />
+              <LessonMotionPerson
+                action="listen"
+                motion="nod"
+                palette="sage"
+                scale={0.78}
+                seated
+                x={468}
+                y={264}
+              />
+              <path
+                className={styles.cupShape}
+                d="M355 180 H381 V215 H355 Z M381 188 C399 188 399 207 381 207"
+              />
+              <path
+                className={styles.steamShape}
+                d="M364 174 C354 160 374 150 364 137 M376 174 C366 160 386 150 376 137"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.2s"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 5;0 -5;0 5"
+                />
+                <animate
+                  attributeName="opacity"
+                  dur="3.2s"
+                  repeatCount="indefinite"
+                  values=".2;1;.2"
+                />
+              </path>
+              <path
+                d="M327 124 H408 M341 107 H394"
+                fill="none"
+                stroke="#c77962"
+                strokeLinecap="round"
+                strokeWidth="5"
+              >
+                <animate
+                  attributeName="opacity"
+                  dur="4s"
+                  repeatCount="indefinite"
+                  values=".2;1;.2"
+                />
+              </path>
+            </g>
+          ) : null}
+
+          {activeSupport === "company" ? (
+            <g key="company">
+              <path className={styles.treeTrunk} d="M604 105 V264" />
+              <circle className={styles.treeLeaf} cx="604" cy="85" r="50" />
+              <LessonMotionPerson
+                action="wave-right"
+                motion="dance"
+                palette="warm"
+                scale={0.8}
+                x={238}
+                y={263}
+              />
+              <LessonMotionPerson
+                action="wave-left"
+                motion="dance"
+                palette="sage"
+                scale={0.8}
+                x={470}
+                y={263}
+              />
+              <circle className={styles.picnicBall} cx="0" cy="0" r="12">
+                <animateMotion
+                  dur="3s"
+                  path="M282 175 Q354 78 426 175 Q354 78 282 175"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </g>
+          ) : null}
+
+          {activeSupport === "practical" ? (
+            <g key="practical">
+              <LessonMotionPerson
+                action="carry-right"
+                motion="walk"
+                palette="warm"
+                scale={0.82}
+                x={300}
+                y={263}
+              />
+              <LessonMotionPerson
+                action="reach-left"
+                motion="nod"
+                palette="sage"
+                scale={0.82}
+                x={520}
+                y={263}
+              />
+              <g className={styles.supportBasket}>
+                <path d="M306 238 H360 L356 263 H310 Z M316 238 C316 222 350 222 350 238" />
+                <animateTransform
+                  attributeName="transform"
+                  dur="7s"
+                  keyTimes="0;0.3;0.6;1"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 0;0 0;130 0;130 0"
+                />
+              </g>
+              <path
+                d="M369 176 Q386 160 405 176"
+                fill="none"
+                stroke="#8ca79a"
+                strokeLinecap="round"
+                strokeWidth="5"
+              >
+                <animate
+                  attributeName="stroke-dasharray"
+                  dur="7s"
+                  keyTimes="0;0.25;0.5;1"
+                  repeatCount="indefinite"
+                  values="0 50;50 0;50 0;0 50"
+                />
+              </path>
+            </g>
+          ) : null}
+
+          {isBoundary ? (
+            <g key="boundary">
+              <path className={styles.storyTable} d="M172 224 H553 M210 224 V270 M515 224 V270" />
+              <LessonMotionPerson
+                action="reach-right"
+                motion="breathe"
+                palette="warm"
+                scale={0.78}
+                seated
+                x={270}
+                y={264}
+              />
+              <LessonMotionPerson
+                action="reach-left"
+                motion="nod"
+                palette="sage"
+                scale={0.78}
+                seated
+                x={489}
+                y={264}
+              />
+              <ellipse className={styles.plateShape} cx="377" cy="217" rx="47" ry="10" />
+              <path
+                d="M327 179 Q359 166 382 193"
+                fill="none"
+                stroke="#a7614e"
+                strokeLinecap="round"
+                strokeWidth="8"
+              >
+                <animate
+                  attributeName="d"
+                  dur="6s"
+                  keyTimes="0;0.35;0.65;1"
+                  repeatCount="indefinite"
+                  values="M327 179 Q359 166 382 193;M327 179 Q359 166 382 193;M327 179 Q337 205 327 222;M327 179 Q337 205 327 222"
+                />
+              </path>
+              <path className={styles.boundaryHand} d="M426 157 V199 M412 172 Q426 157 440 172" />
+            </g>
+          ) : null}
+        </svg>
+      </div>
+
+      <div
+        aria-label="Choose what support means today"
+        className={styles.supportChoices}
+        role="group"
+      >
+        {supportOptions.map((option, index) => (
+          <button
+            aria-pressed={activeSupport === option.id}
+            className={cn(activeSupport === option.id && styles.supportChoiceActive)}
+            key={option.id}
+            onClick={() => setActiveSupport(option.id)}
+            type="button"
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      <div aria-live="polite" className={styles.supportCopy} key={activeSupport}>
+        <p className="editorial-eyebrow">A response that respects the request</p>
+        <h2>{active.title}</h2>
+        <blockquote>“{active.response}”</blockquote>
+      </div>
+    </section>
   );
 }
 
@@ -600,26 +2316,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Where you began">
               The first day asked you to understand, not to become perfect.
             </LessonHeading>
-            <div className={styles.beforeAfter}>
-              <section>
-                <p className="editorial-eyebrow">Then</p>
-                <h2>The diagnosis may have sounded larger than your life.</h2>
-                <p>
-                  New words, new numbers, and new decisions can arrive all at once. It can be hard
-                  to know which question belongs first or whether a single meal, reading, or missed
-                  routine has already decided the future.
-                </p>
-              </section>
-              <section>
-                <p className="editorial-eyebrow">Now</p>
-                <h2>You have a way to make the moment smaller.</h2>
-                <p>
-                  Name what is happening. Add timing and context. Choose one useful tool. Ask for
-                  help when the question belongs with someone else. That sequence is knowledge you
-                  can use.
-                </p>
-              </section>
-            </div>
+            <ThenNowStory />
             <p className={styles.handwrittenLine}>
               The first change may be simple: the question in front of you no longer feels
               impossible to enter.
@@ -655,40 +2352,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Your body makes more sense">
               An explanation can take the place of blame.
             </LessonHeading>
-            <div className={styles.numberedEssay}>
-              <section>
-                <span>01</span>
-                <div>
-                  <h2>Insulin is a signal.</h2>
-                  <p>
-                    It helps glucose move from the bloodstream into cells that can use it for
-                    energy. In insulin resistance, cells do not respond to that signal as
-                    effectively, so the body may need to send more.
-                  </p>
-                </div>
-              </section>
-              <section>
-                <span>02</span>
-                <div>
-                  <h2>Type 2 diabetes develops over time.</h2>
-                  <p>
-                    It is shaped by biology, genetics, environment, age, stress, sleep, access to
-                    care, and many other influences. It is not a moral verdict and it is not proof
-                    that you failed.
-                  </p>
-                </div>
-              </section>
-              <section>
-                <span>03</span>
-                <div>
-                  <h2>Understanding creates choices.</h2>
-                  <p>
-                    Food, movement, medicines, sleep, monitoring, and support can influence
-                    different parts of the system. No single tool has to carry the whole plan.
-                  </p>
-                </div>
-              </section>
-            </div>
+            <p className={styles.lede}>
+              Choose a body system and follow what it does. Each organ stays visible so the
+              animation feels like one connected body—not four unrelated diagrams.
+            </p>
+            <BodySystemLab />
             <blockquote className={styles.pullQuote}>
               Your body is not an enemy to defeat. It is a living system you can learn to support.
             </blockquote>
@@ -701,39 +2369,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Numbers without judgment">
               A reading is a clue. Context helps it speak.
             </LessonHeading>
-            <div className={styles.contextSequence}>
-              <section>
-                <span>First</span>
-                <h2>Name the measure.</h2>
-                <p>
-                  Is it a glucose reading from one moment, or an A1C view across several months?
-                </p>
-              </section>
-              <section>
-                <span>Then</span>
-                <h2>Add the conditions.</h2>
-                <p>
-                  Timing, food, movement, medicines, stress, sleep, and illness can help explain
-                  what the number can—and cannot—say.
-                </p>
-              </section>
-              <section>
-                <span>Next</span>
-                <h2>Look for a pattern.</h2>
-                <p>
-                  One unexpected result can be worth noticing without becoming a verdict. Repeated
-                  patterns and symptoms give the care team more useful information.
-                </p>
-              </section>
-              <section>
-                <span>When needed</span>
-                <h2>Bring the question to care.</h2>
-                <p>
-                  Ask what range applies to you, what might be influencing a pattern, and what next
-                  step is safe. Personal targets belong in a personal care plan.
-                </p>
-              </section>
-            </div>
+            <p className={styles.lede}>
+              Pick a moment. Watch how the meaning changes when the time window and a useful
+              question travel beside the result.
+            </p>
+            <NumberContextExplorer />
             <p className={styles.closingSentence}>
               The skill is not forcing every number to behave. The skill is knowing how to respond
               without turning information into shame.
@@ -747,39 +2387,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Tools that can work together">
               A plan can be flexible without becoming careless.
             </LessonHeading>
-            <div className={styles.toolLines}>
-              <section>
-                <h2>Food can be balanced, familiar, and meaningful.</h2>
-                <p>
-                  Carbohydrate is not forbidden. Fiber, protein, fat, portions, preferences,
-                  culture, access, and the rest of the meal all add context. One plate does not
-                  define your health.
-                </p>
-              </section>
-              <section>
-                <h2>Movement can be ordinary and adapted.</h2>
-                <p>
-                  Working muscles can use glucose. Walking, chores, dancing, gardening, water
-                  movement, strength work, and seated options can all count when they fit your body
-                  and safety needs.
-                </p>
-              </section>
-              <section>
-                <h2>Medicine is a tool, not a failure.</h2>
-                <p>
-                  A medication can support what the body needs. Knowing its name, purpose, timing,
-                  possible side effects, and what to do when a dose is missed makes the tool safer
-                  and easier to use.
-                </p>
-              </section>
-              <section>
-                <h2>Monitoring can answer a question.</h2>
-                <p>
-                  A reading is most useful when you know why you are checking and what you plan to
-                  do with the result. More checking is not automatically better checking.
-                </p>
-              </section>
-            </div>
+            <p className={styles.lede}>
+              Choose a moment below. The same person is not asked to use every tool at once; the
+              scene changes to show how one tool can support one ordinary part of life.
+            </p>
+            <ToolPracticeStudio />
           </div>
         );
 
@@ -789,40 +2401,14 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Protection without fear">
               Prevention is care showing up before a problem becomes loud.
             </LessonHeading>
-            <div className={styles.protectionSpread}>
-              <div>
-                <p>
-                  Eyes, kidneys, nerves, feet, heart, and blood vessels deserve attention without
-                  becoming a catalogue of things to fear. Screening and regular care are ways to
-                  notice change early, when there may be more options.
-                </p>
-                <p>
-                  Bring your questions. Know which checks are due. Share new symptoms, wounds,
-                  vision changes, chest symptoms, or unusual lows and highs with the right member of
-                  your care team.
-                </p>
-              </div>
-              <blockquote>
-                Risk is not destiny. Early attention is not pessimism; it is protection.
-              </blockquote>
-            </div>
-            <div className={styles.safetyNotes}>
-              <section>
-                <span>For an urgent moment</span>
-                <p>
-                  Follow the safety plan you made with your clinician. Know who to call, when to
-                  seek urgent help, and where fast-acting glucose or other supplies belong if they
-                  are part of your plan.
-                </p>
-              </section>
-              <section>
-                <span>For a routine visit</span>
-                <p>
-                  A short note with the pattern, timing, symptoms, medicines, and your question can
-                  make a conversation more useful than trying to remember everything in the room.
-                </p>
-              </section>
-            </div>
+            <p className={styles.lede}>
+              Explore an area of the body. The point is not to predict a complication; it is to see
+              how early attention can make care calmer and more useful.
+            </p>
+            <ProtectionExplorer />
+            <blockquote className={styles.pullQuote}>
+              Risk is not destiny. Early attention is not pessimism; it is protection.
+            </blockquote>
           </div>
         );
 
@@ -833,29 +2419,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               Confidence is knowing how to return, not knowing every answer.
             </LessonHeading>
             <ReturnAfterRainMotion />
-            <div className={styles.returnStories}>
-              <section>
-                <span>At a restaurant</span>
-                <p>
-                  Use what you recognize, choose what fits, and let one uncertain meal remain one
-                  meal. You do not need perfect information to make a reasonable choice.
-                </p>
-              </section>
-              <section>
-                <span>After a surprising reading</span>
-                <p>
-                  Add timing and context, look for a pattern, and bring a useful question to your
-                  care team. Curiosity gives the number a smaller job.
-                </p>
-              </section>
-              <section>
-                <span>When the plan changes</span>
-                <p>
-                  Repair the next available moment instead of the whole day. A smaller Plan B can
-                  protect continuity without pretending life went as expected.
-                </p>
-              </section>
-            </div>
+            <ReturnScenarioExplorer />
           </div>
         );
 
@@ -865,32 +2429,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Care can be shared">
               Support works best when people know what helpful means.
             </LessonHeading>
-            <div className={styles.conversationEssay}>
-              <p>
-                Support is not supervision. A useful person may listen without fixing, join a walk,
-                learn what a low blood glucose plan looks like, help make an appointment, or simply
-                keep diabetes from becoming the only subject in the room.
-              </p>
-              <div className={styles.conversationLines}>
-                <p>
-                  <span>Ask</span> “What would help today?”
-                </p>
-                <p>
-                  <span>Listen</span> “I can stay with this before offering ideas.”
-                </p>
-                <p>
-                  <span>Offer</span> “I can do that. Would company or practical help fit better?”
-                </p>
-                <p>
-                  <span>Check</span> “Does this still feel helpful?”
-                </p>
-              </div>
-              <p>
-                You can also set a calm boundary: “I am following my care plan. Please do not
-                comment on my plate.” Clear limits protect dignity and make room for the kinds of
-                support you actually choose.
-              </p>
-            </div>
+            <p className={styles.lede}>
+              Choose what would actually help today. The scene and response change because support
+              should follow the person’s request—not the helper’s guess.
+            </p>
+            <SupportPractice />
             <blockquote className={styles.pullQuote}>
               Needing support does not make the foundation weaker. It gives the foundation more
               places to stand.

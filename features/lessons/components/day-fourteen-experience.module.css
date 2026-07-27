@@ -19,8 +19,7 @@
 .pullQuote {
   max-width: 48rem;
   margin: 0;
-  border-left: 2px solid var(--accent-warm);
-  padding: 0.35rem 0 0.35rem clamp(1.25rem, 3vw, 2rem);
+  padding: 0.35rem 0;
   color: var(--lesson-ink);
   font-family: var(--font-serif);
   font-size: clamp(1.55rem, 3vw, 2.35rem);
@@ -106,33 +105,161 @@
   background: color-mix(in srgb, var(--success) 7%, transparent);
 }
 
-.beforeAfter {
+.thenNowStory {
   display: grid;
-  border-block: 1px solid var(--border);
+  gap: 1.5rem;
 }
 
-.beforeAfter section {
-  display: grid;
-  gap: 1rem;
-  padding: 1.8rem 0;
+.thenNowVisual,
+.toolVisual {
+  overflow: hidden;
+  aspect-ratio: 720 / 330;
+  background: color-mix(in srgb, var(--muted) 82%, white 18%);
 }
 
-.beforeAfter section + section {
-  border-top: 1px solid var(--border);
+.thenWash {
+  fill: #e9efef;
 }
 
-.beforeAfter h2 {
-  max-width: 31rem;
+.nowWash {
+  fill: #f1eee5;
+}
+
+.storySun {
+  fill: #ebc988;
+}
+
+.storyFloor {
+  fill: none;
+  stroke: #a9b9ae;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.storyTable,
+.storyChair {
+  fill: none;
+  stroke: #6f8178;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7;
+}
+
+.storyNotebook {
+  fill: #fffaf2;
+  stroke: #c47b61;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.sharedQuestion {
+  fill: none;
+  stroke: #c47b61;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.worryThoughts {
+  fill: #879da2;
+}
+
+.storyChoices,
+.toolChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem clamp(1.2rem, 4vw, 2.8rem);
+}
+
+.storyChoices button,
+.toolChoices button {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  padding: 0.55rem 0;
+  color: var(--muted-foreground);
+  font-weight: 650;
+  text-align: left;
+}
+
+.storyChoices button > span,
+.toolChoices button > span {
+  color: var(--accent-warm);
   font-family: var(--font-serif);
-  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.storyChoices button:hover,
+.toolChoices button:hover,
+.storyChoiceActive,
+.toolChoiceActive {
+  color: var(--lesson-ink) !important;
+}
+
+.storyChoiceActive,
+.toolChoiceActive {
+  border-bottom-color: var(--accent-warm) !important;
+}
+
+.storyCopy,
+.toolCopy {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 48rem;
+  animation: quiet-copy-arrival 280ms ease-out both;
+}
+
+.storyMoment,
+.toolMoment {
+  animation: visual-arrival 320ms ease-out both;
+}
+
+.storyCopy h2,
+.toolCopy h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.7rem, 3.2vw, 2.45rem);
   font-weight: 500;
   line-height: 1.15;
 }
 
-.beforeAfter section > p:last-child {
+.storyCopy > p:not(:first-child),
+.toolCopy > p:not(:first-child) {
   color: var(--muted-foreground);
   font-size: 1.03rem;
   line-height: 1.8;
+}
+
+.storyCopy em,
+.toolCopy em {
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  line-height: 1.5;
+}
+
+@keyframes quiet-copy-arrival {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes visual-arrival {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .handwrittenLine {
@@ -191,6 +318,60 @@
 
 .motionFigure figcaption strong {
   color: var(--lesson-ink);
+}
+
+.ordinaryExplorer {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.ordinaryMomentMuted {
+  opacity: 0.28;
+  transition: opacity 220ms ease;
+}
+
+.ordinaryChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem clamp(1.1rem, 3.5vw, 2.5rem);
+}
+
+.ordinaryChoices button {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  padding: 0.55rem 0;
+  color: var(--muted-foreground);
+  font-weight: 650;
+  text-align: left;
+}
+
+.ordinaryChoices button > span {
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  font-weight: 500;
+}
+
+.ordinaryChoices button:hover,
+.ordinaryChoiceActive {
+  color: var(--lesson-ink) !important;
+}
+
+.ordinaryChoiceActive {
+  border-bottom-color: var(--accent-warm) !important;
+}
+
+.ordinaryPrompt {
+  max-width: 44rem;
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: clamp(1.12rem, 2.2vw, 1.5rem);
+  line-height: 1.55;
+  animation: quiet-copy-arrival 280ms ease-out both;
 }
 
 .skyWash {
@@ -355,63 +536,7 @@
   line-height: 1;
 }
 
-.numberedEssay {
-  border-top: 1px solid var(--border);
-}
-
-.numberedEssay section {
-  display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr);
-  gap: 1.25rem;
-  border-bottom: 1px solid var(--border);
-  padding: 1.7rem 0;
-}
-
-.numberedEssay section > span {
-  color: var(--accent-warm);
-  font-family: var(--font-serif);
-  font-size: 2.35rem;
-  line-height: 1;
-}
-
-.numberedEssay section > div {
-  display: grid;
-  gap: 0.55rem;
-}
-
-.numberedEssay h2,
-.contextSequence h2,
-.toolLines h2 {
-  font-family: var(--font-serif);
-  font-size: clamp(1.45rem, 2.6vw, 2rem);
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.numberedEssay p,
-.contextSequence p,
-.toolLines p {
-  color: var(--muted-foreground);
-  line-height: 1.78;
-}
-
-.contextSequence {
-  display: grid;
-  border-top: 1px solid var(--border);
-}
-
-.contextSequence section {
-  display: grid;
-  gap: 0.5rem;
-  border-bottom: 1px solid var(--border);
-  padding: 1.45rem 0;
-}
-
-.contextSequence section > span,
-.safetyNotes span,
-.returnStories span,
-.milestoneSpread span,
-.conversationLines span {
+.milestoneSpread span {
   color: var(--accent-warm);
   font-size: 0.76rem;
   font-weight: 750;
@@ -421,90 +546,381 @@
 
 .closingSentence {
   max-width: 47rem;
-  border-left: 2px solid var(--success);
-  padding-left: 1.4rem;
   font-size: 1.12rem;
   line-height: 1.8;
 }
 
-.toolLines {
-  display: grid;
-  border-top: 1px solid var(--border);
-}
-
-.toolLines section {
-  display: grid;
-  gap: 0.7rem;
-  border-bottom: 1px solid var(--border);
-  padding: 1.55rem 0;
-}
-
-.protectionSpread {
-  display: grid;
-  gap: 2rem;
-  border-block: 1px solid var(--border);
-  padding-block: 2rem;
-}
-
-.protectionSpread > div {
-  display: grid;
-  gap: 1.15rem;
-  color: var(--muted-foreground);
-  font-size: 1.03rem;
-  line-height: 1.8;
-}
-
-.protectionSpread blockquote {
-  align-self: start;
-  margin: 0;
-  color: var(--lesson-ink);
-  font-family: var(--font-serif);
-  font-size: clamp(1.55rem, 3vw, 2.25rem);
-  line-height: 1.35;
-}
-
-.safetyNotes,
-.returnStories {
+.toolPractice {
   display: grid;
   gap: 1.5rem;
 }
 
-.safetyNotes section,
-.returnStories section {
+.toolVisual {
+  aspect-ratio: 720 / 320;
+}
+
+.toolWash {
+  fill: #edf2ed;
+}
+
+.foodSteam {
+  fill: none;
+  stroke: #809a90;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.medicineBottle {
+  fill: #f8f1e8;
+  stroke: #6c8b7d;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.medicineSignal {
+  fill: #d79a6f;
+}
+
+.meterShape {
+  fill: #fffaf2;
+  stroke: #597a6b;
+  stroke-width: 4;
+}
+
+.meterScreen {
+  fill: #b8d1c2;
+}
+
+.toolChoices {
+  justify-content: space-between;
+}
+
+.toolCopy {
+  min-height: 11rem;
+}
+
+.bodyLab,
+.numberExplorer,
+.protectionExplorer,
+.returnExplorer,
+.supportPractice {
   display: grid;
-  gap: 0.6rem;
-  border-left: 2px solid color-mix(in srgb, var(--success) 55%, var(--border));
-  padding-left: 1.25rem;
+  gap: 1.5rem;
 }
 
-.safetyNotes p,
-.returnStories p {
+.organVisual,
+.protectionVisual {
+  overflow: hidden;
+  aspect-ratio: 720 / 430;
+  background: #edf1ee;
+}
+
+.returnVisual,
+.supportVisual {
+  overflow: hidden;
+  aspect-ratio: 720 / 320;
+  background: #f0eee7;
+}
+
+.organWash {
+  fill: #e9f0ed;
+}
+
+.organHalo {
+  fill: #f7f2e8;
+  opacity: 0.82;
+}
+
+.bodyOutline,
+.protectionBody {
+  fill: color-mix(in srgb, #ffffff 72%, #d8e2dc 28%);
+  stroke: #789083;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.esophagusShape {
+  fill: none;
+  stroke: #c38b76;
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.liverShape {
+  fill: #b87966;
+  stroke: #8d5c50;
+  stroke-width: 3;
+}
+
+.stomachShape {
+  fill: #d79a83;
+  stroke: #a96857;
+  stroke-width: 3;
+  transform-origin: 373px 239px;
+}
+
+.pancreasShape {
+  fill: #e3b269;
+  stroke: #ae7f3d;
+  stroke-width: 3;
+}
+
+.intestineShape {
+  fill: none;
+  stroke: #c98974;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 12;
+}
+
+.muscleShape {
+  fill: #8eada0;
+  stroke: #5b7c6d;
+  stroke-width: 3;
+}
+
+.organShapeActive {
+  filter: drop-shadow(0 0 12px rgb(199 124 98 / 36%));
+}
+
+.bloodRoute {
+  fill: none;
+  stroke: #9db4ad;
+  stroke-dasharray: 8 11;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.digestionMotion {
+  fill: #d8955c;
+  stroke: #fff9ef;
+  stroke-width: 3;
+}
+
+.insulinMotion {
+  fill: #5f947b;
+  stroke: #f5faf6;
+  stroke-width: 3;
+}
+
+.liverMotion {
+  fill: #d5a356;
+  stroke: #fff7e7;
+  stroke-width: 3;
+}
+
+.muscleMotion {
+  fill: #d5a356;
+  stroke: #fff7e7;
+  stroke-width: 3;
+}
+
+.musclePulse {
+  fill: none;
+  stroke: #507766;
+  stroke-linecap: round;
+}
+
+.organChoices,
+.numberChoices,
+.protectionChoices,
+.returnChoices,
+.supportChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem clamp(1.1rem, 3.5vw, 2.5rem);
+  justify-content: space-between;
+}
+
+.organChoices button,
+.numberChoices button,
+.protectionChoices button,
+.returnChoices button,
+.supportChoices button {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  padding: 0.55rem 0;
   color: var(--muted-foreground);
-  line-height: 1.75;
+  font-weight: 650;
+  text-align: left;
 }
 
-.conversationEssay {
+.organChoices button > span,
+.numberChoices button > span,
+.protectionChoices button > span,
+.returnChoices button > span,
+.supportChoices button > span {
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  font-weight: 500;
+}
+
+.organChoices button:hover,
+.numberChoices button:hover,
+.protectionChoices button:hover,
+.returnChoices button:hover,
+.supportChoices button:hover,
+.organChoiceActive,
+.numberChoiceActive,
+.protectionChoiceActive,
+.returnChoiceActive,
+.supportChoiceActive {
+  color: var(--lesson-ink) !important;
+}
+
+.organChoiceActive,
+.numberChoiceActive,
+.protectionChoiceActive,
+.returnChoiceActive,
+.supportChoiceActive {
+  border-bottom-color: var(--accent-warm) !important;
+  background: color-mix(in srgb, var(--accent-warm) 7%, transparent) !important;
+}
+
+.organCopy,
+.protectionCopy,
+.returnCopy,
+.supportCopy {
+  display: grid;
+  gap: 0.8rem;
+  max-width: 49rem;
+  min-height: 10.5rem;
+  animation: quiet-copy-arrival 280ms ease-out both;
+}
+
+.organCopy h2,
+.protectionCopy h2,
+.returnCopy h2,
+.supportCopy h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.65rem, 3.1vw, 2.4rem);
+  font-weight: 500;
+  line-height: 1.18;
+}
+
+.organCopy > p:not(:first-child),
+.protectionCopy > p:not(:first-child),
+.returnCopy > p:not(:first-child) {
+  color: var(--muted-foreground);
+  font-size: 1.03rem;
+  line-height: 1.78;
+}
+
+.organCopy em,
+.protectionCopy em {
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.5;
+}
+
+.numberReading {
   display: grid;
   gap: 2rem;
-  color: var(--muted-foreground);
-  font-size: 1.04rem;
-  line-height: 1.8;
-}
-
-.conversationLines {
+  align-items: start;
   border-block: 1px solid var(--border);
+  padding-block: clamp(1.5rem, 4vw, 2.5rem);
+  animation: quiet-copy-arrival 280ms ease-out both;
 }
 
-.conversationLines p {
+.numberReading > div {
   display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr);
-  gap: 1rem;
-  border-bottom: 1px solid var(--border);
-  padding: 1rem 0;
+  gap: 0.6rem;
 }
 
-.conversationLines p:last-child {
-  border-bottom: 0;
+.numberReading h2,
+.numberReading > div:last-child > p:last-child {
+  max-width: 41rem;
+  color: var(--lesson-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.45rem, 2.7vw, 2rem);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.numberWindow span {
+  color: var(--muted-foreground);
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.numberWindow strong {
+  color: var(--success);
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 7vw, 5.4rem);
+  font-weight: 500;
+  line-height: 0.95;
+}
+
+.protectionWash {
+  fill: #eef1eb;
+}
+
+.returnWash {
+  fill: #edf2ee;
+}
+
+.eyeShapes {
+  fill: #5d7d72;
+}
+
+.heartShape {
+  fill: #c97866;
+}
+
+.kidneyShapes {
+  fill: #a87868;
+}
+
+.footShapes {
+  fill: #719485;
+}
+
+.protectionPulse {
+  fill: none;
+  stroke: #c77962;
+  stroke-width: 6;
+}
+
+.returnCopy {
+  min-height: 8.5rem;
+}
+
+.supportWash {
+  fill: #f1eee6;
+}
+
+.supportBasket {
+  fill: none;
+  stroke: #a17350;
+  stroke-linejoin: round;
+  stroke-width: 5;
+}
+
+.boundaryHand {
+  fill: none;
+  stroke: #c77962;
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+.supportWarmth {
+  fill: #e8b675;
+}
+
+.supportCopy blockquote {
+  margin: 0;
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 2.7vw, 1.9rem);
+  line-height: 1.45;
 }
 
 .nextPhase {
@@ -517,8 +933,6 @@
 
 .nextPhase blockquote {
   margin: 0;
-  border-left: 2px solid var(--accent-warm);
-  padding-left: 1.35rem;
   color: var(--lesson-ink);
   font-family: var(--font-serif);
   font-size: clamp(1.4rem, 2.8vw, 2rem);
@@ -609,8 +1023,6 @@
 .whatYouCarry {
   display: grid;
   gap: 0.8rem;
-  border-left: 2px solid var(--accent-warm);
-  padding-left: 1.35rem;
 }
 
 .whatYouCarry > p:not(:first-child),
@@ -692,43 +1104,13 @@
     grid-template-columns: minmax(14rem, 0.72fr) minmax(0, 1.28fr);
   }
 
-  .beforeAfter,
   .editorialColumns,
-  .protectionSpread,
   .milestoneSpread {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .beforeAfter section {
-    padding: 2.2rem 2rem 2.2rem 0;
-  }
-
-  .beforeAfter section + section {
-    border-top: 0;
-    border-left: 1px solid var(--border);
-    padding-right: 0;
-    padding-left: 2rem;
-  }
-
-  .contextSequence,
-  .toolLines {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .contextSequence section:nth-child(odd),
-  .toolLines section:nth-child(odd) {
-    padding-right: 1.75rem;
-  }
-
-  .contextSequence section:nth-child(even),
-  .toolLines section:nth-child(even) {
-    border-left: 1px solid var(--border);
-    padding-left: 1.75rem;
-  }
-
-  .safetyNotes,
-  .returnStories {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .numberReading {
+    grid-template-columns: 0.8fr 1.15fr 1.05fr;
   }
 
   .milestoneSpread section {
@@ -737,7 +1119,6 @@
 
   .milestoneSpread section + section {
     border-top: 0;
-    border-left: 1px solid var(--border);
     padding-right: 0;
     padding-left: 2rem;
   }
