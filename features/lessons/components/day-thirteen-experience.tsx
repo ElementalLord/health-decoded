@@ -984,6 +984,169 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
   );
 }
 
+const boundaryBuilder = {
+  acknowledge: [
+    "I know you care about me.",
+    "I hear that you want to help.",
+    "Thank you for thinking of me.",
+  ],
+  limit: [
+    "Please don't comment on my plate.",
+    "I'm keeping my readings private.",
+    "I'd rather my health not be a joke.",
+  ],
+  redirect: [
+    "You can ask how I'm feeling instead.",
+    "Ask me about my day instead.",
+    "I'll ask if I want advice.",
+  ],
+} as const;
+
+type BoundaryPartKey = keyof typeof boundaryBuilder;
+
+function ComposeBoundary() {
+  const [picked, setPicked] = useState<Record<BoundaryPartKey, number | null>>({
+    acknowledge: null,
+    limit: null,
+    redirect: null,
+  });
+
+  const order: { key: BoundaryPartKey; title: string }[] = [
+    { key: "acknowledge", title: "Acknowledge the person" },
+    { key: "limit", title: "Name the limit" },
+    { key: "redirect", title: "Offer another way in" },
+  ];
+
+  const complete = order.every(({ key }) => picked[key] !== null);
+  const sentence = order
+    .map(({ key }) => (picked[key] !== null ? boundaryBuilder[key][picked[key] as number] : null))
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div className={styles.composer}>
+      <div className={styles.composerHead}>
+        <p className="editorial-eyebrow">Build a boundary you could actually say</p>
+        <p>Pick one phrase from each row. Warm, then firm, then open, in a single breath.</p>
+      </div>
+      <div className={styles.composerRows}>
+        {order.map(({ key, title }) => (
+          <div className={styles.composerRow} key={key}>
+            <p className={styles.composerRowTitle}>{title}</p>
+            <div aria-label={title} className={styles.composerTiles} role="group">
+              {boundaryBuilder[key].map((phrase, index) => (
+                <button
+                  aria-pressed={picked[key] === index}
+                  className={cn(
+                    styles.composerTile,
+                    picked[key] === index && styles.composerTileActive,
+                  )}
+                  key={phrase}
+                  onClick={() =>
+                    setPicked((current) => ({
+                      ...current,
+                      [key]: current[key] === index ? null : index,
+                    }))
+                  }
+                  type="button"
+                >
+                  {phrase}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div
+        aria-live="polite"
+        className={cn(styles.composerResult, complete && styles.composerResultReady)}
+      >
+        {sentence ? (
+          <p className={styles.composerSentence}>“{sentence}”</p>
+        ) : (
+          <p className={styles.composerPlaceholder}>
+            Your boundary will appear here as you build it.
+          </p>
+        )}
+        {complete ? (
+          <p className={styles.composerNote}>
+            No debate, no medical lecture, no apology. The relationship gets a clearer way to care.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+const disclosureItems = [
+  { id: "numbers", label: "My exact glucose numbers" },
+  { id: "meds", label: "Which medicines I take" },
+  { id: "feelings", label: "How I'm feeling about it" },
+  { id: "appointments", label: "What happens at my appointments" },
+  { id: "plate", label: "What is on my plate" },
+] as const;
+
+type DisclosureId = (typeof disclosureItems)[number]["id"];
+
+function DisclosureControl() {
+  const [shared, setShared] = useState<Set<DisclosureId>>(() => new Set());
+  const count = shared.size;
+  const total = disclosureItems.length;
+
+  return (
+    <div className={styles.disclosure}>
+      <div className={styles.disclosureHead}>
+        <p className="editorial-eyebrow">What you share is a choice, one item at a time</p>
+        <p>Set each one where it feels right today. You can change your mind any time.</p>
+      </div>
+      <ul className={styles.disclosureList}>
+        {disclosureItems.map((item) => {
+          const isShared = shared.has(item.id);
+          return (
+            <li className={styles.disclosureRow} key={item.id}>
+              <span className={styles.disclosureLabel}>{item.label}</span>
+              <div aria-label={item.label} className={styles.disclosureToggle} role="group">
+                <button
+                  aria-pressed={!isShared}
+                  className={cn(
+                    styles.disclosureOption,
+                    !isShared && styles.disclosureOptionActive,
+                  )}
+                  onClick={() =>
+                    setShared((current) => {
+                      const next = new Set(current);
+                      next.delete(item.id);
+                      return next;
+                    })
+                  }
+                  type="button"
+                >
+                  Keep private
+                </button>
+                <button
+                  aria-pressed={isShared}
+                  className={cn(styles.disclosureOption, isShared && styles.disclosureOptionActive)}
+                  onClick={() => setShared((current) => new Set(current).add(item.id))}
+                  type="button"
+                >
+                  Open to share
+                </button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      <p aria-live="polite" className={styles.disclosureSummary}>
+        {count === 0
+          ? "Everything is private right now. That is a complete and valid answer."
+          : count === total
+            ? "You are open to sharing all of it, if that is what you want. Also valid."
+            : `You would keep ${total - count} private and share ${count}. There is no right number; it is yours to decide.`}
+      </p>
+    </div>
+  );
+}
+
 export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -1393,6 +1556,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               ))}
             </div>
             <BoundaryConversationAnimation scenario={activeBoundary} />
+            <ComposeBoundary />
             <div className={styles.teachBack}>
               <p className="editorial-eyebrow">Choose the response that protects your peace</p>
               <div className="mt-5 grid gap-3">
@@ -1442,6 +1606,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 </blockquote>
               </div>
             </div>
+            <DisclosureControl />
             <div className={styles.teachBack}>
               <h2>Which response protects both the need and the person’s privacy?</h2>
               <div className="mt-5 grid gap-3">

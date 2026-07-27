@@ -189,6 +189,174 @@
   line-height: 1.7;
 }
 
+.composer {
+  overflow: hidden;
+  border: 1px solid rgb(85 121 106 / 20%);
+  border-radius: 12px;
+  background: #f4f1e8;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.composerHead {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.composerHead p:last-child {
+  color: #6a7a70;
+  line-height: 1.6;
+}
+
+.composerRows {
+  display: grid;
+  gap: 1rem;
+}
+
+.composerRowTitle {
+  margin-bottom: 0.5rem;
+  color: #55796a;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.composerTiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.composerTile {
+  border: 1px solid rgb(85 121 106 / 22%);
+  border-radius: 9px;
+  background: #fffdf8;
+  padding: 0.55rem 0.85rem;
+  color: #405750;
+  line-height: 1.5;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease;
+}
+
+.composerTile:hover {
+  border-color: rgb(85 121 106 / 45%);
+}
+
+.composerTile:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: 2px;
+}
+
+.composerTileActive {
+  border-color: #55796a;
+  background: #e5efe8;
+  color: #2f4f45;
+}
+
+.composerResult {
+  margin-top: 1.25rem;
+  border-top: 1px dashed rgb(85 121 106 / 25%);
+  padding-top: 1.1rem;
+}
+
+.composerSentence {
+  color: #2f4f45;
+  font-family: var(--font-serif, serif);
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+  line-height: 1.5;
+}
+
+.composerPlaceholder {
+  color: #8a978f;
+  font-style: italic;
+}
+
+.composerNote {
+  margin-top: 0.7rem;
+  color: #6a7a70;
+  line-height: 1.6;
+}
+
+.disclosure {
+  overflow: hidden;
+  border: 1px solid rgb(85 121 106 / 20%);
+  border-radius: 12px;
+  background: #f4f1e8;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.disclosureHead {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.disclosureHead p:last-child {
+  color: #6a7a70;
+  line-height: 1.6;
+}
+
+.disclosureList {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.disclosureRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgb(85 121 106 / 12%);
+  padding-bottom: 0.6rem;
+}
+
+.disclosureLabel {
+  color: #405750;
+  line-height: 1.5;
+}
+
+.disclosureToggle {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid rgb(85 121 106 / 25%);
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.disclosureOption {
+  border: none;
+  background: transparent;
+  padding: 0.42rem 0.85rem;
+  color: #6a7a70;
+  font-size: 0.9rem;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.disclosureOption:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: -2px;
+}
+
+.disclosureOptionActive {
+  background: #e5efe8;
+  color: #2f4f45;
+  font-weight: 600;
+}
+
+.disclosureSummary {
+  margin-top: 1.1rem;
+  color: #55796a;
+  font-style: italic;
+  line-height: 1.7;
+}
+
 .boundaryTranscript {
   display: grid;
   background: #fffaf2;
