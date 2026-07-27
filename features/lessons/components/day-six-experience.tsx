@@ -694,7 +694,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
             </div>
             <LessonStoryImage
               alt="Three adult friends laugh together during an easy early-evening walk through their neighborhood"
-              caption="A comfortable walk after a meal is one option—not a rule. The useful plan is the one that fits your body, schedule, and company."
+              caption="A comfortable walk after a meal is one option, not a rule. The useful plan is the one that fits your body, schedule, and company."
               emphasis="Movement can fit the moment."
               priority
               src="/lessons/day-06/after-dinner-walk.jpg"
