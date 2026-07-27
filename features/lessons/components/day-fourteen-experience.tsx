@@ -30,7 +30,7 @@ const ordinaryMoments = [
   {
     id: "breakfast",
     label: "Breakfast",
-    prompt: "At the table, balance can be an addition—not a punishment or a brand-new identity.",
+    prompt: "At the table, balance can be an addition, not a punishment or a brand-new identity.",
   },
   {
     id: "friendship",
@@ -70,7 +70,7 @@ const everydayTools = [
     title: "Movement can carry company and joy.",
   },
   {
-    body: "Knowing a medicine’s name, purpose, timing, and safety notes makes it a tool you can understand—not a symbol of failure or a mystery you must quietly manage.",
+    body: "Knowing a medicine’s name, purpose, timing, and safety notes makes it a tool you can understand, not a symbol of failure or a mystery you must quietly manage.",
     id: "medicine",
     invitation: "Which medicine question would bring relief?",
     label: "With medicine",
@@ -110,7 +110,7 @@ const bodySystems = [
     title: "The liver stores and releases fuel.",
   },
   {
-    body: "Muscle cells use glucose for energy. When muscles work, they can take up glucose through more than one pathway—which is why comfortable, adapted movement can be one useful tool.",
+    body: "Muscle cells use glucose for energy. When muscles work, they can take up glucose through more than one pathway, which is why comfortable, adapted movement can be one useful tool.",
     id: "muscle",
     label: "Muscle",
     notice: "Working muscle pulls fuel from the bloodstream.",
@@ -862,7 +862,7 @@ function ThenNowStory() {
         <p>
           {isNow
             ? "You can name what is happening, add timing and context, choose one useful tool, and ask for help when the question belongs with someone else."
-            : "New words, new numbers, and new decisions can arrive all at once. It can be hard to know which question belongs first—or whether one moment has already decided the future."}
+            : "New words, new numbers, and new decisions can arrive all at once. It can be hard to know which question belongs first, or whether one moment has already decided the future."}
         </p>
         <em>
           {isNow
@@ -2270,7 +2270,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <p className={styles.lede}>
               Today is not an exam and it is not a finale. It is a quiet place to notice what has
-              become clearer—and what you can now carry into real life.
+              become clearer, and what you can now carry into real life.
             </p>
 
             <LessonStoryImage
@@ -2335,7 +2335,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               <p>
                 <span>Y</span>ou learned what insulin resistance means so the diagnosis could become
                 understandable instead of mysterious. You learned to see food, movement, medication,
-                and monitoring as tools—not tests of character.
+                and monitoring as tools, not tests of character.
               </p>
               <p>
                 Then the circle widened: safety, prevention, problem solving, support, and the
@@ -2354,7 +2354,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <p className={styles.lede}>
               Choose a body system and follow what it does. Each organ stays visible so the
-              animation feels like one connected body—not four unrelated diagrams.
+              animation feels like one connected body, not four unrelated diagrams.
             </p>
             <BodySystemLab />
             <blockquote className={styles.pullQuote}>
@@ -2431,7 +2431,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <p className={styles.lede}>
               Choose what would actually help today. The scene and response change because support
-              should follow the person’s request—not the helper’s guess.
+              should follow the person’s request, not the helper’s guess.
             </p>
             <SupportPractice />
             <blockquote className={styles.pullQuote}>
@@ -2449,7 +2449,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <LessonStoryImage
               alt="A grandfather and his teenage granddaughter laugh together while planting herbs in a neighborhood garden"
-              caption="Health knowledge matters because it supports a life with people, plans, ordinary pleasures, and new seasons—not because health must become the center of every day."
+              caption="Health knowledge matters because it supports a life with people, plans, ordinary pleasures, and new seasons, not because health must become the center of every day."
               emphasis="The goal is more life, not more diabetes."
               height={941}
               src="/lessons/day-14/life-keeps-growing.jpg"
@@ -2548,8 +2548,8 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               <MessageCircleHeart aria-hidden="true" />
               <p>
                 You do not need to know everything today. You do not need to be perfect tomorrow.
-                The foundation has done its job when it helps you recognize the next useful step—and
-                trust yourself enough to take it.
+                The foundation has done its job when it helps you recognize the next useful step,
+                and trust yourself enough to take it.
               </p>
               <span>Day 15 begins with understanding behind you and practice in front of you.</span>
             </div>

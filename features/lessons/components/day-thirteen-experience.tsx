@@ -1409,7 +1409,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 <blockquote>
                   “
                   {supportRequest ??
-                    "Could you listen for ten minutes? I do not need an answer—just company."}
+                    "Could you listen for ten minutes? I do not need an answer, just company."}
                   ”
                 </blockquote>
                 <p>
@@ -1473,7 +1473,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className="space-y-9">
             <LessonHeading label="Disclosure belongs to you">
-              Share what supports the need—not everything you know.
+              Share what supports the need, not everything you know.
             </LessonHeading>
             <div className={styles.privacyStory}>
               <div>
@@ -1606,7 +1606,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             <div className={styles.reassurance}>
               <HeartHandshake aria-hidden="true" />
               <p>
-                You are allowed to protect a relationship by changing the conversation—and to
+                You are allowed to protect a relationship by changing the conversation, and to
                 protect yourself when the relationship will not change.
               </p>
             </div>
@@ -1723,7 +1723,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 <p className="editorial-eyebrow">Try one small, specific ask</p>
                 <p className="mt-3 font-serif-display text-2xl leading-snug">
                   {supportRequest ??
-                    "Could you listen for ten minutes? I do not need an answer—just company."}
+                    "Could you listen for ten minutes? I do not need an answer, just company."}
                 </p>
               </div>
               <div>
