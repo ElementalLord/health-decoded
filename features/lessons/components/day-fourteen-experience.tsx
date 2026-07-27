@@ -440,8 +440,8 @@ function OrdinaryLifeMotion() {
             strokeWidth="3"
           />
           <g className={styles.questionLines}>
-            <path d="M581 116h54" />
-            <path d="M591 102h34" />
+            <path d="M581 150h54" />
+            <path d="M591 136h34" />
             <animate
               attributeName="opacity"
               dur="4s"
@@ -737,13 +737,13 @@ function ThenNowStory() {
                 strokeLinecap="round"
                 strokeWidth="4"
               />
-              <path d="M388 211 L418 169" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
+              <path d="M372 209 L402 171" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
                 <animateTransform
                   attributeName="transform"
                   dur="2.6s"
                   repeatCount="indefinite"
                   type="rotate"
-                  values="-4 388 211;5 388 211;-4 388 211"
+                  values="-4 372 209;5 372 209;-4 372 209"
                 />
               </path>
               <path d="M326 111 H412 M342 94 H396" className={styles.sharedQuestion}>
@@ -1018,13 +1018,13 @@ function ToolPracticeStudio() {
                 strokeLinecap="round"
                 strokeWidth="4"
               />
-              <path d="M460 210 L484 169" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
+              <path d="M446 208 L470 167" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
                 <animateTransform
                   attributeName="transform"
                   dur="2.6s"
                   repeatCount="indefinite"
                   type="rotate"
-                  values="-4 460 210;5 460 210;-4 460 210"
+                  values="-4 446 208;5 446 208;-4 446 208"
                 />
               </path>
               <path d="M344 179 H390" stroke="#b8d1c2" strokeLinecap="round" strokeWidth="9">
