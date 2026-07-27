@@ -67,6 +67,111 @@
   line-height: 1.7;
 }
 
+.steady,
+.planKit {
+  overflow: hidden;
+  border: 1px solid rgb(199 124 98 / 20%);
+  border-radius: 14px;
+  background: #f4ebe1;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.steadySvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0.4rem 0 0.9rem;
+}
+
+.steadySlider {
+  width: 100%;
+  accent-color: #b96c55;
+  cursor: pointer;
+}
+
+.steadyLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+  color: #8a7a6d;
+  font-size: 0.82rem;
+}
+
+.planKitBody {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .planKitBody {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.planPieces {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+}
+
+.planPiece {
+  border: 1px solid rgb(157 113 74 / 28%);
+  border-radius: 9px;
+  background: #fffdf8;
+  padding: 0.6rem 0.85rem;
+  color: #5a4a3d;
+  text-align: left;
+  line-height: 1.45;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.planPiece:hover {
+  border-color: rgb(157 113 74 / 55%);
+}
+
+.planPiece:focus-visible {
+  outline: 2px solid #b96c55;
+  outline-offset: 2px;
+}
+
+.planPieceAdded {
+  border-color: #6f947a;
+  background: #e7efe7;
+  color: #33564a;
+}
+
+.planCard {
+  border: 1px solid rgb(111 148 122 / 30%);
+  border-radius: 12px;
+  background: #fffdf8;
+  padding: 1rem 1.1rem;
+}
+
+.planCardTitle {
+  margin-bottom: 0.6rem;
+  color: #55796a;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.planCardEmpty {
+  color: #9a8a7d;
+  font-style: italic;
+}
+
+.planCardList {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #47605a;
+  line-height: 1.5;
+}
+
 .answerChoice:hover {
   transform: translateY(-2px);
   border-color: #9fb5a8;

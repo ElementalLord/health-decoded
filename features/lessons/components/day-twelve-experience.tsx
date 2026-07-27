@@ -1242,6 +1242,133 @@ function RerouteTheDay() {
   );
 }
 
+function SteadyStory() {
+  const [value, setValue] = useState(0);
+  const t = value / 100;
+  const changedIndex = 3;
+
+  return (
+    <div className={styles.steady}>
+      <div className={styles.rerouteHead}>
+        <p className="editorial-eyebrow">The first move is the story you tell</p>
+        <p>
+          Slide from “the whole day is ruined” toward “one part changed,” and watch most of the day
+          steady itself.
+        </p>
+      </div>
+      <svg aria-hidden="true" className={styles.steadySvg} viewBox="0 0 720 190">
+        <path d="M40 158 H680" stroke="#cbb9a8" strokeWidth="2" />
+        {[0, 1, 2, 3, 4, 5].map((index) => {
+          const isChanged = index === changedIndex;
+          const tilt = isChanged ? 7 : 40 * (1 - t);
+          const x = 96 + index * 100;
+          const green = Math.round(150 + 22 * t);
+          const red = Math.round(150 - 36 * t);
+          const fill = isChanged ? "#c7785f" : `rgb(${red} ${green} 140)`;
+          return (
+            <g key={index} transform={`rotate(${tilt} ${x} 158)`}>
+              <rect fill={fill} height="72" rx="8" width="26" x={x - 13} y="86" />
+            </g>
+          );
+        })}
+      </svg>
+      <input
+        aria-label="Slide from the whole day is ruined toward one part changed"
+        className={styles.steadySlider}
+        max={100}
+        min={0}
+        onChange={(event) => setValue(Number(event.target.value))}
+        type="range"
+        value={value}
+      />
+      <div aria-hidden="true" className={styles.steadyLabels}>
+        <span>The whole day is ruined</span>
+        <span>One part changed</span>
+      </div>
+      <p aria-live="polite" className={styles.rerouteCaption}>
+        {t < 0.34
+          ? "When one thing goes wrong, the mind can knock the whole day over."
+          : t < 0.75
+            ? "Look again. Most of the day is still standing."
+            : "One part changed. The rest of the day is still yours to use."}
+      </p>
+    </div>
+  );
+}
+
+const sickPlanPieces = [
+  { id: "fluids", label: "How I will keep fluids up" },
+  { id: "monitor", label: "When I will check glucose" },
+  { id: "medicine", label: "My medicine sick-day notes" },
+  { id: "signs", label: "Warning signs that mean call now" },
+  { id: "contacts", label: "Who to call, and their number" },
+] as const;
+type SickPlanId = (typeof sickPlanPieces)[number]["id"];
+
+function PackSickDayPlan() {
+  const [added, setAdded] = useState<Set<SickPlanId>>(() => new Set());
+  const total = sickPlanPieces.length;
+
+  return (
+    <div className={styles.planKit}>
+      <div className={styles.rerouteHead}>
+        <p className="editorial-eyebrow">Write the plan before you are unwell</p>
+        <p>
+          Tap each piece to write it into your sick-day plan. A plan made while well is easier to
+          follow than a decision made while ill.
+        </p>
+      </div>
+      <div className={styles.planKitBody}>
+        <div aria-label="Sick-day plan pieces" className={styles.planPieces} role="group">
+          {sickPlanPieces.map((piece) => {
+            const isAdded = added.has(piece.id);
+            return (
+              <button
+                aria-pressed={isAdded}
+                className={cn(styles.planPiece, isAdded && styles.planPieceAdded)}
+                key={piece.id}
+                onClick={() =>
+                  setAdded((current) => {
+                    const next = new Set(current);
+                    if (next.has(piece.id)) {
+                      next.delete(piece.id);
+                    } else {
+                      next.add(piece.id);
+                    }
+                    return next;
+                  })
+                }
+                type="button"
+              >
+                {piece.label}
+              </button>
+            );
+          })}
+        </div>
+        <div className={styles.planCard}>
+          <p className={styles.planCardTitle}>My sick-day plan</p>
+          {added.size === 0 ? (
+            <p className={styles.planCardEmpty}>Tap the pieces and they appear here, in order.</p>
+          ) : (
+            <ul className={styles.planCardList}>
+              {sickPlanPieces
+                .filter((piece) => added.has(piece.id))
+                .map((piece) => (
+                  <li key={piece.id}>{piece.label}</li>
+                ))}
+            </ul>
+          )}
+        </div>
+      </div>
+      <p aria-live="polite" className={styles.rerouteCaption}>
+        {added.size === total
+          ? "Your plan is written. Future-you, tired and unwell, will be glad it already exists."
+          : `${added.size} of ${total} written. Keep it somewhere you can find it fast.`}
+      </p>
+    </div>
+  );
+}
+
 export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -1479,6 +1606,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 </p>
               </div>
             </div>
+            <SteadyStory />
             <div className={styles.teachBack}>
               <p className={styles.promptTitle}>Which response uses the four-step solver?</p>
               <div className="mt-6 grid gap-3">
@@ -1583,6 +1711,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               src="/lessons/day-12/sick-day-support.jpg"
             />
             <SickDayBodyAnimation priority={sickPriority} />
+            <PackSickDayPlan />
             <div>
               <p className={styles.promptTitle}>Explore the anchors of a personal sick-day plan.</p>
               <div className={styles.priorityList}>
