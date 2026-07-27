@@ -349,9 +349,6 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
 
         <path d="M545 310 H822" stroke="#876f5d" strokeLinecap="round" strokeWidth="14" />
         <path d="M579 313 L568 370 M785 313 L797 370" stroke="#876f5d" strokeWidth="11" />
-        <rect fill="#fffaf2" height="61" rx="6" stroke="#91aa9d" width="103" x="695" y="239" />
-        <rect fill="#c8dad2" height="10" rx="3" width="65" x="714" y="257" />
-        <rect fill="#e5d4bd" height="8" rx="3" width="49" x="714" y="275" />
         <LessonMotionPerson
           action={activeStep === "choose" ? "reach-right" : "rest"}
           motion={activeStep === "pause" ? "breathe" : "nod"}
@@ -363,48 +360,15 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
         />
 
         {activeStep === "pause" ? (
-          <g key="pause">
-            <path
-              d="M622 215 C606 201 605 186 620 174"
-              fill="none"
-              stroke="#7ba08d"
-              strokeWidth="5"
-            >
-              <animate
-                attributeName="opacity"
-                dur="3.6s"
-                repeatCount="indefinite"
-                values=".15;1;.15"
-              />
-              <animateTransform
-                attributeName="transform"
-                dur="3.6s"
-                repeatCount="indefinite"
-                type="translate"
-                values="0 7;0 -7;0 7"
-              />
-            </path>
-            <path
-              d="M644 215 C660 201 661 186 646 174"
-              fill="none"
-              stroke="#7ba08d"
-              strokeWidth="5"
-            >
-              <animate
-                attributeName="opacity"
-                dur="3.6s"
-                repeatCount="indefinite"
-                values=".15;1;.15"
-              />
-              <animateTransform
-                attributeName="transform"
-                dur="3.6s"
-                repeatCount="indefinite"
-                type="translate"
-                values="0 7;0 -7;0 7"
-              />
-            </path>
-          </g>
+          <circle cx="633" cy="196" fill="none" r="20" stroke="#7ba08d" strokeWidth="4">
+            <animate attributeName="r" dur="3.6s" repeatCount="indefinite" values="14;24;14" />
+            <animate
+              attributeName="opacity"
+              dur="3.6s"
+              repeatCount="indefinite"
+              values=".15;.7;.15"
+            />
+          </circle>
         ) : null}
 
         {activeStep === "understand" ? (
@@ -435,7 +399,7 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
         {activeStep === "choose" ? (
           <g key="choose">
             <ellipse
-              cx="705"
+              cx="745"
               cy="307"
               fill="#fffaf2"
               rx="53"
@@ -443,15 +407,15 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
               stroke="#c7785f"
               strokeWidth="4"
             />
-            <path d="M670 298 Q706 268 742 298" fill="#eac789" />
-            <path d="M680 294 Q706 277 732 294" fill="#789b88" opacity=".85" />
-            <path d="M663 265 V299" stroke="#789185" strokeLinecap="round" strokeWidth="5">
+            <path d="M710 298 Q746 268 782 298" fill="#eac789" />
+            <path d="M720 294 Q746 277 772 294" fill="#789b88" opacity=".85" />
+            <path d="M703 265 V299" stroke="#789185" strokeLinecap="round" strokeWidth="5">
               <animateTransform
                 attributeName="transform"
                 dur="2.8s"
                 repeatCount="indefinite"
                 type="rotate"
-                values="0 663 299;-8 663 299;0 663 299"
+                values="0 703 299;-8 703 299;0 703 299"
               />
             </path>
           </g>
@@ -570,7 +534,7 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
           strokeWidth="12"
         />
         {[0, 1, 2].map((index) => (
-          <circle fill="#e5b56f" key={index} r="8">
+          <circle fill="#e5b56f" key={index} r="11" stroke="#fff7e7" strokeWidth="3">
             <animateMotion
               begin={`${index * -1.1}s`}
               dur="4.6s"
@@ -580,32 +544,6 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
             <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
           </circle>
         ))}
-
-        <g>
-          <circle cx="176" cy="185" fill="#c97b67" r="13" />
-          <path
-            d="M166 173 l-14 -16 M187 173 l15 -16"
-            stroke="#9f5c51"
-            strokeLinecap="round"
-            strokeWidth="5"
-          />
-          <path
-            d="M186 191 C240 220 300 285 340 315"
-            fill="none"
-            stroke="#c97b67"
-            strokeLinecap="round"
-            strokeWidth="3"
-            opacity=".45"
-          />
-          <circle fill="#d57e63" r="7">
-            <animateMotion
-              dur="4.6s"
-              path="M187 191 C240 220 300 285 340 315"
-              repeatCount="indefinite"
-            />
-            <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
-          </circle>
-        </g>
 
         <rect
           fill="#fffaf2"

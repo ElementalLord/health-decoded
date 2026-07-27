@@ -729,16 +729,7 @@ function BoundaryConversationAnimation({
         ) : null}
         {scenario.id === "friend" ? (
           <g key="friend">
-            <rect
-              fill="#405750"
-              height="89"
-              rx="10"
-              stroke="#55796a"
-              strokeWidth="4"
-              width="55"
-              x="443"
-              y="184"
-            >
+            <g>
               <animateTransform
                 attributeName="transform"
                 dur="6s"
@@ -747,8 +738,18 @@ function BoundaryConversationAnimation({
                 type="rotate"
                 values="0 470 273;0 470 273;90 470 273;90 470 273"
               />
-            </rect>
-            <rect fill="#b8d1c2" height="25" rx="3" width="35" x="453" y="198" />
+              <rect
+                fill="#405750"
+                height="89"
+                rx="10"
+                stroke="#55796a"
+                strokeWidth="4"
+                width="55"
+                x="443"
+                y="184"
+              />
+              <rect fill="#b8d1c2" height="25" rx="3" width="35" x="453" y="198" />
+            </g>
           </g>
         ) : null}
       </svg>
