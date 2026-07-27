@@ -541,7 +541,7 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
         />
         <path d="M398 115 V180" stroke="#c98b76" strokeLinecap="round" strokeWidth="7" />
         <path
-          d="M321 192 Q364 155 425 179 Q454 190 456 217 Q457 249 423 266 Q376 280 336 258 Q309 242 321 192 Z"
+          d="M394 178 C366 174 332 190 330 226 C328 260 350 288 390 288 C416 288 434 276 434 256 C433 240 420 236 410 230 C405 210 404 194 398 186 C397 182 396 180 394 178 Z"
           fill="#b87361"
           stroke="#955645"
           strokeWidth="4"
@@ -549,17 +549,10 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
           <animate attributeName="opacity" dur="3.8s" repeatCount="indefinite" values=".72;1;.72" />
         </path>
         <path
-          d="M420 222 Q470 200 481 244 Q488 273 463 300 Q449 315 455 341 Q420 335 404 309 Q391 287 409 264 Q423 247 420 222 Z"
+          d="M330 316 C360 298 430 296 470 310 C486 316 488 334 476 348 C458 368 410 374 366 366 C338 361 318 344 320 328 C321 320 324 318 330 316 Z"
           fill="#d9a184"
           stroke="#a57d61"
           strokeWidth="4"
-        />
-        <path
-          d="M337 311 Q367 288 399 310 Q427 328 401 347 Q374 365 343 348 Q318 334 337 311 Z"
-          fill="none"
-          stroke="#c9826d"
-          strokeLinecap="round"
-          strokeWidth="11"
         />
 
         <path
@@ -581,7 +574,7 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
             <animateMotion
               begin={`${index * -1.1}s`}
               dur="4.6s"
-              path="M382 243 C410 288 447 362 615 390"
+              path="M375 348 C440 356 500 372 615 390"
               repeatCount="indefinite"
             />
             <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
@@ -597,7 +590,7 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
             strokeWidth="5"
           />
           <path
-            d="M186 191 C228 185 277 190 323 208"
+            d="M186 191 C240 220 300 285 340 315"
             fill="none"
             stroke="#c97b67"
             strokeLinecap="round"
@@ -607,7 +600,7 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
           <circle fill="#d57e63" r="7">
             <animateMotion
               dur="4.6s"
-              path="M187 191 C228 185 277 190 323 208"
+              path="M187 191 C240 220 300 285 340 315"
               repeatCount="indefinite"
             />
             <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
