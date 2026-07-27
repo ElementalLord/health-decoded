@@ -18,6 +18,55 @@
     background 180ms ease;
 }
 
+.reroute {
+  overflow: hidden;
+  border: 1px solid rgb(199 124 98 / 20%);
+  border-radius: 14px;
+  background: #f4ebe1;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.rerouteHead {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.rerouteHead p:last-child {
+  color: #7a6a5f;
+  line-height: 1.6;
+}
+
+.rerouteSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.rerouteOption {
+  cursor: pointer;
+  transition:
+    stroke 260ms ease,
+    stroke-dasharray 260ms ease;
+}
+
+.rerouteOption:hover {
+  stroke: #b96c55;
+}
+
+.rerouteOption:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: 3px;
+}
+
+.rerouteCaption {
+  min-height: 3rem;
+  margin-top: 1rem;
+  color: #6f5a4e;
+  font-style: italic;
+  line-height: 1.7;
+}
+
 .answerChoice:hover {
   transform: translateY(-2px);
   border-color: #9fb5a8;
