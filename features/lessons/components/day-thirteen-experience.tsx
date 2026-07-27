@@ -466,15 +466,6 @@ function ConsentConversationAnimation({ mode }: { mode: SupportModeId }) {
               x={650}
               y={345}
             />
-            <path
-              d="M457 158 Q486 137 515 158 M465 175 Q486 161 507 175"
-              fill="none"
-              stroke="#c97961"
-              strokeLinecap="round"
-              strokeWidth="5"
-            >
-              <animate attributeName="opacity" dur="4s" repeatCount="indefinite" values=".2;1;.2" />
-            </path>
           </g>
         ) : null}
 
@@ -548,15 +539,6 @@ function ConsentConversationAnimation({ mode }: { mode: SupportModeId }) {
               strokeLinecap="round"
               strokeWidth="6"
             />
-            <path d="M539 251 L571 205" stroke="#c97961" strokeLinecap="round" strokeWidth="7">
-              <animateTransform
-                attributeName="transform"
-                dur="2.4s"
-                repeatCount="indefinite"
-                type="rotate"
-                values="-4 539 251;5 539 251;-4 539 251"
-              />
-            </path>
             <LessonMotionPerson
               action="reach-right"
               motion="breathe"
@@ -700,36 +682,6 @@ function BoundaryConversationAnimation({
               strokeWidth="4"
             />
             <path d="M440 274 Q470 245 500 274" fill="#e7b879" />
-            <path
-              d="M389 231 Q426 218 452 248"
-              fill="none"
-              stroke="#a7614e"
-              strokeLinecap="round"
-              strokeWidth="9"
-            >
-              <animate
-                attributeName="d"
-                dur="6s"
-                keyTimes="0;0.35;0.58;1"
-                repeatCount="indefinite"
-                values="M389 231 Q426 218 452 248;M389 231 Q426 218 452 248;M389 231 Q399 259 389 282;M389 231 Q399 259 389 282"
-              />
-            </path>
-            <path
-              d="M554 217 V255 M539 231 Q554 216 569 231"
-              fill="none"
-              stroke="#55796a"
-              strokeLinecap="round"
-              strokeWidth="7"
-            >
-              <animate
-                attributeName="opacity"
-                dur="6s"
-                keyTimes="0;0.24;0.6;1"
-                repeatCount="indefinite"
-                values=".25;1;1;.25"
-              />
-            </path>
           </g>
         ) : null}
         {scenario.id === "work" ? (
@@ -773,13 +725,6 @@ function BoundaryConversationAnimation({
                 values="1;1;0;0"
               />
             </path>
-            <path
-              d="M551 181 V224 M536 197 Q551 182 566 197"
-              fill="none"
-              stroke="#55796a"
-              strokeLinecap="round"
-              strokeWidth="7"
-            />
           </g>
         ) : null}
         {scenario.id === "friend" ? (
@@ -804,13 +749,6 @@ function BoundaryConversationAnimation({
               />
             </rect>
             <rect fill="#b8d1c2" height="25" rx="3" width="35" x="453" y="198" />
-            <path
-              d="M547 184 V227 M532 199 Q547 184 562 199"
-              fill="none"
-              stroke="#55796a"
-              strokeLinecap="round"
-              strokeWidth="7"
-            />
           </g>
         ) : null}
       </svg>
@@ -946,15 +884,6 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
               strokeLinecap="round"
               strokeWidth="5"
             />
-            <path d="M480 272 L508 228" stroke="#c97961" strokeLinecap="round" strokeWidth="6">
-              <animateTransform
-                attributeName="transform"
-                dur="2.5s"
-                repeatCount="indefinite"
-                type="rotate"
-                values="-4 480 272;5 480 272;-4 480 272"
-              />
-            </path>
           </g>
         ) : null}
         {activeSeat === "community" ? (
