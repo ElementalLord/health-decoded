@@ -88,9 +88,11 @@ test("Day 14 includes a connected interactive organ lab with distinct physiology
   assert.match(experience, /styles\.pancreasShape/);
   assert.match(experience, /styles\.liverShape/);
   assert.match(experience, /styles\.muscleShape/);
-  assert.match(experience, /path="M360 92 L360 176 C390 193 395 225 367 252/);
-  assert.match(experience, /path="M384 258 C438 244 486 205 550 160"/);
-  assert.match(experience, /path="M542 143 C485 161 435 172 375 184"/);
+  assert.match(experience, /path="M245 42 L245 126 C296 141 298 181 265 215/);
+  assert.match(experience, /path="M316 249 C395 240 436 215 520 214/);
+  assert.match(experience, /path="M652 197 C508 197 426 201 346 211/);
+  assert.match(experience, /height="62"\s+rx="31"\s+width="360"/);
+  assert.doesNotMatch(experience, /styles\.bloodRoute/);
   assert.match(experience, /Working muscle pulls fuel from the bloodstream/);
 });
 
@@ -106,9 +108,14 @@ test("Day 14 converts every formerly static recap into an optional exploration",
   assert.match(experience, /function ReturnScenarioExplorer/);
   assert.match(experience, /useState<ReturnScenarioId>\("restaurant"\)/);
   assert.match(experience, /Choose a changed moment/);
+  assert.match(experience, /className=\{styles\.returnVisual\}/);
+  assert.match(experience, /activeScenario === "reading"/);
+  assert.match(experience, /activeScenario === "routine"/);
   assert.match(experience, /function SupportPractice/);
   assert.match(experience, /useState<SupportOptionId>\("listen"\)/);
   assert.match(experience, /Choose what support means today/);
+  assert.match(experience, /activeSupport === "company"/);
+  assert.match(experience, /activeSupport === "practical"/);
   assert.doesNotMatch(
     experience,
     /styles\.(?:numberedEssay|contextSequence|protectionSpread|safetyNotes|returnStories|conversationEssay|conversationLines)/,

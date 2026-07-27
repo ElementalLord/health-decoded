@@ -27,17 +27,24 @@ test("Day 12 uses four purposeful loops tied to real decisions and physiology", 
   assert.match(experience, /function SickDayBodyAnimation/);
   assert.match(experience, /function CareCallAnimation/);
   assert.match(experience, /function PlanBAnimation/);
-  assert.match(experience, /The next choice still counts/);
-  assert.match(experience, /LIVER/);
-  assert.match(experience, /STOMACH/);
-  assert.match(experience, /HYDRATION/);
+  assert.match(experience, /selected problem-solving step changes the person’s visible action/);
+  assert.match(experience, /priority === "fluids"/);
+  assert.match(experience, /priority === "monitor"/);
+  assert.match(experience, /priority === "medicine"/);
+  assert.match(experience, /priority === "help"/);
+  assert.match(experience, /planBackup === "minutes"/);
+  assert.match(experience, /planBackup === "next"/);
+  assert.match(experience, /planBackup === "ask"/);
+  assert.match(experience, /planBackup === "reset"/);
   assert.match(experience, /A friend helps make a care-team call during illness/);
-  assert.match(experience, /Rain falls directly beneath a cloud/);
+  assert.match(experience, /selected call detail changes what the friend gathers/);
   assert.equal((experience.match(/data-motion-loop="continuous"/g) ?? []).length, 4);
   assert.ok(
     (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 20,
     "expected multiple independently looping gestures across the four scenes",
   );
+  assert.ok((experience.match(/<LessonMotionPerson/g) ?? []).length >= 8);
+  assert.doesNotMatch(experience, /<text(?:\s|>)/);
   assert.match(styles, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(experience, /lighthouse|lantern|weave|bridge/i);
 });
@@ -49,7 +56,7 @@ test("Day 12 grounds the lesson in warm human scenes instead of abstract diagram
   assert.match(experience, /play catch and share a hug/);
   assert.match(experience, /offering water beside a phone and written care plan/);
   assert.match(experience, /laughing and dancing together indoors/);
-  assert.match(experience, /two friends put music on,\s+dance, and share a hug/);
+  assert.match(experience, /short movement break, a supportive next meal, a call for help/);
   assert.doesNotMatch(experience, /AdaptiveDayTimeline|causeFlow|flowConnector|planSequence/);
   assert.doesNotMatch(styles, /\.timelineSteps|\.causeFlow|\.flowConnector|\.planSequence/);
   for (const filename of [

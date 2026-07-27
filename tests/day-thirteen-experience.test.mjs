@@ -34,11 +34,20 @@ test("Day 13 uses four purposeful human loops whose motion teaches a relationshi
   assert.match(experience, /Ask\. Listen\. Offer\. Check\./);
   assert.match(experience, /A clear limit makes room for a better way to care/);
   assert.match(experience, /No one\s+seat has to carry every kind of need/);
+  assert.match(experience, /mode === "listen"/);
+  assert.match(experience, /mode === "company"/);
+  assert.match(experience, /mode === "practical"/);
+  assert.match(experience, /mode === "space"/);
+  assert.match(experience, /activeSeat === "chosen"/);
+  assert.match(experience, /activeSeat === "care"/);
+  assert.match(experience, /activeSeat === "community"/);
   assert.equal((experience.match(/data-motion-loop="continuous"/g) ?? []).length, 4);
   assert.ok(
     (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 20,
     "expected independently looping gestures across the four human scenes",
   );
+  assert.ok((experience.match(/<LessonMotionPerson/g) ?? []).length >= 12);
+  assert.doesNotMatch(experience, /<text(?:\s|>)/);
   assert.match(styles, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(experience, /lighthouse|lantern|weave|bridge/i);
 });
