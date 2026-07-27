@@ -359,18 +359,6 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
           y={356}
         />
 
-        {activeStep === "pause" ? (
-          <circle cx="633" cy="196" fill="none" r="20" stroke="#7ba08d" strokeWidth="4">
-            <animate attributeName="r" dur="3.6s" repeatCount="indefinite" values="14;24;14" />
-            <animate
-              attributeName="opacity"
-              dur="3.6s"
-              repeatCount="indefinite"
-              values=".15;.7;.15"
-            />
-          </circle>
-        ) : null}
-
         {activeStep === "understand" ? (
           <g key="understand">
             <rect
@@ -538,7 +526,7 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
             <animateMotion
               begin={`${index * -1.1}s`}
               dur="4.6s"
-              path="M375 348 C440 356 500 372 615 390"
+              path="M395 336 C410 364 442 389 485 390 C535 391 582 390 616 390"
               repeatCount="indefinite"
             />
             <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
