@@ -689,154 +689,89 @@ function CareCallAnimation({ focus }: { focus: CallDetailId }) {
       >
         <title id="care-call-title">A friend helps make a care-team call during illness</title>
         <desc id="care-call-description">
-          One person rests on a sofa while a friend keeps water and the written sick-day plan within
-          reach. The selected call detail changes what the friend gathers for the clinician.
+          A phone shows an active care-team call beside the open written sick-day plan. The selected
+          call detail changes what the friend gathers for the clinician.
         </desc>
         <rect fill="#f2eee6" height="420" width="900" />
         <path d="M42 381 H858" stroke="#b3bcae" strokeLinecap="round" strokeWidth="5" />
+
         <rect
-          fill="#d9e7e1"
-          height="145"
-          rx="7"
-          stroke="#9fb5a9"
-          strokeWidth="4"
-          width="205"
-          x="64"
-          y="47"
+          fill="#40544c"
+          height="292"
+          rx="28"
+          stroke="#2f3f39"
+          strokeWidth="5"
+          width="188"
+          x="286"
+          y="70"
         />
-        <circle cx="166" cy="110" fill="#edca8c" r="34" />
-        <path d="M89 178 Q166 132 244 178" fill="#abc0b3" />
+        <rect fill="#f4f0e6" height="224" rx="8" width="150" x="305" y="100" />
+        <circle cx="380" cy="156" fill="#cf7b61" r="28" />
+        <rect fill="#cdd6cf" height="11" rx="5" width="98" x="331" y="200" />
+        <rect fill="#e3ece6" height="9" rx="4" width="66" x="347" y="222" />
+        <circle cx="380" cy="296" fill="#8db67f" r="20" />
+        <path d="M372 289c-3 3 0 9 4 13c4 4 10 7 13 4l-5 -7 -6 1 -5 -5 1 -6z" fill="#f4f0e6" />
 
         <path
-          d="M90 304 H389 Q407 304 407 323 V353 H90 Z"
-          fill="#83a18f"
-          stroke="#607b6c"
-          strokeWidth="4"
-        />
-        <rect fill="#a8c0b3" height="76" rx="8" width="104" x="78" y="275" />
-        <path
-          d="M119 353 V381 M376 353 V381"
-          stroke="#607b6c"
+          d="M508 156 Q542 122 508 88 M530 172 Q580 120 530 68"
+          fill="none"
+          stroke="#c7785f"
           strokeLinecap="round"
-          strokeWidth="10"
-        />
-        <LessonMotionPerson
-          action="rest"
-          motion="breathe"
-          palette="warm"
-          scale={0.9}
-          seated
-          x={268}
-          y={344}
-        />
-
-        <path
-          d="M442 311 H657 M466 313 L456 381 M632 313 L642 381"
-          stroke="#866f5e"
-          strokeLinecap="round"
-          strokeWidth="12"
-        />
-        <ellipse
-          cx="526"
-          cy="304"
-          fill="#fffaf2"
-          rx="39"
-          ry="10"
-          stroke="#c58a70"
-          strokeWidth="4"
-        />
-        <path d="M494 252 H522 L520 296 H496 Z" fill="#fffaf2" stroke="#6f9485" strokeWidth="4" />
-        <path d="M497 278 H520 L520 296 H496 Z" fill="#8db8c1" />
-        <LessonMotionPerson
-          action={focus === "followed" ? "reach-left" : "listen"}
-          motion="nod"
-          palette="sage"
-          scale={0.9}
-          seated
-          x={600}
-          y={344}
-        />
+          strokeWidth="5"
+        >
+          <animate attributeName="opacity" dur="2.4s" repeatCount="indefinite" values="0;1;0" />
+        </path>
 
         <rect
           fill="#fffaf2"
-          height="142"
+          height="156"
           rx="7"
           stroke="#a79582"
           strokeWidth="4"
-          width="112"
-          x="658"
-          y="203"
+          width="126"
+          x="600"
+          y="150"
         />
         <path
-          d="M679 234 H749 M679 255 H735 M679 276 H748 M679 297 H726"
+          d="M622 182 H704 M622 205 H688 M622 228 H702 M622 251 H678"
           stroke="#9bad9f"
           strokeLinecap="round"
           strokeWidth="5"
         />
 
         {focus === "change" ? (
-          <g key="change">
-            <circle cx="218" cy="222" fill="#fffaf2" r="34" stroke="#c7785f" strokeWidth="4" />
-            <path
-              d="M218 222 V200 M218 222 L235 229"
-              stroke="#6b8177"
-              strokeLinecap="round"
-              strokeWidth="5"
-            />
-            <path d="M458 248 V292" stroke="#c7785f" strokeLinecap="round" strokeWidth="7" />
-            <circle cx="458" cy="303" fill="#c7785f" r="12">
-              <animate
-                attributeName="opacity"
-                dur="2.8s"
-                repeatCount="indefinite"
-                values=".5;1;.5"
-              />
-            </circle>
-          </g>
+          <circle cx="380" cy="156" fill="none" r="40" stroke="#c7785f" strokeWidth="4">
+            <animate attributeName="r" dur="2.6s" repeatCount="indefinite" values="32;42;32" />
+            <animate attributeName="opacity" dur="2.6s" repeatCount="indefinite" values=".7;0;.7" />
+          </circle>
         ) : null}
         {focus === "followed" ? (
-          <g key="followed">
-            <path d="M674 231 H748" stroke="#c7785f" strokeLinecap="round" strokeWidth="6">
-              <animate
-                attributeName="stroke-dasharray"
-                dur="3s"
-                repeatCount="indefinite"
-                values="0 80;80 0;80 0"
-              />
-            </path>
-            <path d="M486 272 Q505 254 523 272" fill="none" stroke="#79a7b1" strokeWidth="4">
-              <animateTransform
-                attributeName="transform"
-                dur="3.6s"
-                repeatCount="indefinite"
-                type="translate"
-                values="0 5;0 -4;0 5"
-              />
-            </path>
-          </g>
+          <path d="M622 182 H704" stroke="#c7785f" strokeLinecap="round" strokeWidth="6">
+            <animate
+              attributeName="stroke-dasharray"
+              dur="3s"
+              repeatCount="indefinite"
+              values="0 84;84 0;84 0"
+            />
+          </path>
         ) : null}
         {focus === "question" ? (
           <g key="question">
-            <rect fill="#405750" height="82" rx="10" width="48" x="791" y="224" />
-            <circle cx="815" cy="290" fill="#dce8e1" r="4" />
+            <circle cx="663" cy="112" fill="#fffaf2" r="24" stroke="#c7785f" strokeWidth="4" />
             <path
-              d="M780 207 Q815 179 850 207 M788 216 Q815 195 842 216"
+              d="M654 106 Q654 95 663 95 Q672 95 672 103 Q672 110 663 113 M663 121 V123"
               fill="none"
-              stroke="#c87860"
+              stroke="#c7785f"
               strokeLinecap="round"
               strokeWidth="4"
             >
-              <animate attributeName="opacity" dur="2.4s" repeatCount="indefinite" values="0;1;0" />
+              <animate
+                attributeName="opacity"
+                dur="2.4s"
+                repeatCount="indefinite"
+                values=".4;1;.4"
+              />
             </path>
-            <circle cx="815" cy="160" fill="#ddb08a" r="25" stroke="#5b7e89" strokeWidth="4" />
-            <path d="M782 199 Q815 164 848 199" fill="#7d9da4" />
-            <path
-              d="M805 162 Q815 170 825 162"
-              fill="none"
-              stroke="#7c5b4c"
-              strokeLinecap="round"
-              strokeWidth="3"
-            />
           </g>
         ) : null}
       </svg>
