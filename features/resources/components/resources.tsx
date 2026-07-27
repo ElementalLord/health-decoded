@@ -278,7 +278,7 @@ function Perspective({ children }: { children: string }) {
       <Quote aria-hidden="true" size={34} strokeWidth={1.25} />
       <blockquote>{children}</blockquote>
       <p>Composite learner perspective</p>
-      <small>Drawn from recurring patient questions—not an individual testimonial.</small>
+      <small>Drawn from recurring patient questions, not an individual testimonial.</small>
     </aside>
   );
 }
@@ -391,7 +391,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           <div>
             <p>
               Eighteen clear, useful reads for the questions that stay with you between
-              appointments—selected from official CDC and NIH guidance.
+              appointments, selected from official CDC and NIH guidance.
             </p>
             <span>18 guides · 2 trusted sources · reviewed July 2026</span>
           </div>
@@ -444,7 +444,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
       <section aria-labelledby="new-here-heading" className={styles.librarySection} id="new-here">
         <SectionHeading
           count="3 reads across this issue"
-          description="A diagnosis, a lab result, a meter reading—begin with the language underneath them."
+          description="A diagnosis, a lab result, a meter reading: begin with the language underneath them."
           eyebrow="If you’re new here"
           id="new-here-heading"
           title="Make the first questions less mysterious."
@@ -545,7 +545,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
       <footer className={styles.disclaimer}>
         <ShieldCheck aria-hidden="true" size={20} strokeWidth={1.55} />
         <p>
-          These readings support—but do not replace—advice from your health care team. Every link
+          These readings support, but do not replace, advice from your health care team. Every link
           opens on an official CDC or NIH website.
         </p>
       </footer>

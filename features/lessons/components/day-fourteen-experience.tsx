@@ -30,7 +30,7 @@ const ordinaryMoments = [
   {
     id: "breakfast",
     label: "Breakfast",
-    prompt: "At the table, balance can be an addition—not a punishment or a brand-new identity.",
+    prompt: "At the table, balance can be an addition, not a punishment or a brand-new identity.",
   },
   {
     id: "friendship",
@@ -70,7 +70,7 @@ const everydayTools = [
     title: "Movement can carry company and joy.",
   },
   {
-    body: "Knowing a medicine’s name, purpose, timing, and safety notes makes it a tool you can understand—not a symbol of failure or a mystery you must quietly manage.",
+    body: "Knowing a medicine’s name, purpose, timing, and safety notes makes it a tool you can understand, not a symbol of failure or a mystery you must quietly manage.",
     id: "medicine",
     invitation: "Which medicine question would bring relief?",
     label: "With medicine",
@@ -110,7 +110,7 @@ const bodySystems = [
     title: "The liver stores and releases fuel.",
   },
   {
-    body: "Muscle cells use glucose for energy. When muscles work, they can take up glucose through more than one pathway—which is why comfortable, adapted movement can be one useful tool.",
+    body: "Muscle cells use glucose for energy. When muscles work, they can take up glucose through more than one pathway, which is why comfortable, adapted movement can be one useful tool.",
     id: "muscle",
     label: "Muscle",
     notice: "Working muscle pulls fuel from the bloodstream.",
@@ -346,8 +346,8 @@ function OrdinaryLifeMotion() {
           <circle className={styles.sunShape} cx="58" cy="49" r="22" />
           <path className={styles.tableShape} d="M32 228H215M51 228V273M197 228V273" />
           <ellipse className={styles.plateShape} cx="146" cy="220" rx="29" ry="8" />
-          <path className={styles.cupShape} d="M166 190h24v27h-24zM190 196c15 0 15 16 0 16" />
-          <path className={styles.steamShape} d="M174 183c-8-10 9-15 0-27M186 183c-8-10 9-15 0-27">
+          <path className={styles.cupShape} d="M134 188h24v27h-24zM158 194c15 0 15 16 0 16" />
+          <path className={styles.steamShape} d="M142 181c-8-10 9-15 0-27M154 181c-8-10 9-15 0-27">
             <animateTransform
               attributeName="transform"
               dur="3.2s"
@@ -358,7 +358,7 @@ function OrdinaryLifeMotion() {
             <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values="0;0.9;0" />
           </path>
           <LessonMotionPerson
-            action="reach-right"
+            action="rest"
             motion="breathe"
             palette="warm"
             scale={0.62}
@@ -440,8 +440,8 @@ function OrdinaryLifeMotion() {
             strokeWidth="3"
           />
           <g className={styles.questionLines}>
-            <path d="M581 116h54" />
-            <path d="M591 102h34" />
+            <path d="M581 150h54" />
+            <path d="M591 136h34" />
             <animate
               attributeName="opacity"
               dur="4s"
@@ -737,15 +737,6 @@ function ThenNowStory() {
                 strokeLinecap="round"
                 strokeWidth="4"
               />
-              <path d="M388 211 L418 169" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
-                <animateTransform
-                  attributeName="transform"
-                  dur="2.6s"
-                  repeatCount="indefinite"
-                  type="rotate"
-                  values="-4 388 211;5 388 211;-4 388 211"
-                />
-              </path>
               <path d="M326 111 H412 M342 94 H396" className={styles.sharedQuestion}>
                 <animate
                   attributeName="opacity"
@@ -862,7 +853,7 @@ function ThenNowStory() {
         <p>
           {isNow
             ? "You can name what is happening, add timing and context, choose one useful tool, and ask for help when the question belongs with someone else."
-            : "New words, new numbers, and new decisions can arrive all at once. It can be hard to know which question belongs first—or whether one moment has already decided the future."}
+            : "New words, new numbers, and new decisions can arrive all at once. It can be hard to know which question belongs first, or whether one moment has already decided the future."}
         </p>
         <em>
           {isNow
@@ -1018,15 +1009,6 @@ function ToolPracticeStudio() {
                 strokeLinecap="round"
                 strokeWidth="4"
               />
-              <path d="M460 210 L484 169" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
-                <animateTransform
-                  attributeName="transform"
-                  dur="2.6s"
-                  repeatCount="indefinite"
-                  type="rotate"
-                  values="-4 460 210;5 460 210;-4 460 210"
-                />
-              </path>
               <path d="M344 179 H390" stroke="#b8d1c2" strokeLinecap="round" strokeWidth="9">
                 <animate
                   attributeName="opacity"
@@ -1153,7 +1135,7 @@ function BodySystemLab() {
               <path className={styles.esophagusShape} d="M245 47 V135" />
               <path
                 className={cn(styles.stomachShape, styles.organShapeActive)}
-                d="M245 121 C293 102 328 135 315 181 C306 214 272 219 260 250 C250 274 258 292 267 309 C209 300 179 267 184 226 C188 193 214 181 231 166 C244 155 238 136 245 121 Z"
+                d="M250 120 C214 108 185 130 182 172 C179 210 189 244 214 263 C234 278 258 282 280 274 C300 267 312 248 308 226 C304 198 296 168 280 150 C268 137 260 128 250 120 Z"
               />
               <path
                 className={cn(styles.intestineShape, styles.organShapeActive)}
@@ -1201,13 +1183,8 @@ function BodySystemLab() {
           {activeSystem === "pancreas" ? (
             <g className={styles.insulinMotion} key="pancreas">
               <path
-                className={styles.stomachShape}
-                d="M256 103 C300 92 329 124 315 165 C303 198 275 204 259 231 C241 260 248 279 257 300 C205 292 180 257 187 219 C193 184 220 173 238 157 C250 146 248 119 256 103 Z"
-                opacity=".24"
-              />
-              <path
                 className={cn(styles.pancreasShape, styles.organShapeActive)}
-                d="M128 251 C173 213 259 204 329 225 C365 236 375 261 349 278 C325 294 287 281 255 282 C216 283 183 306 151 298 C117 290 104 270 128 251 Z"
+                d="M130 236 C175 224 240 226 290 236 C316 241 336 240 348 254 C358 266 354 284 334 286 C312 288 296 280 274 276 C226 268 172 258 130 236 Z"
               />
               <path d="M439 214 H662" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
               <path d="M439 214 H662" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
@@ -1252,7 +1229,7 @@ function BodySystemLab() {
             <g className={styles.liverMotion} key="liver">
               <path
                 className={cn(styles.liverShape, styles.organShapeActive)}
-                d="M114 157 C133 94 225 70 327 108 C383 129 407 172 384 218 C362 264 300 280 223 266 C157 255 105 221 105 184 C105 174 108 165 114 157 Z"
+                d="M112 182 C150 150 240 128 340 140 C372 144 392 162 388 190 C384 226 356 252 314 260 C252 272 178 262 130 232 C112 220 102 198 112 182 Z"
               />
               <path d="M455 197 H665" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
               <path d="M455 197 H665" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
@@ -1300,13 +1277,9 @@ function BodySystemLab() {
               <path d="M75 116 H645" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
               {[0, 1, 2].map((fiber) => (
                 <g key={fiber}>
-                  <rect
+                  <path
                     className={cn(styles.muscleShape, styles.organShapeActive)}
-                    height="62"
-                    rx="31"
-                    width="360"
-                    x="180"
-                    y={190 + fiber * 72}
+                    d={`M176 ${221 + fiber * 72} C236 ${189 + fiber * 72} 484 ${189 + fiber * 72} 544 ${221 + fiber * 72} C484 ${253 + fiber * 72} 236 ${253 + fiber * 72} 176 ${221 + fiber * 72} Z`}
                   />
                   <path
                     d={`M218 ${221 + fiber * 72} H502`}
@@ -2079,22 +2052,6 @@ function SupportPractice() {
                 y={264}
               />
               <ellipse className={styles.plateShape} cx="377" cy="217" rx="47" ry="10" />
-              <path
-                d="M327 179 Q359 166 382 193"
-                fill="none"
-                stroke="#a7614e"
-                strokeLinecap="round"
-                strokeWidth="8"
-              >
-                <animate
-                  attributeName="d"
-                  dur="6s"
-                  keyTimes="0;0.35;0.65;1"
-                  repeatCount="indefinite"
-                  values="M327 179 Q359 166 382 193;M327 179 Q359 166 382 193;M327 179 Q337 205 327 222;M327 179 Q337 205 327 222"
-                />
-              </path>
-              <path className={styles.boundaryHand} d="M426 157 V199 M412 172 Q426 157 440 172" />
             </g>
           ) : null}
         </svg>
@@ -2270,7 +2227,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <p className={styles.lede}>
               Today is not an exam and it is not a finale. It is a quiet place to notice what has
-              become clearer—and what you can now carry into real life.
+              become clearer, and what you can now carry into real life.
             </p>
 
             <LessonStoryImage
@@ -2335,7 +2292,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               <p>
                 <span>Y</span>ou learned what insulin resistance means so the diagnosis could become
                 understandable instead of mysterious. You learned to see food, movement, medication,
-                and monitoring as tools—not tests of character.
+                and monitoring as tools, not tests of character.
               </p>
               <p>
                 Then the circle widened: safety, prevention, problem solving, support, and the
@@ -2354,7 +2311,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <p className={styles.lede}>
               Choose a body system and follow what it does. Each organ stays visible so the
-              animation feels like one connected body—not four unrelated diagrams.
+              animation feels like one connected body, not four unrelated diagrams.
             </p>
             <BodySystemLab />
             <blockquote className={styles.pullQuote}>
@@ -2431,7 +2388,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <p className={styles.lede}>
               Choose what would actually help today. The scene and response change because support
-              should follow the person’s request—not the helper’s guess.
+              should follow the person’s request, not the helper’s guess.
             </p>
             <SupportPractice />
             <blockquote className={styles.pullQuote}>
@@ -2449,7 +2406,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <LessonStoryImage
               alt="A grandfather and his teenage granddaughter laugh together while planting herbs in a neighborhood garden"
-              caption="Health knowledge matters because it supports a life with people, plans, ordinary pleasures, and new seasons—not because health must become the center of every day."
+              caption="Health knowledge matters because it supports a life with people, plans, ordinary pleasures, and new seasons, not because health must become the center of every day."
               emphasis="The goal is more life, not more diabetes."
               height={941}
               src="/lessons/day-14/life-keeps-growing.jpg"
@@ -2548,8 +2505,8 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               <MessageCircleHeart aria-hidden="true" />
               <p>
                 You do not need to know everything today. You do not need to be perfect tomorrow.
-                The foundation has done its job when it helps you recognize the next useful step—and
-                trust yourself enough to take it.
+                The foundation has done its job when it helps you recognize the next useful step,
+                and trust yourself enough to take it.
               </p>
               <span>Day 15 begins with understanding behind you and practice in front of you.</span>
             </div>

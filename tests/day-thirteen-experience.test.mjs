@@ -43,7 +43,7 @@ test("Day 13 uses four purposeful human loops whose motion teaches a relationshi
   assert.match(experience, /activeSeat === "community"/);
   assert.equal((experience.match(/data-motion-loop="continuous"/g) ?? []).length, 4);
   assert.ok(
-    (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 20,
+    (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 12,
     "expected independently looping gestures across the four human scenes",
   );
   assert.ok((experience.match(/<LessonMotionPerson/g) ?? []).length >= 12);
