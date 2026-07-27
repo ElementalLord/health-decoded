@@ -1008,23 +1008,23 @@ function ToolPracticeStudio() {
                 className={styles.storyNotebook}
                 height="68"
                 rx="4"
-                width="88"
-                x="414"
+                width="70"
+                x="408"
                 y="150"
               />
               <path
-                d="M430 170 H486 M430 187 H475 M430 204 H490"
+                d="M421 170 H465 M421 187 H459 M421 204 H468"
                 stroke="#9bad9f"
                 strokeLinecap="round"
                 strokeWidth="4"
               />
-              <path d="M476 210 L506 166" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
+              <path d="M460 210 L484 169" stroke="#c47b61" strokeLinecap="round" strokeWidth="6">
                 <animateTransform
                   attributeName="transform"
                   dur="2.6s"
                   repeatCount="indefinite"
                   type="rotate"
-                  values="-4 476 210;5 476 210;-4 476 210"
+                  values="-4 460 210;5 460 210;-4 460 210"
                 />
               </path>
               <path d="M344 179 H390" stroke="#b8d1c2" strokeLinecap="round" strokeWidth="9">
@@ -1072,12 +1072,12 @@ function ToolPracticeStudio() {
                 className={styles.storyNotebook}
                 height="69"
                 rx="4"
-                width="91"
+                width="72"
                 x="410"
                 y="149"
               />
               <path
-                d="M426 169 H485 M426 187 H476 M426 204 H489"
+                d="M422 169 H470 M422 187 H463 M422 204 H472"
                 stroke="#9bad9f"
                 strokeLinecap="round"
                 strokeWidth="4"
@@ -1779,12 +1779,12 @@ function ReturnScenarioExplorer() {
                 className={styles.storyNotebook}
                 height="81"
                 rx="4"
-                width="95"
-                x="416"
+                width="76"
+                x="414"
                 y="135"
               />
               <path
-                d="M433 156 H494 M433 174 H482 M433 192 H498"
+                d="M427 156 H478 M427 174 H468 M427 192 H481"
                 stroke="#9bad9f"
                 strokeLinecap="round"
                 strokeWidth="4"

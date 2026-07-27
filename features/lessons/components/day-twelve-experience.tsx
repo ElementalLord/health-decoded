@@ -347,11 +347,11 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
         </line>
         <circle cx="428" cy="108" fill="#566f65" r="5" />
 
-        <path d="M545 278 H822" stroke="#876f5d" strokeLinecap="round" strokeWidth="14" />
-        <path d="M579 281 L568 370 M785 281 L797 370" stroke="#876f5d" strokeWidth="11" />
-        <rect fill="#fffaf2" height="61" rx="6" stroke="#91aa9d" width="103" x="695" y="207" />
-        <rect fill="#c8dad2" height="10" rx="3" width="65" x="714" y="225" />
-        <rect fill="#e5d4bd" height="8" rx="3" width="49" x="714" y="243" />
+        <path d="M545 310 H822" stroke="#876f5d" strokeLinecap="round" strokeWidth="14" />
+        <path d="M579 313 L568 370 M785 313 L797 370" stroke="#876f5d" strokeWidth="11" />
+        <rect fill="#fffaf2" height="61" rx="6" stroke="#91aa9d" width="103" x="695" y="239" />
+        <rect fill="#c8dad2" height="10" rx="3" width="65" x="714" y="257" />
+        <rect fill="#e5d4bd" height="8" rx="3" width="49" x="714" y="275" />
         <LessonMotionPerson
           action={activeStep === "choose" ? "reach-right" : "rest"}
           motion={activeStep === "pause" ? "breathe" : "nod"}
@@ -436,22 +436,22 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
           <g key="choose">
             <ellipse
               cx="705"
-              cy="275"
+              cy="307"
               fill="#fffaf2"
               rx="53"
               ry="13"
               stroke="#c7785f"
               strokeWidth="4"
             />
-            <path d="M670 266 Q706 236 742 266" fill="#eac789" />
-            <path d="M680 262 Q706 245 732 262" fill="#789b88" opacity=".85" />
-            <path d="M663 233 V267" stroke="#789185" strokeLinecap="round" strokeWidth="5">
+            <path d="M670 298 Q706 268 742 298" fill="#eac789" />
+            <path d="M680 294 Q706 277 732 294" fill="#789b88" opacity=".85" />
+            <path d="M663 265 V299" stroke="#789185" strokeLinecap="round" strokeWidth="5">
               <animateTransform
                 attributeName="transform"
                 dur="2.8s"
                 repeatCount="indefinite"
                 type="rotate"
-                values="0 663 267;-8 663 267;0 663 267"
+                values="0 663 299;-8 663 299;0 663 299"
               />
             </path>
           </g>
@@ -864,8 +864,8 @@ function CareCallAnimation({ focus }: { focus: CallDetailId }) {
               strokeLinecap="round"
               strokeWidth="5"
             />
-            <path d="M332 218 V264" stroke="#c7785f" strokeLinecap="round" strokeWidth="7" />
-            <circle cx="332" cy="275" fill="#c7785f" r="12">
+            <path d="M458 248 V292" stroke="#c7785f" strokeLinecap="round" strokeWidth="7" />
+            <circle cx="458" cy="303" fill="#c7785f" r="12">
               <animate
                 attributeName="opacity"
                 dur="2.8s"
