@@ -490,7 +490,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             <LessonStoryImage
               alt="A group of adults with varied bodies laugh and dance together in a living room"
-              caption="Movement can be social, playful, seated, brief, or improvised. The body responds to activity—not whether it looks like a workout."
+              caption="Movement can be social, playful, seated, brief, or improvised. The body responds to activity, not whether it looks like a workout."
               emphasis="Joyful movement counts."
               priority
               src="/lessons/day-05/movement-joy.jpg"

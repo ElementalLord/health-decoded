@@ -95,7 +95,7 @@ const lifeTools = [
   {
     id: "notice",
     label: "Name the change",
-    note: "Respond to what happened—not to the fear that the whole day is ruined.",
+    note: "Respond to what happened, not to the fear that the whole day is ruined.",
   },
   {
     id: "available",
@@ -1447,7 +1447,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               <p>
                 {openingFeeling
                   ? "Real life is allowed in this room. One changed meal, missed routine, or difficult day does not decide your health."
-                  : "Choose an answer if it helps, or keep going. This lesson is practice—not another plan you have to perform perfectly."}
+                  : "Choose an answer if it helps, or keep going. This lesson is practice, not another plan you have to perform perfectly."}
               </p>
             </div>
           </div>
@@ -1504,7 +1504,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 <p className="editorial-eyebrow text-success">What remains available</p>
                 <h2>The day still has another decision in it.</h2>
                 <p>
-                  The useful response is based on the meal and timing that actually exist—not on
+                  The useful response is based on the meal and timing that actually exist, not on
                   making the interruption disappear.
                 </p>
               </div>
@@ -1569,7 +1569,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 <p className="editorial-eyebrow text-accent-warm">What remains true</p>
                 <h2>{activeSituation.truth}</h2>
                 <p>
-                  Choose one tool below. You are not building a perfect rescue plan—just making the
+                  Choose one tool below. You are not building a perfect rescue plan, just making the
                   next moment more usable.
                 </p>
               </article>
@@ -1709,7 +1709,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-9">
             <LessonHeading label="Medication details are specific">
-              A missed dose needs the right instruction—not a guessed correction.
+              A missed dose needs the right instruction, not a guessed correction.
             </LessonHeading>
             <div className={styles.medicineEditorial}>
               <div>
