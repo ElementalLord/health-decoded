@@ -1127,6 +1127,121 @@ function PlanBAnimation({
   );
 }
 
+const dayDetours = [
+  {
+    id: "later",
+    label: "Move it to a calmer hour",
+    note: "You shifted it later. The day still reaches the evening, just by a different road.",
+    path: "C324 60 396 60 420 130",
+  },
+  {
+    id: "help",
+    label: "Ask someone to help",
+    note: "One ask changed the route. You did not have to carry the whole day alone.",
+    path: "C330 96 390 96 420 130",
+  },
+  {
+    id: "smaller",
+    label: "Do a smaller version",
+    note: "A shorter version still counts. The purpose of the plan is protected, not perfected.",
+    path: "C324 180 396 180 420 130",
+  },
+] as const;
+
+function RerouteTheDay() {
+  const [chosen, setChosen] = useState<string | null>(null);
+  const active = dayDetours.find((detour) => detour.id === chosen) ?? null;
+
+  return (
+    <div className={styles.reroute}>
+      <div className={styles.rerouteHead}>
+        <p className="editorial-eyebrow">The interruption changes the route, not the day</p>
+        <p>
+          The middle of the plan is blocked. Tap one of the ways around it and watch the day still
+          reach the evening.
+        </p>
+      </div>
+      <svg
+        aria-label="A planned day drawn as a path from a morning sun to an evening marker, blocked in the middle. Three faint detours arc around the block; tap one to make it the route, and a dot travels the whole day to the evening."
+        className={styles.rerouteSvg}
+        role="group"
+        viewBox="0 0 720 220"
+      >
+        <path d="M44 130 H300" fill="none" stroke="#9db3a8" strokeLinecap="round" strokeWidth="6" />
+        <path
+          d="M420 130 H676"
+          fill="none"
+          stroke="#9db3a8"
+          strokeLinecap="round"
+          strokeWidth="6"
+        />
+        <path
+          d="M300 130 H420"
+          fill="none"
+          stroke="#d8c7b8"
+          strokeDasharray="3 13"
+          strokeLinecap="round"
+          strokeWidth="6"
+        />
+
+        {dayDetours.map((detour) => {
+          const isChosen = chosen === detour.id;
+          return (
+            <path
+              aria-label={`Route around the block: ${detour.label}`}
+              className={styles.rerouteOption}
+              d={`M300 130 ${detour.path}`}
+              fill="none"
+              key={detour.id}
+              onClick={() => setChosen(detour.id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setChosen(detour.id);
+                }
+              }}
+              role="button"
+              stroke={isChosen ? "#b96c55" : "#c9b4a3"}
+              strokeDasharray={isChosen ? undefined : "2 11"}
+              strokeLinecap="round"
+              strokeWidth="6"
+              tabIndex={0}
+            />
+          );
+        })}
+
+        <g transform="translate(360 130)">
+          <circle fill="#f0dfd0" r="15" stroke="#c98a6f" strokeWidth="3" />
+          <path
+            d="M-6 -6 L6 6 M6 -6 L-6 6"
+            stroke="#c98a6f"
+            strokeLinecap="round"
+            strokeWidth="3"
+          />
+        </g>
+
+        <circle cx="44" cy="130" fill="#e6b774" r="10" stroke="#c69551" strokeWidth="3" />
+        <circle cx="676" cy="130" fill="#7b9ea8" r="10" stroke="#5f7d86" strokeWidth="3" />
+
+        {active ? (
+          <circle fill="#6f947a" key={active.id} r="9" stroke="#fffaf3" strokeWidth="3">
+            <animateMotion
+              dur="3.6s"
+              path={`M44 130 H300 ${active.path} H676`}
+              repeatCount="indefinite"
+            />
+          </circle>
+        ) : null}
+      </svg>
+      <p aria-live="polite" className={styles.rerouteCaption}>
+        {active
+          ? active.note
+          : "Morning sun on the left, evening on the right. The blocked middle is where the plan changed."}
+      </p>
+    </div>
+  );
+}
+
 export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -1333,6 +1448,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 ))}
               </div>
             </div>
+            <RerouteTheDay />
             <p className={styles.quietNote}>
               Pause · Understand · Choose · Adjust is a cycle, not a score. New information can send
               you back around without erasing what you already learned.
