@@ -1984,6 +1984,86 @@ function SupportPractice() {
   );
 }
 
+const journeyMilestones = [
+  { day: 1, learned: "Day 1 asked you to understand, not to be perfect.", x: 56, y: 172 },
+  {
+    day: 3,
+    learned: "A lab number became a question with context, not a verdict.",
+    x: 178,
+    y: 150,
+  },
+  {
+    day: 6,
+    learned: "Movement became something your body could use, in your own way.",
+    x: 312,
+    y: 126,
+  },
+  { day: 9, learned: "Highs and lows became signals you can notice and answer.", x: 452, y: 100 },
+  { day: 12, learned: "A disrupted day became something to reroute, not abandon.", x: 584, y: 78 },
+  { day: 14, learned: "You know more than you did fourteen days ago.", x: 684, y: 58 },
+] as const;
+
+function FourteenDayTrace() {
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const active = journeyMilestones.find((milestone) => milestone.day === selectedDay) ?? null;
+
+  return (
+    <div className={styles.journeyTrace}>
+      <div className={styles.journeyTraceHead}>
+        <p className="editorial-eyebrow">Fourteen days, one quiet climb</p>
+        <p>Tap a marked day to remember what became a little clearer.</p>
+      </div>
+      <svg
+        aria-label="A gently rising line across fourteen days. Tap a marked day to recall what became clearer. This is a felt sense of understanding, not a measurement."
+        className={styles.journeyTraceSvg}
+        role="group"
+        viewBox="0 0 720 200"
+      >
+        <path d="M40 178 H700" stroke="#e0cdbb" strokeWidth="2" />
+        <path
+          className={styles.journeyLine}
+          d="M56 172 C120 163 150 156 178 150 C240 138 262 132 312 126 C382 116 402 110 452 100 C520 88 546 84 584 78 C632 70 656 64 684 58"
+          fill="none"
+          pathLength="1"
+          stroke="#b96c55"
+          strokeLinecap="round"
+          strokeWidth="6"
+        />
+        {journeyMilestones.map((milestone) => {
+          const isActive = selectedDay === milestone.day;
+          return (
+            <circle
+              aria-label={`Day ${milestone.day}: ${milestone.learned}`}
+              className={cn(styles.journeyDot, isActive && styles.journeyDotActive)}
+              cx={milestone.x}
+              cy={milestone.y}
+              fill={isActive ? "#6f947a" : "#fffaf3"}
+              key={milestone.day}
+              onClick={() => setSelectedDay(milestone.day)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setSelectedDay(milestone.day);
+                }
+              }}
+              r={isActive ? 11 : 7}
+              role="button"
+              stroke={isActive ? "#476a53" : "#b96c55"}
+              strokeWidth="3"
+              tabIndex={0}
+            />
+          );
+        })}
+      </svg>
+      <p aria-live="polite" className={styles.journeyCaption}>
+        {active
+          ? `Day ${active.day} · ${active.learned}`
+          : "A foundation is something steady to stand on when uncertainty returns. Tap a day to see one step of the climb."}
+      </p>
+    </div>
+  );
+}
+
 export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -2143,6 +2223,8 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               A foundation is not proof that you will never feel uncertain. It is something steady
               to stand on when uncertainty returns.
             </blockquote>
+
+            <FourteenDayTrace />
 
             <section className={styles.optionalReflection}>
               <div>
