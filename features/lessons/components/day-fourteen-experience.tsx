@@ -889,31 +889,12 @@ function ToolPracticeStudio() {
 
           {activeTool === "food" ? (
             <g className={styles.toolMoment} key="food">
-              <path className={styles.storyTable} d="M125 226h472M168 226v43M554 226v43" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="warm"
-                scale={0.76}
-                seated
-                x={232}
-                y={265}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={493}
-                y={265}
-              />
-              <ellipse className={styles.plateShape} cx="362" cy="218" rx="62" ry="13" />
-              <path d="M320 210 Q362 172 404 210" fill="#e6b774" />
-              <path d="M334 206 Q362 184 390 206" fill="#789b88" opacity=".88" />
+              <ellipse className={styles.plateShape} cx="360" cy="214" rx="134" ry="30" />
+              <path d="M274 198 Q360 116 446 198 Z" fill="#e6b774" />
+              <path d="M308 194 Q360 148 412 194 Z" fill="#789b88" opacity=".85" />
               <path
                 className={styles.foodSteam}
-                d="M348 192c-10-11 10-17 0-31M376 192c-10-11 10-17 0-31"
+                d="M334 150c-14-16 14-24 0-46M386 150c-14-16 14-24 0-46"
               >
                 <animateTransform
                   attributeName="transform"
@@ -934,39 +915,28 @@ function ToolPracticeStudio() {
 
           {activeTool === "movement" ? (
             <g className={styles.toolMoment} key="movement">
-              <path className={styles.treeTrunk} d="M596 107v157" />
-              <circle className={styles.treeLeaf} cx="596" cy="86" r="51">
+              <path className={styles.treeTrunk} d="M612 118v146" />
+              <circle className={styles.treeLeaf} cx="612" cy="96" r="48">
                 <animateTransform
                   attributeName="transform"
                   dur="5s"
                   repeatCount="indefinite"
                   type="rotate"
-                  values="-2 596 140;2 596 140;-2 596 140"
+                  values="-2 612 150;2 612 150;-2 612 150"
                 />
               </circle>
-              <LessonMotionPerson
-                action="wave-right"
-                motion="dance"
-                palette="warm"
-                scale={0.79}
-                x={215}
-                y={266}
+              <path
+                d="M92 240 Q244 156 372 214 T596 182"
+                fill="none"
+                stroke="#b8cabf"
+                strokeDasharray="2 30"
+                strokeLinecap="round"
+                strokeWidth="12"
               />
-              <LessonMotionPerson
-                action="wave-left"
-                motion="dance"
-                palette="sage"
-                scale={0.79}
-                x={465}
-                y={266}
-              />
-              <circle className={styles.picnicBall} cx="0" cy="0" r="12">
+              <circle fill="#cf7b61" r="19" stroke="#fffaf2" strokeWidth="5">
                 <animateMotion
-                  calcMode="spline"
-                  dur="3s"
-                  keySplines="0.4 0 0.2 1;0.4 0 0.2 1"
-                  keyTimes="0;0.5;1"
-                  path="M260 174 Q340 74 420 174 Q340 74 260 174"
+                  dur="4.2s"
+                  path="M92 240 Q244 156 372 214 T596 182"
                   repeatCount="indefinite"
                 />
               </circle>
@@ -975,101 +945,73 @@ function ToolPracticeStudio() {
 
           {activeTool === "medicine" ? (
             <g className={styles.toolMoment} key="medicine">
-              <path className={styles.storyTable} d="M125 226h470M169 226v43M552 226v43" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={224}
-                y={265}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="blue"
-                scale={0.76}
-                seated
-                x={500}
-                y={265}
-              />
-              <path className={styles.medicineBottle} d="M341 151h52v68h-52zM351 136h32v15h-32z" />
               <rect
-                className={styles.storyNotebook}
-                height="68"
-                rx="4"
-                width="70"
-                x="408"
-                y="150"
+                className={styles.medicineBottle}
+                height="152"
+                rx="12"
+                width="120"
+                x="236"
+                y="118"
               />
+              <rect fill="#bd7a60" height="30" rx="6" width="82" x="255" y="92" />
+              <rect fill="#fffaf2" height="70" opacity=".92" rx="5" width="92" x="250" y="158" />
               <path
-                d="M421 170 H465 M421 187 H459 M421 204 H468"
-                stroke="#9bad9f"
+                d="M276 186 H326 M276 202 H318 M276 218 H322"
+                stroke="#c99a86"
                 strokeLinecap="round"
                 strokeWidth="4"
               />
-              <path d="M344 179 H390" stroke="#b8d1c2" strokeLinecap="round" strokeWidth="9">
-                <animate
-                  attributeName="opacity"
-                  dur="3s"
-                  repeatCount="indefinite"
-                  values=".45;1;.45"
+              <g>
+                <rect
+                  fill="#e6b774"
+                  height="34"
+                  rx="17"
+                  stroke="#c69551"
+                  strokeWidth="3"
+                  width="92"
+                  x="418"
+                  y="150"
                 />
-              </path>
+                <path d="M464 150 V184" stroke="#c69551" strokeWidth="3" />
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.6s"
+                  repeatCount="indefinite"
+                  type="rotate"
+                  values="-7 464 167;9 464 167;-7 464 167"
+                />
+              </g>
             </g>
           ) : null}
 
           {activeTool === "monitoring" ? (
             <g className={styles.toolMoment} key="monitoring">
-              <path className={styles.storyTable} d="M122 226h478M166 226v43M557 226v43" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="blue"
-                scale={0.76}
-                seated
-                x={222}
-                y={265}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={505}
-                y={265}
-              />
-              <rect className={styles.meterShape} height="78" rx="5" width="64" x="327" y="141" />
-              <rect className={styles.meterScreen} height="27" rx="2" width="42" x="338" y="155">
+              <rect className={styles.meterShape} height="192" rx="16" width="152" x="284" y="90" />
+              <rect className={styles.meterScreen} height="86" rx="5" width="112" x="304" y="114">
                 <animate
                   attributeName="opacity"
                   dur="3s"
                   repeatCount="indefinite"
-                  values=".45;1;.45"
+                  values=".55;1;.55"
                 />
               </rect>
-              <rect
-                className={styles.storyNotebook}
-                height="69"
-                rx="4"
-                width="72"
-                x="410"
-                y="149"
-              />
+              <path d="M326 148 H414" stroke="#5f947b" strokeLinecap="round" strokeWidth="12">
+                <animate
+                  attributeName="opacity"
+                  dur="2.6s"
+                  repeatCount="indefinite"
+                  values=".4;1;.4"
+                />
+              </path>
+              <path d="M326 174 H396" stroke="#9bb7ab" strokeLinecap="round" strokeWidth="8" />
+              <circle cx="360" cy="252" fill="none" r="18" stroke="#789083" strokeWidth="6" />
               <path
-                d="M422 169 H470 M422 187 H463 M422 204 H472"
-                stroke="#9bad9f"
-                strokeLinecap="round"
-                strokeWidth="4"
-              />
-              <path
-                d="M392 181 C402 173 408 173 416 181"
+                d="M352 252 l7 8 14 -17"
                 fill="none"
-                stroke="#c47b61"
+                stroke="#5f947b"
                 strokeLinecap="round"
-                strokeWidth="5"
+                strokeLinejoin="round"
+                strokeWidth="6"
               >
                 <animate
                   attributeName="stroke-dasharray"
@@ -1134,7 +1076,7 @@ function BodySystemLab() {
               <path className={styles.esophagusShape} d="M245 47 V135" />
               <path
                 className={cn(styles.stomachShape, styles.organShapeActive)}
-                d="M248 120 C214 110 184 128 182 170 C180 205 188 236 210 255 C230 272 258 276 282 266 C305 256 316 232 310 204 C305 176 303 148 291 137 C280 128 262 124 248 120 Z"
+                d="M250 118 C202 116 176 158 182 202 C187 244 222 272 268 266 C304 261 316 228 308 196 C301 166 300 140 286 130 C276 122 262 118 250 118 Z"
               />
               <path
                 className={cn(styles.intestineShape, styles.organShapeActive)}
@@ -1183,7 +1125,7 @@ function BodySystemLab() {
             <g className={styles.insulinMotion} key="pancreas">
               <path
                 className={cn(styles.pancreasShape, styles.organShapeActive)}
-                d="M120 230 C156 223 210 225 262 234 C293 239 305 227 331 231 C358 236 371 257 363 281 C355 302 327 308 304 297 C287 289 275 279 253 275 C209 266 154 248 120 230 Z"
+                d="M122 230 C168 221 232 224 296 236 C332 243 362 250 358 270 C353 290 320 291 288 284 C232 273 168 258 122 230 Z"
               />
               <path d="M439 214 H662" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
               <path d="M439 214 H662" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
@@ -1228,7 +1170,7 @@ function BodySystemLab() {
             <g className={styles.liverMotion} key="liver">
               <path
                 className={cn(styles.liverShape, styles.organShapeActive)}
-                d="M112 182 C150 150 240 128 340 140 C372 144 392 162 388 190 C384 226 356 252 314 260 C252 272 178 262 130 232 C112 220 102 198 112 182 Z"
+                d="M110 178 C158 146 264 134 352 148 C384 153 394 182 380 212 C362 250 262 262 176 250 C132 244 100 208 110 178 Z"
               />
               <path d="M455 197 H665" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
               <path d="M455 197 H665" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
