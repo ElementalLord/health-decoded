@@ -55,6 +55,73 @@ test("Day 14 uses three human SVG scenes with native continuous motion", () => {
   assert.doesNotMatch(experience, /type="range"|slider|lighthouse|lantern|random graph/i);
 });
 
+test("Day 14 keeps the passing cloud physically attached to its rain", () => {
+  assert.match(
+    experience,
+    /className=\{styles\.weatherSystem\}[\s\S]*className=\{styles\.rainCloud\}[\s\S]*className=\{styles\.rainDrops\}[\s\S]*values="-180 0;150 0;510 0"/,
+  );
+  assert.match(experience, /values="0 -5;0 70"/);
+  assert.doesNotMatch(experience, /values="0 -10;70 86"/);
+});
+
+test("Day 14 replaces static recap blocks with emotional user-controlled scenes", () => {
+  assert.match(experience, /function ThenNowStory/);
+  assert.match(experience, /useState<"then" \| "now">/);
+  assert.match(experience, /At the beginning/);
+  assert.match(experience, /Fourteen days later/);
+  assert.match(experience, /The questions did not disappear\. You became less alone inside them/);
+  assert.match(experience, /function ToolPracticeStudio/);
+  assert.match(experience, /useState<EverydayToolId>\("food"\)/);
+  assert.match(experience, /Choose a tool to explore/);
+  assert.match(experience, /One tool, inside one real moment/);
+  assert.doesNotMatch(experience, /beforeAfter|toolLines/);
+});
+
+test("Day 14 includes a connected interactive organ lab with distinct physiology", () => {
+  assert.match(experience, /function BodySystemLab/);
+  assert.match(experience, /useState<BodySystemId>\("digestion"\)/);
+  assert.match(experience, /Stomach \+ intestine/);
+  assert.match(experience, /Pancreas/);
+  assert.match(experience, /Liver/);
+  assert.match(experience, /Muscle/);
+  assert.match(experience, /styles\.stomachShape/);
+  assert.match(experience, /styles\.pancreasShape/);
+  assert.match(experience, /styles\.liverShape/);
+  assert.match(experience, /styles\.muscleShape/);
+  assert.match(experience, /path="M245 42 L245 126 C296 141 298 181 265 215/);
+  assert.match(experience, /path="M316 249 C395 240 436 215 520 214/);
+  assert.match(experience, /path="M652 197 C508 197 426 201 346 211/);
+  assert.match(experience, /height="62"\s+rx="31"\s+width="360"/);
+  assert.doesNotMatch(experience, /styles\.bloodRoute/);
+  assert.match(experience, /Working muscle pulls fuel from the bloodstream/);
+});
+
+test("Day 14 converts every formerly static recap into an optional exploration", () => {
+  assert.match(experience, /useState<OrdinaryMomentId>\("breakfast"\)/);
+  assert.match(experience, /Choose an ordinary moment/);
+  assert.match(experience, /function NumberContextExplorer/);
+  assert.match(experience, /useState<NumberMomentId>\("fasting"\)/);
+  assert.match(experience, /Choose a reading context/);
+  assert.match(experience, /function ProtectionExplorer/);
+  assert.match(experience, /useState<ProtectionAreaId>\("eyes"\)/);
+  assert.match(experience, /Choose an area to protect/);
+  assert.match(experience, /function ReturnScenarioExplorer/);
+  assert.match(experience, /useState<ReturnScenarioId>\("restaurant"\)/);
+  assert.match(experience, /Choose a changed moment/);
+  assert.match(experience, /className=\{styles\.returnVisual\}/);
+  assert.match(experience, /activeScenario === "reading"/);
+  assert.match(experience, /activeScenario === "routine"/);
+  assert.match(experience, /function SupportPractice/);
+  assert.match(experience, /useState<SupportOptionId>\("listen"\)/);
+  assert.match(experience, /Choose what support means today/);
+  assert.match(experience, /activeSupport === "company"/);
+  assert.match(experience, /activeSupport === "practical"/);
+  assert.doesNotMatch(
+    experience,
+    /styles\.(?:numberedEssay|contextSequence|protectionSpread|safetyNotes|returnStories|conversationEssay|conversationLines)/,
+  );
+});
+
 test("Day 14 grounds recognition and optimism in two unique human scenes", () => {
   assert.match(experience, /quiet-recognition\.jpg/);
   assert.match(experience, /life-keeps-growing\.jpg/);
@@ -93,12 +160,13 @@ test("Day 14 keeps the optional personal note private and revisitable on the sam
 
 test("Day 14 uses an open editorial layout instead of a modern card dashboard", () => {
   assert.match(styles, /\.editorialChoice[\s\S]*border-top: 1px solid/);
-  assert.match(styles, /\.numberedEssay[\s\S]*border-top: 1px solid/);
+  assert.match(styles, /\.organChoices,[\s\S]*display: flex/);
   assert.match(styles, /\.motionFigure[\s\S]*border-block: 1px solid/);
   assert.match(styles, /--lesson-ink: #50665f/);
   assert.doesNotMatch(styles, /box-shadow:/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:1\.5rem|2rem|3rem)/);
+  assert.doesNotMatch(styles, /border-left|border-inline-start|border-right/);
   assert.doesNotMatch(experience, /rounded-full/);
 });
 

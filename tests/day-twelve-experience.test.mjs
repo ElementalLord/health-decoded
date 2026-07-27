@@ -22,27 +22,43 @@ test("Day 12 uses one custom ten-chapter experience", () => {
   assert.match(experience, /Flexible care can bend without breaking/);
 });
 
-test("Day 12 uses three labeled teaching sequences with motion tied to meaning", () => {
-  assert.match(experience, /function AdaptiveDayTimeline/);
-  assert.match(experience, /function SickDayCauseAndResponse/);
-  assert.match(experience, /function BackupPlanSequence/);
-  assert.match(experience, /One day · two valid routes/);
-  assert.match(experience, /1 · Illness begins/);
-  assert.match(experience, /4 · What remains true/);
-  assert.match(styles, /animation: timeline-node-focus 8s ease-in-out infinite/);
-  assert.match(styles, /animation: flow-panel-focus 9s ease-in-out infinite/);
-  assert.match(styles, /animation: plan-sequence-focus 8s ease-in-out infinite/);
+test("Day 12 uses four purposeful loops tied to real decisions and physiology", () => {
+  assert.match(experience, /function ChangedDayAnimation/);
+  assert.match(experience, /function SickDayBodyAnimation/);
+  assert.match(experience, /function CareCallAnimation/);
+  assert.match(experience, /function PlanBAnimation/);
+  assert.match(experience, /selected problem-solving step changes the person’s visible action/);
+  assert.match(experience, /priority === "fluids"/);
+  assert.match(experience, /priority === "monitor"/);
+  assert.match(experience, /priority === "medicine"/);
+  assert.match(experience, /priority === "help"/);
+  assert.match(experience, /planBackup === "minutes"/);
+  assert.match(experience, /planBackup === "next"/);
+  assert.match(experience, /planBackup === "ask"/);
+  assert.match(experience, /planBackup === "reset"/);
+  assert.match(experience, /A friend helps make a care-team call during illness/);
+  assert.match(experience, /selected call detail changes what the friend gathers/);
+  assert.equal((experience.match(/data-motion-loop="continuous"/g) ?? []).length, 4);
+  assert.ok(
+    (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 20,
+    "expected multiple independently looping gestures across the four scenes",
+  );
+  assert.ok((experience.match(/<LessonMotionPerson/g) ?? []).length >= 8);
+  assert.doesNotMatch(experience, /<text(?:\s|>)/);
   assert.match(styles, /prefers-reduced-motion: reduce/);
-  assert.doesNotMatch(experience, /<svg|animateMotion|lighthouse|lantern|weave|bridge|weather/i);
+  assert.doesNotMatch(experience, /lighthouse|lantern|weave|bridge/i);
 });
 
-test("Day 12 grounds the lesson in warm human scenes instead of abstract decoration", () => {
+test("Day 12 grounds the lesson in warm human scenes instead of abstract diagrams", () => {
   assert.match(experience, /community-in-real-life\.jpg/);
   assert.match(experience, /sick-day-support\.jpg/);
   assert.match(experience, /plan-b-together\.jpg/);
   assert.match(experience, /play catch and share a hug/);
   assert.match(experience, /offering water beside a phone and written care plan/);
   assert.match(experience, /laughing and dancing together indoors/);
+  assert.match(experience, /short movement break, a supportive next meal, a call for help/);
+  assert.doesNotMatch(experience, /AdaptiveDayTimeline|causeFlow|flowConnector|planSequence/);
+  assert.doesNotMatch(styles, /\.timelineSteps|\.causeFlow|\.flowConnector|\.planSequence/);
   for (const filename of [
     "community-in-real-life.jpg",
     "sick-day-support.jpg",
@@ -52,23 +68,32 @@ test("Day 12 grounds the lesson in warm human scenes instead of abstract decorat
   }
 });
 
-test("Day 12 uses softly squared controls rather than pill-shaped lesson UI", () => {
-  assert.match(styles, /\.answerChoice[\s\S]*border-radius: 6px/);
-  assert.match(styles, /\.solverCard[\s\S]*border-radius: 6px/);
-  assert.match(styles, /\.progressTrack[\s\S]*border-radius: 3px/);
-  assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px|50%)/);
+test("Day 12 adopts Day 11's editorial hierarchy with softly squared controls", () => {
+  assert.match(experience, /ProgressBar/);
+  assert.match(experience, /max-w-\[1020px\]/);
+  assert.match(experience, /text-\[length:var\(--text-page-title\)\]/);
+  assert.match(styles, /\.answerChoice[\s\S]*border-radius: 9px/);
+  assert.match(styles, /\.motionFigure[\s\S]*border-radius: 12px/);
+  assert.match(styles, /color: #405750/);
+  assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.doesNotMatch(experience, /rounded-full/);
 });
 
-test("Day 12 turns the curriculum activities into user-input interactions", () => {
+test("Day 12 turns the curriculum activities into low-pressure user input", () => {
   assert.match(experience, /Pause/);
   assert.match(experience, /Understand/);
   assert.match(experience, /Choose/);
   assert.match(experience, /Adjust/);
-  assert.match(experience, /lifeToolChoices\.size >= 2/);
+  assert.match(experience, /lifeSituation/);
+  assert.match(experience, /lifeTool/);
+  assert.match(experience, /sickPriority/);
+  assert.match(experience, /callFocus/);
   assert.match(experience, /Your Plan B/);
   assert.match(experience, /scriptSituation/);
   assert.match(experience, /Run the solver/);
+  assert.match(experience, /The interactions are invitations, not gates/);
+  assert.doesNotMatch(experience, /function canContinue|stageRequirement/);
+  assert.doesNotMatch(experience, /openedSolverSteps|lifeToolChoices|sickPriorities/);
 });
 
 test("Day 12 teaches illness and missed-dose safety without inventing one universal rule", () => {
@@ -78,6 +103,7 @@ test("Day 12 teaches illness and missed-dose safety without inventing one univer
   assert.match(experience, /new confusion/i);
   assert.match(experience, /Do not double a dose unless/i);
   assert.match(experience, /vary by regimen and\s+health history/);
+  assert.match(experience, /Personal instructions matter more than a universal rule/);
   assert.doesNotMatch(experience, /mg\/dL|mmol\/L/);
   assert.doesNotMatch(experience, /SADMANS|euglycemic/i);
 });
