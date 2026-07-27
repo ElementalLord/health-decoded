@@ -1742,8 +1742,8 @@ function SupportPractice() {
       <div
         aria-label={
           isBoundary
-            ? "Two people respectfully make more room after a boundary is stated"
-            : "Two people move closer for a calm supportive conversation"
+            ? "A shield marks a respected boundary"
+            : "A single symbol for the chosen kind of support"
         }
         className={styles.supportVisual}
         data-motion-loop="continuous"
@@ -1760,59 +1760,23 @@ function SupportPractice() {
 
           {activeSupport === "listen" ? (
             <g key="listen">
-              <path className={styles.storyTable} d="M180 224 H548 M218 224 V270 M510 224 V270" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="warm"
-                scale={0.78}
-                seated
-                x={266}
-                y={264}
-              />
-              <LessonMotionPerson
-                action="listen"
-                motion="nod"
-                palette="sage"
-                scale={0.78}
-                seated
-                x={468}
-                y={264}
+              <path
+                d="M262 92 H458 Q482 92 482 116 V184 Q482 208 458 208 H352 L318 240 L322 208 H286 Q262 208 262 184 V116 Q262 92 286 92 Z"
+                fill="#fffaf2"
+                stroke="#7b9ea8"
+                strokeWidth="4"
               />
               <path
-                className={styles.cupShape}
-                d="M355 180 H381 V215 H355 Z M381 188 C399 188 399 207 381 207"
-              />
-              <path
-                className={styles.steamShape}
-                d="M364 174 C354 160 374 150 364 137 M376 174 C366 160 386 150 376 137"
-              >
-                <animateTransform
-                  attributeName="transform"
-                  dur="3.2s"
-                  repeatCount="indefinite"
-                  type="translate"
-                  values="0 5;0 -5;0 5"
-                />
-                <animate
-                  attributeName="opacity"
-                  dur="3.2s"
-                  repeatCount="indefinite"
-                  values=".2;1;.2"
-                />
-              </path>
-              <path
-                d="M327 124 H408 M341 107 H394"
-                fill="none"
-                stroke="#c77962"
+                d="M292 132 H452 M292 156 H420 M292 180 H438"
+                stroke="#a6b6b7"
                 strokeLinecap="round"
-                strokeWidth="5"
+                strokeWidth="7"
               >
                 <animate
                   attributeName="opacity"
-                  dur="4s"
+                  dur="3.4s"
                   repeatCount="indefinite"
-                  values=".2;1;.2"
+                  values=".4;1;.4"
                 />
               </path>
             </g>
@@ -1820,103 +1784,83 @@ function SupportPractice() {
 
           {activeSupport === "company" ? (
             <g key="company">
-              <path className={styles.treeTrunk} d="M604 105 V264" />
-              <circle className={styles.treeLeaf} cx="604" cy="85" r="50" />
-              <LessonMotionPerson
-                action="wave-right"
-                motion="dance"
-                palette="warm"
-                scale={0.8}
-                x={238}
-                y={263}
-              />
-              <LessonMotionPerson
-                action="wave-left"
-                motion="dance"
-                palette="sage"
-                scale={0.8}
-                x={470}
-                y={263}
-              />
-              <circle className={styles.picnicBall} cx="0" cy="0" r="12">
-                <animateMotion
-                  dur="3s"
-                  path="M282 175 Q354 78 426 175 Q354 78 282 175"
-                  repeatCount="indefinite"
-                />
-              </circle>
-            </g>
-          ) : null}
-
-          {activeSupport === "practical" ? (
-            <g key="practical">
-              <LessonMotionPerson
-                action="carry-right"
-                motion="walk"
-                palette="warm"
-                scale={0.82}
-                x={300}
-                y={263}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.82}
-                x={520}
-                y={263}
-              />
-              <g className={styles.supportBasket}>
-                <path d="M306 238 H360 L356 263 H310 Z M316 238 C316 222 350 222 350 238" />
-                <animateTransform
-                  attributeName="transform"
-                  dur="7s"
-                  keyTimes="0;0.3;0.6;1"
-                  repeatCount="indefinite"
-                  type="translate"
-                  values="0 0;0 0;130 0;130 0"
-                />
-              </g>
               <path
-                d="M369 176 Q386 160 405 176"
-                fill="none"
-                stroke="#8ca79a"
-                strokeLinecap="round"
+                d="M360 244 C300 194 268 162 268 130 C268 106 286 90 308 90 C328 90 346 104 360 126 C374 104 392 90 412 90 C434 90 452 106 452 130 C452 162 420 194 360 244 Z"
+                fill="#cf7b61"
+                stroke="#a7614e"
                 strokeWidth="5"
               >
                 <animate
-                  attributeName="stroke-dasharray"
-                  dur="7s"
-                  keyTimes="0;0.25;0.5;1"
+                  attributeName="stroke-width"
+                  dur="1.5s"
                   repeatCount="indefinite"
-                  values="0 50;50 0;50 0;0 50"
+                  values="5;9;5"
                 />
               </path>
             </g>
           ) : null}
 
+          {activeSupport === "practical" ? (
+            <g key="practical">
+              <rect
+                fill="#fffaf2"
+                height="152"
+                rx="8"
+                stroke="#7b9ea8"
+                strokeWidth="4"
+                width="182"
+                x="269"
+                y="84"
+              />
+              <circle cx="300" cy="120" fill="none" r="13" stroke="#5f947b" strokeWidth="4" />
+              <path
+                d="M293 120 l6 7 11 -13"
+                fill="none"
+                stroke="#5f947b"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="4"
+              >
+                <animate
+                  attributeName="stroke-dasharray"
+                  dur="2.6s"
+                  repeatCount="indefinite"
+                  values="0 32;32 0;32 0"
+                />
+              </path>
+              <path d="M326 120 H432" stroke="#8ca79a" strokeLinecap="round" strokeWidth="7" />
+              <path
+                d="M300 158 H432 M300 190 H408"
+                stroke="#cdd6cf"
+                strokeLinecap="round"
+                strokeWidth="7"
+              />
+            </g>
+          ) : null}
+
           {isBoundary ? (
             <g key="boundary">
-              <path className={styles.storyTable} d="M172 224 H553 M210 224 V270 M515 224 V270" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="warm"
-                scale={0.78}
-                seated
-                x={270}
-                y={264}
+              <path
+                d="M360 86 L442 116 V182 C442 226 404 252 360 266 C316 252 278 226 278 182 V116 Z"
+                fill="#dfe8e2"
+                stroke="#58756a"
+                strokeWidth="5"
               />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.78}
-                seated
-                x={489}
-                y={264}
-              />
-              <ellipse className={styles.plateShape} cx="377" cy="217" rx="47" ry="10" />
+              <path
+                d="M336 176 l15 17 32 -40"
+                fill="none"
+                stroke="#58756a"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="6"
+              >
+                <animate
+                  attributeName="opacity"
+                  dur="2.8s"
+                  repeatCount="indefinite"
+                  values=".4;1;.4"
+                />
+              </path>
             </g>
           ) : null}
         </svg>
