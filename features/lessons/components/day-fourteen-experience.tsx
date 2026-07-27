@@ -1128,21 +1128,20 @@ function BodySystemLab() {
         >
           <rect className={styles.organWash} height="430" width="720" />
           <circle className={styles.organHalo} cx="250" cy="214" r="178" />
-          <path d="M448 84 H448 V352" stroke="#bdd0c7" strokeLinecap="round" strokeWidth="2" />
 
           {activeSystem === "digestion" ? (
             <g className={styles.digestionMotion} key="digestion">
               <path className={styles.esophagusShape} d="M245 47 V135" />
               <path
                 className={cn(styles.stomachShape, styles.organShapeActive)}
-                d="M250 120 C214 108 185 130 182 172 C179 210 189 244 214 263 C234 278 258 282 280 274 C300 267 312 248 308 226 C304 198 296 168 280 150 C268 137 260 128 250 120 Z"
+                d="M248 120 C214 110 184 128 182 170 C180 205 188 236 210 255 C230 272 258 276 282 266 C305 256 316 232 310 204 C305 176 303 148 291 137 C280 128 262 124 248 120 Z"
               />
               <path
                 className={cn(styles.intestineShape, styles.organShapeActive)}
-                d="M183 310 C207 282 292 283 316 309 C338 333 305 350 276 338 C240 323 199 330 193 352 C187 378 236 385 272 367 C308 349 337 368 321 392"
+                d="M232 252 C214 276 214 300 240 312 C270 326 300 330 306 348 C312 366 290 376 268 370 C252 366 248 374 245 374"
               />
               {[0, 1, 2].map((dot) => (
-                <circle key={dot} r={8 - dot} fill="#d8955c" stroke="#fff9ef" strokeWidth="3">
+                <circle key={dot} r="10" fill="#d8955c" stroke="#fff9ef" strokeWidth="3">
                   <animateMotion
                     begin={`${dot * -1.35}s`}
                     dur="5.4s"
@@ -1184,7 +1183,7 @@ function BodySystemLab() {
             <g className={styles.insulinMotion} key="pancreas">
               <path
                 className={cn(styles.pancreasShape, styles.organShapeActive)}
-                d="M130 236 C175 224 240 226 290 236 C316 241 336 240 348 254 C358 266 354 284 334 286 C312 288 296 280 274 276 C226 268 172 258 130 236 Z"
+                d="M120 230 C156 223 210 225 262 234 C293 239 305 227 331 231 C358 236 371 257 363 281 C355 302 327 308 304 297 C287 289 275 279 253 275 C209 266 154 248 120 230 Z"
               />
               <path d="M439 214 H662" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
               <path d="M439 214 H662" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
@@ -1516,13 +1515,6 @@ function ProtectionExplorer() {
                 />
               </path>
               <path
-                d="M351 105 V44 M370 107 C399 72 417 58 449 52 M337 109 C307 78 284 66 252 61"
-                fill="none"
-                stroke="#c97866"
-                strokeLinecap="round"
-                strokeWidth="17"
-              />
-              <path
                 d="M353 137 C313 158 310 205 354 249 C397 206 397 159 353 137 Z"
                 fill="#e7a28e"
                 opacity=".75"
@@ -1563,36 +1555,40 @@ function ProtectionExplorer() {
           {activeArea === "feet" ? (
             <g key="feet">
               <path
-                d="M160 152 C191 91 262 92 287 148 C305 188 285 235 249 266 C215 295 164 279 145 242 C131 214 143 184 160 152 Z"
+                d="M292 268 C296 236 286 196 256 190 C226 184 196 200 176 176 C160 157 150 168 150 190 C150 214 158 236 150 258 C144 276 160 286 186 286 C224 286 262 288 292 268 Z"
                 fill="#d8aa89"
                 stroke="#8d6c5e"
-                strokeWidth="6"
-              />
-              <path
-                d="M433 148 C459 92 529 91 560 152 C577 184 589 214 575 242 C556 279 505 295 471 266 C435 235 415 188 433 148 Z"
-                fill="#d8aa89"
-                stroke="#8d6c5e"
+                strokeLinejoin="round"
                 strokeWidth="6"
               />
               {[0, 1, 2, 3, 4].map((toe) => (
-                <g key={toe}>
-                  <circle
-                    cx={176 + toe * 23}
-                    cy={130 - Math.abs(2 - toe) * 6}
-                    fill="#d8aa89"
-                    r={14 - Math.abs(2 - toe)}
-                    stroke="#8d6c5e"
-                    strokeWidth="4"
-                  />
-                  <circle
-                    cx={544 - toe * 23}
-                    cy={130 - Math.abs(2 - toe) * 6}
-                    fill="#d8aa89"
-                    r={14 - Math.abs(2 - toe)}
-                    stroke="#8d6c5e"
-                    strokeWidth="4"
-                  />
-                </g>
+                <circle
+                  key={`ltoe-${toe}`}
+                  cx={168 + toe * 5}
+                  cy={150 + toe * 20}
+                  fill="#d8aa89"
+                  r={11 - toe}
+                  stroke="#8d6c5e"
+                  strokeWidth="4"
+                />
+              ))}
+              <path
+                d="M428 268 C424 236 434 196 464 190 C494 184 524 200 544 176 C560 157 570 168 570 190 C570 214 562 236 570 258 C576 276 560 286 534 286 C496 286 458 288 428 268 Z"
+                fill="#d8aa89"
+                stroke="#8d6c5e"
+                strokeLinejoin="round"
+                strokeWidth="6"
+              />
+              {[0, 1, 2, 3, 4].map((toe) => (
+                <circle
+                  key={`rtoe-${toe}`}
+                  cx={552 - toe * 5}
+                  cy={150 + toe * 20}
+                  fill="#d8aa89"
+                  r={11 - toe}
+                  stroke="#8d6c5e"
+                  strokeWidth="4"
+                />
               ))}
               <path d="M130 335 H590" stroke="#789083" strokeLinecap="round" strokeWidth="7" />
               <g>
