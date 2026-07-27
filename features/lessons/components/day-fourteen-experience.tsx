@@ -1609,111 +1609,58 @@ function ReturnScenarioExplorer() {
 
           {activeScenario === "restaurant" ? (
             <g key="restaurant">
-              <path className={styles.storyTable} d="M171 224 H574 M210 224 V270 M535 224 V270" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="warm"
-                scale={0.76}
-                seated
-                x={250}
-                y={266}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={506}
-                y={266}
-              />
               <rect
                 fill="#fffaf2"
-                height="98"
-                rx="5"
-                stroke="#7b9ea8"
+                height="168"
+                rx="8"
+                stroke="#c9896f"
                 strokeWidth="4"
-                width="79"
-                x="323"
-                y="112"
+                width="156"
+                x="282"
+                y="74"
               />
-              <path
-                d="M339 135 H386 M339 152 H377 M339 169 H388 M339 186 H371"
-                stroke="#a6b6b7"
-                strokeLinecap="round"
-                strokeWidth="4"
-              />
-              <ellipse className={styles.plateShape} cx="439" cy="216" rx="44" ry="10" />
-              <path d="M410 209 Q439 183 468 209" fill="#e7b879">
+              <rect fill="#e6cdbd" height="34" rx="4" width="116" x="302" y="92" />
+              <rect fill="#e7b879" height="13" rx="6" opacity=".5" width="78" x="302" y="142">
                 <animate
                   attributeName="opacity"
-                  dur="3.4s"
+                  dur="2.8s"
                   repeatCount="indefinite"
-                  values=".55;1;.55"
+                  values=".2;.75;.2"
                 />
-              </path>
+              </rect>
+              <path
+                d="M302 170 H420 M302 192 H438 M302 214 H412"
+                stroke="#c3a894"
+                strokeLinecap="round"
+                strokeWidth="6"
+              />
             </g>
           ) : null}
 
           {activeScenario === "reading" ? (
             <g key="reading">
-              <path className={styles.storyTable} d="M142 226 H596 M181 226 V270 M557 226 V270" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="blue"
-                scale={0.76}
-                seated
-                x={232}
-                y={266}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={520}
-                y={266}
-              />
-              <rect className={styles.meterShape} height="83" rx="6" width="66" x="323" y="134" />
-              <rect className={styles.meterScreen} height="29" rx="3" width="44" x="334" y="150">
-                <animate
-                  attributeName="opacity"
-                  dur="2.8s"
-                  repeatCount="indefinite"
-                  values=".45;1;.45"
-                />
-              </rect>
               <rect
-                className={styles.storyNotebook}
-                height="81"
-                rx="4"
-                width="76"
-                x="414"
-                y="135"
-              />
-              <path
-                d="M427 156 H478 M427 174 H468 M427 192 H481"
-                stroke="#9bad9f"
-                strokeLinecap="round"
+                fill="#fffaf2"
+                height="150"
+                rx="8"
+                stroke="#7b9ea8"
                 strokeWidth="4"
+                width="212"
+                x="254"
+                y="82"
               />
+              <path d="M282 112 H360" stroke="#a6b6b7" strokeLinecap="round" strokeWidth="6" />
               <path
-                d="M390 176 C403 166 409 166 417 176"
+                d="M282 202 L322 176 L352 186 L392 132 L432 166 L468 152"
                 fill="none"
                 stroke="#c47b61"
                 strokeLinecap="round"
+                strokeLinejoin="round"
                 strokeWidth="5"
-              >
-                <animate
-                  attributeName="stroke-dasharray"
-                  dur="3s"
-                  repeatCount="indefinite"
-                  values="0 50;50 0;50 0"
-                />
-              </path>
+              />
+              <circle cx="392" cy="132" fill="#c47b61" r="9" stroke="#fffaf2" strokeWidth="3">
+                <animate attributeName="r" dur="2s" repeatCount="indefinite" values="7;11;7" />
+              </circle>
             </g>
           ) : null}
 
@@ -1721,63 +1668,43 @@ function ReturnScenarioExplorer() {
             <g key="routine">
               <rect
                 fill="#fffaf2"
-                height="115"
-                rx="6"
+                height="158"
+                rx="8"
                 stroke="#7b9ea8"
                 strokeWidth="4"
-                width="128"
-                x="105"
-                y="83"
+                width="176"
+                x="272"
+                y="80"
               />
-              <path d="M105 112 H233 M135 69 V101 M205 69 V101" stroke="#7b9ea8" strokeWidth="6" />
               <path
-                d="M132 135 L205 177 M205 135 L132 177"
-                stroke="#c77962"
+                d="M272 120 H448 M312 66 V98 M408 66 V98"
+                stroke="#7b9ea8"
                 strokeLinecap="round"
-                strokeWidth="7"
-              >
-                <animate
-                  attributeName="opacity"
-                  dur="3.2s"
-                  repeatCount="indefinite"
-                  values=".45;1;.45"
-                />
-              </path>
-              <path
-                d="M334 243 H636 M368 246 V270 M601 246 V270"
-                stroke="#826e5e"
-                strokeLinecap="round"
-                strokeWidth="12"
+                strokeWidth="6"
               />
-              <LessonMotionPerson
-                action="celebrate"
-                motion="dance"
-                palette="warm"
-                scale={0.8}
-                x={450}
-                y={266}
-              />
-              <LessonMotionPerson
-                action="wave-left"
-                motion="dance"
-                palette="sage"
-                scale={0.8}
-                x={557}
-                y={266}
-              />
+              <rect fill="#eef2f0" height="24" rx="3" width="44" x="292" y="136" />
+              <rect fill="#eef2f0" height="24" rx="3" width="44" x="344" y="136" />
+              <rect fill="#eef2f0" height="24" rx="3" width="44" x="292" y="172" />
+              <rect fill="#eef2f0" height="24" rx="3" width="44" x="344" y="172" />
               <rect
-                fill="#6f8f80"
-                height="56"
-                rx="7"
-                stroke="#58756a"
-                strokeWidth="4"
-                width="65"
-                x="648"
-                y="184"
-              />
-              <circle cx="681" cy="212" fill="#f1ddbd" r="17">
-                <animate attributeName="r" dur="2.2s" repeatCount="indefinite" values="15;20;15" />
-              </circle>
+                fill="#e7b879"
+                height="24"
+                rx="4"
+                stroke="#c69551"
+                strokeWidth="2"
+                width="44"
+                x="396"
+                y="136"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.4s"
+                  keyTimes="0;0.4;0.6;1"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 0;0 36;0 36;0 0"
+                />
+              </rect>
             </g>
           ) : null}
         </svg>
