@@ -995,7 +995,7 @@ function ToolPracticeStudio() {
                   values=".55;1;.55"
                 />
               </rect>
-              <path d="M326 148 H414" stroke="#5f947b" strokeLinecap="round" strokeWidth="12">
+              <path d="M328 150 H390" stroke="#5f947b" strokeLinecap="round" strokeWidth="10">
                 <animate
                   attributeName="opacity"
                   dur="2.6s"
@@ -1003,7 +1003,7 @@ function ToolPracticeStudio() {
                   values=".4;1;.4"
                 />
               </path>
-              <path d="M326 174 H396" stroke="#9bb7ab" strokeLinecap="round" strokeWidth="8" />
+              <path d="M328 172 H368" stroke="#9bb7ab" strokeLinecap="round" strokeWidth="8" />
               <circle cx="360" cy="252" fill="none" r="18" stroke="#789083" strokeWidth="6" />
               <path
                 d="M352 252 l7 8 14 -17"
@@ -1611,16 +1611,30 @@ function ReturnScenarioExplorer() {
             <g key="restaurant">
               <rect
                 fill="#fffaf2"
-                height="168"
+                height="176"
                 rx="8"
                 stroke="#c9896f"
                 strokeWidth="4"
-                width="156"
-                x="282"
-                y="74"
+                width="160"
+                x="280"
+                y="80"
               />
-              <rect fill="#e6cdbd" height="34" rx="4" width="116" x="302" y="92" />
-              <rect fill="#e7b879" height="13" rx="6" opacity=".5" width="78" x="302" y="142">
+              <path
+                d="M330 100 V120 M340 100 V120 M350 100 V120 M340 120 V158"
+                fill="none"
+                stroke="#c9896f"
+                strokeLinecap="round"
+                strokeWidth="4"
+              />
+              <path
+                d="M392 100 C404 104 404 128 392 132 M392 100 V158"
+                fill="none"
+                stroke="#c9896f"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="4"
+              />
+              <rect fill="#e7b879" height="13" rx="6" opacity=".5" width="82" x="300" y="176">
                 <animate
                   attributeName="opacity"
                   dur="2.8s"
@@ -1629,7 +1643,7 @@ function ReturnScenarioExplorer() {
                 />
               </rect>
               <path
-                d="M302 170 H420 M302 192 H438 M302 214 H412"
+                d="M300 202 H416 M300 224 H430"
                 stroke="#c3a894"
                 strokeLinecap="round"
                 strokeWidth="6"
@@ -1760,6 +1774,13 @@ function SupportPractice() {
 
           {activeSupport === "listen" ? (
             <g key="listen">
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 0;0 -6;0 0"
+              />
               <path
                 d="M262 92 H458 Q482 92 482 116 V184 Q482 208 458 208 H352 L318 240 L322 208 H286 Q262 208 262 184 V116 Q262 92 286 92 Z"
                 fill="#fffaf2"
@@ -1779,6 +1800,20 @@ function SupportPractice() {
                   values=".4;1;.4"
                 />
               </path>
+              <path
+                d="M500 126 Q524 150 500 174 M520 112 Q556 150 520 188"
+                fill="none"
+                stroke="#8ca79a"
+                strokeLinecap="round"
+                strokeWidth="4"
+              >
+                <animate
+                  attributeName="opacity"
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                  values="0;1;0"
+                />
+              </path>
             </g>
           ) : null}
 
@@ -1792,11 +1827,35 @@ function SupportPractice() {
               >
                 <animate
                   attributeName="stroke-width"
-                  dur="1.5s"
+                  dur="1.4s"
                   repeatCount="indefinite"
-                  values="5;9;5"
+                  values="5;10;5"
                 />
               </path>
+              {[0, 1, 2].map((i) => (
+                <path
+                  d="M0 10 C-8 4 -12 0 -12 -5 C-12 -9 -8 -10 -4 -7 C-1 -5 0 -3 0 -1 C0 -3 1 -5 4 -7 C8 -10 12 -9 12 -5 C12 0 8 4 0 10 Z"
+                  fill="#cf7b61"
+                  key={i}
+                  opacity="0"
+                >
+                  <animateTransform
+                    attributeName="transform"
+                    begin={`${i * -1.6}s`}
+                    dur="4.8s"
+                    repeatCount="indefinite"
+                    type="translate"
+                    values="360 118;384 34"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${i * -1.6}s`}
+                    dur="4.8s"
+                    repeatCount="indefinite"
+                    values="0;0.8;0"
+                  />
+                </path>
+              ))}
             </g>
           ) : null}
 
@@ -1829,17 +1888,48 @@ function SupportPractice() {
                 />
               </path>
               <path d="M326 120 H432" stroke="#8ca79a" strokeLinecap="round" strokeWidth="7" />
-              <path
-                d="M300 158 H432 M300 190 H408"
-                stroke="#cdd6cf"
-                strokeLinecap="round"
-                strokeWidth="7"
-              />
+              <path d="M300 158 H432" stroke="#cdd6cf" strokeLinecap="round" strokeWidth="7">
+                <animate
+                  attributeName="opacity"
+                  dur="3.2s"
+                  keyTimes="0;0.3;0.7;1"
+                  repeatCount="indefinite"
+                  values=".25;1;1;.25"
+                />
+              </path>
+              <path d="M300 190 H408" stroke="#cdd6cf" strokeLinecap="round" strokeWidth="7">
+                <animate
+                  attributeName="opacity"
+                  begin="-1.6s"
+                  dur="3.2s"
+                  keyTimes="0;0.3;0.7;1"
+                  repeatCount="indefinite"
+                  values=".25;1;1;.25"
+                />
+              </path>
             </g>
           ) : null}
 
           {isBoundary ? (
             <g key="boundary">
+              <ellipse
+                cx="360"
+                cy="176"
+                fill="none"
+                rx="52"
+                ry="58"
+                stroke="#8aa596"
+                strokeWidth="3"
+              >
+                <animate attributeName="rx" dur="3s" repeatCount="indefinite" values="46;60;46" />
+                <animate attributeName="ry" dur="3s" repeatCount="indefinite" values="52;66;52" />
+                <animate
+                  attributeName="opacity"
+                  dur="3s"
+                  repeatCount="indefinite"
+                  values=".55;0;.55"
+                />
+              </ellipse>
               <path
                 d="M360 86 L442 116 V182 C442 226 404 252 360 266 C316 252 278 226 278 182 V116 Z"
                 fill="#dfe8e2"
@@ -1855,10 +1945,10 @@ function SupportPractice() {
                 strokeWidth="6"
               >
                 <animate
-                  attributeName="opacity"
+                  attributeName="stroke-dasharray"
                   dur="2.8s"
                   repeatCount="indefinite"
-                  values=".4;1;.4"
+                  values="0 80;80 0;80 0"
                 />
               </path>
             </g>
