@@ -2064,6 +2064,94 @@ function FourteenDayTrace() {
   );
 }
 
+const biteStations = [
+  {
+    caption: "It starts as an ordinary meal. Carbohydrate foods carry most of the glucose.",
+    label: "On the plate",
+  },
+  {
+    caption: "Digestion breaks the food down into glucose, a simple sugar the body can use.",
+    label: "In the stomach",
+  },
+  {
+    caption: "Glucose enters the bloodstream, so blood glucose gently rises after eating.",
+    label: "Into the blood",
+  },
+  {
+    caption:
+      "Insulin is the key that lets glucose into cells for energy. In type 2, the key works less well, so glucose can linger in the blood.",
+    label: "Into the cells",
+  },
+] as const;
+
+function FollowOneBite() {
+  const [step, setStep] = useState(0);
+  const stationX = [96, 272, 448, 624];
+  const total = biteStations.length;
+  const atLast = step === total - 1;
+  const active = biteStations[step] ?? biteStations[0];
+
+  return (
+    <div className={styles.bite}>
+      <div className={styles.journeyTraceHead}>
+        <p className="editorial-eyebrow">Follow one bite</p>
+        <p>Walk a single piece of food through the body, one step at a time.</p>
+      </div>
+      <svg
+        aria-label={`Step ${step + 1} of ${total}, ${active.label}. ${active.caption}`}
+        className={styles.biteSvg}
+        role="img"
+        viewBox="0 0 720 150"
+      >
+        <path
+          d="M96 96 H624"
+          fill="none"
+          stroke="#d8c7b8"
+          strokeDasharray="2 12"
+          strokeLinecap="round"
+          strokeWidth="4"
+        />
+        {biteStations.map((station, index) => (
+          <circle
+            cx={stationX[index]}
+            cy="96"
+            fill={index <= step ? "#f0e2d0" : "#f5efe6"}
+            key={station.label}
+            r="24"
+            stroke={index <= step ? "#b96c55" : "#dccbbb"}
+            strokeWidth="3"
+          />
+        ))}
+        <circle
+          className={styles.biteParticle}
+          cx="0"
+          cy="96"
+          fill="#e0a24f"
+          r="12"
+          stroke="#fff7e7"
+          strokeWidth="3"
+          style={{ transform: `translateX(${stationX[step]}px)` }}
+        />
+      </svg>
+      <div className={styles.biteControls}>
+        <div>
+          <p className={styles.biteStationLabel}>{active.label}</p>
+          <p aria-live="polite" className={styles.biteStationCaption}>
+            {active.caption}
+          </p>
+        </div>
+        <button
+          className={styles.biteButton}
+          onClick={() => setStep((current) => (atLast ? 0 : current + 1))}
+          type="button"
+        >
+          {atLast ? "Start over" : "Next step"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -2295,6 +2383,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               animation feels like one connected body, not four unrelated diagrams.
             </p>
             <BodySystemLab />
+            <FollowOneBite />
             <blockquote className={styles.pullQuote}>
               Your body is not an enemy to defeat. It is a living system you can learn to support.
             </blockquote>

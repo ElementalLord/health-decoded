@@ -99,6 +99,67 @@
   line-height: 1.7;
 }
 
+.bite {
+  overflow: hidden;
+  border: 1px solid rgb(199 124 98 / 22%);
+  border-radius: 14px;
+  background: #f4ebe1;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.biteSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0.6rem 0 0.4rem;
+}
+
+.biteParticle {
+  transition: transform 550ms var(--ease-standard, ease);
+}
+
+.biteControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+.biteStationLabel {
+  color: #55796a;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.biteStationCaption {
+  max-width: 34rem;
+  margin-top: 0.35rem;
+  color: #6f5a4e;
+  line-height: 1.6;
+}
+
+.biteButton {
+  flex-shrink: 0;
+  border: 1px solid #b96c55;
+  border-radius: 9px;
+  background: #b96c55;
+  padding: 0.5rem 1.1rem;
+  color: #fff8f0;
+  transition: background 160ms ease;
+}
+
+.biteButton:hover {
+  background: #a75f4a;
+}
+
+.biteButton:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .journeyLine {
     animation: none;
@@ -107,6 +168,10 @@
 
   .journeyDotActive {
     animation: none;
+  }
+
+  .biteParticle {
+    transition: none;
   }
 }
 
