@@ -91,7 +91,7 @@ test("Day 14 includes a connected interactive organ lab with distinct physiology
   assert.match(experience, /path="M245 42 L245 126 C296 141 298 181 265 215/);
   assert.match(experience, /path="M316 249 C395 240 436 215 520 214/);
   assert.match(experience, /path="M652 197 C508 197 426 201 346 211/);
-  assert.match(experience, /height="62"\s+rx="31"\s+width="360"/);
+  assert.match(experience, /M176 \$\{221 \+ fiber \* 72\} C236/);
   assert.doesNotMatch(experience, /styles\.bloodRoute/);
   assert.match(experience, /Working muscle pulls fuel from the bloodstream/);
 });
