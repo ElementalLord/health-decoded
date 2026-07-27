@@ -168,6 +168,27 @@
   color: #405750;
 }
 
+.loadBag {
+  cursor: pointer;
+  transition: transform 480ms var(--ease-standard, ease);
+}
+
+.loadBag:hover rect {
+  filter: brightness(1.04);
+}
+
+.loadBag:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: 4px;
+}
+
+.loadStatus {
+  padding: 0.85rem 1.4rem 0;
+  color: #55796a;
+  font-style: italic;
+  line-height: 1.7;
+}
+
 .boundaryTranscript {
   display: grid;
   background: #fffaf2;
@@ -832,6 +853,10 @@
   .feedback,
   .identityStatement {
     animation: none;
+  }
+
+  .loadBag {
+    transition: none;
   }
 
   .answerChoice,

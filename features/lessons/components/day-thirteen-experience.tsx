@@ -280,21 +280,41 @@ function Feedback({ feedback }: { feedback: DayThirteenEvaluationFeedback }) {
 }
 
 function SharedLoadAnimation() {
+  const [shared, setShared] = useState<Set<number>>(() => new Set());
+
+  function toggle(id: number) {
+    setShared((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  const carried = 3 - shared.size;
+  const tilt = carried * 3;
+  const bagColors = ["#e4b878", "#e9c88f", "#efd7b0"] as const;
+
   return (
     <figure className={styles.motionFigure} data-motion-loop="continuous">
       <svg
         aria-labelledby="shared-load-title shared-load-description"
         className={styles.motionCanvas}
-        role="img"
+        role="group"
         viewBox="0 0 900 430"
       >
         <title id="shared-load-title">One chosen task becomes shared</title>
         <desc id="shared-load-description">
-          Two friends pause on a walk. One asks before taking one grocery bag. The other person
-          keeps their second bag and their direction.
+          Two friends pause on a walk. Tap a grocery bag the first person is carrying to set it on a
+          shared bench between them; the person eases upright as each chosen task is shared.
         </desc>
         <rect fill="#eef4f0" height="430" width="900" />
-        <circle cx="770" cy="79" fill="#edca8c" opacity=".72" r="40" />
+        <circle cx="770" cy="79" fill="#edca8c" opacity=".72" r="40">
+          <animate attributeName="opacity" dur="6s" repeatCount="indefinite" values=".6;.8;.6" />
+        </circle>
         <path
           d="M35 367 Q245 349 455 366 T865 362"
           fill="none"
@@ -304,73 +324,73 @@ function SharedLoadAnimation() {
         />
         <path d="M95 366 Q135 309 175 366 M724 362 Q768 300 812 362" fill="#dce7df" />
 
-        <LessonMotionPerson
-          action="carry-left"
-          motion="breathe"
-          palette="warm"
-          scale={1.03}
-          x={328}
-          y={355}
+        <path
+          d="M396 348 H584 M412 348 V376 M568 348 V376"
+          fill="none"
+          stroke="#9d8a72"
+          strokeLinecap="round"
+          strokeWidth="9"
         />
+
+        <g transform={`rotate(${tilt} 300 376)`}>
+          <LessonMotionPerson
+            action={carried === 0 ? "rest" : "carry-left"}
+            motion="breathe"
+            palette="warm"
+            scale={1.02}
+            x={300}
+            y={360}
+          />
+        </g>
         <LessonMotionPerson
           action="reach-left"
           motion="nod"
           palette="sage"
-          scale={1.03}
-          x={590}
-          y={355}
+          scale={1.02}
+          x={606}
+          y={360}
         />
 
-        <g>
-          <rect
-            fill="#e4b878"
-            height="62"
-            rx="7"
-            stroke="#9d714a"
-            strokeWidth="3"
-            width="68"
-            x="250"
-            y="310"
-          />
-          <path d="M264 312 Q284 292 304 312" fill="none" stroke="#9d714a" strokeWidth="6" />
-        </g>
-        <g>
-          <rect
-            fill="#efd7b0"
-            height="62"
-            rx="7"
-            stroke="#9d714a"
-            strokeWidth="3"
-            width="68"
-            x="339"
-            y="310"
-          />
-          <path d="M353 312 Q373 292 393 312" fill="none" stroke="#9d714a" strokeWidth="6" />
-          <animateTransform
-            attributeName="transform"
-            dur="8s"
-            keyTimes="0;0.23;0.5;0.78;1"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 0;0 0;145 -18;145 -18;0 0"
-          />
-        </g>
-        <path
-          d="M430 238 C456 217 481 217 507 238"
-          fill="none"
-          stroke="#8ea79b"
-          strokeLinecap="round"
-          strokeWidth="5"
-        >
-          <animate
-            attributeName="stroke-dasharray"
-            dur="8s"
-            keyTimes="0;0.18;0.38;0.7;1"
-            repeatCount="indefinite"
-            values="0 100;100 0;100 0;0 100;0 100"
-          />
-        </path>
+        {[0, 1, 2].map((id) => {
+          const isShared = shared.has(id);
+          const x = isShared ? 414 + id * 54 : 168;
+          const y = isShared ? 300 : 320 - id * 50;
+          return (
+            <g
+              aria-label={isShared ? "Take this task back" : "Share this task with your friend"}
+              className={styles.loadBag}
+              key={id}
+              onClick={() => toggle(id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  toggle(id);
+                }
+              }}
+              role="button"
+              style={{ transform: `translate(${x}px, ${y}px)` }}
+              tabIndex={0}
+            >
+              <rect
+                fill={bagColors[id]}
+                height="58"
+                rx="7"
+                stroke="#9d714a"
+                strokeWidth="3"
+                width="64"
+              />
+              <path d="M14 2 Q32 -16 50 2" fill="none" stroke="#9d714a" strokeWidth="6" />
+            </g>
+          );
+        })}
       </svg>
+      <div aria-live="polite" className={styles.loadStatus}>
+        {carried === 0
+          ? "Two of you now carry what one carried alone. The plan, and the walk, are still yours."
+          : shared.size > 0
+            ? "One chosen task has changed hands. You still hold the rest, and the direction."
+            : "Tap a bag to let your friend carry one chosen part."}
+      </div>
       <figcaption className={styles.figureCaption}>
         <strong>What to notice:</strong> permission comes first. One chosen task changes hands; the
         person keeps ownership of the plan.
