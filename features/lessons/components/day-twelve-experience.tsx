@@ -28,6 +28,7 @@ import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-
 import styles from "@/features/lessons/components/day-twelve-experience.module.css";
 import {
   canNavigateToLessonStage,
+  getLessonResumeStage,
   isLessonStageLocked,
   type LessonStageGateMap,
 } from "@/features/lessons/lib/lesson-stage-gating";
@@ -36,9 +37,15 @@ import { cn } from "@/lib/utils";
 
 const stageCount = 10;
 const dayTwelveStageGates: LessonStageGateMap = {
+  0: "Choose what feels most true when a careful plan changes before you move on.",
   1: "Open all four solver steps above before you move on.",
+  2: "Choose a response to the moved-lunch scenario before you move on.",
+  3: "Choose both a real-life interruption and one useful tool before you move on.",
   4: "Add all five pieces to the sick-day plan above before you move on.",
+  5: "Choose what makes the care-team call useful before you move on.",
+  6: "Choose the safest missed-dose response before you move on.",
   7: "Choose both sides of your Plan B above before you move on.",
+  8: "Run the solver once in the final scenario before you move on.",
 };
 
 const openingFeelings = [
@@ -1464,6 +1471,8 @@ function PackSickDayPlan({ onReady }: { onReady?: () => void }) {
 
 export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
+  const storageKey = `health-decoded:day-twelve:${experience.lessonProgressId}`;
+  const gateStorageKey = `${storageKey}:ready`;
   const [stage, setStage] = useState(0);
   const [openingFeeling, setOpeningFeeling] = useState<string | null>(null);
   const [activeSolverStep, setActiveSolverStep] = useState<SolverStepId>("pause");
@@ -1497,12 +1506,22 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
   const [planChoicesMade, setPlanChoicesMade] = useState<Set<"trigger" | "backup">>(
     () => new Set(),
   );
-  const markReady = useCallback((target: number) => {
-    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
-  }, []);
+  const [dayChoicesMade, setDayChoicesMade] = useState<Set<"situation" | "tool">>(() => new Set());
+  const markReady = useCallback(
+    (target: number) => {
+      setReadyStages((current) => {
+        if (current.has(target)) return current;
+        const next = new Set(current).add(target);
+        if (experience.accessMode === "active") {
+          window.localStorage.setItem(gateStorageKey, JSON.stringify([...next]));
+        }
+        return next;
+      });
+    },
+    [experience.accessMode, gateStorageKey],
+  );
   const markSickDayPlanReady = useCallback(() => markReady(4), [markReady]);
   const stageRef = useRef<HTMLDivElement>(null);
-  const storageKey = `health-decoded:day-twelve:${experience.lessonProgressId}`;
   const stageLocked = isLessonStageLocked({
     accessMode: experience.accessMode,
     gates: dayTwelveStageGates,
@@ -1513,9 +1532,29 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
 
   useEffect(() => {
     if (experience.accessMode === "review") return;
+    let restoredReady = new Set<number>();
+    try {
+      const parsed = JSON.parse(window.localStorage.getItem(gateStorageKey) ?? "[]") as unknown;
+      if (Array.isArray(parsed)) {
+        restoredReady = new Set(
+          parsed.filter((value): value is number => Number.isInteger(value) && value >= 0),
+        );
+      }
+    } catch {
+      restoredReady = new Set();
+    }
+    setReadyStages(restoredReady);
     const stored = Number(window.localStorage.getItem(storageKey));
-    if (Number.isInteger(stored) && stored >= 0 && stored < stageCount) setStage(stored);
-  }, [experience.accessMode, storageKey]);
+    if (Number.isInteger(stored) && stored >= 0 && stored < stageCount) {
+      setStage(
+        getLessonResumeStage({
+          gates: dayTwelveStageGates,
+          readyStages: restoredReady,
+          storedStage: stored,
+        }),
+      );
+    }
+  }, [experience.accessMode, gateStorageKey, storageKey]);
 
   useEffect(() => {
     if (stage > 0) stageRef.current?.focus();
@@ -1566,6 +1605,8 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
     answer: string,
   ) {
     setSelectedAnswers((current) => ({ ...current, [key]: answer }));
+    const evaluationStage = { lateLunch: 2, sickDay: 5, missedMedication: 6, teachBack: 8 };
+    markReady(evaluationStage[key]);
     const result = await evaluateDayTwelveAction(input);
     if (result.ok) setEvaluations((current) => ({ ...current, [key]: result.data }));
     else setMessage(result.message);
@@ -1599,6 +1640,20 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
     const next = new Set(planChoicesMade).add("backup" as const);
     setPlanChoicesMade(next);
     if (next.has("trigger")) markReady(7);
+  }
+
+  function selectLifeSituation(id: LifeSituationId) {
+    setLifeSituation(id);
+    const next = new Set(dayChoicesMade).add("situation" as const);
+    setDayChoicesMade(next);
+    if (next.has("tool")) markReady(3);
+  }
+
+  function selectLifeTool(id: LifeToolId) {
+    setLifeTool(id);
+    const next = new Set(dayChoicesMade).add("tool" as const);
+    setDayChoicesMade(next);
+    if (next.has("situation")) markReady(3);
   }
 
   function continueLabel() {
@@ -1638,6 +1693,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         return;
       }
       window.localStorage.removeItem(storageKey);
+      window.localStorage.removeItem(gateStorageKey);
       router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
@@ -1674,7 +1730,10 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 {openingFeelings.map(([id, label]) => (
                   <AnswerChoice
                     key={id}
-                    onClick={() => setOpeningFeeling(id)}
+                    onClick={() => {
+                      setOpeningFeeling(id);
+                      markReady(0);
+                    }}
                     selected={openingFeeling === id}
                   >
                     {label}
@@ -1687,7 +1746,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               <p>
                 {openingFeeling
                   ? "Real life is allowed in this room. One changed meal, missed routine, or difficult day does not decide your health."
-                  : "Choose an answer if it helps, or keep going. This lesson is practice, not another plan you have to perform perfectly."}
+                  : "Choose the closest answer to continue. This lesson is practice, not another plan you have to perform perfectly."}
               </p>
             </div>
           </div>
@@ -1806,7 +1865,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                       lifeSituation === item.id && styles.textTabActive,
                     )}
                     key={item.id}
-                    onClick={() => setLifeSituation(item.id)}
+                    onClick={() => selectLifeSituation(item.id)}
                     type="button"
                   >
                     {item.label}
@@ -1828,7 +1887,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                   aria-pressed={lifeTool === item.id}
                   className={cn(styles.toolChoice, lifeTool === item.id && styles.toolChoiceActive)}
                   key={item.id}
-                  onClick={() => setLifeTool(item.id)}
+                  onClick={() => selectLifeTool(item.id)}
                   type="button"
                 >
                   <strong>{item.label}</strong>
@@ -2289,7 +2348,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             </Button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Three practice chapters ask for a small interaction before continuing. Personal
+            Each practice chapter asks for one meaningful interaction before continuing. Personal
             reflections and writing remain optional.
           </p>
         </footer>

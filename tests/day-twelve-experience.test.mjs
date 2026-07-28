@@ -79,7 +79,7 @@ test("Day 12 adopts Day 11's editorial hierarchy with softly squared controls", 
   assert.doesNotMatch(experience, /rounded-full/);
 });
 
-test("Day 12 uses three purposeful gates while keeping personal reflection optional", () => {
+test("Day 12 gates every practice chapter while keeping personal reflection optional", () => {
   assert.match(experience, /Pause/);
   assert.match(experience, /Understand/);
   assert.match(experience, /Choose/);
@@ -92,9 +92,9 @@ test("Day 12 uses three purposeful gates while keeping personal reflection optio
   assert.match(experience, /scriptSituation/);
   assert.match(experience, /Run the solver/);
   assert.match(experience, /const dayTwelveStageGates/);
-  assert.match(experience, /1: "Open all four solver steps/);
-  assert.match(experience, /4: "Add all five pieces to the sick-day plan/);
-  assert.match(experience, /7: "Choose both sides of your Plan B/);
+  for (let stage = 0; stage <= 8; stage += 1) {
+    assert.match(experience, new RegExp(`\\n  ${stage}: "`));
+  }
   assert.match(experience, /solverStepsSeen\.size === solverSteps\.length/);
   assert.match(experience, /<PackSickDayPlan onReady=\{markSickDayPlanReady\}/);
   assert.match(experience, /planChoicesMade\.size === 2/);
