@@ -21,7 +21,7 @@ export const getCurrentProfile = cache(async function getCurrentProfile(): Promi
   const database = await getServerDatabaseClient();
   const response = await database
     .from("profiles")
-    .select("id, display_name, onboarding_completed_at")
+    .select("id, display_name, onboarding_completed_at, created_at")
     .eq("id", user.data.id)
     .maybeSingle();
 
