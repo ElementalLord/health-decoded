@@ -2152,6 +2152,67 @@ function FollowOneBite() {
   );
 }
 
+function PracticeLoop() {
+  const [running, setRunning] = useState(false);
+  const loopPath = "M250 42 A88 88 0 1 1 250 218 A88 88 0 1 1 250 42";
+  const stations = [
+    { label: "Notice", labelY: 26, x: 250, y: 42 },
+    { label: "Try", labelY: 205, x: 326, y: 174 },
+    { label: "Adjust", labelY: 205, x: 174, y: 174 },
+  ];
+
+  return (
+    <div className={styles.loop}>
+      <div className={styles.journeyTraceHead}>
+        <p className="editorial-eyebrow">Practice is a loop, not a finish line</p>
+        <p>Start the loop and watch it turn: notice, try, adjust, and around again.</p>
+      </div>
+      <svg
+        aria-label="A circular loop marked notice, try, and adjust. Starting it sends a dot travelling around the loop again and again."
+        className={styles.loopSvg}
+        role="img"
+        viewBox="0 0 500 250"
+      >
+        <path d={loopPath} fill="none" stroke="#e0cdbb" strokeWidth="6" />
+        {stations.map((station) => (
+          <g key={station.label}>
+            <circle
+              cx={station.x}
+              cy={station.y}
+              fill="#f0e2d0"
+              r="10"
+              stroke="#b96c55"
+              strokeWidth="3"
+            />
+            <text fill="#7a6a5f" fontSize="15" textAnchor="middle" x={station.x} y={station.labelY}>
+              {station.label}
+            </text>
+          </g>
+        ))}
+        {running ? (
+          <circle fill="#6f947a" r="10" stroke="#fffaf3" strokeWidth="3">
+            <animateMotion dur="6s" path={loopPath} repeatCount="indefinite" />
+          </circle>
+        ) : null}
+      </svg>
+      <div className={styles.loopControls}>
+        <p aria-live="polite" className={styles.journeyCaption}>
+          {running
+            ? "It keeps turning. Each pass is a little more yours. There is no lap that fails."
+            : "The loop does not end at day fourteen. It just keeps gently turning."}
+        </p>
+        <button
+          className={styles.loopButton}
+          onClick={() => setRunning((current) => !current)}
+          type="button"
+        >
+          {running ? "Pause the loop" : "Start the loop"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const foundationStones = [
   "Understanding, not perfection",
   "Numbers read with context",
@@ -2578,6 +2639,8 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
                 Practice is not the part after learning. Practice is how learning becomes yours.
               </blockquote>
             </div>
+
+            <PracticeLoop />
 
             <section className={styles.nextStepSection}>
               <div>

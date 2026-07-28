@@ -160,12 +160,48 @@
   outline-offset: 2px;
 }
 
-.foundation {
+.foundation,
+.loop {
   overflow: hidden;
   border: 1px solid rgb(199 124 98 / 22%);
   border-radius: 14px;
   background: #f4ebe1;
   padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.loopSvg {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  margin: 0.4rem auto 0.6rem;
+}
+
+.loopControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.loopButton {
+  flex-shrink: 0;
+  border: 1px solid #6f947a;
+  border-radius: 9px;
+  background: #6f947a;
+  padding: 0.5rem 1.1rem;
+  color: #f6faf7;
+  transition: background 160ms ease;
+}
+
+.loopButton:hover {
+  background: #5d8069;
+}
+
+.loopButton:focus-visible {
+  outline: 2px solid #33564a;
+  outline-offset: 2px;
 }
 
 .foundationSvg {
