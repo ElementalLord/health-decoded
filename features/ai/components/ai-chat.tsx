@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Copy, RefreshCw, Send, ShieldCheck } from "lucide-react";
+import { Copy, RefreshCw, Send, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
@@ -45,6 +45,12 @@ const suggestedPrompts = [
     topic: "Understand a medication",
   },
 ] as const;
+
+const flatPrimaryButton =
+  "border-[#557a69] bg-[#557a69] text-[#fffaf3] shadow-none hover:translate-y-0 hover:bg-[#496b5d] hover:shadow-none";
+const flatSecondaryButton =
+  "border-[#cbd8d0] bg-white text-[#465c51] shadow-none hover:translate-y-0 hover:border-[#91a99c] hover:bg-[#f7faf8] hover:shadow-none";
+const calmTextButton = "text-[#557a69] decoration-[#a8b9b0] hover:decoration-[#557a69]";
 
 const streamErrorMessages = {
   AI_CONFIGURATION_ERROR:
@@ -339,20 +345,19 @@ export function AiChat() {
   }
 
   return (
-    <div className="mt-7 flex min-h-0 flex-1 flex-col sm:mt-8">
+    <div className="mt-6 flex min-h-0 flex-1 flex-col sm:mt-7">
       <aside
         aria-label="Educational safety notice"
-        className="mb-6 flex gap-3 border-y border-accent-warm/35 bg-[#f2e7df] px-4 py-4 text-sm leading-6"
+        className="mb-5 flex gap-3 rounded-[14px] border border-[#d4dfd7] bg-[#f0f5f1] px-4 py-3.5 text-sm leading-6"
         id="ai-safety-notice"
         role="note"
       >
-        <ShieldCheck aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-accent-warm" />
+        <ShieldCheck aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-[#658271]" />
         <div>
-          <p className="font-semibold text-foreground">Educational support only</p>
+          <p className="font-semibold text-[#40594d]">A gentle safety note</p>
           <p className="text-muted-foreground">
-            Health Decoded explains learning topics. It does not diagnose, interpret personal
-            results, or recommend treatments or medication changes. For urgent symptoms, contact
-            local emergency services.
+            I can explain learning topics, but I cannot diagnose, interpret personal results, or
+            recommend treatment or medication changes. Urgent symptoms need local emergency care.
           </p>
         </div>
       </aside>
@@ -360,6 +365,7 @@ export function AiChat() {
         <p className="text-sm text-muted-foreground">This conversation clears when you leave.</p>
         {messages.length ? (
           <Button
+            className={flatSecondaryButton}
             disabled={isStreaming}
             fullWidth={false}
             onClick={() => setNewConversationOpen(true)}
@@ -374,7 +380,7 @@ export function AiChat() {
       {newConversationOpen ? (
         <div
           aria-labelledby="new-conversation-confirmation"
-          className="motion-status mb-5 flex flex-col gap-3 border-l-2 border-accent-warm bg-[#f2e7df] px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+          className="motion-status mb-5 flex flex-col gap-3 rounded-[14px] border border-[#d9d2c8] bg-[#f5f0e9] px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
           role="group"
         >
           <p className="text-sm leading-6 text-muted-foreground" id="new-conversation-confirmation">
@@ -382,6 +388,7 @@ export function AiChat() {
           </p>
           <div className="flex shrink-0 flex-wrap gap-3">
             <Button
+              className={calmTextButton}
               fullWidth={false}
               onClick={() => setNewConversationOpen(false)}
               size="sm"
@@ -390,7 +397,13 @@ export function AiChat() {
             >
               Keep these messages
             </Button>
-            <Button fullWidth={false} onClick={startNewConversation} size="sm" type="button">
+            <Button
+              className={flatPrimaryButton}
+              fullWidth={false}
+              onClick={startNewConversation}
+              size="sm"
+              type="button"
+            >
               Start fresh
             </Button>
           </div>
@@ -415,8 +428,8 @@ export function AiChat() {
                   className={cn(
                     "max-w-[92%] sm:max-w-[86%]",
                     isAssistant
-                      ? "border-l-2 border-success bg-info/55 px-5 py-4 sm:px-7 sm:py-5"
-                      : "rounded-[9px] border border-accent-warm/25 bg-[#f3e4dc] px-4 py-3 text-foreground shadow-[0_2px_0_rgb(61_47_41/0.06)]",
+                      ? "rounded-[18px] rounded-tl-[6px] border border-[#d3dfd7] bg-[#edf4ef] px-5 py-4 sm:px-6 sm:py-5"
+                      : "rounded-[18px] rounded-tr-[6px] border border-[#ddd4c9] bg-[#f2ede6] px-4 py-3 text-foreground",
                   )}
                 >
                   {isAssistant ? (
@@ -459,6 +472,7 @@ export function AiChat() {
                         {!isStreaming && isLatestAssistant ? (
                           <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-3">
                             <Button
+                              className={calmTextButton}
                               fullWidth={false}
                               onClick={() => void copyResponse(entry.id, entry.content)}
                               size="sm"
@@ -469,6 +483,7 @@ export function AiChat() {
                               {copiedMessageId === entry.id ? "Copied" : "Copy"}
                             </Button>
                             <Button
+                              className={calmTextButton}
                               fullWidth={false}
                               onClick={askFollowUp}
                               size="sm"
@@ -478,6 +493,7 @@ export function AiChat() {
                               Ask follow-up
                             </Button>
                             <Button
+                              className={calmTextButton}
                               fullWidth={false}
                               onClick={() => void ask(lastQuestion ?? "", true)}
                               size="sm"
@@ -490,21 +506,19 @@ export function AiChat() {
                           </div>
                         ) : null}
                         {!isStreaming && isLatestAssistant && entry.suggestedQuestions.length ? (
-                          <div className="mt-6 border-t border-border pt-5">
-                            <p className="editorial-eyebrow">Continue exploring</p>
-                            <div className="mt-3 divide-y divide-border border-y border-border">
+                          <div className="mt-6 border-t border-[#d5dfd8] pt-5">
+                            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#718078]">
+                              You could ask next
+                            </p>
+                            <div className="mt-3 flex flex-wrap gap-2.5">
                               {entry.suggestedQuestions.map((suggestion) => (
                                 <button
-                                  className="group flex min-h-16 w-full items-center justify-between gap-5 py-4 text-left leading-6 transition hover:bg-muted/30 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+                                  className="max-w-full rounded-[16px] rounded-bl-[5px] border border-[#cfdcd4] bg-[#faf8f2] px-3.5 py-2.5 text-left text-sm leading-5 text-[#465c51] transition hover:border-[#8fa89b] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#789987]/35"
                                   key={suggestion}
                                   onClick={() => void ask(suggestion)}
                                   type="button"
                                 >
-                                  <span>{suggestion}</span>
-                                  <ArrowRight
-                                    aria-hidden="true"
-                                    className="size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary"
-                                  />
+                                  {suggestion}
                                 </button>
                               ))}
                             </div>
@@ -518,9 +532,9 @@ export function AiChat() {
                         role="status"
                       >
                         <span aria-hidden="true" className="flex gap-1">
-                          <span className="size-1.5 animate-pulse rounded-full bg-primary" />
-                          <span className="size-1.5 animate-pulse rounded-full bg-primary [animation-delay:120ms]" />
-                          <span className="size-1.5 animate-pulse rounded-full bg-primary [animation-delay:240ms]" />
+                          <span className="size-1.5 animate-pulse rounded-full bg-[#789987]" />
+                          <span className="size-1.5 animate-pulse rounded-full bg-[#789987] [animation-delay:120ms]" />
+                          <span className="size-1.5 animate-pulse rounded-full bg-[#789987] [animation-delay:240ms]" />
                         </span>
                         Taking a moment to make this clear…
                       </div>
@@ -533,7 +547,7 @@ export function AiChat() {
             );
           })
         ) : (
-          <div className="space-y-8 py-5 sm:py-9">
+          <div className="space-y-7 py-4 sm:py-7">
             <div className="max-w-xl space-y-3">
               <h2 className="font-serif-display text-3xl font-normal tracking-tight sm:text-4xl">
                 How can I help today?
@@ -545,33 +559,32 @@ export function AiChat() {
               </p>
             </div>
 
-            <section aria-labelledby="suggested-questions-title" className="space-y-5">
+            <section aria-labelledby="suggested-questions-title" className="space-y-3">
               <div className="space-y-2">
-                <h3 className="editorial-eyebrow" id="suggested-questions-title">
-                  A few places to begin
+                <h3
+                  className="text-xs font-semibold uppercase tracking-[0.12em] text-[#806f63]"
+                  id="suggested-questions-title"
+                >
+                  A few gentle ways to begin
                 </h3>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Choose one path, or write a question of your own below.
+                  Tap a thought bubble, or write your own question below.
                 </p>
               </div>
-              <ol className="divide-y divide-border border-y border-border">
-                {suggestedPrompts.map((prompt, index) => (
-                  <li key={prompt.question}>
+              <ol className="flex flex-wrap items-start gap-3">
+                {suggestedPrompts.map((prompt) => (
+                  <li className="max-w-full" key={prompt.question}>
                     <button
-                      className="group grid min-h-24 w-full items-center gap-3 py-6 text-left transition hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:gap-7"
+                      className="group flex max-w-[23rem] flex-col items-start gap-1 rounded-[18px] rounded-bl-[6px] border border-[#cfdbd3] bg-[#eef4ef] px-4 py-3 text-left transition hover:border-[#8fa89b] hover:bg-[#f6faf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#789987]/35"
                       onClick={() => void ask(prompt.question)}
                       type="button"
                     >
-                      <span className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
-                        {String(index + 1).padStart(2, "0")} · {prompt.topic}
+                      <span className="text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-[#718078]">
+                        {prompt.topic}
                       </span>
-                      <span className="font-serif-display text-xl font-normal leading-7 text-foreground sm:text-2xl">
+                      <span className="text-sm font-medium leading-5 text-[#40554b] sm:text-[0.95rem]">
                         {prompt.question}
                       </span>
-                      <ArrowRight
-                        aria-hidden="true"
-                        className="hidden size-5 shrink-0 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary sm:block"
-                      />
                     </button>
                   </li>
                 ))}
@@ -583,7 +596,7 @@ export function AiChat() {
       </section>
 
       <form
-        className="safe-area-bottom rounded-[5px] border border-[#cdb9aa] border-l-4 border-l-primary bg-card p-4 shadow-[6px_6px_0_rgb(68_47_37/0.06)] sm:p-5"
+        className="safe-area-bottom rounded-[16px] border border-[#cbd8d0] bg-[#faf8f2] p-4 sm:p-5"
         onSubmit={submit}
       >
         <label className="grid gap-2 text-sm font-semibold" htmlFor="ai-question">
@@ -591,7 +604,7 @@ export function AiChat() {
           <Textarea
             aria-describedby={`ai-safety-notice${error ? " ai-request-error" : ""}`}
             aria-invalid={Boolean(error) || undefined}
-            className="max-h-40 min-h-12 resize-none"
+            className="max-h-40 min-h-12 resize-none rounded-[13px] border-[#cbd8d0] bg-white shadow-none focus:border-[#789987]"
             disabled={isStreaming}
             id="ai-question"
             maxLength={AI_MAX_MESSAGE_CHARACTERS}
@@ -616,11 +629,22 @@ export function AiChat() {
             Enter sends · Shift + Enter adds a line
           </p>
           {isStreaming ? (
-            <Button fullWidth={false} onClick={stopResponse} type="button" variant="secondary">
+            <Button
+              className={flatSecondaryButton}
+              fullWidth={false}
+              onClick={stopResponse}
+              type="button"
+              variant="secondary"
+            >
               Stop response
             </Button>
           ) : (
-            <Button disabled={!message.trim()} fullWidth={false} type="submit">
+            <Button
+              className={flatPrimaryButton}
+              disabled={!message.trim()}
+              fullWidth={false}
+              type="submit"
+            >
               <Send aria-hidden="true" className="size-4" />
               Send
             </Button>
@@ -643,9 +667,10 @@ export function AiChat() {
             id="ai-request-error"
             role="alert"
           >
-            <p className="text-sm text-destructive">{error}</p>
+            <p className="text-sm text-[#8b6258]">{error}</p>
             {lastQuestion ? (
               <Button
+                className={calmTextButton}
                 disabled={isStreaming}
                 fullWidth={false}
                 onClick={() => void ask(lastQuestion, true)}
