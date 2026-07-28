@@ -336,27 +336,25 @@
   left: 50%;
   position: absolute;
   top: 50%;
-  transform: translate(-50%, -50%) rotate(-9deg);
+  transform: translate(-50%, -50%);
   border-radius: 50%;
 }
 
 .orbitRingInner {
-  height: 12rem;
-  width: 16rem;
+  height: 13rem;
+  width: 13rem;
 }
 
 .orbitRingOuter {
-  height: 18rem;
-  width: 25rem;
+  height: 20rem;
+  width: 20rem;
 }
 
 .orbitAvatar {
   align-items: center;
-  background: linear-gradient(145deg, #e7b49e, #c87860);
-  border: 5px solid #fffaf3;
-  box-shadow:
-    0 0 0 1px rgb(185 108 85 / 0.28),
-    0 16px 36px rgb(83 55 43 / 0.14);
+  background: #d9987f;
+  border: 4px solid #fffaf3;
+  box-shadow: 0 0 0 1px rgb(111 148 122 / 0.26);
   color: #fffaf3;
   display: flex;
   font-family: var(--font-serif);
@@ -374,30 +372,35 @@
 }
 
 .orbitPath {
-  --orbit-delay: 0s;
-  --orbit-direction: normal;
-  --orbit-duration: 18s;
-  animation: profile-orbit var(--orbit-duration) linear var(--orbit-delay) infinite
-    var(--orbit-direction);
-  inset: 3.15rem;
+  --counter-end-angle: -360deg;
+  --counter-start-angle: 0deg;
+  --orbit-duration: 20s;
+  --orbit-end-angle: 360deg;
+  --orbit-size: 20rem;
+  --orbit-start-angle: 0deg;
+  animation: profile-orbit var(--orbit-duration) linear infinite;
+  height: var(--orbit-size);
+  left: 50%;
   position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(var(--orbit-start-angle));
+  transform-origin: center;
+  width: var(--orbit-size);
 }
 
 .orbitItem {
   align-items: center;
-  animation: profile-counter-orbit var(--orbit-duration) linear var(--orbit-delay) infinite
-    var(--orbit-direction);
+  animation: profile-counter-orbit var(--orbit-duration) linear infinite;
   background: #fffaf3;
   border: 1px solid #b9c9c0;
-  box-shadow: 0 7px 18px rgb(58 76 66 / 0.09);
   color: #557a69;
   display: flex;
   height: 2.7rem;
   justify-content: center;
   left: 50%;
   position: absolute;
-  top: -1.35rem;
-  transform: translateX(-50%);
+  top: 0;
+  transform: translate(-50%, -50%) rotate(var(--counter-start-angle));
   width: 2.7rem;
   border-radius: 8px;
 }
@@ -408,35 +411,45 @@
 }
 
 .orbitPathOne {
-  --orbit-delay: -2s;
-  --orbit-duration: 19s;
-  inset: 2.35rem;
+  --counter-end-angle: -288deg;
+  --counter-start-angle: 72deg;
+  --orbit-duration: 22s;
+  --orbit-end-angle: 288deg;
+  --orbit-start-angle: -72deg;
 }
 
 .orbitPathTwo {
-  --orbit-delay: -11s;
-  --orbit-duration: 19s;
-  inset: 2.35rem;
+  --counter-end-angle: -408deg;
+  --counter-start-angle: -48deg;
+  --orbit-duration: 22s;
+  --orbit-end-angle: 408deg;
+  --orbit-start-angle: 48deg;
 }
 
 .orbitPathThree {
-  --orbit-delay: -4s;
-  --orbit-direction: reverse;
-  --orbit-duration: 14s;
-  inset: 5.2rem 6.8rem;
+  --counter-end-angle: -368deg;
+  --counter-start-angle: -8deg;
+  --orbit-duration: 15s;
+  --orbit-end-angle: 368deg;
+  --orbit-size: 13rem;
+  --orbit-start-angle: 8deg;
 }
 
 .orbitPathFour {
-  --orbit-delay: -11s;
-  --orbit-direction: reverse;
-  --orbit-duration: 14s;
-  inset: 5.2rem 6.8rem;
+  --counter-end-angle: -548deg;
+  --counter-start-angle: -188deg;
+  --orbit-duration: 15s;
+  --orbit-end-angle: 548deg;
+  --orbit-size: 13rem;
+  --orbit-start-angle: 188deg;
 }
 
 .orbitPathFive {
-  --orbit-delay: -7s;
-  --orbit-duration: 23s;
-  inset: 1rem;
+  --counter-end-angle: -542deg;
+  --counter-start-angle: -182deg;
+  --orbit-duration: 22s;
+  --orbit-end-angle: 542deg;
+  --orbit-start-angle: 182deg;
 }
 
 .confettiBurst {
@@ -1002,17 +1015,20 @@
 }
 
 @keyframes profile-orbit {
+  from {
+    transform: translate(-50%, -50%) rotate(var(--orbit-start-angle));
+  }
   to {
-    transform: rotate(360deg);
+    transform: translate(-50%, -50%) rotate(var(--orbit-end-angle));
   }
 }
 
 @keyframes profile-counter-orbit {
   from {
-    transform: translateX(-50%) rotate(0);
+    transform: translate(-50%, -50%) rotate(var(--counter-start-angle));
   }
   to {
-    transform: translateX(-50%) rotate(-360deg);
+    transform: translate(-50%, -50%) rotate(var(--counter-end-angle));
   }
 }
 

@@ -91,6 +91,11 @@ test("the profile orbit keeps personal tools moving around the user", () => {
 
   assert.match(styles, /@keyframes profile-orbit/);
   assert.match(styles, /@keyframes profile-counter-orbit/);
+  assert.match(styles, /--orbit-start-angle: -72deg/);
+  assert.match(styles, /--orbit-start-angle: 48deg/);
+  assert.match(styles, /--orbit-start-angle: 188deg/);
+  assert.match(styles, /--orbit-start-angle: 182deg/);
+  assert.match(styles, /transform: translate\(-50%, -50%\) rotate\(var\(--orbit-start-angle\)\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
 });
