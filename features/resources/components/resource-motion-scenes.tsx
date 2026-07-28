@@ -28,7 +28,7 @@ const motionCopy: Record<
     note: "A familiar plate gains fiber and protein; afterward, ordinary movement gives working muscles another way to use glucose.",
     sceneLabel:
       "Food groups assemble on a familiar plate, then footsteps carry energy toward working muscles",
-    watch: "Watch the plate come together first, then follow the energy into the moving legs.",
+    watch: "Watch the plate come together first, then follow the energy into the working muscle.",
   },
   medicine: {
     label: "The useful medicine plan connects the right dose to the right time.",
@@ -63,73 +63,96 @@ const motionCopy: Record<
   },
 };
 
+const DAY_TRACK = "M150 182 Q214 150 278 172 Q342 194 406 172 Q470 150 534 172 Q574 184 588 182";
+
 function ContextScene() {
   return (
     <>
-      <path
-        d="M74 214 C170 112 264 272 356 158 S526 86 646 192"
-        fill="none"
-        stroke="#b4c5bd"
-        strokeWidth="6"
-      />
-      <g transform="translate(74 214)">
+      {/* the glucose meter that produced the reading */}
+      <g transform="translate(96 176)">
         <rect
           fill="#fffaf2"
-          height="82"
-          rx="8"
+          height="88"
+          rx="13"
           stroke="#567a6b"
           strokeWidth="5"
           width="94"
           x="-47"
-          y="-41"
+          y="-44"
         />
-        <path
-          d="M-28 -18h56M-28 0h42M-28 18h50"
-          stroke="#7d9b8e"
-          strokeLinecap="round"
-          strokeWidth="6"
+        <rect
+          fill="#e7efe9"
+          height="36"
+          rx="6"
+          stroke="#8ea79b"
+          strokeWidth="3"
+          width="70"
+          x="-35"
+          y="-32"
         />
+        <path d="M-6-20h22M-6-10h14" stroke="#8ea79b" strokeLinecap="round" strokeWidth="4" />
+        <circle cx="-22" cy="-14" fill="#dfa54d" r="5">
+          <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="1;.35;1" />
+        </circle>
+        <path d="M-30 22h60" stroke="#cf9a6f" strokeLinecap="round" strokeWidth="7" />
       </g>
-      <g transform="translate(232 182)">
-        <ellipse fill="#fffaf2" rx="49" ry="28" stroke="#bc755e" strokeWidth="5" />
-        <path d="M-34 0h68M0-22v44" opacity=".7" stroke="#bc755e" strokeWidth="3" />
-        <animateTransform
-          attributeName="transform"
-          dur="6s"
-          repeatCount="indefinite"
-          type="translate"
-          values="232 182;232 170;232 182"
-        />
+
+      {/* the day itself: one soft timeline the reading rides */}
+      <path d={DAY_TRACK} fill="none" stroke="#b4c5bd" strokeLinecap="round" strokeWidth="6" />
+
+      {/* meal station */}
+      <g stroke="#9db3a8" strokeWidth="3">
+        <path d="M278 172V143" strokeLinecap="round" />
+        <circle cx="278" cy="128" fill="#fffaf2" r="6" stroke="#9db3a8" />
       </g>
-      <g fill="none" stroke="#587b6c" strokeLinecap="round" strokeWidth="7">
-        <path d="M350 199l18-25 18 25M384 216l18-25 18 25" />
-        <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values=".25;1;.25" />
+      <circle cx="278" cy="128" fill="none" r="13" stroke="#bc755e" strokeWidth="4" />
+      <path
+        d="M272 121v14M278 121v14M284 121v14"
+        stroke="#bc755e"
+        strokeLinecap="round"
+        strokeWidth="2.4"
+      />
+
+      {/* movement station */}
+      <g stroke="#9db3a8" strokeWidth="3">
+        <path d="M406 172V143" strokeLinecap="round" />
+        <circle cx="406" cy="128" fill="#fffaf2" r="6" stroke="#9db3a8" />
       </g>
-      <g transform="translate(494 122)">
-        <g>
-          <path d="M0-30a30 30 0 1 0 30 30A24 24 0 0 1 0-30Z" fill="#74899a" />
-          <animateTransform
-            attributeName="transform"
-            dur="5s"
-            repeatCount="indefinite"
-            type="rotate"
-            values="-5;5;-5"
-          />
-        </g>
+      <path
+        d="M396 133l6-9 6 9M406 122l6-9 6 9"
+        fill="none"
+        stroke="#587b6c"
+        strokeLinecap="round"
+        strokeWidth="4"
+      >
+        <animate attributeName="opacity" dur="2.6s" repeatCount="indefinite" values=".4;1;.4" />
+      </path>
+
+      {/* sleep station */}
+      <g stroke="#9db3a8" strokeWidth="3">
+        <path d="M534 172V143" strokeLinecap="round" />
+        <circle cx="534" cy="128" fill="#fffaf2" r="6" stroke="#9db3a8" />
       </g>
-      <g transform="translate(632 190)">
+      <path
+        d="M540 116a13 13 0 1 0 0 24 10 10 0 0 1 0-24Z"
+        fill="#74899a"
+        transform="translate(-6 0)"
+      />
+
+      {/* the question the reading becomes */}
+      <g transform="translate(650 178)">
         <rect
           fill="#fffaf2"
-          height="98"
-          rx="8"
+          height="104"
+          rx="12"
           stroke="#567a6b"
           strokeWidth="5"
-          width="110"
-          x="-55"
-          y="-49"
+          width="104"
+          x="-52"
+          y="-52"
         />
         <path
-          d="M-32-18h64M-32 4h45M-32 26h56"
+          d="M-30-24h60M-30-4h44M-30 16h54"
           stroke="#cb8469"
           strokeLinecap="round"
           strokeWidth="6"
@@ -138,17 +161,17 @@ function ContextScene() {
             attributeName="stroke-dasharray"
             dur="5.6s"
             repeatCount="indefinite"
-            values="0 90;90 0;90 0"
+            values="0 170;170 0;170 0"
           />
         </path>
+        <circle cx="26" cy="34" fill="#cb8469" r="4" />
       </g>
-      <circle fill="#dfa54d" r="12">
-        <animateMotion
-          dur="8s"
-          path="M74 214 C170 112 264 272 356 158 S526 86 646 192"
-          repeatCount="indefinite"
-        />
-        <animate attributeName="r" dur="2s" repeatCount="indefinite" values="9;14;9" />
+
+      {/* the amber reading, riding the exact timeline it is drawn on */}
+      <circle fill="#dfa54d" r="10">
+        <animateMotion dur="7s" path={DAY_TRACK} repeatCount="indefinite" />
+        <animate attributeName="r" dur="2s" repeatCount="indefinite" values="8;12;8" />
+        <animate attributeName="opacity" dur="7s" repeatCount="indefinite" values="0;1;1;1;1;0" />
       </circle>
     </>
   );
@@ -157,50 +180,63 @@ function ContextScene() {
 function SourceScene() {
   return (
     <>
+      {/* two official source pages travel together toward verification */}
       <g>
-        <rect
-          fill="#fffaf2"
-          height="146"
-          rx="8"
-          stroke="#6e8c80"
-          strokeWidth="5"
-          width="116"
-          x="70"
-          y="72"
-        />
-        <rect
-          fill="#f6eadf"
-          height="146"
-          rx="8"
-          stroke="#b87760"
-          strokeWidth="5"
-          width="116"
-          x="126"
-          y="92"
-        />
-        <path
-          d="M92 106h70M92 132h54M92 158h66M148 126h70M148 152h48M148 178h62"
-          stroke="#8ba298"
-          strokeLinecap="round"
-          strokeWidth="6"
-        />
+        <g transform="translate(60 96)">
+          <rect
+            fill="#fffaf2"
+            height="132"
+            rx="10"
+            stroke="#6e8c80"
+            strokeWidth="5"
+            width="104"
+            x="0"
+            y="0"
+          />
+          <path
+            d="M20 26h64M20 50h48M20 74h60M20 98h40"
+            stroke="#8ba298"
+            strokeLinecap="round"
+            strokeWidth="6"
+          />
+        </g>
+        <g transform="translate(104 116)">
+          <rect
+            fill="#f6eadf"
+            height="132"
+            rx="10"
+            stroke="#b87760"
+            strokeWidth="5"
+            width="104"
+            x="0"
+            y="0"
+          />
+          <path
+            d="M20 26h64M20 50h44M20 74h58M20 98h38"
+            stroke="#c08a76"
+            strokeLinecap="round"
+            strokeWidth="6"
+          />
+        </g>
         <animateTransform
           attributeName="transform"
           dur="7s"
           repeatCount="indefinite"
           type="translate"
-          values="0 0;42 0;42 0;0 0"
+          values="0 0;118 0;118 0;0 0"
         />
       </g>
-      <g transform="translate(354 156)">
+
+      {/* the verification mark the guidance passes through */}
+      <g transform="translate(400 160)">
         <path
-          d="M0-72l58 22v44c0 52-34 76-58 88-24-12-58-36-58-88v-44Z"
+          d="M0-74l52 19v42c0 48-32 70-52 82-20-12-52-34-52-82v-42Z"
           fill="#e7efe9"
           stroke="#567a6b"
           strokeWidth="6"
         />
         <path
-          d="m-26 3 18 18 38-44"
+          d="m-24 4 16 16 34-40"
           fill="none"
           stroke="#4f806b"
           strokeLinecap="round"
@@ -214,24 +250,26 @@ function SourceScene() {
             values="0 100;100 0;100 0"
           />
         </path>
-        <circle fill="none" r="88" stroke="#d9a36b" strokeWidth="4">
-          <animate attributeName="r" dur="3.5s" repeatCount="indefinite" values="74;92;74" />
-          <animate attributeName="opacity" dur="3.5s" repeatCount="indefinite" values=".7;0;.7" />
+        <circle fill="none" r="80" stroke="#d9a36b" strokeWidth="4">
+          <animate attributeName="r" dur="3.6s" repeatCount="indefinite" values="66;86;66" />
+          <animate attributeName="opacity" dur="3.6s" repeatCount="indefinite" values=".7;0;.7" />
         </circle>
       </g>
-      <g transform="translate(566 154)">
+
+      {/* the short, plain-language question note it becomes */}
+      <g transform="translate(600 160)">
         <rect
           fill="#fffaf2"
-          height="150"
-          rx="9"
+          height="140"
+          rx="10"
           stroke="#6e8c80"
           strokeWidth="5"
-          width="132"
-          x="-66"
-          y="-75"
+          width="120"
+          x="-60"
+          y="-70"
         />
         <path
-          d="M-40-38h72M-40-8h50M-40 22h64"
+          d="M-36-34h64M-36-6h46M-36 22h58"
           stroke="#b87760"
           strokeLinecap="round"
           strokeWidth="7"
@@ -243,14 +281,16 @@ function SourceScene() {
             values="0 100;100 0;100 0"
           />
         </path>
-        <circle cx="38" cy="46" fill="#e6b774" r="9">
-          <animate attributeName="r" dur="2.4s" repeatCount="indefinite" values="7;12;7" />
+        <circle cx="30" cy="44" fill="#e6b774" r="7">
+          <animate attributeName="r" dur="2.4s" repeatCount="indefinite" values="5;10;5" />
         </circle>
       </g>
+
+      {/* verified guidance carried into the note */}
       <path
-        d="M260 156h38M414 156h76"
+        d="M455 160H534"
         stroke="#78988a"
-        strokeDasharray="10 12"
+        strokeDasharray="9 11"
         strokeLinecap="round"
         strokeWidth="5"
       >
@@ -258,50 +298,60 @@ function SourceScene() {
           attributeName="stroke-dashoffset"
           dur="2s"
           repeatCount="indefinite"
-          values="44;0"
+          values="40;0"
         />
       </path>
+      <circle fill="#dfa54d" r="7">
+        <animateMotion begin=".4s" dur="3s" path="M455 160H534" repeatCount="indefinite" />
+        <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0;1;1;0" />
+      </circle>
     </>
   );
 }
 
+const ENERGY_TRACK = "M306 178 Q396 148 462 184 Q528 220 596 184";
+
 function DailyScene() {
   return (
     <>
-      <ellipse cx="220" cy="168" fill="#fffaf2" rx="128" ry="92" stroke="#b87760" strokeWidth="6" />
-      <path d="M220 78v180M92 168h256" opacity=".55" stroke="#b87760" strokeWidth="4" />
+      {/* a familiar plate, filled by addition and kept inside its rim */}
+      <circle cx="210" cy="168" fill="#fffaf2" r="84" />
       <g>
-        <path d="M126 124c28-28 66-30 94 0v44h-94Z" fill="#739783" />
+        <path d="M210 168 L210 84 A84 84 0 0 0 210 252 Z" fill="#739783" />
         <animateTransform
           attributeName="transform"
-          dur="5.8s"
+          dur="6s"
           repeatCount="indefinite"
           type="translate"
-          values="-90 -50;0 0;0 0;-90 -50"
+          values="-130 0;0 0;0 0;-130 0"
         />
       </g>
       <g>
-        <path d="M238 110h72v58h-72Z" fill="#e3b261" />
+        <path d="M210 168 L210 84 A84 84 0 0 1 294 168 Z" fill="#e3b261" />
         <animateTransform
           attributeName="transform"
-          dur="5.8s"
+          dur="6s"
           repeatCount="indefinite"
           type="translate"
-          values="85 -54;0 0;0 0;85 -54"
+          values="80 -70;0 0;0 0;80 -70"
         />
       </g>
       <g>
-        <ellipse cx="260" cy="212" fill="#cf8068" rx="48" ry="25" />
+        <path d="M210 168 L294 168 A84 84 0 0 1 210 252 Z" fill="#cf8068" />
         <animateTransform
           attributeName="transform"
-          dur="5.8s"
+          dur="6s"
           repeatCount="indefinite"
           type="translate"
-          values="0 90;0 0;0 0;0 90"
+          values="0 96;0 0;0 0;0 96"
         />
       </g>
+      <path d="M210 84v168M210 168h84" opacity=".5" stroke="#fffaf2" strokeWidth="4" />
+      <circle cx="210" cy="168" fill="none" r="92" stroke="#b87760" strokeWidth="6" />
+
+      {/* footsteps carrying energy toward a working muscle */}
       <path
-        d="M366 186 C430 126 472 220 532 158 S626 126 666 164"
+        d={ENERGY_TRACK}
         fill="none"
         stroke="#a8beb2"
         strokeDasharray="12 13"
@@ -310,48 +360,59 @@ function DailyScene() {
       >
         <animate
           attributeName="stroke-dashoffset"
-          dur="2.5s"
+          dur="2.6s"
           repeatCount="indefinite"
           values="50;0"
         />
       </path>
-      <g fill="none" stroke="#527767" strokeLinecap="round" strokeWidth="10">
-        <path d="M408 170l20 28M446 148l20 28M493 174l20 28M538 142l20 28" />
-        <animate attributeName="opacity" dur="3.5s" repeatCount="indefinite" values=".2;1;.2" />
+      <g fill="none" stroke="#527767" strokeLinecap="round" strokeWidth="9">
+        <path d="M356 160l16 22M420 196l16 22M498 176l16 22" />
+        <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values=".25;1;.25" />
       </g>
-      <g transform="translate(618 164)">
-        <path d="M-34-54h68l20 108h-108Z" fill="#e9f0eb" stroke="#567a6b" strokeWidth="5" />
-        <path
-          d="M-18-30v60M0-34v68M18-30v60"
-          stroke="#ce856b"
-          strokeLinecap="round"
-          strokeWidth="7"
-        >
-          <animate
-            attributeName="stroke-dasharray"
-            dur="3s"
-            repeatCount="indefinite"
-            values="5 80;70 5;5 80"
-          />
-        </path>
-      </g>
-      <circle fill="#dfaa53" r="10">
-        <animateMotion
-          dur="5.2s"
-          path="M360 182 C430 126 472 220 532 158 S626 126 666 164"
+
+      {/* the muscle that puts the energy to use */}
+      <g transform="translate(612 178)">
+        <rect fill="#cf8f6f" height="26" rx="13" width="54" x="-42" y="6" />
+        <rect fill="#cf8f6f" height="54" rx="13" width="26" x="-4" y="-42" />
+        <circle cx="9" cy="-42" fill="#cf8f6f" r="15" />
+        <ellipse cx="-10" cy="8" fill="#b87760" rx="18" ry="15" />
+        <ellipse cx="-10" cy="6" fill="#f0c98f" rx="10" ry="8">
+          <animate attributeName="opacity" dur="2.2s" repeatCount="indefinite" values=".2;.95;.2" />
+        </ellipse>
+        <animateTransform
+          attributeName="transform"
+          additive="sum"
+          dur="2.2s"
           repeatCount="indefinite"
+          type="rotate"
+          values="0 0 0;-4 0 0;0 0 0"
         />
+      </g>
+
+      {/* the glucose energy following the footsteps into the muscle */}
+      <circle fill="#dfaa53" r="9">
+        <animateMotion dur="4.4s" path={ENERGY_TRACK} repeatCount="indefinite" />
+        <animate attributeName="opacity" dur="4.4s" repeatCount="indefinite" values="0;1;1;1;0" />
       </circle>
     </>
   );
 }
 
+const DOSE_ARC = "M330 150 C432 92 536 96 632 158";
+
 function MedicineScene() {
   return (
     <>
-      <g transform="translate(120 158)">
-        <circle fill="#fffaf2" r="75" stroke="#607f72" strokeWidth="6" />
-        <path d="M0 0V-43" stroke="#b87259" strokeLinecap="round" strokeWidth="8">
+      {/* the timing cue: a clock that advances */}
+      <g transform="translate(112 158)">
+        <circle fill="#fffaf2" r="66" stroke="#607f72" strokeWidth="6" />
+        <path
+          d="M0-56v10M56 0H46M0 56V46M-56 0h10"
+          stroke="#607f72"
+          strokeLinecap="round"
+          strokeWidth="5"
+        />
+        <path d="M0 0V-38" stroke="#b87259" strokeLinecap="round" strokeWidth="7">
           <animateTransform
             attributeName="transform"
             dur="12s"
@@ -360,7 +421,7 @@ function MedicineScene() {
             values="0;360"
           />
         </path>
-        <path d="M0 0l38 22" stroke="#b87259" strokeLinecap="round" strokeWidth="8">
+        <path d="M0 0l30 18" stroke="#b87259" strokeLinecap="round" strokeWidth="7">
           <animateTransform
             attributeName="transform"
             dur="60s"
@@ -369,60 +430,53 @@ function MedicineScene() {
             values="0;360"
           />
         </path>
-        <path
-          d="M0-62v10M62 0H52M0 62V52M-62 0h10"
-          stroke="#607f72"
-          strokeLinecap="round"
-          strokeWidth="5"
-        />
+        <circle fill="#607f72" r="5" />
       </g>
-      <g transform="translate(302 156)">
+
+      {/* one dose leaves the bottle */}
+      <g transform="translate(300 158)">
         <g>
           <rect
             fill="#fffaf2"
-            height="126"
+            height="120"
             rx="11"
             stroke="#a86d52"
             strokeWidth="6"
-            width="88"
-            x="-44"
-            y="-50"
+            width="84"
+            x="-42"
+            y="-46"
           />
-          <rect fill="#d89170" height="30" rx="6" width="96" x="-48" y="-76" />
-          <path d="M-23-12h46M-23 12h34" stroke="#7b9287" strokeLinecap="round" strokeWidth="6" />
+          <rect fill="#d89170" height="28" rx="6" width="92" x="-46" y="-70" />
+          <path d="M-22-10h44M-22 14h32" stroke="#7b9287" strokeLinecap="round" strokeWidth="6" />
           <animateTransform
             attributeName="transform"
             dur="6s"
             repeatCount="indefinite"
             type="rotate"
-            values="0;-8;0"
+            values="0;-7;0"
           />
         </g>
       </g>
+
+      {/* the exact arc the dose follows into its compartment */}
       <path
-        d="M354 154 C408 112 446 112 492 154"
+        d={DOSE_ARC}
         fill="none"
         stroke="#a9beb4"
         strokeDasharray="10 12"
+        strokeLinecap="round"
         strokeWidth="5"
       >
         <animate
           attributeName="stroke-dashoffset"
-          dur="1.8s"
+          dur="1.9s"
           repeatCount="indefinite"
           values="44;0"
         />
       </path>
-      <circle fill="#e5b45f" r="12">
-        <animateMotion
-          begin=".6s"
-          dur="4.8s"
-          path="M338 146 C410 96 454 104 504 158"
-          repeatCount="indefinite"
-        />
-        <animate attributeName="opacity" dur="4.8s" repeatCount="indefinite" values="0;1;1;0" />
-      </circle>
-      <g transform="translate(574 164)">
+
+      {/* the day-and-time organizer */}
+      <g transform="translate(575 164)">
         <rect
           fill="#fffaf2"
           height="150"
@@ -453,11 +507,17 @@ function MedicineScene() {
             r="10"
           >
             {index === 5 ? (
-              <animate attributeName="r" dur="2.4s" repeatCount="indefinite" values="8;14;8" />
+              <animate attributeName="r" dur="1.9s" repeatCount="indefinite" values="9;14;9" />
             ) : null}
           </circle>
         ))}
       </g>
+
+      {/* the single dose, riding the arc into the matching space */}
+      <circle fill="#e5b45f" r="11">
+        <animateMotion dur="4.4s" path={DOSE_ARC} repeatCount="indefinite" />
+        <animate attributeName="opacity" dur="4.4s" repeatCount="indefinite" values="0;1;1;1;0" />
+      </circle>
     </>
   );
 }
@@ -465,45 +525,64 @@ function MedicineScene() {
 function SafetyScene() {
   return (
     <>
-      <g transform="translate(105 160)">
-        <circle cy="-38" fill="#e7b184" r="34" />
-        <path d="M-55 80V10c0-35 110-35 110 0v70Z" fill="#d27f66" />
-        <path d="M-5-70v78" stroke="#fffaf2" strokeLinecap="round" strokeWidth="15" />
-        <circle cy="8" fill="#c65f4a" r="13">
-          <animate attributeName="cy" dur="4s" repeatCount="indefinite" values="8;-24;8" />
-        </circle>
-      </g>
-      <g transform="translate(274 162)">
-        <path d="M0-70C-36-28-50 0-50 26a50 50 0 0 0 100 0C50 0 36-28 0-70Z" fill="#7fabb7" />
-        <path d="M-28 26h56" stroke="#d9eef2" strokeLinecap="round" strokeWidth="10">
+      {/* notice a change: a thermometer whose reading rises */}
+      <g transform="translate(110 166)">
+        <rect
+          fill="#fffaf2"
+          height="98"
+          rx="12"
+          stroke="#c07a5f"
+          strokeWidth="5"
+          width="24"
+          x="-12"
+          y="-72"
+        />
+        <circle cy="42" fill="#c65f4a" r="21" stroke="#a94f3d" strokeWidth="4" />
+        <path d="M0 40V-56" stroke="#c65f4a" strokeLinecap="round" strokeWidth="9">
           <animate
             attributeName="stroke-dasharray"
-            dur="4s"
+            dur="3.6s"
+            repeatCount="indefinite"
+            values="0 120;78 42;0 120"
+          />
+        </path>
+        <path d="M15-50h9M15-30h9M15-10h9" stroke="#c07a5f" strokeLinecap="round" strokeWidth="3" />
+      </g>
+
+      {/* restore hydration */}
+      <g transform="translate(285 166)">
+        <path d="M0-62C-33-22-45 3-45 25a45 45 0 0 0 90 0C45 3 33-22 0-62Z" fill="#7fabb7" />
+        <path d="M-25 24h50" stroke="#d9eef2" strokeLinecap="round" strokeWidth="10">
+          <animate
+            attributeName="stroke-dasharray"
+            dur="3.4s"
             repeatCount="indefinite"
             values="0 60;60 0;60 0"
           />
         </path>
         <animateTransform
           attributeName="transform"
-          dur="4s"
+          dur="3.4s"
           repeatCount="indefinite"
           type="translate"
-          values="274 172;274 154;274 172"
+          values="285 174;285 158;285 174"
         />
       </g>
-      <g transform="translate(426 160)">
+
+      {/* open the written plan */}
+      <g transform="translate(448 166)">
         <rect
           fill="#fffaf2"
-          height="150"
-          rx="8"
+          height="146"
+          rx="10"
           stroke="#607f72"
           strokeWidth="6"
-          width="120"
-          x="-60"
-          y="-75"
+          width="118"
+          x="-59"
+          y="-73"
         />
         <path
-          d="M-35-40h70M-35-12h54M-35 16h66M-35 44h42"
+          d="M-34-40h68M-34-12h52M-34 16h64"
           stroke="#8fa69a"
           strokeLinecap="round"
           strokeWidth="6"
@@ -516,7 +595,7 @@ function SafetyScene() {
           />
         </path>
         <path
-          d="m18 44 12 12 25-30"
+          d="m14 42 12 12 26-30"
           fill="none"
           stroke="#c6775e"
           strokeLinecap="round"
@@ -525,20 +604,22 @@ function SafetyScene() {
           <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values=".15;1;1;.15" />
         </path>
       </g>
-      <g transform="translate(610 162)">
+
+      {/* connect to help when the plan says it is time */}
+      <g transform="translate(610 166)">
         <rect
           fill="#eef4ef"
-          height="144"
-          rx="18"
+          height="140"
+          rx="16"
           stroke="#607f72"
           strokeWidth="7"
-          width="82"
-          x="-41"
-          y="-72"
+          width="80"
+          x="-40"
+          y="-70"
         />
-        <circle cy="48" fill="#b9cabf" r="8" />
+        <circle cy="46" fill="#b9cabf" r="7" />
         <path
-          d="M-20-26c16-18 24-18 40 0M-12-8c9-10 15-10 24 0"
+          d="M-20-24c15-17 25-17 40 0M-12-6c9-10 15-10 24 0"
           fill="none"
           stroke="#c6775e"
           strokeLinecap="round"
@@ -547,10 +628,13 @@ function SafetyScene() {
           <animate attributeName="opacity" dur="2.2s" repeatCount="indefinite" values=".2;1;.2" />
         </path>
       </g>
+
+      {/* one clean baseline joining the sequence */}
       <path
-        d="M166 160h54M326 160h40M488 160h76"
+        d="M146 166H240M336 166H384M514 166H566"
         stroke="#a9beb4"
         strokeDasharray="10 11"
+        strokeLinecap="round"
         strokeWidth="5"
       >
         <animate
@@ -567,117 +651,162 @@ function SafetyScene() {
 function CareScene() {
   return (
     <>
-      <g transform="translate(270 160)" fill="#fdf9f1" stroke="#617f72" strokeWidth="6">
-        <circle cy="-92" r="38" />
-        <path d="M-72 12c0-70 144-70 144 0v114H20L0 60l-20 66h-52Z" />
+      {/* a calm standing body, checked area by area, breathing as one */}
+      <g>
+        <g fill="#fdf9f1" stroke="#617f72" strokeWidth="6">
+          <circle cx="235" cy="102" r="33" />
+          <path d="M226 134h18v22h-18Z" />
+          <path d="M180 254C176 188 186 158 235 158C284 158 294 188 290 254Z" />
+          <path d="M214 254v12M256 254v12" fill="none" strokeLinecap="round" />
+          <ellipse cx="211" cy="268" rx="17" ry="9" />
+          <ellipse cx="259" cy="268" rx="17" ry="9" />
+        </g>
+
+        {/* five areas, each lit in its own moment */}
+        <g fill="#c97962">
+          {/* eyes */}
+          <g>
+            <circle cx="226" cy="98" r="4.5" />
+            <circle cx="244" cy="98" r="4.5" />
+            <animate
+              attributeName="opacity"
+              dur="10s"
+              repeatCount="indefinite"
+              values="1;.28;.28;.28;.28;1"
+            />
+          </g>
+          {/* mouth */}
+          <g>
+            <path
+              d="M226 114c5 6 13 6 18 0"
+              fill="none"
+              stroke="#c97962"
+              strokeLinecap="round"
+              strokeWidth="4"
+            />
+            <animate
+              attributeName="opacity"
+              dur="10s"
+              repeatCount="indefinite"
+              values=".28;.28;.28;.28;1;.28"
+            />
+          </g>
+          {/* heart */}
+          <g>
+            <path d="M222 182c-5-9-18-6-18 5 0 9 18 19 18 19s18-10 18-19c0-11-13-14-18-5Z" />
+            <animate
+              attributeName="opacity"
+              dur="10s"
+              repeatCount="indefinite"
+              values=".28;.28;1;.28;.28;.28"
+            />
+          </g>
+          {/* kidneys */}
+          <g>
+            <ellipse cx="215" cy="222" rx="10" ry="15" />
+            <ellipse cx="255" cy="222" rx="10" ry="15" />
+            <animate
+              attributeName="opacity"
+              dur="10s"
+              repeatCount="indefinite"
+              values=".28;1;.28;.28;.28;.28"
+            />
+          </g>
+          {/* feet */}
+          <g>
+            <ellipse cx="211" cy="268" rx="15" ry="8" />
+            <ellipse cx="259" cy="268" rx="15" ry="8" />
+            <animate
+              attributeName="opacity"
+              dur="10s"
+              repeatCount="indefinite"
+              values=".28;.28;.28;1;.28;.28"
+            />
+          </g>
+        </g>
+
+        <animateTransform
+          attributeName="transform"
+          dur="6s"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0;0 -3;0 0"
+        />
       </g>
-      <g fill="#c97962" stroke="#a95f4d" strokeWidth="3">
-        <path d="M245 134c-24-28-55 10 25 62 80-52 49-90 25-62-14-18-36-18-50 0Z">
-          <animate
-            attributeName="opacity"
-            dur="8s"
-            repeatCount="indefinite"
-            values="1;.25;.25;.25;1"
-          />
-        </path>
-        <ellipse cx="238" cy="210" rx="18" ry="31">
-          <animate
-            attributeName="opacity"
-            dur="8s"
-            repeatCount="indefinite"
-            values=".25;1;.25;.25;.25"
-          />
-        </ellipse>
-        <ellipse cx="302" cy="210" rx="18" ry="31">
-          <animate
-            attributeName="opacity"
-            dur="8s"
-            repeatCount="indefinite"
-            values=".25;1;.25;.25;.25"
-          />
-        </ellipse>
-        <circle cx="270" cy="64" r="15">
-          <animate
-            attributeName="opacity"
-            dur="8s"
-            repeatCount="indefinite"
-            values=".25;.25;1;.25;.25"
-          />
-        </circle>
-        <ellipse cx="245" cy="278" rx="30" ry="12">
-          <animate
-            attributeName="opacity"
-            dur="8s"
-            repeatCount="indefinite"
-            values=".25;.25;.25;1;.25"
-          />
-        </ellipse>
-        <ellipse cx="305" cy="278" rx="30" ry="12">
-          <animate
-            attributeName="opacity"
-            dur="8s"
-            repeatCount="indefinite"
-            values=".25;.25;.25;1;.25"
-          />
-        </ellipse>
-      </g>
-      <g transform="translate(530 160)">
+
+      {/* the care record filling one visit at a time */}
+      <g transform="translate(540 160)">
         <rect
           fill="#fffaf2"
           height="166"
           rx="10"
           stroke="#617f72"
           strokeWidth="6"
-          width="174"
-          x="-87"
+          width="170"
+          x="-85"
           y="-83"
         />
-        <path d="M-87-38h174M-35-83v166M20-83v166M-87 16h174" stroke="#9fb4aa" strokeWidth="4" />
+        <path d="M-85-52h170M-26-52v112M26-52v112M-85 4h170" stroke="#9fb4aa" strokeWidth="4" />
+        <path d="M-70-72h44" stroke="#c6a08f" strokeLinecap="round" strokeWidth="6" />
         <g
           fill="none"
           stroke="#c97962"
+          strokeDasharray="40"
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="7"
         >
-          <path d="m-70-60 10 10 18-22">
+          <path d="m-64-30 8 9 15-18">
             <animate
-              attributeName="stroke-dasharray"
-              dur="8s"
+              attributeName="stroke-dashoffset"
+              dur="10s"
               repeatCount="indefinite"
-              values="0 50;50 0;50 0;0 50"
+              values="40;0;0;0;0;0"
             />
           </path>
-          <path d="m-15-60 10 10 18-22">
+          <path d="m-8-30 8 9 15-18">
             <animate
-              attributeName="stroke-dasharray"
-              begin="1.5s"
-              dur="8s"
+              attributeName="stroke-dashoffset"
+              dur="10s"
               repeatCount="indefinite"
-              values="0 50;50 0;50 0;0 50"
+              values="40;40;0;0;0;0"
             />
           </path>
-          <path d="m40-60 10 10 18-22">
+          <path d="m48-30 8 9 15-18">
             <animate
-              attributeName="stroke-dasharray"
-              begin="3s"
-              dur="8s"
+              attributeName="stroke-dashoffset"
+              dur="10s"
               repeatCount="indefinite"
-              values="0 50;50 0;50 0;0 50"
+              values="40;40;40;0;0;0"
             />
           </path>
-          <path d="m-70-5 10 10 18-22">
+          <path d="m-64 26 8 9 15-18">
             <animate
-              attributeName="stroke-dasharray"
-              begin="4.5s"
-              dur="8s"
+              attributeName="stroke-dashoffset"
+              dur="10s"
               repeatCount="indefinite"
-              values="0 50;50 0;50 0;0 50"
+              values="40;40;40;40;0;0"
+            />
+          </path>
+          <path d="m-8 26 8 9 15-18">
+            <animate
+              attributeName="stroke-dashoffset"
+              dur="10s"
+              repeatCount="indefinite"
+              values="40;40;40;40;40;0"
             />
           </path>
         </g>
       </g>
-      <path d="M358 160h74" stroke="#a9beb4" strokeDasharray="10 11" strokeWidth="5">
+
+      {/* the visit joins the record */}
+      <path
+        d="M300 160H452"
+        stroke="#a9beb4"
+        strokeDasharray="10 11"
+        strokeLinecap="round"
+        strokeWidth="5"
+      >
         <animate
           attributeName="stroke-dashoffset"
           dur="2s"
@@ -692,109 +821,96 @@ function CareScene() {
 function SupportScene() {
   return (
     <>
+      {/* the ground everyone shares */}
       <path
-        d="M48 258c182-8 430-8 624 0"
+        d="M60 262c180-8 420-8 600 0"
         fill="none"
         stroke="#a9bdb3"
         strokeLinecap="round"
         strokeWidth="6"
       />
-      <g transform="translate(360 252)">
-        <circle cy="-142" fill="#e4ad82" r="34" />
-        <path d="M-50-102c0-38 100-38 100 0v96H-50Z" fill="#cd7b62" />
-        <path
-          d="M-38-70c-44-4-72-22-94-52"
-          fill="none"
-          stroke="#cd7b62"
-          strokeLinecap="round"
-          strokeWidth="15"
-        >
-          <animate
-            attributeName="stroke-dasharray"
-            dur="4s"
-            repeatCount="indefinite"
-            values="0 120;120 0;120 0"
-          />
-        </path>
-      </g>
-      <g transform="translate(124 252)">
-        <circle cy="-130" fill="#d7a47c" r="31" />
-        <path d="M-44-94c0-34 88-34 88 0v88h-88Z" fill="#719583" />
-        <animateTransform
-          attributeName="transform"
-          dur="5.5s"
-          repeatCount="indefinite"
-          type="translate"
-          values="-60 252;124 252;124 252;-60 252"
-        />
-      </g>
-      <g transform="translate(596 252)">
-        <circle cy="-130" fill="#e5bb91" r="31" />
-        <path d="M-44-94c0-34 88-34 88 0v88h-88Z" fill="#7d99a2" />
-        <animateTransform
-          attributeName="transform"
-          dur="5.5s"
-          repeatCount="indefinite"
-          type="translate"
-          values="780 252;596 252;596 252;780 252"
-        />
-      </g>
-      <g transform="translate(216 218)">
-        <path d="M-36-32h72l12 58h-96Z" fill="#edc687" stroke="#a86c4b" strokeWidth="5" />
-        <path d="M-20-32c0-30 40-30 40 0" fill="none" stroke="#a86c4b" strokeWidth="5" />
-        <animateTransform
-          attributeName="transform"
-          dur="5.5s"
-          repeatCount="indefinite"
-          type="translate"
-          values="-120 218;216 218;216 218;-120 218"
-        />
-      </g>
-      <g transform="translate(505 218)">
-        <path d="M-28-35h50l-6 56h-38Z" fill="#fffaf2" stroke="#6e8d80" strokeWidth="5" />
-        <path
-          d="M-12-49c-9-14 10-18 1-32M5-49c-9-14 10-18 1-32"
-          fill="none"
-          stroke="#91aa9f"
-          strokeLinecap="round"
-          strokeWidth="4"
-        >
+
+      {/* the person who makes the ask */}
+      <g transform="translate(360 256)">
+        <circle cy="-118" fill="#e4ad82" r="32" />
+        <path d="M-46-84c0-36 92-36 92 0v86H-46Z" fill="#cd7b62" />
+        {/* the ask itself, rising and opening outward */}
+        <circle cy="-92" fill="none" r="14" stroke="#c97a62" strokeWidth="4">
+          <animate attributeName="r" dur="3.4s" repeatCount="indefinite" values="10;40;10" />
+          <animate attributeName="opacity" dur="3.4s" repeatCount="indefinite" values=".85;0;.85" />
+        </circle>
+        <path d="M-9-96c0-7 9-5 9 1 0-6 9-8 9-1 0 7-9 13-9 13s-9-6-9-13Z" fill="#c97a62">
           <animateTransform
             attributeName="transform"
-            dur="2.8s"
+            dur="3.4s"
             repeatCount="indefinite"
             type="translate"
-            values="0 7;0 -8;0 7"
-          />
-          <animate
-            attributeName="opacity"
-            dur="2.8s"
-            repeatCount="indefinite"
-            values=".15;.9;.15"
+            values="0 6;0 -10;0 6"
           />
         </path>
+      </g>
+
+      {/* a companion arriving from the left with a warm drink */}
+      <g>
+        <g transform="translate(150 256)">
+          <circle cy="-108" fill="#d7a47c" r="30" />
+          <path d="M-42-76c0-32 84-32 84 0v78h-84Z" fill="#719583" />
+        </g>
+        <g transform="translate(214 224)">
+          <path
+            d="M-24-24h48v30a24 24 0 0 1-48 0Z"
+            fill="#edc687"
+            stroke="#a86c4b"
+            strokeWidth="5"
+          />
+          <path d="M24-16c18 0 18 24 0 24" fill="none" stroke="#a86c4b" strokeWidth="5" />
+          <g stroke="#c9a06f" strokeLinecap="round" strokeWidth="4">
+            <path d="M-8-32c-6-8 6-12 0-20M8-32c-6-8 6-12 0-20">
+              <animateTransform
+                attributeName="transform"
+                dur="2.8s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 6;0 -8;0 6"
+              />
+              <animate
+                attributeName="opacity"
+                dur="2.8s"
+                repeatCount="indefinite"
+                values=".15;.9;.15"
+              />
+            </path>
+          </g>
+        </g>
         <animateTransform
           attributeName="transform"
           dur="5.5s"
           repeatCount="indefinite"
           type="translate"
-          values="820 218;505 218;505 218;820 218"
+          values="-150 0;0 0;0 0;-150 0"
         />
       </g>
-      <path
-        d="M212 92c52-44 96-44 142 0M508 92c-52-44-96-44-142 0"
-        fill="none"
-        stroke="#c97a62"
-        strokeDasharray="9 11"
-        strokeWidth="5"
-      >
-        <animate
-          attributeName="stroke-dashoffset"
-          dur="2s"
+
+      {/* a companion arriving from the right with a practical task */}
+      <g>
+        <g transform="translate(570 256)">
+          <circle cy="-108" fill="#e5bb91" r="30" />
+          <path d="M-42-76c0-32 84-32 84 0v78h-84Z" fill="#7d99a2" />
+        </g>
+        <g transform="translate(506 226)">
+          <ellipse cx="0" cy="8" fill="#e7efe9" rx="34" ry="9" stroke="#6e8d80" strokeWidth="4" />
+          <path d="M-30 8c0-24 60-24 60 0Z" fill="#fffaf2" stroke="#6e8d80" strokeWidth="5" />
+          <circle cy="-18" fill="#6e8d80" r="4" />
+          <path d="M0-18v6" stroke="#6e8d80" strokeLinecap="round" strokeWidth="4" />
+        </g>
+        <animateTransform
+          attributeName="transform"
+          dur="5.5s"
           repeatCount="indefinite"
-          values="40;0"
+          type="translate"
+          values="150 0;0 0;0 0;150 0"
         />
-      </path>
+      </g>
     </>
   );
 }
@@ -832,9 +948,6 @@ export function EditorialMotion({ variant }: { variant: MotionVariant }) {
           viewBox="0 0 720 320"
         >
           <rect fill="#edf3ef" height="320" width="720" />
-          <circle cx="650" cy="52" fill="#f0cf92" opacity=".72" r="30">
-            <animate attributeName="r" dur="5s" repeatCount="indefinite" values="27;34;27" />
-          </circle>
           <Scene variant={variant} />
         </svg>
       </div>
