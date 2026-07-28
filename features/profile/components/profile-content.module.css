@@ -372,25 +372,25 @@
 }
 
 .orbitPath {
-  --counter-end-angle: -360deg;
-  --counter-start-angle: 0deg;
-  --orbit-duration: 20s;
-  --orbit-end-angle: 360deg;
+  --orbit-delay: 0s;
+  --orbit-duration: 13s;
   --orbit-size: 20rem;
-  --orbit-start-angle: 0deg;
   animation: profile-orbit var(--orbit-duration) linear infinite;
+  animation-delay: var(--orbit-delay);
   height: var(--orbit-size);
   left: 50%;
   position: absolute;
   top: 50%;
-  transform: translate(-50%, -50%) rotate(var(--orbit-start-angle));
+  transform: translate(-50%, -50%) rotate(0deg);
   transform-origin: center;
+  will-change: transform;
   width: var(--orbit-size);
 }
 
 .orbitItem {
   align-items: center;
   animation: profile-counter-orbit var(--orbit-duration) linear infinite;
+  animation-delay: var(--orbit-delay);
   background: #fffaf3;
   border: 1px solid #b9c9c0;
   color: #557a69;
@@ -400,7 +400,8 @@
   left: 50%;
   position: absolute;
   top: 0;
-  transform: translate(-50%, -50%) rotate(var(--counter-start-angle));
+  transform: translate(-50%, -50%) rotate(0deg);
+  will-change: transform;
   width: 2.7rem;
   border-radius: 8px;
 }
@@ -411,45 +412,27 @@
 }
 
 .orbitPathOne {
-  --counter-end-angle: -288deg;
-  --counter-start-angle: 72deg;
-  --orbit-duration: 22s;
-  --orbit-end-angle: 288deg;
-  --orbit-start-angle: -72deg;
+  --orbit-delay: -1s;
 }
 
 .orbitPathTwo {
-  --counter-end-angle: -408deg;
-  --counter-start-angle: -48deg;
-  --orbit-duration: 22s;
-  --orbit-end-angle: 408deg;
-  --orbit-start-angle: 48deg;
+  --orbit-delay: -5.35s;
 }
 
 .orbitPathThree {
-  --counter-end-angle: -368deg;
-  --counter-start-angle: -8deg;
-  --orbit-duration: 15s;
-  --orbit-end-angle: 368deg;
+  --orbit-delay: -0.7s;
+  --orbit-duration: 8.5s;
   --orbit-size: 13rem;
-  --orbit-start-angle: 8deg;
 }
 
 .orbitPathFour {
-  --counter-end-angle: -548deg;
-  --counter-start-angle: -188deg;
-  --orbit-duration: 15s;
-  --orbit-end-angle: 548deg;
+  --orbit-delay: -4.95s;
+  --orbit-duration: 8.5s;
   --orbit-size: 13rem;
-  --orbit-start-angle: 188deg;
 }
 
 .orbitPathFive {
-  --counter-end-angle: -542deg;
-  --counter-start-angle: -182deg;
-  --orbit-duration: 22s;
-  --orbit-end-angle: 542deg;
-  --orbit-start-angle: 182deg;
+  --orbit-delay: -9.7s;
 }
 
 .confettiBurst {
@@ -1016,19 +999,19 @@
 
 @keyframes profile-orbit {
   from {
-    transform: translate(-50%, -50%) rotate(var(--orbit-start-angle));
+    transform: translate(-50%, -50%) rotate(0deg);
   }
   to {
-    transform: translate(-50%, -50%) rotate(var(--orbit-end-angle));
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }
 
 @keyframes profile-counter-orbit {
   from {
-    transform: translate(-50%, -50%) rotate(var(--counter-start-angle));
+    transform: translate(-50%, -50%) rotate(0deg);
   }
   to {
-    transform: translate(-50%, -50%) rotate(var(--counter-end-angle));
+    transform: translate(-50%, -50%) rotate(-360deg);
   }
 }
 

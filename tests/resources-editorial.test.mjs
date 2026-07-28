@@ -76,8 +76,8 @@ test("editorial imagery is purposeful and production sized", () => {
     assert.ok(statSync(`public/resources/${image}`).size > 300_000);
   }
 
-  assert.match(styles, /object-fit: contain/);
-  assert.doesNotMatch(styles, /object-fit: cover/);
+  assert.match(styles, /object-fit: cover/);
+  assert.doesNotMatch(styles, /object-fit: contain/);
 });
 
 test("article views persist locally and expose a clear completion record", () => {
@@ -114,8 +114,9 @@ test("the visual hierarchy keeps articles larger and more explicit than supporti
   assert.match(component, /Read the official guide/);
   assert.ok(component.split("<ReadGuide />").length - 1 >= 7);
   assert.doesNotMatch(component, /className=\{styles\.photoPair\}/);
-  assert.match(styles, /align-self: center/);
-  assert.match(styles, /minmax\(16rem, 0\.82fr\)/);
+  assert.match(styles, /grid-template-columns: minmax\(19rem, 0\.78fr\) minmax\(0, 1\.22fr\)/);
+  assert.match(styles, /\.checklistWithPhoto \{\s+grid-column: 1 \/ -1;/);
+  assert.match(styles, /min-height: 22rem/);
   assert.match(styles, /@keyframes article-dashes/);
   assert.match(styles, /\.featuredLead::after/);
   assert.match(styles, /min-height: 12rem/);
