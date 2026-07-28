@@ -225,7 +225,7 @@
 
 .featuredLink {
   display: grid;
-  grid-template-columns: minmax(0, 1.62fr) minmax(11rem, 0.38fr);
+  grid-template-columns: minmax(0, 1.18fr) minmax(16rem, 0.82fr);
   height: 100%;
 }
 
@@ -237,7 +237,7 @@
 }
 
 .featuredImage {
-  align-self: end;
+  align-self: center;
   aspect-ratio: 1660 / 948;
   grid-column: 2;
   grid-row: 1;
@@ -303,12 +303,12 @@
 
 .featuredSide > a {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(7.5rem, 0.4fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(10rem, 0.85fr);
   height: 100%;
 }
 
 .sideImage {
-  align-self: end;
+  align-self: center;
   aspect-ratio: 3 / 2;
   grid-column: 2;
   grid-row: 1;
@@ -853,8 +853,9 @@ article:hover .externalArrow {
 }
 
 .checklistWithPhoto > a {
+  align-items: center;
   display: grid;
-  grid-template-columns: minmax(12rem, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(12rem, 0.95fr) minmax(0, 1.05fr);
 }
 
 .checklistCopy {
@@ -866,11 +867,14 @@ article:hover .externalArrow {
 }
 
 .articlePhoto {
-  background: #edf2ee;
+  align-self: center;
+  aspect-ratio: 3 / 2;
+  background: #fffaf3;
   border-right: 1px solid var(--editorial-rule);
-  min-height: 100%;
+  min-height: 0;
   overflow: hidden;
   position: relative;
+  width: 100%;
 }
 
 .articlePhoto img {
@@ -934,7 +938,7 @@ article:hover .externalArrow {
   border: 1px solid #ccd8cf;
   border-radius: 9px;
   display: grid;
-  grid-template-columns: minmax(9rem, 11rem) minmax(0, 1fr);
+  grid-template-columns: minmax(16rem, 0.76fr) minmax(0, 1.24fr);
   isolation: isolate;
   margin-bottom: 1rem;
   min-width: 0;
@@ -1427,20 +1431,6 @@ article:hover .externalArrow {
   background: #f1eee7;
 }
 
-.photoPair {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.photoPair {
-  margin-top: 1rem;
-}
-
-.photoPair .photoInterlude {
-  margin-bottom: 0;
-}
-
 .disclaimer {
   align-items: start;
   border-top: 1px solid var(--editorial-rule);
@@ -1469,7 +1459,7 @@ article:hover .externalArrow {
   }
 
   .featuredSide > a {
-    grid-template-columns: minmax(0, 1.62fr) minmax(9rem, 0.38fr);
+    grid-template-columns: minmax(0, 1.2fr) minmax(10rem, 0.8fr);
   }
 
   .sideImage {
@@ -1535,10 +1525,6 @@ article:hover .externalArrow {
   .sourceNote,
   .sourceExplanation,
   .wideFeature > a {
-    grid-template-columns: 1fr;
-  }
-
-  .photoPair {
     grid-template-columns: 1fr;
   }
 
