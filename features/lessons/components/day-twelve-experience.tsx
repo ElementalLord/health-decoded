@@ -349,9 +349,6 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
 
         <path d="M545 310 H822" stroke="#876f5d" strokeLinecap="round" strokeWidth="14" />
         <path d="M579 313 L568 370 M785 313 L797 370" stroke="#876f5d" strokeWidth="11" />
-        <rect fill="#fffaf2" height="61" rx="6" stroke="#91aa9d" width="103" x="695" y="239" />
-        <rect fill="#c8dad2" height="10" rx="3" width="65" x="714" y="257" />
-        <rect fill="#e5d4bd" height="8" rx="3" width="49" x="714" y="275" />
         <LessonMotionPerson
           action={activeStep === "choose" ? "reach-right" : "rest"}
           motion={activeStep === "pause" ? "breathe" : "nod"}
@@ -361,51 +358,6 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
           x={625}
           y={356}
         />
-
-        {activeStep === "pause" ? (
-          <g key="pause">
-            <path
-              d="M622 215 C606 201 605 186 620 174"
-              fill="none"
-              stroke="#7ba08d"
-              strokeWidth="5"
-            >
-              <animate
-                attributeName="opacity"
-                dur="3.6s"
-                repeatCount="indefinite"
-                values=".15;1;.15"
-              />
-              <animateTransform
-                attributeName="transform"
-                dur="3.6s"
-                repeatCount="indefinite"
-                type="translate"
-                values="0 7;0 -7;0 7"
-              />
-            </path>
-            <path
-              d="M644 215 C660 201 661 186 646 174"
-              fill="none"
-              stroke="#7ba08d"
-              strokeWidth="5"
-            >
-              <animate
-                attributeName="opacity"
-                dur="3.6s"
-                repeatCount="indefinite"
-                values=".15;1;.15"
-              />
-              <animateTransform
-                attributeName="transform"
-                dur="3.6s"
-                repeatCount="indefinite"
-                type="translate"
-                values="0 7;0 -7;0 7"
-              />
-            </path>
-          </g>
-        ) : null}
 
         {activeStep === "understand" ? (
           <g key="understand">
@@ -435,7 +387,7 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
         {activeStep === "choose" ? (
           <g key="choose">
             <ellipse
-              cx="705"
+              cx="745"
               cy="307"
               fill="#fffaf2"
               rx="53"
@@ -443,15 +395,15 @@ function ChangedDayAnimation({ activeStep }: { activeStep: SolverStepId }) {
               stroke="#c7785f"
               strokeWidth="4"
             />
-            <path d="M670 298 Q706 268 742 298" fill="#eac789" />
-            <path d="M680 294 Q706 277 732 294" fill="#789b88" opacity=".85" />
-            <path d="M663 265 V299" stroke="#789185" strokeLinecap="round" strokeWidth="5">
+            <path d="M710 298 Q746 268 782 298" fill="#eac789" />
+            <path d="M720 294 Q746 277 772 294" fill="#789b88" opacity=".85" />
+            <path d="M703 265 V299" stroke="#789185" strokeLinecap="round" strokeWidth="5">
               <animateTransform
                 attributeName="transform"
                 dur="2.8s"
                 repeatCount="indefinite"
                 type="rotate"
-                values="0 663 299;-8 663 299;0 663 299"
+                values="0 703 299;-8 703 299;0 703 299"
               />
             </path>
           </g>
@@ -539,21 +491,21 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
           stroke="#8da99a"
           strokeWidth="6"
         />
-        <path d="M398 115 V180" stroke="#c98b76" strokeLinecap="round" strokeWidth="7" />
+        <path d="M398 115 V278" stroke="#c98b76" strokeLinecap="round" strokeWidth="7" />
         <path
-          d="M394 178 C366 174 332 190 330 226 C328 260 350 288 390 288 C416 288 434 276 434 256 C433 240 420 236 410 230 C405 210 404 194 398 186 C397 182 396 180 394 178 Z"
+          d="M352 208 C362 184 402 174 442 184 C460 189 464 210 456 232 C444 254 400 260 368 253 C350 249 344 226 352 208 Z"
+          fill="#d9a184"
+          stroke="#a57d61"
+          strokeWidth="4"
+        />
+        <path
+          d="M398 276 C368 272 344 288 344 320 C344 350 366 372 400 370 C428 368 448 356 448 336 C447 320 434 316 424 310 C418 292 414 282 406 278 C403 277 400 276 398 276 Z"
           fill="#b87361"
           stroke="#955645"
           strokeWidth="4"
         >
           <animate attributeName="opacity" dur="3.8s" repeatCount="indefinite" values=".72;1;.72" />
         </path>
-        <path
-          d="M330 316 C360 298 430 296 470 310 C486 316 488 334 476 348 C458 368 410 374 366 366 C338 361 318 344 320 328 C321 320 324 318 330 316 Z"
-          fill="#d9a184"
-          stroke="#a57d61"
-          strokeWidth="4"
-        />
 
         <path
           d="M255 390 H625"
@@ -570,42 +522,16 @@ function SickDayBodyAnimation({ priority }: { priority: SickPriorityId }) {
           strokeWidth="12"
         />
         {[0, 1, 2].map((index) => (
-          <circle fill="#e5b56f" key={index} r="8">
+          <circle fill="#e5b56f" key={index} r="11" stroke="#fff7e7" strokeWidth="3">
             <animateMotion
               begin={`${index * -1.1}s`}
               dur="4.6s"
-              path="M375 348 C440 356 500 372 615 390"
+              path="M430 238 C465 295 495 355 550 388 C578 391 600 390 616 390"
               repeatCount="indefinite"
             />
             <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
           </circle>
         ))}
-
-        <g>
-          <circle cx="176" cy="185" fill="#c97b67" r="13" />
-          <path
-            d="M166 173 l-14 -16 M187 173 l15 -16"
-            stroke="#9f5c51"
-            strokeLinecap="round"
-            strokeWidth="5"
-          />
-          <path
-            d="M186 191 C240 220 300 285 340 315"
-            fill="none"
-            stroke="#c97b67"
-            strokeLinecap="round"
-            strokeWidth="3"
-            opacity=".45"
-          />
-          <circle fill="#d57e63" r="7">
-            <animateMotion
-              dur="4.6s"
-              path="M187 191 C240 220 300 285 340 315"
-              repeatCount="indefinite"
-            />
-            <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;1;1;0" />
-          </circle>
-        </g>
 
         <rect
           fill="#fffaf2"
@@ -763,154 +689,89 @@ function CareCallAnimation({ focus }: { focus: CallDetailId }) {
       >
         <title id="care-call-title">A friend helps make a care-team call during illness</title>
         <desc id="care-call-description">
-          One person rests on a sofa while a friend keeps water and the written sick-day plan within
-          reach. The selected call detail changes what the friend gathers for the clinician.
+          A phone shows an active care-team call beside the open written sick-day plan. The selected
+          call detail changes what the friend gathers for the clinician.
         </desc>
         <rect fill="#f2eee6" height="420" width="900" />
         <path d="M42 381 H858" stroke="#b3bcae" strokeLinecap="round" strokeWidth="5" />
+
         <rect
-          fill="#d9e7e1"
-          height="145"
-          rx="7"
-          stroke="#9fb5a9"
-          strokeWidth="4"
-          width="205"
-          x="64"
-          y="47"
+          fill="#40544c"
+          height="292"
+          rx="28"
+          stroke="#2f3f39"
+          strokeWidth="5"
+          width="188"
+          x="286"
+          y="70"
         />
-        <circle cx="166" cy="110" fill="#edca8c" r="34" />
-        <path d="M89 178 Q166 132 244 178" fill="#abc0b3" />
+        <rect fill="#f4f0e6" height="224" rx="8" width="150" x="305" y="100" />
+        <circle cx="380" cy="156" fill="#cf7b61" r="28" />
+        <rect fill="#cdd6cf" height="11" rx="5" width="98" x="331" y="200" />
+        <rect fill="#e3ece6" height="9" rx="4" width="66" x="347" y="222" />
+        <circle cx="380" cy="296" fill="#8db67f" r="20" />
+        <path d="M372 289c-3 3 0 9 4 13c4 4 10 7 13 4l-5 -7 -6 1 -5 -5 1 -6z" fill="#f4f0e6" />
 
         <path
-          d="M90 304 H389 Q407 304 407 323 V353 H90 Z"
-          fill="#83a18f"
-          stroke="#607b6c"
-          strokeWidth="4"
-        />
-        <rect fill="#a8c0b3" height="76" rx="8" width="104" x="78" y="275" />
-        <path
-          d="M119 353 V381 M376 353 V381"
-          stroke="#607b6c"
+          d="M508 156 Q542 122 508 88 M530 172 Q580 120 530 68"
+          fill="none"
+          stroke="#c7785f"
           strokeLinecap="round"
-          strokeWidth="10"
-        />
-        <LessonMotionPerson
-          action="rest"
-          motion="breathe"
-          palette="warm"
-          scale={0.9}
-          seated
-          x={268}
-          y={344}
-        />
-
-        <path
-          d="M442 311 H657 M466 313 L456 381 M632 313 L642 381"
-          stroke="#866f5e"
-          strokeLinecap="round"
-          strokeWidth="12"
-        />
-        <ellipse
-          cx="526"
-          cy="304"
-          fill="#fffaf2"
-          rx="39"
-          ry="10"
-          stroke="#c58a70"
-          strokeWidth="4"
-        />
-        <path d="M494 252 H522 L520 296 H496 Z" fill="#fffaf2" stroke="#6f9485" strokeWidth="4" />
-        <path d="M497 278 H520 L520 296 H496 Z" fill="#8db8c1" />
-        <LessonMotionPerson
-          action={focus === "followed" ? "reach-left" : "listen"}
-          motion="nod"
-          palette="sage"
-          scale={0.9}
-          seated
-          x={600}
-          y={344}
-        />
+          strokeWidth="5"
+        >
+          <animate attributeName="opacity" dur="2.4s" repeatCount="indefinite" values="0;1;0" />
+        </path>
 
         <rect
           fill="#fffaf2"
-          height="142"
+          height="156"
           rx="7"
           stroke="#a79582"
           strokeWidth="4"
-          width="112"
-          x="658"
-          y="203"
+          width="126"
+          x="600"
+          y="150"
         />
         <path
-          d="M679 234 H749 M679 255 H735 M679 276 H748 M679 297 H726"
+          d="M622 182 H704 M622 205 H688 M622 228 H702 M622 251 H678"
           stroke="#9bad9f"
           strokeLinecap="round"
           strokeWidth="5"
         />
 
         {focus === "change" ? (
-          <g key="change">
-            <circle cx="218" cy="222" fill="#fffaf2" r="34" stroke="#c7785f" strokeWidth="4" />
-            <path
-              d="M218 222 V200 M218 222 L235 229"
-              stroke="#6b8177"
-              strokeLinecap="round"
-              strokeWidth="5"
-            />
-            <path d="M458 248 V292" stroke="#c7785f" strokeLinecap="round" strokeWidth="7" />
-            <circle cx="458" cy="303" fill="#c7785f" r="12">
-              <animate
-                attributeName="opacity"
-                dur="2.8s"
-                repeatCount="indefinite"
-                values=".5;1;.5"
-              />
-            </circle>
-          </g>
+          <circle cx="380" cy="156" fill="none" r="40" stroke="#c7785f" strokeWidth="4">
+            <animate attributeName="r" dur="2.6s" repeatCount="indefinite" values="32;42;32" />
+            <animate attributeName="opacity" dur="2.6s" repeatCount="indefinite" values=".7;0;.7" />
+          </circle>
         ) : null}
         {focus === "followed" ? (
-          <g key="followed">
-            <path d="M674 231 H748" stroke="#c7785f" strokeLinecap="round" strokeWidth="6">
-              <animate
-                attributeName="stroke-dasharray"
-                dur="3s"
-                repeatCount="indefinite"
-                values="0 80;80 0;80 0"
-              />
-            </path>
-            <path d="M486 272 Q505 254 523 272" fill="none" stroke="#79a7b1" strokeWidth="4">
-              <animateTransform
-                attributeName="transform"
-                dur="3.6s"
-                repeatCount="indefinite"
-                type="translate"
-                values="0 5;0 -4;0 5"
-              />
-            </path>
-          </g>
+          <path d="M622 182 H704" stroke="#c7785f" strokeLinecap="round" strokeWidth="6">
+            <animate
+              attributeName="stroke-dasharray"
+              dur="3s"
+              repeatCount="indefinite"
+              values="0 84;84 0;84 0"
+            />
+          </path>
         ) : null}
         {focus === "question" ? (
           <g key="question">
-            <rect fill="#405750" height="82" rx="10" width="48" x="791" y="224" />
-            <circle cx="815" cy="290" fill="#dce8e1" r="4" />
+            <circle cx="663" cy="112" fill="#fffaf2" r="24" stroke="#c7785f" strokeWidth="4" />
             <path
-              d="M780 207 Q815 179 850 207 M788 216 Q815 195 842 216"
+              d="M654 106 Q654 95 663 95 Q672 95 672 103 Q672 110 663 113 M663 121 V123"
               fill="none"
-              stroke="#c87860"
+              stroke="#c7785f"
               strokeLinecap="round"
               strokeWidth="4"
             >
-              <animate attributeName="opacity" dur="2.4s" repeatCount="indefinite" values="0;1;0" />
+              <animate
+                attributeName="opacity"
+                dur="2.4s"
+                repeatCount="indefinite"
+                values=".4;1;.4"
+              />
             </path>
-            <circle cx="815" cy="160" fill="#ddb08a" r="25" stroke="#5b7e89" strokeWidth="4" />
-            <path d="M782 199 Q815 164 848 199" fill="#7d9da4" />
-            <path
-              d="M805 162 Q815 170 825 162"
-              fill="none"
-              stroke="#7c5b4c"
-              strokeLinecap="round"
-              strokeWidth="3"
-            />
           </g>
         ) : null}
       </svg>
@@ -1266,6 +1127,327 @@ function PlanBAnimation({
   );
 }
 
+const dayDetours = [
+  {
+    id: "later",
+    label: "Move it to a calmer hour",
+    note: "You shifted it later. The day still reaches the evening, just by a different road.",
+    path: "C324 60 396 60 420 130",
+  },
+  {
+    id: "help",
+    label: "Ask someone to help",
+    note: "One ask changed the route. You did not have to carry the whole day alone.",
+    path: "C330 96 390 96 420 130",
+  },
+  {
+    id: "smaller",
+    label: "Do a smaller version",
+    note: "A shorter version still counts. The purpose of the plan is protected, not perfected.",
+    path: "C324 180 396 180 420 130",
+  },
+] as const;
+
+function RerouteTheDay() {
+  const [chosen, setChosen] = useState<string | null>(null);
+  const active = dayDetours.find((detour) => detour.id === chosen) ?? null;
+
+  return (
+    <div className={styles.reroute}>
+      <div className={styles.rerouteHead}>
+        <p className="editorial-eyebrow">The interruption changes the route, not the day</p>
+        <p>
+          The middle of the plan is blocked. Tap one of the ways around it and watch the day still
+          reach the evening.
+        </p>
+      </div>
+      <svg
+        aria-label="A planned day drawn as a path from a morning sun to an evening marker, blocked in the middle. Three faint detours arc around the block; tap one to make it the route, and a dot travels the whole day to the evening."
+        className={styles.rerouteSvg}
+        role="group"
+        viewBox="0 0 720 220"
+      >
+        <path d="M44 130 H300" fill="none" stroke="#9db3a8" strokeLinecap="round" strokeWidth="6" />
+        <path
+          d="M420 130 H676"
+          fill="none"
+          stroke="#9db3a8"
+          strokeLinecap="round"
+          strokeWidth="6"
+        />
+        <path
+          d="M300 130 H420"
+          fill="none"
+          stroke="#d8c7b8"
+          strokeDasharray="3 13"
+          strokeLinecap="round"
+          strokeWidth="6"
+        />
+
+        {dayDetours.map((detour) => {
+          const isChosen = chosen === detour.id;
+          return (
+            <path
+              aria-label={`Route around the block: ${detour.label}`}
+              className={styles.rerouteOption}
+              d={`M300 130 ${detour.path}`}
+              fill="none"
+              key={detour.id}
+              onClick={() => setChosen(detour.id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setChosen(detour.id);
+                }
+              }}
+              role="button"
+              stroke={isChosen ? "#b96c55" : "#c9b4a3"}
+              strokeDasharray={isChosen ? undefined : "2 11"}
+              strokeLinecap="round"
+              strokeWidth="6"
+              tabIndex={0}
+            />
+          );
+        })}
+
+        <g transform="translate(360 130)">
+          <circle fill="#f0dfd0" r="15" stroke="#c98a6f" strokeWidth="3" />
+          <path
+            d="M-6 -6 L6 6 M6 -6 L-6 6"
+            stroke="#c98a6f"
+            strokeLinecap="round"
+            strokeWidth="3"
+          />
+        </g>
+
+        <circle cx="44" cy="130" fill="#e6b774" r="10" stroke="#c69551" strokeWidth="3" />
+        <circle cx="676" cy="130" fill="#7b9ea8" r="10" stroke="#5f7d86" strokeWidth="3" />
+
+        {active ? (
+          <circle fill="#6f947a" key={active.id} r="9" stroke="#fffaf3" strokeWidth="3">
+            <animateMotion
+              dur="3.6s"
+              path={`M44 130 H300 ${active.path} H676`}
+              repeatCount="indefinite"
+            />
+          </circle>
+        ) : null}
+      </svg>
+      <p aria-live="polite" className={styles.rerouteCaption}>
+        {active
+          ? active.note
+          : "Morning sun on the left, evening on the right. The blocked middle is where the plan changed."}
+      </p>
+    </div>
+  );
+}
+
+function BreatheThrough() {
+  const [breathing, setBreathing] = useState(false);
+  const panic = [
+    [58, 54],
+    [244, 62],
+    [66, 182],
+    [236, 178],
+    [150, 34],
+    [150, 210],
+    [40, 120],
+    [262, 118],
+  ];
+
+  return (
+    <div className={styles.breathe}>
+      <div className={styles.rerouteHead}>
+        <p className="editorial-eyebrow">Before you solve anything, one breath</p>
+        <p>
+          The all-or-nothing story loosens with a single slow breath. Start one and follow the ring
+          as it grows and settles.
+        </p>
+      </div>
+      <div className={styles.breatheStage}>
+        <svg aria-hidden="true" className={styles.breatheSvg} viewBox="0 0 302 240">
+          <g className={cn(styles.breathePanic, breathing && styles.breathePanicCalm)}>
+            {panic.map(([x, y], index) => (
+              <circle cx={x} cy={y} fill="#c08b7a" key={index} r="5" />
+            ))}
+          </g>
+          <circle
+            className={styles.breatheRing}
+            cx="151"
+            cy="120"
+            fill="#efe1d0"
+            r="40"
+            stroke="#b96c55"
+            strokeWidth="3"
+          >
+            {breathing ? (
+              <>
+                <animate
+                  attributeName="r"
+                  calcMode="spline"
+                  dur="9s"
+                  keySplines="0.4 0 0.4 1;0.4 0 0.4 1"
+                  keyTimes="0;0.44;1"
+                  repeatCount="indefinite"
+                  values="34;66;34"
+                />
+                <animate
+                  attributeName="opacity"
+                  dur="9s"
+                  keyTimes="0;0.44;1"
+                  repeatCount="indefinite"
+                  values="0.7;1;0.7"
+                />
+              </>
+            ) : null}
+          </circle>
+        </svg>
+      </div>
+      <div className={styles.breatheControls}>
+        <p aria-live="polite" className={styles.rerouteCaption}>
+          {breathing
+            ? "In as the ring grows, out as it settles. The day is still here when you return."
+            : "One breath interrupts the story that the whole day is already ruined."}
+        </p>
+        <button
+          className={styles.breatheButton}
+          onClick={() => setBreathing((current) => !current)}
+          type="button"
+        >
+          {breathing ? "Rest" : "Take one breath"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SteadyStory() {
+  const [value, setValue] = useState(0);
+  const t = value / 100;
+  const changedIndex = 3;
+
+  return (
+    <div className={styles.steady}>
+      <div className={styles.rerouteHead}>
+        <p className="editorial-eyebrow">The first move is the story you tell</p>
+        <p>
+          Slide from “the whole day is ruined” toward “one part changed,” and watch most of the day
+          steady itself.
+        </p>
+      </div>
+      <svg aria-hidden="true" className={styles.steadySvg} viewBox="0 0 720 190">
+        <path d="M40 158 H680" stroke="#cbb9a8" strokeWidth="2" />
+        {[0, 1, 2, 3, 4, 5].map((index) => {
+          const isChanged = index === changedIndex;
+          const tilt = isChanged ? 7 : 40 * (1 - t);
+          const x = 96 + index * 100;
+          const green = Math.round(150 + 22 * t);
+          const red = Math.round(150 - 36 * t);
+          const fill = isChanged ? "#c7785f" : `rgb(${red} ${green} 140)`;
+          return (
+            <g key={index} transform={`rotate(${tilt} ${x} 158)`}>
+              <rect fill={fill} height="72" rx="8" width="26" x={x - 13} y="86" />
+            </g>
+          );
+        })}
+      </svg>
+      <input
+        aria-label="Slide from the whole day is ruined toward one part changed"
+        className={styles.steadySlider}
+        max={100}
+        min={0}
+        onChange={(event) => setValue(Number(event.target.value))}
+        type="range"
+        value={value}
+      />
+      <div aria-hidden="true" className={styles.steadyLabels}>
+        <span>The whole day is ruined</span>
+        <span>One part changed</span>
+      </div>
+      <p aria-live="polite" className={styles.rerouteCaption}>
+        {t < 0.34
+          ? "When one thing goes wrong, the mind can knock the whole day over."
+          : t < 0.75
+            ? "Look again. Most of the day is still standing."
+            : "One part changed. The rest of the day is still yours to use."}
+      </p>
+    </div>
+  );
+}
+
+const sickPlanPieces = [
+  { id: "fluids", label: "How I will keep fluids up" },
+  { id: "monitor", label: "When I will check glucose" },
+  { id: "medicine", label: "My medicine sick-day notes" },
+  { id: "signs", label: "Warning signs that mean call now" },
+  { id: "contacts", label: "Who to call, and their number" },
+] as const;
+type SickPlanId = (typeof sickPlanPieces)[number]["id"];
+
+function PackSickDayPlan() {
+  const [added, setAdded] = useState<Set<SickPlanId>>(() => new Set());
+  const total = sickPlanPieces.length;
+
+  return (
+    <div className={styles.planKit}>
+      <div className={styles.rerouteHead}>
+        <p className="editorial-eyebrow">Write the plan before you are unwell</p>
+        <p>
+          Tap each piece to write it into your sick-day plan. A plan made while well is easier to
+          follow than a decision made while ill.
+        </p>
+      </div>
+      <div className={styles.planKitBody}>
+        <div aria-label="Sick-day plan pieces" className={styles.planPieces} role="group">
+          {sickPlanPieces.map((piece) => {
+            const isAdded = added.has(piece.id);
+            return (
+              <button
+                aria-pressed={isAdded}
+                className={cn(styles.planPiece, isAdded && styles.planPieceAdded)}
+                key={piece.id}
+                onClick={() =>
+                  setAdded((current) => {
+                    const next = new Set(current);
+                    if (next.has(piece.id)) {
+                      next.delete(piece.id);
+                    } else {
+                      next.add(piece.id);
+                    }
+                    return next;
+                  })
+                }
+                type="button"
+              >
+                {piece.label}
+              </button>
+            );
+          })}
+        </div>
+        <div className={styles.planCard}>
+          <p className={styles.planCardTitle}>My sick-day plan</p>
+          {added.size === 0 ? (
+            <p className={styles.planCardEmpty}>Tap the pieces and they appear here, in order.</p>
+          ) : (
+            <ul className={styles.planCardList}>
+              {sickPlanPieces
+                .filter((piece) => added.has(piece.id))
+                .map((piece) => (
+                  <li key={piece.id}>{piece.label}</li>
+                ))}
+            </ul>
+          )}
+        </div>
+      </div>
+      <p aria-live="polite" className={styles.rerouteCaption}>
+        {added.size === total
+          ? "Your plan is written. Future-you, tired and unwell, will be glad it already exists."
+          : `${added.size} of ${total} written. Keep it somewhere you can find it fast.`}
+      </p>
+    </div>
+  );
+}
+
 export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -1472,6 +1654,8 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 ))}
               </div>
             </div>
+            <BreatheThrough />
+            <RerouteTheDay />
             <p className={styles.quietNote}>
               Pause · Understand · Choose · Adjust is a cycle, not a score. New information can send
               you back around without erasing what you already learned.
@@ -1502,6 +1686,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 </p>
               </div>
             </div>
+            <SteadyStory />
             <div className={styles.teachBack}>
               <p className={styles.promptTitle}>Which response uses the four-step solver?</p>
               <div className="mt-6 grid gap-3">
@@ -1606,6 +1791,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               src="/lessons/day-12/sick-day-support.jpg"
             />
             <SickDayBodyAnimation priority={sickPriority} />
+            <PackSickDayPlan />
             <div>
               <p className={styles.promptTitle}>Explore the anchors of a personal sick-day plan.</p>
               <div className={styles.priorityList}>

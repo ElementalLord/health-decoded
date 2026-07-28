@@ -37,7 +37,7 @@ test("Day 12 uses four purposeful loops tied to real decisions and physiology", 
   assert.match(experience, /planBackup === "ask"/);
   assert.match(experience, /planBackup === "reset"/);
   assert.match(experience, /A friend helps make a care-team call during illness/);
-  assert.match(experience, /selected call detail changes what the friend gathers/);
+  assert.match(experience, /selected\s+call\s+detail\s+changes\s+what\s+the\s+friend\s+gathers/);
   assert.equal((experience.match(/data-motion-loop="continuous"/g) ?? []).length, 4);
   assert.ok(
     (experience.match(/repeatCount="indefinite"/g) ?? []).length >= 20,
