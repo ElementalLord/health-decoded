@@ -160,6 +160,61 @@
   outline-offset: 2px;
 }
 
+.foundation {
+  overflow: hidden;
+  border: 1px solid rgb(199 124 98 / 22%);
+  border-radius: 14px;
+  background: #f4ebe1;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.foundationSvg {
+  display: block;
+  width: 100%;
+  max-width: 32rem;
+  height: auto;
+  margin: 0.4rem auto 0.9rem;
+}
+
+.foundationBlock {
+  transition:
+    opacity 400ms var(--ease-standard, ease),
+    transform 400ms var(--ease-standard, ease);
+}
+
+.foundationChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.foundationChip {
+  border: 1px solid rgb(157 113 74 / 28%);
+  border-radius: 9px;
+  background: #fffdf8;
+  padding: 0.5rem 0.85rem;
+  color: #5a4a3d;
+  line-height: 1.45;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.foundationChip:hover {
+  border-color: rgb(157 113 74 / 55%);
+}
+
+.foundationChip:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: 2px;
+}
+
+.foundationChipActive {
+  border-color: #a2634c;
+  background: #f0e0d5;
+  color: #7a4634;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .journeyLine {
     animation: none;
@@ -171,6 +226,10 @@
   }
 
   .biteParticle {
+    transition: none;
+  }
+
+  .foundationBlock {
     transition: none;
   }
 }

@@ -2152,6 +2152,90 @@ function FollowOneBite() {
   );
 }
 
+const foundationStones = [
+  "Understanding, not perfection",
+  "Numbers read with context",
+  "Food and movement that fit you",
+  "Medicine as a tool, not a verdict",
+  "Care that can be shared",
+] as const;
+
+function BuildFoundation() {
+  const [placed, setPlaced] = useState<Set<number>>(() => new Set());
+  const blocks = [
+    { x: 160, y: 150 },
+    { x: 258, y: 150 },
+    { x: 356, y: 150 },
+    { x: 209, y: 110 },
+    { x: 307, y: 110 },
+  ];
+  const total = foundationStones.length;
+  const complete = placed.size === total;
+
+  return (
+    <div className={styles.foundation}>
+      <div className={styles.journeyTraceHead}>
+        <p className="editorial-eyebrow">Set your foundation in place</p>
+        <p>Tap each idea you now carry, and watch it become one steady piece to stand on.</p>
+      </div>
+      <svg aria-hidden="true" className={styles.foundationSvg} viewBox="0 0 516 200">
+        <path d="M96 186 H420" fill="none" stroke="#cbb9a8" strokeLinecap="round" strokeWidth="3" />
+        {blocks.map((block, index) => {
+          const isPlaced = placed.has(index);
+          return (
+            <rect
+              className={styles.foundationBlock}
+              fill={isPlaced ? "#c98a6f" : "#efe7db"}
+              height="34"
+              key={index}
+              rx="6"
+              stroke={isPlaced ? "#a2634c" : "#ddd0c1"}
+              strokeWidth="2"
+              style={{
+                opacity: isPlaced ? 1 : 0.35,
+                transform: isPlaced ? "translateY(0)" : "translateY(-9px)",
+              }}
+              width="92"
+              x={block.x - 46}
+              y={block.y}
+            />
+          );
+        })}
+      </svg>
+      <div aria-label="Ideas you now carry" className={styles.foundationChips} role="group">
+        {foundationStones.map((stone, index) => (
+          <button
+            aria-pressed={placed.has(index)}
+            className={cn(styles.foundationChip, placed.has(index) && styles.foundationChipActive)}
+            key={stone}
+            onClick={() =>
+              setPlaced((current) => {
+                const next = new Set(current);
+                if (next.has(index)) {
+                  next.delete(index);
+                } else {
+                  next.add(index);
+                }
+                return next;
+              })
+            }
+            type="button"
+          >
+            {stone}
+          </button>
+        ))}
+      </div>
+      <p aria-live="polite" className={styles.journeyCaption}>
+        {complete
+          ? "Your foundation is built. It holds because you set each piece yourself."
+          : placed.size === 0
+            ? "Tap an idea to set the first piece."
+            : `${placed.size} of ${total} in place.`}
+      </p>
+    </div>
+  );
+}
+
 export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -2483,6 +2567,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               width={1672}
             />
             <FullLifePicnicMotion />
+            <BuildFoundation />
             <div className={styles.nextPhase}>
               <p>
                 The first fourteen days built language and structure. The next seventy-six are for
