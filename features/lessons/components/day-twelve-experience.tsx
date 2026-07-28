@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -26,10 +26,20 @@ import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-prog
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-person";
 import styles from "@/features/lessons/components/day-twelve-experience.module.css";
+import {
+  canNavigateToLessonStage,
+  isLessonStageLocked,
+  type LessonStageGateMap,
+} from "@/features/lessons/lib/lesson-stage-gating";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
 const stageCount = 10;
+const dayTwelveStageGates: LessonStageGateMap = {
+  1: "Open all four solver steps above before you move on.",
+  4: "Add all five pieces to the sick-day plan above before you move on.",
+  7: "Choose both sides of your Plan B above before you move on.",
+};
 
 const openingFeelings = [
   ["tired", "I am tired of plans falling apart"],
@@ -1384,9 +1394,13 @@ const sickPlanPieces = [
 ] as const;
 type SickPlanId = (typeof sickPlanPieces)[number]["id"];
 
-function PackSickDayPlan() {
+function PackSickDayPlan({ onReady }: { onReady?: () => void }) {
   const [added, setAdded] = useState<Set<SickPlanId>>(() => new Set());
   const total = sickPlanPieces.length;
+
+  useEffect(() => {
+    if (added.size === total) onReady?.();
+  }, [added.size, onReady, total]);
 
   return (
     <div className={styles.planKit}>
@@ -1476,8 +1490,26 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
   const [exitOpen, setExitOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
+  const [solverStepsSeen, setSolverStepsSeen] = useState<Set<SolverStepId>>(
+    () => new Set(["pause"]),
+  );
+  const [planChoicesMade, setPlanChoicesMade] = useState<Set<"trigger" | "backup">>(
+    () => new Set(),
+  );
+  const markReady = useCallback((target: number) => {
+    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
+  }, []);
+  const markSickDayPlanReady = useCallback(() => markReady(4), [markReady]);
   const stageRef = useRef<HTMLDivElement>(null);
   const storageKey = `health-decoded:day-twelve:${experience.lessonProgressId}`;
+  const stageLocked = isLessonStageLocked({
+    accessMode: experience.accessMode,
+    gates: dayTwelveStageGates,
+    readyStages,
+    stage,
+  });
+  const stageGateMessage = dayTwelveStageGates[stage];
 
   useEffect(() => {
     if (experience.accessMode === "review") return;
@@ -1507,6 +1539,18 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
   }
 
   function goToStage(nextStage: number) {
+    if (
+      !canNavigateToLessonStage({
+        accessMode: experience.accessMode,
+        currentStage: stage,
+        gates: dayTwelveStageGates,
+        nextStage,
+        readyStages,
+      })
+    ) {
+      return;
+    }
+
     const normalized = Math.max(0, Math.min(stageCount - 1, nextStage));
     setStage(normalized);
     saveStage(normalized);
@@ -1535,6 +1579,27 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
   const selectedBackup = planBackups.find(([id]) => id === planBackup)?.[1] ?? planBackups[0][1];
   const personalSituation = scriptSituation.trim() || selectedTrigger;
   const personalAction = scriptAction.trim() || selectedBackup;
+
+  function selectSolverStep(id: SolverStepId) {
+    setActiveSolverStep(id);
+    const next = new Set(solverStepsSeen).add(id);
+    setSolverStepsSeen(next);
+    if (next.size === solverSteps.length) markReady(1);
+  }
+
+  function selectPlanTrigger(id: PlanTriggerId) {
+    setPlanTrigger(id);
+    const next = new Set(planChoicesMade).add("trigger" as const);
+    setPlanChoicesMade(next);
+    if (next.has("backup")) markReady(7);
+  }
+
+  function selectPlanBackup(id: PlanBackupId) {
+    setPlanBackup(id);
+    const next = new Set(planChoicesMade).add("backup" as const);
+    setPlanChoicesMade(next);
+    if (next.has("trigger")) markReady(7);
+  }
 
   function continueLabel() {
     return (
@@ -1645,7 +1710,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                       activeSolverStep === item.id && styles.solverTabActive,
                     )}
                     key={item.id}
-                    onClick={() => setActiveSolverStep(item.id)}
+                    onClick={() => selectSolverStep(item.id)}
                     type="button"
                   >
                     <span>{item.number}</span>
@@ -1653,6 +1718,11 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                   </button>
                 ))}
               </div>
+              <p aria-live="polite" className={styles.rerouteCaption}>
+                {solverStepsSeen.size === solverSteps.length
+                  ? "All four moves are open. You can carry the full sequence into the next chapter."
+                  : `${solverStepsSeen.size} of ${solverSteps.length} moves opened. Visit each move once.`}
+              </p>
             </div>
             <BreatheThrough />
             <RerouteTheDay />
@@ -1791,7 +1861,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               src="/lessons/day-12/sick-day-support.jpg"
             />
             <SickDayBodyAnimation priority={sickPriority} />
-            <PackSickDayPlan />
+            <PackSickDayPlan onReady={markSickDayPlanReady} />
             <div>
               <p className={styles.promptTitle}>Explore the anchors of a personal sick-day plan.</p>
               <div className={styles.priorityList}>
@@ -1972,7 +2042,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                   {planTriggers.map(([id, label]) => (
                     <AnswerChoice
                       key={id}
-                      onClick={() => setPlanTrigger(id)}
+                      onClick={() => selectPlanTrigger(id)}
                       selected={planTrigger === id}
                     >
                       {label}
@@ -1986,7 +2056,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                   {planBackups.map(([id, label]) => (
                     <AnswerChoice
                       key={id}
-                      onClick={() => setPlanBackup(id)}
+                      onClick={() => selectPlanBackup(id)}
                       selected={planBackup === id}
                     >
                       {label}
@@ -1995,6 +2065,11 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 </div>
               </section>
             </div>
+            <p aria-live="polite" className={styles.quietNote}>
+              {planChoicesMade.size === 2
+                ? "Both sides are chosen. Your backup plan is ready to carry forward."
+                : `${planChoicesMade.size} of 2 sides chosen. Pick one changed moment and one useful response.`}
+            </p>
             <div className={styles.planTicket}>
               <p className="editorial-eyebrow">Your Plan B</p>
               <p>
@@ -2196,6 +2271,11 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
       </div>
       {stage < stageCount - 1 ? (
         <footer className="border-t border-border pt-5">
+          {stageLocked && stageGateMessage ? (
+            <p className="mb-4 rounded-[8px] border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
+              One small step first: {stageGateMessage}
+            </p>
+          ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <Button
               disabled={stage === 0 || isPending}
@@ -2204,12 +2284,13 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             >
               Previous
             </Button>
-            <Button disabled={isPending} onClick={() => goToStage(stage + 1)}>
+            <Button disabled={isPending || stageLocked} onClick={() => goToStage(stage + 1)}>
               {continueLabel()}
             </Button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            The interactions are invitations, not gates. Continue whenever you are ready.
+            Three practice chapters ask for a small interaction before continuing. Personal
+            reflections and writing remain optional.
           </p>
         </footer>
       ) : null}

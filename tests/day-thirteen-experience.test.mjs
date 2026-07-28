@@ -86,7 +86,7 @@ test("Day 13 adopts Day 11's editorial hierarchy with softly squared controls", 
   assert.doesNotMatch(experience, /rounded-full/);
 });
 
-test("Day 13 makes interactions meaningful without turning them into completion gates", () => {
+test("Day 13 validates its three skill gates without gating personal choices", () => {
   assert.match(experience, /stigmaMoment/);
   assert.match(experience, /supportMode/);
   assert.match(experience, /supportRequest/);
@@ -95,8 +95,17 @@ test("Day 13 makes interactions meaningful without turning them into completion 
   assert.match(experience, /repairStep/);
   assert.match(experience, /reflection/);
   assert.match(experience, /Define support without control/);
-  assert.match(experience, /The interactions are invitations, not gates/);
-  assert.doesNotMatch(experience, /function canContinue|stageRequirement/);
+  assert.match(experience, /const dayThirteenStageGates/);
+  assert.match(experience, /1: "Share at least one bag/);
+  assert.match(experience, /5: "Build a full boundary/);
+  assert.match(experience, /7: "Call for backup/);
+  assert.match(experience, /<SharedLoadAnimation onReady=\{markSharedLoadReady\}/);
+  assert.match(experience, /<ComposeBoundary onReady=\{markBoundaryReady\}/);
+  assert.match(experience, /<SupportArrives onReady=\{markSupportReady\}/);
+  assert.match(experience, /setTimeout\(\(\) => \{[\s\S]*setLanded\(true\)/);
+  assert.match(experience, /canNavigateToLessonStage/);
+  assert.match(experience, /disabled=\{isPending \|\| stageLocked\}/);
+  assert.match(experience, /Personal\s+choices and reflection remain optional/);
   assert.doesNotMatch(experience, /supportClassifications|mapChoices|openedMyths/);
 });
 

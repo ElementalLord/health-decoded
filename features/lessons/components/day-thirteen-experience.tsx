@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -26,10 +26,20 @@ import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-prog
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-person";
 import styles from "@/features/lessons/components/day-thirteen-experience.module.css";
+import {
+  canNavigateToLessonStage,
+  isLessonStageLocked,
+  type LessonStageGateMap,
+} from "@/features/lessons/lib/lesson-stage-gating";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
 const stageCount = 11;
+const dayThirteenStageGates: LessonStageGateMap = {
+  1: "Share at least one bag onto the bench above before you move on.",
+  5: "Build a full boundary above, one phrase from each row, before you move on.",
+  7: "Call for backup above and let it land before you move on.",
+};
 
 const openingFeelings = [
   ["held", "I already have someone who listens"],
@@ -989,9 +999,24 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
 
 function SupportArrives({ onReady }: { onReady?: () => void }) {
   const [near, setNear] = useState(false);
+  const [landed, setLanded] = useState(false);
   const capeRest =
     "M-14 -84 C-42 -66 -48 -22 -30 4 C-18 -10 -10 -16 -4 -24 C-12 -48 -8 -70 -2 -82 Z";
   const capeFlow = "M-14 -84 C-36 -58 -46 -16 -22 8 C-12 -8 -8 -16 -2 -24 C-10 -48 -6 -70 -2 -82 Z";
+
+  useEffect(() => {
+    if (!near) {
+      setLanded(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setLanded(true);
+      onReady?.();
+    }, 5700);
+
+    return () => window.clearTimeout(timer);
+  }, [near, onReady]);
 
   return (
     <div className={styles.arrive}>
@@ -1076,22 +1101,21 @@ function SupportArrives({ onReady }: { onReady?: () => void }) {
       </svg>
       <div className={styles.arriveControls}>
         <p aria-live="polite" className={styles.loadStatus}>
-          {near
+          {landed
             ? "Backup has landed. You did not have to carry the moment alone."
-            : "One small ask can change a hard hour. You choose who, and when."}
+            : near
+              ? "Backup is on the way. Let the ask travel all the way to support."
+              : "One small ask can change a hard hour. You choose who, and when."}
         </p>
         <button
+          aria-pressed={near}
           className={styles.arriveButton}
           onClick={() => {
-            const next = !near;
-            setNear(next);
-            if (next) {
-              onReady?.();
-            }
+            setNear((current) => !current);
           }}
           type="button"
         >
-          {near ? "Thank them and reset" : "Call for backup"}
+          {near ? "Reset the scene" : "Call for backup"}
         </button>
       </div>
     </div>
@@ -1296,15 +1320,19 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
-  function markReady(target: number) {
+  const markReady = useCallback((target: number) => {
     setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
-  }
-  const stageGates: Record<number, string> = {
-    1: "Share at least one bag onto the bench above before you move on.",
-    5: "Build a full boundary above, one phrase from each row, before you move on.",
-    7: "Call for backup above and let it land before you move on.",
-  };
-  const stageLocked = stageGates[stage] !== undefined && !readyStages.has(stage);
+  }, []);
+  const markSharedLoadReady = useCallback(() => markReady(1), [markReady]);
+  const markBoundaryReady = useCallback(() => markReady(5), [markReady]);
+  const markSupportReady = useCallback(() => markReady(7), [markReady]);
+  const stageLocked = isLessonStageLocked({
+    accessMode: experience.accessMode,
+    gates: dayThirteenStageGates,
+    readyStages,
+    stage,
+  });
+  const stageGateMessage = dayThirteenStageGates[stage];
   const stageRef = useRef<HTMLDivElement>(null);
   const storageKey = "health-decoded:day-thirteen:" + experience.lessonProgressId;
 
@@ -1336,6 +1364,18 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
   }
 
   function goToStage(nextStage: number) {
+    if (
+      !canNavigateToLessonStage({
+        accessMode: experience.accessMode,
+        currentStage: stage,
+        gates: dayThirteenStageGates,
+        nextStage,
+        readyStages,
+      })
+    ) {
+      return;
+    }
+
     const normalized = Math.max(0, Math.min(stageCount - 1, nextStage));
     setStage(normalized);
     saveStage(normalized);
@@ -1462,7 +1502,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="A diagnosis is one chapter">
               Diabetes can belong inside your life without becoming the name of it.
             </LessonHeading>
-            <SharedLoadAnimation onReady={() => markReady(1)} />
+            <SharedLoadAnimation onReady={markSharedLoadReady} />
             <div className={styles.editorialPrompt}>
               <div>
                 <p className="editorial-eyebrow">Keep the whole person visible</p>
@@ -1685,7 +1725,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               ))}
             </div>
             <BoundaryConversationAnimation scenario={activeBoundary} />
-            <ComposeBoundary onReady={() => markReady(5)} />
+            <ComposeBoundary onReady={markBoundaryReady} />
             <div className={styles.teachBack}>
               <p className="editorial-eyebrow">Choose the response that protects your peace</p>
               <div className="mt-5 grid gap-3">
@@ -1781,7 +1821,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               src="/lessons/day-13/community-belonging.jpg"
             />
             <SupportTableAnimation activeSeat={supportSeat} />
-            <SupportArrives onReady={() => markReady(7)} />
+            <SupportArrives onReady={markSupportReady} />
             <div className={styles.seatChooser}>
               {supportSeats.map((seat) => (
                 <button
@@ -2045,9 +2085,9 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
       </div>
       {stage < stageCount - 1 ? (
         <footer className="border-t border-border pt-5">
-          {stageLocked ? (
-            <p className="mb-4 rounded-lg border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
-              One small step first: {stageGates[stage]}
+          {stageLocked && stageGateMessage ? (
+            <p className="mb-4 rounded-[8px] border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
+              One small step first: {stageGateMessage}
             </p>
           ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
@@ -2063,7 +2103,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             </Button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            The interactions are invitations, not gates. Continue whenever you are ready.
+            Three skill-building chapters ask for one small action before continuing. Personal
+            choices and reflection remain optional.
           </p>
         </footer>
       ) : null}

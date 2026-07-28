@@ -143,10 +143,23 @@ test("Day 14 keeps reflection light, optional, and free from checkbox labor", ()
   assert.doesNotMatch(experience, /carryTruths|confidenceViews/);
   assert.doesNotMatch(
     experience,
-    /toolkitItems|checklistSkills|draggable=|handleToolDrop|canContinue|stageRequirement|To continue:/,
+    /toolkitItems|checklistSkills|draggable=|handleToolDrop|canContinue|stageRequirement/,
   );
   assert.doesNotMatch(experience, /\bCheck\s*,|choiceMark|checkButton/);
   assert.doesNotMatch(experience, /correctAnswer|isCorrect|data-correct|styles\.incorrect/i);
+});
+
+test("Day 14 validates its three milestone interactions without blocking review mode", () => {
+  assert.match(experience, /const dayFourteenStageGates/);
+  assert.match(experience, /0: "Tap at least one day/);
+  assert.match(experience, /3: "Walk the bite all the way to the cells/);
+  assert.match(experience, /9: "Set at least two foundation pieces/);
+  assert.match(experience, /<FourteenDayTrace onReady=\{markTraceReady\}/);
+  assert.match(experience, /<FollowOneBite onReady=\{markBiteReady\}/);
+  assert.match(experience, /<BuildFoundation onReady=\{markFoundationReady\}/);
+  assert.match(experience, /canNavigateToLessonStage/);
+  assert.match(experience, /isLessonStageLocked/);
+  assert.match(experience, /disabled=\{isPending \|\| stageLocked\}/);
 });
 
 test("Day 14 keeps the optional personal note private and revisitable on the same browser", () => {
