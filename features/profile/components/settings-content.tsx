@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useActionState } from "react";
 
@@ -119,12 +120,13 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
               <p
                 aria-live="polite"
                 className={cn(
-                  "motion-status text-sm",
+                  "motion-status flex items-center gap-2 text-sm",
                   hasError ? "text-destructive" : "text-success",
                 )}
                 id={messageId}
                 role={hasError ? "alert" : "status"}
               >
+                {!hasError ? <CheckCircle2 aria-hidden="true" className="size-5" /> : null}
                 {state.message}
               </p>
             ) : null}

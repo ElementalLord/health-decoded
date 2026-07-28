@@ -1687,7 +1687,10 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         setMessage(positionResult.message);
         return;
       }
-      const result = await completeLessonAction({ lessonProgressId: experience.lessonProgressId });
+      const result = await completeLessonAction({
+        lessonProgressId: experience.lessonProgressId,
+        reflection: `When ${personalSituation}, I can ${personalAction}.`,
+      });
       if (!result.ok) {
         setMessage(result.message);
         return;

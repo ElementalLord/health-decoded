@@ -1,8 +1,19 @@
 "use client";
 
-import { ArrowRight, CalendarDays, LockKeyhole, Settings, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpenText,
+  CalendarDays,
+  CheckCircle2,
+  LockKeyhole,
+  NotebookPen,
+  Pill,
+  Settings,
+  Stethoscope,
+  UserRound,
+} from "lucide-react";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +28,7 @@ import type { ProfileReflectionArchive } from "@/features/profile/types/profile-
 import { cn } from "@/lib/utils";
 
 const initialState: ProfileActionState = { status: "idle", message: "" };
+const PROFILE_CONFETTI_KEY = "health-decoded:profile-confetti-date";
 
 function getInitials(displayName: string) {
   const parts = displayName.trim().split(/\s+/).filter(Boolean);
@@ -36,27 +48,81 @@ function formatDate(value: string, options?: Intl.DateTimeFormatOptions) {
   ).format(new Date(value));
 }
 
-function PersonalJournalScene({ initials }: { initials: string }) {
+function localDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function DailyProfileConfetti({ reducedMotion }: { reducedMotion: boolean }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const today = localDateKey(new Date());
+
+    try {
+      if (window.localStorage.getItem(PROFILE_CONFETTI_KEY) === today) return;
+      window.localStorage.setItem(PROFILE_CONFETTI_KEY, today);
+    } catch {
+      // When browser storage is unavailable, avoid replaying during this mounted visit.
+    }
+
+    if (reducedMotion) return;
+    setVisible(true);
+    const timer = window.setTimeout(() => setVisible(false), 2200);
+    return () => window.clearTimeout(timer);
+  }, [reducedMotion]);
+
+  if (!visible) return null;
+
   return (
-    <div aria-hidden="true" className={styles.scene}>
-      <span className={styles.lampGlow} />
-      <span className={styles.lampShade} />
-      <span className={styles.lampStem} />
-      <span className={styles.plantLeafOne} />
-      <span className={styles.plantLeafTwo} />
-      <span className={styles.plantLeafThree} />
-      <span className={styles.plantPot} />
-      <span className={styles.desk} />
-      <span className={styles.journalLeft}>
-        <span className={styles.journalInitials}>{initials}</span>
-        <span className={styles.journalCaption}>MY SPACE</span>
+    <div aria-hidden="true" className={styles.confettiBurst}>
+      {Array.from({ length: 18 }, (_, index) => (
+        <span key={index} />
+      ))}
+    </div>
+  );
+}
+
+function ProfileOrbitScene({ initials }: { initials: string }) {
+  return (
+    <div
+      aria-label="Your profile at the center of notes, settings, lessons, medicine, and care"
+      className={styles.orbitScene}
+      role="img"
+    >
+      <span aria-hidden="true" className={`${styles.orbitRing} ${styles.orbitRingInner}`} />
+      <span aria-hidden="true" className={`${styles.orbitRing} ${styles.orbitRingOuter}`} />
+      <span aria-hidden="true" className={styles.orbitAvatar}>
+        {initials}
       </span>
-      <span className={styles.journalRight}>
-        <span />
-        <span />
-        <span />
+
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathOne}`}>
+        <span className={styles.orbitItem}>
+          <NotebookPen />
+        </span>
       </span>
-      <span className={styles.bookmark} />
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathTwo}`}>
+        <span className={styles.orbitItem}>
+          <Settings />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathThree}`}>
+        <span className={styles.orbitItem}>
+          <Pill />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathFour}`}>
+        <span className={styles.orbitItem}>
+          <BookOpenText />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathFive}`}>
+        <span className={styles.orbitItem}>
+          <Stethoscope />
+        </span>
+      </span>
     </div>
   );
 }
@@ -65,10 +131,12 @@ export function ProfileContent({
   data,
   memberSince,
   reflections,
+  reflectionsUnavailable = false,
 }: {
   data: ProfileSettings;
   memberSince: string;
   reflections: ProfileReflectionArchive;
+  reflectionsUnavailable?: boolean;
 }) {
   const [state, action, pending] = useActionState(updateDisplayNameAction, initialState);
   const hasError = state.status === "error";
@@ -80,6 +148,7 @@ export function ProfileContent({
 
   return (
     <section className={styles.profilePage}>
+      <DailyProfileConfetti reducedMotion={data.reducedMotion} />
       <section aria-labelledby="profile-title" className={styles.hero}>
         <div className={styles.heroCopy}>
           <div aria-label={`${displayName}'s initials`} className={styles.avatar} role="img">
@@ -95,36 +164,12 @@ export function ProfileContent({
             learn.
           </p>
           <nav aria-label="Profile actions" className={styles.heroActions}>
-            <a className={styles.primaryTextAction} href="#profile-details">
-              Edit your name
-              <ArrowRight aria-hidden="true" />
-            </a>
             <Link className={styles.quietAction} href="/settings">
               Open settings
             </Link>
           </nav>
         </div>
-        <PersonalJournalScene initials={initials} />
-      </section>
-
-      <section aria-labelledby="profile-identity-title" className={styles.identityStrip}>
-        <div>
-          <p className={styles.stripLabel}>This profile says</p>
-          <p className={styles.stripValue}>{displayName}</p>
-        </div>
-        <div>
-          <p className={styles.stripLabel}>Your space began</p>
-          <p className={styles.stripValue}>
-            {formatDate(memberSince, { month: "long", year: "numeric" })}
-          </p>
-        </div>
-        <div>
-          <p className={styles.stripLabel}>Visible to</p>
-          <p className={styles.stripValue}>Only you</p>
-        </div>
-        <h2 className="sr-only" id="profile-identity-title">
-          Your profile identity
-        </h2>
+        <ProfileOrbitScene initials={initials} />
       </section>
 
       <section
@@ -144,7 +189,18 @@ export function ProfileContent({
           ) : null}
         </div>
 
-        {featuredReflection ? (
+        {reflectionsUnavailable ? (
+          <div className={styles.reflectionLoadError} role="status">
+            <NotebookPen aria-hidden="true" />
+            <div>
+              <h3>Your saved words are still private.</h3>
+              <p>
+                We could not load them just now. Refresh the page in a moment instead of assuming
+                the archive is empty.
+              </p>
+            </div>
+          </div>
+        ) : featuredReflection ? (
           <div className={styles.reflectionLayout}>
             <article className={styles.featuredReflection}>
               <div className={styles.reflectionMeta}>
@@ -252,13 +308,11 @@ export function ProfileContent({
             {state.message ? (
               <p
                 aria-live="polite"
-                className={cn(
-                  "motion-status text-sm",
-                  hasError ? "text-destructive" : "text-success",
-                )}
+                className={cn(styles.saveStatus, hasError ? "text-destructive" : "text-success")}
                 id="profile-form-message"
                 role={hasError ? "alert" : "status"}
               >
+                {!hasError ? <CheckCircle2 aria-hidden="true" /> : null}
                 {state.message}
               </p>
             ) : null}

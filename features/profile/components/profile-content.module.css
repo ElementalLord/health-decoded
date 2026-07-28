@@ -323,6 +323,260 @@
   width: 0.75rem;
 }
 
+.orbitScene {
+  height: 23rem;
+  justify-self: center;
+  max-width: 28rem;
+  position: relative;
+  width: 100%;
+}
+
+.orbitRing {
+  border: 1px dashed rgb(85 122 106 / 0.38);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-9deg);
+  border-radius: 50%;
+}
+
+.orbitRingInner {
+  height: 12rem;
+  width: 16rem;
+}
+
+.orbitRingOuter {
+  height: 18rem;
+  width: 25rem;
+}
+
+.orbitAvatar {
+  align-items: center;
+  background: linear-gradient(145deg, #e7b49e, #c87860);
+  border: 5px solid #fffaf3;
+  box-shadow:
+    0 0 0 1px rgb(185 108 85 / 0.28),
+    0 16px 36px rgb(83 55 43 / 0.14);
+  color: #fffaf3;
+  display: flex;
+  font-family: var(--font-serif);
+  font-size: 2.1rem;
+  height: 6rem;
+  justify-content: center;
+  left: 50%;
+  letter-spacing: -0.04em;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 6rem;
+  z-index: 2;
+  border-radius: 50%;
+}
+
+.orbitPath {
+  --orbit-delay: 0s;
+  --orbit-direction: normal;
+  --orbit-duration: 18s;
+  animation: profile-orbit var(--orbit-duration) linear var(--orbit-delay) infinite
+    var(--orbit-direction);
+  inset: 3.15rem;
+  position: absolute;
+}
+
+.orbitItem {
+  align-items: center;
+  animation: profile-counter-orbit var(--orbit-duration) linear var(--orbit-delay) infinite
+    var(--orbit-direction);
+  background: #fffaf3;
+  border: 1px solid #b9c9c0;
+  box-shadow: 0 7px 18px rgb(58 76 66 / 0.09);
+  color: #557a69;
+  display: flex;
+  height: 2.7rem;
+  justify-content: center;
+  left: 50%;
+  position: absolute;
+  top: -1.35rem;
+  transform: translateX(-50%);
+  width: 2.7rem;
+  border-radius: 8px;
+}
+
+.orbitItem svg {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.orbitPathOne {
+  --orbit-delay: -2s;
+  --orbit-duration: 19s;
+  inset: 2.35rem;
+}
+
+.orbitPathTwo {
+  --orbit-delay: -11s;
+  --orbit-duration: 19s;
+  inset: 2.35rem;
+}
+
+.orbitPathThree {
+  --orbit-delay: -4s;
+  --orbit-direction: reverse;
+  --orbit-duration: 14s;
+  inset: 5.2rem 6.8rem;
+}
+
+.orbitPathFour {
+  --orbit-delay: -11s;
+  --orbit-direction: reverse;
+  --orbit-duration: 14s;
+  inset: 5.2rem 6.8rem;
+}
+
+.orbitPathFive {
+  --orbit-delay: -7s;
+  --orbit-duration: 23s;
+  inset: 1rem;
+}
+
+.confettiBurst {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: 80;
+}
+
+.confettiBurst span {
+  --confetti-color: #c87860;
+  --confetti-rotation: 360deg;
+  --confetti-x: 0px;
+  --confetti-y: 72vh;
+  animation: profile-confetti 1.85s cubic-bezier(0.12, 0.64, 0.3, 1) forwards;
+  background: var(--confetti-color);
+  height: 0.8rem;
+  left: 50%;
+  opacity: 0;
+  position: absolute;
+  top: 15%;
+  width: 0.42rem;
+  border-radius: 2px;
+}
+
+.confettiBurst span:nth-child(2n) {
+  --confetti-color: #6f947a;
+  height: 0.42rem;
+  width: 0.8rem;
+}
+
+.confettiBurst span:nth-child(3n) {
+  --confetti-color: #e0ad59;
+}
+
+.confettiBurst span:nth-child(4n) {
+  --confetti-color: #7f9ead;
+}
+
+.confettiBurst span:nth-child(1) {
+  --confetti-rotation: 540deg;
+  --confetti-x: -22rem;
+  --confetti-y: 55vh;
+}
+
+.confettiBurst span:nth-child(2) {
+  --confetti-rotation: -410deg;
+  --confetti-x: -18rem;
+  --confetti-y: 72vh;
+}
+
+.confettiBurst span:nth-child(3) {
+  --confetti-x: -14rem;
+  --confetti-y: 62vh;
+}
+
+.confettiBurst span:nth-child(4) {
+  --confetti-rotation: -520deg;
+  --confetti-x: -10rem;
+  --confetti-y: 78vh;
+}
+
+.confettiBurst span:nth-child(5) {
+  --confetti-x: -6rem;
+  --confetti-y: 58vh;
+}
+
+.confettiBurst span:nth-child(6) {
+  --confetti-rotation: 620deg;
+  --confetti-x: -3rem;
+  --confetti-y: 75vh;
+}
+
+.confettiBurst span:nth-child(7) {
+  --confetti-rotation: -460deg;
+  --confetti-x: 1rem;
+  --confetti-y: 63vh;
+}
+
+.confettiBurst span:nth-child(8) {
+  --confetti-x: 5rem;
+  --confetti-y: 78vh;
+}
+
+.confettiBurst span:nth-child(9) {
+  --confetti-rotation: -590deg;
+  --confetti-x: 9rem;
+  --confetti-y: 58vh;
+}
+
+.confettiBurst span:nth-child(10) {
+  --confetti-x: 13rem;
+  --confetti-y: 73vh;
+}
+
+.confettiBurst span:nth-child(11) {
+  --confetti-rotation: -430deg;
+  --confetti-x: 17rem;
+  --confetti-y: 64vh;
+}
+
+.confettiBurst span:nth-child(12) {
+  --confetti-x: 22rem;
+  --confetti-y: 78vh;
+}
+
+.confettiBurst span:nth-child(13) {
+  --confetti-x: -20rem;
+  --confetti-y: 81vh;
+}
+
+.confettiBurst span:nth-child(14) {
+  --confetti-rotation: -650deg;
+  --confetti-x: -12rem;
+  --confetti-y: 86vh;
+}
+
+.confettiBurst span:nth-child(15) {
+  --confetti-x: -1rem;
+  --confetti-y: 84vh;
+}
+
+.confettiBurst span:nth-child(16) {
+  --confetti-rotation: -560deg;
+  --confetti-x: 8rem;
+  --confetti-y: 88vh;
+}
+
+.confettiBurst span:nth-child(17) {
+  --confetti-x: 15rem;
+  --confetti-y: 82vh;
+}
+
+.confettiBurst span:nth-child(18) {
+  --confetti-rotation: -680deg;
+  --confetti-x: 20rem;
+  --confetti-y: 88vh;
+}
+
 .identityStrip {
   border-block: 1px solid var(--border);
   display: grid;
@@ -525,6 +779,35 @@
   padding: clamp(2rem, 5vw, 3.5rem);
 }
 
+.reflectionLoadError {
+  align-items: center;
+  background: #f3eee6;
+  border-left: 3px solid #c87860;
+  display: grid;
+  gap: 1.4rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+.reflectionLoadError > svg {
+  color: #a76450;
+  height: 2rem;
+  width: 2rem;
+}
+
+.reflectionLoadError h3 {
+  color: var(--info-foreground);
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 540;
+}
+
+.reflectionLoadError p {
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin-top: 0.35rem;
+}
+
 .reflectionEmpty h3 {
   color: var(--info-foreground);
   font-family: var(--font-serif);
@@ -608,6 +891,20 @@
   display: grid;
   gap: 0.7rem;
   grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.saveStatus {
+  align-items: center;
+  display: flex;
+  font-size: 0.875rem;
+  gap: 0.45rem;
+  margin-top: 0.8rem;
+}
+
+.saveStatus svg {
+  flex: 0 0 auto;
+  height: 1.15rem;
+  width: 1.15rem;
 }
 
 .accountFacts {
@@ -704,12 +1001,45 @@
   }
 }
 
+@keyframes profile-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes profile-counter-orbit {
+  from {
+    transform: translateX(-50%) rotate(0);
+  }
+  to {
+    transform: translateX(-50%) rotate(-360deg);
+  }
+}
+
+@keyframes profile-confetti {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--confetti-x), var(--confetti-y), 0) rotate(var(--confetti-rotation));
+  }
+}
+
 @media (max-width: 56rem) {
   .hero {
     grid-template-columns: 1fr;
   }
 
   .scene {
+    max-width: 32rem;
+  }
+
+  .orbitScene {
     max-width: 32rem;
   }
 
@@ -743,6 +1073,12 @@
   }
 
   .scene {
+    height: 19rem;
+    transform: scale(0.9);
+    transform-origin: center bottom;
+  }
+
+  .orbitScene {
     height: 19rem;
     transform: scale(0.9);
     transform-origin: center bottom;
@@ -830,7 +1166,10 @@
   .plantLeafTwo,
   .plantLeafThree,
   .journalRight,
-  .bookmark {
+  .bookmark,
+  .orbitPath,
+  .orbitItem,
+  .confettiBurst span {
     animation: none;
   }
 }

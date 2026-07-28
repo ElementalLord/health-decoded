@@ -2527,7 +2527,13 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         setMessage(positionResult.message);
         return;
       }
-      const result = await completeLessonAction({ lessonProgressId: experience.lessonProgressId });
+      const selectedArrival = arrivalFeelings.find(([id]) => id === draft.arrivalFeeling);
+      const reflectionStep = nextSteps.find(([id]) => id === draft.nextStep);
+      const reflection = [selectedArrival?.[1], reflectionStep?.[1]].filter(Boolean).join(" ");
+      const result = await completeLessonAction({
+        lessonProgressId: experience.lessonProgressId,
+        reflection: reflection || undefined,
+      });
       if (!result.ok) {
         setMessage(result.message);
         return;

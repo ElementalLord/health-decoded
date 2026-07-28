@@ -38,6 +38,7 @@ export default async function ProfilePage() {
       data={settings.data}
       memberSince={profile.data.created_at}
       reflections={reflections.ok ? reflections.data : { entries: [], total: 0 }}
+      reflectionsUnavailable={!reflections.ok}
     />
   );
 }

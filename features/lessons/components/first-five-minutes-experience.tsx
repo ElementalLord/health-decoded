@@ -518,7 +518,10 @@ export function FirstFiveMinutesExperience({
       return;
     }
     startTransition(async () => {
-      const result = await completeLessonAction({ lessonProgressId: experience.lessonProgressId });
+      const result = await completeLessonAction({
+        lessonProgressId: experience.lessonProgressId,
+        reflection: surprise ?? undefined,
+      });
       if (!result.ok) {
         setMessage(result.message);
         return;
@@ -1161,7 +1164,8 @@ export function FirstFiveMinutesExperience({
             </div>
             {surprise ? (
               <p aria-live="polite" className="animate-fade-in leading-7 text-muted-foreground">
-                Reflection helps an idea settle. Your choice is private and is not saved.
+                Reflection helps an idea settle. When you complete this lesson, this choice will be
+                saved to your private profile.
               </p>
             ) : null}
           </div>
