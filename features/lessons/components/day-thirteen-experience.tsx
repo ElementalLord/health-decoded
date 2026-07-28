@@ -279,10 +279,13 @@ function Feedback({ feedback }: { feedback: DayThirteenEvaluationFeedback }) {
   );
 }
 
-function SharedLoadAnimation() {
+function SharedLoadAnimation({ onReady }: { onReady?: () => void }) {
   const [shared, setShared] = useState<Set<number>>(() => new Set());
 
   function toggle(id: number) {
+    if (!shared.has(id)) {
+      onReady?.();
+    }
     setShared((current) => {
       const next = new Set(current);
       if (next.has(id)) {
@@ -984,7 +987,7 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
   );
 }
 
-function SupportArrives() {
+function SupportArrives({ onReady }: { onReady?: () => void }) {
   const [near, setNear] = useState(false);
   const capeRest =
     "M-14 -84 C-42 -66 -48 -22 -30 4 C-18 -10 -10 -16 -4 -24 C-12 -48 -8 -70 -2 -82 Z";
@@ -1079,7 +1082,13 @@ function SupportArrives() {
         </p>
         <button
           className={styles.arriveButton}
-          onClick={() => setNear((current) => !current)}
+          onClick={() => {
+            const next = !near;
+            setNear(next);
+            if (next) {
+              onReady?.();
+            }
+          }}
           type="button"
         >
           {near ? "Thank them and reset" : "Call for backup"}
@@ -1109,7 +1118,7 @@ const boundaryBuilder = {
 
 type BoundaryPartKey = keyof typeof boundaryBuilder;
 
-function ComposeBoundary() {
+function ComposeBoundary({ onReady }: { onReady?: () => void }) {
   const [picked, setPicked] = useState<Record<BoundaryPartKey, number | null>>({
     acknowledge: null,
     limit: null,
@@ -1123,6 +1132,11 @@ function ComposeBoundary() {
   ];
 
   const complete = order.every(({ key }) => picked[key] !== null);
+  useEffect(() => {
+    if (complete) {
+      onReady?.();
+    }
+  }, [complete, onReady]);
   const sentence = order
     .map(({ key }) => (picked[key] !== null ? boundaryBuilder[key][picked[key] as number] : null))
     .filter(Boolean)
@@ -1281,6 +1295,16 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
   const [exitOpen, setExitOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
+  function markReady(target: number) {
+    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
+  }
+  const stageGates: Record<number, string> = {
+    1: "Share at least one bag onto the bench above before you move on.",
+    5: "Build a full boundary above, one phrase from each row, before you move on.",
+    7: "Call for backup above and let it land before you move on.",
+  };
+  const stageLocked = stageGates[stage] !== undefined && !readyStages.has(stage);
   const stageRef = useRef<HTMLDivElement>(null);
   const storageKey = "health-decoded:day-thirteen:" + experience.lessonProgressId;
 
@@ -1438,7 +1462,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="A diagnosis is one chapter">
               Diabetes can belong inside your life without becoming the name of it.
             </LessonHeading>
-            <SharedLoadAnimation />
+            <SharedLoadAnimation onReady={() => markReady(1)} />
             <div className={styles.editorialPrompt}>
               <div>
                 <p className="editorial-eyebrow">Keep the whole person visible</p>
@@ -1661,7 +1685,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               ))}
             </div>
             <BoundaryConversationAnimation scenario={activeBoundary} />
-            <ComposeBoundary />
+            <ComposeBoundary onReady={() => markReady(5)} />
             <div className={styles.teachBack}>
               <p className="editorial-eyebrow">Choose the response that protects your peace</p>
               <div className="mt-5 grid gap-3">
@@ -1757,7 +1781,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               src="/lessons/day-13/community-belonging.jpg"
             />
             <SupportTableAnimation activeSeat={supportSeat} />
-            <SupportArrives />
+            <SupportArrives onReady={() => markReady(7)} />
             <div className={styles.seatChooser}>
               {supportSeats.map((seat) => (
                 <button
@@ -2021,6 +2045,11 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
       </div>
       {stage < stageCount - 1 ? (
         <footer className="border-t border-border pt-5">
+          {stageLocked ? (
+            <p className="mb-4 rounded-lg border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
+              One small step first: {stageGates[stage]}
+            </p>
+          ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <Button
               disabled={stage === 0 || isPending}
@@ -2029,7 +2058,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             >
               Previous
             </Button>
-            <Button disabled={isPending} onClick={() => goToStage(stage + 1)}>
+            <Button disabled={isPending || stageLocked} onClick={() => goToStage(stage + 1)}>
               {continueLabel()}
             </Button>
           </div>
