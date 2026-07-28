@@ -984,6 +984,68 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
   );
 }
 
+function SupportArrives() {
+  const [near, setNear] = useState(false);
+
+  return (
+    <div className={styles.arrive}>
+      <div className={styles.composerHead}>
+        <p className="editorial-eyebrow">Support often starts with one small ask</p>
+        <p>You do not have to wait to be noticed. Reach out and watch someone move beside you.</p>
+      </div>
+      <svg aria-hidden="true" className={styles.arriveSvg} viewBox="0 0 720 240">
+        <path d="M40 208 H680" stroke="#a9bcae" strokeLinecap="round" strokeWidth="4" />
+        <LessonMotionPerson
+          action="rest"
+          motion="breathe"
+          palette="warm"
+          scale={1}
+          x={282}
+          y={204}
+        />
+        <g
+          className={styles.arriveGuest}
+          style={{ opacity: near ? 1 : 0, transform: near ? "translateX(0)" : "translateX(250px)" }}
+        >
+          <LessonMotionPerson
+            action="reach-left"
+            motion="nod"
+            palette="sage"
+            scale={1}
+            x={440}
+            y={204}
+          />
+        </g>
+        {near ? (
+          <circle cx="360" cy="150" fill="none" r="10" stroke="#c7785f" strokeWidth="3">
+            <animate attributeName="r" dur="2.6s" repeatCount="indefinite" values="8;42;8" />
+            <animate
+              attributeName="opacity"
+              dur="2.6s"
+              repeatCount="indefinite"
+              values=".55;0;.55"
+            />
+          </circle>
+        ) : null}
+      </svg>
+      <div className={styles.arriveControls}>
+        <p aria-live="polite" className={styles.loadStatus}>
+          {near
+            ? "Someone is beside you now. You did not have to carry the moment alone."
+            : "One small ask can change a hard hour. You choose who, and when."}
+        </p>
+        <button
+          className={styles.arriveButton}
+          onClick={() => setNear((current) => !current)}
+          type="button"
+        >
+          {near ? "Take some space" : "Reach out"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const boundaryBuilder = {
   acknowledge: [
     "I know you care about me.",
@@ -1652,6 +1714,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               src="/lessons/day-13/community-belonging.jpg"
             />
             <SupportTableAnimation activeSeat={supportSeat} />
+            <SupportArrives />
             <div className={styles.seatChooser}>
               {supportSeats.map((seat) => (
                 <button
