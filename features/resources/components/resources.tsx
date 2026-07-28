@@ -184,6 +184,15 @@ function ExternalArrow() {
   );
 }
 
+function ReadGuide() {
+  return (
+    <span className={styles.readGuide}>
+      Read the official guide
+      <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.8} />
+    </span>
+  );
+}
+
 function FeaturedLead({ resource }: { resource: Resource }) {
   return (
     <article className={styles.featuredLead}>
@@ -201,6 +210,7 @@ function FeaturedLead({ resource }: { resource: Resource }) {
           <ArticleLabel resource={resource} />
           <h2>{resource.title}</h2>
           <p>{resource.description}</p>
+          <ReadGuide />
           <ResourceMeta resource={resource} />
           <ExternalArrow />
         </div>
@@ -228,6 +238,7 @@ function FeaturedSide({
           <ArticleLabel resource={resource} />
           <h3>{resource.title}</h3>
           <p>{resource.description}</p>
+          <ReadGuide />
           <ResourceMeta compact resource={resource} />
           <ExternalArrow />
         </div>
@@ -272,6 +283,7 @@ function LeadArticle({ index, resource }: { index: string; resource: Resource })
           <ArticleLabel resource={resource} />
           <h3>{resource.title}</h3>
           <p>{resource.description}</p>
+          <ReadGuide />
           <ResourceMeta resource={resource} />
         </div>
         <ExternalArrow />
@@ -287,6 +299,7 @@ function CompactArticle({ resource }: { resource: Resource }) {
         <ArticleLabel resource={resource} />
         <h3>{resource.title}</h3>
         <p>{resource.description}</p>
+        <ReadGuide />
         <ResourceMeta compact resource={resource} />
         <ExternalArrow />
       </ResourceLink>
@@ -318,6 +331,7 @@ function ChecklistArticle({
           <p className={styles.checkNote}>{note}</p>
           <h3>{resource.title}</h3>
           <p>{resource.description}</p>
+          <ReadGuide />
           <ResourceMeta compact resource={resource} />
           <ExternalArrow />
         </div>
@@ -372,6 +386,7 @@ function WideFeature({ resource }: { resource: Resource }) {
         </div>
         <div className={styles.wideFeatureCopy}>
           <p>{resource.description}</p>
+          <ReadGuide />
           <ResourceMeta resource={resource} />
         </div>
         <ExternalArrow />
@@ -388,6 +403,7 @@ function SupportFeature({ resource }: { resource: Resource }) {
         <ArticleLabel resource={resource} />
         <h3>{resource.title}</h3>
         <p>{resource.description}</p>
+        <ReadGuide />
         <ResourceMeta compact resource={resource} />
         <ExternalArrow />
       </ResourceLink>
@@ -651,6 +667,10 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             title="Know the next move before you need it."
           />
           <WideFeature resource={treatments} />
+          <div className={styles.checklistGrid}>
+            <ChecklistArticle note="Recognize · Treat · Recheck" resource={lowBloodSugar} />
+            <ChecklistArticle note="Monitor · Hydrate · Know when to call" resource={sickDays} />
+          </div>
           <EditorialPhoto
             alt="An older woman and community pharmacist building a medicine timing routine together"
             eyebrow="A routine built with someone"
@@ -658,11 +678,9 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             src="/resources/pharmacist-routine-editorial.png"
             title="Questions belong in the medicine routine."
           />
-          <EditorialMotion variant="medicine" />
-          <EditorialMotion variant="safety" />
-          <div className={styles.checklistGrid}>
-            <ChecklistArticle note="Recognize · Treat · Recheck" resource={lowBloodSugar} />
-            <ChecklistArticle note="Monitor · Hydrate · Know when to call" resource={sickDays} />
+          <div className={styles.motionPair}>
+            <EditorialMotion variant="medicine" />
+            <EditorialMotion variant="safety" />
           </div>
         </section>
 
@@ -707,13 +725,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             id="living-confidently-heading"
             title="Care works better when it does not all sit on you."
           />
-          <EditorialPhoto
-            alt="Two friends sharing tea and an easy laugh at a kitchen table"
-            eyebrow="An ordinary kind of support"
-            note="Company and practical help can make room for health without making every conversation about diabetes."
-            src="/resources/everyday-support-natural.png"
-            title="Sometimes care looks like being able to exhale with someone."
-          />
           <div className={styles.confidenceGrid}>
             <LeadArticle index="03" resource={mentalHealth} />
             <Perspective>
@@ -721,13 +732,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               feeling was the first useful step.
             </Perspective>
             <WideFeature resource={education} />
-            <EditorialPhoto
-              alt="A diverse group of adults and an educator exchanging questions around a welcoming table"
-              eyebrow="Learning with people who understand"
-              note="Education can be a conversation: one person asks, another recognizes the feeling, and everyone leaves with a more usable next question."
-              src="/resources/community-education-editorial.png"
-              title="Good support makes room for your voice."
-            />
             <SupportFeature resource={financialHelp} />
             <ChecklistArticle
               image={{
@@ -736,6 +740,22 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               }}
               note="Records · Supplies · Backup plan"
               resource={emergency}
+            />
+          </div>
+          <div className={styles.photoPair}>
+            <EditorialPhoto
+              alt="Two friends sharing tea and an easy laugh at a kitchen table"
+              eyebrow="An ordinary kind of support"
+              note="Company and practical help can make room for health without making every conversation about diabetes."
+              src="/resources/everyday-support-natural.png"
+              title="Sometimes care looks like being able to exhale with someone."
+            />
+            <EditorialPhoto
+              alt="A diverse group of adults and an educator exchanging questions around a welcoming table"
+              eyebrow="Learning with people who understand"
+              note="Education can be a conversation: one person asks, another recognizes the feeling, and everyone leaves with a more usable next question."
+              src="/resources/community-education-editorial.png"
+              title="Good support makes room for your voice."
             />
           </div>
           <EditorialMotion variant="support" />
