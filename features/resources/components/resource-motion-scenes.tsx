@@ -5,154 +5,124 @@ import styles from "./resources.module.css";
 export type MotionVariant =
   "care" | "context" | "daily" | "medicine" | "safety" | "source" | "support";
 
-const motionCopy: Record<
-  MotionVariant,
-  { label: string; note: string; sceneLabel: string; watch: string }
-> = {
+const motionCopy: Record<MotionVariant, { sceneLabel: string }> = {
   care: {
-    label: "Screening is a rotation, not a prediction.",
-    note: "Eyes, kidneys, heart, feet, and mouth each get their own calm moment of attention.",
     sceneLabel:
-      "A body is checked area by area while a calendar records each completed preventive visit",
-    watch: "Watch each body area receive attention before the visit is added to the care record.",
+      "A person receives calm preventive attention for their eyes, heart, kidneys, feet, and mouth while a calendar records each visit",
   },
   context: {
-    label: "A reading travels with the day that produced it.",
-    note: "Timing, food, movement, sleep, and symptoms turn an isolated result into a useful question.",
     sceneLabel:
-      "A reading moves along a timeline past a meal, movement, and sleep before becoming a question",
-    watch: "Follow the amber reading from the meter through the day and into the question card.",
+      "A reading moves along a clear timeline past separate meal, movement, and sleep stations before becoming a question",
   },
   daily: {
-    label: "Balance can be built by addition, then carried into motion.",
-    note: "A familiar plate gains fiber and protein; afterward, ordinary movement gives working muscles another way to use glucose.",
     sceneLabel:
-      "Food groups assemble on a familiar plate, then footsteps carry energy toward working muscles",
-    watch: "Watch the plate come together first, then follow the energy into the working muscle.",
+      "Food groups assemble on a familiar plate before energy travels toward a person taking an ordinary walk",
   },
   medicine: {
-    label: "The useful medicine plan connects the right dose to the right time.",
-    note: "A name, purpose, timing cue, and missed-dose instruction make a routine safer than memory alone.",
     sceneLabel:
       "A clock advances while a medicine moves from its bottle into the correct day and time compartment",
-    watch:
-      "Follow one dose from the bottle, past the timing cue, into the matching organizer space.",
   },
   safety: {
-    label: "A sick-day plan responds to change before guessing.",
-    note: "Symptoms prompt fluids, monitoring, written instructions, and a call when the personal plan says it is time.",
     sceneLabel:
       "A temperature rises, hydration is restored, a written plan opens, and a phone connects to support",
-    watch:
-      "See the sequence move from noticing a change to using the prepared plan and contacting help.",
   },
   source: {
-    label: "Trusted guidance becomes useful when it reaches a real question.",
-    note: "Official evidence is checked, translated into plain language, and carried into the next conversation.",
     sceneLabel:
       "Two official source pages pass through a verification mark and become a short question note",
-    watch: "Watch the source pages move through verification before the useful note is written.",
   },
   support: {
-    label: "A specific ask gives support somewhere useful to land.",
-    note: "Listening, company, and one practical task arrive differently because the person—not the helper—chooses the need.",
     sceneLabel:
       "One person makes an ask, two people move closer, and a practical task and warm drink arrive",
-    watch:
-      "Follow the ask outward, then notice how people and practical help respond without taking over.",
   },
 };
 
-const DAY_TRACK = "M150 182 Q214 150 278 172 Q342 194 406 172 Q470 150 534 172 Q574 184 588 182";
+const DAY_TRACK = "M142 224 H574";
 
 function ContextScene() {
   return (
     <>
-      {/* the glucose meter that produced the reading */}
-      <g transform="translate(96 176)">
+      <g transform="translate(82 218)">
         <rect
           fill="#fffaf2"
-          height="88"
-          rx="13"
+          height="78"
+          rx="11"
           stroke="#567a6b"
           strokeWidth="5"
-          width="94"
-          x="-47"
-          y="-44"
+          width="82"
+          x="-41"
+          y="-39"
         />
         <rect
           fill="#e7efe9"
-          height="36"
+          height="31"
           rx="6"
           stroke="#8ea79b"
           strokeWidth="3"
-          width="70"
-          x="-35"
-          y="-32"
+          width="60"
+          x="-30"
+          y="-29"
         />
-        <path d="M-6-20h22M-6-10h14" stroke="#8ea79b" strokeLinecap="round" strokeWidth="4" />
-        <circle cx="-22" cy="-14" fill="#dfa54d" r="5">
+        <path d="M-3-19h19M-3-10h12" stroke="#8ea79b" strokeLinecap="round" strokeWidth="4" />
+        <circle cx="-19" cy="-14" fill="#dfa54d" r="5">
           <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="1;.35;1" />
         </circle>
-        <path d="M-30 22h60" stroke="#cf9a6f" strokeLinecap="round" strokeWidth="7" />
+        <path d="M-26 20h52" stroke="#cf9a6f" strokeLinecap="round" strokeWidth="7" />
       </g>
 
-      {/* the day itself: one soft timeline the reading rides */}
       <path d={DAY_TRACK} fill="none" stroke="#b4c5bd" strokeLinecap="round" strokeWidth="6" />
 
-      {/* meal station */}
-      <g stroke="#9db3a8" strokeWidth="3">
-        <path d="M278 172V143" strokeLinecap="round" />
-        <circle cx="278" cy="128" fill="#fffaf2" r="6" stroke="#9db3a8" />
+      {/* Three independent context stations never cross the reading path. */}
+      <g transform="translate(238 128)">
+        <circle fill="#fffaf2" r="42" stroke="#9db3a8" strokeWidth="4" />
+        <circle fill="#e5b35e" r="21" />
+        <path d="M-17 0h34M0-17v34" stroke="#fffaf2" strokeWidth="3" />
+        <path d="M0 42v54" stroke="#9db3a8" strokeLinecap="round" strokeWidth="4" />
       </g>
-      <circle cx="278" cy="128" fill="none" r="13" stroke="#bc755e" strokeWidth="4" />
-      <path
-        d="M272 121v14M278 121v14M284 121v14"
-        stroke="#bc755e"
-        strokeLinecap="round"
-        strokeWidth="2.4"
-      />
 
-      {/* movement station */}
-      <g stroke="#9db3a8" strokeWidth="3">
-        <path d="M406 172V143" strokeLinecap="round" />
-        <circle cx="406" cy="128" fill="#fffaf2" r="6" stroke="#9db3a8" />
+      <g transform="translate(376 128)">
+        <circle fill="#fffaf2" r="42" stroke="#9db3a8" strokeWidth="4" />
+        <circle cy="-15" fill="#dfa77d" r="12" />
+        <path
+          d="M0 0v22M0 8l-18 16M0 8l18 16M0 22l-14 20M0 22l14 20"
+          fill="none"
+          stroke="#587b6c"
+          strokeLinecap="round"
+          strokeWidth="6"
+        >
+          <animateTransform
+            attributeName="transform"
+            dur="2.4s"
+            repeatCount="indefinite"
+            type="rotate"
+            values="-3 0 8;3 0 8;-3 0 8"
+          />
+        </path>
+        <path d="M0 42v54" stroke="#9db3a8" strokeLinecap="round" strokeWidth="4" />
       </g>
-      <path
-        d="M396 133l6-9 6 9M406 122l6-9 6 9"
-        fill="none"
-        stroke="#587b6c"
-        strokeLinecap="round"
-        strokeWidth="4"
-      >
-        <animate attributeName="opacity" dur="2.6s" repeatCount="indefinite" values=".4;1;.4" />
-      </path>
 
-      {/* sleep station */}
-      <g stroke="#9db3a8" strokeWidth="3">
-        <path d="M534 172V143" strokeLinecap="round" />
-        <circle cx="534" cy="128" fill="#fffaf2" r="6" stroke="#9db3a8" />
+      <g transform="translate(514 128)">
+        <circle fill="#fffaf2" r="42" stroke="#9db3a8" strokeWidth="4" />
+        <path
+          d="M8-23a25 25 0 1 0 0 46 19 19 0 0 1 0-46Z"
+          fill="#74899a"
+          transform="translate(-8 0)"
+        />
+        <path d="M0 42v54" stroke="#9db3a8" strokeLinecap="round" strokeWidth="4" />
       </g>
-      <path
-        d="M540 116a13 13 0 1 0 0 24 10 10 0 0 1 0-24Z"
-        fill="#74899a"
-        transform="translate(-6 0)"
-      />
 
-      {/* the question the reading becomes */}
-      <g transform="translate(650 178)">
+      <g transform="translate(650 218)">
         <rect
           fill="#fffaf2"
-          height="104"
+          height="92"
           rx="12"
           stroke="#567a6b"
           strokeWidth="5"
-          width="104"
-          x="-52"
-          y="-52"
+          width="100"
+          x="-50"
+          y="-46"
         />
         <path
-          d="M-30-24h60M-30-4h44M-30 16h54"
+          d="M-28-22h56M-28-2h40M-28 18h50"
           stroke="#cb8469"
           strokeLinecap="round"
           strokeWidth="6"
@@ -164,13 +134,11 @@ function ContextScene() {
             values="0 170;170 0;170 0"
           />
         </path>
-        <circle cx="26" cy="34" fill="#cb8469" r="4" />
+        <circle cx="26" cy="31" fill="#cb8469" r="4" />
       </g>
 
-      {/* the amber reading, riding the exact timeline it is drawn on */}
       <circle fill="#dfa54d" r="10">
         <animateMotion dur="7s" path={DAY_TRACK} repeatCount="indefinite" />
-        <animate attributeName="r" dur="2s" repeatCount="indefinite" values="8;12;8" />
         <animate attributeName="opacity" dur="7s" repeatCount="indefinite" values="0;1;1;1;1;0" />
       </circle>
     </>
@@ -309,15 +277,14 @@ function SourceScene() {
   );
 }
 
-const ENERGY_TRACK = "M306 178 Q396 148 462 184 Q528 220 596 184";
+const ENERGY_TRACK = "M302 188 C382 132 470 132 540 182";
 
 function DailyScene() {
   return (
     <>
-      {/* a familiar plate, filled by addition and kept inside its rim */}
-      <circle cx="210" cy="168" fill="#fffaf2" r="84" />
+      <circle cx="190" cy="174" fill="#fffaf2" r="78" />
       <g>
-        <path d="M210 168 L210 84 A84 84 0 0 0 210 252 Z" fill="#739783" />
+        <path d="M190 174 L190 96 A78 78 0 0 0 190 252 Z" fill="#739783" />
         <animateTransform
           attributeName="transform"
           dur="6s"
@@ -327,7 +294,7 @@ function DailyScene() {
         />
       </g>
       <g>
-        <path d="M210 168 L210 84 A84 84 0 0 1 294 168 Z" fill="#e3b261" />
+        <path d="M190 174 L190 96 A78 78 0 0 1 268 174 Z" fill="#e3b261" />
         <animateTransform
           attributeName="transform"
           dur="6s"
@@ -337,7 +304,7 @@ function DailyScene() {
         />
       </g>
       <g>
-        <path d="M210 168 L294 168 A84 84 0 0 1 210 252 Z" fill="#cf8068" />
+        <path d="M190 174 L268 174 A78 78 0 0 1 190 252 Z" fill="#cf8068" />
         <animateTransform
           attributeName="transform"
           dur="6s"
@@ -346,10 +313,9 @@ function DailyScene() {
           values="0 96;0 0;0 0;0 96"
         />
       </g>
-      <path d="M210 84v168M210 168h84" opacity=".5" stroke="#fffaf2" strokeWidth="4" />
-      <circle cx="210" cy="168" fill="none" r="92" stroke="#b87760" strokeWidth="6" />
+      <path d="M190 96v156M190 174h78" opacity=".5" stroke="#fffaf2" strokeWidth="4" />
+      <circle cx="190" cy="174" fill="none" r="86" stroke="#b87760" strokeWidth="6" />
 
-      {/* footsteps carrying energy toward a working muscle */}
       <path
         d={ENERGY_TRACK}
         fill="none"
@@ -365,31 +331,58 @@ function DailyScene() {
           values="50;0"
         />
       </path>
-      <g fill="none" stroke="#527767" strokeLinecap="round" strokeWidth="9">
-        <path d="M356 160l16 22M420 196l16 22M498 176l16 22" />
+      <g fill="none" stroke="#527767" strokeLinecap="round" strokeWidth="8">
+        <path d="M350 164l12 17M414 151l12 17M478 159l12 17" />
         <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values=".25;1;.25" />
       </g>
 
-      {/* the muscle that puts the energy to use */}
-      <g transform="translate(612 178)">
-        <rect fill="#cf8f6f" height="26" rx="13" width="54" x="-42" y="6" />
-        <rect fill="#cf8f6f" height="54" rx="13" width="26" x="-4" y="-42" />
-        <circle cx="9" cy="-42" fill="#cf8f6f" r="15" />
-        <ellipse cx="-10" cy="8" fill="#b87760" rx="18" ry="15" />
-        <ellipse cx="-10" cy="6" fill="#f0c98f" rx="10" ry="8">
-          <animate attributeName="opacity" dur="2.2s" repeatCount="indefinite" values=".2;.95;.2" />
-        </ellipse>
-        <animateTransform
-          attributeName="transform"
-          additive="sum"
-          dur="2.2s"
-          repeatCount="indefinite"
-          type="rotate"
-          values="0 0 0;-4 0 0;0 0 0"
-        />
+      {/* A recognizable walking person replaces the abstract muscle shape. */}
+      <g transform="translate(610 86)">
+        <circle cx="0" cy="28" fill="#dfa77d" r="25" />
+        <path d="M-22 18c8-22 36-22 44 0" fill="#6f5a4d" />
+        <path d="M-34 70c0-26 68-26 68 0v69h-68Z" fill="#739783" />
+        <g transform="translate(0 70)">
+          <path d="M-26 6l-34 42" stroke="#587b6c" strokeLinecap="round" strokeWidth="10">
+            <animateTransform
+              attributeName="transform"
+              dur="1.8s"
+              repeatCount="indefinite"
+              type="rotate"
+              values="-12 -26 6;12 -26 6;-12 -26 6"
+            />
+          </path>
+          <path d="M26 6l34 42" stroke="#587b6c" strokeLinecap="round" strokeWidth="10">
+            <animateTransform
+              attributeName="transform"
+              dur="1.8s"
+              repeatCount="indefinite"
+              type="rotate"
+              values="12 26 6;-12 26 6;12 26 6"
+            />
+          </path>
+        </g>
+        <g transform="translate(0 136)">
+          <path d="M-17 0l-20 72" stroke="#536f63" strokeLinecap="round" strokeWidth="12">
+            <animateTransform
+              attributeName="transform"
+              dur="1.8s"
+              repeatCount="indefinite"
+              type="rotate"
+              values="12 -17 0;-12 -17 0;12 -17 0"
+            />
+          </path>
+          <path d="M17 0l20 72" stroke="#536f63" strokeLinecap="round" strokeWidth="12">
+            <animateTransform
+              attributeName="transform"
+              dur="1.8s"
+              repeatCount="indefinite"
+              type="rotate"
+              values="-12 17 0;12 17 0;-12 17 0"
+            />
+          </path>
+        </g>
       </g>
 
-      {/* the glucose energy following the footsteps into the muscle */}
       <circle fill="#dfaa53" r="9">
         <animateMotion dur="4.4s" path={ENERGY_TRACK} repeatCount="indefinite" />
         <animate attributeName="opacity" dur="4.4s" repeatCount="indefinite" values="0;1;1;1;0" />
@@ -651,23 +644,46 @@ function SafetyScene() {
 function CareScene() {
   return (
     <>
-      {/* a calm standing body, checked area by area, breathing as one */}
-      <g>
-        <g fill="#fdf9f1" stroke="#617f72" strokeWidth="6">
-          <circle cx="235" cy="102" r="33" />
-          <path d="M226 134h18v22h-18Z" />
-          <path d="M180 254C176 188 186 158 235 158C284 158 294 188 290 254Z" />
-          <path d="M214 254v12M256 254v12" fill="none" strokeLinecap="round" />
-          <ellipse cx="211" cy="268" rx="17" ry="9" />
-          <ellipse cx="259" cy="268" rx="17" ry="9" />
-        </g>
+      {/* A recognizably human figure: head, hair, face, clothing, arms, trousers, and shoes. */}
+      <g transform="translate(10 2)">
+        <circle cx="225" cy="76" fill="#dfa77d" r="35" stroke="#617f72" strokeWidth="5" />
+        <path d="M191 70c4-42 64-43 69 0-18-11-51-11-69 0Z" fill="#65574d" />
+        <circle cx="214" cy="80" fill="#5d6f67" r="3" />
+        <circle cx="236" cy="80" fill="#5d6f67" r="3" />
+        <path
+          d="M216 95c6 4 12 4 18 0"
+          fill="none"
+          stroke="#9c6958"
+          strokeLinecap="round"
+          strokeWidth="3"
+        />
+        <path d="M216 110h18v17h-18Z" fill="#dfa77d" stroke="#617f72" strokeWidth="4" />
+        <path
+          d="M173 222c0-69 5-99 52-99s52 30 52 99Z"
+          fill="#789b89"
+          stroke="#617f72"
+          strokeWidth="5"
+        />
+        <path
+          d="M178 142l-34 73M272 142l34 73"
+          stroke="#617f72"
+          strokeLinecap="round"
+          strokeWidth="14"
+        />
+        <circle cx="142" cy="218" fill="#dfa77d" r="9" />
+        <circle cx="308" cy="218" fill="#dfa77d" r="9" />
+        <path d="M188 218h74v34h-74Z" fill="#758b98" stroke="#617f72" strokeWidth="5" />
+        <path
+          d="M207 251l-4 39M243 251l4 39"
+          stroke="#617f72"
+          strokeLinecap="round"
+          strokeWidth="14"
+        />
+        <path d="M181 290h26M243 290h26" stroke="#4e665d" strokeLinecap="round" strokeWidth="13" />
 
-        {/* five areas, each lit in its own moment */}
         <g fill="#c97962">
-          {/* eyes */}
           <g>
-            <circle cx="226" cy="98" r="4.5" />
-            <circle cx="244" cy="98" r="4.5" />
+            <path d="M208 80h12M230 80h12" stroke="#c97962" strokeLinecap="round" strokeWidth="5" />
             <animate
               attributeName="opacity"
               dur="10s"
@@ -675,10 +691,9 @@ function CareScene() {
               values="1;.28;.28;.28;.28;1"
             />
           </g>
-          {/* mouth */}
           <g>
             <path
-              d="M226 114c5 6 13 6 18 0"
+              d="M216 95c6 4 12 4 18 0"
               fill="none"
               stroke="#c97962"
               strokeLinecap="round"
@@ -691,9 +706,8 @@ function CareScene() {
               values=".28;.28;.28;.28;1;.28"
             />
           </g>
-          {/* heart */}
           <g>
-            <path d="M222 182c-5-9-18-6-18 5 0 9 18 19 18 19s18-10 18-19c0-11-13-14-18-5Z" />
+            <path d="M213 160c-5-9-18-6-18 5 0 9 18 19 18 19s18-10 18-19c0-11-13-14-18-5Z" />
             <animate
               attributeName="opacity"
               dur="10s"
@@ -701,10 +715,8 @@ function CareScene() {
               values=".28;.28;1;.28;.28;.28"
             />
           </g>
-          {/* kidneys */}
           <g>
-            <ellipse cx="215" cy="222" rx="10" ry="15" />
-            <ellipse cx="255" cy="222" rx="10" ry="15" />
+            <path d="M200 190c-12 0-15 20-3 26 10 5 14-8 14-17 0-5-3-9-11-9ZM250 190c12 0 15 20 3 26-10 5-14-8-14-17 0-5 3-9 11-9Z" />
             <animate
               attributeName="opacity"
               dur="10s"
@@ -712,10 +724,14 @@ function CareScene() {
               values=".28;1;.28;.28;.28;.28"
             />
           </g>
-          {/* feet */}
           <g>
-            <ellipse cx="211" cy="268" rx="15" ry="8" />
-            <ellipse cx="259" cy="268" rx="15" ry="8" />
+            <path
+              d="M181 290h26M243 290h26"
+              fill="none"
+              stroke="#c97962"
+              strokeLinecap="round"
+              strokeWidth="9"
+            />
             <animate
               attributeName="opacity"
               dur="10s"
@@ -724,14 +740,6 @@ function CareScene() {
             />
           </g>
         </g>
-
-        <animateTransform
-          attributeName="transform"
-          dur="6s"
-          repeatCount="indefinite"
-          type="translate"
-          values="0 0;0 -3;0 0"
-        />
       </g>
 
       {/* the care record filling one visit at a time */}
@@ -951,11 +959,6 @@ export function EditorialMotion({ variant }: { variant: MotionVariant }) {
           <Scene variant={variant} />
         </svg>
       </div>
-      <figcaption>
-        <p>{copy.watch}</p>
-        <strong>{copy.label}</strong>
-        <span>{copy.note}</span>
-      </figcaption>
     </figure>
   );
 }

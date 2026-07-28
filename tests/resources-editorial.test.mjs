@@ -106,11 +106,22 @@ test("seven complex editorial scenes loop meaningfully and respect reduced motio
   assert.ok((motion.match(/repeatCount="indefinite"/g) ?? []).length >= 35);
   assert.ok((motion.match(/<animateMotion/g) ?? []).length >= 3);
   assert.ok((motion.match(/<animateTransform/g) ?? []).length >= 10);
-  assert.match(motion, /Follow the amber reading/);
-  assert.match(motion, /Follow one dose from the bottle/);
-  assert.match(motion, /sequence move from noticing a change/);
-  assert.match(motion, /person—not the helper—chooses the need/);
+  assert.match(motion, /separate meal, movement, and sleep stations/);
+  assert.match(motion, /person taking an ordinary walk/);
+  assert.match(motion, /head, hair, face, clothing, arms, trousers, and shoes/);
+  assert.doesNotMatch(motion, /<figcaption>/);
   assert.match(styles, /\.motionArt animateMotion/);
+});
+
+test("the visual hierarchy keeps articles larger and more explicit than supporting media", () => {
+  assert.match(component, /Read the official guide/);
+  assert.ok(component.split("<ReadGuide />").length - 1 >= 7);
+  assert.match(component, /className=\{styles\.motionPair\}/);
+  assert.match(component, /className=\{styles\.photoPair\}/);
+  assert.match(styles, /@keyframes article-dashes/);
+  assert.match(styles, /\.featuredLead::after/);
+  assert.match(styles, /min-height: 12rem/);
+  assert.match(styles, /max-height: 15rem/);
 });
 
 test("the reading room stays slightly rounded, responsive, focused, and motion-safe", () => {
