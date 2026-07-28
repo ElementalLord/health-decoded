@@ -1353,7 +1353,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         setMessage(positionResult.message);
         return;
       }
-      const result = await completeLessonAction({ lessonProgressId: experience.lessonProgressId });
+      const result = await completeLessonAction({
+        lessonProgressId: experience.lessonProgressId,
+        reflection: reflection.trim() || undefined,
+      });
       if (!result.ok) {
         setMessage(result.message);
         return;
@@ -1866,7 +1869,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 value={reflection}
               />
               <small>
-                This reflection stays on this page and is not saved as health information.
+                If you complete this lesson, this reflection will be saved to your private profile.
               </small>
             </label>
             <div className={styles.teachBack}>

@@ -80,7 +80,7 @@ export async function getProfileReflections(): Promise<Result<ProfileReflectionA
 
   const assignments = await database
     .from("journey_lessons")
-    .select("id, day_number, lessons!inner(title)")
+    .select("id, day_number, lesson_id")
     .in("id", assignmentIds);
 
   if (assignments.error) {
@@ -90,14 +90,32 @@ export async function getProfileReflections(): Promise<Result<ProfileReflectionA
     return err(unexpectedError());
   }
 
+  const lessonIds = [...new Set(assignments.data.map((assignment) => assignment.lesson_id))];
+  const lessons = await database.from("lessons").select("id, title").in("id", lessonIds);
+
+  if (lessons.error) {
+    logger.error("profile_reflections.lesson_titles_unavailable", {
+      error_code: lessons.error.code,
+    });
+    return err(unexpectedError());
+  }
+
+  const lessonTitleById = new Map(lessons.data.map((lesson) => [lesson.id, lesson.title] as const));
   const assignmentById = new Map(
-    assignments.data.map((assignment) => [
-      assignment.id,
-      {
-        dayNumber: assignment.day_number,
-        lessonTitle: assignment.lessons.title,
-      },
-    ]),
+    assignments.data.flatMap((assignment) => {
+      const lessonTitle = lessonTitleById.get(assignment.lesson_id);
+      if (!lessonTitle) return [];
+
+      return [
+        [
+          assignment.id,
+          {
+            dayNumber: assignment.day_number,
+            lessonTitle,
+          },
+        ] as const,
+      ];
+    }),
   );
 
   const entries = reflections.data.flatMap<ProfileReflection>((reflection) => {
