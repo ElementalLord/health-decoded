@@ -1,0 +1,65 @@
+import type { StoryPreviewStatus, StoryProgress } from "@/features/stories/types/interactive-story";
+
+export const MARCUS_STORY_STORAGE_KEY = "health-decoded:story:marcus-parking-lot:progress";
+
+export const createInitialStoryProgress = (): StoryProgress => ({
+  currentScene: 0,
+  currentQuizQuestion: 0,
+  furthestSceneReached: 0,
+  interactionStates: {},
+  meaningfulChoice: null,
+  prediction: null,
+  quizAnswers: {},
+  submittedQuizQuestions: [],
+  quizScore: 0,
+  storyCompleted: false,
+  keyIdeaUnderstood: false,
+  completionDate: null,
+  privateReflection: null,
+  versionCompleted: null,
+  stage: "intro",
+});
+
+export function parseStoryProgress(value: string | null): StoryProgress {
+  if (!value) return createInitialStoryProgress();
+
+  try {
+    const parsed = JSON.parse(value) as Partial<StoryProgress>;
+    const initial = createInitialStoryProgress();
+    return {
+      ...initial,
+      ...parsed,
+      currentScene:
+        typeof parsed.currentScene === "number"
+          ? Math.max(0, Math.min(5, parsed.currentScene))
+          : initial.currentScene,
+      currentQuizQuestion:
+        typeof parsed.currentQuizQuestion === "number"
+          ? Math.max(0, Math.min(2, parsed.currentQuizQuestion))
+          : initial.currentQuizQuestion,
+      furthestSceneReached:
+        typeof parsed.furthestSceneReached === "number"
+          ? Math.max(0, Math.min(5, parsed.furthestSceneReached))
+          : initial.furthestSceneReached,
+      interactionStates:
+        parsed.interactionStates && typeof parsed.interactionStates === "object"
+          ? parsed.interactionStates
+          : initial.interactionStates,
+      quizAnswers:
+        parsed.quizAnswers && typeof parsed.quizAnswers === "object"
+          ? parsed.quizAnswers
+          : initial.quizAnswers,
+      submittedQuizQuestions: Array.isArray(parsed.submittedQuizQuestions)
+        ? parsed.submittedQuizQuestions.filter((id): id is string => typeof id === "string")
+        : initial.submittedQuizQuestions,
+    };
+  } catch {
+    return createInitialStoryProgress();
+  }
+}
+
+export function getStoryPreviewStatus(progress: StoryProgress): StoryPreviewStatus {
+  if (progress.storyCompleted) return "completed";
+  if (progress.stage !== "intro" || progress.furthestSceneReached > 0) return "in-progress";
+  return "not-started";
+}
