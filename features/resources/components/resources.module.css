@@ -186,7 +186,7 @@
 .featuredGrid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 0.75fr);
+  grid-template-columns: 1fr;
 }
 
 .featuredLead,
@@ -224,8 +224,9 @@
 }
 
 .featuredLink {
+  align-items: stretch;
   display: grid;
-  grid-template-columns: minmax(0, 1.18fr) minmax(16rem, 0.82fr);
+  grid-template-columns: minmax(19rem, 0.78fr) minmax(0, 1.22fr);
   height: 100%;
 }
 
@@ -237,11 +238,9 @@
 }
 
 .featuredImage {
-  align-self: center;
-  aspect-ratio: 1660 / 948;
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1;
-  min-height: 0;
+  min-height: 22rem;
 }
 
 .featuredImage::after,
@@ -255,7 +254,8 @@
 
 .featuredImage img,
 .sideImage img {
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   transition: filter 320ms var(--ease-gentle);
 }
 
@@ -270,9 +270,10 @@
 }
 
 .featuredCopy {
-  grid-column: 1;
+  align-self: center;
+  grid-column: 2;
   grid-row: 1;
-  padding: 2rem 2.1rem 2.15rem;
+  padding: clamp(2rem, 5vw, 4rem);
 }
 
 .featuredCopy h2 {
@@ -298,29 +299,29 @@
 .featuredRail {
   display: grid;
   gap: 1rem;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .featuredSide > a {
+  align-items: stretch;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(10rem, 0.85fr);
+  grid-template-columns: minmax(13rem, 0.82fr) minmax(0, 1.18fr);
   height: 100%;
 }
 
 .sideImage {
-  align-self: center;
-  aspect-ratio: 3 / 2;
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1;
-  min-height: 0;
+  min-height: 20rem;
 }
 
 .sideCopy {
+  align-self: center;
   display: flex;
   flex-direction: column;
-  grid-column: 1;
+  grid-column: 2;
   grid-row: 1;
-  padding: 1.25rem 1.35rem;
+  padding: 1.75rem;
 }
 
 .sideCopy h3,
@@ -853,9 +854,13 @@ article:hover .externalArrow {
 }
 
 .checklistWithPhoto > a {
-  align-items: center;
+  align-items: stretch;
   display: grid;
-  grid-template-columns: minmax(12rem, 0.95fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(16rem, 0.8fr) minmax(0, 1.2fr);
+}
+
+.checklistWithPhoto {
+  grid-column: 1 / -1;
 }
 
 .checklistCopy {
@@ -867,18 +872,17 @@ article:hover .externalArrow {
 }
 
 .articlePhoto {
-  align-self: center;
-  aspect-ratio: 3 / 2;
   background: #fffaf3;
   border-right: 1px solid var(--editorial-rule);
-  min-height: 0;
+  min-height: 19rem;
   overflow: hidden;
   position: relative;
   width: 100%;
 }
 
 .articlePhoto img {
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 
 .checkIcon {
@@ -938,7 +942,7 @@ article:hover .externalArrow {
   border: 1px solid #ccd8cf;
   border-radius: 9px;
   display: grid;
-  grid-template-columns: minmax(16rem, 0.76fr) minmax(0, 1.24fr);
+  grid-template-columns: minmax(20rem, 0.78fr) minmax(0, 1.22fr);
   isolation: isolate;
   margin-bottom: 1rem;
   min-width: 0;
@@ -946,10 +950,8 @@ article:hover .externalArrow {
 }
 
 .photoInterlude > div {
-  align-self: center;
-  aspect-ratio: 3 / 2;
   background: #fffaf3;
-  min-height: 0;
+  min-height: 22rem;
   min-width: 0;
   overflow: hidden;
   position: relative;
@@ -957,14 +959,15 @@ article:hover .externalArrow {
 }
 
 .photoInterlude img {
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 
 .photoInterlude figcaption {
   align-self: center;
   background: #eef2ed;
   min-width: 0;
-  padding: 1.15rem 1.35rem;
+  padding: clamp(1.75rem, 4vw, 3.25rem);
   position: relative;
   z-index: 1;
 }
@@ -1449,21 +1452,12 @@ article:hover .externalArrow {
 }
 
 @media (max-width: 68rem) {
-  .featuredGrid {
+  .featuredRail {
     grid-template-columns: 1fr;
   }
 
-  .featuredRail {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: none;
-  }
-
   .featuredSide > a {
-    grid-template-columns: minmax(0, 1.2fr) minmax(10rem, 0.8fr);
-  }
-
-  .sideImage {
-    aspect-ratio: 3 / 2;
+    grid-template-columns: minmax(17rem, 0.78fr) minmax(0, 1.22fr);
   }
 
   .pathGrid {
@@ -1532,15 +1526,23 @@ article:hover .externalArrow {
     padding: 1.5rem;
   }
 
-  .featuredLink {
+  .featuredLink,
+  .featuredSide > a {
     grid-template-columns: 1fr;
   }
 
-  .featuredImage {
-    aspect-ratio: 16 / 8;
+  .featuredImage,
+  .sideImage {
+    aspect-ratio: 3 / 2;
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 0;
+  }
+
+  .featuredCopy,
+  .sideCopy {
     grid-column: 1;
     grid-row: 2;
-    min-height: 0;
   }
 
   .featuredCopy h2 {
@@ -1550,14 +1552,6 @@ article:hover .externalArrow {
   .featuredCopy .externalArrow {
     right: 1.35rem;
     top: 1.45rem;
-  }
-
-  .featuredSide > a {
-    grid-template-columns: minmax(0, 1.35fr) minmax(8rem, 0.65fr);
-  }
-
-  .sideImage {
-    aspect-ratio: auto;
   }
 
   .pathGrid {
@@ -1617,7 +1611,8 @@ article:hover .externalArrow {
   }
 
   .photoInterlude > div {
-    min-height: auto;
+    aspect-ratio: 3 / 2;
+    min-height: 0;
   }
 
   .disclaimer {
@@ -1628,16 +1623,6 @@ article:hover .externalArrow {
 @media (max-width: 34rem) {
   .mastheadRule span:last-child {
     display: none;
-  }
-
-  .featuredSide > a {
-    grid-template-columns: 1fr;
-  }
-
-  .sideImage {
-    aspect-ratio: 16 / 8;
-    grid-column: 1;
-    grid-row: 2;
   }
 
   .pathGrid {
