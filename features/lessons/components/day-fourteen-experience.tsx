@@ -2003,7 +2003,7 @@ const journeyMilestones = [
   { day: 14, learned: "You know more than you did fourteen days ago.", x: 684, y: 58 },
 ] as const;
 
-function FourteenDayTrace() {
+function FourteenDayTrace({ onReady }: { onReady?: () => void }) {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const active = journeyMilestones.find((milestone) => milestone.day === selectedDay) ?? null;
 
@@ -2039,11 +2039,15 @@ function FourteenDayTrace() {
               cy={milestone.y}
               fill={isActive ? "#6f947a" : "#fffaf3"}
               key={milestone.day}
-              onClick={() => setSelectedDay(milestone.day)}
+              onClick={() => {
+                setSelectedDay(milestone.day);
+                onReady?.();
+              }}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
                   setSelectedDay(milestone.day);
+                  onReady?.();
                 }
               }}
               r={isActive ? 11 : 7}
@@ -2084,7 +2088,7 @@ const biteStations = [
   },
 ] as const;
 
-function FollowOneBite() {
+function FollowOneBite({ onReady }: { onReady?: () => void }) {
   const [step, setStep] = useState(0);
   const stationX = [96, 272, 448, 624];
   const total = biteStations.length;
@@ -2142,7 +2146,13 @@ function FollowOneBite() {
         </div>
         <button
           className={styles.biteButton}
-          onClick={() => setStep((current) => (atLast ? 0 : current + 1))}
+          onClick={() => {
+            const next = atLast ? 0 : step + 1;
+            setStep(next);
+            if (next === total - 1) {
+              onReady?.();
+            }
+          }}
           type="button"
         >
           {atLast ? "Start over" : "Next step"}
@@ -2221,7 +2231,7 @@ const foundationStones = [
   "Care that can be shared",
 ] as const;
 
-function BuildFoundation() {
+function BuildFoundation({ onReady }: { onReady?: () => void }) {
   const [placed, setPlaced] = useState<Set<number>>(() => new Set());
   const blocks = [
     { x: 160, y: 150 },
@@ -2269,7 +2279,8 @@ function BuildFoundation() {
             aria-pressed={placed.has(index)}
             className={cn(styles.foundationChip, placed.has(index) && styles.foundationChipActive)}
             key={stone}
-            onClick={() =>
+            onClick={() => {
+              const willHave = placed.has(index) ? placed.size - 1 : placed.size + 1;
               setPlaced((current) => {
                 const next = new Set(current);
                 if (next.has(index)) {
@@ -2278,8 +2289,11 @@ function BuildFoundation() {
                   next.add(index);
                 }
                 return next;
-              })
-            }
+              });
+              if (willHave >= 2) {
+                onReady?.();
+              }
+            }}
             type="button"
           >
             {stone}
@@ -2306,6 +2320,16 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   const [exitOpen, setExitOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
+  function markReady(target: number) {
+    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
+  }
+  const stageGates: Record<number, string> = {
+    0: "Tap at least one day on the climb above before you move on.",
+    3: "Walk the bite all the way to the cells above before you move on.",
+    9: "Set at least two foundation pieces above before you move on.",
+  };
+  const stageLocked = stageGates[stage] !== undefined && !readyStages.has(stage);
   const stageRef = useRef<HTMLDivElement>(null);
   const positionKey = `health-decoded:day-fourteen-position:${experience.lessonProgressId}`;
   const draftKey = `health-decoded:day-fourteen-foundation:${experience.lessonProgressId}`;
@@ -2457,7 +2481,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               to stand on when uncertainty returns.
             </blockquote>
 
-            <FourteenDayTrace />
+            <FourteenDayTrace onReady={() => markReady(0)} />
 
             <section className={styles.optionalReflection}>
               <div>
@@ -2528,7 +2552,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               animation feels like one connected body, not four unrelated diagrams.
             </p>
             <BodySystemLab />
-            <FollowOneBite />
+            <FollowOneBite onReady={() => markReady(3)} />
             <blockquote className={styles.pullQuote}>
               Your body is not an enemy to defeat. It is a living system you can learn to support.
             </blockquote>
@@ -2628,7 +2652,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               width={1672}
             />
             <FullLifePicnicMotion />
-            <BuildFoundation />
+            <BuildFoundation onReady={() => markReady(9)} />
             <div className={styles.nextPhase}>
               <p>
                 The first fourteen days built language and structure. The next seventy-six are for
@@ -2806,6 +2830,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
           <p className="mb-4 text-sm text-muted-foreground">
             Reflections on this lesson are optional.
           </p>
+          {stageLocked ? (
+            <p className="mb-4 rounded-lg border border-[#d9a88f] bg-[#f6e9e1] px-3 py-2 text-sm font-medium text-[#a2593f]">
+              One small step first: {stageGates[stage]}
+            </p>
+          ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <Button
               disabled={stage === 0 || isPending}
@@ -2814,7 +2843,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             >
               Previous
             </Button>
-            <Button disabled={isPending} onClick={() => goToStage(stage + 1)}>
+            <Button disabled={isPending || stageLocked} onClick={() => goToStage(stage + 1)}>
               {continueLabel()}
             </Button>
           </div>
