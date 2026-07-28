@@ -3,7 +3,7 @@
 import { ArrowLeft, BookOpen, MessageCircleHeart } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -12,12 +12,22 @@ import { completeLessonAction } from "@/features/lessons/actions/lesson-completi
 import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-progress.actions";
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-person";
+import {
+  canNavigateToLessonStage,
+  isLessonStageLocked,
+  type LessonStageGateMap,
+} from "@/features/lessons/lib/lesson-stage-gating";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
 import styles from "./day-fourteen-experience.module.css";
 
 const stageCount = 11;
+const dayFourteenStageGates: LessonStageGateMap = {
+  0: "Tap at least one day on the climb above before you move on.",
+  3: "Walk the bite all the way to the cells above before you move on.",
+  9: "Set at least two foundation pieces above before you move on.",
+};
 
 const arrivalFeelings = [
   ["quieter", "The diagnosis feels a little less loud"],
@@ -2247,7 +2257,7 @@ function BuildFoundation({ onReady }: { onReady?: () => void }) {
     <div className={styles.foundation}>
       <div className={styles.journeyTraceHead}>
         <p className="editorial-eyebrow">Set your foundation in place</p>
-        <p>Tap each idea you now carry, and watch it become one steady piece to stand on.</p>
+        <p>Tap at least two ideas you now carry and watch them become a steady place to stand.</p>
       </div>
       <svg aria-hidden="true" className={styles.foundationSvg} viewBox="0 0 516 200">
         <path d="M96 186 H420" fill="none" stroke="#cbb9a8" strokeLinecap="round" strokeWidth="3" />
@@ -2321,15 +2331,19 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
-  function markReady(target: number) {
+  const markReady = useCallback((target: number) => {
     setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
-  }
-  const stageGates: Record<number, string> = {
-    0: "Tap at least one day on the climb above before you move on.",
-    3: "Walk the bite all the way to the cells above before you move on.",
-    9: "Set at least two foundation pieces above before you move on.",
-  };
-  const stageLocked = stageGates[stage] !== undefined && !readyStages.has(stage);
+  }, []);
+  const markTraceReady = useCallback(() => markReady(0), [markReady]);
+  const markBiteReady = useCallback(() => markReady(3), [markReady]);
+  const markFoundationReady = useCallback(() => markReady(9), [markReady]);
+  const stageLocked = isLessonStageLocked({
+    accessMode: experience.accessMode,
+    gates: dayFourteenStageGates,
+    readyStages,
+    stage,
+  });
+  const stageGateMessage = dayFourteenStageGates[stage];
   const stageRef = useRef<HTMLDivElement>(null);
   const positionKey = `health-decoded:day-fourteen-position:${experience.lessonProgressId}`;
   const draftKey = `health-decoded:day-fourteen-foundation:${experience.lessonProgressId}`;
@@ -2394,6 +2408,18 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   }
 
   function goToStage(nextStage: number) {
+    if (
+      !canNavigateToLessonStage({
+        accessMode: experience.accessMode,
+        currentStage: stage,
+        gates: dayFourteenStageGates,
+        nextStage,
+        readyStages,
+      })
+    ) {
+      return;
+    }
+
     const normalized = Math.max(0, Math.min(stageCount - 1, nextStage));
     setStage(normalized);
     saveStage(normalized);
@@ -2481,7 +2507,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               to stand on when uncertainty returns.
             </blockquote>
 
-            <FourteenDayTrace onReady={() => markReady(0)} />
+            <FourteenDayTrace onReady={markTraceReady} />
 
             <section className={styles.optionalReflection}>
               <div>
@@ -2552,7 +2578,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               animation feels like one connected body, not four unrelated diagrams.
             </p>
             <BodySystemLab />
-            <FollowOneBite onReady={() => markReady(3)} />
+            <FollowOneBite onReady={markBiteReady} />
             <blockquote className={styles.pullQuote}>
               Your body is not an enemy to defeat. It is a living system you can learn to support.
             </blockquote>
@@ -2652,7 +2678,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               width={1672}
             />
             <FullLifePicnicMotion />
-            <BuildFoundation onReady={() => markReady(9)} />
+            <BuildFoundation onReady={markFoundationReady} />
             <div className={styles.nextPhase}>
               <p>
                 The first fourteen days built language and structure. The next seventy-six are for
@@ -2830,9 +2856,9 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
           <p className="mb-4 text-sm text-muted-foreground">
             Reflections on this lesson are optional.
           </p>
-          {stageLocked ? (
-            <p className="mb-4 rounded-lg border border-[#d9a88f] bg-[#f6e9e1] px-3 py-2 text-sm font-medium text-[#a2593f]">
-              One small step first: {stageGates[stage]}
+          {stageLocked && stageGateMessage ? (
+            <p className="mb-4 rounded-[8px] border border-[#d9a88f] bg-[#f6e9e1] px-3 py-2 text-sm font-medium text-[#a2593f]">
+              One small step first: {stageGateMessage}
             </p>
           ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
