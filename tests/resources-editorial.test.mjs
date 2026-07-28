@@ -67,9 +67,7 @@ test("editorial imagery is purposeful and production sized", () => {
     "everyday-movement-editorial.jpg",
     "foot-check-natural.png",
     "emergency-kit-natural.png",
-    "everyday-support-natural.png",
     "pharmacist-routine-editorial.png",
-    "community-education-editorial.png",
   ];
 
   assert.match(component, /import Image from "next\/image"/);
@@ -92,16 +90,16 @@ test("article views persist locally and expose a clear completion record", () =>
   assert.match(component, /Clear viewed history/);
 });
 
-test("four supporting editorial scenes loop meaningfully and respect reduced motion", () => {
-  for (const variant of ["context", "source", "daily", "support"]) {
+test("three supporting editorial scenes loop meaningfully and respect reduced motion", () => {
+  for (const variant of ["context", "source", "daily"]) {
     assert.match(component, new RegExp(`EditorialMotion variant="${variant}"`));
   }
 
-  for (const removedVariant of ["medicine", "safety", "care"]) {
+  for (const removedVariant of ["medicine", "safety", "care", "support"]) {
     assert.doesNotMatch(component, new RegExp(`EditorialMotion variant="${removedVariant}"`));
   }
 
-  assert.equal(component.split("<EditorialMotion").length - 1, 4);
+  assert.equal(component.split("<EditorialMotion").length - 1, 3);
   assert.ok((motion.match(/repeatCount="indefinite"/g) ?? []).length >= 35);
   assert.ok((motion.match(/<animateMotion/g) ?? []).length >= 3);
   assert.ok((motion.match(/<animateTransform/g) ?? []).length >= 10);
@@ -115,7 +113,9 @@ test("four supporting editorial scenes loop meaningfully and respect reduced mot
 test("the visual hierarchy keeps articles larger and more explicit than supporting media", () => {
   assert.match(component, /Read the official guide/);
   assert.ok(component.split("<ReadGuide />").length - 1 >= 7);
-  assert.match(component, /className=\{styles\.photoPair\}/);
+  assert.doesNotMatch(component, /className=\{styles\.photoPair\}/);
+  assert.match(styles, /align-self: center/);
+  assert.match(styles, /minmax\(16rem, 0\.82fr\)/);
   assert.match(styles, /@keyframes article-dashes/);
   assert.match(styles, /\.featuredLead::after/);
   assert.match(styles, /min-height: 12rem/);

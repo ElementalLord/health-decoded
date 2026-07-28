@@ -737,23 +737,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               resource={emergency}
             />
           </div>
-          <div className={styles.photoPair}>
-            <EditorialPhoto
-              alt="Two friends sharing tea and an easy laugh at a kitchen table"
-              eyebrow="An ordinary kind of support"
-              note="Company and practical help can make room for health without making every conversation about diabetes."
-              src="/resources/everyday-support-natural.png"
-              title="Sometimes care looks like being able to exhale with someone."
-            />
-            <EditorialPhoto
-              alt="A diverse group of adults and an educator exchanging questions around a welcoming table"
-              eyebrow="Learning with people who understand"
-              note="Education can be a conversation: one person asks, another recognizes the feeling, and everyone leaves with a more usable next question."
-              src="/resources/community-education-editorial.png"
-              title="Good support makes room for your voice."
-            />
-          </div>
-          <EditorialMotion variant="support" />
         </section>
 
         <footer className={styles.disclaimer}>
