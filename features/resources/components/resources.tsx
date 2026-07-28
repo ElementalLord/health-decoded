@@ -678,10 +678,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             src="/resources/pharmacist-routine-editorial.png"
             title="Questions belong in the medicine routine."
           />
-          <div className={styles.motionPair}>
-            <EditorialMotion variant="medicine" />
-            <EditorialMotion variant="safety" />
-          </div>
         </section>
 
         <section
@@ -710,7 +706,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             />
             <CompactArticle resource={oral} />
           </div>
-          <EditorialMotion variant="care" />
         </section>
 
         <section
