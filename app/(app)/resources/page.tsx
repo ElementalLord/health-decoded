@@ -14,7 +14,7 @@ export default async function ResourcesPage() {
   const resources = listReviewedResources();
 
   return (
-    <section className="mx-auto max-w-[1280px] py-6 sm:py-10">
+    <section className="mx-auto max-w-6xl py-6 sm:py-10">
       <ResourcesList resources={resources} />
     </section>
   );
