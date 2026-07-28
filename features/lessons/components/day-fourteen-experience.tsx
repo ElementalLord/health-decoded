@@ -14,6 +14,7 @@ import { LessonStoryImage } from "@/features/lessons/components/lesson-story-ima
 import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-person";
 import {
   canNavigateToLessonStage,
+  getLessonResumeStage,
   isLessonStageLocked,
   type LessonStageGateMap,
 } from "@/features/lessons/lib/lesson-stage-gating";
@@ -25,7 +26,14 @@ import styles from "./day-fourteen-experience.module.css";
 const stageCount = 11;
 const dayFourteenStageGates: LessonStageGateMap = {
   0: "Tap at least one day on the climb above before you move on.",
+  1: "Switch the story between then and now before you move on.",
+  2: "Choose one ordinary moment before you move on.",
   3: "Walk the bite all the way to the cells above before you move on.",
+  4: "Choose one reading context before you move on.",
+  5: "Choose one everyday tool before you move on.",
+  6: "Choose one area to protect before you move on.",
+  7: "Choose one real-life return scenario before you move on.",
+  8: "Choose the kind of support that would help today before you move on.",
   9: "Set at least two foundation pieces above before you move on.",
 };
 
@@ -332,7 +340,7 @@ function MotionFigure({
   );
 }
 
-function OrdinaryLifeMotion() {
+function OrdinaryLifeMotion({ onReady }: { onReady?: () => void }) {
   const [activeMoment, setActiveMoment] = useState<OrdinaryMomentId>("breakfast");
   const active = ordinaryMoments.find((moment) => moment.id === activeMoment) ?? ordinaryMoments[0];
 
@@ -476,7 +484,10 @@ function OrdinaryLifeMotion() {
             aria-pressed={activeMoment === moment.id}
             className={cn(activeMoment === moment.id && styles.ordinaryChoiceActive)}
             key={moment.id}
-            onClick={() => setActiveMoment(moment.id)}
+            onClick={() => {
+              setActiveMoment(moment.id);
+              onReady?.();
+            }}
             type="button"
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
@@ -678,7 +689,7 @@ function FullLifePicnicMotion() {
   );
 }
 
-function ThenNowStory() {
+function ThenNowStory({ onReady }: { onReady?: () => void }) {
   const [view, setView] = useState<"then" | "now">("then");
   const isNow = view === "now";
 
@@ -836,7 +847,10 @@ function ThenNowStory() {
         <button
           aria-pressed={!isNow}
           className={cn(!isNow && styles.storyChoiceActive)}
-          onClick={() => setView("then")}
+          onClick={() => {
+            setView("then");
+            onReady?.();
+          }}
           type="button"
         >
           <span>01</span>
@@ -845,7 +859,10 @@ function ThenNowStory() {
         <button
           aria-pressed={isNow}
           className={cn(isNow && styles.storyChoiceActive)}
-          onClick={() => setView("now")}
+          onClick={() => {
+            setView("now");
+            onReady?.();
+          }}
           type="button"
         >
           <span>02</span>
@@ -875,7 +892,7 @@ function ThenNowStory() {
   );
 }
 
-function ToolPracticeStudio() {
+function ToolPracticeStudio({ onReady }: { onReady?: () => void }) {
   const [activeTool, setActiveTool] = useState<EverydayToolId>("food");
   const active = everydayTools.find((tool) => tool.id === activeTool) ?? everydayTools[0];
 
@@ -1041,7 +1058,10 @@ function ToolPracticeStudio() {
             aria-pressed={activeTool === tool.id}
             className={cn(activeTool === tool.id && styles.toolChoiceActive)}
             key={tool.id}
-            onClick={() => setActiveTool(tool.id)}
+            onClick={() => {
+              setActiveTool(tool.id);
+              onReady?.();
+            }}
             type="button"
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
@@ -1296,7 +1316,7 @@ function BodySystemLab() {
   );
 }
 
-function NumberContextExplorer() {
+function NumberContextExplorer({ onReady }: { onReady?: () => void }) {
   const [activeMoment, setActiveMoment] = useState<NumberMomentId>("fasting");
   const active = numberMoments.find((moment) => moment.id === activeMoment) ?? numberMoments[0];
 
@@ -1308,7 +1328,10 @@ function NumberContextExplorer() {
             aria-pressed={activeMoment === moment.id}
             className={cn(activeMoment === moment.id && styles.numberChoiceActive)}
             key={moment.id}
-            onClick={() => setActiveMoment(moment.id)}
+            onClick={() => {
+              setActiveMoment(moment.id);
+              onReady?.();
+            }}
             type="button"
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
@@ -1335,7 +1358,7 @@ function NumberContextExplorer() {
   );
 }
 
-function ProtectionExplorer() {
+function ProtectionExplorer({ onReady }: { onReady?: () => void }) {
   const [activeArea, setActiveArea] = useState<ProtectionAreaId>("eyes");
   const active = protectionAreas.find((area) => area.id === activeArea) ?? protectionAreas[0];
 
@@ -1576,7 +1599,10 @@ function ProtectionExplorer() {
             aria-pressed={activeArea === area.id}
             className={cn(activeArea === area.id && styles.protectionChoiceActive)}
             key={area.id}
-            onClick={() => setActiveArea(area.id)}
+            onClick={() => {
+              setActiveArea(area.id);
+              onReady?.();
+            }}
             type="button"
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
@@ -1595,7 +1621,7 @@ function ProtectionExplorer() {
   );
 }
 
-function ReturnScenarioExplorer() {
+function ReturnScenarioExplorer({ onReady }: { onReady?: () => void }) {
   const [activeScenario, setActiveScenario] = useState<ReturnScenarioId>("restaurant");
   const active =
     returnScenarios.find((scenario) => scenario.id === activeScenario) ?? returnScenarios[0];
@@ -1739,7 +1765,10 @@ function ReturnScenarioExplorer() {
             aria-pressed={activeScenario === scenario.id}
             className={cn(activeScenario === scenario.id && styles.returnChoiceActive)}
             key={scenario.id}
-            onClick={() => setActiveScenario(scenario.id)}
+            onClick={() => {
+              setActiveScenario(scenario.id);
+              onReady?.();
+            }}
             type="button"
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
@@ -1756,7 +1785,7 @@ function ReturnScenarioExplorer() {
   );
 }
 
-function SupportPractice() {
+function SupportPractice({ onReady }: { onReady?: () => void }) {
   const [activeSupport, setActiveSupport] = useState<SupportOptionId>("listen");
   const active = supportOptions.find((option) => option.id === activeSupport) ?? supportOptions[0];
   const isBoundary = activeSupport === "boundary";
@@ -1976,7 +2005,10 @@ function SupportPractice() {
             aria-pressed={activeSupport === option.id}
             className={cn(activeSupport === option.id && styles.supportChoiceActive)}
             key={option.id}
-            onClick={() => setActiveSupport(option.id)}
+            onClick={() => {
+              setActiveSupport(option.id);
+              onReady?.();
+            }}
             type="button"
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
@@ -2323,6 +2355,9 @@ function BuildFoundation({ onReady }: { onReady?: () => void }) {
 
 export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
+  const positionKey = `health-decoded:day-fourteen-position:${experience.lessonProgressId}`;
+  const gateStorageKey = `${positionKey}:ready`;
+  const draftKey = `health-decoded:day-fourteen-foundation:${experience.lessonProgressId}`;
   const [stage, setStage] = useState(0);
   const [draft, setDraft] = useState<MilestoneDraft>(initialDraft);
   const [hydrated, setHydrated] = useState(false);
@@ -2331,11 +2366,28 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
-  const markReady = useCallback((target: number) => {
-    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
-  }, []);
+  const markReady = useCallback(
+    (target: number) => {
+      setReadyStages((current) => {
+        if (current.has(target)) return current;
+        const next = new Set(current).add(target);
+        if (experience.accessMode === "active") {
+          window.localStorage.setItem(gateStorageKey, JSON.stringify([...next]));
+        }
+        return next;
+      });
+    },
+    [experience.accessMode, gateStorageKey],
+  );
   const markTraceReady = useCallback(() => markReady(0), [markReady]);
+  const markStoryReady = useCallback(() => markReady(1), [markReady]);
+  const markOrdinaryMomentReady = useCallback(() => markReady(2), [markReady]);
   const markBiteReady = useCallback(() => markReady(3), [markReady]);
+  const markNumberReady = useCallback(() => markReady(4), [markReady]);
+  const markToolReady = useCallback(() => markReady(5), [markReady]);
+  const markProtectionReady = useCallback(() => markReady(6), [markReady]);
+  const markReturnReady = useCallback(() => markReady(7), [markReady]);
+  const markSupportReady = useCallback(() => markReady(8), [markReady]);
   const markFoundationReady = useCallback(() => markReady(9), [markReady]);
   const stageLocked = isLessonStageLocked({
     accessMode: experience.accessMode,
@@ -2345,8 +2397,6 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   });
   const stageGateMessage = dayFourteenStageGates[stage];
   const stageRef = useRef<HTMLDivElement>(null);
-  const positionKey = `health-decoded:day-fourteen-position:${experience.lessonProgressId}`;
-  const draftKey = `health-decoded:day-fourteen-foundation:${experience.lessonProgressId}`;
 
   useEffect(() => {
     try {
@@ -2361,9 +2411,25 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
       }
 
       if (experience.accessMode !== "review") {
+        let restoredReady = new Set<number>();
+        const parsedReady = JSON.parse(
+          window.localStorage.getItem(gateStorageKey) ?? "[]",
+        ) as unknown;
+        if (Array.isArray(parsedReady)) {
+          restoredReady = new Set(
+            parsedReady.filter((value): value is number => Number.isInteger(value) && value >= 0),
+          );
+        }
+        setReadyStages(restoredReady);
         const storedStage = Number(window.localStorage.getItem(positionKey));
         if (Number.isInteger(storedStage) && storedStage >= 0 && storedStage < stageCount) {
-          setStage(storedStage);
+          setStage(
+            getLessonResumeStage({
+              gates: dayFourteenStageGates,
+              readyStages: restoredReady,
+              storedStage,
+            }),
+          );
         }
       }
     } catch {
@@ -2371,7 +2437,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
     } finally {
       setHydrated(true);
     }
-  }, [draftKey, experience.accessMode, positionKey]);
+  }, [draftKey, experience.accessMode, gateStorageKey, positionKey]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -2467,6 +2533,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         return;
       }
       window.localStorage.removeItem(positionKey);
+      window.localStorage.removeItem(gateStorageKey);
       router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
@@ -2537,7 +2604,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Where you began">
               The first day asked you to understand, not to become perfect.
             </LessonHeading>
-            <ThenNowStory />
+            <ThenNowStory onReady={markStoryReady} />
             <p className={styles.handwrittenLine}>
               The first change may be simple: the question in front of you no longer feels
               impossible to enter.
@@ -2551,7 +2618,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="Knowledge that travels">
               The lessons were never meant to stay in separate boxes.
             </LessonHeading>
-            <OrdinaryLifeMotion />
+            <OrdinaryLifeMotion onReady={markOrdinaryMomentReady} />
             <div className={styles.editorialColumns}>
               <p>
                 <span>Y</span>ou learned what insulin resistance means so the diagnosis could become
@@ -2595,7 +2662,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               Pick a moment. Watch how the meaning changes when the time window and a useful
               question travel beside the result.
             </p>
-            <NumberContextExplorer />
+            <NumberContextExplorer onReady={markNumberReady} />
             <p className={styles.closingSentence}>
               The skill is not forcing every number to behave. The skill is knowing how to respond
               without turning information into shame.
@@ -2613,7 +2680,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               Choose a moment below. The same person is not asked to use every tool at once; the
               scene changes to show how one tool can support one ordinary part of life.
             </p>
-            <ToolPracticeStudio />
+            <ToolPracticeStudio onReady={markToolReady} />
           </div>
         );
 
@@ -2627,7 +2694,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               Explore an area of the body. The point is not to predict a complication; it is to see
               how early attention can make care calmer and more useful.
             </p>
-            <ProtectionExplorer />
+            <ProtectionExplorer onReady={markProtectionReady} />
             <blockquote className={styles.pullQuote}>
               Risk is not destiny. Early attention is not pessimism; it is protection.
             </blockquote>
@@ -2641,7 +2708,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               Confidence is knowing how to return, not knowing every answer.
             </LessonHeading>
             <ReturnAfterRainMotion />
-            <ReturnScenarioExplorer />
+            <ReturnScenarioExplorer onReady={markReturnReady} />
           </div>
         );
 
@@ -2655,7 +2722,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               Choose what would actually help today. The scene and response change because support
               should follow the person’s request, not the helper’s guess.
             </p>
-            <SupportPractice />
+            <SupportPractice onReady={markSupportReady} />
             <blockquote className={styles.pullQuote}>
               Needing support does not make the foundation weaker. It gives the foundation more
               places to stand.

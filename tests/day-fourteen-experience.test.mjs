@@ -149,13 +149,20 @@ test("Day 14 keeps reflection light, optional, and free from checkbox labor", ()
   assert.doesNotMatch(experience, /correctAnswer|isCorrect|data-correct|styles\.incorrect/i);
 });
 
-test("Day 14 validates its three milestone interactions without blocking review mode", () => {
+test("Day 14 gates every milestone interaction, including review mode", () => {
   assert.match(experience, /const dayFourteenStageGates/);
-  assert.match(experience, /0: "Tap at least one day/);
-  assert.match(experience, /3: "Walk the bite all the way to the cells/);
-  assert.match(experience, /9: "Set at least two foundation pieces/);
+  for (let stage = 0; stage <= 9; stage += 1) {
+    assert.match(experience, new RegExp(`\\n  ${stage}: "`));
+  }
   assert.match(experience, /<FourteenDayTrace onReady=\{markTraceReady\}/);
+  assert.match(experience, /<ThenNowStory onReady=\{markStoryReady\}/);
+  assert.match(experience, /<OrdinaryLifeMotion onReady=\{markOrdinaryMomentReady\}/);
   assert.match(experience, /<FollowOneBite onReady=\{markBiteReady\}/);
+  assert.match(experience, /<NumberContextExplorer onReady=\{markNumberReady\}/);
+  assert.match(experience, /<ToolPracticeStudio onReady=\{markToolReady\}/);
+  assert.match(experience, /<ProtectionExplorer onReady=\{markProtectionReady\}/);
+  assert.match(experience, /<ReturnScenarioExplorer onReady=\{markReturnReady\}/);
+  assert.match(experience, /<SupportPractice onReady=\{markSupportReady\}/);
   assert.match(experience, /<BuildFoundation onReady=\{markFoundationReady\}/);
   assert.match(experience, /canNavigateToLessonStage/);
   assert.match(experience, /isLessonStageLocked/);

@@ -28,6 +28,7 @@ import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-
 import styles from "@/features/lessons/components/day-thirteen-experience.module.css";
 import {
   canNavigateToLessonStage,
+  getLessonResumeStage,
   isLessonStageLocked,
   type LessonStageGateMap,
 } from "@/features/lessons/lib/lesson-stage-gating";
@@ -36,9 +37,16 @@ import { cn } from "@/lib/utils";
 
 const stageCount = 11;
 const dayThirteenStageGates: LessonStageGateMap = {
+  0: "Choose how you want this lesson to meet you before you move on.",
   1: "Share at least one bag onto the bench above before you move on.",
+  2: "Choose a response to the stigma example before you move on.",
+  3: "Choose the permission-first support response before you move on.",
+  4: "Choose one person and one useful action before you move on.",
   5: "Build a full boundary above, one phrase from each row, before you move on.",
-  7: "Call for backup above and let it land before you move on.",
+  6: "Choose the response that protects privacy before you move on.",
+  7: "Choose one seat at your support table before you move on.",
+  8: "Choose one repair move before you move on.",
+  9: "Answer what makes support helpful before you move on.",
 };
 
 const openingFeelings = [
@@ -997,131 +1005,6 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
   );
 }
 
-function SupportArrives({ onReady }: { onReady?: () => void }) {
-  const [near, setNear] = useState(false);
-  const [landed, setLanded] = useState(false);
-  const capeRest =
-    "M-14 -84 C-42 -66 -48 -22 -30 4 C-18 -10 -10 -16 -4 -24 C-12 -48 -8 -70 -2 -82 Z";
-  const capeFlow = "M-14 -84 C-36 -58 -46 -16 -22 8 C-12 -8 -8 -16 -2 -24 C-10 -48 -6 -70 -2 -82 Z";
-
-  useEffect(() => {
-    if (!near) {
-      setLanded(false);
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      setLanded(true);
-      onReady?.();
-    }, 5700);
-
-    return () => window.clearTimeout(timer);
-  }, [near, onReady]);
-
-  return (
-    <div className={styles.arrive}>
-      <div className={styles.composerHead}>
-        <p className="editorial-eyebrow">Support often starts with one small ask</p>
-        <p>You do not have to wait to be noticed. Call for backup and watch it fly slowly in.</p>
-      </div>
-      <svg aria-hidden="true" className={styles.arriveSvg} viewBox="0 0 720 260">
-        <path d="M40 226 H680" stroke="#a9bcae" strokeLinecap="round" strokeWidth="4" />
-        <LessonMotionPerson
-          action="rest"
-          motion="breathe"
-          palette="warm"
-          scale={1}
-          x={280}
-          y={222}
-        />
-        {near ? (
-          <g key="hero" transform="translate(452 222)">
-            <g>
-              <animateTransform
-                attributeName="transform"
-                begin="0s"
-                calcMode="spline"
-                dur="3.8s"
-                fill="freeze"
-                keySplines="0.12 0.7 0.16 1"
-                keyTimes="0;1"
-                type="translate"
-                values="330 -184;0 0"
-              />
-              <g transform="rotate(-90 0 0)">
-                <animateTransform
-                  attributeName="transform"
-                  begin="4.2s"
-                  calcMode="spline"
-                  dur="1.5s"
-                  fill="freeze"
-                  keySplines="0.34 0 0.2 1"
-                  keyTimes="0;1"
-                  type="rotate"
-                  values="-90 0 0;0 0 0"
-                />
-                <path d={capeRest} fill="#c15b4a" opacity="0.92">
-                  <animate
-                    attributeName="d"
-                    dur="0.9s"
-                    repeatCount="indefinite"
-                    values={`${capeRest};${capeFlow};${capeRest}`}
-                  />
-                </path>
-                <LessonMotionPerson
-                  action="celebrate"
-                  motion="still"
-                  palette="sage"
-                  scale={1}
-                  x={0}
-                  y={0}
-                />
-              </g>
-            </g>
-          </g>
-        ) : null}
-        {near ? (
-          <circle cx="366" cy="152" fill="none" r="10" stroke="#c7785f" strokeWidth="3">
-            <animate
-              attributeName="opacity"
-              begin="5.6s"
-              dur="2.6s"
-              repeatCount="indefinite"
-              values=".55;0;.55"
-            />
-            <animate
-              attributeName="r"
-              begin="5.6s"
-              dur="2.6s"
-              repeatCount="indefinite"
-              values="8;42;8"
-            />
-          </circle>
-        ) : null}
-      </svg>
-      <div className={styles.arriveControls}>
-        <p aria-live="polite" className={styles.loadStatus}>
-          {landed
-            ? "Backup has landed. You did not have to carry the moment alone."
-            : near
-              ? "Backup is on the way. Let the ask travel all the way to support."
-              : "One small ask can change a hard hour. You choose who, and when."}
-        </p>
-        <button
-          aria-pressed={near}
-          className={styles.arriveButton}
-          onClick={() => {
-            setNear((current) => !current);
-          }}
-          type="button"
-        >
-          {near ? "Reset the scene" : "Call for backup"}
-        </button>
-      </div>
-    </div>
-  );
-}
-
 const boundaryBuilder = {
   acknowledge: [
     "I know you care about me.",
@@ -1292,6 +1175,8 @@ function DisclosureControl() {
 
 export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
+  const storageKey = "health-decoded:day-thirteen:" + experience.lessonProgressId;
+  const gateStorageKey = `${storageKey}:ready`;
   const [stage, setStage] = useState(0);
   const [openingFeeling, setOpeningFeeling] = useState<string | null>(null);
   const [identityIdea, setIdentityIdea] = useState<string | null>(null);
@@ -1320,12 +1205,21 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
-  const markReady = useCallback((target: number) => {
-    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
-  }, []);
+  const markReady = useCallback(
+    (target: number) => {
+      setReadyStages((current) => {
+        if (current.has(target)) return current;
+        const next = new Set(current).add(target);
+        if (experience.accessMode === "active") {
+          window.localStorage.setItem(gateStorageKey, JSON.stringify([...next]));
+        }
+        return next;
+      });
+    },
+    [experience.accessMode, gateStorageKey],
+  );
   const markSharedLoadReady = useCallback(() => markReady(1), [markReady]);
   const markBoundaryReady = useCallback(() => markReady(5), [markReady]);
-  const markSupportReady = useCallback(() => markReady(7), [markReady]);
   const stageLocked = isLessonStageLocked({
     accessMode: experience.accessMode,
     gates: dayThirteenStageGates,
@@ -1334,13 +1228,32 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
   });
   const stageGateMessage = dayThirteenStageGates[stage];
   const stageRef = useRef<HTMLDivElement>(null);
-  const storageKey = "health-decoded:day-thirteen:" + experience.lessonProgressId;
 
   useEffect(() => {
     if (experience.accessMode === "review") return;
+    let restoredReady = new Set<number>();
+    try {
+      const parsed = JSON.parse(window.localStorage.getItem(gateStorageKey) ?? "[]") as unknown;
+      if (Array.isArray(parsed)) {
+        restoredReady = new Set(
+          parsed.filter((value): value is number => Number.isInteger(value) && value >= 0),
+        );
+      }
+    } catch {
+      restoredReady = new Set();
+    }
+    setReadyStages(restoredReady);
     const stored = Number(window.localStorage.getItem(storageKey));
-    if (Number.isInteger(stored) && stored >= 0 && stored < stageCount) setStage(stored);
-  }, [experience.accessMode, storageKey]);
+    if (Number.isInteger(stored) && stored >= 0 && stored < stageCount) {
+      setStage(
+        getLessonResumeStage({
+          gates: dayThirteenStageGates,
+          readyStages: restoredReady,
+          storedStage: stored,
+        }),
+      );
+    }
+  }, [experience.accessMode, gateStorageKey, storageKey]);
 
   useEffect(() => {
     if (stage > 0) stageRef.current?.focus();
@@ -1391,6 +1304,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
     answer: string,
   ) {
     setSelectedAnswers((current) => ({ ...current, [key]: answer }));
+    const evaluationStage = { myth: 2, support: 3, boundary: 5, workplace: 6, teachBack: 9 };
+    markReady(evaluationStage[key]);
     const result = await evaluateDayThirteenAction(input);
     if (result.ok) setEvaluations((current) => ({ ...current, [key]: result.data }));
     else setMessage(result.message);
@@ -1444,6 +1359,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         return;
       }
       window.localStorage.removeItem(storageKey);
+      window.localStorage.removeItem(gateStorageKey);
       router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
@@ -1478,7 +1394,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 {openingFeelings.map(([id, label]) => (
                   <AnswerChoice
                     key={id}
-                    onClick={() => setOpeningFeeling(id)}
+                    onClick={() => {
+                      setOpeningFeeling(id);
+                      markReady(0);
+                    }}
                     selected={openingFeeling === id}
                   >
                     {label}
@@ -1491,7 +1410,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               <p>
                 {openingFeeling
                   ? "You do not need a perfect support system to begin. One safer conversation can change how heavy care feels."
-                  : "You can choose an answer, or simply keep going. Nothing personal in this lesson has to be shared."}
+                  : "Choose the closest answer to continue. Nothing you choose here is saved as health information."}
               </p>
             </div>
           </div>
@@ -1661,7 +1580,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                   {supportPeople.map(([id, label]) => (
                     <AnswerChoice
                       key={id}
-                      onClick={() => setSupportPerson(id)}
+                      onClick={() => {
+                        setSupportPerson(id);
+                        if (supportAction) markReady(4);
+                      }}
                       selected={supportPerson === id}
                     >
                       {label}
@@ -1675,7 +1597,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                   {requestActions.map((action) => (
                     <AnswerChoice
                       key={action}
-                      onClick={() => setSupportAction(action)}
+                      onClick={() => {
+                        setSupportAction(action);
+                        if (supportPerson) markReady(4);
+                      }}
                       selected={supportAction === action}
                     >
                       {action}
@@ -1821,7 +1746,6 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               src="/lessons/day-13/community-belonging.jpg"
             />
             <SupportTableAnimation activeSeat={supportSeat} />
-            <SupportArrives onReady={markSupportReady} />
             <div className={styles.seatChooser}>
               {supportSeats.map((seat) => (
                 <button
@@ -1831,7 +1755,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                     supportSeat === seat.id && styles.seatChoiceActive,
                   )}
                   key={seat.id}
-                  onClick={() => setSupportSeat(seat.id)}
+                  onClick={() => {
+                    setSupportSeat(seat.id);
+                    markReady(7);
+                  }}
                   type="button"
                 >
                   <strong>{seat.label}</strong>
@@ -1865,7 +1792,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                       repairStep === item.id && styles.repairChoiceActive,
                     )}
                     key={item.id}
-                    onClick={() => setRepairStep(item.id)}
+                    onClick={() => {
+                      setRepairStep(item.id);
+                      markReady(8);
+                    }}
                     type="button"
                   >
                     <span>0{index + 1}</span>
@@ -2103,8 +2033,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             </Button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Three skill-building chapters ask for one small action before continuing. Personal
-            choices and reflection remain optional.
+            Each practice chapter asks for one meaningful action before continuing. Private writing
+            and reflection remain optional.
           </p>
         </footer>
       ) : null}

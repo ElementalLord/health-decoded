@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   canNavigateToLessonStage,
+  getLessonResumeStage,
   isLessonStageLocked,
 } from "../features/lessons/lib/lesson-stage-gating.ts";
 
@@ -52,7 +53,7 @@ test("the required interaction unlocks forward navigation without locking earlie
   );
 });
 
-test("ungated chapters and review mode remain freely navigable", () => {
+test("ungated chapters remain freely navigable", () => {
   assert.equal(
     isLessonStageLocked({
       accessMode: "active",
@@ -62,6 +63,9 @@ test("ungated chapters and review mode remain freely navigable", () => {
     }),
     false,
   );
+});
+
+test("review mode still requires the visible chapter interaction", () => {
   assert.equal(
     canNavigateToLessonStage({
       accessMode: "review",
@@ -70,6 +74,48 @@ test("ungated chapters and review mode remain freely navigable", () => {
       nextStage: 2,
       readyStages: new Set(),
     }),
+    false,
+  );
+});
+
+test("a multi-chapter jump cannot bypass an unresolved gate in between", () => {
+  assert.equal(
+    canNavigateToLessonStage({
+      accessMode: "active",
+      currentStage: 0,
+      gates,
+      nextStage: 5,
+      readyStages: new Set([1]),
+    }),
+    false,
+  );
+  assert.equal(
+    canNavigateToLessonStage({
+      accessMode: "active",
+      currentStage: 0,
+      gates,
+      nextStage: 5,
+      readyStages: new Set([1, 4]),
+    }),
     true,
+  );
+});
+
+test("a saved position resumes at the earliest unfinished gate instead of skipping it", () => {
+  assert.equal(
+    getLessonResumeStage({
+      gates,
+      readyStages: new Set([1]),
+      storedStage: 5,
+    }),
+    4,
+  );
+  assert.equal(
+    getLessonResumeStage({
+      gates,
+      readyStages: new Set([1, 4]),
+      storedStage: 5,
+    }),
+    5,
   );
 });
