@@ -986,44 +986,87 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
 
 function SupportArrives() {
   const [near, setNear] = useState(false);
+  const capeRest =
+    "M-14 -84 C-42 -66 -48 -22 -30 4 C-18 -10 -10 -16 -4 -24 C-12 -48 -8 -70 -2 -82 Z";
+  const capeFlow = "M-14 -84 C-36 -58 -46 -16 -22 8 C-12 -8 -8 -16 -2 -24 C-10 -48 -6 -70 -2 -82 Z";
 
   return (
     <div className={styles.arrive}>
       <div className={styles.composerHead}>
         <p className="editorial-eyebrow">Support often starts with one small ask</p>
-        <p>You do not have to wait to be noticed. Reach out and watch someone move beside you.</p>
+        <p>You do not have to wait to be noticed. Call for backup and watch it fly slowly in.</p>
       </div>
-      <svg aria-hidden="true" className={styles.arriveSvg} viewBox="0 0 720 240">
-        <path d="M40 208 H680" stroke="#a9bcae" strokeLinecap="round" strokeWidth="4" />
+      <svg aria-hidden="true" className={styles.arriveSvg} viewBox="0 0 720 260">
+        <path d="M40 226 H680" stroke="#a9bcae" strokeLinecap="round" strokeWidth="4" />
         <LessonMotionPerson
           action="rest"
           motion="breathe"
           palette="warm"
           scale={1}
-          x={282}
-          y={204}
+          x={280}
+          y={222}
         />
-        <g
-          className={styles.arriveGuest}
-          style={{ opacity: near ? 1 : 0, transform: near ? "translateX(0)" : "translateX(250px)" }}
-        >
-          <LessonMotionPerson
-            action="reach-left"
-            motion="nod"
-            palette="sage"
-            scale={1}
-            x={440}
-            y={204}
-          />
-        </g>
         {near ? (
-          <circle cx="360" cy="150" fill="none" r="10" stroke="#c7785f" strokeWidth="3">
-            <animate attributeName="r" dur="2.6s" repeatCount="indefinite" values="8;42;8" />
+          <g key="hero" transform="translate(452 222)">
+            <g>
+              <animateTransform
+                attributeName="transform"
+                begin="0s"
+                calcMode="spline"
+                dur="3.8s"
+                fill="freeze"
+                keySplines="0.12 0.7 0.16 1"
+                keyTimes="0;1"
+                type="translate"
+                values="330 -184;0 0"
+              />
+              <g transform="rotate(-90 0 0)">
+                <animateTransform
+                  attributeName="transform"
+                  begin="4.2s"
+                  calcMode="spline"
+                  dur="1.5s"
+                  fill="freeze"
+                  keySplines="0.34 0 0.2 1"
+                  keyTimes="0;1"
+                  type="rotate"
+                  values="-90 0 0;0 0 0"
+                />
+                <path d={capeRest} fill="#c15b4a" opacity="0.92">
+                  <animate
+                    attributeName="d"
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                    values={`${capeRest};${capeFlow};${capeRest}`}
+                  />
+                </path>
+                <LessonMotionPerson
+                  action="celebrate"
+                  motion="still"
+                  palette="sage"
+                  scale={1}
+                  x={0}
+                  y={0}
+                />
+              </g>
+            </g>
+          </g>
+        ) : null}
+        {near ? (
+          <circle cx="366" cy="152" fill="none" r="10" stroke="#c7785f" strokeWidth="3">
             <animate
               attributeName="opacity"
+              begin="5.6s"
               dur="2.6s"
               repeatCount="indefinite"
               values=".55;0;.55"
+            />
+            <animate
+              attributeName="r"
+              begin="5.6s"
+              dur="2.6s"
+              repeatCount="indefinite"
+              values="8;42;8"
             />
           </circle>
         ) : null}
@@ -1031,7 +1074,7 @@ function SupportArrives() {
       <div className={styles.arriveControls}>
         <p aria-live="polite" className={styles.loadStatus}>
           {near
-            ? "Someone is beside you now. You did not have to carry the moment alone."
+            ? "Backup has landed. You did not have to carry the moment alone."
             : "One small ask can change a hard hour. You choose who, and when."}
         </p>
         <button
@@ -1039,7 +1082,7 @@ function SupportArrives() {
           onClick={() => setNear((current) => !current)}
           type="button"
         >
-          {near ? "Take some space" : "Reach out"}
+          {near ? "Thank them and reset" : "Call for backup"}
         </button>
       </div>
     </div>
