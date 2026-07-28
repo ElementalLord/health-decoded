@@ -1242,6 +1242,85 @@ function RerouteTheDay() {
   );
 }
 
+function BreatheThrough() {
+  const [breathing, setBreathing] = useState(false);
+  const panic = [
+    [58, 54],
+    [244, 62],
+    [66, 182],
+    [236, 178],
+    [150, 34],
+    [150, 210],
+    [40, 120],
+    [262, 118],
+  ];
+
+  return (
+    <div className={styles.breathe}>
+      <div className={styles.rerouteHead}>
+        <p className="editorial-eyebrow">Before you solve anything, one breath</p>
+        <p>
+          The all-or-nothing story loosens with a single slow breath. Start one and follow the ring
+          as it grows and settles.
+        </p>
+      </div>
+      <div className={styles.breatheStage}>
+        <svg aria-hidden="true" className={styles.breatheSvg} viewBox="0 0 302 240">
+          <g className={cn(styles.breathePanic, breathing && styles.breathePanicCalm)}>
+            {panic.map(([x, y], index) => (
+              <circle cx={x} cy={y} fill="#c08b7a" key={index} r="5" />
+            ))}
+          </g>
+          <circle
+            className={styles.breatheRing}
+            cx="151"
+            cy="120"
+            fill="#efe1d0"
+            r="40"
+            stroke="#b96c55"
+            strokeWidth="3"
+          >
+            {breathing ? (
+              <>
+                <animate
+                  attributeName="r"
+                  calcMode="spline"
+                  dur="9s"
+                  keySplines="0.4 0 0.4 1;0.4 0 0.4 1"
+                  keyTimes="0;0.44;1"
+                  repeatCount="indefinite"
+                  values="34;66;34"
+                />
+                <animate
+                  attributeName="opacity"
+                  dur="9s"
+                  keyTimes="0;0.44;1"
+                  repeatCount="indefinite"
+                  values="0.7;1;0.7"
+                />
+              </>
+            ) : null}
+          </circle>
+        </svg>
+      </div>
+      <div className={styles.breatheControls}>
+        <p aria-live="polite" className={styles.rerouteCaption}>
+          {breathing
+            ? "In as the ring grows, out as it settles. The day is still here when you return."
+            : "One breath interrupts the story that the whole day is already ruined."}
+        </p>
+        <button
+          className={styles.breatheButton}
+          onClick={() => setBreathing((current) => !current)}
+          type="button"
+        >
+          {breathing ? "Rest" : "Take one breath"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function SteadyStory() {
   const [value, setValue] = useState(0);
   const t = value / 100;
@@ -1575,6 +1654,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 ))}
               </div>
             </div>
+            <BreatheThrough />
             <RerouteTheDay />
             <p className={styles.quietNote}>
               Pause · Understand · Choose · Adjust is a cycle, not a score. New information can send
