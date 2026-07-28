@@ -1,0 +1,1209 @@
+.page {
+  margin-inline: auto;
+  max-width: 70rem;
+  padding: 1.5rem 0 4.5rem;
+}
+
+.backToStories,
+.lessonLink {
+  align-items: center;
+  color: #4e6f61;
+  display: inline-flex;
+  font-size: 0.86rem;
+  font-weight: 750;
+  gap: 0.45rem;
+  min-height: 44px;
+  text-decoration: underline;
+  text-decoration-color: #b9c8c0;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35rem;
+}
+
+.hero {
+  background: #fffaf3;
+  border: 1px solid #d8cec2;
+  border-radius: 10px;
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+.cover {
+  aspect-ratio: 16 / 9;
+  background: #dce5e2;
+  overflow: hidden;
+}
+
+.cover img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.heroBody {
+  padding: clamp(1.6rem, 5vw, 4rem);
+}
+
+.storyLabels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+}
+
+.storyLabels span,
+.sceneEyebrow,
+.stageEyebrow,
+.playerIntroduction > p:first-child,
+.governance > p {
+  color: #a7604b;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.storyLabels span:last-child {
+  color: #557466;
+}
+
+.hero h1 {
+  color: var(--info-foreground);
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 6.5vw, 5.8rem);
+  font-variation-settings:
+    "opsz" 72,
+    "SOFT" 58;
+  font-weight: 420;
+  letter-spacing: -0.065em;
+  line-height: 0.94;
+  margin-top: 1rem;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+
+.heroMeta {
+  color: #736b64;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  gap: 0.65rem 1.5rem;
+  margin-top: 1.4rem;
+}
+
+.heroMeta span {
+  position: relative;
+}
+
+.heroMeta span + span::before {
+  background: #c8bcb0;
+  content: "";
+  height: 3px;
+  left: -0.8rem;
+  position: absolute;
+  top: 0.5rem;
+  width: 3px;
+  border-radius: 1px;
+}
+
+.disclosure {
+  background: #edf2ed;
+  border-left: 3px solid #7f9f8e;
+  color: #596c63;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin-top: 2rem;
+  max-width: 58rem;
+  padding: 1.15rem 1.25rem;
+}
+
+.contentWarning {
+  color: #665b53;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  margin-top: 1rem;
+  max-width: 58rem;
+}
+
+.reviewAttribution {
+  color: #607168;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  margin-top: 0.85rem;
+}
+
+.heroAction,
+.continueButton,
+.backButton,
+.lessonLink {
+  border-radius: 8px;
+}
+
+.heroAction,
+.continueButton {
+  align-items: center;
+  background: #3d6055;
+  border: 1px solid #3d6055;
+  color: #fffaf3;
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 760;
+  gap: 0.55rem;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.75rem 1.25rem;
+}
+
+.heroAction {
+  margin-top: 1.5rem;
+}
+
+.heroAction:hover,
+.continueButton:hover {
+  background: #314f46;
+}
+
+.heroAction:disabled,
+.continueButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.player {
+  background: #fffaf3;
+  border: 1px solid #d8cec2;
+  border-radius: 10px;
+  margin-top: 4rem;
+  min-height: 32.5rem;
+  overflow: hidden;
+  scroll-margin-top: 1rem;
+}
+
+.playerIntroduction,
+.retrievalStage,
+.quizStage,
+.resultsStage,
+.lessonStage,
+.reflectionStage,
+.completionStage {
+  margin-inline: auto;
+  max-width: 50rem;
+  min-height: 32.5rem;
+  padding: clamp(2rem, 6vw, 5rem);
+}
+
+.playerIntroduction,
+.resultsStage,
+.completionStage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.playerIntroduction h2,
+.retrievalStage h2,
+.quizStage h2,
+.resultsStage h2,
+.lessonStage h2,
+.reflectionStage h2,
+.completionStage h2 {
+  color: var(--info-foreground);
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.2vw, 3.35rem);
+  font-variation-settings:
+    "opsz" 48,
+    "SOFT" 64;
+  font-weight: 480;
+  letter-spacing: -0.05em;
+  line-height: 1.04;
+  margin-top: 0.65rem;
+  text-wrap: balance;
+}
+
+.playerIntroduction > p:nth-child(3),
+.resultsStage > p,
+.completionStage > p {
+  color: #65726c;
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-top: 1.2rem;
+  max-width: 58ch;
+}
+
+.playerIntroduction .continueButton,
+.resultsStage > .continueButton,
+.lessonStage > .continueButton {
+  align-self: flex-start;
+  margin-top: 1.8rem;
+}
+
+.progressBlock {
+  align-items: center;
+  background: #edf2ed;
+  border-bottom: 1px solid #d4ded6;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  padding: 1rem 1.4rem;
+}
+
+.progressText {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.progressText span {
+  color: #a7614c;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.progressText strong {
+  color: #426257;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 570;
+}
+
+.progressRail {
+  display: flex;
+  gap: 0.45rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.progressRail button {
+  align-items: center;
+  border: 1px solid #bac9c0;
+  border-radius: 6px;
+  display: flex;
+  font-size: 0.74rem;
+  font-weight: 760;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.currentStep {
+  background: #b96c55;
+  border-color: #b96c55 !important;
+  color: #fffaf3;
+}
+
+.completedStep {
+  background: #779888;
+  border-color: #779888 !important;
+  color: #fffaf3;
+}
+
+.futureStep {
+  background: #f8f4ed;
+  color: #9a9189;
+}
+
+.sceneSurface {
+  display: grid;
+  grid-template-columns: minmax(0, 58fr) minmax(20rem, 42fr);
+  min-height: 32.5rem;
+}
+
+.narrative,
+.interaction {
+  min-width: 0;
+  padding: clamp(1.8rem, 4vw, 3.3rem);
+}
+
+.narrative {
+  border-right: 1px solid #ded5ca;
+}
+
+.narrative h2 {
+  color: var(--info-foreground);
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 4vw, 3.7rem);
+  font-variation-settings:
+    "opsz" 52,
+    "SOFT" 62;
+  font-weight: 450;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  margin-top: 0.6rem;
+  text-wrap: balance;
+}
+
+.paragraphs {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.7rem;
+  max-width: 38rem;
+}
+
+.paragraphs p {
+  color: #4f4a46;
+  font-size: 1.0625rem;
+  line-height: 1.76;
+}
+
+.paragraphs p:is(:nth-child(3), :nth-last-child(-n + 3)) {
+  color: #3f5f55;
+  font-family: var(--font-serif);
+  font-size: 1.16rem;
+}
+
+.interaction {
+  background: #eef3ef;
+}
+
+.sceneNavigation {
+  align-items: center;
+  border-top: 1px solid #ded5ca;
+  display: flex;
+  gap: 1rem;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  padding: 1rem 1.4rem;
+}
+
+.backButton {
+  align-items: center;
+  background: transparent;
+  border: 1px solid #c9beb1;
+  color: #5f554e;
+  display: inline-flex;
+  font-size: 0.86rem;
+  font-weight: 720;
+  gap: 0.4rem;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.7rem 1.05rem;
+}
+
+.backButton:hover {
+  background: #f2ece3;
+}
+
+.sceneSurface.entering.forward {
+  animation: scene-enter-forward 230ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sceneSurface.entering.backward {
+  animation: scene-enter-backward 230ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sceneSurface.leaving.forward {
+  animation: scene-leave-forward 150ms ease both;
+}
+
+.sceneSurface.leaving.backward {
+  animation: scene-leave-backward 150ms ease both;
+}
+
+/* Scene interactions */
+.resultHeader,
+.phoneTop,
+.callStatus {
+  align-items: center;
+  color: #61736a;
+  display: flex;
+  font-size: 0.72rem;
+  font-weight: 760;
+  justify-content: space-between;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.termFocus > p {
+  color: #6c7972;
+  font-size: 0.84rem;
+  margin-top: 1.3rem;
+}
+
+.termList {
+  border-top: 1px solid #cbd8d0;
+  margin-top: 1rem;
+}
+
+.termList button {
+  align-items: center;
+  border-bottom: 1px solid #cbd8d0;
+  color: #3d5f54;
+  display: flex;
+  font-size: 0.9rem;
+  font-weight: 720;
+  justify-content: space-between;
+  min-height: 54px;
+  text-align: left;
+  width: 100%;
+}
+
+.termList button[aria-pressed="true"] {
+  color: #a55f4b;
+}
+
+.interactionReveal {
+  background: #fffaf3;
+  border-left: 3px solid #c77c63;
+  display: grid;
+  gap: 0.35rem;
+  line-height: 1.55;
+  margin-top: 1.3rem;
+  min-height: 5.25rem;
+  padding: 1rem;
+}
+
+.interactionReveal strong {
+  color: #3f6055;
+}
+
+.interactionReveal span {
+  color: #66736d;
+  font-size: 0.83rem;
+}
+
+.phoneDraft {
+  background: #fffaf3;
+  border: 1px solid #c8d5cd;
+  border-radius: 9px;
+  margin-inline: auto;
+  max-width: 22rem;
+  padding: 1.25rem;
+}
+
+.phoneTop {
+  border-bottom: 1px solid #ddd3c7;
+  padding-bottom: 0.8rem;
+}
+
+.incomingMessage {
+  background: #dfeae3;
+  border-radius: 8px 8px 8px 2px;
+  color: #476156;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  margin-top: 1.25rem;
+  padding: 0.8rem;
+}
+
+.draftField {
+  animation: draft-change 180ms ease both;
+  border-bottom: 1px solid #a9bdb1;
+  color: #5f554f;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-top: 2rem;
+  min-height: 3rem;
+  padding: 0.6rem 0.2rem;
+}
+
+.draftField span {
+  color: #9a9088;
+}
+
+.draftControls {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: space-between;
+  margin-top: 1.2rem;
+}
+
+.draftControls button,
+.dialogue > button,
+.reviewLinks button {
+  color: #4f7063;
+  font-size: 0.78rem;
+  font-weight: 730;
+  min-height: 44px;
+  text-decoration: underline;
+  text-decoration-color: #a9bdb1;
+  text-underline-offset: 0.3rem;
+}
+
+.draftControls button:disabled {
+  opacity: 0.35;
+}
+
+.comparison > div:first-child {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.comparison > div:first-child button {
+  border: 1px solid #b8c9bf;
+  color: #5d7168;
+  font-size: 0.78rem;
+  font-weight: 740;
+  min-height: 58px;
+  padding: 0.6rem;
+}
+
+.comparison > div:first-child button:first-child {
+  border-radius: 7px 0 0 7px;
+}
+
+.comparison > div:first-child button:last-child {
+  border-left: 0;
+  border-radius: 0 7px 7px 0;
+}
+
+.comparison > div:first-child button[aria-pressed="true"] {
+  background: #3f6257;
+  color: #fffaf3;
+}
+
+.comparisonText {
+  align-items: start;
+  background: #fffaf3;
+  border: 1px solid #d4cbc0;
+  border-radius: 7px;
+  color: #4c5f57;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: auto 1fr;
+  line-height: 1.65;
+  margin-top: 1rem;
+  min-height: 9rem;
+  padding: 1.2rem;
+}
+
+.comparisonText svg {
+  color: #a96955;
+  margin-top: 0.2rem;
+}
+
+.comparison > small {
+  color: #6e7b74;
+  display: block;
+  line-height: 1.55;
+  margin-top: 1rem;
+}
+
+.callStatus {
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.dialogueLines {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+  min-height: 15rem;
+}
+
+.dialogueLines > p {
+  background: #fffaf3;
+  border-left: 3px solid #8aa594;
+  border-radius: 0 7px 7px 0;
+  color: #51655c;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  padding: 0.8rem;
+}
+
+.dialogueLines > p.marcusLine {
+  border-left-color: #c67a61;
+  margin-left: 1.5rem;
+}
+
+.dialogueLines small {
+  color: #927164;
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 780;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.dialogueLines > span {
+  color: #8c837b;
+  font-family: var(--font-serif);
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.questionChanged,
+.choiceConsequence,
+.allQuestionsOpen,
+.holdAnswer,
+.quizFeedback {
+  background: #fffaf3;
+  border-left: 3px solid #7e9c8c;
+  color: #586b62;
+  line-height: 1.6;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.questionChanged {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.questionChanged strong {
+  color: #3f6257;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+}
+
+.browserTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-height: 8rem;
+  overflow: hidden;
+}
+
+.browserTabs svg {
+  color: #9b6553;
+  margin: 0.55rem 0.3rem 0 0;
+}
+
+.browserTabs span {
+  background: #fffaf3;
+  border: 1px solid #d6cbc0;
+  border-radius: 5px 5px 0 0;
+  color: #695f58;
+  font-size: 0.65rem;
+  max-width: 10rem;
+  overflow: hidden;
+  padding: 0.55rem 0.65rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.decision fieldset,
+.nextStepChoices {
+  border: 0;
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1.35rem;
+  min-width: 0;
+}
+
+.decision legend,
+.nextStepChoices legend {
+  color: #3f5e53;
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  font-weight: 550;
+  line-height: 1.35;
+  margin-bottom: 0.45rem;
+}
+
+.decision label,
+.nextStepChoices label,
+.answerChoices label {
+  cursor: pointer;
+}
+
+.decision label input,
+.nextStepChoices input,
+.answerChoices input {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.decision label > span,
+.nextStepChoices label > span,
+.answerChoices label > span {
+  align-items: center;
+  background: #fffaf3;
+  border: 1px solid #d2c8bc;
+  border-radius: 7px;
+  color: #5e5a55;
+  display: flex;
+  font-size: 0.8rem;
+  gap: 0.65rem;
+  line-height: 1.45;
+  min-height: 48px;
+  padding: 0.7rem 0.8rem;
+}
+
+.decision label input:checked + span,
+.nextStepChoices input:checked + span,
+.answerChoices input:checked + span {
+  background: #e1ebe4;
+  border-color: #6f9280;
+  color: #36584d;
+  box-shadow: inset 3px 0 #6f9280;
+}
+
+.decision label input:focus-visible + span,
+.nextStepChoices input:focus-visible + span,
+.answerChoices input:focus-visible + span {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.decision label small,
+.answerChoices label small {
+  align-items: center;
+  border-right: 1px solid #d5cbc0;
+  color: #a76450;
+  display: flex;
+  flex: 0 0 1.7rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 1.7rem;
+}
+
+.choiceConsequence {
+  display: grid;
+  font-size: 0.78rem;
+  gap: 0.65rem;
+}
+
+.choiceConsequence strong {
+  color: #3e6055;
+}
+
+.choiceConsequence span {
+  color: #707a75;
+}
+
+.foldedQuestions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.foldedQuestions button {
+  background: #fffaf3;
+  border: 1px solid #d4c9bd;
+  border-radius: 7px;
+  box-shadow: 4px 4px 0 rgb(111 148 122 / 0.12);
+  display: grid;
+  gap: 0.35rem;
+  min-height: 5.7rem;
+  padding: 1rem;
+  position: relative;
+  text-align: left;
+}
+
+.foldedQuestions button::after {
+  border-left: 1rem solid transparent;
+  border-top: 1rem solid #dfe9e2;
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.foldedQuestions button span {
+  color: #a6624e;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.foldedQuestions button strong {
+  color: #456157;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 550;
+  line-height: 1.35;
+}
+
+.questionInteraction > small {
+  color: #7b807d;
+  display: block;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  margin-top: 0.8rem;
+}
+
+.allQuestionsOpen {
+  font-size: 0.8rem;
+}
+
+/* Prediction, quiz, lesson, reflection, completion */
+.retrievalStage h2,
+.quizStage h2 {
+  max-width: 19ch;
+}
+
+.answerChoices {
+  border: 0;
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 2rem;
+  min-width: 0;
+  padding: 0;
+}
+
+.answerChoices label > span {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 0.9rem 1rem;
+}
+
+.stageNavigation,
+.reflectionActions,
+.completionActions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.quizStage > .continueButton {
+  margin-top: 1.5rem;
+}
+
+.quizFeedback {
+  margin-top: 1.5rem;
+}
+
+.quizFeedback strong {
+  color: #3d5f54;
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+}
+
+.quizFeedback p {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.quizFeedback .continueButton {
+  margin-top: 1rem;
+}
+
+.reviewLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 1rem;
+}
+
+.lessonStage > div {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.lessonStage > div p {
+  color: #5c6862;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.lessonStage blockquote {
+  border-block: 1px solid #cbbfb2;
+  color: #3e5f54;
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  line-height: 1.4;
+  margin-top: 2rem;
+  padding-block: 1.5rem;
+}
+
+.lessonStage blockquote span {
+  color: #a7614c;
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.65rem;
+  text-transform: uppercase;
+}
+
+.reflectionStage label {
+  color: #3f5f54;
+  display: grid;
+  font-size: 0.8rem;
+  font-weight: 750;
+  gap: 0.55rem;
+  margin-top: 1.7rem;
+}
+
+.reflectionStage textarea {
+  background: #fffdf8;
+  border: 1px solid #cfc3b6;
+  border-radius: 7px;
+  color: #413b37;
+  font: inherit;
+  font-weight: 450;
+  line-height: 1.6;
+  min-height: 10rem;
+  padding: 1rem;
+  resize: vertical;
+  width: 100%;
+}
+
+.reflectionStage > p {
+  color: #77736f;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  margin-top: 0.7rem;
+}
+
+.completionMark {
+  align-items: center;
+  background: #e2ebe4;
+  border: 1px solid #bfd0c5;
+  border-radius: 50%;
+  color: #557867;
+  display: flex;
+  height: 4.25rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  width: 4.25rem;
+}
+
+.completionFacts {
+  border-block: 1px solid #d6ccc0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 2rem;
+}
+
+.completionFacts > div {
+  padding: 1rem;
+}
+
+.completionFacts > div + div {
+  border-left: 1px solid #d6ccc0;
+}
+
+.completionFacts dt {
+  color: #a7614c;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.completionFacts dd {
+  color: #3f5f54;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-top: 0.35rem;
+}
+
+.completionActions {
+  justify-content: flex-start;
+}
+
+.completionActions .lessonLink {
+  border: 1px solid transparent;
+  padding-inline: 0.4rem;
+}
+
+.governance {
+  border-top: 1px solid var(--border);
+  color: #77716c;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+}
+
+.governance > span {
+  display: block;
+  font-size: 0.74rem;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+  max-width: 60rem;
+}
+
+.governance dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  margin-top: 1rem;
+}
+
+.governance dl > div {
+  display: flex;
+  font-size: 0.68rem;
+  gap: 0.4rem;
+}
+
+.governance dt {
+  font-weight: 780;
+}
+
+.governance dd {
+  text-transform: capitalize;
+}
+
+@keyframes scene-enter-forward {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scene-enter-backward {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scene-leave-forward {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+}
+
+@keyframes scene-leave-backward {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+}
+
+@keyframes draft-change {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 48rem) {
+  .player {
+    margin-top: 2.5rem;
+  }
+
+  .progressBlock {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .progressRail {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .progressRail button {
+    height: 44px;
+    width: 44px;
+  }
+
+  .sceneSurface {
+    grid-template-columns: 1fr;
+  }
+
+  .narrative {
+    border-bottom: 1px solid #ded5ca;
+    border-right: 0;
+  }
+
+  .interaction {
+    min-height: 20rem;
+  }
+
+  .completionFacts {
+    grid-template-columns: 1fr;
+  }
+
+  .completionFacts > div + div {
+    border-left: 0;
+    border-top: 1px solid #d6ccc0;
+  }
+}
+
+@media (max-width: 30rem) {
+  .heroBody,
+  .narrative,
+  .interaction,
+  .playerIntroduction,
+  .retrievalStage,
+  .quizStage,
+  .resultsStage,
+  .lessonStage,
+  .reflectionStage,
+  .completionStage {
+    padding-inline: 1.25rem;
+  }
+
+  .heroMeta span + span::before {
+    display: none;
+  }
+
+  .heroMeta {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .progressRail {
+    gap: 0.25rem;
+  }
+
+  .progressRail button {
+    width: 40px;
+  }
+
+  .sceneNavigation,
+  .stageNavigation {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .sceneNavigation > *,
+  .stageNavigation > * {
+    width: 100%;
+  }
+
+  .comparison > div:first-child {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison > div:first-child button:first-child,
+  .comparison > div:first-child button:last-child {
+    border: 1px solid #b8c9bf;
+    border-radius: 7px;
+  }
+
+  .comparison > div:first-child button:last-child {
+    margin-top: 0.4rem;
+  }
+
+  .draftControls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sceneSurface.entering.forward,
+  .sceneSurface.entering.backward,
+  .sceneSurface.leaving.forward,
+  .sceneSurface.leaving.backward {
+    animation: none;
+  }
+
+  .draftField {
+    animation: none;
+  }
+}
