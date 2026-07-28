@@ -5,6 +5,7 @@ import test from "node:test";
 import { type2DiabetesResources } from "../content/resources/type-2-diabetes-resources.ts";
 
 const component = readFileSync("features/resources/components/resources.tsx", "utf8");
+const motion = readFileSync("features/resources/components/resource-motion-scenes.tsx", "utf8");
 const styles = readFileSync("features/resources/components/resources.module.css", "utf8");
 
 test("the reading room publishes 18 distinct reviewed guides", () => {
@@ -67,6 +68,8 @@ test("editorial imagery is purposeful and production sized", () => {
     "foot-check-natural.png",
     "emergency-kit-natural.png",
     "everyday-support-natural.png",
+    "pharmacist-routine-editorial.png",
+    "community-education-editorial.png",
   ];
 
   assert.match(component, /import Image from "next\/image"/);
@@ -89,17 +92,25 @@ test("article views persist locally and expose a clear completion record", () =>
   assert.match(component, /Clear viewed history/);
 });
 
-test("five distinct editorial scenes loop meaningfully and respect reduced motion", () => {
-  for (const variant of ["context", "daily", "safety", "care", "support"]) {
+test("seven complex editorial scenes loop meaningfully and respect reduced motion", () => {
+  for (const variant of ["context", "source", "daily", "medicine", "safety", "care", "support"]) {
     assert.match(component, new RegExp(`EditorialMotion variant="${variant}"`));
   }
 
-  assert.equal(component.split("<EditorialMotion").length - 1, 5);
-  assert.match(styles, /animation: context-moment 6s ease-in-out infinite/);
-  assert.match(styles, /animation: steps-walk 4\.8s ease-in-out infinite/);
-  assert.match(styles, /animation: pack-water 5\.4s ease-in-out infinite/);
-  assert.match(styles, /animation: calendar-check 6s ease-in-out infinite/);
-  assert.match(styles, /animation: people-lean 4\.2s ease-in-out infinite/);
+  assert.equal(component.split("<EditorialMotion").length - 1, 7);
+  assert.equal(
+    (motion.match(/function (?:Context|Source|Daily|Medicine|Safety|Care|Support)Scene\(\)/g) ?? [])
+      .length,
+    7,
+  );
+  assert.ok((motion.match(/repeatCount="indefinite"/g) ?? []).length >= 35);
+  assert.ok((motion.match(/<animateMotion/g) ?? []).length >= 3);
+  assert.ok((motion.match(/<animateTransform/g) ?? []).length >= 10);
+  assert.match(motion, /Follow the amber reading/);
+  assert.match(motion, /Follow one dose from the bottle/);
+  assert.match(motion, /sequence move from noticing a change/);
+  assert.match(motion, /person—not the helper—chooses the need/);
+  assert.match(styles, /\.motionArt animateMotion/);
 });
 
 test("the reading room stays slightly rounded, responsive, focused, and motion-safe", () => {

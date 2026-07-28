@@ -1357,6 +1357,47 @@ article:hover .externalArrow {
   }
 }
 
+.confidenceGrid > .photoInterlude {
+  grid-column: 1 / -1;
+}
+
+.motionFigure {
+  grid-template-columns: minmax(0, 1.48fr) minmax(18rem, 0.72fr);
+  min-height: 22rem;
+}
+
+.motionStage {
+  min-height: 22rem;
+  padding: 0;
+}
+
+.motionArt {
+  display: block;
+  height: 100%;
+  min-height: 22rem;
+  width: 100%;
+}
+
+.motionFigure figcaption {
+  padding: 2rem 2.2rem;
+}
+
+.motionFigure figcaption > p {
+  color: #a7604b;
+  font-size: 0.65rem;
+  font-weight: 780;
+  letter-spacing: 0.1em;
+  line-height: 1.55;
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+}
+
+.motionFigure[data-motion-scene="source"],
+.motionFigure[data-motion-scene="medicine"],
+.motionFigure[data-motion-scene="support"] {
+  background: linear-gradient(105deg, #f4ece3 0%, #eef3ef 100%);
+}
+
 .disclaimer {
   align-items: start;
   border-top: 1px solid var(--editorial-rule);
@@ -1532,6 +1573,10 @@ article:hover .externalArrow {
     border-right: 0;
   }
 
+  .motionArt {
+    min-height: 18rem;
+  }
+
   .photoInterlude > div {
     min-height: auto;
   }
@@ -1620,6 +1665,12 @@ article:hover .externalArrow {
   .supportPeople,
   .supportSteam i {
     animation: none;
+  }
+
+  .motionArt animate,
+  .motionArt animateMotion,
+  .motionArt animateTransform {
+    display: none;
   }
 }
 

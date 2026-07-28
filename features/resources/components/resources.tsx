@@ -4,34 +4,23 @@ import Image from "next/image";
 import {
   ArrowRight,
   ArrowUpRight,
-  BatteryCharging,
   BookOpenText,
-  CalendarDays,
   Check,
   CircleDollarSign,
   ClipboardCheck,
-  Coffee,
-  Droplets,
-  FileText,
-  Flashlight,
-  Footprints,
-  Heart,
   HeartPulse,
-  Moon,
   Quote,
   Salad,
   ShieldCheck,
   Sparkles,
   Stethoscope,
-  Sun,
-  Utensils,
-  Users,
   type LucideIcon,
 } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import type { Resource } from "@/features/stories/schemas/resource.schema";
 
+import { EditorialMotion } from "./resource-motion-scenes";
 import styles from "./resources.module.css";
 
 type ResourceId = Resource["id"];
@@ -443,119 +432,28 @@ function ReadingProgressPanel({ total }: { total: number }) {
   );
 }
 
-type MotionVariant = "context" | "daily" | "safety" | "care" | "support";
-
-const motionCopy: Record<MotionVariant, { label: string; note: string }> = {
-  care: {
-    label: "Small appointments can protect a much bigger life.",
-    note: "Routine checks make quiet changes easier to notice early.",
-  },
-  context: {
-    label: "A number becomes more useful when life joins the picture.",
-    note: "Meals, movement, sleep, and timing help turn a result into a better question.",
-  },
-  daily: {
-    label: "Familiar food and ordinary movement can share the same day.",
-    note: "Care can fit around the table you already have.",
-  },
-  safety: {
-    label: "A calm plan is easiest to pack before you need it.",
-    note: "Water, light, power, supplies, and written instructions each have a purpose.",
-  },
-  support: {
-    label: "Support does not have to look clinical.",
-    note: "It can be company, a warm drink, a shared walk, or one practical task.",
-  },
-};
-
-function EditorialMotion({ variant }: { variant: MotionVariant }) {
-  const copy = motionCopy[variant];
-
-  return (
-    <figure className={styles.motionFigure}>
-      <div aria-hidden="true" className={styles.motionStage}>
-        {variant === "context" ? (
-          <div className={styles.contextScene}>
-            <FileText className={styles.contextPaper} strokeWidth={1.45} />
-            <div className={styles.contextMoments}>
-              <Sun className={styles.contextSun} strokeWidth={1.5} />
-              <Utensils className={styles.contextMeal} strokeWidth={1.5} />
-              <Moon className={styles.contextMoon} strokeWidth={1.5} />
-            </div>
-          </div>
-        ) : null}
-        {variant === "daily" ? (
-          <div className={styles.dailyScene}>
-            <div className={styles.dailyPlate}>
-              <span />
-              <span />
-              <span />
-            </div>
-            <div className={styles.dailySteam}>
-              <i />
-              <i />
-            </div>
-            <Footprints className={styles.dailySteps} strokeWidth={1.4} />
-          </div>
-        ) : null}
-        {variant === "safety" ? (
-          <div className={styles.safetyScene}>
-            <div className={styles.safetyBag}>
-              <span />
-            </div>
-            <Droplets className={styles.safetyWater} strokeWidth={1.5} />
-            <Flashlight className={styles.safetyLight} strokeWidth={1.5} />
-            <BatteryCharging className={styles.safetyPower} strokeWidth={1.5} />
-          </div>
-        ) : null}
-        {variant === "care" ? (
-          <div className={styles.careScene}>
-            <CalendarDays className={styles.careCalendar} strokeWidth={1.35} />
-            <div className={styles.careChecks}>
-              <Check strokeWidth={2.2} />
-              <Check strokeWidth={2.2} />
-              <Check strokeWidth={2.2} />
-            </div>
-            <Heart className={styles.careHeart} fill="currentColor" strokeWidth={1.25} />
-          </div>
-        ) : null}
-        {variant === "support" ? (
-          <div className={styles.supportScene}>
-            <Users className={styles.supportPeople} strokeWidth={1.35} />
-            <Coffee className={styles.supportCup} strokeWidth={1.45} />
-            <div className={styles.supportSteam}>
-              <i />
-              <i />
-            </div>
-          </div>
-        ) : null}
-      </div>
-      <figcaption>
-        <strong>{copy.label}</strong>
-        <span>{copy.note}</span>
-      </figcaption>
-    </figure>
-  );
-}
-
-function EditorialPhoto() {
+function EditorialPhoto({
+  alt,
+  eyebrow,
+  note,
+  src,
+  title,
+}: {
+  alt: string;
+  eyebrow: string;
+  note: string;
+  src: string;
+  title: string;
+}) {
   return (
     <figure className={styles.photoInterlude}>
       <div>
-        <Image
-          alt="Two friends sharing tea and an easy laugh at a kitchen table"
-          fill
-          sizes="(max-width: 48rem) 100vw, 58vw"
-          src="/resources/everyday-support-natural.png"
-        />
+        <Image alt={alt} fill sizes="(max-width: 48rem) 100vw, 58vw" src={src} />
       </div>
       <figcaption>
-        <p>An ordinary kind of support</p>
-        <strong>Sometimes care looks like being able to exhale with someone.</strong>
-        <span>
-          Company and practical help can make room for health without making every conversation
-          about diabetes.
-        </span>
+        <p>{eyebrow}</p>
+        <strong>{title}</strong>
+        <span>{note}</span>
       </figcaption>
     </figure>
   );
@@ -716,6 +614,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
         </section>
 
         <SourceNote />
+        <EditorialMotion variant="source" />
 
         <section
           aria-labelledby="daily-living-heading"
@@ -752,6 +651,14 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             title="Know the next move before you need it."
           />
           <WideFeature resource={treatments} />
+          <EditorialPhoto
+            alt="An older woman and community pharmacist building a medicine timing routine together"
+            eyebrow="A routine built with someone"
+            note="The useful plan connects the exact medicine to its timing, purpose, and written instructions—without asking memory to carry everything."
+            src="/resources/pharmacist-routine-editorial.png"
+            title="Questions belong in the medicine routine."
+          />
+          <EditorialMotion variant="medicine" />
           <EditorialMotion variant="safety" />
           <div className={styles.checklistGrid}>
             <ChecklistArticle note="Recognize · Treat · Recheck" resource={lowBloodSugar} />
@@ -800,7 +707,13 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             id="living-confidently-heading"
             title="Care works better when it does not all sit on you."
           />
-          <EditorialPhoto />
+          <EditorialPhoto
+            alt="Two friends sharing tea and an easy laugh at a kitchen table"
+            eyebrow="An ordinary kind of support"
+            note="Company and practical help can make room for health without making every conversation about diabetes."
+            src="/resources/everyday-support-natural.png"
+            title="Sometimes care looks like being able to exhale with someone."
+          />
           <div className={styles.confidenceGrid}>
             <LeadArticle index="03" resource={mentalHealth} />
             <Perspective>
@@ -808,6 +721,13 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               feeling was the first useful step.
             </Perspective>
             <WideFeature resource={education} />
+            <EditorialPhoto
+              alt="A diverse group of adults and an educator exchanging questions around a welcoming table"
+              eyebrow="Learning with people who understand"
+              note="Education can be a conversation: one person asks, another recognizes the feeling, and everyone leaves with a more usable next question."
+              src="/resources/community-education-editorial.png"
+              title="Good support makes room for your voice."
+            />
             <SupportFeature resource={financialHelp} />
             <ChecklistArticle
               image={{
