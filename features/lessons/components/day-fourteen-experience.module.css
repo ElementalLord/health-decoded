@@ -26,6 +26,250 @@
   line-height: 1.35;
 }
 
+.journeyTrace {
+  overflow: hidden;
+  border: 1px solid rgb(199 124 98 / 22%);
+  border-radius: 14px;
+  background: #f4ebe1;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.journeyTraceHead {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.journeyTraceHead p:last-child {
+  color: #7a6a5f;
+  line-height: 1.6;
+}
+
+.journeyTraceSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.journeyLine {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: journey-draw 2.4s var(--ease-standard, ease) forwards;
+}
+
+@keyframes journey-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.journeyDot {
+  cursor: pointer;
+  transition:
+    r 280ms ease,
+    fill 280ms ease,
+    stroke 280ms ease;
+}
+
+.journeyDot:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: 3px;
+}
+
+.journeyDotActive {
+  animation: journey-glow 1.9s ease-in-out infinite;
+}
+
+@keyframes journey-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgb(111 148 122 / 0%));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 6px rgb(111 148 122 / 55%));
+  }
+}
+
+.journeyCaption {
+  min-height: 3.2rem;
+  margin-top: 1rem;
+  color: #6f5a4e;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.bite {
+  overflow: hidden;
+  border: 1px solid rgb(199 124 98 / 22%);
+  border-radius: 14px;
+  background: #f4ebe1;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.biteSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0.6rem 0 0.4rem;
+}
+
+.biteParticle {
+  transition: transform 550ms var(--ease-standard, ease);
+}
+
+.biteControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+.biteStationLabel {
+  color: #55796a;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.biteStationCaption {
+  max-width: 34rem;
+  margin-top: 0.35rem;
+  color: #6f5a4e;
+  line-height: 1.6;
+}
+
+.biteButton {
+  flex-shrink: 0;
+  border: 1px solid #b96c55;
+  border-radius: 9px;
+  background: #b96c55;
+  padding: 0.5rem 1.1rem;
+  color: #fff8f0;
+  transition: background 160ms ease;
+}
+
+.biteButton:hover {
+  background: #a75f4a;
+}
+
+.biteButton:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: 2px;
+}
+
+.foundation,
+.loop {
+  overflow: hidden;
+  border: 1px solid rgb(199 124 98 / 22%);
+  border-radius: 14px;
+  background: #f4ebe1;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.loopSvg {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  margin: 0.4rem auto 0.6rem;
+}
+
+.loopControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.loopButton {
+  flex-shrink: 0;
+  border: 1px solid #6f947a;
+  border-radius: 9px;
+  background: #6f947a;
+  padding: 0.5rem 1.1rem;
+  color: #f6faf7;
+  transition: background 160ms ease;
+}
+
+.loopButton:hover {
+  background: #5d8069;
+}
+
+.loopButton:focus-visible {
+  outline: 2px solid #33564a;
+  outline-offset: 2px;
+}
+
+.foundationSvg {
+  display: block;
+  width: 100%;
+  max-width: 32rem;
+  height: auto;
+  margin: 0.4rem auto 0.9rem;
+}
+
+.foundationBlock {
+  transition:
+    opacity 400ms var(--ease-standard, ease),
+    transform 400ms var(--ease-standard, ease);
+}
+
+.foundationChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.foundationChip {
+  border: 1px solid rgb(157 113 74 / 28%);
+  border-radius: 9px;
+  background: #fffdf8;
+  padding: 0.5rem 0.85rem;
+  color: #5a4a3d;
+  line-height: 1.45;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.foundationChip:hover {
+  border-color: rgb(157 113 74 / 55%);
+}
+
+.foundationChip:focus-visible {
+  outline: 2px solid #55796a;
+  outline-offset: 2px;
+}
+
+.foundationChipActive {
+  border-color: #a2634c;
+  background: #f0e0d5;
+  color: #7a4634;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journeyLine {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .journeyDotActive {
+    animation: none;
+  }
+
+  .biteParticle {
+    transition: none;
+  }
+
+  .foundationBlock {
+    transition: none;
+  }
+}
+
 .optionalReflection,
 .nextStepSection {
   display: grid;

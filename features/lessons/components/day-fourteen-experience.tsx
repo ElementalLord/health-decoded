@@ -889,31 +889,12 @@ function ToolPracticeStudio() {
 
           {activeTool === "food" ? (
             <g className={styles.toolMoment} key="food">
-              <path className={styles.storyTable} d="M125 226h472M168 226v43M554 226v43" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="warm"
-                scale={0.76}
-                seated
-                x={232}
-                y={265}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={493}
-                y={265}
-              />
-              <ellipse className={styles.plateShape} cx="362" cy="218" rx="62" ry="13" />
-              <path d="M320 210 Q362 172 404 210" fill="#e6b774" />
-              <path d="M334 206 Q362 184 390 206" fill="#789b88" opacity=".88" />
+              <ellipse className={styles.plateShape} cx="360" cy="214" rx="134" ry="30" />
+              <path d="M274 198 Q360 116 446 198 Z" fill="#e6b774" />
+              <path d="M308 194 Q360 148 412 194 Z" fill="#789b88" opacity=".85" />
               <path
                 className={styles.foodSteam}
-                d="M348 192c-10-11 10-17 0-31M376 192c-10-11 10-17 0-31"
+                d="M334 150c-14-16 14-24 0-46M386 150c-14-16 14-24 0-46"
               >
                 <animateTransform
                   attributeName="transform"
@@ -934,39 +915,28 @@ function ToolPracticeStudio() {
 
           {activeTool === "movement" ? (
             <g className={styles.toolMoment} key="movement">
-              <path className={styles.treeTrunk} d="M596 107v157" />
-              <circle className={styles.treeLeaf} cx="596" cy="86" r="51">
+              <path className={styles.treeTrunk} d="M612 118v146" />
+              <circle className={styles.treeLeaf} cx="612" cy="96" r="48">
                 <animateTransform
                   attributeName="transform"
                   dur="5s"
                   repeatCount="indefinite"
                   type="rotate"
-                  values="-2 596 140;2 596 140;-2 596 140"
+                  values="-2 612 150;2 612 150;-2 612 150"
                 />
               </circle>
-              <LessonMotionPerson
-                action="wave-right"
-                motion="dance"
-                palette="warm"
-                scale={0.79}
-                x={215}
-                y={266}
+              <path
+                d="M92 240 Q244 156 372 214 T596 182"
+                fill="none"
+                stroke="#b8cabf"
+                strokeDasharray="2 30"
+                strokeLinecap="round"
+                strokeWidth="12"
               />
-              <LessonMotionPerson
-                action="wave-left"
-                motion="dance"
-                palette="sage"
-                scale={0.79}
-                x={465}
-                y={266}
-              />
-              <circle className={styles.picnicBall} cx="0" cy="0" r="12">
+              <circle fill="#cf7b61" r="19" stroke="#fffaf2" strokeWidth="5">
                 <animateMotion
-                  calcMode="spline"
-                  dur="3s"
-                  keySplines="0.4 0 0.2 1;0.4 0 0.2 1"
-                  keyTimes="0;0.5;1"
-                  path="M260 174 Q340 74 420 174 Q340 74 260 174"
+                  dur="4.2s"
+                  path="M92 240 Q244 156 372 214 T596 182"
                   repeatCount="indefinite"
                 />
               </circle>
@@ -975,101 +945,73 @@ function ToolPracticeStudio() {
 
           {activeTool === "medicine" ? (
             <g className={styles.toolMoment} key="medicine">
-              <path className={styles.storyTable} d="M125 226h470M169 226v43M552 226v43" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={224}
-                y={265}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="blue"
-                scale={0.76}
-                seated
-                x={500}
-                y={265}
-              />
-              <path className={styles.medicineBottle} d="M341 151h52v68h-52zM351 136h32v15h-32z" />
               <rect
-                className={styles.storyNotebook}
-                height="68"
-                rx="4"
-                width="70"
-                x="408"
-                y="150"
+                className={styles.medicineBottle}
+                height="152"
+                rx="12"
+                width="120"
+                x="236"
+                y="118"
               />
+              <rect fill="#bd7a60" height="30" rx="6" width="82" x="255" y="92" />
+              <rect fill="#fffaf2" height="70" opacity=".92" rx="5" width="92" x="250" y="158" />
               <path
-                d="M421 170 H465 M421 187 H459 M421 204 H468"
-                stroke="#9bad9f"
+                d="M276 186 H326 M276 202 H318 M276 218 H322"
+                stroke="#c99a86"
                 strokeLinecap="round"
                 strokeWidth="4"
               />
-              <path d="M344 179 H390" stroke="#b8d1c2" strokeLinecap="round" strokeWidth="9">
-                <animate
-                  attributeName="opacity"
-                  dur="3s"
-                  repeatCount="indefinite"
-                  values=".45;1;.45"
+              <g>
+                <rect
+                  fill="#e6b774"
+                  height="34"
+                  rx="17"
+                  stroke="#c69551"
+                  strokeWidth="3"
+                  width="92"
+                  x="418"
+                  y="150"
                 />
-              </path>
+                <path d="M464 150 V184" stroke="#c69551" strokeWidth="3" />
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.6s"
+                  repeatCount="indefinite"
+                  type="rotate"
+                  values="-7 464 167;9 464 167;-7 464 167"
+                />
+              </g>
             </g>
           ) : null}
 
           {activeTool === "monitoring" ? (
             <g className={styles.toolMoment} key="monitoring">
-              <path className={styles.storyTable} d="M122 226h478M166 226v43M557 226v43" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="blue"
-                scale={0.76}
-                seated
-                x={222}
-                y={265}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={505}
-                y={265}
-              />
-              <rect className={styles.meterShape} height="78" rx="5" width="64" x="327" y="141" />
-              <rect className={styles.meterScreen} height="27" rx="2" width="42" x="338" y="155">
+              <rect className={styles.meterShape} height="192" rx="16" width="152" x="284" y="90" />
+              <rect className={styles.meterScreen} height="86" rx="5" width="112" x="304" y="114">
                 <animate
                   attributeName="opacity"
                   dur="3s"
                   repeatCount="indefinite"
-                  values=".45;1;.45"
+                  values=".55;1;.55"
                 />
               </rect>
-              <rect
-                className={styles.storyNotebook}
-                height="69"
-                rx="4"
-                width="72"
-                x="410"
-                y="149"
-              />
+              <path d="M328 150 H390" stroke="#5f947b" strokeLinecap="round" strokeWidth="10">
+                <animate
+                  attributeName="opacity"
+                  dur="2.6s"
+                  repeatCount="indefinite"
+                  values=".4;1;.4"
+                />
+              </path>
+              <path d="M328 172 H368" stroke="#9bb7ab" strokeLinecap="round" strokeWidth="8" />
+              <circle cx="360" cy="252" fill="none" r="18" stroke="#789083" strokeWidth="6" />
               <path
-                d="M422 169 H470 M422 187 H463 M422 204 H472"
-                stroke="#9bad9f"
-                strokeLinecap="round"
-                strokeWidth="4"
-              />
-              <path
-                d="M392 181 C402 173 408 173 416 181"
+                d="M352 252 l7 8 14 -17"
                 fill="none"
-                stroke="#c47b61"
+                stroke="#5f947b"
                 strokeLinecap="round"
-                strokeWidth="5"
+                strokeLinejoin="round"
+                strokeWidth="6"
               >
                 <animate
                   attributeName="stroke-dasharray"
@@ -1128,21 +1070,20 @@ function BodySystemLab() {
         >
           <rect className={styles.organWash} height="430" width="720" />
           <circle className={styles.organHalo} cx="250" cy="214" r="178" />
-          <path d="M448 84 H448 V352" stroke="#bdd0c7" strokeLinecap="round" strokeWidth="2" />
 
           {activeSystem === "digestion" ? (
             <g className={styles.digestionMotion} key="digestion">
               <path className={styles.esophagusShape} d="M245 47 V135" />
               <path
                 className={cn(styles.stomachShape, styles.organShapeActive)}
-                d="M250 120 C214 108 185 130 182 172 C179 210 189 244 214 263 C234 278 258 282 280 274 C300 267 312 248 308 226 C304 198 296 168 280 150 C268 137 260 128 250 120 Z"
+                d="M250 118 C202 116 176 158 182 202 C187 244 222 272 268 266 C304 261 316 228 308 196 C301 166 300 140 286 130 C276 122 262 118 250 118 Z"
               />
               <path
                 className={cn(styles.intestineShape, styles.organShapeActive)}
-                d="M183 310 C207 282 292 283 316 309 C338 333 305 350 276 338 C240 323 199 330 193 352 C187 378 236 385 272 367 C308 349 337 368 321 392"
+                d="M232 252 C214 276 214 300 240 312 C270 326 300 330 306 348 C312 366 290 376 268 370 C252 366 248 374 245 374"
               />
               {[0, 1, 2].map((dot) => (
-                <circle key={dot} r={8 - dot} fill="#d8955c" stroke="#fff9ef" strokeWidth="3">
+                <circle key={dot} r="10" fill="#d8955c" stroke="#fff9ef" strokeWidth="3">
                   <animateMotion
                     begin={`${dot * -1.35}s`}
                     dur="5.4s"
@@ -1184,7 +1125,7 @@ function BodySystemLab() {
             <g className={styles.insulinMotion} key="pancreas">
               <path
                 className={cn(styles.pancreasShape, styles.organShapeActive)}
-                d="M130 236 C175 224 240 226 290 236 C316 241 336 240 348 254 C358 266 354 284 334 286 C312 288 296 280 274 276 C226 268 172 258 130 236 Z"
+                d="M122 230 C168 221 232 224 296 236 C332 243 362 250 358 270 C353 290 320 291 288 284 C232 273 168 258 122 230 Z"
               />
               <path d="M439 214 H662" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
               <path d="M439 214 H662" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
@@ -1229,7 +1170,7 @@ function BodySystemLab() {
             <g className={styles.liverMotion} key="liver">
               <path
                 className={cn(styles.liverShape, styles.organShapeActive)}
-                d="M112 182 C150 150 240 128 340 140 C372 144 392 162 388 190 C384 226 356 252 314 260 C252 272 178 262 130 232 C112 220 102 198 112 182 Z"
+                d="M110 178 C158 146 264 134 352 148 C384 153 394 182 380 212 C362 250 262 262 176 250 C132 244 100 208 110 178 Z"
               />
               <path d="M455 197 H665" stroke="#8ca9aa" strokeLinecap="round" strokeWidth="28" />
               <path d="M455 197 H665" stroke="#dceaea" strokeLinecap="round" strokeWidth="14" />
@@ -1516,13 +1457,6 @@ function ProtectionExplorer() {
                 />
               </path>
               <path
-                d="M351 105 V44 M370 107 C399 72 417 58 449 52 M337 109 C307 78 284 66 252 61"
-                fill="none"
-                stroke="#c97866"
-                strokeLinecap="round"
-                strokeWidth="17"
-              />
-              <path
                 d="M353 137 C313 158 310 205 354 249 C397 206 397 159 353 137 Z"
                 fill="#e7a28e"
                 opacity=".75"
@@ -1563,36 +1497,40 @@ function ProtectionExplorer() {
           {activeArea === "feet" ? (
             <g key="feet">
               <path
-                d="M160 152 C191 91 262 92 287 148 C305 188 285 235 249 266 C215 295 164 279 145 242 C131 214 143 184 160 152 Z"
+                d="M292 268 C296 236 286 196 256 190 C226 184 196 200 176 176 C160 157 150 168 150 190 C150 214 158 236 150 258 C144 276 160 286 186 286 C224 286 262 288 292 268 Z"
                 fill="#d8aa89"
                 stroke="#8d6c5e"
-                strokeWidth="6"
-              />
-              <path
-                d="M433 148 C459 92 529 91 560 152 C577 184 589 214 575 242 C556 279 505 295 471 266 C435 235 415 188 433 148 Z"
-                fill="#d8aa89"
-                stroke="#8d6c5e"
+                strokeLinejoin="round"
                 strokeWidth="6"
               />
               {[0, 1, 2, 3, 4].map((toe) => (
-                <g key={toe}>
-                  <circle
-                    cx={176 + toe * 23}
-                    cy={130 - Math.abs(2 - toe) * 6}
-                    fill="#d8aa89"
-                    r={14 - Math.abs(2 - toe)}
-                    stroke="#8d6c5e"
-                    strokeWidth="4"
-                  />
-                  <circle
-                    cx={544 - toe * 23}
-                    cy={130 - Math.abs(2 - toe) * 6}
-                    fill="#d8aa89"
-                    r={14 - Math.abs(2 - toe)}
-                    stroke="#8d6c5e"
-                    strokeWidth="4"
-                  />
-                </g>
+                <circle
+                  key={`ltoe-${toe}`}
+                  cx={168 + toe * 5}
+                  cy={150 + toe * 20}
+                  fill="#d8aa89"
+                  r={11 - toe}
+                  stroke="#8d6c5e"
+                  strokeWidth="4"
+                />
+              ))}
+              <path
+                d="M428 268 C424 236 434 196 464 190 C494 184 524 200 544 176 C560 157 570 168 570 190 C570 214 562 236 570 258 C576 276 560 286 534 286 C496 286 458 288 428 268 Z"
+                fill="#d8aa89"
+                stroke="#8d6c5e"
+                strokeLinejoin="round"
+                strokeWidth="6"
+              />
+              {[0, 1, 2, 3, 4].map((toe) => (
+                <circle
+                  key={`rtoe-${toe}`}
+                  cx={552 - toe * 5}
+                  cy={150 + toe * 20}
+                  fill="#d8aa89"
+                  r={11 - toe}
+                  stroke="#8d6c5e"
+                  strokeWidth="4"
+                />
               ))}
               <path d="M130 335 H590" stroke="#789083" strokeLinecap="round" strokeWidth="7" />
               <g>
@@ -1671,111 +1609,72 @@ function ReturnScenarioExplorer() {
 
           {activeScenario === "restaurant" ? (
             <g key="restaurant">
-              <path className={styles.storyTable} d="M171 224 H574 M210 224 V270 M535 224 V270" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="warm"
-                scale={0.76}
-                seated
-                x={250}
-                y={266}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={506}
-                y={266}
-              />
               <rect
                 fill="#fffaf2"
-                height="98"
-                rx="5"
-                stroke="#7b9ea8"
+                height="176"
+                rx="8"
+                stroke="#c9896f"
                 strokeWidth="4"
-                width="79"
-                x="323"
-                y="112"
+                width="160"
+                x="280"
+                y="80"
               />
               <path
-                d="M339 135 H386 M339 152 H377 M339 169 H388 M339 186 H371"
-                stroke="#a6b6b7"
+                d="M330 100 V120 M340 100 V120 M350 100 V120 M340 120 V158"
+                fill="none"
+                stroke="#c9896f"
                 strokeLinecap="round"
                 strokeWidth="4"
               />
-              <ellipse className={styles.plateShape} cx="439" cy="216" rx="44" ry="10" />
-              <path d="M410 209 Q439 183 468 209" fill="#e7b879">
+              <path
+                d="M392 100 C404 104 404 128 392 132 M392 100 V158"
+                fill="none"
+                stroke="#c9896f"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="4"
+              />
+              <rect fill="#e7b879" height="13" rx="6" opacity=".5" width="82" x="300" y="176">
                 <animate
                   attributeName="opacity"
-                  dur="3.4s"
+                  dur="2.8s"
                   repeatCount="indefinite"
-                  values=".55;1;.55"
+                  values=".2;.75;.2"
                 />
-              </path>
+              </rect>
+              <path
+                d="M300 202 H416 M300 224 H430"
+                stroke="#c3a894"
+                strokeLinecap="round"
+                strokeWidth="6"
+              />
             </g>
           ) : null}
 
           {activeScenario === "reading" ? (
             <g key="reading">
-              <path className={styles.storyTable} d="M142 226 H596 M181 226 V270 M557 226 V270" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="blue"
-                scale={0.76}
-                seated
-                x={232}
-                y={266}
-              />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.76}
-                seated
-                x={520}
-                y={266}
-              />
-              <rect className={styles.meterShape} height="83" rx="6" width="66" x="323" y="134" />
-              <rect className={styles.meterScreen} height="29" rx="3" width="44" x="334" y="150">
-                <animate
-                  attributeName="opacity"
-                  dur="2.8s"
-                  repeatCount="indefinite"
-                  values=".45;1;.45"
-                />
-              </rect>
               <rect
-                className={styles.storyNotebook}
-                height="81"
-                rx="4"
-                width="76"
-                x="414"
-                y="135"
-              />
-              <path
-                d="M427 156 H478 M427 174 H468 M427 192 H481"
-                stroke="#9bad9f"
-                strokeLinecap="round"
+                fill="#fffaf2"
+                height="150"
+                rx="8"
+                stroke="#7b9ea8"
                 strokeWidth="4"
+                width="212"
+                x="254"
+                y="82"
               />
+              <path d="M282 112 H360" stroke="#a6b6b7" strokeLinecap="round" strokeWidth="6" />
               <path
-                d="M390 176 C403 166 409 166 417 176"
+                d="M282 202 L322 176 L352 186 L392 132 L432 166 L468 152"
                 fill="none"
                 stroke="#c47b61"
                 strokeLinecap="round"
+                strokeLinejoin="round"
                 strokeWidth="5"
-              >
-                <animate
-                  attributeName="stroke-dasharray"
-                  dur="3s"
-                  repeatCount="indefinite"
-                  values="0 50;50 0;50 0"
-                />
-              </path>
+              />
+              <circle cx="392" cy="132" fill="#c47b61" r="9" stroke="#fffaf2" strokeWidth="3">
+                <animate attributeName="r" dur="2s" repeatCount="indefinite" values="7;11;7" />
+              </circle>
             </g>
           ) : null}
 
@@ -1783,63 +1682,43 @@ function ReturnScenarioExplorer() {
             <g key="routine">
               <rect
                 fill="#fffaf2"
-                height="115"
-                rx="6"
+                height="158"
+                rx="8"
                 stroke="#7b9ea8"
                 strokeWidth="4"
-                width="128"
-                x="105"
-                y="83"
+                width="176"
+                x="272"
+                y="80"
               />
-              <path d="M105 112 H233 M135 69 V101 M205 69 V101" stroke="#7b9ea8" strokeWidth="6" />
               <path
-                d="M132 135 L205 177 M205 135 L132 177"
-                stroke="#c77962"
+                d="M272 120 H448 M312 66 V98 M408 66 V98"
+                stroke="#7b9ea8"
                 strokeLinecap="round"
-                strokeWidth="7"
-              >
-                <animate
-                  attributeName="opacity"
-                  dur="3.2s"
-                  repeatCount="indefinite"
-                  values=".45;1;.45"
-                />
-              </path>
-              <path
-                d="M334 243 H636 M368 246 V270 M601 246 V270"
-                stroke="#826e5e"
-                strokeLinecap="round"
-                strokeWidth="12"
+                strokeWidth="6"
               />
-              <LessonMotionPerson
-                action="celebrate"
-                motion="dance"
-                palette="warm"
-                scale={0.8}
-                x={450}
-                y={266}
-              />
-              <LessonMotionPerson
-                action="wave-left"
-                motion="dance"
-                palette="sage"
-                scale={0.8}
-                x={557}
-                y={266}
-              />
+              <rect fill="#eef2f0" height="24" rx="3" width="44" x="292" y="136" />
+              <rect fill="#eef2f0" height="24" rx="3" width="44" x="344" y="136" />
+              <rect fill="#eef2f0" height="24" rx="3" width="44" x="292" y="172" />
+              <rect fill="#eef2f0" height="24" rx="3" width="44" x="344" y="172" />
               <rect
-                fill="#6f8f80"
-                height="56"
-                rx="7"
-                stroke="#58756a"
-                strokeWidth="4"
-                width="65"
-                x="648"
-                y="184"
-              />
-              <circle cx="681" cy="212" fill="#f1ddbd" r="17">
-                <animate attributeName="r" dur="2.2s" repeatCount="indefinite" values="15;20;15" />
-              </circle>
+                fill="#e7b879"
+                height="24"
+                rx="4"
+                stroke="#c69551"
+                strokeWidth="2"
+                width="44"
+                x="396"
+                y="136"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  dur="3.4s"
+                  keyTimes="0;0.4;0.6;1"
+                  repeatCount="indefinite"
+                  type="translate"
+                  values="0 0;0 36;0 36;0 0"
+                />
+              </rect>
             </g>
           ) : null}
         </svg>
@@ -1877,8 +1756,8 @@ function SupportPractice() {
       <div
         aria-label={
           isBoundary
-            ? "Two people respectfully make more room after a boundary is stated"
-            : "Two people move closer for a calm supportive conversation"
+            ? "A shield marks a respected boundary"
+            : "A single symbol for the chosen kind of support"
         }
         className={styles.supportVisual}
         data-motion-loop="continuous"
@@ -1895,59 +1774,44 @@ function SupportPractice() {
 
           {activeSupport === "listen" ? (
             <g key="listen">
-              <path className={styles.storyTable} d="M180 224 H548 M218 224 V270 M510 224 V270" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="warm"
-                scale={0.78}
-                seated
-                x={266}
-                y={264}
-              />
-              <LessonMotionPerson
-                action="listen"
-                motion="nod"
-                palette="sage"
-                scale={0.78}
-                seated
-                x={468}
-                y={264}
+              <animateTransform
+                attributeName="transform"
+                dur="3.6s"
+                repeatCount="indefinite"
+                type="translate"
+                values="0 0;0 -6;0 0"
               />
               <path
-                className={styles.cupShape}
-                d="M355 180 H381 V215 H355 Z M381 188 C399 188 399 207 381 207"
+                d="M262 92 H458 Q482 92 482 116 V184 Q482 208 458 208 H352 L318 240 L322 208 H286 Q262 208 262 184 V116 Q262 92 286 92 Z"
+                fill="#fffaf2"
+                stroke="#7b9ea8"
+                strokeWidth="4"
               />
               <path
-                className={styles.steamShape}
-                d="M364 174 C354 160 374 150 364 137 M376 174 C366 160 386 150 376 137"
+                d="M292 132 H452 M292 156 H420 M292 180 H438"
+                stroke="#a6b6b7"
+                strokeLinecap="round"
+                strokeWidth="7"
               >
-                <animateTransform
-                  attributeName="transform"
-                  dur="3.2s"
-                  repeatCount="indefinite"
-                  type="translate"
-                  values="0 5;0 -5;0 5"
-                />
                 <animate
                   attributeName="opacity"
-                  dur="3.2s"
+                  dur="3.4s"
                   repeatCount="indefinite"
-                  values=".2;1;.2"
+                  values=".4;1;.4"
                 />
               </path>
               <path
-                d="M327 124 H408 M341 107 H394"
+                d="M500 126 Q524 150 500 174 M520 112 Q556 150 520 188"
                 fill="none"
-                stroke="#c77962"
+                stroke="#8ca79a"
                 strokeLinecap="round"
-                strokeWidth="5"
+                strokeWidth="4"
               >
                 <animate
                   attributeName="opacity"
-                  dur="4s"
+                  dur="2.2s"
                   repeatCount="indefinite"
-                  values=".2;1;.2"
+                  values="0;1;0"
                 />
               </path>
             </g>
@@ -1955,76 +1819,92 @@ function SupportPractice() {
 
           {activeSupport === "company" ? (
             <g key="company">
-              <path className={styles.treeTrunk} d="M604 105 V264" />
-              <circle className={styles.treeLeaf} cx="604" cy="85" r="50" />
-              <LessonMotionPerson
-                action="wave-right"
-                motion="dance"
-                palette="warm"
-                scale={0.8}
-                x={238}
-                y={263}
-              />
-              <LessonMotionPerson
-                action="wave-left"
-                motion="dance"
-                palette="sage"
-                scale={0.8}
-                x={470}
-                y={263}
-              />
-              <circle className={styles.picnicBall} cx="0" cy="0" r="12">
-                <animateMotion
-                  dur="3s"
-                  path="M282 175 Q354 78 426 175 Q354 78 282 175"
+              <path
+                d="M360 244 C300 194 268 162 268 130 C268 106 286 90 308 90 C328 90 346 104 360 126 C374 104 392 90 412 90 C434 90 452 106 452 130 C452 162 420 194 360 244 Z"
+                fill="#cf7b61"
+                stroke="#a7614e"
+                strokeWidth="5"
+              >
+                <animate
+                  attributeName="stroke-width"
+                  dur="1.4s"
                   repeatCount="indefinite"
+                  values="5;10;5"
                 />
-              </circle>
+              </path>
+              {[0, 1, 2].map((i) => (
+                <path
+                  d="M0 10 C-8 4 -12 0 -12 -5 C-12 -9 -8 -10 -4 -7 C-1 -5 0 -3 0 -1 C0 -3 1 -5 4 -7 C8 -10 12 -9 12 -5 C12 0 8 4 0 10 Z"
+                  fill="#cf7b61"
+                  key={i}
+                  opacity="0"
+                >
+                  <animateTransform
+                    attributeName="transform"
+                    begin={`${i * -1.6}s`}
+                    dur="4.8s"
+                    repeatCount="indefinite"
+                    type="translate"
+                    values="360 118;384 34"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    begin={`${i * -1.6}s`}
+                    dur="4.8s"
+                    repeatCount="indefinite"
+                    values="0;0.8;0"
+                  />
+                </path>
+              ))}
             </g>
           ) : null}
 
           {activeSupport === "practical" ? (
             <g key="practical">
-              <LessonMotionPerson
-                action="carry-right"
-                motion="walk"
-                palette="warm"
-                scale={0.82}
-                x={300}
-                y={263}
+              <rect
+                fill="#fffaf2"
+                height="152"
+                rx="8"
+                stroke="#7b9ea8"
+                strokeWidth="4"
+                width="182"
+                x="269"
+                y="84"
               />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.82}
-                x={520}
-                y={263}
-              />
-              <g className={styles.supportBasket}>
-                <path d="M306 238 H360 L356 263 H310 Z M316 238 C316 222 350 222 350 238" />
-                <animateTransform
-                  attributeName="transform"
-                  dur="7s"
-                  keyTimes="0;0.3;0.6;1"
-                  repeatCount="indefinite"
-                  type="translate"
-                  values="0 0;0 0;130 0;130 0"
-                />
-              </g>
+              <circle cx="300" cy="120" fill="none" r="13" stroke="#5f947b" strokeWidth="4" />
               <path
-                d="M369 176 Q386 160 405 176"
+                d="M293 120 l6 7 11 -13"
                 fill="none"
-                stroke="#8ca79a"
+                stroke="#5f947b"
                 strokeLinecap="round"
-                strokeWidth="5"
+                strokeLinejoin="round"
+                strokeWidth="4"
               >
                 <animate
                   attributeName="stroke-dasharray"
-                  dur="7s"
-                  keyTimes="0;0.25;0.5;1"
+                  dur="2.6s"
                   repeatCount="indefinite"
-                  values="0 50;50 0;50 0;0 50"
+                  values="0 32;32 0;32 0"
+                />
+              </path>
+              <path d="M326 120 H432" stroke="#8ca79a" strokeLinecap="round" strokeWidth="7" />
+              <path d="M300 158 H432" stroke="#cdd6cf" strokeLinecap="round" strokeWidth="7">
+                <animate
+                  attributeName="opacity"
+                  dur="3.2s"
+                  keyTimes="0;0.3;0.7;1"
+                  repeatCount="indefinite"
+                  values=".25;1;1;.25"
+                />
+              </path>
+              <path d="M300 190 H408" stroke="#cdd6cf" strokeLinecap="round" strokeWidth="7">
+                <animate
+                  attributeName="opacity"
+                  begin="-1.6s"
+                  dur="3.2s"
+                  keyTimes="0;0.3;0.7;1"
+                  repeatCount="indefinite"
+                  values=".25;1;1;.25"
                 />
               </path>
             </g>
@@ -2032,26 +1912,45 @@ function SupportPractice() {
 
           {isBoundary ? (
             <g key="boundary">
-              <path className={styles.storyTable} d="M172 224 H553 M210 224 V270 M515 224 V270" />
-              <LessonMotionPerson
-                action="reach-right"
-                motion="breathe"
-                palette="warm"
-                scale={0.78}
-                seated
-                x={270}
-                y={264}
+              <ellipse
+                cx="360"
+                cy="176"
+                fill="none"
+                rx="52"
+                ry="58"
+                stroke="#8aa596"
+                strokeWidth="3"
+              >
+                <animate attributeName="rx" dur="3s" repeatCount="indefinite" values="46;60;46" />
+                <animate attributeName="ry" dur="3s" repeatCount="indefinite" values="52;66;52" />
+                <animate
+                  attributeName="opacity"
+                  dur="3s"
+                  repeatCount="indefinite"
+                  values=".55;0;.55"
+                />
+              </ellipse>
+              <path
+                d="M360 86 L442 116 V182 C442 226 404 252 360 266 C316 252 278 226 278 182 V116 Z"
+                fill="#dfe8e2"
+                stroke="#58756a"
+                strokeWidth="5"
               />
-              <LessonMotionPerson
-                action="reach-left"
-                motion="nod"
-                palette="sage"
-                scale={0.78}
-                seated
-                x={489}
-                y={264}
-              />
-              <ellipse className={styles.plateShape} cx="377" cy="217" rx="47" ry="10" />
+              <path
+                d="M336 176 l15 17 32 -40"
+                fill="none"
+                stroke="#58756a"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="6"
+              >
+                <animate
+                  attributeName="stroke-dasharray"
+                  dur="2.8s"
+                  repeatCount="indefinite"
+                  values="0 80;80 0;80 0"
+                />
+              </path>
             </g>
           ) : null}
         </svg>
@@ -2085,6 +1984,333 @@ function SupportPractice() {
   );
 }
 
+const journeyMilestones = [
+  { day: 1, learned: "Day 1 asked you to understand, not to be perfect.", x: 56, y: 172 },
+  {
+    day: 3,
+    learned: "A lab number became a question with context, not a verdict.",
+    x: 178,
+    y: 150,
+  },
+  {
+    day: 6,
+    learned: "Movement became something your body could use, in your own way.",
+    x: 312,
+    y: 126,
+  },
+  { day: 9, learned: "Highs and lows became signals you can notice and answer.", x: 452, y: 100 },
+  { day: 12, learned: "A disrupted day became something to reroute, not abandon.", x: 584, y: 78 },
+  { day: 14, learned: "You know more than you did fourteen days ago.", x: 684, y: 58 },
+] as const;
+
+function FourteenDayTrace({ onReady }: { onReady?: () => void }) {
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const active = journeyMilestones.find((milestone) => milestone.day === selectedDay) ?? null;
+
+  return (
+    <div className={styles.journeyTrace}>
+      <div className={styles.journeyTraceHead}>
+        <p className="editorial-eyebrow">Fourteen days, one quiet climb</p>
+        <p>Tap a marked day to remember what became a little clearer.</p>
+      </div>
+      <svg
+        aria-label="A gently rising line across fourteen days. Tap a marked day to recall what became clearer. This is a felt sense of understanding, not a measurement."
+        className={styles.journeyTraceSvg}
+        role="group"
+        viewBox="0 0 720 200"
+      >
+        <path d="M40 178 H700" stroke="#e0cdbb" strokeWidth="2" />
+        <path
+          className={styles.journeyLine}
+          d="M56 172 C120 163 150 156 178 150 C240 138 262 132 312 126 C382 116 402 110 452 100 C520 88 546 84 584 78 C632 70 656 64 684 58"
+          fill="none"
+          pathLength="1"
+          stroke="#b96c55"
+          strokeLinecap="round"
+          strokeWidth="6"
+        />
+        {journeyMilestones.map((milestone) => {
+          const isActive = selectedDay === milestone.day;
+          return (
+            <circle
+              aria-label={`Day ${milestone.day}: ${milestone.learned}`}
+              className={cn(styles.journeyDot, isActive && styles.journeyDotActive)}
+              cx={milestone.x}
+              cy={milestone.y}
+              fill={isActive ? "#6f947a" : "#fffaf3"}
+              key={milestone.day}
+              onClick={() => {
+                setSelectedDay(milestone.day);
+                onReady?.();
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setSelectedDay(milestone.day);
+                  onReady?.();
+                }
+              }}
+              r={isActive ? 11 : 7}
+              role="button"
+              stroke={isActive ? "#476a53" : "#b96c55"}
+              strokeWidth="3"
+              tabIndex={0}
+            />
+          );
+        })}
+      </svg>
+      <p aria-live="polite" className={styles.journeyCaption}>
+        {active
+          ? `Day ${active.day} · ${active.learned}`
+          : "A foundation is something steady to stand on when uncertainty returns. Tap a day to see one step of the climb."}
+      </p>
+    </div>
+  );
+}
+
+const biteStations = [
+  {
+    caption: "It starts as an ordinary meal. Carbohydrate foods carry most of the glucose.",
+    label: "On the plate",
+  },
+  {
+    caption: "Digestion breaks the food down into glucose, a simple sugar the body can use.",
+    label: "In the stomach",
+  },
+  {
+    caption: "Glucose enters the bloodstream, so blood glucose gently rises after eating.",
+    label: "Into the blood",
+  },
+  {
+    caption:
+      "Insulin is the key that lets glucose into cells for energy. In type 2, the key works less well, so glucose can linger in the blood.",
+    label: "Into the cells",
+  },
+] as const;
+
+function FollowOneBite({ onReady }: { onReady?: () => void }) {
+  const [step, setStep] = useState(0);
+  const stationX = [96, 272, 448, 624];
+  const total = biteStations.length;
+  const atLast = step === total - 1;
+  const active = biteStations[step] ?? biteStations[0];
+
+  return (
+    <div className={styles.bite}>
+      <div className={styles.journeyTraceHead}>
+        <p className="editorial-eyebrow">Follow one bite</p>
+        <p>Walk a single piece of food through the body, one step at a time.</p>
+      </div>
+      <svg
+        aria-label={`Step ${step + 1} of ${total}, ${active.label}. ${active.caption}`}
+        className={styles.biteSvg}
+        role="img"
+        viewBox="0 0 720 150"
+      >
+        <path
+          d="M96 96 H624"
+          fill="none"
+          stroke="#d8c7b8"
+          strokeDasharray="2 12"
+          strokeLinecap="round"
+          strokeWidth="4"
+        />
+        {biteStations.map((station, index) => (
+          <circle
+            cx={stationX[index]}
+            cy="96"
+            fill={index <= step ? "#f0e2d0" : "#f5efe6"}
+            key={station.label}
+            r="24"
+            stroke={index <= step ? "#b96c55" : "#dccbbb"}
+            strokeWidth="3"
+          />
+        ))}
+        <circle
+          className={styles.biteParticle}
+          cx="0"
+          cy="96"
+          fill="#e0a24f"
+          r="12"
+          stroke="#fff7e7"
+          strokeWidth="3"
+          style={{ transform: `translateX(${stationX[step]}px)` }}
+        />
+      </svg>
+      <div className={styles.biteControls}>
+        <div>
+          <p className={styles.biteStationLabel}>{active.label}</p>
+          <p aria-live="polite" className={styles.biteStationCaption}>
+            {active.caption}
+          </p>
+        </div>
+        <button
+          className={styles.biteButton}
+          onClick={() => {
+            const next = atLast ? 0 : step + 1;
+            setStep(next);
+            if (next === total - 1) {
+              onReady?.();
+            }
+          }}
+          type="button"
+        >
+          {atLast ? "Start over" : "Next step"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PracticeLoop() {
+  const [running, setRunning] = useState(false);
+  const loopPath = "M250 42 A88 88 0 1 1 250 218 A88 88 0 1 1 250 42";
+  const stations = [
+    { label: "Notice", labelY: 26, x: 250, y: 42 },
+    { label: "Try", labelY: 205, x: 326, y: 174 },
+    { label: "Adjust", labelY: 205, x: 174, y: 174 },
+  ];
+
+  return (
+    <div className={styles.loop}>
+      <div className={styles.journeyTraceHead}>
+        <p className="editorial-eyebrow">Practice is a loop, not a finish line</p>
+        <p>Start the loop and watch it turn: notice, try, adjust, and around again.</p>
+      </div>
+      <svg
+        aria-label="A circular loop marked notice, try, and adjust. Starting it sends a dot travelling around the loop again and again."
+        className={styles.loopSvg}
+        role="img"
+        viewBox="0 0 500 250"
+      >
+        <path d={loopPath} fill="none" stroke="#e0cdbb" strokeWidth="6" />
+        {stations.map((station) => (
+          <g key={station.label}>
+            <circle
+              cx={station.x}
+              cy={station.y}
+              fill="#f0e2d0"
+              r="10"
+              stroke="#b96c55"
+              strokeWidth="3"
+            />
+            <text fill="#7a6a5f" fontSize="15" textAnchor="middle" x={station.x} y={station.labelY}>
+              {station.label}
+            </text>
+          </g>
+        ))}
+        {running ? (
+          <circle fill="#6f947a" r="10" stroke="#fffaf3" strokeWidth="3">
+            <animateMotion dur="6s" path={loopPath} repeatCount="indefinite" />
+          </circle>
+        ) : null}
+      </svg>
+      <div className={styles.loopControls}>
+        <p aria-live="polite" className={styles.journeyCaption}>
+          {running
+            ? "It keeps turning. Each pass is a little more yours. There is no lap that fails."
+            : "The loop does not end at day fourteen. It just keeps gently turning."}
+        </p>
+        <button
+          className={styles.loopButton}
+          onClick={() => setRunning((current) => !current)}
+          type="button"
+        >
+          {running ? "Pause the loop" : "Start the loop"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const foundationStones = [
+  "Understanding, not perfection",
+  "Numbers read with context",
+  "Food and movement that fit you",
+  "Medicine as a tool, not a verdict",
+  "Care that can be shared",
+] as const;
+
+function BuildFoundation({ onReady }: { onReady?: () => void }) {
+  const [placed, setPlaced] = useState<Set<number>>(() => new Set());
+  const blocks = [
+    { x: 160, y: 150 },
+    { x: 258, y: 150 },
+    { x: 356, y: 150 },
+    { x: 209, y: 110 },
+    { x: 307, y: 110 },
+  ];
+  const total = foundationStones.length;
+  const complete = placed.size === total;
+
+  return (
+    <div className={styles.foundation}>
+      <div className={styles.journeyTraceHead}>
+        <p className="editorial-eyebrow">Set your foundation in place</p>
+        <p>Tap each idea you now carry, and watch it become one steady piece to stand on.</p>
+      </div>
+      <svg aria-hidden="true" className={styles.foundationSvg} viewBox="0 0 516 200">
+        <path d="M96 186 H420" fill="none" stroke="#cbb9a8" strokeLinecap="round" strokeWidth="3" />
+        {blocks.map((block, index) => {
+          const isPlaced = placed.has(index);
+          return (
+            <rect
+              className={styles.foundationBlock}
+              fill={isPlaced ? "#c98a6f" : "#efe7db"}
+              height="34"
+              key={index}
+              rx="6"
+              stroke={isPlaced ? "#a2634c" : "#ddd0c1"}
+              strokeWidth="2"
+              style={{
+                opacity: isPlaced ? 1 : 0.35,
+                transform: isPlaced ? "translateY(0)" : "translateY(-9px)",
+              }}
+              width="92"
+              x={block.x - 46}
+              y={block.y}
+            />
+          );
+        })}
+      </svg>
+      <div aria-label="Ideas you now carry" className={styles.foundationChips} role="group">
+        {foundationStones.map((stone, index) => (
+          <button
+            aria-pressed={placed.has(index)}
+            className={cn(styles.foundationChip, placed.has(index) && styles.foundationChipActive)}
+            key={stone}
+            onClick={() => {
+              const willHave = placed.has(index) ? placed.size - 1 : placed.size + 1;
+              setPlaced((current) => {
+                const next = new Set(current);
+                if (next.has(index)) {
+                  next.delete(index);
+                } else {
+                  next.add(index);
+                }
+                return next;
+              });
+              if (willHave >= 2) {
+                onReady?.();
+              }
+            }}
+            type="button"
+          >
+            {stone}
+          </button>
+        ))}
+      </div>
+      <p aria-live="polite" className={styles.journeyCaption}>
+        {complete
+          ? "Your foundation is built. It holds because you set each piece yourself."
+          : placed.size === 0
+            ? "Tap an idea to set the first piece."
+            : `${placed.size} of ${total} in place.`}
+      </p>
+    </div>
+  );
+}
+
 export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -2094,6 +2320,16 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   const [exitOpen, setExitOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
+  function markReady(target: number) {
+    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
+  }
+  const stageGates: Record<number, string> = {
+    0: "Tap at least one day on the climb above before you move on.",
+    3: "Walk the bite all the way to the cells above before you move on.",
+    9: "Set at least two foundation pieces above before you move on.",
+  };
+  const stageLocked = stageGates[stage] !== undefined && !readyStages.has(stage);
   const stageRef = useRef<HTMLDivElement>(null);
   const positionKey = `health-decoded:day-fourteen-position:${experience.lessonProgressId}`;
   const draftKey = `health-decoded:day-fourteen-foundation:${experience.lessonProgressId}`;
@@ -2245,6 +2481,8 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               to stand on when uncertainty returns.
             </blockquote>
 
+            <FourteenDayTrace onReady={() => markReady(0)} />
+
             <section className={styles.optionalReflection}>
               <div>
                 <p className="editorial-eyebrow">Optional reflection</p>
@@ -2314,6 +2552,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               animation feels like one connected body, not four unrelated diagrams.
             </p>
             <BodySystemLab />
+            <FollowOneBite onReady={() => markReady(3)} />
             <blockquote className={styles.pullQuote}>
               Your body is not an enemy to defeat. It is a living system you can learn to support.
             </blockquote>
@@ -2413,6 +2652,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               width={1672}
             />
             <FullLifePicnicMotion />
+            <BuildFoundation onReady={() => markReady(9)} />
             <div className={styles.nextPhase}>
               <p>
                 The first fourteen days built language and structure. The next seventy-six are for
@@ -2423,6 +2663,8 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
                 Practice is not the part after learning. Practice is how learning becomes yours.
               </blockquote>
             </div>
+
+            <PracticeLoop />
 
             <section className={styles.nextStepSection}>
               <div>
@@ -2588,6 +2830,11 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
           <p className="mb-4 text-sm text-muted-foreground">
             Reflections on this lesson are optional.
           </p>
+          {stageLocked ? (
+            <p className="mb-4 rounded-lg border border-[#d9a88f] bg-[#f6e9e1] px-3 py-2 text-sm font-medium text-[#a2593f]">
+              One small step first: {stageGates[stage]}
+            </p>
+          ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <Button
               disabled={stage === 0 || isPending}
@@ -2596,7 +2843,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             >
               Previous
             </Button>
-            <Button disabled={isPending} onClick={() => goToStage(stage + 1)}>
+            <Button disabled={isPending || stageLocked} onClick={() => goToStage(stage + 1)}>
               {continueLabel()}
             </Button>
           </div>

@@ -279,22 +279,45 @@ function Feedback({ feedback }: { feedback: DayThirteenEvaluationFeedback }) {
   );
 }
 
-function SharedLoadAnimation() {
+function SharedLoadAnimation({ onReady }: { onReady?: () => void }) {
+  const [shared, setShared] = useState<Set<number>>(() => new Set());
+
+  function toggle(id: number) {
+    if (!shared.has(id)) {
+      onReady?.();
+    }
+    setShared((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  const carried = 3 - shared.size;
+  const tilt = carried * 3;
+  const bagColors = ["#e4b878", "#e9c88f", "#efd7b0"] as const;
+
   return (
     <figure className={styles.motionFigure} data-motion-loop="continuous">
       <svg
         aria-labelledby="shared-load-title shared-load-description"
         className={styles.motionCanvas}
-        role="img"
+        role="group"
         viewBox="0 0 900 430"
       >
         <title id="shared-load-title">One chosen task becomes shared</title>
         <desc id="shared-load-description">
-          Two friends pause on a walk. One asks before taking one grocery bag. The other person
-          keeps their second bag and their direction.
+          Two friends pause on a walk. Tap a grocery bag the first person is carrying to set it on a
+          shared bench between them; the person eases upright as each chosen task is shared.
         </desc>
         <rect fill="#eef4f0" height="430" width="900" />
-        <circle cx="770" cy="79" fill="#edca8c" opacity=".72" r="40" />
+        <circle cx="770" cy="79" fill="#edca8c" opacity=".72" r="40">
+          <animate attributeName="opacity" dur="6s" repeatCount="indefinite" values=".6;.8;.6" />
+        </circle>
         <path
           d="M35 367 Q245 349 455 366 T865 362"
           fill="none"
@@ -304,73 +327,73 @@ function SharedLoadAnimation() {
         />
         <path d="M95 366 Q135 309 175 366 M724 362 Q768 300 812 362" fill="#dce7df" />
 
-        <LessonMotionPerson
-          action="carry-left"
-          motion="breathe"
-          palette="warm"
-          scale={1.03}
-          x={328}
-          y={355}
+        <path
+          d="M396 348 H584 M412 348 V376 M568 348 V376"
+          fill="none"
+          stroke="#9d8a72"
+          strokeLinecap="round"
+          strokeWidth="9"
         />
+
+        <g transform={`rotate(${tilt} 300 376)`}>
+          <LessonMotionPerson
+            action={carried === 0 ? "rest" : "carry-left"}
+            motion="breathe"
+            palette="warm"
+            scale={1.02}
+            x={300}
+            y={360}
+          />
+        </g>
         <LessonMotionPerson
           action="reach-left"
           motion="nod"
           palette="sage"
-          scale={1.03}
-          x={590}
-          y={355}
+          scale={1.02}
+          x={606}
+          y={360}
         />
 
-        <g>
-          <rect
-            fill="#e4b878"
-            height="62"
-            rx="7"
-            stroke="#9d714a"
-            strokeWidth="3"
-            width="68"
-            x="250"
-            y="310"
-          />
-          <path d="M264 312 Q284 292 304 312" fill="none" stroke="#9d714a" strokeWidth="6" />
-        </g>
-        <g>
-          <rect
-            fill="#efd7b0"
-            height="62"
-            rx="7"
-            stroke="#9d714a"
-            strokeWidth="3"
-            width="68"
-            x="339"
-            y="310"
-          />
-          <path d="M353 312 Q373 292 393 312" fill="none" stroke="#9d714a" strokeWidth="6" />
-          <animateTransform
-            attributeName="transform"
-            dur="8s"
-            keyTimes="0;0.23;0.5;0.78;1"
-            repeatCount="indefinite"
-            type="translate"
-            values="0 0;0 0;145 -18;145 -18;0 0"
-          />
-        </g>
-        <path
-          d="M430 238 C456 217 481 217 507 238"
-          fill="none"
-          stroke="#8ea79b"
-          strokeLinecap="round"
-          strokeWidth="5"
-        >
-          <animate
-            attributeName="stroke-dasharray"
-            dur="8s"
-            keyTimes="0;0.18;0.38;0.7;1"
-            repeatCount="indefinite"
-            values="0 100;100 0;100 0;0 100;0 100"
-          />
-        </path>
+        {[0, 1, 2].map((id) => {
+          const isShared = shared.has(id);
+          const x = isShared ? 414 + id * 54 : 168;
+          const y = isShared ? 300 : 320 - id * 50;
+          return (
+            <g
+              aria-label={isShared ? "Take this task back" : "Share this task with your friend"}
+              className={styles.loadBag}
+              key={id}
+              onClick={() => toggle(id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  toggle(id);
+                }
+              }}
+              role="button"
+              style={{ transform: `translate(${x}px, ${y}px)` }}
+              tabIndex={0}
+            >
+              <rect
+                fill={bagColors[id]}
+                height="58"
+                rx="7"
+                stroke="#9d714a"
+                strokeWidth="3"
+                width="64"
+              />
+              <path d="M14 2 Q32 -16 50 2" fill="none" stroke="#9d714a" strokeWidth="6" />
+            </g>
+          );
+        })}
       </svg>
+      <div aria-live="polite" className={styles.loadStatus}>
+        {carried === 0
+          ? "Two of you now carry what one carried alone. The plan, and the walk, are still yours."
+          : shared.size > 0
+            ? "One chosen task has changed hands. You still hold the rest, and the direction."
+            : "Tap a bag to let your friend carry one chosen part."}
+      </div>
       <figcaption className={styles.figureCaption}>
         <strong>What to notice:</strong> permission comes first. One chosen task changes hands; the
         person keeps ownership of the plan.
@@ -729,16 +752,7 @@ function BoundaryConversationAnimation({
         ) : null}
         {scenario.id === "friend" ? (
           <g key="friend">
-            <rect
-              fill="#405750"
-              height="89"
-              rx="10"
-              stroke="#55796a"
-              strokeWidth="4"
-              width="55"
-              x="443"
-              y="184"
-            >
+            <g>
               <animateTransform
                 attributeName="transform"
                 dur="6s"
@@ -747,8 +761,18 @@ function BoundaryConversationAnimation({
                 type="rotate"
                 values="0 470 273;0 470 273;90 470 273;90 470 273"
               />
-            </rect>
-            <rect fill="#b8d1c2" height="25" rx="3" width="35" x="453" y="198" />
+              <rect
+                fill="#405750"
+                height="89"
+                rx="10"
+                stroke="#55796a"
+                strokeWidth="4"
+                width="55"
+                x="443"
+                y="184"
+              />
+              <rect fill="#b8d1c2" height="25" rx="3" width="35" x="453" y="198" />
+            </g>
           </g>
         ) : null}
       </svg>
@@ -963,6 +987,285 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
   );
 }
 
+function SupportArrives({ onReady }: { onReady?: () => void }) {
+  const [near, setNear] = useState(false);
+  const capeRest =
+    "M-14 -84 C-42 -66 -48 -22 -30 4 C-18 -10 -10 -16 -4 -24 C-12 -48 -8 -70 -2 -82 Z";
+  const capeFlow = "M-14 -84 C-36 -58 -46 -16 -22 8 C-12 -8 -8 -16 -2 -24 C-10 -48 -6 -70 -2 -82 Z";
+
+  return (
+    <div className={styles.arrive}>
+      <div className={styles.composerHead}>
+        <p className="editorial-eyebrow">Support often starts with one small ask</p>
+        <p>You do not have to wait to be noticed. Call for backup and watch it fly slowly in.</p>
+      </div>
+      <svg aria-hidden="true" className={styles.arriveSvg} viewBox="0 0 720 260">
+        <path d="M40 226 H680" stroke="#a9bcae" strokeLinecap="round" strokeWidth="4" />
+        <LessonMotionPerson
+          action="rest"
+          motion="breathe"
+          palette="warm"
+          scale={1}
+          x={280}
+          y={222}
+        />
+        {near ? (
+          <g key="hero" transform="translate(452 222)">
+            <g>
+              <animateTransform
+                attributeName="transform"
+                begin="0s"
+                calcMode="spline"
+                dur="3.8s"
+                fill="freeze"
+                keySplines="0.12 0.7 0.16 1"
+                keyTimes="0;1"
+                type="translate"
+                values="330 -184;0 0"
+              />
+              <g transform="rotate(-90 0 0)">
+                <animateTransform
+                  attributeName="transform"
+                  begin="4.2s"
+                  calcMode="spline"
+                  dur="1.5s"
+                  fill="freeze"
+                  keySplines="0.34 0 0.2 1"
+                  keyTimes="0;1"
+                  type="rotate"
+                  values="-90 0 0;0 0 0"
+                />
+                <path d={capeRest} fill="#c15b4a" opacity="0.92">
+                  <animate
+                    attributeName="d"
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                    values={`${capeRest};${capeFlow};${capeRest}`}
+                  />
+                </path>
+                <LessonMotionPerson
+                  action="celebrate"
+                  motion="still"
+                  palette="sage"
+                  scale={1}
+                  x={0}
+                  y={0}
+                />
+              </g>
+            </g>
+          </g>
+        ) : null}
+        {near ? (
+          <circle cx="366" cy="152" fill="none" r="10" stroke="#c7785f" strokeWidth="3">
+            <animate
+              attributeName="opacity"
+              begin="5.6s"
+              dur="2.6s"
+              repeatCount="indefinite"
+              values=".55;0;.55"
+            />
+            <animate
+              attributeName="r"
+              begin="5.6s"
+              dur="2.6s"
+              repeatCount="indefinite"
+              values="8;42;8"
+            />
+          </circle>
+        ) : null}
+      </svg>
+      <div className={styles.arriveControls}>
+        <p aria-live="polite" className={styles.loadStatus}>
+          {near
+            ? "Backup has landed. You did not have to carry the moment alone."
+            : "One small ask can change a hard hour. You choose who, and when."}
+        </p>
+        <button
+          className={styles.arriveButton}
+          onClick={() => {
+            const next = !near;
+            setNear(next);
+            if (next) {
+              onReady?.();
+            }
+          }}
+          type="button"
+        >
+          {near ? "Thank them and reset" : "Call for backup"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const boundaryBuilder = {
+  acknowledge: [
+    "I know you care about me.",
+    "I hear that you want to help.",
+    "Thank you for thinking of me.",
+  ],
+  limit: [
+    "Please don't comment on my plate.",
+    "I'm keeping my readings private.",
+    "I'd rather my health not be a joke.",
+  ],
+  redirect: [
+    "You can ask how I'm feeling instead.",
+    "Ask me about my day instead.",
+    "I'll ask if I want advice.",
+  ],
+} as const;
+
+type BoundaryPartKey = keyof typeof boundaryBuilder;
+
+function ComposeBoundary({ onReady }: { onReady?: () => void }) {
+  const [picked, setPicked] = useState<Record<BoundaryPartKey, number | null>>({
+    acknowledge: null,
+    limit: null,
+    redirect: null,
+  });
+
+  const order: { key: BoundaryPartKey; title: string }[] = [
+    { key: "acknowledge", title: "Acknowledge the person" },
+    { key: "limit", title: "Name the limit" },
+    { key: "redirect", title: "Offer another way in" },
+  ];
+
+  const complete = order.every(({ key }) => picked[key] !== null);
+  useEffect(() => {
+    if (complete) {
+      onReady?.();
+    }
+  }, [complete, onReady]);
+  const sentence = order
+    .map(({ key }) => (picked[key] !== null ? boundaryBuilder[key][picked[key] as number] : null))
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div className={styles.composer}>
+      <div className={styles.composerHead}>
+        <p className="editorial-eyebrow">Build a boundary you could actually say</p>
+        <p>Pick one phrase from each row. Warm, then firm, then open, in a single breath.</p>
+      </div>
+      <div className={styles.composerRows}>
+        {order.map(({ key, title }) => (
+          <div className={styles.composerRow} key={key}>
+            <p className={styles.composerRowTitle}>{title}</p>
+            <div aria-label={title} className={styles.composerTiles} role="group">
+              {boundaryBuilder[key].map((phrase, index) => (
+                <button
+                  aria-pressed={picked[key] === index}
+                  className={cn(
+                    styles.composerTile,
+                    picked[key] === index && styles.composerTileActive,
+                  )}
+                  key={phrase}
+                  onClick={() =>
+                    setPicked((current) => ({
+                      ...current,
+                      [key]: current[key] === index ? null : index,
+                    }))
+                  }
+                  type="button"
+                >
+                  {phrase}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div
+        aria-live="polite"
+        className={cn(styles.composerResult, complete && styles.composerResultReady)}
+      >
+        {sentence ? (
+          <p className={styles.composerSentence}>“{sentence}”</p>
+        ) : (
+          <p className={styles.composerPlaceholder}>
+            Your boundary will appear here as you build it.
+          </p>
+        )}
+        {complete ? (
+          <p className={styles.composerNote}>
+            No debate, no medical lecture, no apology. The relationship gets a clearer way to care.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+const disclosureItems = [
+  { id: "numbers", label: "My exact glucose numbers" },
+  { id: "meds", label: "Which medicines I take" },
+  { id: "feelings", label: "How I'm feeling about it" },
+  { id: "appointments", label: "What happens at my appointments" },
+  { id: "plate", label: "What is on my plate" },
+] as const;
+
+type DisclosureId = (typeof disclosureItems)[number]["id"];
+
+function DisclosureControl() {
+  const [shared, setShared] = useState<Set<DisclosureId>>(() => new Set());
+  const count = shared.size;
+  const total = disclosureItems.length;
+
+  return (
+    <div className={styles.disclosure}>
+      <div className={styles.disclosureHead}>
+        <p className="editorial-eyebrow">What you share is a choice, one item at a time</p>
+        <p>Set each one where it feels right today. You can change your mind any time.</p>
+      </div>
+      <ul className={styles.disclosureList}>
+        {disclosureItems.map((item) => {
+          const isShared = shared.has(item.id);
+          return (
+            <li className={styles.disclosureRow} key={item.id}>
+              <span className={styles.disclosureLabel}>{item.label}</span>
+              <div aria-label={item.label} className={styles.disclosureToggle} role="group">
+                <button
+                  aria-pressed={!isShared}
+                  className={cn(
+                    styles.disclosureOption,
+                    !isShared && styles.disclosureOptionActive,
+                  )}
+                  onClick={() =>
+                    setShared((current) => {
+                      const next = new Set(current);
+                      next.delete(item.id);
+                      return next;
+                    })
+                  }
+                  type="button"
+                >
+                  Keep private
+                </button>
+                <button
+                  aria-pressed={isShared}
+                  className={cn(styles.disclosureOption, isShared && styles.disclosureOptionActive)}
+                  onClick={() => setShared((current) => new Set(current).add(item.id))}
+                  type="button"
+                >
+                  Open to share
+                </button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      <p aria-live="polite" className={styles.disclosureSummary}>
+        {count === 0
+          ? "Everything is private right now. That is a complete and valid answer."
+          : count === total
+            ? "You are open to sharing all of it, if that is what you want. Also valid."
+            : `You would keep ${total - count} private and share ${count}. There is no right number; it is yours to decide.`}
+      </p>
+    </div>
+  );
+}
+
 export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
   const [stage, setStage] = useState(0);
@@ -992,6 +1295,16 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
   const [exitOpen, setExitOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
+  function markReady(target: number) {
+    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
+  }
+  const stageGates: Record<number, string> = {
+    1: "Share at least one bag onto the bench above before you move on.",
+    5: "Build a full boundary above, one phrase from each row, before you move on.",
+    7: "Call for backup above and let it land before you move on.",
+  };
+  const stageLocked = stageGates[stage] !== undefined && !readyStages.has(stage);
   const stageRef = useRef<HTMLDivElement>(null);
   const storageKey = "health-decoded:day-thirteen:" + experience.lessonProgressId;
 
@@ -1149,7 +1462,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="A diagnosis is one chapter">
               Diabetes can belong inside your life without becoming the name of it.
             </LessonHeading>
-            <SharedLoadAnimation />
+            <SharedLoadAnimation onReady={() => markReady(1)} />
             <div className={styles.editorialPrompt}>
               <div>
                 <p className="editorial-eyebrow">Keep the whole person visible</p>
@@ -1372,6 +1685,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               ))}
             </div>
             <BoundaryConversationAnimation scenario={activeBoundary} />
+            <ComposeBoundary onReady={() => markReady(5)} />
             <div className={styles.teachBack}>
               <p className="editorial-eyebrow">Choose the response that protects your peace</p>
               <div className="mt-5 grid gap-3">
@@ -1421,6 +1735,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 </blockquote>
               </div>
             </div>
+            <DisclosureControl />
             <div className={styles.teachBack}>
               <h2>Which response protects both the need and the person’s privacy?</h2>
               <div className="mt-5 grid gap-3">
@@ -1466,6 +1781,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               src="/lessons/day-13/community-belonging.jpg"
             />
             <SupportTableAnimation activeSeat={supportSeat} />
+            <SupportArrives onReady={() => markReady(7)} />
             <div className={styles.seatChooser}>
               {supportSeats.map((seat) => (
                 <button
@@ -1729,6 +2045,11 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
       </div>
       {stage < stageCount - 1 ? (
         <footer className="border-t border-border pt-5">
+          {stageLocked ? (
+            <p className="mb-4 rounded-lg border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
+              One small step first: {stageGates[stage]}
+            </p>
+          ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <Button
               disabled={stage === 0 || isPending}
@@ -1737,7 +2058,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             >
               Previous
             </Button>
-            <Button disabled={isPending} onClick={() => goToStage(stage + 1)}>
+            <Button disabled={isPending || stageLocked} onClick={() => goToStage(stage + 1)}>
               {continueLabel()}
             </Button>
           </div>
