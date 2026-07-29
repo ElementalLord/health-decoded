@@ -7,10 +7,6 @@ const component = readFileSync("features/profile/components/profile-content.tsx"
 const settings = readFileSync("features/profile/components/settings-content.tsx", "utf8");
 const settingsAction = readFileSync("features/profile/actions/profile-settings.actions.ts", "utf8");
 const styles = readFileSync("features/profile/components/profile-content.module.css", "utf8");
-const reflectionsService = readFileSync(
-  "features/profile/services/profile-reflections.server.ts",
-  "utf8",
-);
 const completionAction = readFileSync(
   "features/lessons/actions/lesson-completion.actions.ts",
   "utf8",
@@ -27,23 +23,17 @@ test("profile stays distinct from Journey and Progress", () => {
   assert.match(component, /Reading comfort and motion choices\s+remain in Settings/);
 });
 
-test("profile reflections are real, private records rather than invented content", () => {
-  assert.match(page, /getProfileReflections/);
-  assert.match(reflectionsService, /getAuthenticatedUser/);
-  assert.match(reflectionsService, /\.eq\("user_id", user\.data\.id\)/);
-  assert.match(reflectionsService, /\.from\("reflection_entries"\)/);
-  assert.match(reflectionsService, /\{ count: "exact" \}/);
-  assert.match(reflectionsService, /\.from\("lessons"\)\.select\("id, title"\)/);
-  assert.match(page, /reflectionsUnavailable=\{!reflections\.ok\}/);
-  assert.match(
+test("profile omits the reflections archive and does not load it", () => {
+  assert.doesNotMatch(page, /getProfileReflections|reflectionsUnavailable/);
+  assert.doesNotMatch(
     component,
-    /Refresh the page in a moment instead of assuming\s+the archive is empty/,
+    /Words you kept along the way|Your private archive|Nothing is missing here/,
   );
-  assert.match(component, /Nothing is missing here/);
-  assert.doesNotMatch(component, /fake|placeholder reflection|sample reflection/i);
+  assert.doesNotMatch(component, /styles\.reflection/);
+  assert.doesNotMatch(styles, /\.reflection|\.featuredReflection|\.archiveNote|\.emptyJournal/);
 });
 
-test("completed lesson reflections are written to the private profile archive", () => {
+test("optional lesson reflections remain private backend records", () => {
   assert.match(
     completionSchema,
     /reflection: z\.string\(\)\.trim\(\)\.min\(1\)\.max\(300\)\.optional/,
@@ -145,7 +135,6 @@ test("the profile has one name form and omits the redundant identity strip", () 
 test("the redesigned profile remains responsive and keyboard friendly", () => {
   assert.match(styles, /@media \(max-width: 56rem\)/);
   assert.match(styles, /@media \(max-width: 40rem\)/);
-  assert.match(component, /<summary>/);
   assert.match(component, /aria-live="polite"/);
   assert.match(component, /aria-label="Profile actions"/);
 });

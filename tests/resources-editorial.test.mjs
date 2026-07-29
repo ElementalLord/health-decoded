@@ -110,6 +110,13 @@ test("three supporting editorial scenes loop meaningfully and respect reduced mo
   assert.match(styles, /\.motionArt animateMotion/);
 });
 
+test("resource motion keeps people and traveling markers in separate visual lanes", () => {
+  assert.match(motion, /M0-3v14M0 3l-12 11M0 3l12 11M0 11l-10 18M0 11l10 18/);
+  assert.match(motion, /const ENERGY_TRACK = "M302 188 C370 136 442 136 510 176"/);
+  assert.match(motion, /transform="translate\(625 86\)"/);
+  assert.doesNotMatch(motion, /M350 164l12 17M414 151l12 17M478 159l12 17/);
+});
+
 test("the visual hierarchy keeps articles larger and more explicit than supporting media", () => {
   assert.match(component, /Read the official guide/);
   assert.ok(component.split("<ReadGuide />").length - 1 >= 7);
