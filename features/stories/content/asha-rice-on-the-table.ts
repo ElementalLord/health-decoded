@@ -64,6 +64,25 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         "She looked into it and wondered whether this was what eating with diabetes would be like forever.",
       ],
       interactionType: "grocery-fear",
+      interaction: {
+        id: "asha-label-context",
+        purpose: "apply",
+        engagement: "optional-exploration",
+        prompt: "Which label clue would help you understand the food without judging it?",
+        instructions:
+          "Explore serving size, total carbohydrate, fiber and protein, usual amount, or meal context.",
+        options: [
+          { id: "serving-size", label: "Serving size" },
+          { id: "total-carbohydrate", label: "Total carbohydrate" },
+          { id: "fiber-protein", label: "Fiber and protein" },
+          { id: "usual-amount", label: "Your usual amount" },
+          { id: "meal-context", label: "The rest of the meal" },
+        ],
+        feedbackMode: "single-explanation",
+        requiredForProgress: false,
+        learningPoint:
+          "A package label provides comparison clues, but it cannot decide whether a familiar food belongs in one person’s overall eating pattern.",
+      },
       continueLabel: "Continue to Asha’s first family dinner",
     },
     {
@@ -86,6 +105,22 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         "Asha looked down at her food and tried to convince herself that being disciplined was supposed to feel this lonely.",
       ],
       interactionType: "separate-plate",
+      interaction: {
+        id: "asha-shared-versus-identical",
+        purpose: "compare",
+        engagement: "optional-exploration",
+        prompt: "What needs to be shared for a meal to still feel shared?",
+        instructions:
+          "Compare identical plates with a shared ritual that leaves room for personal choices.",
+        options: [
+          { id: "connected", label: "Shared meal, individual choices" },
+          { id: "identical", label: "Everyone needs the same plate" },
+        ],
+        feedbackMode: "single-explanation",
+        requiredForProgress: false,
+        learningPoint:
+          "Connection can come from shared time, food, labor, and conversation without requiring identical portions or care decisions.",
+      },
       continueLabel: "Hear what her daughter noticed",
     },
     {
@@ -109,6 +144,35 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         "She did not yet know how to ask for something between those two extremes.",
       ],
       interactionType: "family-dialogue",
+      interaction: {
+        id: "asha-boundary-language",
+        purpose: "choose-response",
+        engagement: "knowledge-application",
+        prompt: "Which boundary could Asha borrow for a future family meal?",
+        instructions: "Choose language that protects both family connection and Asha’s autonomy.",
+        options: [
+          {
+            id: "plate-agency",
+            label: "Please let me decide what goes on my plate. Ask before offering advice.",
+          },
+          {
+            id: "planning-help",
+            label: "Invite me to plan with you, but do not create a separate menu for me.",
+          },
+          {
+            id: "normal-conversation",
+            label: "Keep dinner conversation ordinary unless I choose to discuss diabetes.",
+          },
+          {
+            id: "question-list",
+            label: "Help me save concerns for my appointment instead of correcting me.",
+          },
+        ],
+        feedbackMode: "choice-consequence",
+        requiredForProgress: false,
+        learningPoint:
+          "Clear, consent-based language can redirect concern without rejecting the people who want to help.",
+      },
       continueLabel: "See what Asha learned next",
     },
     {
@@ -137,6 +201,28 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         "“How can I build this meal thoughtfully?”",
       ],
       interactionType: "meal-builder",
+      interaction: {
+        id: "asha-three-f-meal",
+        purpose: "apply",
+        engagement: "optional-exploration",
+        prompt: "Can one possible dinner feel familiar, filling, and feasible?",
+        instructions:
+          "Build and adjust a familiar meal. This is a sustainability exercise, not a personalized prescription.",
+        options: [
+          { id: "rice", label: "Rice" },
+          { id: "dal", label: "Dal" },
+          { id: "vegetables", label: "Vegetables" },
+          { id: "protein", label: "Chicken" },
+          { id: "flatbread", label: "Flatbread" },
+          { id: "yogurt", label: "Plain yogurt" },
+          { id: "water", label: "Water" },
+          { id: "dessert", label: "Dessert" },
+        ],
+        feedbackMode: "single-explanation",
+        requiredForProgress: false,
+        learningPoint:
+          "A sustainable meal considers nourishment alongside familiarity, satisfaction, culture, access, and what someone can realistically continue.",
+      },
       continueLabel: "Return to Sunday dinner",
     },
     {
@@ -152,6 +238,43 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         "Asha realized there were several ways she could respond.",
       ],
       interactionType: "meaningful-food-choice",
+      interaction: {
+        id: "asha-small-meal-experiment",
+        purpose: "explore-consequences",
+        engagement: "meaningful-decision",
+        prompt: "Which small experiment could Asha choose without making a permanent rule?",
+        instructions: "Choose one low-pressure next step and observe what it could make possible.",
+        options: [
+          {
+            id: "serve-self",
+            label: "Keep the dishes family-style and let Asha serve her own plate",
+            feedback:
+              "Asha keeps agency over her plate while the meal remains a shared family experience.",
+          },
+          {
+            id: "one-experiment",
+            label: "Choose one small meal experiment instead of creating a permanent food rule",
+            feedback:
+              "A small experiment can create useful experience without asking one dinner to solve everything.",
+          },
+          {
+            id: "satisfaction-note",
+            label: "Notice what feels satisfying and bring that observation to the dietitian",
+            feedback:
+              "Satisfaction and sustainability become information Asha can use in a qualified conversation.",
+          },
+          {
+            id: "pause-experiment",
+            label: "Keep tonight familiar and choose a calmer meal for the first experiment",
+            feedback:
+              "Asha can choose timing as well as food. Waiting for a calmer moment is different from abandoning the question.",
+          },
+        ],
+        feedbackMode: "choice-consequence",
+        requiredForProgress: true,
+        learningPoint:
+          "A small, reversible experiment can create useful experience without asking one meal to prove success or failure.",
+      },
       continueLabel: "See what changed at the table",
     },
     {
@@ -178,6 +301,26 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         "That understanding felt far more sustainable than fear.",
       ],
       interactionType: "shared-table",
+      interaction: {
+        id: "asha-family-meal-agreement",
+        purpose: "apply",
+        engagement: "knowledge-application",
+        prompt: "Which agreements could make future meals calmer for everyone?",
+        instructions:
+          "Choose any agreements that preserve routine, consent, privacy, and personal agency.",
+        options: [
+          { id: "neutral-language", label: "Use neutral words for food" },
+          { id: "rotate-planning", label: "Rotate who helps choose the family menu" },
+          { id: "agreed-check-in", label: "Save health questions for an agreed check-in" },
+          { id: "public-praise", label: "Praise or correct Asha’s plate publicly" },
+          { id: "self-service", label: "Let each person serve themselves" },
+          { id: "secret-substitutions", label: "Change Asha’s ingredients without telling her" },
+        ],
+        feedbackMode: "open-interpretation",
+        requiredForProgress: false,
+        learningPoint:
+          "Families can change the environment around a meal without monitoring or taking ownership of another person’s plate.",
+      },
       continueLabel: "Pause and Think",
     },
   ],

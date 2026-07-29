@@ -41,6 +41,16 @@ function statusActionLabel(progress: StoryProgress) {
   return "Begin Story";
 }
 
+function isSceneInteractionComplete(
+  scene: StoryScene,
+  interactionStates: Record<string, InteractionValue>,
+) {
+  return (
+    !scene.interaction.requiredForProgress ||
+    interactionStates[`${scene.id}:complete`] === "complete"
+  );
+}
+
 function StoryProgressRail({
   current,
   furthest,
@@ -99,6 +109,7 @@ function StoryProgressRail({
 function StorySceneView({
   direction,
   interactionStates,
+  interactionComplete,
   isLeaving,
   meaningfulChoice,
   onBack,
@@ -109,6 +120,7 @@ function StorySceneView({
 }: {
   direction: Direction;
   interactionStates: Record<string, InteractionValue>;
+  interactionComplete: boolean;
   isLeaving: boolean;
   meaningfulChoice: string | null;
   onBack: (() => void) | undefined;
@@ -137,6 +149,13 @@ function StorySceneView({
           {scene.paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
+          {scene.paragraphsAfterInteraction && interactionComplete ? (
+            <div aria-live="polite" className={styles.followUpNarrative}>
+              {scene.paragraphsAfterInteraction.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          ) : null}
         </div>
       </section>
       <aside aria-label={`Interactive companion for ${scene.title}`} className={styles.interaction}>
@@ -157,10 +176,22 @@ function StorySceneView({
         ) : (
           <span />
         )}
-        <button className={styles.continueButton} onClick={onContinue} type="button">
-          {scene.continueLabel}
-          <ArrowRight aria-hidden="true" size={18} />
-        </button>
+        <div className={styles.continueArea}>
+          {!interactionComplete ? (
+            <span aria-live="polite" className={styles.interactionGateHint}>
+              Make the decision above to continue this moment.
+            </span>
+          ) : null}
+          <button
+            className={styles.continueButton}
+            disabled={!interactionComplete}
+            onClick={onContinue}
+            type="button"
+          >
+            {scene.continueLabel}
+            <ArrowRight aria-hidden="true" size={18} />
+          </button>
+        </div>
       </nav>
     </div>
   );
@@ -183,6 +214,9 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   const relatedLessonTitle = story.relatedLessonTitle ?? "Lesson 1, The First Five Minutes";
   const relatedLessonHref = story.relatedLessonHref ?? "/lessons/1";
   const isFoodFamilyStory = story.id === "asha-rice-on-the-table";
+  const interactionStates = progress.interactionStates as Record<string, InteractionValue>;
+  const currentScene = story.scenes[progress.currentScene]!;
+  const currentInteractionComplete = isSceneInteractionComplete(currentScene, interactionStates);
 
   useEffect(() => {
     try {
@@ -242,7 +276,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
         setIsLeaving(false);
         keepPlayerInView();
       },
-      reducedMotion ? 0 : 150,
+      reducedMotion ? 0 : 160,
     );
   };
 
@@ -256,6 +290,8 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   };
 
   const continueScene = () => {
+    if (!currentInteractionComplete) return;
+
     if (progress.currentScene < story.scenes.length - 1) {
       runSceneTransition(progress.currentScene + 1, "forward");
       return;
@@ -271,7 +307,6 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
     requestAnimationFrame(keepPlayerInView);
   };
 
-  const interactionStates = progress.interactionStates as Record<string, InteractionValue>;
   const currentQuestion = story.quiz[progress.currentQuizQuestion];
   const selectedAnswer = currentQuestion
     ? (progress.quizAnswers[currentQuestion.id] ?? quizSelection)
@@ -427,6 +462,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
             <StorySceneView
               direction={direction}
               interactionStates={interactionStates}
+              interactionComplete={currentInteractionComplete}
               isLeaving={isLeaving}
               meaningfulChoice={progress.meaningfulChoice}
               onBack={
@@ -444,7 +480,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
                   interactionStates: { ...current.interactionStates, [key]: value },
                 }))
               }
-              scene={story.scenes[progress.currentScene]!}
+              scene={currentScene}
             />
           </>
         ) : null}

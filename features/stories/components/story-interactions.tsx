@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronRight, PhoneCall, Search, X } from "lucide-react";
+import { Check, PhoneCall, Search } from "lucide-react";
 import type { ReactNode } from "react";
 
 import type { StoryInteractionType, StoryScene } from "@/features/stories/types/interactive-story";
@@ -17,82 +17,43 @@ type StoryInteractionProps = {
   scene: StoryScene;
 };
 
-const termExplanations = {
-  "Act on tonight":
-    "Put the visit papers somewhere easy to find and check whether any written instruction is time-sensitive.",
-  "Ask at follow-up":
-    "Which result led to this diagnosis, and what would the clinician like Marcus to understand about it first?",
-  "Let wait":
-    "Predicting every future treatment or rebuilding an entire routine before Marcus understands his own care plan.",
-} as const;
-
-const drafts = [
-  "I do not need advice yet. Could you listen for five minutes?",
-  "Could you sit with me while I read the visit summary once?",
-  "Can you help me remember to call the clinic tomorrow?",
-  "I want company while I settle down. We can talk about plans later.",
+const thoughtCategories = [
+  { id: "knows", label: "What Marcus knows" },
+  { id: "self-blame", label: "What Marcus is blaming himself for" },
 ] as const;
 
-const dialogue = [
-  "Would listening, company, or practical help feel best right now?",
-  "Listening. I need to say it out loud before we solve anything.",
-  "Okay. I’m here. We can choose one task after you feel heard.",
-] as const;
+const thoughtCategoryById: Record<string, (typeof thoughtCategories)[number]["id"]> = {
+  "new-information": "knows",
+  prevented: "self-blame",
+  results: "knows",
+  takeout: "self-blame",
+  "first-step": "knows",
+  failed: "self-blame",
+};
 
-const browserTabs = [
-  "After-visit instructions",
-  "Clinic contact page",
-  "National health organization",
-  "Anonymous discussion thread",
-  "Supplement advertisement",
-  "Breaking-news headline",
-] as const;
-
-const decisionChoices = [
+const usefulQuestionChoices = [
   {
-    id: "visit-summary",
-    label: "Use the after-visit instructions to check what the clinic actually asked him to do",
-    consequence:
-      "This source is connected to Marcus’s visit and can help separate an assigned next step from general information.",
+    id: "generic-plan",
+    label: "What is the best diabetes plan?",
+    useful: false,
   },
   {
-    id: "health-organization",
-    label: "Use a national health organization to learn one unfamiliar term",
-    consequence:
-      "A reputable explainer can add background, but it cannot interpret Marcus’s personal results or replace his clinician.",
+    id: "personal-context",
+    label:
+      "What does my A1C result mean, and what did my healthcare professional ask me to do next?",
+    useful: true,
   },
   {
-    id: "discussion-thread",
-    label: "Use an anonymous discussion thread to decide what treatment he will need",
-    consequence:
-      "Someone else’s experience may offer companionship, but it cannot determine which care plan applies to Marcus.",
-  },
-  {
-    id: "product-ad",
-    label: "Use a product advertisement that promises a fast solution",
-    consequence:
-      "A sales page has an interest in the decision. Strong promises are a reason to pause and check the claim with a qualified source.",
+    id: "future-certainty",
+    label: "Can someone tell me exactly what will happen years from now?",
+    useful: false,
   },
 ] as const;
 
-const questionCards = [
-  {
-    id: "bring",
-    title: "Bring",
-    detail: "A current medication and supplement list, the visit summary, and one main concern.",
-  },
-  {
-    id: "during",
-    title: "During the visit",
-    detail:
-      "Ask for the first instruction in plain language and write down who owns the next step.",
-  },
-  {
-    id: "before-leaving",
-    title: "Before leaving",
-    detail:
-      "Confirm who to contact if an instruction is unclear and when the next follow-up happens.",
-  },
+const priorityBuckets = [
+  { id: "first", label: "Ask first" },
+  { id: "follow-up", label: "Discuss during follow-up" },
+  { id: "over-time", label: "Keep exploring over time" },
 ] as const;
 
 const nextSteps = [
@@ -180,33 +141,6 @@ const mealComponents = [
   { id: "dessert", label: "Dessert" },
 ] as const;
 
-const foodDecisionChoices = [
-  {
-    id: "serve-self",
-    label: "Keep the dishes family-style and let Asha serve her own plate",
-    consequence:
-      "Asha keeps agency over her plate while the meal remains a shared family experience.",
-  },
-  {
-    id: "one-experiment",
-    label: "Choose one small meal experiment instead of creating a permanent food rule",
-    consequence:
-      "A small experiment can create useful experience without asking one dinner to solve everything.",
-  },
-  {
-    id: "satisfaction-note",
-    label: "Notice what feels satisfying and bring that observation to the dietitian",
-    consequence:
-      "Satisfaction and sustainability become information Asha can use in a qualified conversation.",
-  },
-  {
-    id: "pause-experiment",
-    label: "Keep tonight familiar and choose a lower-pressure meal for the first experiment",
-    consequence:
-      "Asha can choose timing as well as food. Waiting for a calmer moment is different from abandoning the question.",
-  },
-] as const;
-
 const supportChoices = [
   {
     id: "neutral-language",
@@ -232,206 +166,322 @@ const supportChoices = [
   },
 ] as const;
 
-function TermFocus({
+function AttentionOverload({
+  interactionStates,
   onStateChange,
   scene,
-  selected,
 }: {
+  interactionStates: StoryInteractionProps["interactionStates"];
   onStateChange: StoryInteractionProps["onStateChange"];
   scene: StoryScene;
-  selected: string;
 }) {
+  const selected = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const submitted = interactionStates[`${scene.id}:submitted`] === "submitted";
+  const options = scene.interaction.options ?? [];
+
+  const toggle = (id: string) => {
+    const next = selected.includes(id)
+      ? selected.filter((item) => item !== id)
+      : selected.length < 2
+        ? [...selected, id]
+        : selected;
+    onStateChange(scene.id, next);
+    onStateChange(`${scene.id}:submitted`, "");
+  };
+
   return (
     <div className={styles.termFocus}>
       <div className={styles.resultHeader}>
-        <span>Information sorter</span>
-        <span>One layer at a time</span>
+        <span>Appointment summary</span>
+        <span>{selected.length} of 2 selected</span>
       </div>
-      <p>Choose where a thought belongs instead of asking it to become an answer tonight.</p>
-      <div aria-label="Sort what needs attention now" className={styles.termList}>
-        {Object.keys(termExplanations).map((term) => (
+      <h3>{scene.interaction.prompt}</h3>
+      <p>{scene.interaction.instructions}</p>
+      <div aria-label="Appointment summary information" className={styles.termList}>
+        {options.map((option) => (
           <button
-            aria-pressed={selected === term}
-            key={term}
-            onClick={() => onStateChange(scene.id, term)}
+            aria-pressed={selected.includes(option.id)}
+            disabled={selected.length === 2 && !selected.includes(option.id)}
+            key={option.id}
+            onClick={() => toggle(option.id)}
             type="button"
           >
-            <span>{term}</span>
-            <ChevronRight aria-hidden="true" size={17} />
+            <span>{option.label}</span>
+            {selected.includes(option.id) ? <Check aria-hidden="true" size={17} /> : null}
           </button>
         ))}
       </div>
-      <div aria-live="polite" className={styles.interactionReveal}>
-        {selected ? (
-          <>
-            <strong>{selected}</strong>
-            <span>{termExplanations[selected as keyof typeof termExplanations]}</span>
-          </>
-        ) : (
-          <span>Not every important question belongs to the same moment.</span>
-        )}
-      </div>
+      <button
+        className={styles.interactionAction}
+        disabled={selected.length === 0}
+        onClick={() => onStateChange(`${scene.id}:submitted`, "submitted")}
+        type="button"
+      >
+        Consider my selections
+      </button>
+      {submitted ? (
+        <div aria-live="polite" className={styles.interactionReveal}>
+          <strong>Stress can narrow attention.</strong>
+          <span>
+            People under stress often remember the most emotionally charged information while
+            practical details become harder to retain. This does not mean they were not listening or
+            do not care.
+          </span>
+          <p>
+            <b>What felt urgent:</b> the diagnosis itself.
+          </p>
+          <p>
+            <b>What could help later:</b> written instructions, the follow-up appointment, and
+            questions for the healthcare team.
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }
 
-function PhoneDrafts({
-  draftIndex,
+function EmotionalInterpretation({
+  interactionStates,
   onStateChange,
   scene,
 }: {
-  draftIndex: number;
+  interactionStates: StoryInteractionProps["interactionStates"];
   onStateChange: StoryInteractionProps["onStateChange"];
   scene: StoryScene;
 }) {
-  const safeIndex = Math.max(0, Math.min(drafts.length - 1, draftIndex));
+  const selected = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const submitted = interactionStates[`${scene.id}:submitted`] === "submitted";
+  const options = scene.interaction.options ?? [];
+  const toggle = (id: string) => {
+    onStateChange(
+      scene.id,
+      selected.includes(id) ? selected.filter((item) => item !== id) : [...selected, id],
+    );
+    onStateChange(`${scene.id}:submitted`, "");
+  };
+
   return (
     <div className={styles.phoneDraft}>
       <div className={styles.phoneTop}>
-        <span>A specific support request</span>
-        <small>Practice language</small>
+        <span>
+          <PhoneCall aria-hidden="true" size={17} /> Message not sent
+        </span>
+        <small>Interpret the pause</small>
       </div>
-      <p className={styles.incomingMessage}>
-        What kind of help would make the next ten minutes easier?
-      </p>
-      <div aria-live="polite" className={styles.draftField} key={safeIndex}>
-        {drafts[safeIndex] || <span>Empty draft</span>}
-      </div>
-      <div className={styles.draftControls}>
-        <button
-          disabled={safeIndex === 0}
-          onClick={() => onStateChange(scene.id, safeIndex - 1)}
-          type="button"
-        >
-          Previous draft
-        </button>
-        <button
-          disabled={safeIndex === drafts.length - 1}
-          onClick={() => onStateChange(scene.id, safeIndex + 1)}
-          type="button"
-        >
-          Try another kind of support
-        </button>
-      </div>
-      <small>A request can be specific without explaining the whole diagnosis.</small>
+      <h3>{scene.interaction.prompt}</h3>
+      <p>{scene.interaction.instructions}</p>
+      <fieldset className={styles.nextStepChoices}>
+        <legend className="sr-only">Possible reasons the message feels difficult</legend>
+        {options.map((option) => (
+          <label key={option.id}>
+            <input
+              checked={selected.includes(option.id)}
+              onChange={() => toggle(option.id)}
+              type="checkbox"
+            />
+            <span>{option.label}</span>
+          </label>
+        ))}
+      </fieldset>
+      <button
+        className={styles.interactionAction}
+        disabled={selected.length === 0}
+        onClick={() => onStateChange(`${scene.id}:submitted`, "submitted")}
+        type="button"
+      >
+        Reflect on these reasons
+      </button>
+      {submitted ? (
+        <p aria-live="polite" className={styles.draftField}>
+          Marcus’s silence was not proof that he was ignoring the diagnosis. He was still trying to
+          find language for it. More than one reaction may be understandable here.
+        </p>
+      ) : null}
     </div>
   );
 }
 
-function FactVersusStory({
+function ThoughtSort({
+  interactionStates,
   onStateChange,
   scene,
-  selected,
 }: {
+  interactionStates: StoryInteractionProps["interactionStates"];
   onStateChange: StoryInteractionProps["onStateChange"];
   scene: StoryScene;
-  selected: string;
 }) {
+  const options = scene.interaction.options ?? [];
+  const assignments = Object.fromEntries(
+    options.map((option) => {
+      const value = interactionStates[`${scene.id}:${option.id}`];
+      return [option.id, typeof value === "string" ? value : ""];
+    }),
+  );
+  const current = options.find((option) => !assignments[option.id]);
+  const sortedCount = options.filter((option) => assignments[option.id]).length;
+  const lastFeedback =
+    typeof interactionStates[`${scene.id}:feedback`] === "string"
+      ? String(interactionStates[`${scene.id}:feedback`])
+      : "";
+
+  const sortThought = (category: string) => {
+    if (!current) return;
+    onStateChange(`${scene.id}:${current.id}`, category);
+    const matches = thoughtCategoryById[current.id] === category;
+    onStateChange(
+      `${scene.id}:feedback`,
+      matches
+        ? "That distinction fits: this separates available information from the meaning shame adds."
+        : "This thought may feel factual to Marcus, but look again at whether the medical result itself actually says it.",
+    );
+  };
+
   return (
     <div className={styles.comparison}>
-      <div aria-label="Compare what a diagnosis can and cannot measure" role="group">
-        <button
-          aria-pressed={selected !== "story"}
-          onClick={() => onStateChange(scene.id, "event")}
-          type="button"
-        >
-          What it can tell him
-        </button>
-        <button
-          aria-pressed={selected === "story"}
-          onClick={() => onStateChange(scene.id, "story")}
-          type="button"
-        >
-          What it cannot measure
-        </button>
+      <div className={styles.resultHeader}>
+        <span>
+          Thought {Math.min(sortedCount + 1, options.length)} of {options.length}
+        </span>
+        <span>{sortedCount} sorted</span>
       </div>
-      <div aria-live="polite" className={styles.comparisonText}>
-        {selected === "story" ? (
-          <>
-            <X aria-hidden="true" />
-            <p>Character, effort, love for family, or whether Marcus deserves compassion.</p>
-          </>
-        ) : (
-          <>
-            <Check aria-hidden="true" />
-            <p>
-              A health condition may reflect biology, genetics, environment, access, time, and other
-              influences worth understanding with his care team.
-            </p>
-          </>
-        )}
-      </div>
-      <small>
-        A diagnosis can guide care. It is not a character score and cannot summarize a person’s
-        history.
-      </small>
-    </div>
-  );
-}
-
-function PhoneDialogue({
-  lineCount,
-  onStateChange,
-  scene,
-}: {
-  lineCount: number;
-  onStateChange: StoryInteractionProps["onStateChange"];
-  scene: StoryScene;
-}) {
-  const safeCount = Math.max(0, Math.min(dialogue.length, lineCount));
-  return (
-    <div className={styles.dialogue}>
-      <div className={styles.callStatus}>
-        <PhoneCall aria-hidden="true" size={18} />
-        <span>Practice a support check-in</span>
-      </div>
-      <div aria-live="polite" className={styles.dialogueLines}>
-        {dialogue.slice(0, safeCount).map((line, index) => (
-          <p className={index === 1 ? styles.marcusLine : ""} key={line}>
-            <small>{index === 1 ? "Marcus" : "His wife"}</small>
-            {line}
-          </p>
-        ))}
-        {safeCount === 0 ? <span>The line is quiet.</span> : null}
-      </div>
-      {safeCount < dialogue.length ? (
-        <button onClick={() => onStateChange(scene.id, safeCount + 1)} type="button">
-          Reveal the next listening move
-        </button>
+      <h3>{scene.interaction.prompt}</h3>
+      <p>{scene.interaction.instructions}</p>
+      {current ? (
+        <>
+          <div className={styles.comparisonText}>
+            <p>{current.label}</p>
+          </div>
+          <div aria-label="Sort this thought" className={styles.sortChoices} role="group">
+            {thoughtCategories.map((category) => (
+              <button key={category.id} onClick={() => sortThought(category.id)} type="button">
+                {category.label}
+              </button>
+            ))}
+          </div>
+          {lastFeedback ? (
+            <small aria-live="polite">{lastFeedback}</small>
+          ) : (
+            <small>Choose the category that best describes what this sentence is doing.</small>
+          )}
+        </>
       ) : (
-        <div className={styles.questionChanged}>
-          <span>The helper asks before solving:</span>
-          <strong>Listen first. Clarify the need. Then choose one task.</strong>
+        <div aria-live="polite" className={styles.comparisonText}>
+          <Check aria-hidden="true" />
+          <p>
+            A diagnosis provides health information. Shame often adds a much harsher story that the
+            medical results themselves do not say. Lifestyle can matter without one behavior—or one
+            person’s character—being the whole explanation.
+          </p>
         </div>
       )}
     </div>
   );
 }
 
-function MeaningfulChoice({
+function ResponsePrediction({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const selected =
+    typeof interactionStates[scene.id] === "string" ? interactionStates[scene.id] : "";
+  const option = scene.interaction.options?.find((candidate) => candidate.id === selected);
+
+  const choose = (id: string) => {
+    onStateChange(scene.id, id);
+    onStateChange(`${scene.id}:complete`, "complete");
+  };
+
+  return (
+    <div className={styles.dialogue}>
+      <div className={styles.callStatus}>
+        <PhoneCall aria-hidden="true" size={18} />
+        <span>Prediction point</span>
+      </div>
+      <fieldset className={styles.nextStepChoices}>
+        <legend>{scene.interaction.prompt}</legend>
+        <p>{scene.interaction.instructions}</p>
+        {(scene.interaction.options ?? []).map((choice, index) => (
+          <label key={choice.id}>
+            <input
+              checked={selected === choice.id}
+              name={`${scene.id}-prediction`}
+              onChange={() => choose(choice.id)}
+              type="radio"
+            />
+            <span>
+              <small>{String.fromCharCode(65 + index)}</small>
+              {choice.label}
+            </span>
+          </label>
+        ))}
+      </fieldset>
+      {option ? (
+        <div aria-live="polite" className={styles.questionChanged}>
+          <strong>{option.feedback}</strong>
+          <span>
+            Marcus’s wife brings him back from an imagined future to the next clear action. Her
+            response now continues in the story.
+          </span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function InformationFilter({
+  interactionStates,
   meaningfulChoice,
   onMeaningfulChoice,
+  onStateChange,
+  scene,
 }: {
+  interactionStates: StoryInteractionProps["interactionStates"];
   meaningfulChoice: string | null;
   onMeaningfulChoice: (choice: string) => void;
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
 }) {
-  const selected = decisionChoices.find((choice) => choice.id === meaningfulChoice);
+  const selected = scene.interaction.options?.find((choice) => choice.id === meaningfulChoice);
+  const questionKey = `${scene.id}:question`;
+  const selectedQuestion =
+    typeof interactionStates[questionKey] === "string" ? interactionStates[questionKey] : "";
+  const question = usefulQuestionChoices.find((choice) => choice.id === selectedQuestion);
+
+  const chooseQuestion = (id: string) => {
+    onStateChange(questionKey, id);
+    onStateChange(`${scene.id}:complete`, "complete");
+  };
+
   return (
     <div className={styles.decision}>
       <div aria-label="Open browser tabs" className={styles.browserTabs}>
         <Search aria-hidden="true" size={18} />
-        {browserTabs.map((tab) => (
-          <span key={tab}>{tab}</span>
-        ))}
+        <span>12 tabs open</span>
+        <span>More opinions</span>
+        <span>Another long-term outcome</span>
       </div>
       <fieldset>
-        <legend>One question, one source: where should Marcus look first?</legend>
-        {decisionChoices.map((choice, index) => (
+        <legend>{scene.interaction.prompt}</legend>
+        <p>{scene.interaction.instructions}</p>
+        {(scene.interaction.options ?? []).map((choice, index) => (
           <label key={choice.id}>
             <input
               checked={meaningfulChoice === choice.id}
-              name="marcus-next-choice"
-              onChange={() => onMeaningfulChoice(choice.id)}
+              name={`${scene.id}-information-use`}
+              onChange={() => {
+                onMeaningfulChoice(choice.id);
+                onStateChange(questionKey, "");
+                onStateChange(`${scene.id}:complete`, "");
+              }}
               type="radio"
               value={choice.id}
             />
@@ -444,20 +494,37 @@ function MeaningfulChoice({
       </fieldset>
       {selected ? (
         <div aria-live="polite" className={styles.choiceConsequence}>
-          <p>{selected.consequence}</p>
-          <strong>Match the source to the job.</strong>
-          <span>
-            Personal instructions belong with the clinic. General education belongs with a credible
-            health source. Neither advertisements nor another person’s treatment story can interpret
-            Marcus’s results.
-          </span>
+          <p>{selected.feedback}</p>
+          <strong>Turn the broad search into a question Marcus can use.</strong>
+          <span>Broad search: “What happens to people with diabetes?”</span>
+          <fieldset className={styles.nextStepChoices}>
+            <legend>Which version adds Marcus’s actual context?</legend>
+            {usefulQuestionChoices.map((choice) => (
+              <label key={choice.id}>
+                <input
+                  checked={selectedQuestion === choice.id}
+                  name={`${scene.id}-useful-question`}
+                  onChange={() => chooseQuestion(choice.id)}
+                  type="radio"
+                />
+                <span>{choice.label}</span>
+              </label>
+            ))}
+          </fieldset>
+          {question ? (
+            <p aria-live="polite">
+              {question.useful
+                ? "This question connects general information to Marcus’s result and the next action his healthcare professional gave him."
+                : "That question is understandable, but it is still too broad to answer Marcus’s immediate need. Add his result, his instructions, or the decision in front of him."}
+            </p>
+          ) : null}
         </div>
       ) : null}
     </div>
   );
 }
 
-function QuestionCards({
+function QuestionPrioritization({
   interactionStates,
   onStateChange,
   scene,
@@ -466,44 +533,51 @@ function QuestionCards({
   onStateChange: StoryInteractionProps["onStateChange"];
   scene: StoryScene;
 }) {
-  const openKey = `${scene.id}:opened`;
   const nextKey = `${scene.id}:next`;
-  const opened = Array.isArray(interactionStates[openKey])
-    ? (interactionStates[openKey] as string[])
-    : [];
+  const options = scene.interaction.options ?? [];
   const selectedNext =
     typeof interactionStates[nextKey] === "string" ? interactionStates[nextKey] : "";
-
-  const toggleQuestion = (questionId: string) => {
-    const next = opened.includes(questionId)
-      ? opened.filter((item) => item !== questionId)
-      : [...opened, questionId];
-    onStateChange(openKey, next);
-  };
+  const assignedCount = options.filter(
+    (question) => typeof interactionStates[`${scene.id}:${question.id}`] === "string",
+  ).length;
 
   return (
     <div className={styles.questionInteraction}>
-      <div className={styles.foldedQuestions}>
-        {questionCards.map((question, index) => (
-          <button
-            aria-expanded={opened.includes(question.id)}
-            key={question.id}
-            onClick={() => toggleQuestion(question.id)}
-            type="button"
-          >
-            <span>
-              Pocket {index + 1} · {question.title}
-            </span>
-            <strong>
-              {opened.includes(question.id) ? question.detail : "Open the appointment pocket"}
-            </strong>
-          </button>
-        ))}
+      <div className={styles.resultHeader}>
+        <span>Appointment questions</span>
+        <span>
+          {assignedCount} of {options.length} placed
+        </span>
       </div>
-      {opened.length === questionCards.length ? (
-        <p className={styles.allQuestionsOpen}>
-          A useful appointment kit reduces the amount memory has to carry and makes the next
-          conversation easier to use.
+      <h3>{scene.interaction.prompt}</h3>
+      <p>{scene.interaction.instructions}</p>
+      <div className={styles.foldedQuestions}>
+        {options.map((question) => {
+          const assignment = interactionStates[`${scene.id}:${question.id}`];
+          return (
+            <fieldset key={question.id}>
+              <legend>{question.label}</legend>
+              <div aria-label={`Priority for: ${question.label}`} role="group">
+                {priorityBuckets.map((bucket) => (
+                  <button
+                    aria-pressed={assignment === bucket.id}
+                    key={bucket.id}
+                    onClick={() => onStateChange(`${scene.id}:${question.id}`, bucket.id)}
+                    type="button"
+                  >
+                    {bucket.label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          );
+        })}
+      </div>
+      {assignedCount === options.length ? (
+        <p aria-live="polite" className={styles.allQuestionsOpen}>
+          There is no perfect order. “Ask first” can hold what changes the next action; follow-up
+          can hold what needs more conversation; some questions become clearer with experience over
+          time.
         </p>
       ) : null}
       <fieldset className={styles.nextStepChoices}>
@@ -540,18 +614,19 @@ function GroceryFearExplorer({
     <div className={styles.groceryExplorer}>
       <div>
         <p className={styles.interactionKicker}>A calmer label-reading order</p>
-        <h3>Choose one clue and learn what job it can—and cannot—do.</h3>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
       </div>
       <div aria-label="Explore nutrition label clues" className={styles.groceryShelf}>
-        {groceryItems.map((food) => (
+        {scene.interaction.options.map((option) => (
           <button
-            aria-pressed={selected === food.id}
-            key={food.id}
-            onClick={() => onStateChange(scene.id, food.id)}
+            aria-pressed={selected === option.id}
+            key={option.id}
+            onClick={() => onStateChange(scene.id, option.id)}
             type="button"
           >
-            <span aria-hidden="true" className={styles.foodMark} data-food={food.id} />
-            {food.label}
+            <span aria-hidden="true" className={styles.foodMark} data-food={option.id} />
+            {option.label}
           </button>
         ))}
       </div>
@@ -591,6 +666,8 @@ function SeparatePlateComparison({
 
   return (
     <div className={styles.plateComparison}>
+      <h3>{scene.interaction.prompt}</h3>
+      <p>{scene.interaction.instructions}</p>
       <div className={styles.tableComparisonVisual}>
         <section>
           <p>What can stay shared</p>
@@ -681,18 +758,19 @@ function FamilySupportDialogue({
   return (
     <div className={styles.familyDialogue}>
       <fieldset>
-        <legend>Which boundary could Asha borrow for a future family meal?</legend>
-        {familyDialogueChoices.map((choice, index) => (
-          <label key={choice.id}>
+        <legend>{scene.interaction.prompt}</legend>
+        <p>{scene.interaction.instructions}</p>
+        {scene.interaction.options.map((option, index) => (
+          <label key={option.id}>
             <input
-              checked={selected === choice.id}
+              checked={selected === option.id}
               name={`${scene.id}-support-response`}
-              onChange={() => onStateChange(scene.id, choice.id)}
+              onChange={() => onStateChange(scene.id, option.id)}
               type="radio"
             />
             <span>
               <small>{String.fromCharCode(65 + index)}</small>
-              {choice.label}
+              {option.label}
             </span>
           </label>
         ))}
@@ -772,7 +850,8 @@ function CulturalMealBuilder({
     <div className={styles.mealBuilder}>
       <div className={styles.mealBuilderHeading}>
         <p className={styles.interactionKicker}>Try the three-F check</p>
-        <h3>Build one dinner that feels familiar, filling, and feasible.</h3>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
       </div>
       <div className={styles.mealCanvas}>
         <div aria-label="Selected meal components" className={styles.dinnerPlate}>
@@ -801,7 +880,7 @@ function CulturalMealBuilder({
         ) : null}
       </div>
       <div aria-label="Shared food area" className={styles.foodTray}>
-        {mealComponents.map((food) => (
+        {scene.interaction.options.map((food) => (
           <button
             aria-pressed={selected.includes(food.id)}
             key={food.id}
@@ -851,22 +930,31 @@ function CulturalMealBuilder({
 function FoodChoicePath({
   meaningfulChoice,
   onMeaningfulChoice,
+  onStateChange,
+  scene,
 }: {
   meaningfulChoice: string | null;
   onMeaningfulChoice: (choice: string) => void;
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
 }) {
-  const selected = foodDecisionChoices.find((choice) => choice.id === meaningfulChoice);
+  const selected = scene.interaction.options.find((choice) => choice.id === meaningfulChoice);
+  const choose = (id: string) => {
+    onMeaningfulChoice(id);
+    onStateChange(`${scene.id}:complete`, "complete");
+  };
 
   return (
     <div className={styles.foodChoicePath}>
       <fieldset>
-        <legend>Which small experiment could Asha choose without making a permanent rule?</legend>
-        {foodDecisionChoices.map((choice, index) => (
+        <legend>{scene.interaction.prompt}</legend>
+        <p>{scene.interaction.instructions}</p>
+        {scene.interaction.options.map((choice, index) => (
           <label key={choice.id}>
             <input
               checked={meaningfulChoice === choice.id}
               name="asha-sunday-dinner-choice"
-              onChange={() => onMeaningfulChoice(choice.id)}
+              onChange={() => choose(choice.id)}
               type="radio"
             />
             <span>
@@ -878,7 +966,7 @@ function FoodChoicePath({
       </fieldset>
       {selected ? (
         <div aria-live="polite" className={styles.foodChoiceConsequence}>
-          <p>{selected.consequence}</p>
+          <p>{selected.feedback}</p>
           <div>
             <strong>One experiment, not a verdict</strong>
             <p>
@@ -928,15 +1016,16 @@ function SharedMealSupportSelector({
         <span data-person="asha" />
       </div>
       <fieldset>
-        <legend>Which agreements could make future meals calmer for everyone?</legend>
-        {supportChoices.map((choice) => (
-          <label key={choice.id}>
+        <legend>{scene.interaction.prompt}</legend>
+        <p>{scene.interaction.instructions}</p>
+        {scene.interaction.options.map((option) => (
+          <label key={option.id}>
             <input
-              checked={selected.includes(choice.id)}
-              onChange={() => toggle(choice.id)}
+              checked={selected.includes(option.id)}
+              onChange={() => toggle(option.id)}
               type="checkbox"
             />
-            <span>{choice.label}</span>
+            <span>{option.label}</span>
           </label>
         ))}
       </fieldset>
@@ -956,10 +1045,11 @@ function SharedMealSupportSelector({
           <ul>
             {selected.map((id) => {
               const choice = supportChoices.find((item) => item.id === id);
+              const option = scene.interaction.options.find((item) => item.id === id);
               if (!choice) return null;
               return (
                 <li key={id}>
-                  <span>{choice.label}</span>
+                  <span>{option?.label ?? choice.label}</span>
                   <small>
                     {choice.helpful
                       ? "This protects routine, consent, or personal agency."
@@ -985,42 +1075,45 @@ export function StoryInteraction({
   const value = interactionStates[scene.id];
 
   const renderers: Record<StoryInteractionType, () => ReactNode> = {
-    "term-focus": () => (
-      <TermFocus
-        onStateChange={onStateChange}
-        scene={scene}
-        selected={typeof value === "string" ? value : ""}
-      />
-    ),
-    "phone-drafts": () => (
-      <PhoneDrafts
-        draftIndex={typeof value === "number" ? value : 0}
+    "attention-overload": () => (
+      <AttentionOverload
+        interactionStates={interactionStates}
         onStateChange={onStateChange}
         scene={scene}
       />
     ),
-    "fact-vs-story": () => (
-      <FactVersusStory
-        onStateChange={onStateChange}
-        scene={scene}
-        selected={typeof value === "string" ? value : "event"}
-      />
-    ),
-    "phone-dialogue": () => (
-      <PhoneDialogue
-        lineCount={typeof value === "number" ? value : 0}
+    "emotional-interpretation": () => (
+      <EmotionalInterpretation
+        interactionStates={interactionStates}
         onStateChange={onStateChange}
         scene={scene}
       />
     ),
-    "meaningful-choice": () => (
-      <MeaningfulChoice
+    "thought-sort": () => (
+      <ThoughtSort
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "response-prediction": () => (
+      <ResponsePrediction
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "information-filter": () => (
+      <InformationFilter
+        interactionStates={interactionStates}
         meaningfulChoice={meaningfulChoice}
         onMeaningfulChoice={onMeaningfulChoice}
+        onStateChange={onStateChange}
+        scene={scene}
       />
     ),
-    "question-cards": () => (
-      <QuestionCards
+    "question-prioritization": () => (
+      <QuestionPrioritization
         interactionStates={interactionStates}
         onStateChange={onStateChange}
         scene={scene}
@@ -1055,7 +1148,12 @@ export function StoryInteraction({
       />
     ),
     "meaningful-food-choice": () => (
-      <FoodChoicePath meaningfulChoice={meaningfulChoice} onMeaningfulChoice={onMeaningfulChoice} />
+      <FoodChoicePath
+        meaningfulChoice={meaningfulChoice}
+        onMeaningfulChoice={onMeaningfulChoice}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
     ),
     "shared-table": () => (
       <SharedMealSupportSelector

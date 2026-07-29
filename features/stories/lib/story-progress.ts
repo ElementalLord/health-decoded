@@ -4,6 +4,7 @@ export const getStoryStorageKey = (slug: string) => `health-decoded:story:${slug
 
 export const MARCUS_STORY_STORAGE_KEY = getStoryStorageKey("marcus-parking-lot");
 export const ASHA_STORY_STORAGE_KEY = getStoryStorageKey("asha-rice-on-the-table");
+export const CURRENT_STORY_INTERACTION_VERSION = 2;
 
 export const createInitialStoryProgress = (): StoryProgress => ({
   currentScene: 0,
@@ -20,6 +21,7 @@ export const createInitialStoryProgress = (): StoryProgress => ({
   completionDate: null,
   privateReflection: null,
   versionCompleted: null,
+  interactionVersion: CURRENT_STORY_INTERACTION_VERSION,
   stage: "intro",
 });
 
@@ -29,6 +31,8 @@ export function parseStoryProgress(value: string | null): StoryProgress {
   try {
     const parsed = JSON.parse(value) as Partial<StoryProgress>;
     const initial = createInitialStoryProgress();
+    const interactionStateIsCurrent =
+      parsed.interactionVersion === CURRENT_STORY_INTERACTION_VERSION;
     return {
       ...initial,
       ...parsed,
@@ -45,9 +49,13 @@ export function parseStoryProgress(value: string | null): StoryProgress {
           ? Math.max(0, Math.min(5, parsed.furthestSceneReached))
           : initial.furthestSceneReached,
       interactionStates:
-        parsed.interactionStates && typeof parsed.interactionStates === "object"
+        interactionStateIsCurrent &&
+        parsed.interactionStates &&
+        typeof parsed.interactionStates === "object"
           ? parsed.interactionStates
           : initial.interactionStates,
+      meaningfulChoice: interactionStateIsCurrent ? (parsed.meaningfulChoice ?? null) : null,
+      interactionVersion: CURRENT_STORY_INTERACTION_VERSION,
       quizAnswers:
         parsed.quizAnswers && typeof parsed.quizAnswers === "object"
           ? parsed.quizAnswers

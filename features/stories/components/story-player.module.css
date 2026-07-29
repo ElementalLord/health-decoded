@@ -352,6 +352,28 @@
   font-size: 1.16rem;
 }
 
+.followUpNarrative {
+  border-top: 1px solid #d9d0c5;
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.45rem;
+  padding-top: 1.15rem;
+}
+
+.continueArea {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.interactionGateHint {
+  color: #6f5f54;
+  font-size: 0.78rem;
+  max-width: 18rem;
+  text-align: right;
+}
+
 .interaction {
   background: #eef3ef;
 }
@@ -393,11 +415,11 @@
 }
 
 .sceneSurface.leaving.forward {
-  animation: scene-leave-forward 150ms ease both;
+  animation: scene-leave-forward 160ms ease both;
 }
 
 .sceneSurface.leaving.backward {
-  animation: scene-leave-backward 150ms ease both;
+  animation: scene-leave-backward 160ms ease both;
 }
 
 /* Scene interactions */
@@ -440,6 +462,20 @@
 
 .termList button[aria-pressed="true"] {
   color: #a55f4b;
+}
+
+.interactionAction {
+  border-bottom: 2px solid #708f80;
+  color: #3f6257;
+  font-size: 0.78rem;
+  font-weight: 760;
+  margin-top: 1rem;
+  min-height: 44px;
+}
+
+.interactionAction:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
 }
 
 .interactionReveal {
@@ -524,13 +560,16 @@
   opacity: 0.35;
 }
 
-.comparison > div:first-child {
+.sortChoices {
   display: grid;
+  gap: 0.5rem;
   grid-template-columns: 1fr 1fr;
+  margin-top: 0.7rem;
 }
 
-.comparison > div:first-child button {
+.sortChoices button {
   border: 1px solid #b8c9bf;
+  border-radius: 7px;
   color: #5d7168;
   font-size: 0.78rem;
   font-weight: 740;
@@ -538,18 +577,8 @@
   padding: 0.6rem;
 }
 
-.comparison > div:first-child button:first-child {
-  border-radius: 7px 0 0 7px;
-}
-
-.comparison > div:first-child button:last-child {
-  border-left: 0;
-  border-radius: 0 7px 7px 0;
-}
-
-.comparison > div:first-child button[aria-pressed="true"] {
-  background: #3f6257;
-  color: #fffaf3;
+.sortChoices button:hover {
+  background: #e3ebe5;
 }
 
 .comparisonText {
@@ -769,44 +798,47 @@
 .foldedQuestions {
   display: grid;
   gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.foldedQuestions fieldset {
+  border: 1px solid #d4c9bd;
+  border-radius: 7px;
+  margin: 0;
+  padding: 0.9rem;
+}
+
+.foldedQuestions legend {
+  color: #405f54;
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  padding-inline: 0.3rem;
+}
+
+.foldedQuestions fieldset > div {
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .foldedQuestions button {
   background: #fffaf3;
   border: 1px solid #d4c9bd;
-  border-radius: 7px;
-  box-shadow: 4px 4px 0 rgb(111 148 122 / 0.12);
-  display: grid;
-  gap: 0.35rem;
-  min-height: 5.7rem;
-  padding: 1rem;
-  position: relative;
-  text-align: left;
-}
-
-.foldedQuestions button::after {
-  border-left: 1rem solid transparent;
-  border-top: 1rem solid #dfe9e2;
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.foldedQuestions button span {
-  color: #a6624e;
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.foldedQuestions button strong {
-  color: #456157;
-  font-family: var(--font-serif);
-  font-size: 1rem;
-  font-weight: 550;
+  border-radius: 6px;
+  color: #625a54;
+  font-size: 0.68rem;
   line-height: 1.35;
+  min-height: 46px;
+  padding: 0.55rem;
+  text-align: center;
+}
+
+.foldedQuestions button[aria-pressed="true"] {
+  background: #e1ebe4;
+  border-color: #759786;
+  box-shadow: inset 3px 0 #759786;
+  color: #36584d;
 }
 
 .questionInteraction > small {
@@ -1874,6 +1906,11 @@
 
   .progressRail {
     gap: 0.25rem;
+  }
+
+  .foldedQuestions fieldset > div,
+  .sortChoices {
+    grid-template-columns: 1fr;
   }
 
   .progressRail button {

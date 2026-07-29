@@ -101,11 +101,17 @@ test("the story contains exactly six progressive scenes in the required order", 
   assert.doesNotMatch(player, /story\.scenes\.map\(\(scene\).*<StorySceneView/s);
 });
 
-test("story navigation advances and returns exactly one scene without gating interactions", () => {
+test("story navigation advances one scene and gates only Asha’s meaningful experiment", () => {
   assert.match(player, /runSceneTransition\(progress\.currentScene \+ 1, "forward"\)/);
   assert.match(player, /runSceneTransition\(progress\.currentScene - 1, "backward"\)/);
   assert.match(player, /disabled=\{!isReached \|\| isCurrent\}/);
-  assert.doesNotMatch(player, /disabled=\{[^}]*interaction/i);
+  assert.match(player, /disabled=\{!interactionComplete\}/);
+  assert.deepEqual(
+    ashaRiceOnTheTableStory.scenes
+      .filter((scene) => scene.interaction.requiredForProgress)
+      .map((scene) => scene.number),
+    [5],
+  );
   assert.match(player, /headingRef\.current\?\.focus/);
 });
 
@@ -120,7 +126,7 @@ test("label exploration adds a reusable reading skill without repeating Asha's c
     assert.match(interactions, new RegExp(`label: "${clue}"`));
   }
   assert.match(interactions, /aria-label="Explore nutrition label clues"/);
-  assert.match(interactions, /aria-pressed=\{selected === food\.id\}/);
+  assert.match(interactions, /aria-pressed=\{selected === option\.id\}/);
   assert.match(interactions, /A package label is a tool for comparison/);
   assert.doesNotMatch(interactions, /calories|good food|bad food|safe food classification/i);
 });
@@ -135,7 +141,7 @@ test("the shared-meal comparison adds an agency concept with drag and button con
 
 test("family dialogue offers reusable consent and boundary language", () => {
   assert.equal(familyDialogueChoiceCount(), 4);
-  assert.match(interactions, /Which boundary could Asha borrow/);
+  assert.match(ashaRiceOnTheTableStory.scenes[2].interaction.prompt, /boundary could Asha borrow/);
   assert.match(interactions, /Please let me decide what goes on my plate/);
   assert.match(interactions, /protect connection and independence/);
   assert.match(interactions, /aria-live="polite"/);
@@ -165,7 +171,10 @@ test("the meal builder has tap controls, broad portions, contextual feedback, an
   assert.match(interactions, /There is no single universally perfect plate/);
   assert.match(interactions, /not a personalized meal plan/);
   assert.match(interactions, /Individual\s+needs\s+can vary/);
-  assert.match(interactions, /familiar, filling, and feasible/i);
+  assert.match(
+    ashaRiceOnTheTableStory.scenes[3].interaction.prompt,
+    /familiar, filling, and feasible/i,
+  );
   const builder = interactions.slice(
     interactions.indexOf("function CulturalMealBuilder"),
     interactions.indexOf("function FoodChoicePath"),
@@ -175,9 +184,13 @@ test("the meal builder has tap controls, broad portions, contextual feedback, an
 
 test("Scene 5 contains a meaningful non-quiz learner decision", () => {
   assert.equal(ashaRiceOnTheTableStory.scenes[4]?.interactionType, "meaningful-food-choice");
-  assert.match(interactions, /Which small experiment could Asha choose/);
+  assert.match(
+    ashaRiceOnTheTableStory.scenes[4]?.interaction.prompt ?? "",
+    /Which small experiment could Asha choose/,
+  );
   assert.match(interactions, /One experiment, not a verdict/);
   assert.match(interactions, /what Asha learns about\s+familiarity, satisfaction/);
+  assert.match(interactions, /onStateChange\(`\$\{scene\.id\}:complete`, "complete"\)/);
   const decision = interactions.slice(
     interactions.indexOf("function FoodChoicePath"),
     interactions.indexOf("function SharedMealSupportSelector"),
@@ -187,26 +200,29 @@ test("Scene 5 contains a meaningful non-quiz learner decision", () => {
 
 test("Scene 6 contains a multiple-selection shared-support agreement", () => {
   assert.equal(ashaRiceOnTheTableStory.scenes[5]?.interactionType, "shared-table");
-  assert.match(interactions, /Which agreements could make future meals calmer/);
+  assert.match(
+    ashaRiceOnTheTableStory.scenes[5].interaction.prompt,
+    /Which agreements could make future meals calmer/,
+  );
   assert.match(interactions, /type="checkbox"/);
   assert.match(
     interactions,
     /A family agreement can reduce pressure before anyone needs to correct a plate/,
   );
-  assert.match(interactions, /The learner|selected\.length/);
+  assert.match(interactions, /selected\.length/);
 });
 
 test("all six Asha interactions add original tools instead of replaying the scene", () => {
   for (const newTool of [
     "calmer label-reading order",
     "What can stay shared",
-    "future family meal",
     "three-F check",
-    "small experiment",
     "family agreement",
   ]) {
     assert.match(interactions, new RegExp(newTool, "i"));
   }
+  assert.match(ashaRiceOnTheTableStory.scenes[2].interaction.prompt, /future family meal/i);
+  assert.match(ashaRiceOnTheTableStory.scenes[4].interaction.prompt, /small experiment/i);
 
   for (const repeatedStoryDetail of [
     "Asha’s grocery shelf",
