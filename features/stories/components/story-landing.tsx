@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 import { ashaRiceOnTheTableStory } from "@/features/stories/content/asha-rice-on-the-table";
 import { marcusParkingLotStory } from "@/features/stories/content/marcus-parking-lot";
+import { noraPrescriptionBagStory } from "@/features/stories/content/nora-prescription-bag";
 import {
   getStoryPreviewStatus,
   getStoryStorageKey,
@@ -22,7 +23,7 @@ import styles from "./story-landing.module.css";
 const situations = [
   { label: "Just diagnosed", available: true, href: "#just-diagnosed-story" },
   { label: "Food and family", available: true, href: "#food-and-family-story" },
-  { label: "Starting medication", available: false },
+  { label: "Starting medication", available: true, href: "#starting-medication-story" },
   { label: "A worrying reading", available: false },
   { label: "Support and boundaries", available: false },
 ] as const;
@@ -117,6 +118,7 @@ export function StoryLanding() {
   const [progressByStory, setProgressByStory] = useState<Record<string, PreviewState>>({
     [marcusParkingLotStory.slug]: { status: "not-started", scene: 1 },
     [ashaRiceOnTheTableStory.slug]: { status: "not-started", scene: 1 },
+    [noraPrescriptionBagStory.slug]: { status: "not-started", scene: 1 },
   });
 
   useEffect(() => {
@@ -124,9 +126,10 @@ export function StoryLanding() {
       setProgressByStory({
         [marcusParkingLotStory.slug]: loadPreviewState(marcusParkingLotStory.slug),
         [ashaRiceOnTheTableStory.slug]: loadPreviewState(ashaRiceOnTheTableStory.slug),
+        [noraPrescriptionBagStory.slug]: loadPreviewState(noraPrescriptionBagStory.slug),
       });
     } catch {
-      // Both stories remain available even if browser storage is blocked.
+      // All stories remain available even if browser storage is blocked.
     }
   }, []);
 
@@ -186,9 +189,20 @@ export function StoryLanding() {
         />
       </section>
 
+      <section aria-labelledby="starting-medication-heading" id="starting-medication-story">
+        <div className={styles.sectionHeading}>
+          <p>Available now</p>
+          <h2 id="starting-medication-heading">Starting medication</h2>
+        </div>
+        <StoryPreview
+          progress={progressByStory[noraPrescriptionBagStory.slug]!}
+          story={noraPrescriptionBagStory}
+        />
+      </section>
+
       <p className={styles.prototypeNote}>
-        Two stories are available in this prototype. Future situations are labeled without creating
-        empty story previews.
+        Three stories are available in this prototype. Future situations are labeled without
+        creating empty story previews.
       </p>
     </main>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, BookOpenText, Check, ChevronLeft, RotateCcw } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -205,6 +206,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   const relatedLessonTitle = story.relatedLessonTitle ?? "Lesson 1, The First Five Minutes";
   const relatedLessonHref = story.relatedLessonHref ?? "/lessons/1";
   const isFoodFamilyStory = story.id === "asha-rice-on-the-table";
+  const isMedicationStory = story.id === "nora-prescription-bag";
   const interactionStates = progress.interactionStates as Record<string, InteractionValue>;
   const currentScene = story.scenes[progress.currentScene]!;
   const currentInteractionComplete = isSceneInteractionComplete(currentScene, interactionStates);
@@ -383,9 +385,32 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
         Back to Stories
       </Link>
 
+      {story.showDetailCover ? (
+        <header className={styles.detailCover}>
+          <div className={styles.detailCoverImage}>
+            <Image
+              alt={story.imageAlt}
+              height={900}
+              priority
+              sizes="(max-width: 70rem) 100vw, 1120px"
+              src={story.imagePath}
+              width={1600}
+            />
+          </div>
+          <div className={styles.detailCoverCopy}>
+            <div>
+              <span>Illustrative story</span>
+              <span>{story.topic}</span>
+            </div>
+            <h1>{story.title}</h1>
+            <p>{story.disclosure}</p>
+          </div>
+        </header>
+      ) : null}
+
       <section
         aria-label="Interactive story player"
-        className={`${styles.player} ${isFoodFamilyStory ? styles.foodFamilyPlayer : ""}`}
+        className={`${styles.player} ${isFoodFamilyStory ? styles.foodFamilyPlayer : ""} ${isMedicationStory ? styles.medicationPlayer : ""}`}
         ref={playerRef}
       >
         {progress.stage === "intro" || progress.stage === "story" ? (
@@ -552,7 +577,9 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
           <section className={styles.resultsStage}>
             <p className={styles.stageEyebrow}>Story completed</p>
             <h2 ref={stageHeadingRef} tabIndex={-1}>
-              Knowledge check: {quizScore} of {story.quiz.length}
+              {story.resultIdeas
+                ? `You understood ${quizScore} of ${story.quiz.length} ideas.`
+                : `Knowledge check: ${quizScore} of ${story.quiz.length}`}
             </h2>
             <p>
               {keyIdeaUnderstood
@@ -560,6 +587,13 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
                   "You identified the central idea: a manageable next step can make room for action without minimizing the diagnosis.")
                 : "A few ideas may be worth reviewing."}
             </p>
+            {story.resultIdeas ? (
+              <ol className={styles.resultIdeas}>
+                {story.resultIdeas.map((idea) => (
+                  <li key={idea}>{idea}</li>
+                ))}
+              </ol>
+            ) : null}
             <ol className={styles.resultsBreakdown}>
               {story.quiz.map((question, index) => {
                 const answer = progress.quizAnswers[question.id];

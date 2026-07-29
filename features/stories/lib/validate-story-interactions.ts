@@ -115,15 +115,14 @@ export function validateStoryInteractions(story: InteractiveStory) {
       });
     }
 
-    if (
-      story.quiz.some(
-        (question) =>
-          hasSubstantialOverlap(interaction.prompt, question.prompt) ||
-          (interaction.options ?? []).some((option) =>
-            question.choices.some((choice) => hasSubstantialOverlap(option.label, choice.label)),
-          ),
-      )
-    ) {
+    const overlappingQuizItems = story.quiz.filter(
+      (question) =>
+        hasSubstantialOverlap(interaction.prompt, question.prompt) ||
+        (interaction.options ?? []).filter((option) =>
+          question.choices.some((choice) => hasSubstantialOverlap(option.label, choice.label)),
+        ).length >= 2,
+    );
+    if (overlappingQuizItems.length > 0) {
       issues.push({
         storyId: story.id,
         sceneId: scene.id,
