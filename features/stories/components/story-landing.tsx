@@ -48,21 +48,20 @@ function loadPreviewState(slug: string): PreviewState {
 }
 
 function StoryPreview({
-  compact,
   progress,
   story,
+  variant,
 }: {
-  compact?: boolean;
   progress: PreviewState;
   story: InteractiveStory;
+  variant: "featured" | "row" | "row-reverse";
 }) {
   const timeLabel = story.estimatedTimeLabel ?? "5 to 7 minutes";
   const lessonLabel = story.relatedLessonLabel ?? "Lesson 1";
-  const storyHref =
-    progress.status === "completed" ? `/stories/${story.slug}?restart=1` : `/stories/${story.slug}`;
+  const storyHref = `/stories/${story.slug}`;
 
   return (
-    <article className={`${styles.preview} ${compact ? styles.compactPreview : ""}`}>
+    <article className={`${styles.preview} ${styles[variant]}`} data-theme={story.visualTheme}>
       <div className={styles.cover}>
         <Image
           alt={story.imageAlt}
@@ -83,7 +82,7 @@ function StoryPreview({
           <p className={styles.previewIntroduction}>{story.introduction}</p>
         </div>
         <aside className={styles.whyItMatters}>
-          <p>Why this story matters</p>
+          <p>Why it may stay with you</p>
           <span>{story.whyItMatters}</span>
         </aside>
         <footer className={styles.previewFooter}>
@@ -137,11 +136,10 @@ export function StoryLanding() {
     <main className={styles.page}>
       <header className={styles.intro}>
         <p className={styles.eyebrow}>Stories</p>
-        <h1>Sometimes an experience makes the lesson easier to hold.</h1>
+        <h1>Stories</h1>
         <p>
-          These illustrative experiences explore emotions, decisions, and everyday challenges
-          commonly reported by people living with Type 2 diabetes. Each story offers a practical
-          lesson without representing one specific individual.
+          Illustrative experiences that explore the emotions, decisions, and everyday challenges
+          that can come with Type 2 diabetes.
         </p>
       </header>
 
@@ -166,44 +164,58 @@ export function StoryLanding() {
         </ul>
       </nav>
 
-      <section aria-labelledby="just-diagnosed-heading" id="just-diagnosed-story">
+      <section
+        aria-labelledby="just-diagnosed-heading"
+        className={styles.featuredSection}
+        id="just-diagnosed-story"
+      >
         <div className={styles.sectionHeading}>
-          <p>Available now</p>
-          <h2 id="just-diagnosed-heading">Just diagnosed</h2>
+          <p>Recommended place to begin</p>
+          <h2 id="just-diagnosed-heading">A first evening after diagnosis</h2>
         </div>
         <StoryPreview
           progress={progressByStory[marcusParkingLotStory.slug]!}
           story={marcusParkingLotStory}
+          variant="featured"
         />
       </section>
 
-      <section aria-labelledby="food-and-family-heading" id="food-and-family-story">
+      <section aria-labelledby="more-stories-heading" className={styles.moreStories}>
         <div className={styles.sectionHeading}>
-          <p>Available now</p>
-          <h2 id="food-and-family-heading">Food and family</h2>
+          <p>More situations</p>
+          <h2 id="more-stories-heading">Different moments, different questions</h2>
         </div>
-        <StoryPreview
-          compact
-          progress={progressByStory[ashaRiceOnTheTableStory.slug]!}
-          story={ashaRiceOnTheTableStory}
-        />
+        <div className={styles.storyRows}>
+          <div id="food-and-family-story">
+            <h3 className="sr-only" id="food-and-family-heading">
+              Food and family
+            </h3>
+            <StoryPreview
+              progress={progressByStory[ashaRiceOnTheTableStory.slug]!}
+              story={ashaRiceOnTheTableStory}
+              variant="row"
+            />
+          </div>
+          <div id="starting-medication-story">
+            <h3 className="sr-only" id="starting-medication-heading">
+              Starting medication
+            </h3>
+            <StoryPreview
+              progress={progressByStory[noraPrescriptionBagStory.slug]!}
+              story={noraPrescriptionBagStory}
+              variant="row-reverse"
+            />
+          </div>
+        </div>
       </section>
 
-      <section aria-labelledby="starting-medication-heading" id="starting-medication-story">
-        <div className={styles.sectionHeading}>
-          <p>Available now</p>
-          <h2 id="starting-medication-heading">Starting medication</h2>
-        </div>
-        <StoryPreview
-          progress={progressByStory[noraPrescriptionBagStory.slug]!}
-          story={noraPrescriptionBagStory}
-        />
-      </section>
-
-      <p className={styles.prototypeNote}>
-        Three stories are available in this prototype. Future situations are labeled without
-        creating empty story previews.
-      </p>
+      <aside className={styles.storyNote}>
+        <p>These are illustrative, not biographical.</p>
+        <span>
+          Each story is an original composite designed to make an everyday question easier to
+          explore. It does not describe one specific person or replace individualized care.
+        </span>
+      </aside>
     </main>
   );
 }

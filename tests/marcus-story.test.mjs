@@ -14,14 +14,15 @@ import {
 const landing = readFileSync("features/stories/components/story-landing.tsx", "utf8");
 const landingStyles = readFileSync("features/stories/components/story-landing.module.css", "utf8");
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
+const opening = readFileSync("features/stories/components/story-opening.tsx", "utf8");
 const interactions = readFileSync("features/stories/components/story-interactions.tsx", "utf8");
 const playerStyles = readFileSync("features/stories/components/story-player.module.css", "utf8");
 const landingRoute = readFileSync("app/(app)/stories/page.tsx", "utf8");
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 
 test("the Stories page explains that its experiences are illustrative", () => {
-  assert.match(landing, /These illustrative experiences explore emotions, decisions/);
-  assert.match(landing, /without representing one specific individual/);
+  assert.match(landing, /Illustrative experiences that explore the emotions, decisions/);
+  assert.match(landing, /It does not describe one specific person/);
   assert.match(landingRoute, /<StoryLanding \/>/);
   assert.doesNotMatch(landing, /testimonial|real patient|success story/i);
 });
@@ -42,7 +43,7 @@ test("topic browsing lists five situations without fake story previews", () => {
 
 test("Marcus remains the Just diagnosed preview and its cover comes first", () => {
   assert.match(landing, /id="just-diagnosed-story"/);
-  assert.match(landing, /Why this story matters/i);
+  assert.match(landing, /Why it may stay with you/i);
   assert.match(landing, /story=\{marcusParkingLotStory\}/);
   assert.match(landing, /href=\{storyHref\}/);
   assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.previewBody"));
@@ -50,24 +51,25 @@ test("Marcus remains the Just diagnosed preview and its cover comes first", () =
   assert.equal(marcusParkingLotStory.topic, "Just diagnosed");
 });
 
-test("Marcus’s generated cover remains optimized, accessible, and appears only on Stories", () => {
+test("Marcus’s generated cover remains optimized and is reused without duplicate assets", () => {
   assert.equal(marcusParkingLotStory.imagePath, "/stories/marcus-parking-lot-cover.webp");
   assert.match(marcusParkingLotStory.imageAlt, /editorial illustration/i);
   assert.doesNotMatch(marcusParkingLotStory.imageAlt, /Photo of Marcus|real patient/i);
   assert.ok(statSync("public/stories/marcus-parking-lot-cover.webp").size > 80_000);
   assert.equal(landing.split("story.imagePath").length - 1, 1);
-  assert.equal(marcusParkingLotStory.showDetailCover, undefined);
   assert.match(landing, /height=\{900\}/);
   assert.match(landing, /width=\{1600\}/);
-  assert.match(player, /story\.showDetailCover/);
+  assert.match(opening, /src=\{story\.imagePath\}/);
 });
 
-test("a story-card click opens Scene 1 directly and completed stories start a clean reread", () => {
-  assert.match(player, /progress\.stage === "intro" \|\| progress\.stage === "story"/);
-  assert.doesNotMatch(player, /Begin Scene 1|playerIntroduction|beginOrResume/);
+test("a story opens on its cover before an intentional begin or reread action", () => {
+  assert.match(player, /progress\.stage !== "intro"/);
+  assert.match(opening, /Begin Story/);
+  assert.match(opening, /Resume Story/);
+  assert.match(opening, /Read Again/);
   assert.match(landing, /progress\.status === "completed"/);
-  assert.match(landing, /\?restart=1/);
-  assert.match(player, /createStoryReviewProgress\(saved\)/);
+  assert.doesNotMatch(landing, /\?restart=1/);
+  assert.match(player, /createStoryReviewProgress/);
 });
 
 test("the dedicated route selects the interactive story without changing Lesson 1", () => {
@@ -184,8 +186,8 @@ test("prediction appears after Scene 6 and never changes quiz score", () => {
 test("the three-question quiz teaches immediately and scores only submitted answers", () => {
   assert.equal(marcusParkingLotStory.quiz.length, 3);
   assert.match(player, /Submit Answer/);
-  assert.match(player, /That’s it\./);
-  assert.match(player, /Not quite\. Here is the idea to carry forward\./);
+  assert.match(player, /Correct answer/);
+  assert.match(player, /Worth reviewing/);
   assert.match(player, /aria-live="polite"/);
   assert.match(player, /calculateStoryQuizScore\(story\.quiz, quizAnswers\)/);
   assert.match(player, /Your answer/);

@@ -14,6 +14,7 @@ import {
 const landing = readFileSync("features/stories/components/story-landing.tsx", "utf8");
 const landingStyles = readFileSync("features/stories/components/story-landing.module.css", "utf8");
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
+const opening = readFileSync("features/stories/components/story-opening.tsx", "utf8");
 const interactions = readFileSync("features/stories/components/story-interactions.tsx", "utf8");
 const playerStyles = readFileSync("features/stories/components/story-player.module.css", "utf8");
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
@@ -23,7 +24,7 @@ test("Asha remains the second available situation after Story 3 is added", () =>
   assert.match(landing, /id="food-and-family-story"/);
   assert.match(landing, /story=\{ashaRiceOnTheTableStory\}/);
   assert.match(landing, /story=\{marcusParkingLotStory\}/);
-  assert.match(landing, /Three stories are available/);
+  assert.match(landing, /These are illustrative, not biographical/);
   assert.equal(landing.split("story={").length - 1, 3);
   assert.equal(ashaRiceOnTheTableStory.topic, "Food and family");
   assert.match(landing, /id="starting-medication-story"/);
@@ -33,7 +34,7 @@ test("Asha remains the second available situation after Story 3 is added", () =>
 test("Asha’s preview preserves the requested editorial order and copy", () => {
   for (const phrase of [
     "Illustrative story",
-    "Why this story matters",
+    "Why it may stay with you",
     "Connected to",
     "Begin Story",
     "Resume Story",
@@ -53,7 +54,7 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
   assert.equal(ashaRiceOnTheTableStory.relatedLessonLabel, "Lesson 4");
 });
 
-test("the one Asha cover remains limited to Asha’s preview", () => {
+test("Asha’s one cover is reused consistently on preview and opening", () => {
   assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-rice-on-the-table-cover.webp");
   assert.match(ashaRiceOnTheTableStory.imageAlt, /editorial illustration/i);
   assert.match(ashaRiceOnTheTableStory.imageAlt, /South Asian woman/i);
@@ -62,8 +63,8 @@ test("the one Asha cover remains limited to Asha’s preview", () => {
   assert.match(landing, /height=\{900\}/);
   assert.match(landing, /width=\{1600\}/);
   assert.equal(landing.split("story.imagePath").length - 1, 1);
-  assert.equal(ashaRiceOnTheTableStory.showDetailCover, undefined);
-  assert.match(player, /story\.showDetailCover/);
+  assert.match(opening, /src=\{story\.imagePath\}/);
+  assert.match(playerStyles, /\.openingCover[\s\S]*aspect-ratio: 16 \/ 9/);
 });
 
 test("the dedicated route selects Asha’s story and does not complete Lesson 4", () => {
@@ -257,8 +258,8 @@ test("the three-question quiz uses immediate teaching feedback and separate outc
     ["b", "c", "c"],
   );
   assert.match(player, /Submit Answer/);
-  assert.match(player, /That’s it\./);
-  assert.match(player, /Not quite\. Here is the idea to carry forward\./);
+  assert.match(player, /Correct answer/);
+  assert.match(player, /Worth reviewing/);
   assert.match(player, /storyCompleted: true/);
   assert.match(player, /keyIdeaUnderstood: score >= 2/);
   assert.match(player, /Your answer/);

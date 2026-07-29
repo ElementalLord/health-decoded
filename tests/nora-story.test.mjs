@@ -15,6 +15,7 @@ import { validateStoryInteractions } from "../features/stories/lib/validate-stor
 
 const landing = readFileSync("features/stories/components/story-landing.tsx", "utf8");
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
+const opening = readFileSync("features/stories/components/story-opening.tsx", "utf8");
 const interactions = readFileSync("features/stories/components/story-interactions.tsx", "utf8");
 const styles = readFileSync("features/stories/components/story-player.module.css", "utf8");
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
@@ -23,7 +24,7 @@ test("Story 3 appears under Starting medication with its state-aware preview", (
   assert.match(landing, /id="starting-medication-story"/);
   assert.match(landing, /story=\{noraPrescriptionBagStory\}/);
   assert.match(landing, /Starting medication/);
-  assert.match(landing, /Three stories are available/);
+  assert.match(landing, /Different moments, different questions/);
   for (const action of ["Begin Story", "Resume Story", "Read Again"]) {
     assert.match(landing, new RegExp(action));
   }
@@ -32,7 +33,6 @@ test("Story 3 appears under Starting medication with its state-aware preview", (
 
 test("the single local Nora cover is optimized and appears in both required locations", async () => {
   assert.equal(noraPrescriptionBagStory.imagePath, "/stories/nora-prescription-bag-cover.webp");
-  assert.equal(noraPrescriptionBagStory.showDetailCover, true);
   assert.match(noraPrescriptionBagStory.imageAlt, /editorial illustration/i);
   assert.doesNotMatch(noraPrescriptionBagStory.imageAlt, /real patient|Nora taking|photograph/i);
   assert.ok(statSync("public/stories/nora-prescription-bag-cover.webp").size > 80_000);
@@ -40,8 +40,8 @@ test("the single local Nora cover is optimized and appears in both required loca
   assert.equal(metadata.width, 1600);
   assert.equal(metadata.height, 900);
   assert.match(landing, /src=\{story\.imagePath\}/);
-  assert.match(player, /story\.showDetailCover/);
-  assert.match(player, /className=\{styles\.detailCoverImage\}/);
+  assert.match(opening, /src=\{story\.imagePath\}/);
+  assert.match(opening, /height=\{900\}/);
 });
 
 test("the route and disclosure identify an illustrative placeholder story", () => {
@@ -49,7 +49,7 @@ test("the route and disclosure identify an illustrative placeholder story", () =
   assert.match(storyRoute, /<InteractiveStoryPlayer story=\{noraPrescriptionBagStory\} \/>/);
   assert.equal(noraPrescriptionBagStory.slug, "nora-prescription-bag");
   assert.match(noraPrescriptionBagStory.disclosure, /Nora is a placeholder name/);
-  assert.match(player, /<p>\{story\.disclosure\}<\/p>/);
+  assert.match(opening, /story\.disclosure/);
   assert.doesNotMatch(player, /Medically reviewed/);
   assert.equal(noraPrescriptionBagStory.reviewStatus, "not-reviewed");
 });

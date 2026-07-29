@@ -31,12 +31,16 @@ export const noraPrescriptionBagStory: InteractiveStory = {
   version: "1.0",
   sourceThemeNote:
     "Original composite narrative informed by common medication-stigma, uncertainty, and question-asking themes in diabetes education. It does not reproduce one person’s identity, wording, or treatment plan.",
+  visualTheme: "hesitation",
+  emotionalArc: "hesitation to informed partnership",
+  dominantInteractionType: "question-building",
+  primaryAccent: "pharmacy blue",
+  closingTone: "steady and self-directed",
   imagePath: "/stories/nora-prescription-bag-cover.webp",
   imagePrompt:
     "A cinematic editorial scene in a quiet lived-in kitchen in early evening, with a thoughtful older woman seated at a table beside a closed unbranded pharmacy bag, reading glasses, and folded paper. Warm natural light, muted cream and green tones, no loose pills, labels, logos, or medical drama.",
   imageAlt:
     "An editorial illustration of a woman sitting at a kitchen table while a closed pharmacy bag rests nearby.",
-  showDetailCover: true,
   introduction:
     "Nora picked up the medication her clinician prescribed, but the pharmacy bag stayed unopened on her kitchen counter. Follow the assumptions, questions, and conversation that changed what the prescription meant to her.",
   whyItMatters:
@@ -46,6 +50,8 @@ export const noraPrescriptionBagStory: InteractiveStory = {
       id: "the-pharmacy-bag",
       number: 1,
       title: "The Pharmacy Bag",
+      layout: "narrative-left",
+      tone: "tension",
       paragraphs: [
         "Nora expected the appointment to end with advice about food, movement, and another set of laboratory tests.",
         "Instead, her clinician also prescribed medication.",
@@ -93,6 +99,8 @@ export const noraPrescriptionBagStory: InteractiveStory = {
       id: "still-on-the-counter",
       number: 2,
       title: "Still on the Counter",
+      layout: "decision-focus",
+      tone: "tension",
       paragraphs: [
         "The bag remained on the counter the next morning.",
         "Nora noticed it while making coffee. She noticed it again before leaving for work.",
@@ -136,6 +144,8 @@ export const noraPrescriptionBagStory: InteractiveStory = {
       id: "already",
       number: 3,
       title: "“Already?”",
+      layout: "perspective-split",
+      tone: "pause",
       paragraphs: [
         "Nora’s sister came over that weekend and noticed the pharmacy bag.",
         "“They put you on medication already?” she asked.",
@@ -172,6 +182,8 @@ export const noraPrescriptionBagStory: InteractiveStory = {
       id: "the-question-she-avoided",
       number: 4,
       title: "The Question She Avoided",
+      layout: "narrative-right",
+      tone: "clarity",
       paragraphs: [
         "On Monday, Nora called the pharmacy.",
         "She began with a practical question about the instructions. Then she paused.",
@@ -223,6 +235,8 @@ export const noraPrescriptionBagStory: InteractiveStory = {
       id: "making-it-fit",
       number: 5,
       title: "Making It Fit",
+      layout: "stacked",
+      tone: "clarity",
       paragraphs: [
         "After the call, Nora read the written instructions again.",
         "The prescription no longer felt like a sealed decision she was afraid to touch. It felt like something she could understand one question at a time.",
@@ -258,6 +272,8 @@ export const noraPrescriptionBagStory: InteractiveStory = {
       id: "one-tool-not-a-verdict",
       number: 6,
       title: "One Tool, Not a Verdict",
+      layout: "closing-wide",
+      tone: "clarity",
       paragraphs: [
         "A few days later, the pharmacy bag was gone from the counter.",
         "Nora had not stopped caring about meals, movement, or the other changes she wanted to make.",
