@@ -190,58 +190,6 @@
 }
 
 .composer,
-.arrive {
-  overflow: hidden;
-  border: 1px solid rgb(85 121 106 / 20%);
-  border-radius: 12px;
-  background: #f4f1e8;
-  padding: 1.4rem 1.5rem 1.5rem;
-}
-
-.arriveSvg {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 0.6rem 0;
-}
-
-.arriveGuest {
-  transition:
-    transform 1150ms var(--ease-standard, ease),
-    opacity 1150ms var(--ease-standard, ease);
-}
-
-.arriveControls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.arriveControls .loadStatus {
-  padding: 0;
-}
-
-.arriveButton {
-  flex-shrink: 0;
-  border: 1px solid #55796a;
-  border-radius: 9px;
-  background: #55796a;
-  padding: 0.5rem 1.1rem;
-  color: #f6faf7;
-  transition: background 160ms ease;
-}
-
-.arriveButton:hover {
-  background: #486456;
-}
-
-.arriveButton:focus-visible {
-  outline: 2px solid #2f4f45;
-  outline-offset: 2px;
-}
-
 .composerHead {
   display: grid;
   gap: 0.3rem;
@@ -1068,13 +1016,8 @@
     animation: none;
   }
 
-  .loadBag,
-  .arriveGuest {
+  .loadBag {
     transition: none;
-  }
-
-  .arriveSvg animate {
-    display: none;
   }
 
   .answerChoice,

@@ -143,10 +143,30 @@ test("Day 14 keeps reflection light, optional, and free from checkbox labor", ()
   assert.doesNotMatch(experience, /carryTruths|confidenceViews/);
   assert.doesNotMatch(
     experience,
-    /toolkitItems|checklistSkills|draggable=|handleToolDrop|canContinue|stageRequirement|To continue:/,
+    /toolkitItems|checklistSkills|draggable=|handleToolDrop|canContinue|stageRequirement/,
   );
   assert.doesNotMatch(experience, /\bCheck\s*,|choiceMark|checkButton/);
   assert.doesNotMatch(experience, /correctAnswer|isCorrect|data-correct|styles\.incorrect/i);
+});
+
+test("Day 14 gates every milestone interaction, including review mode", () => {
+  assert.match(experience, /const dayFourteenStageGates/);
+  for (let stage = 0; stage <= 9; stage += 1) {
+    assert.match(experience, new RegExp(`\\n  ${stage}: "`));
+  }
+  assert.match(experience, /<FourteenDayTrace onReady=\{markTraceReady\}/);
+  assert.match(experience, /<ThenNowStory onReady=\{markStoryReady\}/);
+  assert.match(experience, /<OrdinaryLifeMotion onReady=\{markOrdinaryMomentReady\}/);
+  assert.match(experience, /<FollowOneBite onReady=\{markBiteReady\}/);
+  assert.match(experience, /<NumberContextExplorer onReady=\{markNumberReady\}/);
+  assert.match(experience, /<ToolPracticeStudio onReady=\{markToolReady\}/);
+  assert.match(experience, /<ProtectionExplorer onReady=\{markProtectionReady\}/);
+  assert.match(experience, /<ReturnScenarioExplorer onReady=\{markReturnReady\}/);
+  assert.match(experience, /<SupportPractice onReady=\{markSupportReady\}/);
+  assert.match(experience, /<BuildFoundation onReady=\{markFoundationReady\}/);
+  assert.match(experience, /canNavigateToLessonStage/);
+  assert.match(experience, /isLessonStageLocked/);
+  assert.match(experience, /disabled=\{isPending \|\| stageLocked\}/);
 });
 
 test("Day 14 keeps the optional personal note private and revisitable on the same browser", () => {

@@ -86,7 +86,7 @@ test("Day 13 adopts Day 11's editorial hierarchy with softly squared controls", 
   assert.doesNotMatch(experience, /rounded-full/);
 });
 
-test("Day 13 makes interactions meaningful without turning them into completion gates", () => {
+test("Day 13 gates every practice chapter while keeping private writing optional", () => {
   assert.match(experience, /stigmaMoment/);
   assert.match(experience, /supportMode/);
   assert.match(experience, /supportRequest/);
@@ -95,8 +95,16 @@ test("Day 13 makes interactions meaningful without turning them into completion 
   assert.match(experience, /repairStep/);
   assert.match(experience, /reflection/);
   assert.match(experience, /Define support without control/);
-  assert.match(experience, /The interactions are invitations, not gates/);
-  assert.doesNotMatch(experience, /function canContinue|stageRequirement/);
+  assert.match(experience, /const dayThirteenStageGates/);
+  for (let stage = 0; stage <= 9; stage += 1) {
+    assert.match(experience, new RegExp(`\\n  ${stage}: "`));
+  }
+  assert.match(experience, /<SharedLoadAnimation onReady=\{markSharedLoadReady\}/);
+  assert.match(experience, /<ComposeBoundary onReady=\{markBoundaryReady\}/);
+  assert.doesNotMatch(experience, /SupportArrives|Call for backup|Backup has landed/);
+  assert.match(experience, /canNavigateToLessonStage/);
+  assert.match(experience, /disabled=\{isPending \|\| stageLocked\}/);
+  assert.match(experience, /Private\s+writing\s+and reflection remain optional/);
   assert.doesNotMatch(experience, /supportClassifications|mapChoices|openedMyths/);
 });
 

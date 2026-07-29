@@ -4,7 +4,6 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ProfileContent } from "@/features/profile/components/profile-content";
 import { getProfileSettings } from "@/features/profile/services/profile-settings.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
-import { getProgressData } from "@/features/progress/services/progress.server";
 
 export const metadata = { title: "Profile" };
 
@@ -20,7 +19,7 @@ export default async function ProfilePage() {
     );
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
-  const [settings, progress] = await Promise.all([getProfileSettings(), getProgressData()]);
+  const settings = await getProfileSettings();
   if (!settings.ok)
     return (
       <EmptyState
@@ -30,23 +29,5 @@ export default async function ProfilePage() {
       />
     );
 
-  const currentDay = progress.ok
-    ? (progress.data.milestones.find((milestone) => milestone.state === "current")?.dayNumber ??
-      progress.data.totalLessons)
-    : null;
-
-  return (
-    <ProfileContent
-      data={settings.data}
-      journeyStats={
-        progress.ok && currentDay !== null
-          ? {
-              completedLessons: progress.data.completedLessons,
-              currentDay,
-              totalConfidenceXp: progress.data.totalConfidenceXp,
-            }
-          : null
-      }
-    />
-  );
+  return <ProfileContent data={settings.data} memberSince={profile.data.created_at} />;
 }

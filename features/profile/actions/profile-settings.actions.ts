@@ -54,13 +54,16 @@ export async function updateSettingsAction(
   const database = await getServerDatabaseClient();
   const result = await database
     .from("user_settings")
-    .upsert({
-      user_id: user.data.id,
-      reduced_motion: parsed.data.reducedMotion,
-      preferred_text_scale: parsed.data.preferredTextScale,
-      locale: parsed.data.locale,
-      timezone: parsed.data.timezone,
-    })
+    .upsert(
+      {
+        user_id: user.data.id,
+        reduced_motion: parsed.data.reducedMotion,
+        preferred_text_scale: parsed.data.preferredTextScale,
+        locale: parsed.data.locale,
+        timezone: parsed.data.timezone,
+      },
+      { onConflict: "user_id" },
+    )
     .select("user_id")
     .maybeSingle();
   if (result.error || !result.data) {
@@ -70,6 +73,8 @@ export async function updateSettingsAction(
     return { status: "error", message: "We couldn’t save your settings. Please try again." };
   }
   revalidatePath("/", "layout");
+  revalidatePath("/settings");
+  revalidatePath("/profile");
   return {
     status: "success",
     message: "Your preferences are saved. Health Decoded will use them from here.",
