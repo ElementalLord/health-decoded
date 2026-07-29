@@ -43,6 +43,17 @@ export type StoryInteractionPurpose =
 export type StoryInteractionEngagement =
   "optional-exploration" | "meaningful-decision" | "knowledge-application";
 
+export type StorySceneLayout =
+  | "narrative-left"
+  | "narrative-right"
+  | "stacked"
+  | "decision-focus"
+  | "perspective-split"
+  | "quiet-pause"
+  | "closing-wide";
+
+export type StoryVisualTheme = "quiet-dusk" | "family-warmth" | "hesitation";
+
 export type StoryInteractionOption = {
   id: string;
   label: string;
@@ -66,6 +77,8 @@ export type StoryScene = {
   id: string;
   number: number;
   title: string;
+  layout: StorySceneLayout;
+  tone: "tension" | "pause" | "clarity";
   paragraphs: string[];
   interactionType: StoryInteractionType;
   interaction: StoryInteractionDefinition;
@@ -104,6 +117,11 @@ export type InteractiveStory = {
   reviewedAt?: string;
   version: string;
   sourceThemeNote: string;
+  visualTheme: StoryVisualTheme;
+  emotionalArc: string;
+  dominantInteractionType: StoryInteractionPurpose;
+  primaryAccent: string;
+  closingTone: string;
   imagePath: string;
   imagePrompt: string;
   imageAlt: string;
@@ -132,7 +150,6 @@ export type InteractiveStory = {
   privateReflectionSupportPrompt?: string;
   completionHeading?: string;
   completionMessage?: string;
-  showDetailCover?: boolean;
   resultIdeas?: string[];
 };
 

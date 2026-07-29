@@ -24,6 +24,11 @@ export const marcusParkingLotStory = {
   version: "1.0",
   sourceThemeNote:
     "Original composite narrative informed by recurring themes commonly described in public diabetes-education discussions. No single person’s wording, identity, or chronology is reproduced.",
+  visualTheme: "quiet-dusk",
+  emotionalArc: "shock to orientation",
+  dominantInteractionType: "prioritize",
+  primaryAccent: "dashboard amber",
+  closingTone: "quietly capable",
   imagePath: "/stories/marcus-parking-lot-cover.webp",
   imageAlt:
     "An editorial illustration of a man sitting quietly inside a parked car at dusk with folded medical papers and a phone after an appointment.",
@@ -38,6 +43,8 @@ export const marcusParkingLotStory = {
       id: "the-word-he-heard",
       number: 1,
       title: "The Word He Heard",
+      layout: "narrative-left",
+      tone: "tension",
       interactionType: "attention-overload",
       interaction: {
         id: "marcus-attention-overload",
@@ -76,6 +83,8 @@ export const marcusParkingLotStory = {
       id: "forty-minutes",
       number: 2,
       title: "Forty Minutes",
+      layout: "narrative-right",
+      tone: "pause",
       interactionType: "emotional-interpretation",
       interaction: {
         id: "marcus-message-interpretation",
@@ -123,6 +132,8 @@ export const marcusParkingLotStory = {
       id: "the-promise-he-thought-he-broke",
       number: 3,
       title: "The Promise He Thought He Broke",
+      layout: "stacked",
+      tone: "tension",
       interactionType: "thought-sort",
       interaction: {
         id: "marcus-fact-self-blame-sort",
@@ -159,6 +170,8 @@ export const marcusParkingLotStory = {
       id: "then-come-home",
       number: 4,
       title: "Then Come Home",
+      layout: "perspective-split",
+      tone: "pause",
       interactionType: "response-prediction",
       interaction: {
         id: "marcus-helpful-response-prediction",
@@ -217,6 +230,8 @@ export const marcusParkingLotStory = {
       id: "too-much-information",
       number: 5,
       title: "Too Much Information",
+      layout: "decision-focus",
+      tone: "clarity",
       interactionType: "information-filter",
       interaction: {
         id: "marcus-information-filter",
@@ -272,6 +287,8 @@ export const marcusParkingLotStory = {
       id: "three-questions",
       number: 6,
       title: "Three Questions",
+      layout: "closing-wide",
+      tone: "clarity",
       interactionType: "question-prioritization",
       interaction: {
         id: "marcus-question-prioritization",

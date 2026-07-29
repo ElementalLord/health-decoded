@@ -28,6 +28,11 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
   version: "1.0",
   sourceThemeNote:
     "Original composite narrative informed by recurring themes commonly reported in diabetes education, including fear of carbohydrates, loss of cultural foods, family pressure, and the need for sustainable meal changes. No single person’s wording, identity, or chronology is reproduced.",
+  visualTheme: "family-warmth",
+  emotionalArc: "distance to shared agency",
+  dominantInteractionType: "apply",
+  primaryAccent: "table terracotta",
+  closingTone: "warmly connected",
   imagePath: "/stories/asha-rice-on-the-table-cover.webp",
   imagePrompt:
     "Create a cinematic editorial illustration of a warm South Asian family dinner at home in the early evening. A middle-aged South Asian woman sits at a dining table with several family members, but the composition focuses on the table and the emotional distance she feels rather than on clearly identifiable faces. In front of her is a very small, separate plate, while familiar shared dishes remain in the center of the table, including rice, lentils, vegetables, flatbread, and a protein dish. Her family is engaged in the meal, while she looks quietly uncertain about what she is allowed to eat. Show natural body language, warm household lighting, and a realistic family setting. Use restrained warm cream, deep green, muted terracotta, soft gold, and natural wood colors. No text, medical devices, logos, exaggerated emotion, stereotypical decoration, or moral contrast between foods. Polished cinematic editorial illustration, not stock photography or a cartoon.",
@@ -50,6 +55,8 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       id: "everything-looked-different",
       number: 1,
       title: "Everything Looked Different",
+      layout: "narrative-left",
+      tone: "tension",
       paragraphs: [
         "The first grocery trip after her diagnosis took Asha almost two hours.",
         "She picked up a bag of rice, read the nutrition label, and placed it back on the shelf.",
@@ -89,6 +96,8 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       id: "the-separate-plate",
       number: 2,
       title: "The Separate Plate",
+      layout: "narrative-right",
+      tone: "tension",
       paragraphs: [
         "That Sunday, Asha’s family gathered for dinner.",
         "The table held many of the foods they usually shared: rice, dal, vegetables, flatbread, yogurt, and chicken.",
@@ -127,6 +136,8 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       id: "are-you-not-eating-with-us",
       number: 3,
       title: "“Are You Not Eating With Us?”",
+      layout: "perspective-split",
+      tone: "tension",
       paragraphs: [
         "Asha’s daughter looked across the table.",
         "“Are you not eating with us?” she asked.",
@@ -179,6 +190,8 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       id: "learning-what-the-meal-was-doing",
       number: 4,
       title: "Learning What the Meal Was Doing",
+      layout: "stacked",
+      tone: "clarity",
       paragraphs: [
         "At her next appointment, Asha described the grocery trip and the separate plate.",
         "The dietitian listened and then said:",
@@ -229,6 +242,8 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       id: "the-choice-at-sunday-dinner",
       number: 5,
       title: "The Choice at Sunday Dinner",
+      layout: "decision-focus",
+      tone: "pause",
       paragraphs: [
         "The following Sunday, the same dishes returned to the table.",
         "Asha still felt nervous.",
@@ -281,6 +296,8 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       id: "the-same-table",
       number: 6,
       title: "The Same Table",
+      layout: "closing-wide",
+      tone: "clarity",
       paragraphs: [
         "Asha’s daughter watched her serve the rice.",
         "“I thought you could not eat that anymore,” she said.",
