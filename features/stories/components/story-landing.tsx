@@ -57,6 +57,8 @@ function StoryPreview({
 }) {
   const timeLabel = story.estimatedTimeLabel ?? "5 to 7 minutes";
   const lessonLabel = story.relatedLessonLabel ?? "Lesson 1";
+  const storyHref =
+    progress.status === "completed" ? `/stories/${story.slug}?restart=1` : `/stories/${story.slug}`;
 
   return (
     <article className={`${styles.preview} ${compact ? styles.compactPreview : ""}`}>
@@ -101,7 +103,7 @@ function StoryPreview({
               <span>Not started</span>
             )}
           </div>
-          <Link className={styles.storyAction} href={`/stories/${story.slug}`}>
+          <Link className={styles.storyAction} href={storyHref}>
             {actionByStatus[progress.status]}
             <ArrowRight aria-hidden="true" size={18} />
           </Link>

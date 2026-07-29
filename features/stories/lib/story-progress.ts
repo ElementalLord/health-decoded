@@ -1,4 +1,8 @@
-import type { StoryPreviewStatus, StoryProgress } from "@/features/stories/types/interactive-story";
+import type {
+  StoryPreviewStatus,
+  StoryProgress,
+  StoryQuizQuestion,
+} from "@/features/stories/types/interactive-story";
 
 export const getStoryStorageKey = (slug: string) => `health-decoded:story:${slug}:progress`;
 
@@ -24,6 +28,36 @@ export const createInitialStoryProgress = (): StoryProgress => ({
   interactionVersion: CURRENT_STORY_INTERACTION_VERSION,
   stage: "intro",
 });
+
+export function createStoryReviewProgress(progress: StoryProgress): StoryProgress {
+  return {
+    ...progress,
+    currentScene: 0,
+    currentQuizQuestion: 0,
+    furthestSceneReached: 0,
+    interactionStates: {},
+    meaningfulChoice: null,
+    prediction: null,
+    quizAnswers: {},
+    submittedQuizQuestions: [],
+    quizScore: 0,
+    storyCompleted: false,
+    keyIdeaUnderstood: false,
+    completionDate: null,
+    versionCompleted: null,
+    stage: "story",
+  };
+}
+
+export function calculateStoryQuizScore(
+  questions: StoryQuizQuestion[],
+  answers: Record<string, string>,
+) {
+  return questions.reduce(
+    (score, question) => score + (answers[question.id] === question.correctChoiceId ? 1 : 0),
+    0,
+  );
+}
 
 export function parseStoryProgress(value: string | null): StoryProgress {
   if (!value) return createInitialStoryProgress();

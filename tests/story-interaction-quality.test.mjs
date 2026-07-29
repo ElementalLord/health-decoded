@@ -5,8 +5,10 @@ import test from "node:test";
 import { ashaRiceOnTheTableStory } from "../features/stories/content/asha-rice-on-the-table.ts";
 import { marcusParkingLotStory } from "../features/stories/content/marcus-parking-lot.ts";
 import {
+  calculateStoryQuizScore,
   CURRENT_STORY_INTERACTION_VERSION,
   createInitialStoryProgress,
+  createStoryReviewProgress,
   parseStoryProgress,
 } from "../features/stories/lib/story-progress.ts";
 import { validateStoryInteractions } from "../features/stories/lib/validate-story-interactions.ts";
@@ -186,6 +188,58 @@ test("interaction state migration preserves story outcomes and resets obsolete m
   assert.deepEqual(migrated.quizAnswers, { q1: "b" });
   assert.deepEqual(migrated.submittedQuizQuestions, ["q1"]);
   assert.equal(migrated.quizScore, 1);
+});
+
+test("knowledge-check results are derived from recorded answers instead of stale counters", () => {
+  const correctMarcusAnswers = Object.fromEntries(
+    marcusParkingLotStory.quiz.map((question) => [question.id, question.correctChoiceId]),
+  );
+  const correctAshaAnswers = Object.fromEntries(
+    ashaRiceOnTheTableStory.quiz.map((question) => [question.id, question.correctChoiceId]),
+  );
+
+  assert.equal(
+    calculateStoryQuizScore(marcusParkingLotStory.quiz, correctMarcusAnswers),
+    marcusParkingLotStory.quiz.length,
+  );
+  assert.equal(
+    calculateStoryQuizScore(ashaRiceOnTheTableStory.quiz, correctAshaAnswers),
+    ashaRiceOnTheTableStory.quiz.length,
+  );
+  assert.equal(calculateStoryQuizScore(marcusParkingLotStory.quiz, {}), 0);
+  assert.equal(calculateStoryQuizScore(ashaRiceOnTheTableStory.quiz, {}), 0);
+});
+
+test("rereading clears previous choices and scoring while preserving a private reflection", () => {
+  const reread = createStoryReviewProgress({
+    ...createInitialStoryProgress(),
+    currentScene: 5,
+    furthestSceneReached: 5,
+    interactionStates: { old: "complete" },
+    meaningfulChoice: "old-choice",
+    prediction: "old-prediction",
+    quizAnswers: { q1: "b" },
+    submittedQuizQuestions: ["q1"],
+    quizScore: 1,
+    storyCompleted: true,
+    keyIdeaUnderstood: true,
+    completionDate: "2026-07-29T00:00:00.000Z",
+    privateReflection: "A note worth keeping",
+    versionCompleted: "1.0",
+    stage: "complete",
+  });
+
+  assert.equal(reread.stage, "story");
+  assert.equal(reread.currentScene, 0);
+  assert.equal(reread.furthestSceneReached, 0);
+  assert.deepEqual(reread.interactionStates, {});
+  assert.equal(reread.prediction, null);
+  assert.deepEqual(reread.quizAnswers, {});
+  assert.deepEqual(reread.submittedQuizQuestions, []);
+  assert.equal(reread.quizScore, 0);
+  assert.equal(reread.storyCompleted, false);
+  assert.equal(reread.keyIdeaUnderstood, false);
+  assert.equal(reread.privateReflection, "A note worth keeping");
 });
 
 test("controls are semantic, keyboard-operable, and provide accessible feedback", () => {

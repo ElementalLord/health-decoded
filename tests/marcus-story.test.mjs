@@ -4,7 +4,9 @@ import test from "node:test";
 
 import { marcusParkingLotStory } from "../features/stories/content/marcus-parking-lot.ts";
 import {
+  calculateStoryQuizScore,
   createInitialStoryProgress,
+  createStoryReviewProgress,
   getStoryPreviewStatus,
   parseStoryProgress,
 } from "../features/stories/lib/story-progress.ts";
@@ -42,23 +44,30 @@ test("Marcus remains the Just diagnosed preview and its cover comes first", () =
   assert.match(landing, /id="just-diagnosed-story"/);
   assert.match(landing, /Why this story matters/i);
   assert.match(landing, /story=\{marcusParkingLotStory\}/);
-  assert.match(landing, /href=\{`\/stories\/\$\{story\.slug\}`\}/);
+  assert.match(landing, /href=\{storyHref\}/);
   assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.previewBody"));
   assert.equal(marcusParkingLotStory.title, "Forty Minutes in the Parking Lot");
   assert.equal(marcusParkingLotStory.topic, "Just diagnosed");
 });
 
-test("Marcus’s generated cover remains optimized, accessible, and reused", () => {
+test("Marcus’s generated cover remains optimized, accessible, and appears only on Stories", () => {
   assert.equal(marcusParkingLotStory.imagePath, "/stories/marcus-parking-lot-cover.webp");
   assert.match(marcusParkingLotStory.imageAlt, /editorial illustration/i);
   assert.doesNotMatch(marcusParkingLotStory.imageAlt, /Photo of Marcus|real patient/i);
   assert.ok(statSync("public/stories/marcus-parking-lot-cover.webp").size > 80_000);
   assert.equal(landing.split("story.imagePath").length - 1, 1);
-  assert.equal(player.split("story.imagePath").length - 1, 1);
+  assert.equal(player.split("story.imagePath").length - 1, 0);
   assert.match(landing, /height=\{900\}/);
   assert.match(landing, /width=\{1600\}/);
-  assert.match(player, /height=\{900\}/);
-  assert.match(player, /width=\{1600\}/);
+  assert.doesNotMatch(player, /styles\.hero|styles\.cover|<Image/);
+});
+
+test("a story-card click opens Scene 1 directly and completed stories start a clean reread", () => {
+  assert.match(player, /progress\.stage === "intro" \|\| progress\.stage === "story"/);
+  assert.doesNotMatch(player, /Begin Scene 1|playerIntroduction|beginOrResume/);
+  assert.match(landing, /progress\.status === "completed"/);
+  assert.match(landing, /\?restart=1/);
+  assert.match(player, /createStoryReviewProgress\(saved\)/);
 });
 
 test("the dedicated route selects the interactive story without changing Lesson 1", () => {
@@ -178,7 +187,27 @@ test("the three-question quiz teaches immediately and scores only submitted answ
   assert.match(player, /That’s it\./);
   assert.match(player, /Not quite\. Here is the idea to carry forward\./);
   assert.match(player, /aria-live="polite"/);
-  assert.match(player, /current\.quizScore \+ \(alreadySubmitted \|\| !correct \? 0 : 1\)/);
+  assert.match(player, /calculateStoryQuizScore\(story\.quiz, quizAnswers\)/);
+  assert.match(player, /Your answer/);
+  assert.match(player, /Best answer/);
+  assert.match(player, /resultsBreakdown/);
+
+  assert.equal(
+    calculateStoryQuizScore(marcusParkingLotStory.quiz, {
+      "manageable-next-step": "c",
+      "information-overload": "b",
+      "helpful-response": "c",
+    }),
+    3,
+  );
+  assert.equal(
+    calculateStoryQuizScore(marcusParkingLotStory.quiz, {
+      "manageable-next-step": "a",
+      "information-overload": "b",
+      "helpful-response": "d",
+    }),
+    1,
+  );
 });
 
 test("story completion and key-idea understanding are distinct persistent outcomes", () => {
@@ -186,7 +215,7 @@ test("story completion and key-idea understanding are distinct persistent outcom
   assert.equal(initial.storyCompleted, false);
   assert.equal(initial.keyIdeaUnderstood, false);
   assert.match(player, /storyCompleted: true/);
-  assert.match(player, /keyIdeaUnderstood: current\.quizScore >= 2/);
+  assert.match(player, /keyIdeaUnderstood: score >= 2/);
   assert.match(player, /A few ideas may be worth reviewing\./);
   assert.doesNotMatch(player, /\bFailed\b|Poor score|Did not master/);
 
@@ -216,8 +245,26 @@ test("story progress persists and exposes Begin, Resume, and Read Again states",
   assert.match(player, /versionCompleted/);
   for (const label of ["Begin Story", "Resume Story", "Read Again"]) {
     assert.match(landing, new RegExp(label));
-    assert.match(player, new RegExp(label));
   }
+
+  const reread = createStoryReviewProgress({
+    ...createInitialStoryProgress(),
+    currentScene: 5,
+    furthestSceneReached: 5,
+    quizAnswers: { "manageable-next-step": "c" },
+    submittedQuizQuestions: ["manageable-next-step"],
+    quizScore: 1,
+    storyCompleted: true,
+    privateReflection: "Keep this note",
+    stage: "complete",
+  });
+  assert.equal(reread.stage, "story");
+  assert.equal(reread.currentScene, 0);
+  assert.deepEqual(reread.quizAnswers, {});
+  assert.deepEqual(reread.submittedQuizQuestions, []);
+  assert.equal(reread.quizScore, 0);
+  assert.equal(reread.storyCompleted, false);
+  assert.equal(reread.privateReflection, "Keep this note");
 });
 
 test("the disclosure and editorial-governance metadata make the scenario honest", () => {
@@ -227,9 +274,8 @@ test("the disclosure and editorial-governance metadata make the scenario honest"
   assert.equal(marcusParkingLotStory.medicalRiskLevel, "low");
   assert.equal(marcusParkingLotStory.version, "1.0");
   assert.equal("contentWarning" in marcusParkingLotStory, false);
-  assert.match(player, /story\.contentWarning \?/);
-  assert.match(player, /story\.reviewStatus === "reviewed"/);
-  assert.match(player, /story\.reviewerName/);
+  assert.match(player, /story\.disclosure/);
+  assert.doesNotMatch(player, /story\.imagePath/);
   assert.doesNotMatch(player, /Medically reviewed|Not medically reviewed/);
 });
 

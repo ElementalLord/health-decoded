@@ -52,7 +52,7 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
   assert.equal(ashaRiceOnTheTableStory.relatedLessonLabel, "Lesson 4");
 });
 
-test("the one Asha cover is local, optimized, accessible, and shared by preview and route", () => {
+test("the one Asha cover is local, optimized, accessible, and limited to the preview", () => {
   assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-rice-on-the-table-cover.webp");
   assert.match(ashaRiceOnTheTableStory.imageAlt, /editorial illustration/i);
   assert.match(ashaRiceOnTheTableStory.imageAlt, /South Asian woman/i);
@@ -60,10 +60,9 @@ test("the one Asha cover is local, optimized, accessible, and shared by preview 
   assert.ok(statSync("public/stories/asha-rice-on-the-table-cover.webp").size > 80_000);
   assert.match(landing, /height=\{900\}/);
   assert.match(landing, /width=\{1600\}/);
-  assert.match(player, /height=\{900\}/);
-  assert.match(player, /width=\{1600\}/);
   assert.equal(landing.split("story.imagePath").length - 1, 1);
-  assert.equal(player.split("story.imagePath").length - 1, 1);
+  assert.equal(player.split("story.imagePath").length - 1, 0);
+  assert.doesNotMatch(player, /styles\.hero|styles\.cover|<Image/);
 });
 
 test("the dedicated route selects Asha’s story and does not complete Lesson 4", () => {
@@ -260,7 +259,10 @@ test("the three-question quiz uses immediate teaching feedback and separate outc
   assert.match(player, /That’s it\./);
   assert.match(player, /Not quite\. Here is the idea to carry forward\./);
   assert.match(player, /storyCompleted: true/);
-  assert.match(player, /keyIdeaUnderstood: current\.quizScore >= 2/);
+  assert.match(player, /keyIdeaUnderstood: score >= 2/);
+  assert.match(player, /Your answer/);
+  assert.match(player, /Best answer/);
+  assert.match(player, /resultsBreakdown/);
 
   const completedWithoutUnderstanding = parseStoryProgress(
     JSON.stringify({ ...createInitialStoryProgress(), storyCompleted: true, quizScore: 1 }),
@@ -314,7 +316,7 @@ test("editorial governance labels Asha honestly without review or warning claims
   assert.match(ashaRiceOnTheTableStory.disclosure, /placeholder name/);
   assert.match(ashaRiceOnTheTableStory.disclosure, /does not describe one specific individual/);
   assert.match(ashaRiceOnTheTableStory.sourceThemeNote, /No single person’s wording/);
-  assert.match(player, /story\.reviewStatus === "reviewed"/);
+  assert.match(player, /story\.disclosure/);
   assert.doesNotMatch(
     player,
     /Dietitian approved|Clinician approved|ADA approved|Not reviewed badge/i,
