@@ -1929,6 +1929,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .storyLoading span {
+    animation: none;
+  }
+
   .sceneSurface.entering.forward,
   .sceneSurface.entering.backward,
   .sceneSurface.leaving.forward,
@@ -2017,6 +2021,48 @@
   --story-muted: #63716d;
 }
 
+.storyOpening[data-theme="urgent-calm"],
+.player[data-theme="urgent-calm"] {
+  --story-accent: #a87350;
+  --story-accent-soft: #d8e3df;
+  --story-canvas: #e7efed;
+  --story-ink: #315149;
+  --story-muted: #63736e;
+}
+
+.storyLoading {
+  align-items: center;
+  background: #fffaf3;
+  border-radius: 18px;
+  color: #607069;
+  display: flex;
+  font-size: 0.92rem;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: 1rem;
+  min-height: 12rem;
+}
+
+.storyLoading span {
+  animation: story-loading-pulse 900ms ease-in-out infinite alternate;
+  background: #74968a;
+  border-radius: 50%;
+  height: 0.65rem;
+  width: 0.65rem;
+}
+
+@keyframes story-loading-pulse {
+  from {
+    opacity: 0.35;
+    transform: translateY(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
 .storyOpening {
   background: #fffaf3;
   border-radius: 26px;
@@ -2027,11 +2073,6 @@
   transition:
     grid-template-columns 340ms cubic-bezier(0.22, 1, 0.36, 1),
     background 340ms ease;
-}
-
-.storyOpeningCompact {
-  background: color-mix(in srgb, var(--story-canvas) 62%, #fffaf3);
-  grid-template-columns: minmax(15rem, 0.58fr) minmax(0, 1.42fr);
 }
 
 .openingCover {
@@ -2095,10 +2136,6 @@
   text-wrap: balance;
 }
 
-.storyOpeningCompact .openingCopy h1 {
-  font-size: clamp(2rem, 3.6vw, 3.5rem);
-}
-
 .openingPremise {
   color: var(--story-muted);
   font-size: 1.05rem;
@@ -2142,6 +2179,22 @@
   line-height: 1.55;
   margin-top: 1.3rem;
   padding-top: 1rem;
+}
+
+.openingContextNote {
+  background: color-mix(in srgb, var(--story-canvas) 72%, #fffaf3);
+  border-left: 3px solid color-mix(in srgb, var(--story-accent) 68%, transparent);
+  color: var(--story-muted);
+  display: grid;
+  font-size: 0.78rem;
+  gap: 0.28rem;
+  line-height: 1.5;
+  margin-top: 1.2rem;
+  padding: 0.8rem 0.9rem;
+}
+
+.openingContextNote strong {
+  color: var(--story-ink);
 }
 
 .openingAction {
@@ -2293,20 +2346,29 @@
 
 .sceneSurface[data-layout="stacked"],
 .sceneSurface[data-layout="quiet-pause"],
-.sceneSurface[data-layout="closing-wide"] {
+.sceneSurface[data-layout="closing-wide"],
+.sceneSurface[data-layout="thought-chain"],
+.sceneSurface[data-layout="process-path"],
+.sceneSurface[data-layout="communication-builder"] {
   grid-template-columns: 1fr;
 }
 
 .sceneSurface[data-layout="stacked"] .narrative,
 .sceneSurface[data-layout="quiet-pause"] .narrative,
-.sceneSurface[data-layout="closing-wide"] .narrative {
+.sceneSurface[data-layout="closing-wide"] .narrative,
+.sceneSurface[data-layout="thought-chain"] .narrative,
+.sceneSurface[data-layout="process-path"] .narrative,
+.sceneSurface[data-layout="communication-builder"] .narrative {
   border-right: 0;
   padding-bottom: 1.2rem;
 }
 
 .sceneSurface[data-layout="stacked"] .interaction,
 .sceneSurface[data-layout="quiet-pause"] .interaction,
-.sceneSurface[data-layout="closing-wide"] .interaction {
+.sceneSurface[data-layout="closing-wide"] .interaction,
+.sceneSurface[data-layout="thought-chain"] .interaction,
+.sceneSurface[data-layout="process-path"] .interaction,
+.sceneSurface[data-layout="communication-builder"] .interaction {
   background: color-mix(in srgb, var(--story-canvas) 76%, #fffaf3);
   margin: 0 clamp(1.4rem, 4vw, 3.3rem);
   padding: clamp(1.5rem, 3vw, 2.6rem);
@@ -2435,13 +2497,8 @@
 }
 
 @media (max-width: 54rem) {
-  .storyOpening,
-  .storyOpeningCompact {
+  .storyOpening {
     grid-template-columns: 1fr;
-  }
-
-  .storyOpeningCompact .openingCover {
-    max-height: 17rem;
   }
 
   .sceneSurface,
@@ -2578,6 +2635,11 @@
   padding: 0;
 }
 
+.beliefList fieldset[data-status="incorrect"] {
+  border-left: 3px solid #bf755d;
+  padding-left: 0.75rem;
+}
+
 .beliefList legend,
 .responseChoices legend {
   color: #4f4a46;
@@ -2698,9 +2760,45 @@
   grid-template-columns: auto 1fr;
 }
 
+.noraFeedback li[data-status="incorrect"] {
+  background: rgb(255 250 243 / 0.72);
+  color: #765044;
+  padding: 0.55rem;
+}
+
 .noraFeedback li span {
   color: #67736d;
+  display: grid;
+  gap: 0.12rem;
   grid-column: 2;
+}
+
+.noraFeedback li small {
+  color: #68766f;
+  font-size: 0.78rem;
+  font-weight: 560;
+}
+
+.questionChoices button[data-status="incorrect"],
+.processPath button[data-review="incorrect"],
+.detailBank button[data-review="incorrect"] {
+  border-color: #bf755d;
+  box-shadow: inset 3px 0 0 #bf755d;
+}
+
+.answerCorrection {
+  color: #765044;
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 680;
+  grid-column: 1 / -1;
+  line-height: 1.45;
+  margin-top: 0.15rem;
+}
+
+.answerKey {
+  color: var(--story-ink) !important;
+  font-size: 0.86rem;
 }
 
 .sourceResults {
@@ -2974,5 +3072,421 @@
 @media (max-width: 54rem) {
   .medicationPlayer .sceneSurface[data-layout] {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Story 4 · The Number on the Screen */
+.devonBoundary,
+.devonThoughtChain,
+.devonProcess,
+.devonUrgency,
+.devonMessageBuilder,
+.devonPattern {
+  color: var(--story-ink);
+  display: grid;
+  gap: 1.25rem;
+}
+
+.boundaryColumns {
+  display: grid;
+  font-size: 0.72rem;
+  font-weight: 800;
+  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.boundaryColumns p {
+  border-bottom: 2px solid color-mix(in srgb, var(--story-accent) 36%, transparent);
+  padding-bottom: 0.55rem;
+}
+
+.boundaryStatements {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.boundaryStatement {
+  background: rgb(255 250 243 / 0.72);
+  border-radius: 13px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--story-ink) 14%, transparent);
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 0.9rem;
+}
+
+.boundaryStatement[data-status="incorrect"] {
+  box-shadow:
+    inset 3px 0 0 #bf755d,
+    inset 0 0 0 1px color-mix(in srgb, #bf755d 48%, transparent);
+}
+
+.boundaryStatementLabel {
+  color: var(--story-ink);
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  grid-column: 1 / -1;
+  line-height: 1.25;
+  margin: 0 0 0.25rem;
+}
+
+.boundaryStatements button,
+.contextLenses button,
+.processPath button,
+.detailBank button,
+.patternViews button {
+  background: #fffaf3;
+  border: 0;
+  border-radius: 12px;
+  color: var(--story-muted);
+  font: inherit;
+  min-height: 44px;
+  padding: 0.6rem 0.7rem;
+  text-align: left;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--story-ink) 18%, transparent);
+}
+
+.boundaryStatements button[aria-pressed="true"],
+.processPath button[data-selected="true"],
+.detailBank button[aria-pressed="true"],
+.patternViews button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--story-canvas) 76%, #fffaf3);
+  border-color: var(--story-accent);
+  color: var(--story-ink);
+}
+
+.devonFeedback {
+  background: #fffaf3;
+  border-left: 3px solid var(--story-accent);
+  display: grid;
+  gap: 0.35rem;
+  line-height: 1.55;
+  padding: 1rem 1.1rem;
+}
+
+.devonFeedback p {
+  color: var(--story-muted);
+}
+
+.chainStatementBank {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.chainStatementBank span {
+  background: #fffaf3;
+  border-left: 3px solid var(--story-accent);
+  color: var(--story-ink);
+  font-size: 0.86rem;
+  line-height: 1.4;
+  padding: 0.7rem 0.8rem;
+  transition: opacity 160ms ease;
+}
+
+.chainStatementBank span[data-used="true"] {
+  opacity: 0.42;
+}
+
+.chainTrack {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.chainStep {
+  min-width: 0;
+  padding: 2.75rem 0.45rem 0;
+  position: relative;
+}
+
+.chainStep::after {
+  background: color-mix(in srgb, var(--story-accent) 52%, transparent);
+  content: "";
+  height: 3px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 2rem;
+}
+
+.chainStep::before {
+  background: var(--story-accent);
+  border: 4px solid var(--story-canvas);
+  border-radius: 50%;
+  content: "";
+  height: 17px;
+  left: 0.25rem;
+  position: absolute;
+  top: 1.55rem;
+  width: 17px;
+  z-index: 1;
+}
+
+.chainStepLabel {
+  color: var(--story-ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  left: 0.45rem;
+  letter-spacing: 0.06em;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  text-transform: uppercase;
+}
+
+.chainTrack select,
+.optionalContext select {
+  background: #fffaf3;
+  border: 1px solid color-mix(in srgb, var(--story-ink) 20%, transparent);
+  border-radius: 11px;
+  color: var(--story-ink);
+  font: inherit;
+  min-height: 46px;
+  padding: 0.55rem;
+  width: 100%;
+}
+
+.chainStep[data-status="incorrect"] select {
+  border-color: #bf755d;
+  box-shadow: inset 3px 0 0 #bf755d;
+}
+
+.evidenceBoundary {
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.evidenceBoundary legend {
+  font-weight: 760;
+  margin-bottom: 0.7rem;
+  width: 100%;
+}
+
+.evidenceBoundary label {
+  position: relative;
+}
+
+.evidenceBoundary input {
+  inset: 0;
+  opacity: 0;
+  position: absolute;
+}
+
+.evidenceBoundary span {
+  background: #fffaf3;
+  border: 1px solid color-mix(in srgb, var(--story-ink) 18%, transparent);
+  border-radius: 999px;
+  display: block;
+  padding: 0.6rem 0.85rem;
+}
+
+.evidenceBoundary input:checked + span {
+  background: var(--story-ink);
+  color: #fffaf3;
+}
+
+.processPath {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.processPath button {
+  display: grid;
+  gap: 0.7rem;
+  min-height: 118px;
+}
+
+.processPath small {
+  color: var(--story-accent);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.contextLenses {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.contextLenses button {
+  display: grid;
+  gap: 0.45rem;
+  min-height: 104px;
+}
+
+.contextLenses button[aria-expanded="true"] {
+  background: var(--story-ink);
+  color: #fffaf3;
+}
+
+.contextLenses span {
+  font-family: var(--font-serif);
+  font-size: 1.28rem;
+}
+
+.responseScenarios {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.responseScenarios fieldset {
+  background: #fffaf3;
+  border: 0;
+  border-left: 3px solid color-mix(in srgb, var(--story-accent) 66%, transparent);
+  padding: 1rem;
+}
+
+.responseScenarios fieldset[data-status="incorrect"] {
+  border-left-color: #bf755d;
+}
+
+.responseScenarios legend {
+  color: var(--story-ink);
+  font-weight: 730;
+  line-height: 1.45;
+  margin-bottom: 0.7rem;
+}
+
+.responseScenarios label {
+  align-items: flex-start;
+  color: var(--story-muted);
+  display: flex;
+  gap: 0.55rem;
+  line-height: 1.4;
+  padding: 0.35rem 0;
+}
+
+.messageWorkspace {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 0.85fr);
+}
+
+.detailBank {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.messageDraft {
+  align-content: start;
+  background: #fffaf3;
+  border: 1px solid color-mix(in srgb, var(--story-ink) 18%, transparent);
+  border-radius: 14px;
+  display: grid;
+  gap: 0.7rem;
+  min-height: 100%;
+  padding: 1rem;
+}
+
+.messageDraft small {
+  color: var(--story-accent);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.messageDraft p {
+  color: var(--story-ink);
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+
+.patternViews {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.patternViews button {
+  display: grid;
+  gap: 0.65rem;
+  min-height: 180px;
+  place-items: center;
+  text-align: center;
+}
+
+.singlePoint {
+  background: var(--story-accent);
+  border: 8px solid color-mix(in srgb, var(--story-accent-soft) 72%, #fffaf3);
+  border-radius: 50%;
+  height: 58px;
+  width: 58px;
+}
+
+.contextLine {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  width: min(90%, 220px);
+}
+
+.contextLine::before {
+  background: color-mix(in srgb, var(--story-ink) 40%, transparent);
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.contextLine i {
+  background: var(--story-accent);
+  border: 5px solid var(--story-canvas);
+  border-radius: 50%;
+  height: 27px;
+  position: relative;
+  width: 27px;
+}
+
+.optionalContext {
+  color: var(--story-muted);
+  display: grid;
+  font-size: 0.82rem;
+  gap: 0.4rem;
+}
+
+@media (max-width: 54rem) {
+  .boundaryStatements,
+  .chainStatementBank,
+  .messageWorkspace {
+    grid-template-columns: 1fr;
+  }
+
+  .processPath,
+  .chainTrack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1rem;
+  }
+}
+
+@media (max-width: 38rem) {
+  .boundaryStatement,
+  .detailBank,
+  .patternViews,
+  .contextLenses,
+  .processPath,
+  .chainTrack {
+    grid-template-columns: 1fr;
+  }
+
+  .boundaryStatement {
+    display: grid;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chainStatementBank span {
+    transition: none;
   }
 }

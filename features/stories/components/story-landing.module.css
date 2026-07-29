@@ -116,9 +116,15 @@
 .preview {
   --story-accent: #a96951;
   --story-wash: #edf2ed;
+  align-items: center;
   background: #fffaf3;
   border-radius: 24px;
+  contain: paint;
+  isolation: isolate;
+  min-width: 0;
   overflow: hidden;
+  overflow: clip;
+  position: relative;
 }
 
 .preview[data-theme="quiet-dusk"] {
@@ -136,14 +142,18 @@
   --story-wash: #e5eeeb;
 }
 
+.preview[data-theme="urgent-calm"] {
+  --story-accent: #a87652;
+  --story-wash: #e6efed;
+}
+
 .featured {
   display: grid;
-  grid-template-columns: minmax(21rem, 1.05fr) minmax(0, 0.95fr);
-  min-height: 34rem;
+  grid-template-columns: minmax(16rem, 0.78fr) minmax(0, 1.22fr);
 }
 
 .featured .cover {
-  min-height: 100%;
+  height: clamp(18rem, 29vw, 27rem);
 }
 
 .featured .previewBody {
@@ -161,11 +171,11 @@
 .row,
 .row-reverse {
   display: grid;
-  grid-template-columns: minmax(17rem, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(14rem, 0.68fr) minmax(0, 1.32fr);
 }
 
 .row-reverse {
-  grid-template-columns: minmax(0, 1.2fr) minmax(17rem, 0.8fr);
+  grid-template-columns: minmax(0, 1.32fr) minmax(14rem, 0.68fr);
 }
 
 .row-reverse .cover {
@@ -179,15 +189,18 @@
 
 .row .cover,
 .row-reverse .cover {
-  aspect-ratio: 16 / 10;
-  min-height: 100%;
+  height: clamp(17rem, 27vw, 25rem);
 }
 
 .cover {
-  aspect-ratio: 16 / 9;
   background: var(--story-wash);
+  border-radius: 16px;
+  margin: clamp(0.85rem, 2vw, 1.4rem);
+  min-height: 0;
+  min-width: 0;
   overflow: hidden;
   position: relative;
+  z-index: 1;
 }
 
 .cover::after {
@@ -201,16 +214,23 @@
 .cover img {
   display: block;
   height: 100%;
+  max-height: 100%;
+  max-width: 100%;
   object-fit: cover;
+  position: static;
   width: 100%;
 }
 
 .previewBody {
+  min-width: 0;
   padding: clamp(1.7rem, 4.5vw, 3.5rem);
+  position: relative;
+  z-index: 2;
 }
 
 .previewMain {
   max-width: 42rem;
+  min-width: 0;
 }
 
 .labels {
@@ -276,18 +296,22 @@
   align-items: end;
   border-top: 1px solid color-mix(in srgb, var(--story-accent) 22%, transparent);
   display: flex;
+  flex-wrap: wrap;
   gap: 1.25rem;
   justify-content: space-between;
   margin-top: 1.8rem;
+  min-width: 0;
   padding-top: 1.25rem;
 }
 
 .metadata {
   color: #766c65;
   display: flex;
+  flex: 1 1 18rem;
   flex-wrap: wrap;
   font-size: 0.78rem;
   gap: 0.55rem 1rem;
+  min-width: 0;
 }
 
 .metadata span {
@@ -313,7 +337,10 @@
   gap: 0.65rem;
   justify-content: center;
   min-height: 50px;
+  margin-left: auto;
   padding: 0.75rem 1.25rem;
+  position: relative;
+  z-index: 3;
   transition:
     background 180ms var(--ease-standard),
     transform 180ms var(--ease-standard);
@@ -348,7 +375,7 @@
   line-height: 1.65;
 }
 
-@media (max-width: 52rem) {
+@media (max-width: 60rem) {
   .intro,
   .featured,
   .row,
@@ -369,11 +396,17 @@
   .row .cover,
   .row-reverse .cover {
     aspect-ratio: 16 / 9;
+    height: auto;
     min-height: auto;
   }
 
   .storyRows > div:nth-child(2) {
     margin-left: 0;
+  }
+
+  .cover {
+    margin-bottom: 0;
+    max-height: 25rem;
   }
 }
 
@@ -385,6 +418,7 @@
 
   .storyAction {
     align-self: stretch;
+    margin-left: 0;
   }
 
   .previewBody {

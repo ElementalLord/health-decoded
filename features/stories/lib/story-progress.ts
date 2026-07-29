@@ -9,6 +9,7 @@ export const getStoryStorageKey = (slug: string) => `health-decoded:story:${slug
 export const MARCUS_STORY_STORAGE_KEY = getStoryStorageKey("marcus-parking-lot");
 export const ASHA_STORY_STORAGE_KEY = getStoryStorageKey("asha-rice-on-the-table");
 export const NORA_STORY_STORAGE_KEY = getStoryStorageKey("nora-prescription-bag");
+export const DEVON_STORY_STORAGE_KEY = getStoryStorageKey("devon-number-screen");
 export const CURRENT_STORY_INTERACTION_VERSION = 2;
 
 export const createInitialStoryProgress = (): StoryProgress => ({
@@ -46,6 +47,20 @@ export function createStoryReviewProgress(progress: StoryProgress): StoryProgres
     keyIdeaUnderstood: false,
     completionDate: null,
     versionCompleted: null,
+    stage: "story",
+  };
+}
+
+export function resolveStoryEntryProgress(
+  progress: StoryProgress,
+  options: { begin?: boolean; restart?: boolean },
+): StoryProgress {
+  const restoredProgress = options.restart ? createStoryReviewProgress(progress) : progress;
+  if (!options.begin || restoredProgress.stage !== "intro") return restoredProgress;
+
+  return {
+    ...restoredProgress,
+    currentScene: 0,
     stage: "story",
   };
 }

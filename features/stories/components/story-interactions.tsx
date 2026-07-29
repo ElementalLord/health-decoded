@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, PhoneCall, Search } from "lucide-react";
+import { Check, PhoneCall, Search, X } from "lucide-react";
 import type { ReactNode } from "react";
 
 import type { StoryInteractionType, StoryScene } from "@/features/stories/types/interactive-story";
@@ -16,6 +16,55 @@ type StoryInteractionProps = {
   onStateChange: (key: string, value: InteractionValue) => void;
   scene: StoryScene;
 };
+
+const MAX_UNSUCCESSFUL_ATTEMPTS = 2;
+
+function getAttemptCount(
+  interactionStates: StoryInteractionProps["interactionStates"],
+  sceneId: string,
+) {
+  const value = interactionStates[`${sceneId}:attempts`];
+  return typeof value === "number" ? value : 0;
+}
+
+function submitEvaluatedInteraction({
+  attempts,
+  correct,
+  onStateChange,
+  sceneId,
+}: {
+  attempts: number;
+  correct: boolean;
+  onStateChange: StoryInteractionProps["onStateChange"];
+  sceneId: string;
+}) {
+  onStateChange(`${sceneId}:checked`, "checked");
+  if (correct) {
+    onStateChange(`${sceneId}:complete`, "complete");
+    return;
+  }
+
+  const nextAttempts = attempts + 1;
+  onStateChange(`${sceneId}:attempts`, nextAttempts);
+  if (nextAttempts >= MAX_UNSUCCESSFUL_ATTEMPTS) {
+    onStateChange(`${sceneId}:complete`, "complete");
+  }
+}
+
+function clearEvaluatedCheck({
+  attempts,
+  onStateChange,
+  sceneId,
+}: {
+  attempts: number;
+  onStateChange: StoryInteractionProps["onStateChange"];
+  sceneId: string;
+}) {
+  onStateChange(`${sceneId}:checked`, "");
+  if (attempts < MAX_UNSUCCESSFUL_ATTEMPTS) {
+    onStateChange(`${sceneId}:complete`, "");
+  }
+}
 
 const thoughtCategories = [
   { id: "knows", label: "What Marcus knows" },
@@ -1077,7 +1126,9 @@ function BeliefMapping({
   const assignments = Array.isArray(interactionStates[scene.id])
     ? (interactionStates[scene.id] as string[])
     : [];
-  const submitted = interactionStates[`${scene.id}:complete`] === "complete";
+  const checked = interactionStates[`${scene.id}:checked`] === "checked";
+  const resolved = interactionStates[`${scene.id}:complete`] === "complete";
+  const attempts = getAttemptCount(interactionStates, scene.id);
   const correctById: Record<string, "fear" | "understanding"> = {
     "effort-proof": "fear",
     "health-needs": "understanding",
@@ -1090,7 +1141,15 @@ function BeliefMapping({
       `${id}:${category}`,
     ];
     onStateChange(scene.id, next);
+    clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
   };
+  const assignmentById = Object.fromEntries(
+    assignments.map((entry) => entry.split(":") as [string, string]),
+  );
+  const correctCount = scene.interaction.options.filter(
+    (option) => correctById[option.id] === assignmentById[option.id],
+  ).length;
+  const accurate = correctCount === scene.interaction.options.length;
 
   return (
     <div className={styles.noraInteraction}>
@@ -1104,13 +1163,17 @@ function BeliefMapping({
           const current = assignments
             .find((entry) => entry.startsWith(`${option.id}:`))
             ?.split(":")[1];
+          const isCorrect = correctById[option.id] === current;
           return (
-            <fieldset key={option.id}>
+            <fieldset
+              data-status={checked ? (isCorrect ? "correct" : "incorrect") : "unchecked"}
+              key={option.id}
+            >
               <legend>{option.label}</legend>
               <div>
                 <button
                   aria-pressed={current === "fear"}
-                  disabled={submitted}
+                  disabled={resolved}
                   onClick={() => setCategory(option.id, "fear")}
                   type="button"
                 >
@@ -1118,51 +1181,81 @@ function BeliefMapping({
                 </button>
                 <button
                   aria-pressed={current === "understanding"}
-                  disabled={submitted}
+                  disabled={resolved}
                   onClick={() => setCategory(option.id, "understanding")}
                   type="button"
                 >
                   More useful understanding
                 </button>
               </div>
+              {checked && !isCorrect ? (
+                <small className={styles.answerCorrection}>
+                  Try “
+                  {correctById[option.id] === "fear"
+                    ? "Fear or assumption"
+                    : "More useful understanding"}
+                  .”
+                </small>
+              ) : null}
             </fieldset>
           );
         })}
       </div>
-      {!submitted ? (
+      {!resolved ? (
         <button
           className={styles.interactionSubmit}
           disabled={assignments.length !== scene.interaction.options.length}
-          onClick={() => onStateChange(`${scene.id}:complete`, "complete")}
+          onClick={() =>
+            submitEvaluatedInteraction({
+              attempts,
+              correct: accurate,
+              onStateChange,
+              sceneId: scene.id,
+            })
+          }
           type="button"
         >
-          Check the map
+          {checked ? "Check the revised map" : "Check the map"}
         </button>
-      ) : (
+      ) : null}
+      {checked ? (
         <div aria-live="polite" className={styles.noraFeedback}>
           <strong>
-            {
-              assignments.filter((entry) => {
-                const [id, category] = entry.split(":");
-                return correctById[id!] === category;
-              }).length
-            }{" "}
-            of 4 placed as intended
+            {accurate
+              ? "All four ideas are placed as intended."
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? `${correctCount} of 4 matched. The intended map is shown, and you can continue.`
+                : `${correctCount} of 4 matched. The choices to revise are marked above.`}
           </strong>
           <p>{scene.interaction.learningPoint}</p>
           <ul>
-            {scene.interaction.options.map((option) => (
-              <li key={option.id}>
-                <Check aria-hidden="true" size={16} />
-                {correctById[option.id] === "fear"
-                  ? "Fear or assumption"
-                  : "More useful understanding"}
-                <span>{option.label}</span>
-              </li>
-            ))}
+            {scene.interaction.options.map((option) => {
+              const isCorrect = correctById[option.id] === assignmentById[option.id];
+              return (
+                <li data-status={isCorrect ? "correct" : "incorrect"} key={option.id}>
+                  {isCorrect ? (
+                    <Check aria-hidden="true" size={16} />
+                  ) : (
+                    <X aria-hidden="true" size={16} />
+                  )}
+                  <span>
+                    {option.label}
+                    <small>
+                      {isCorrect
+                        ? "Placed correctly"
+                        : `Move to ${
+                            correctById[option.id] === "fear"
+                              ? "Fear or assumption"
+                              : "More useful understanding"
+                          }`}
+                    </small>
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -1256,6 +1349,8 @@ function PerspectiveSwitch({
       : "nora";
   const selected =
     typeof interactionStates[scene.id] === "string" ? interactionStates[scene.id] : "";
+  const attempts = getAttemptCount(interactionStates, scene.id);
+  const resolved = interactionStates[`${scene.id}:complete`] === "complete";
   const perspectives = {
     nora: ["You failed.", "This must be serious.", "You should have prevented this."],
     sister: ["I am surprised.", "I am worried.", "I do not understand the treatment plan."],
@@ -1266,7 +1361,12 @@ function PerspectiveSwitch({
   };
   const chooseResponse = (id: string) => {
     onStateChange(scene.id, id);
-    onStateChange(`${scene.id}:complete`, "complete");
+    submitEvaluatedInteraction({
+      attempts,
+      correct: id === "c",
+      onStateChange,
+      sceneId: scene.id,
+    });
   };
 
   return (
@@ -1306,6 +1406,7 @@ function PerspectiveSwitch({
         {scene.interaction.options.map((option) => (
           <button
             aria-pressed={selected === option.id}
+            disabled={resolved}
             key={option.id}
             onClick={() => chooseResponse(option.id)}
             type="button"
@@ -1320,7 +1421,9 @@ function PerspectiveSwitch({
           <p>
             {selected === "c"
               ? "This response centers Nora’s experience and lets her decide how much she wants to share."
-              : "This reaction may come from concern, but it can make Nora feel that she has to justify her treatment."}
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? "Concern can still feel like pressure. The response that asks what Nora wants creates more room to talk. You can continue."
+                : "This reaction may come from concern, but it can make Nora feel that she has to justify her treatment. Try the response that gives her control."}
           </p>
         </div>
       ) : null}
@@ -1340,17 +1443,24 @@ function QuestionBuilder({
   const selected = Array.isArray(interactionStates[scene.id])
     ? (interactionStates[scene.id] as string[])
     : [];
-  const submitted = interactionStates[`${scene.id}:complete`] === "complete";
+  const checked = interactionStates[`${scene.id}:checked`] === "checked";
+  const resolved = interactionStates[`${scene.id}:complete`] === "complete";
+  const attempts = getAttemptCount(interactionStates, scene.id);
   const strong = new Set(["purpose", "label", "concerns", "uncertain"]);
+  const accurate = selected.length === 4 && selected.every((id) => strong.has(id));
   const toggle = (id: string) => {
     if (selected.includes(id)) {
       onStateChange(
         scene.id,
         selected.filter((item) => item !== id),
       );
+      clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
       return;
     }
-    if (selected.length < 4) onStateChange(scene.id, [...selected, id]);
+    if (selected.length < 4) {
+      onStateChange(scene.id, [...selected, id]);
+      clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
+    }
   };
 
   return (
@@ -1366,7 +1476,14 @@ function QuestionBuilder({
         {scene.interaction.options.map((option) => (
           <button
             aria-pressed={selected.includes(option.id)}
-            disabled={submitted || (!selected.includes(option.id) && selected.length === 4)}
+            data-status={
+              checked && selected.includes(option.id)
+                ? strong.has(option.id)
+                  ? "correct"
+                  : "incorrect"
+                : "unchecked"
+            }
+            disabled={resolved || (!selected.includes(option.id) && selected.length === 4)}
             key={option.id}
             onClick={() => toggle(option.id)}
             type="button"
@@ -1376,23 +1493,35 @@ function QuestionBuilder({
           </button>
         ))}
       </div>
-      {!submitted ? (
+      {!resolved ? (
         <button
           className={styles.interactionSubmit}
           disabled={selected.length !== 4}
-          onClick={() => onStateChange(`${scene.id}:complete`, "complete")}
+          onClick={() =>
+            submitEvaluatedInteraction({
+              attempts,
+              correct: accurate,
+              onStateChange,
+              sceneId: scene.id,
+            })
+          }
           type="button"
         >
-          Bring these questions
+          {checked ? "Review the revised questions" : "Bring these questions"}
         </button>
-      ) : (
+      ) : null}
+      {checked ? (
         <div aria-live="polite" className={styles.noraFeedback}>
           <strong>
-            {selected.filter((id) => strong.has(id)).length} useful questions selected
+            {accurate
+              ? "Four useful questions selected."
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? `${selected.filter((id) => strong.has(id)).length} of 4 are useful. The stronger choices are now identified, and you can continue.`
+                : `${selected.filter((id) => strong.has(id)).length} of 4 are useful. Replace the highlighted choice and try again.`}
           </strong>
           <p>{scene.interaction.learningPoint}</p>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -1545,6 +1674,746 @@ function CareToolbox({
   );
 }
 
+const readingBoundaryAnswers: Record<string, "shows" | "cannot"> = {
+  "above-target": "shows",
+  "worth-recording": "shows",
+  "needs-context": "shows",
+  failed: "cannot",
+  "permanent-change": "cannot",
+  "exact-cause": "cannot",
+};
+
+function ReadingBoundary({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const assignments = scene.interaction.options.map((option) => ({
+    ...option,
+    value:
+      typeof interactionStates[`${scene.id}:${option.id}`] === "string"
+        ? String(interactionStates[`${scene.id}:${option.id}`])
+        : "",
+  }));
+  const complete = assignments.every((item) => item.value);
+  const checked = interactionStates[`${scene.id}:checked`] === "checked";
+  const attempts = getAttemptCount(interactionStates, scene.id);
+  const correct = assignments.filter(
+    (item) => readingBoundaryAnswers[item.id] === item.value,
+  ).length;
+  const accurate = correct === scene.interaction.options.length;
+
+  const check = () => {
+    submitEvaluatedInteraction({
+      attempts,
+      correct: accurate,
+      onStateChange,
+      sceneId: scene.id,
+    });
+  };
+
+  return (
+    <div className={styles.devonBoundary}>
+      <div className={styles.interactionHeader}>
+        <span>Information boundary</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.boundaryColumns}>
+        <p>What the reading can tell</p>
+        <p>What it cannot explain</p>
+      </div>
+      <div className={styles.boundaryStatements}>
+        {assignments.map((option) => {
+          const isCorrect = readingBoundaryAnswers[option.id] === option.value;
+          return (
+            <div
+              aria-label={option.label}
+              className={styles.boundaryStatement}
+              data-status={checked ? (isCorrect ? "correct" : "incorrect") : "unchecked"}
+              key={option.id}
+              role="group"
+            >
+              <p className={styles.boundaryStatementLabel}>{option.label}</p>
+              <button
+                aria-pressed={option.value === "shows"}
+                onClick={() => {
+                  onStateChange(`${scene.id}:${option.id}`, "shows");
+                  clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
+                }}
+                type="button"
+              >
+                The reading tells us
+              </button>
+              <button
+                aria-pressed={option.value === "cannot"}
+                onClick={() => {
+                  onStateChange(`${scene.id}:${option.id}`, "cannot");
+                  clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
+                }}
+                type="button"
+              >
+                The reading cannot decide
+              </button>
+              {checked && !isCorrect ? (
+                <small className={styles.answerCorrection}>
+                  Move this to “
+                  {readingBoundaryAnswers[option.id] === "shows"
+                    ? "The reading tells us"
+                    : "The reading cannot decide"}
+                  .”
+                </small>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+      <button
+        className={styles.interactionSubmit}
+        disabled={!complete}
+        onClick={check}
+        type="button"
+      >
+        Check the boundary
+      </button>
+      {checked ? (
+        <div aria-live="polite" className={styles.devonFeedback}>
+          <strong>
+            {accurate
+              ? "The boundary is clear."
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? `${correct} of ${scene.interaction.options.length} matched. The intended side is labeled above, and you can continue.`
+                : `${correct} of ${scene.interaction.options.length} matched. Revise the marked statements and check once more.`}
+          </strong>
+          <p>{scene.interaction.learningPoint}</p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const thoughtChainStages = [
+  { id: "observation", label: "Observation" },
+  { id: "interpretation", label: "Interpretation" },
+  { id: "prediction", label: "Prediction" },
+  { id: "verdict", label: "Verdict" },
+] as const;
+
+function ThoughtChain({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const placements = thoughtChainStages.map((stage) => {
+    const value = interactionStates[`${scene.id}:${stage.id}`];
+    return { ...stage, value: typeof value === "string" ? value : "" };
+  });
+  const used = placements.map((item) => item.value);
+  const boundary = interactionStates[`${scene.id}:boundary`];
+  const attempts = getAttemptCount(interactionStates, scene.id);
+  const correctlyOrdered = placements.every((item) => item.value === item.id);
+  const accurate = correctlyOrdered && boundary === "observation";
+  const place = (stageId: string, optionId: string) => {
+    thoughtChainStages.forEach((stage) => {
+      if (interactionStates[`${scene.id}:${stage.id}`] === optionId) {
+        onStateChange(`${scene.id}:${stage.id}`, "");
+      }
+    });
+    onStateChange(`${scene.id}:${stageId}`, optionId);
+    clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
+  };
+
+  return (
+    <div className={styles.devonThoughtChain}>
+      <div className={styles.interactionHeader}>
+        <span>Thought chain</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.chainStatementBank}>
+        {scene.interaction.options.map((option) => (
+          <span data-used={used.includes(option.id)} key={option.id}>
+            {option.label}
+          </span>
+        ))}
+      </div>
+      <div className={styles.chainTrack}>
+        {placements.map((stage) => (
+          <div
+            className={styles.chainStep}
+            data-status={
+              interactionStates[`${scene.id}:checked`] === "checked"
+                ? stage.value === stage.id
+                  ? "correct"
+                  : "incorrect"
+                : "unchecked"
+            }
+            key={stage.id}
+          >
+            <p className={styles.chainStepLabel}>{stage.label}</p>
+            <select
+              aria-label={`Statement for ${stage.label}`}
+              onChange={(event) => place(stage.id, event.target.value)}
+              value={stage.value}
+            >
+              <option value="">Choose a statement</option>
+              {scene.interaction.options.map((option) => (
+                <option
+                  disabled={used.includes(option.id) && stage.value !== option.id}
+                  key={option.id}
+                  value={option.id}
+                >
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {interactionStates[`${scene.id}:checked`] === "checked" && stage.value !== stage.id ? (
+              <small className={styles.answerCorrection}>
+                This stage needs “
+                {scene.interaction.options.find((option) => option.id === stage.id)?.label}.”
+              </small>
+            ) : null}
+          </div>
+        ))}
+      </div>
+      <fieldset className={styles.evidenceBoundary}>
+        <legend>Where does direct evidence end?</legend>
+        {thoughtChainStages.map((stage) => (
+          <label key={stage.id}>
+            <input
+              checked={boundary === stage.id}
+              name={`${scene.id}-boundary`}
+              onChange={() => {
+                onStateChange(`${scene.id}:boundary`, stage.id);
+                clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
+              }}
+              type="radio"
+            />
+            <span>After {stage.label.toLowerCase()}</span>
+          </label>
+        ))}
+      </fieldset>
+      <button
+        className={styles.interactionSubmit}
+        disabled={!placements.every((item) => item.value) || !boundary}
+        onClick={() => {
+          submitEvaluatedInteraction({
+            attempts,
+            correct: accurate,
+            onStateChange,
+            sceneId: scene.id,
+          });
+        }}
+        type="button"
+      >
+        Test the chain
+      </button>
+      {interactionStates[`${scene.id}:checked`] === "checked" ? (
+        <div aria-live="polite" className={styles.devonFeedback}>
+          <strong>
+            {accurate
+              ? "The observation is the evidence boundary."
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? "The corrected chain is labeled above. Direct evidence ends after the observation, and you can continue."
+                : "The misplaced stages are marked. Start with what the meter directly supports, then follow how the story expands."}
+          </strong>
+          <p>{scene.interaction.learningPoint}</p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const measurementUseful = new Set([
+  "notice-feeling",
+  "follow-instructions",
+  "clean-hands",
+  "check-strip",
+  "record-context",
+]);
+
+function MeasurementContext({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const selected = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const checked = interactionStates[`${scene.id}:checked`] === "checked";
+  const attempts = getAttemptCount(interactionStates, scene.id);
+  const accurate =
+    selected.length === measurementUseful.size && selected.every((id) => measurementUseful.has(id));
+  const toggle = (id: string) => {
+    onStateChange(
+      scene.id,
+      selected.includes(id) ? selected.filter((item) => item !== id) : [...selected, id],
+    );
+    clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
+  };
+
+  return (
+    <div className={styles.devonProcess}>
+      <div className={styles.interactionHeader}>
+        <span>Calm measurement check</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.processPath}>
+        {scene.interaction.options.map((option, index) => (
+          <button
+            aria-pressed={selected.includes(option.id)}
+            data-review={
+              checked && selected.includes(option.id)
+                ? measurementUseful.has(option.id)
+                  ? "correct"
+                  : "incorrect"
+                : "unchecked"
+            }
+            data-selected={selected.includes(option.id)}
+            key={option.id}
+            onClick={() => toggle(option.id)}
+            type="button"
+          >
+            <small>{String(index + 1).padStart(2, "0")}</small>
+            <span>{option.label}</span>
+          </button>
+        ))}
+      </div>
+      <button
+        className={styles.interactionSubmit}
+        disabled={selected.length === 0}
+        onClick={() => {
+          submitEvaluatedInteraction({
+            attempts,
+            correct: accurate,
+            onStateChange,
+            sceneId: scene.id,
+          });
+        }}
+        type="button"
+      >
+        Review this process
+      </button>
+      {checked ? (
+        <div aria-live="polite" className={styles.devonFeedback}>
+          <strong>
+            {accurate
+              ? "This process adds context without chasing reassurance."
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? "The useful process steps are identified below, and you can continue."
+                : "Selected steps that chase a preferred result or improvise treatment are marked. Revise them and try once more."}
+          </strong>
+          <p>{scene.interaction.learningPoint}</p>
+          {!accurate ? (
+            <p className={styles.answerKey}>
+              Keep:{" "}
+              {scene.interaction.options
+                .filter((option) => measurementUseful.has(option.id))
+                .map((option) => option.label)
+                .join("; ")}
+              .
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const urgencyScenarios = [
+  {
+    id: "urgent",
+    prompt:
+      "Trouble breathing, confusion, fainting, persistent vomiting, or inability to keep fluids down",
+    answer: "urgent-help",
+  },
+  {
+    id: "plan",
+    prompt:
+      "No emergency symptoms, but results remain outside the personal range or the written plan directs action",
+    answer: "follow-plan",
+  },
+  {
+    id: "technique",
+    prompt: "A result seems unusual or does not match how the person feels",
+    answer: "review-technique",
+  },
+] as const;
+
+function UrgencyContext({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const opened = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const allAnswered = urgencyScenarios.every(
+    (scenario) => typeof interactionStates[`${scene.id}:${scenario.id}`] === "string",
+  );
+  const allCorrect = urgencyScenarios.every(
+    (scenario) => interactionStates[`${scene.id}:${scenario.id}`] === scenario.answer,
+  );
+  const checked = interactionStates[`${scene.id}:checked`] === "checked";
+  const attempts = getAttemptCount(interactionStates, scene.id);
+
+  return (
+    <div className={styles.devonUrgency}>
+      <div className={styles.interactionHeader}>
+        <span>Response context</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.contextLenses}>
+        {scene.interaction.options.map((option) => (
+          <button
+            aria-expanded={opened.includes(option.id)}
+            key={option.id}
+            onClick={() =>
+              onStateChange(
+                scene.id,
+                opened.includes(option.id)
+                  ? opened.filter((item) => item !== option.id)
+                  : [...opened, option.id],
+              )
+            }
+            type="button"
+          >
+            <span>{option.label.split(":")[0]}</span>
+            <small>
+              {opened.includes(option.id)
+                ? option.label.split(":").slice(1).join(":")
+                : "Open this context"}
+            </small>
+          </button>
+        ))}
+      </div>
+      {opened.length === scene.interaction.options.length ? (
+        <div className={styles.responseScenarios}>
+          {urgencyScenarios.map((scenario) => {
+            const currentAnswer = interactionStates[`${scene.id}:${scenario.id}`];
+            const isCorrect = currentAnswer === scenario.answer;
+            return (
+              <fieldset
+                data-status={checked ? (isCorrect ? "correct" : "incorrect") : "unchecked"}
+                key={scenario.id}
+              >
+                <legend>{scenario.prompt}</legend>
+                {[
+                  ["urgent-help", "Seek urgent help; do not delay for an app or retesting"],
+                  ["follow-plan", "Follow the personal plan or contact the care team as directed"],
+                  [
+                    "review-technique",
+                    "Review technique and device instructions; ask when uncertain",
+                  ],
+                ].map(([id, label]) => (
+                  <label key={id}>
+                    <input
+                      checked={interactionStates[`${scene.id}:${scenario.id}`] === id}
+                      name={`${scene.id}-${scenario.id}`}
+                      onChange={() => {
+                        onStateChange(`${scene.id}:${scenario.id}`, id!);
+                        clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
+                      }}
+                      type="radio"
+                    />
+                    <span>{label}</span>
+                  </label>
+                ))}
+                {checked && !isCorrect ? (
+                  <small className={styles.answerCorrection}>
+                    Best response:{" "}
+                    {
+                      [
+                        ["urgent-help", "Seek urgent help; do not delay for an app or retesting"],
+                        [
+                          "follow-plan",
+                          "Follow the personal plan or contact the care team as directed",
+                        ],
+                        [
+                          "review-technique",
+                          "Review technique and device instructions; ask when uncertain",
+                        ],
+                      ].find(([id]) => id === scenario.answer)?.[1]
+                    }
+                    .
+                  </small>
+                ) : null}
+              </fieldset>
+            );
+          })}
+        </div>
+      ) : null}
+      {opened.length === scene.interaction.options.length ? (
+        <button
+          className={styles.interactionSubmit}
+          disabled={!allAnswered}
+          onClick={() => {
+            submitEvaluatedInteraction({
+              attempts,
+              correct: allCorrect,
+              onStateChange,
+              sceneId: scene.id,
+            });
+          }}
+          type="button"
+        >
+          Check the response paths
+        </button>
+      ) : null}
+      {checked ? (
+        <div aria-live="polite" className={styles.devonFeedback}>
+          <strong>
+            {allCorrect
+              ? "Each situation now has a response matched to its context."
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? "The intended response for each missed situation is shown above, and you can continue."
+                : "The path that needs another look is marked. Emergency symptoms should never wait; non-emergency questions return to technique and the personal plan."}
+          </strong>
+          <p>{scene.interaction.learningPoint}</p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const communicationUseful = new Set([
+  "result-time",
+  "meal-timing",
+  "symptoms",
+  "medicine-instructions",
+  "routine-context",
+  "repeat-context",
+  "meter-steps",
+]);
+
+function CommunicationBuilder({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const selected = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const accurate =
+    selected.length === communicationUseful.size &&
+    selected.every((id) => communicationUseful.has(id));
+  const checked = interactionStates[`${scene.id}:checked`] === "checked";
+  const attempts = getAttemptCount(interactionStates, scene.id);
+  const toggle = (id: string) => {
+    onStateChange(
+      scene.id,
+      selected.includes(id) ? selected.filter((item) => item !== id) : [...selected, id],
+    );
+    clearEvaluatedCheck({ attempts, onStateChange, sceneId: scene.id });
+  };
+
+  return (
+    <div className={styles.devonMessageBuilder}>
+      <div className={styles.interactionHeader}>
+        <span>Context note</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.messageWorkspace}>
+        <div className={styles.detailBank}>
+          {scene.interaction.options.map((option) => (
+            <button
+              aria-pressed={selected.includes(option.id)}
+              data-review={
+                checked && selected.includes(option.id)
+                  ? communicationUseful.has(option.id)
+                    ? "correct"
+                    : "incorrect"
+                  : "unchecked"
+              }
+              key={option.id}
+              onClick={() => toggle(option.id)}
+              type="button"
+            >
+              {selected.includes(option.id) ? "Remove" : "Add"} · {option.label}
+            </button>
+          ))}
+        </div>
+        <div aria-live="polite" className={styles.messageDraft}>
+          <small>Message draft</small>
+          <p>
+            I had an unexpected result. I can share{" "}
+            {selected.length
+              ? selected
+                  .map((id) =>
+                    scene.interaction.options
+                      .find((option) => option.id === id)
+                      ?.label.toLowerCase(),
+                  )
+                  .join("; ")
+              : "the context that may help interpret it"}
+            . What should I do according to my plan?
+          </p>
+        </div>
+      </div>
+      <button
+        className={styles.interactionSubmit}
+        disabled={selected.length === 0}
+        onClick={() => {
+          submitEvaluatedInteraction({
+            attempts,
+            correct: accurate,
+            onStateChange,
+            sceneId: scene.id,
+          });
+        }}
+        type="button"
+      >
+        Review the message
+      </button>
+      {checked ? (
+        <div aria-live="polite" className={styles.devonFeedback}>
+          <strong>
+            {accurate
+              ? "This note carries context without carrying blame."
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? "The concrete details are identified below, and you can continue."
+                : "Selected details that add blame, frightening search results, or certainty from one moment are marked. Revise and try once more."}
+          </strong>
+          <p>{scene.interaction.learningPoint}</p>
+          {!accurate ? (
+            <p className={styles.answerKey}>
+              Useful context:{" "}
+              {scene.interaction.options
+                .filter((option) => communicationUseful.has(option.id))
+                .map((option) => option.label)
+                .join("; ")}
+              .
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function PatternComparison({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const selected =
+    typeof interactionStates[scene.id] === "string" ? String(interactionStates[scene.id]) : "";
+  const attempts = getAttemptCount(interactionStates, scene.id);
+  const contexts = [
+    "time and relation to eating",
+    "symptoms or how the person felt",
+    "illness, stress, sleep, or routine changes",
+    "steps from the personal plan",
+    "measurement technique",
+    "questions for the care team",
+    "whether a similar context repeated",
+  ];
+
+  return (
+    <div className={styles.devonPattern}>
+      <div className={styles.interactionHeader}>
+        <span>One point or a contextual view</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.patternViews}>
+        <button
+          aria-pressed={selected === "isolated"}
+          onClick={() => {
+            onStateChange(scene.id, "isolated");
+            submitEvaluatedInteraction({
+              attempts,
+              correct: false,
+              onStateChange,
+              sceneId: scene.id,
+            });
+          }}
+          type="button"
+        >
+          <span className={styles.singlePoint} aria-hidden="true" />
+          <strong>View A</strong>
+          <small>One result without surrounding context</small>
+        </button>
+        <button
+          aria-pressed={selected === "contextual"}
+          onClick={() => {
+            onStateChange(scene.id, "contextual");
+            submitEvaluatedInteraction({
+              attempts,
+              correct: true,
+              onStateChange,
+              sceneId: scene.id,
+            });
+          }}
+          type="button"
+        >
+          <span className={styles.contextLine} aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
+          <strong>View B</strong>
+          <small>Several moments labeled with relevant context</small>
+        </button>
+      </div>
+      {selected ? (
+        <div aria-live="polite" className={styles.devonFeedback}>
+          <strong>
+            {selected === "contextual"
+              ? "Context can make a pattern discussable."
+              : attempts >= MAX_UNSUCCESSFUL_ATTEMPTS
+                ? "One point may matter, but it cannot show whether a pattern is present. View B is the more useful comparison, and you can continue."
+                : "One point may matter, but it cannot show whether a pattern is present. Compare it with View B."}
+          </strong>
+          <p>{scene.interaction.learningPoint}</p>
+        </div>
+      ) : null}
+      <label className={styles.optionalContext}>
+        <span>Optional: Which kind of context would make a future conversation clearer?</span>
+        <select
+          defaultValue=""
+          onChange={(event) => onStateChange(`${scene.id}:optional-context`, event.target.value)}
+        >
+          <option disabled value="">
+            Choose only if useful
+          </option>
+          {contexts.map((context) => (
+            <option key={context}>{context}</option>
+          ))}
+        </select>
+      </label>
+    </div>
+  );
+}
+
 export function StoryInteraction({
   interactionStates,
   meaningfulChoice,
@@ -1679,6 +2548,48 @@ export function StoryInteraction({
     ),
     "care-toolbox": () => (
       <CareToolbox
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "reading-boundary": () => (
+      <ReadingBoundary
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "thought-chain": () => (
+      <ThoughtChain
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "measurement-context": () => (
+      <MeasurementContext
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "urgency-context": () => (
+      <UrgencyContext
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "communication-builder": () => (
+      <CommunicationBuilder
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "pattern-comparison": () => (
+      <PatternComparison
         interactionStates={interactionStates}
         onStateChange={onStateChange}
         scene={scene}

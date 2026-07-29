@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { ashaRiceOnTheTableStory } from "../features/stories/content/asha-rice-on-the-table.ts";
+import { devonNumberScreenStory } from "../features/stories/content/devon-number-screen.ts";
 import { marcusParkingLotStory } from "../features/stories/content/marcus-parking-lot.ts";
 import { noraPrescriptionBagStory } from "../features/stories/content/nora-prescription-bag.ts";
 import {
@@ -18,10 +19,11 @@ const interactions = readFileSync("features/stories/components/story-interaction
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
 const styles = readFileSync("features/stories/components/story-player.module.css", "utf8");
 
-test("the development guard accepts all three stories without duplication issues", () => {
+test("the development guard accepts all four stories without duplication issues", () => {
   assert.deepEqual(validateStoryInteractions(marcusParkingLotStory), []);
   assert.deepEqual(validateStoryInteractions(ashaRiceOnTheTableStory), []);
   assert.deepEqual(validateStoryInteractions(noraPrescriptionBagStory), []);
+  assert.deepEqual(validateStoryInteractions(devonNumberScreenStory), []);
 });
 
 test("the development guard flags passive reveals, missing learning metadata, and overlap", () => {
@@ -88,9 +90,13 @@ test("Marcus predicts before the actual response is revealed", () => {
 
 test("Marcus sees all three appointment questions and prioritizes rather than reveals them", () => {
   const scene = marcusParkingLotStory.scenes[5];
+  const questionInteractionSource = interactions.slice(
+    interactions.indexOf("function QuestionPrioritization"),
+    interactions.indexOf("function GroceryFearExplorer"),
+  );
   assert.equal(scene.interaction.options?.length, 3);
   assert.equal(scene.interaction.purpose, "prioritize");
-  assert.doesNotMatch(interactions, /aria-expanded/);
+  assert.doesNotMatch(questionInteractionSource, /aria-expanded/);
   for (const label of ["Ask first", "Discuss during follow-up", "Keep exploring over time"]) {
     assert.match(interactions, new RegExp(label));
   }
@@ -155,6 +161,7 @@ test("all scenes declare purpose, learning point, engagement, and feedback mode"
     ...marcusParkingLotStory.scenes,
     ...ashaRiceOnTheTableStory.scenes,
     ...noraPrescriptionBagStory.scenes,
+    ...devonNumberScreenStory.scenes,
   ]) {
     assert.ok(scene.interaction.id);
     assert.ok(scene.interaction.purpose);
@@ -206,6 +213,9 @@ test("knowledge-check results are derived from recorded answers instead of stale
   const correctNoraAnswers = Object.fromEntries(
     noraPrescriptionBagStory.quiz.map((question) => [question.id, question.correctChoiceId]),
   );
+  const correctDevonAnswers = Object.fromEntries(
+    devonNumberScreenStory.quiz.map((question) => [question.id, question.correctChoiceId]),
+  );
 
   assert.equal(
     calculateStoryQuizScore(marcusParkingLotStory.quiz, correctMarcusAnswers),
@@ -219,9 +229,14 @@ test("knowledge-check results are derived from recorded answers instead of stale
     calculateStoryQuizScore(noraPrescriptionBagStory.quiz, correctNoraAnswers),
     noraPrescriptionBagStory.quiz.length,
   );
+  assert.equal(
+    calculateStoryQuizScore(devonNumberScreenStory.quiz, correctDevonAnswers),
+    devonNumberScreenStory.quiz.length,
+  );
   assert.equal(calculateStoryQuizScore(marcusParkingLotStory.quiz, {}), 0);
   assert.equal(calculateStoryQuizScore(ashaRiceOnTheTableStory.quiz, {}), 0);
   assert.equal(calculateStoryQuizScore(noraPrescriptionBagStory.quiz, {}), 0);
+  assert.equal(calculateStoryQuizScore(devonNumberScreenStory.quiz, {}), 0);
 });
 
 test("rereading clears previous choices and scoring while preserving a private reflection", () => {
@@ -280,16 +295,21 @@ test("routes, covers, narratives, reflection, and final quizzes remain intact", 
   assert.equal(marcusParkingLotStory.slug, "marcus-parking-lot");
   assert.equal(ashaRiceOnTheTableStory.slug, "asha-rice-on-the-table");
   assert.equal(noraPrescriptionBagStory.slug, "nora-prescription-bag");
+  assert.equal(devonNumberScreenStory.slug, "devon-number-screen");
   assert.equal(marcusParkingLotStory.imagePath, "/stories/marcus-parking-lot-cover.webp");
   assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-rice-on-the-table-cover.webp");
   assert.equal(noraPrescriptionBagStory.imagePath, "/stories/nora-prescription-bag-cover.webp");
+  assert.equal(devonNumberScreenStory.imagePath, "/stories/devon-number-screen-cover.webp");
   assert.equal(marcusParkingLotStory.scenes.length, 6);
   assert.equal(ashaRiceOnTheTableStory.scenes.length, 6);
   assert.equal(noraPrescriptionBagStory.scenes.length, 6);
+  assert.equal(devonNumberScreenStory.scenes.length, 6);
   assert.equal(marcusParkingLotStory.quiz.length, 3);
   assert.equal(ashaRiceOnTheTableStory.quiz.length, 3);
   assert.equal(noraPrescriptionBagStory.quiz.length, 3);
+  assert.equal(devonNumberScreenStory.quiz.length, 3);
   assert.ok(marcusParkingLotStory.privateReflectionPrompt);
   assert.ok(ashaRiceOnTheTableStory.privateReflectionPrompt);
   assert.ok(noraPrescriptionBagStory.privateReflectionPrompt);
+  assert.ok(devonNumberScreenStory.privateReflectionPrompt);
 });
