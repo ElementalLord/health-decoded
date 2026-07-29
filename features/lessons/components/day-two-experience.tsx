@@ -433,7 +433,10 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
       return;
     }
     startTransition(async () => {
-      const result = await completeLessonAction({ lessonProgressId: experience.lessonProgressId });
+      const result = await completeLessonAction({
+        lessonProgressId: experience.lessonProgressId,
+        reflection: reflection ?? undefined,
+      });
       if (!result.ok) {
         setMessage(result.message);
         return;

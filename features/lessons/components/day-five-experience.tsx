@@ -409,7 +409,10 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
         setMessage(positionResult.message);
         return;
       }
-      const result = await completeLessonAction({ lessonProgressId: experience.lessonProgressId });
+      const result = await completeLessonAction({
+        lessonProgressId: experience.lessonProgressId,
+        reflection: reflection ?? undefined,
+      });
       if (!result.ok) {
         setMessage(result.message);
         return;

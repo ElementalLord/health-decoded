@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -26,10 +26,28 @@ import { saveLessonPositionAction } from "@/features/lessons/actions/lesson-prog
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import { LessonMotionPerson } from "@/features/lessons/components/lesson-motion-person";
 import styles from "@/features/lessons/components/day-thirteen-experience.module.css";
+import {
+  canNavigateToLessonStage,
+  getLessonResumeStage,
+  isLessonStageLocked,
+  type LessonStageGateMap,
+} from "@/features/lessons/lib/lesson-stage-gating";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
 
 const stageCount = 11;
+const dayThirteenStageGates: LessonStageGateMap = {
+  0: "Choose how you want this lesson to meet you before you move on.",
+  1: "Share at least one bag onto the bench above before you move on.",
+  2: "Choose a response to the stigma example before you move on.",
+  3: "Choose the permission-first support response before you move on.",
+  4: "Choose one person and one useful action before you move on.",
+  5: "Build a full boundary above, one phrase from each row, before you move on.",
+  6: "Choose the response that protects privacy before you move on.",
+  7: "Choose one seat at your support table before you move on.",
+  8: "Choose one repair move before you move on.",
+  9: "Answer what makes support helpful before you move on.",
+};
 
 const openingFeelings = [
   ["held", "I already have someone who listens"],
@@ -987,117 +1005,6 @@ function SupportTableAnimation({ activeSeat }: { activeSeat: SupportSeatId }) {
   );
 }
 
-function SupportArrives({ onReady }: { onReady?: () => void }) {
-  const [near, setNear] = useState(false);
-  const capeRest =
-    "M-14 -84 C-42 -66 -48 -22 -30 4 C-18 -10 -10 -16 -4 -24 C-12 -48 -8 -70 -2 -82 Z";
-  const capeFlow = "M-14 -84 C-36 -58 -46 -16 -22 8 C-12 -8 -8 -16 -2 -24 C-10 -48 -6 -70 -2 -82 Z";
-
-  return (
-    <div className={styles.arrive}>
-      <div className={styles.composerHead}>
-        <p className="editorial-eyebrow">Support often starts with one small ask</p>
-        <p>You do not have to wait to be noticed. Call for backup and watch it fly slowly in.</p>
-      </div>
-      <svg aria-hidden="true" className={styles.arriveSvg} viewBox="0 0 720 260">
-        <path d="M40 226 H680" stroke="#a9bcae" strokeLinecap="round" strokeWidth="4" />
-        <LessonMotionPerson
-          action="rest"
-          motion="breathe"
-          palette="warm"
-          scale={1}
-          x={280}
-          y={222}
-        />
-        {near ? (
-          <g key="hero" transform="translate(452 222)">
-            <g>
-              <animateTransform
-                attributeName="transform"
-                begin="0s"
-                calcMode="spline"
-                dur="3.8s"
-                fill="freeze"
-                keySplines="0.12 0.7 0.16 1"
-                keyTimes="0;1"
-                type="translate"
-                values="330 -184;0 0"
-              />
-              <g transform="rotate(-90 0 0)">
-                <animateTransform
-                  attributeName="transform"
-                  begin="4.2s"
-                  calcMode="spline"
-                  dur="1.5s"
-                  fill="freeze"
-                  keySplines="0.34 0 0.2 1"
-                  keyTimes="0;1"
-                  type="rotate"
-                  values="-90 0 0;0 0 0"
-                />
-                <path d={capeRest} fill="#c15b4a" opacity="0.92">
-                  <animate
-                    attributeName="d"
-                    dur="0.9s"
-                    repeatCount="indefinite"
-                    values={`${capeRest};${capeFlow};${capeRest}`}
-                  />
-                </path>
-                <LessonMotionPerson
-                  action="celebrate"
-                  motion="still"
-                  palette="sage"
-                  scale={1}
-                  x={0}
-                  y={0}
-                />
-              </g>
-            </g>
-          </g>
-        ) : null}
-        {near ? (
-          <circle cx="366" cy="152" fill="none" r="10" stroke="#c7785f" strokeWidth="3">
-            <animate
-              attributeName="opacity"
-              begin="5.6s"
-              dur="2.6s"
-              repeatCount="indefinite"
-              values=".55;0;.55"
-            />
-            <animate
-              attributeName="r"
-              begin="5.6s"
-              dur="2.6s"
-              repeatCount="indefinite"
-              values="8;42;8"
-            />
-          </circle>
-        ) : null}
-      </svg>
-      <div className={styles.arriveControls}>
-        <p aria-live="polite" className={styles.loadStatus}>
-          {near
-            ? "Backup has landed. You did not have to carry the moment alone."
-            : "One small ask can change a hard hour. You choose who, and when."}
-        </p>
-        <button
-          className={styles.arriveButton}
-          onClick={() => {
-            const next = !near;
-            setNear(next);
-            if (next) {
-              onReady?.();
-            }
-          }}
-          type="button"
-        >
-          {near ? "Thank them and reset" : "Call for backup"}
-        </button>
-      </div>
-    </div>
-  );
-}
-
 const boundaryBuilder = {
   acknowledge: [
     "I know you care about me.",
@@ -1268,6 +1175,8 @@ function DisclosureControl() {
 
 export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPlayerViewModel }) {
   const router = useRouter();
+  const storageKey = "health-decoded:day-thirteen:" + experience.lessonProgressId;
+  const gateStorageKey = `${storageKey}:ready`;
   const [stage, setStage] = useState(0);
   const [openingFeeling, setOpeningFeeling] = useState<string | null>(null);
   const [identityIdea, setIdentityIdea] = useState<string | null>(null);
@@ -1296,23 +1205,55 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [readyStages, setReadyStages] = useState<Set<number>>(() => new Set());
-  function markReady(target: number) {
-    setReadyStages((current) => (current.has(target) ? current : new Set(current).add(target)));
-  }
-  const stageGates: Record<number, string> = {
-    1: "Share at least one bag onto the bench above before you move on.",
-    5: "Build a full boundary above, one phrase from each row, before you move on.",
-    7: "Call for backup above and let it land before you move on.",
-  };
-  const stageLocked = stageGates[stage] !== undefined && !readyStages.has(stage);
+  const markReady = useCallback(
+    (target: number) => {
+      setReadyStages((current) => {
+        if (current.has(target)) return current;
+        const next = new Set(current).add(target);
+        if (experience.accessMode === "active") {
+          window.localStorage.setItem(gateStorageKey, JSON.stringify([...next]));
+        }
+        return next;
+      });
+    },
+    [experience.accessMode, gateStorageKey],
+  );
+  const markSharedLoadReady = useCallback(() => markReady(1), [markReady]);
+  const markBoundaryReady = useCallback(() => markReady(5), [markReady]);
+  const stageLocked = isLessonStageLocked({
+    accessMode: experience.accessMode,
+    gates: dayThirteenStageGates,
+    readyStages,
+    stage,
+  });
+  const stageGateMessage = dayThirteenStageGates[stage];
   const stageRef = useRef<HTMLDivElement>(null);
-  const storageKey = "health-decoded:day-thirteen:" + experience.lessonProgressId;
 
   useEffect(() => {
     if (experience.accessMode === "review") return;
+    let restoredReady = new Set<number>();
+    try {
+      const parsed = JSON.parse(window.localStorage.getItem(gateStorageKey) ?? "[]") as unknown;
+      if (Array.isArray(parsed)) {
+        restoredReady = new Set(
+          parsed.filter((value): value is number => Number.isInteger(value) && value >= 0),
+        );
+      }
+    } catch {
+      restoredReady = new Set();
+    }
+    setReadyStages(restoredReady);
     const stored = Number(window.localStorage.getItem(storageKey));
-    if (Number.isInteger(stored) && stored >= 0 && stored < stageCount) setStage(stored);
-  }, [experience.accessMode, storageKey]);
+    if (Number.isInteger(stored) && stored >= 0 && stored < stageCount) {
+      setStage(
+        getLessonResumeStage({
+          gates: dayThirteenStageGates,
+          readyStages: restoredReady,
+          storedStage: stored,
+        }),
+      );
+    }
+  }, [experience.accessMode, gateStorageKey, storageKey]);
 
   useEffect(() => {
     if (stage > 0) stageRef.current?.focus();
@@ -1336,6 +1277,18 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
   }
 
   function goToStage(nextStage: number) {
+    if (
+      !canNavigateToLessonStage({
+        accessMode: experience.accessMode,
+        currentStage: stage,
+        gates: dayThirteenStageGates,
+        nextStage,
+        readyStages,
+      })
+    ) {
+      return;
+    }
+
     const normalized = Math.max(0, Math.min(stageCount - 1, nextStage));
     setStage(normalized);
     saveStage(normalized);
@@ -1351,6 +1304,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
     answer: string,
   ) {
     setSelectedAnswers((current) => ({ ...current, [key]: answer }));
+    const evaluationStage = { myth: 2, support: 3, boundary: 5, workplace: 6, teachBack: 9 };
+    markReady(evaluationStage[key]);
     const result = await evaluateDayThirteenAction(input);
     if (result.ok) setEvaluations((current) => ({ ...current, [key]: result.data }));
     else setMessage(result.message);
@@ -1398,12 +1353,16 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         setMessage(positionResult.message);
         return;
       }
-      const result = await completeLessonAction({ lessonProgressId: experience.lessonProgressId });
+      const result = await completeLessonAction({
+        lessonProgressId: experience.lessonProgressId,
+        reflection: reflection.trim() || undefined,
+      });
       if (!result.ok) {
         setMessage(result.message);
         return;
       }
       window.localStorage.removeItem(storageKey);
+      window.localStorage.removeItem(gateStorageKey);
       router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
@@ -1438,7 +1397,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 {openingFeelings.map(([id, label]) => (
                   <AnswerChoice
                     key={id}
-                    onClick={() => setOpeningFeeling(id)}
+                    onClick={() => {
+                      setOpeningFeeling(id);
+                      markReady(0);
+                    }}
                     selected={openingFeeling === id}
                   >
                     {label}
@@ -1451,7 +1413,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               <p>
                 {openingFeeling
                   ? "You do not need a perfect support system to begin. One safer conversation can change how heavy care feels."
-                  : "You can choose an answer, or simply keep going. Nothing personal in this lesson has to be shared."}
+                  : "Choose the closest answer to continue. Nothing you choose here is saved as health information."}
               </p>
             </div>
           </div>
@@ -1462,7 +1424,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             <LessonHeading label="A diagnosis is one chapter">
               Diabetes can belong inside your life without becoming the name of it.
             </LessonHeading>
-            <SharedLoadAnimation onReady={() => markReady(1)} />
+            <SharedLoadAnimation onReady={markSharedLoadReady} />
             <div className={styles.editorialPrompt}>
               <div>
                 <p className="editorial-eyebrow">Keep the whole person visible</p>
@@ -1621,7 +1583,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                   {supportPeople.map(([id, label]) => (
                     <AnswerChoice
                       key={id}
-                      onClick={() => setSupportPerson(id)}
+                      onClick={() => {
+                        setSupportPerson(id);
+                        if (supportAction) markReady(4);
+                      }}
                       selected={supportPerson === id}
                     >
                       {label}
@@ -1635,7 +1600,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                   {requestActions.map((action) => (
                     <AnswerChoice
                       key={action}
-                      onClick={() => setSupportAction(action)}
+                      onClick={() => {
+                        setSupportAction(action);
+                        if (supportPerson) markReady(4);
+                      }}
                       selected={supportAction === action}
                     >
                       {action}
@@ -1685,7 +1653,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               ))}
             </div>
             <BoundaryConversationAnimation scenario={activeBoundary} />
-            <ComposeBoundary onReady={() => markReady(5)} />
+            <ComposeBoundary onReady={markBoundaryReady} />
             <div className={styles.teachBack}>
               <p className="editorial-eyebrow">Choose the response that protects your peace</p>
               <div className="mt-5 grid gap-3">
@@ -1781,7 +1749,6 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               src="/lessons/day-13/community-belonging.jpg"
             />
             <SupportTableAnimation activeSeat={supportSeat} />
-            <SupportArrives onReady={() => markReady(7)} />
             <div className={styles.seatChooser}>
               {supportSeats.map((seat) => (
                 <button
@@ -1791,7 +1758,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                     supportSeat === seat.id && styles.seatChoiceActive,
                   )}
                   key={seat.id}
-                  onClick={() => setSupportSeat(seat.id)}
+                  onClick={() => {
+                    setSupportSeat(seat.id);
+                    markReady(7);
+                  }}
                   type="button"
                 >
                   <strong>{seat.label}</strong>
@@ -1825,7 +1795,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                       repairStep === item.id && styles.repairChoiceActive,
                     )}
                     key={item.id}
-                    onClick={() => setRepairStep(item.id)}
+                    onClick={() => {
+                      setRepairStep(item.id);
+                      markReady(8);
+                    }}
                     type="button"
                   >
                     <span>0{index + 1}</span>
@@ -1896,7 +1869,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 value={reflection}
               />
               <small>
-                This reflection stays on this page and is not saved as health information.
+                If you complete this lesson, this reflection will be saved to your private profile.
               </small>
             </label>
             <div className={styles.teachBack}>
@@ -2045,9 +2018,9 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
       </div>
       {stage < stageCount - 1 ? (
         <footer className="border-t border-border pt-5">
-          {stageLocked ? (
-            <p className="mb-4 rounded-lg border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
-              One small step first: {stageGates[stage]}
+          {stageLocked && stageGateMessage ? (
+            <p className="mb-4 rounded-[8px] border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
+              One small step first: {stageGateMessage}
             </p>
           ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
@@ -2063,7 +2036,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             </Button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            The interactions are invitations, not gates. Continue whenever you are ready.
+            Each practice chapter asks for one meaningful action before continuing. Private writing
+            and reflection remain optional.
           </p>
         </footer>
       ) : null}

@@ -79,7 +79,7 @@ test("Day 12 adopts Day 11's editorial hierarchy with softly squared controls", 
   assert.doesNotMatch(experience, /rounded-full/);
 });
 
-test("Day 12 turns the curriculum activities into low-pressure user input", () => {
+test("Day 12 gates every practice chapter while keeping personal reflection optional", () => {
   assert.match(experience, /Pause/);
   assert.match(experience, /Understand/);
   assert.match(experience, /Choose/);
@@ -91,8 +91,16 @@ test("Day 12 turns the curriculum activities into low-pressure user input", () =
   assert.match(experience, /Your Plan B/);
   assert.match(experience, /scriptSituation/);
   assert.match(experience, /Run the solver/);
-  assert.match(experience, /The interactions are invitations, not gates/);
-  assert.doesNotMatch(experience, /function canContinue|stageRequirement/);
+  assert.match(experience, /const dayTwelveStageGates/);
+  for (let stage = 0; stage <= 8; stage += 1) {
+    assert.match(experience, new RegExp(`\\n  ${stage}: "`));
+  }
+  assert.match(experience, /solverStepsSeen\.size === solverSteps\.length/);
+  assert.match(experience, /<PackSickDayPlan onReady=\{markSickDayPlanReady\}/);
+  assert.match(experience, /planChoicesMade\.size === 2/);
+  assert.match(experience, /canNavigateToLessonStage/);
+  assert.match(experience, /disabled=\{isPending \|\| stageLocked\}/);
+  assert.match(experience, /Personal\s+reflections and writing remain optional/);
   assert.doesNotMatch(experience, /openedSolverSteps|lifeToolChoices|sickPriorities/);
 });
 

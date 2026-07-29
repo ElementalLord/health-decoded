@@ -1,104 +1,197 @@
 "use client";
 
+import {
+  ArrowRight,
+  BookOpenText,
+  CalendarDays,
+  CheckCircle2,
+  LockKeyhole,
+  NotebookPen,
+  Pill,
+  Settings,
+  Stethoscope,
+  UserRound,
+} from "lucide-react";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
-import { PageHeader } from "@/components/shared/page-header";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { logoutAction } from "@/features/auth/actions/auth.actions";
 import {
   updateDisplayNameAction,
   type ProfileActionState,
 } from "@/features/profile/actions/profile-settings.actions";
+import styles from "@/features/profile/components/profile-content.module.css";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
 import { cn } from "@/lib/utils";
 
 const initialState: ProfileActionState = { status: "idle", message: "" };
+const PROFILE_CONFETTI_KEY = "health-decoded:profile-confetti-date";
 
-type ProfileJourneyStats = {
-  completedLessons: number;
-  currentDay: number;
-  totalConfidenceXp: number;
-};
+function getInitials(displayName: string) {
+  const parts = displayName.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "HD";
+  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase();
+  return `${parts[0]![0]}${parts.at(-1)![0]}`.toUpperCase();
+}
+
+function formatDate(value: string, options?: Intl.DateTimeFormatOptions) {
+  return new Intl.DateTimeFormat(
+    undefined,
+    options ?? {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    },
+  ).format(new Date(value));
+}
+
+function localDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function DailyProfileConfetti({ reducedMotion }: { reducedMotion: boolean }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const today = localDateKey(new Date());
+
+    try {
+      if (window.localStorage.getItem(PROFILE_CONFETTI_KEY) === today) return;
+      window.localStorage.setItem(PROFILE_CONFETTI_KEY, today);
+    } catch {
+      // When browser storage is unavailable, avoid replaying during this mounted visit.
+    }
+
+    if (reducedMotion) return;
+    setVisible(true);
+    const timer = window.setTimeout(() => setVisible(false), 2200);
+    return () => window.clearTimeout(timer);
+  }, [reducedMotion]);
+
+  if (!visible) return null;
+
+  return (
+    <div aria-hidden="true" className={styles.confettiBurst}>
+      {Array.from({ length: 18 }, (_, index) => (
+        <span key={index} />
+      ))}
+    </div>
+  );
+}
+
+function ProfileOrbitScene({ initials }: { initials: string }) {
+  return (
+    <div
+      aria-label="Your profile at the center of notes, settings, lessons, medicine, care, and your calendar"
+      className={styles.orbitScene}
+      role="img"
+    >
+      <span aria-hidden="true" className={`${styles.orbitRing} ${styles.orbitRingInner}`} />
+      <span aria-hidden="true" className={`${styles.orbitRing} ${styles.orbitRingOuter}`} />
+      <span aria-hidden="true" className={styles.orbitAvatar}>
+        {initials}
+      </span>
+
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathOne}`}>
+        <span className={styles.orbitItem}>
+          <NotebookPen />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathTwo}`}>
+        <span className={styles.orbitItem}>
+          <Settings />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathThree}`}>
+        <span className={styles.orbitItem}>
+          <Pill />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathFour}`}>
+        <span className={styles.orbitItem}>
+          <BookOpenText />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathFive}`}>
+        <span className={styles.orbitItem}>
+          <Stethoscope />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathSix}`}>
+        <span className={`${styles.orbitItem} ${styles.orbitItemTiny}`}>
+          <CalendarDays />
+        </span>
+      </span>
+    </div>
+  );
+}
 
 export function ProfileContent({
   data,
-  journeyStats,
+  memberSince,
 }: {
   data: ProfileSettings;
-  journeyStats: ProfileJourneyStats | null;
+  memberSince: string;
 }) {
   const [state, action, pending] = useActionState(updateDisplayNameAction, initialState);
   const hasError = state.status === "error";
+  const displayName = data.displayName.trim() || "you";
+  const firstName = displayName.split(/\s+/)[0] ?? "you";
+  const initials = getInitials(data.displayName);
 
   return (
-    <section className="mx-auto max-w-5xl space-y-14 py-6 sm:py-10">
-      <div className="motion-reveal grid gap-8 border-b border-border pb-9 sm:grid-cols-[1fr_auto] sm:items-end">
-        <PageHeader
-          description="Your account details and privacy at a glance."
-          eyebrow="Your private space"
-          title="Your profile."
-        />
-        <div
-          aria-hidden="true"
-          className="flex size-24 items-center justify-center rounded-full border border-accent-warm/35 bg-[#f2e3da] font-serif-display text-4xl text-accent-warm"
-        >
-          {(data.displayName.trim()[0] ?? "H").toUpperCase()}
+    <section className={styles.profilePage}>
+      <DailyProfileConfetti reducedMotion={data.reducedMotion} />
+      <section aria-labelledby="profile-title" className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <div aria-label={`${displayName}'s initials`} className={styles.avatar} role="img">
+            {initials}
+          </div>
+          <p className="editorial-eyebrow">Your private space</p>
+          <h1 className={styles.heroTitle} id="profile-title">
+            A space that belongs to {firstName}.
+          </h1>
+          <p className={styles.heroDescription}>
+            The lessons live in your journey. This is where the details that make Health Decoded
+            yours stay close—your name, your account details, and the way you prefer to learn.
+          </p>
+          <nav aria-label="Profile actions" className={styles.heroActions}>
+            <Link className={styles.quietAction} href="/settings">
+              Open settings
+            </Link>
+          </nav>
         </div>
-      </div>
-
-      {journeyStats ? (
-        <section
-          aria-label="Your journey at a glance"
-          className="motion-cascade motion-reveal grid divide-y divide-border border-y border-border py-3 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:py-10"
-        >
-          {[
-            [String(journeyStats.currentDay).padStart(2, "0"), "Day in"],
-            [String(journeyStats.completedLessons).padStart(2, "0"), "Lessons done"],
-            [String(journeyStats.totalConfidenceXp), "Confidence XP"],
-          ].map(([value, label], index) => (
-            <div className="min-w-0 px-1 py-5 sm:px-8 sm:py-0 sm:first:pl-0" key={label}>
-              <p
-                className={cn(
-                  "font-serif-display text-5xl font-light leading-none sm:text-7xl",
-                  index === 1
-                    ? "text-success"
-                    : index === 2
-                      ? "text-accent-warm"
-                      : "text-foreground",
-                )}
-              >
-                {value}
-              </p>
-              <p className="mt-4 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground sm:text-sm">
-                {label}
-              </p>
-            </div>
-          ))}
-        </section>
-      ) : null}
+        <ProfileOrbitScene initials={initials} />
+      </section>
 
       <section
-        aria-labelledby="profile-information"
-        className="motion-reveal grid gap-8 md:grid-cols-[0.65fr_1.35fr] md:gap-14"
+        aria-labelledby="profile-details-title"
+        className={styles.accountSection}
+        id="profile-details"
       >
-        <div className="space-y-1.5">
-          <h2
-            className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
-            id="profile-information"
-          >
-            Your information
-          </h2>
-          <p className="text-pretty text-sm leading-6 text-muted-foreground">
-            Your email is verified through your account and cannot be changed here.
+        <div className={styles.accountIntro}>
+          <p className="editorial-eyebrow">Account and privacy</p>
+          <h2 id="profile-details-title">The practical details, kept in their place.</h2>
+          <p>
+            Change the name Health Decoded uses for you here. Reading comfort and motion choices
+            remain in Settings, where they can be changed without cluttering this page.
           </p>
+          <Link className={styles.settingsLink} href="/settings">
+            <Settings aria-hidden="true" />
+            Review reading and motion settings
+            <ArrowRight aria-hidden="true" />
+          </Link>
         </div>
 
-        <div className="space-y-8">
-          <form action={action} className="max-w-xl space-y-4">
-            <label className="grid gap-2 text-sm font-medium" htmlFor="profile-display-name">
-              Display name
+        <div className={styles.accountPanel}>
+          <form action={action} className={styles.nameForm}>
+            <label htmlFor="profile-display-name">The name you use here</label>
+            <div className={styles.nameFields}>
               <Input
                 aria-describedby={state.message ? "profile-form-message" : undefined}
                 aria-invalid={hasError || undefined}
@@ -107,80 +200,58 @@ export function ProfileContent({
                 name="displayName"
                 required
               />
-            </label>
-            <Button disabled={pending} fullWidth={false}>
-              {pending ? "Saving…" : "Save name"}
-            </Button>
+              <Button disabled={pending} fullWidth={false}>
+                {pending ? "Saving…" : "Save name"}
+              </Button>
+            </div>
             {state.message ? (
               <p
                 aria-live="polite"
-                className={cn(
-                  "motion-status text-sm",
-                  hasError ? "text-destructive" : "text-success",
-                )}
+                className={cn(styles.saveStatus, hasError ? "text-destructive" : "text-success")}
                 id="profile-form-message"
                 role={hasError ? "alert" : "status"}
               >
+                {!hasError ? <CheckCircle2 aria-hidden="true" /> : null}
                 {state.message}
               </p>
             ) : null}
           </form>
 
-          <dl className="max-w-xl divide-y divide-border border-y border-border">
-            <div className="grid gap-1 py-3.5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-4">
-              <dt className="text-sm text-muted-foreground">Email</dt>
-              <dd className="break-words">{data.email}</dd>
+          <dl className={styles.accountFacts}>
+            <div>
+              <dt>
+                <UserRound aria-hidden="true" />
+                Email
+              </dt>
+              <dd>{data.email}</dd>
             </div>
-            <div className="grid gap-1 py-3.5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-4">
-              <dt className="text-sm text-muted-foreground">Onboarding</dt>
-              <dd>{data.onboardingComplete ? "Complete" : "Not complete"}</dd>
+            <div>
+              <dt>
+                <CalendarDays aria-hidden="true" />
+                Member since
+              </dt>
+              <dd>{formatDate(memberSince)}</dd>
+            </div>
+            <div>
+              <dt>
+                <LockKeyhole aria-hidden="true" />
+                Privacy
+              </dt>
+              <dd>
+                Your profile and educational progress are private. AI conversations clear when you
+                leave the page and are not added here.
+              </dd>
             </div>
           </dl>
-        </div>
-      </section>
 
-      <section
-        aria-labelledby="profile-privacy"
-        className="motion-reveal space-y-4 border-t border-border pt-10"
-      >
-        <h2
-          className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
-          id="profile-privacy"
-        >
-          Privacy
-        </h2>
-        <p className="max-w-2xl text-pretty leading-7 text-muted-foreground">
-          Health Decoded stores your profile and private educational progress. AI conversations
-          clear when you leave the page and are not saved to your profile. Your information is not
-          public and is not shared with caregivers.
-        </p>
-      </section>
-
-      <section
-        aria-labelledby="account-actions"
-        className="motion-reveal space-y-6 border-t border-border pt-10"
-      >
-        <h2
-          className="font-serif-display text-[length:var(--text-section-title)] font-medium tracking-tight"
-          id="account-actions"
-        >
-          Account
-        </h2>
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Link
-            className={cn(
-              buttonVariants({ fullWidth: false, variant: "secondary" }),
-              "min-h-12 px-6",
-            )}
-            href="/settings"
-          >
-            Open settings
-          </Link>
-          <form action={logoutAction}>
-            <Button fullWidth={false} variant="secondary">
-              Sign out
-            </Button>
-          </form>
+          <div className={styles.signOutRow}>
+            <p>Finished for now?</p>
+            <form action={logoutAction}>
+              <Button fullWidth={false} variant="secondary">
+                Sign out
+              </Button>
+            </form>
+          </div>
         </div>
       </section>
     </section>
