@@ -12,6 +12,7 @@ import {
   createStoryReviewProgress,
   getStoryStorageKey,
   parseStoryProgress,
+  resolveStoryEntryProgress,
 } from "@/features/stories/lib/story-progress";
 import type {
   InteractiveStory,
@@ -222,8 +223,13 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   useEffect(() => {
     try {
       const saved = parseStoryProgress(window.localStorage.getItem(storageKey));
-      const shouldRestart = new URLSearchParams(window.location.search).get("restart") === "1";
-      const nextProgress = shouldRestart ? createStoryReviewProgress(saved) : saved;
+      const search = new URLSearchParams(window.location.search);
+      const shouldRestart = search.get("restart") === "1";
+      const shouldBegin = search.get("begin") === "1";
+      const nextProgress = resolveStoryEntryProgress(saved, {
+        begin: shouldBegin,
+        restart: shouldRestart,
+      });
       setProgress(nextProgress);
       setReflectionDraft(nextProgress.privateReflection ?? "");
     } finally {
@@ -256,12 +262,18 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
     setProgress((current) => updater(current));
   }, []);
 
-  const keepPlayerInView = () => {
+  const keepPlayerInView = useCallback(() => {
     playerRef.current?.scrollIntoView({
       behavior: prefersReducedMotion() ? "auto" : "smooth",
       block: "start",
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || progress.stage === "intro") return;
+    const frame = window.requestAnimationFrame(keepPlayerInView);
+    return () => window.cancelAnimationFrame(frame);
+  }, [hydrated, keepPlayerInView, progress.stage]);
 
   const runSceneTransition = (nextScene: number, nextDirection: Direction) => {
     const reducedMotion = prefersReducedMotion();
@@ -387,8 +399,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   };
 
   const beginStory = () => {
-    updateProgress((current) => ({ ...current, stage: "story" }));
-    requestAnimationFrame(keepPlayerInView);
+    updateProgress((current) => ({ ...current, currentScene: 0, stage: "story" }));
   };
 
   return (
@@ -398,15 +409,16 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
         Back to Stories
       </Link>
 
-      <StoryOpening
-        onBegin={beginStory}
-        onReadAgain={reviewStory}
-        onResume={keepPlayerInView}
-        stage={progress.stage}
-        story={story}
-      />
+      {!hydrated ? (
+        <div aria-live="polite" className={styles.storyLoading} role="status">
+          <span />
+          Preparing your story…
+        </div>
+      ) : progress.stage === "intro" ? (
+        <StoryOpening onBegin={beginStory} story={story} />
+      ) : null}
 
-      {progress.stage !== "intro" ? (
+      {hydrated && progress.stage !== "intro" ? (
         <section
           aria-label="Interactive story player"
           className={`${styles.player} ${styles.storyPlayerRevealed} ${isFoodFamilyStory ? styles.foodFamilyPlayer : ""} ${isMedicationStory ? styles.medicationPlayer : ""}`}

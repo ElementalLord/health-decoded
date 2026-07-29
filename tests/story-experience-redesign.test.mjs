@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { ashaRiceOnTheTableStory } from "../features/stories/content/asha-rice-on-the-table.ts";
+import { devonNumberScreenStory } from "../features/stories/content/devon-number-screen.ts";
 import { marcusParkingLotStory } from "../features/stories/content/marcus-parking-lot.ts";
 import { noraPrescriptionBagStory } from "../features/stories/content/nora-prescription-bag.ts";
 
@@ -12,15 +13,35 @@ const player = readFileSync("features/stories/components/interactive-story-playe
 const landingStyles = readFileSync("features/stories/components/story-landing.module.css", "utf8");
 const playerStyles = readFileSync("features/stories/components/story-player.module.css", "utf8");
 
-const stories = [marcusParkingLotStory, ashaRiceOnTheTableStory, noraPrescriptionBagStory];
+const stories = [
+  marcusParkingLotStory,
+  ashaRiceOnTheTableStory,
+  noraPrescriptionBagStory,
+  devonNumberScreenStory,
+];
 
-test("the landing hierarchy has one feature and two deliberately varied rows", () => {
+test("the landing hierarchy has one feature and deliberately varied editorial rows", () => {
   assert.match(landing, /variant="featured"/);
   assert.match(landing, /variant="row"/);
   assert.match(landing, /variant="row-reverse"/);
   assert.match(landing, /Recommended place to begin/);
   assert.match(landingStyles, /\.featured[\s\S]*grid-template-columns/);
   assert.match(landingStyles, /\.row-reverse \.cover[\s\S]*grid-column: 2/);
+});
+
+test("story preview images stay bounded beside copy and can never cover the action", () => {
+  assert.match(landingStyles, /\.preview \{[\s\S]*contain: paint/);
+  assert.match(landingStyles, /\.preview \{[\s\S]*overflow: clip/);
+  assert.match(landingStyles, /\.featured \{[\s\S]*minmax\(16rem, 0\.78fr\)/);
+  assert.match(
+    landingStyles,
+    /\.row,[\s\S]*grid-template-columns: minmax\(14rem, 0\.68fr\) minmax\(0, 1\.32fr\)/,
+  );
+  assert.match(landingStyles, /\.featured \.cover \{[\s\S]*height: clamp\(18rem, 29vw, 27rem\)/);
+  assert.match(landingStyles, /\.row \.cover,[\s\S]*height: clamp\(17rem, 27vw, 25rem\)/);
+  assert.match(landingStyles, /\.cover img \{[\s\S]*max-width: 100%/);
+  assert.match(landingStyles, /\.previewFooter \{[\s\S]*flex-wrap: wrap/);
+  assert.match(landingStyles, /\.storyAction \{[\s\S]*z-index: 3/);
 });
 
 test("every dedicated story begins with the same complete cover sequence", () => {
@@ -33,7 +54,7 @@ test("every dedicated story begins with the same complete cover sequence", () =>
     "Resume Story",
     "Read Again",
   ]) {
-    assert.match(`${player}\n${opening}`, new RegExp(phrase));
+    assert.match(`${landing}\n${player}\n${opening}`, new RegExp(phrase));
   }
   assert.match(opening, /src=\{story\.imagePath\}/);
   assert.match(player, /progress\.stage !== "intro"/);
@@ -42,7 +63,7 @@ test("every dedicated story begins with the same complete cover sequence", () =>
 test("story metadata controls distinct themes, arcs, and scene rhythm", () => {
   assert.deepEqual(
     stories.map((story) => story.visualTheme),
-    ["quiet-dusk", "family-warmth", "hesitation"],
+    ["quiet-dusk", "family-warmth", "hesitation", "urgent-calm"],
   );
   for (const story of stories) {
     assert.ok(story.emotionalArc);

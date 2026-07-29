@@ -10,6 +10,7 @@ import {
   getStoryPreviewStatus,
   NORA_STORY_STORAGE_KEY,
   parseStoryProgress,
+  resolveStoryEntryProgress,
 } from "../features/stories/lib/story-progress.ts";
 import { validateStoryInteractions } from "../features/stories/lib/validate-story-interactions.ts";
 
@@ -29,6 +30,14 @@ test("Story 3 appears under Starting medication with its state-aware preview", (
     assert.match(landing, new RegExp(action));
   }
   assert.doesNotMatch(landing, /quizScore/);
+});
+
+test("Story 3 Begin enters Scene 1 instead of leaving Nora on the repeated cover", () => {
+  const entered = resolveStoryEntryProgress(createInitialStoryProgress(), { begin: true });
+  assert.equal(entered.stage, "story");
+  assert.equal(entered.currentScene, 0);
+  assert.match(landing, /\?begin=1/);
+  assert.match(player, /resolveStoryEntryProgress/);
 });
 
 test("the single local Nora cover is optimized and appears in both required locations", async () => {
@@ -119,6 +128,9 @@ test("Scene 1 maps beliefs with keyboard-friendly category buttons", () => {
     /Buttons provide a keyboard-friendly alternative to dragging/,
   );
   assert.match(interactions, /aria-pressed=\{current === "fear"\}/);
+  assert.match(interactions, /The choices to revise are marked above/);
+  assert.match(interactions, /Move to \$\{/);
+  assert.match(interactions, /<X aria-hidden="true"/);
 });
 
 test("Scene 2 evaluates prescription-connected sources without dismissing community", () => {
@@ -147,6 +159,7 @@ test("Scene 4 builds four professional questions and supplies no replacement dos
   assert.equal(scene.interaction.purpose, "question-building");
   assert.equal(scene.interaction.options.length, 6);
   assert.match(interactions, /selected\.length < 4/);
+  assert.match(interactions, /Replace the highlighted choice and try again/);
   assert.match(scene.interaction.learningPoint, /should not be made independently/);
   assert.doesNotMatch(interactions, /take \d|milligram|mg\b|double the dose/i);
 });

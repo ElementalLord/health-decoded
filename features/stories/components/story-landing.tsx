@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { ashaRiceOnTheTableStory } from "@/features/stories/content/asha-rice-on-the-table";
+import { devonNumberScreenStory } from "@/features/stories/content/devon-number-screen";
 import { marcusParkingLotStory } from "@/features/stories/content/marcus-parking-lot";
 import { noraPrescriptionBagStory } from "@/features/stories/content/nora-prescription-bag";
 import {
@@ -24,7 +25,7 @@ const situations = [
   { label: "Just diagnosed", available: true, href: "#just-diagnosed-story" },
   { label: "Food and family", available: true, href: "#food-and-family-story" },
   { label: "Starting medication", available: true, href: "#starting-medication-story" },
-  { label: "A worrying reading", available: false },
+  { label: "A worrying reading", available: true, href: "#worrying-reading-story" },
   { label: "Support and boundaries", available: false },
 ] as const;
 
@@ -58,7 +59,8 @@ function StoryPreview({
 }) {
   const timeLabel = story.estimatedTimeLabel ?? "5 to 7 minutes";
   const lessonLabel = story.relatedLessonLabel ?? "Lesson 1";
-  const storyHref = `/stories/${story.slug}`;
+  const storyHref =
+    progress.status === "not-started" ? `/stories/${story.slug}?begin=1` : `/stories/${story.slug}`;
 
   return (
     <article className={`${styles.preview} ${styles[variant]}`} data-theme={story.visualTheme}>
@@ -66,8 +68,8 @@ function StoryPreview({
         <Image
           alt={story.imageAlt}
           height={900}
-          priority
-          sizes="(max-width: 76rem) 100vw, 1120px"
+          priority={variant === "featured"}
+          sizes="(max-width: 60rem) calc(100vw - 3rem), (max-width: 76rem) 36vw, 420px"
           src={story.imagePath}
           width={1600}
         />
@@ -118,6 +120,7 @@ export function StoryLanding() {
     [marcusParkingLotStory.slug]: { status: "not-started", scene: 1 },
     [ashaRiceOnTheTableStory.slug]: { status: "not-started", scene: 1 },
     [noraPrescriptionBagStory.slug]: { status: "not-started", scene: 1 },
+    [devonNumberScreenStory.slug]: { status: "not-started", scene: 1 },
   });
 
   useEffect(() => {
@@ -126,6 +129,7 @@ export function StoryLanding() {
         [marcusParkingLotStory.slug]: loadPreviewState(marcusParkingLotStory.slug),
         [ashaRiceOnTheTableStory.slug]: loadPreviewState(ashaRiceOnTheTableStory.slug),
         [noraPrescriptionBagStory.slug]: loadPreviewState(noraPrescriptionBagStory.slug),
+        [devonNumberScreenStory.slug]: loadPreviewState(devonNumberScreenStory.slug),
       });
     } catch {
       // All stories remain available even if browser storage is blocked.
@@ -204,6 +208,16 @@ export function StoryLanding() {
               progress={progressByStory[noraPrescriptionBagStory.slug]!}
               story={noraPrescriptionBagStory}
               variant="row-reverse"
+            />
+          </div>
+          <div id="worrying-reading-story">
+            <h3 className="sr-only" id="worrying-reading-heading">
+              A worrying reading
+            </h3>
+            <StoryPreview
+              progress={progressByStory[devonNumberScreenStory.slug]!}
+              story={devonNumberScreenStory}
+              variant="row"
             />
           </div>
         </div>

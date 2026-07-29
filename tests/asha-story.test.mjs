@@ -20,15 +20,15 @@ const playerStyles = readFileSync("features/stories/components/story-player.modu
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 const storyTypes = readFileSync("features/stories/types/interactive-story.ts", "utf8");
 
-test("Asha remains the second available situation after Story 3 is added", () => {
+test("Asha remains the second available situation after Story 4 is added", () => {
   assert.match(landing, /id="food-and-family-story"/);
   assert.match(landing, /story=\{ashaRiceOnTheTableStory\}/);
   assert.match(landing, /story=\{marcusParkingLotStory\}/);
   assert.match(landing, /These are illustrative, not biographical/);
-  assert.equal(landing.split("story={").length - 1, 3);
+  assert.equal(landing.split("story={").length - 1, 4);
   assert.equal(ashaRiceOnTheTableStory.topic, "Food and family");
   assert.match(landing, /id="starting-medication-story"/);
-  assert.doesNotMatch(landing, /worrying-reading|support-boundaries/);
+  assert.match(landing, /id="worrying-reading-story"/);
 });
 
 test("Asha’s preview preserves the requested editorial order and copy", () => {

@@ -27,7 +27,7 @@ test("the Stories page explains that its experiences are illustrative", () => {
   assert.doesNotMatch(landing, /testimonial|real patient|success story/i);
 });
 
-test("topic browsing lists five situations without fake story previews", () => {
+test("topic browsing lists five situations and only marks the unbuilt topic as planned", () => {
   for (const topic of [
     "Just diagnosed",
     "Food and family",
@@ -37,7 +37,7 @@ test("topic browsing lists five situations without fake story previews", () => {
   ]) {
     assert.match(landing, new RegExp(topic));
   }
-  assert.equal(landing.split("story={").length - 1, 3);
+  assert.equal(landing.split("story={").length - 1, 4);
   assert.match(landing, /<small>Planned<\/small>/);
 });
 
@@ -62,11 +62,15 @@ test("Marcus’s generated cover remains optimized and is reused without duplica
   assert.match(opening, /src=\{story\.imagePath\}/);
 });
 
-test("a story opens on its cover before an intentional begin or reread action", () => {
+test("a new story can begin directly from the landing without repeating its cover", () => {
   assert.match(player, /progress\.stage !== "intro"/);
   assert.match(opening, /Begin Story/);
-  assert.match(opening, /Resume Story/);
-  assert.match(opening, /Read Again/);
+  assert.match(landing, /Resume Story/);
+  assert.match(landing, /Read Again/);
+  assert.match(landing, /\?begin=1/);
+  assert.match(player, /resolveStoryEntryProgress/);
+  assert.match(player, /progress\.stage === "intro" \?/);
+  assert.match(player, /hydrated && progress\.stage !== "intro"/);
   assert.match(landing, /progress\.status === "completed"/);
   assert.doesNotMatch(landing, /\?restart=1/);
   assert.match(player, /createStoryReviewProgress/);

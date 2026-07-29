@@ -3,31 +3,21 @@
 import { ArrowRight, Clock3 } from "lucide-react";
 import Image from "next/image";
 
-import type { InteractiveStory, StoryStage } from "@/features/stories/types/interactive-story";
+import type { InteractiveStory } from "@/features/stories/types/interactive-story";
 
 import styles from "./story-player.module.css";
 
 type StoryOpeningProps = {
   onBegin: () => void;
-  onReadAgain: () => void;
-  onResume: () => void;
-  stage: StoryStage;
   story: InteractiveStory;
 };
 
-export function StoryOpening({ onBegin, onReadAgain, onResume, stage, story }: StoryOpeningProps) {
-  const isIntro = stage === "intro";
-  const isComplete = stage === "complete";
-  const actionLabel = isIntro ? "Begin Story" : isComplete ? "Read Again" : "Resume Story";
-  const action = isIntro ? onBegin : isComplete ? onReadAgain : onResume;
+export function StoryOpening({ onBegin, story }: StoryOpeningProps) {
   const timeLabel = story.estimatedTimeLabel ?? `${story.estimatedMinutes} minutes`;
   const lessonLabel = story.relatedLessonLabel ?? story.relatedLessonId.replace("-", " ");
 
   return (
-    <header
-      className={`${styles.storyOpening} ${isIntro ? styles.storyOpeningExpanded : styles.storyOpeningCompact}`}
-      data-theme={story.visualTheme}
-    >
+    <header className={styles.storyOpening} data-theme={story.visualTheme}>
       <div className={styles.openingCover}>
         <Image
           alt={story.imageAlt}
@@ -62,9 +52,15 @@ export function StoryOpening({ onBegin, onReadAgain, onResume, stage, story }: S
             <dd>{lessonLabel}</dd>
           </div>
         </dl>
+        {story.contentWarning ? (
+          <p className={styles.openingContextNote}>
+            <strong>Quiet context note</strong>
+            {story.contentWarning}
+          </p>
+        ) : null}
         <p className={styles.openingDisclosure}>{story.disclosure}</p>
-        <button className={styles.openingAction} onClick={action} type="button">
-          {actionLabel}
+        <button className={styles.openingAction} onClick={onBegin} type="button">
+          Begin Story
           <ArrowRight aria-hidden="true" size={18} />
         </button>
       </div>

@@ -18,7 +18,13 @@ export type StoryInteractionType =
   | "perspective-switch"
   | "question-builder"
   | "routine-anchor"
-  | "care-toolbox";
+  | "care-toolbox"
+  | "reading-boundary"
+  | "thought-chain"
+  | "measurement-context"
+  | "urgency-context"
+  | "communication-builder"
+  | "pattern-comparison";
 
 export type FoodComponent =
   "rice" | "dal" | "vegetables" | "protein" | "flatbread" | "yogurt" | "dessert" | "water";
@@ -38,7 +44,13 @@ export type StoryInteractionPurpose =
   | "rewrite-response"
   | "question-building"
   | "routine-planning"
-  | "concept-integration";
+  | "concept-integration"
+  | "reading-boundary"
+  | "thought-chain"
+  | "measurement-context"
+  | "urgency-context"
+  | "communication-builder"
+  | "pattern-comparison";
 
 export type StoryInteractionEngagement =
   "optional-exploration" | "meaningful-decision" | "knowledge-application";
@@ -50,9 +62,12 @@ export type StorySceneLayout =
   | "decision-focus"
   | "perspective-split"
   | "quiet-pause"
-  | "closing-wide";
+  | "closing-wide"
+  | "thought-chain"
+  | "process-path"
+  | "communication-builder";
 
-export type StoryVisualTheme = "quiet-dusk" | "family-warmth" | "hesitation";
+export type StoryVisualTheme = "quiet-dusk" | "family-warmth" | "hesitation" | "urgent-calm";
 
 export type StoryInteractionOption = {
   id: string;
