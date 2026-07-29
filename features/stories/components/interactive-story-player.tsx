@@ -9,7 +9,7 @@ import { StoryInteraction } from "@/features/stories/components/story-interactio
 import {
   createInitialStoryProgress,
   getStoryPreviewStatus,
-  MARCUS_STORY_STORAGE_KEY,
+  getStoryStorageKey,
   parseStoryProgress,
 } from "@/features/stories/lib/story-progress";
 import type {
@@ -176,25 +176,32 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   const playerRef = useRef<HTMLElement>(null);
   const stageHeadingRef = useRef<HTMLHeadingElement>(null);
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const storageKey = getStoryStorageKey(story.slug);
+  const storyPredictionChoices = story.predictionChoices ?? predictionChoices;
+  const estimatedTimeLabel = story.estimatedTimeLabel ?? "5 to 7 minutes";
+  const relatedLessonLabel = story.relatedLessonLabel ?? "Lesson 1";
+  const relatedLessonTitle = story.relatedLessonTitle ?? "Lesson 1, The First Five Minutes";
+  const relatedLessonHref = story.relatedLessonHref ?? "/lessons/1";
+  const isFoodFamilyStory = story.id === "asha-rice-on-the-table";
 
   useEffect(() => {
     try {
-      const saved = parseStoryProgress(window.localStorage.getItem(MARCUS_STORY_STORAGE_KEY));
+      const saved = parseStoryProgress(window.localStorage.getItem(storageKey));
       setProgress(saved);
       setReflectionDraft(saved.privateReflection ?? "");
     } finally {
       setHydrated(true);
     }
-  }, []);
+  }, [storageKey]);
 
   useEffect(() => {
     if (!hydrated) return;
     try {
-      window.localStorage.setItem(MARCUS_STORY_STORAGE_KEY, JSON.stringify(progress));
+      window.localStorage.setItem(storageKey, JSON.stringify(progress));
     } catch {
       // The story remains fully usable when browser storage is unavailable.
     }
-  }, [hydrated, progress]);
+  }, [hydrated, progress, storageKey]);
 
   useEffect(
     () => () => {
@@ -363,8 +370,8 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
           <h1>{story.title}</h1>
           <div className={styles.heroMeta}>
             <span>{story.characterName}</span>
-            <span>5 to 7 minutes</span>
-            <span>Related lesson: Lesson 1</span>
+            <span>{estimatedTimeLabel}</span>
+            <span>Related lesson: {relatedLessonLabel}</span>
           </div>
           <p className={styles.disclosure}>{story.disclosure}</p>
           {story.contentWarning ? (
@@ -385,16 +392,20 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
         </div>
       </header>
 
-      <section aria-label="Interactive story player" className={styles.player} ref={playerRef}>
+      <section
+        aria-label="Interactive story player"
+        className={`${styles.player} ${isFoodFamilyStory ? styles.foodFamilyPlayer : ""}`}
+        ref={playerRef}
+      >
         {progress.stage === "intro" ? (
           <div className={styles.playerIntroduction}>
-            <p>First evening</p>
+            <p>{story.introEyebrow ?? "First evening"}</p>
             <h2 ref={stageHeadingRef} tabIndex={-1}>
-              Begin where Marcus’s appointment ended.
+              {story.introHeading ?? "Begin where Marcus’s appointment ended."}
             </h2>
             <p>
-              Six short scenes follow one evening from shock toward a manageable next step. The
-              story moves only when you choose Continue, and the small interactions are optional.
+              {story.introDescription ??
+                "Six short scenes follow one evening from shock toward a manageable next step. The story moves only when you choose Continue, and the small interactions are optional."}
             </p>
             <button className={styles.continueButton} onClick={beginOrResume} type="button">
               Begin Scene 1
@@ -446,11 +457,11 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
             </h2>
             <fieldset className={styles.answerChoices}>
               <legend className="sr-only">Choose one prediction</legend>
-              {predictionChoices.map((choice) => (
+              {storyPredictionChoices.map((choice) => (
                 <label key={choice.id}>
                   <input
                     checked={progress.prediction === choice.id}
-                    name="story-prediction"
+                    name={`${story.slug}-prediction`}
                     onChange={() =>
                       updateProgress((current) => ({ ...current, prediction: choice.id }))
                     }
@@ -558,7 +569,8 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
             </h2>
             <p>
               {progress.keyIdeaUnderstood
-                ? "You identified the central idea: a manageable next step can make room for action without minimizing the diagnosis."
+                ? (story.keyIdeaUnderstoodMessage ??
+                  "You identified the central idea: a manageable next step can make room for action without minimizing the diagnosis.")
                 : "A few ideas may be worth reviewing."}
             </p>
             {!progress.keyIdeaUnderstood ? (
@@ -596,9 +608,11 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
 
         {progress.stage === "lesson" ? (
           <section className={styles.lessonStage}>
-            <p className={styles.stageEyebrow}>What Marcus’s experience can teach us</p>
+            <p className={styles.stageEyebrow}>
+              {story.lessonEyebrow ?? "What Marcus’s experience can teach us"}
+            </p>
             <h2 ref={stageHeadingRef} tabIndex={-1}>
-              Progress can be quieter than feeling fully prepared.
+              {story.lessonHeading ?? "Progress can be quieter than feeling fully prepared."}
             </h2>
             <div>
               {story.interpretation.map((paragraph) => (
@@ -626,6 +640,11 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
             <h2 ref={stageHeadingRef} tabIndex={-1}>
               {story.privateReflectionPrompt}
             </h2>
+            {story.privateReflectionSupportPrompt ? (
+              <p className={styles.reflectionSupportPrompt}>
+                {story.privateReflectionSupportPrompt}
+              </p>
+            ) : null}
             <label htmlFor="story-private-reflection">
               Your private note
               <textarea
@@ -668,11 +687,11 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
             </div>
             <p className={styles.stageEyebrow}>Story complete</p>
             <h2 ref={stageHeadingRef} tabIndex={-1}>
-              One next step made room to move.
+              {story.completionHeading ?? "One next step made room to move."}
             </h2>
             <p>
-              You followed Marcus through the first evening after his diagnosis and saw how one
-              manageable next step made an overwhelming moment easier to face.
+              {story.completionMessage ??
+                "You followed Marcus through the first evening after his diagnosis and saw how one manageable next step made an overwhelming moment easier to face."}
             </p>
             <dl className={styles.completionFacts}>
               <div>
@@ -685,7 +704,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
               </div>
               <div>
                 <dt>Related lesson</dt>
-                <dd>Lesson 1, The First Five Minutes</dd>
+                <dd>{relatedLessonTitle}</dd>
               </div>
             </dl>
             <div className={styles.completionActions}>
@@ -696,7 +715,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
                 <RotateCcw aria-hidden="true" size={17} />
                 Review This Story
               </button>
-              <Link className={styles.lessonLink} href="/lessons/1">
+              <Link className={styles.lessonLink} href={relatedLessonHref}>
                 Go to Related Lesson
                 <ArrowRight aria-hidden="true" size={17} />
               </Link>

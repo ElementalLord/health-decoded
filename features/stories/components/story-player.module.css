@@ -821,6 +821,714 @@
   font-size: 0.8rem;
 }
 
+/* Food-and-family story interactions */
+.foodFamilyPlayer .sceneSurface {
+  grid-template-columns: minmax(0, 52fr) minmax(22rem, 48fr);
+}
+
+.foodFamilyPlayer .interaction {
+  background: #f0f1e9;
+}
+
+.foodFamilyPlayer h3,
+.familyDialogue legend,
+.foodChoicePath legend,
+.supportAgreement legend {
+  color: #355b50;
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 560;
+  line-height: 1.35;
+}
+
+.interactionKicker {
+  color: #a85f48;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.groceryShelf {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1.25rem;
+}
+
+.groceryShelf button,
+.foodTray button {
+  align-items: center;
+  background: #fffaf1;
+  border: 1px solid #d5c7b7;
+  border-radius: 6px;
+  color: #655b53;
+  display: flex;
+  font-size: 0.76rem;
+  font-weight: 730;
+  gap: 0.6rem;
+  min-height: 48px;
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+}
+
+.groceryShelf button[aria-pressed="true"],
+.foodTray button[aria-pressed="true"] {
+  background: #e5ece2;
+  border-color: #718f7d;
+  box-shadow: inset 3px 0 #718f7d;
+  color: #31574c;
+}
+
+.foodMark {
+  background: #dca36b;
+  border: 1px solid rgb(72 75 63 / 0.18);
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 1.75rem;
+  position: relative;
+  width: 1.75rem;
+}
+
+.foodMark[data-food="rice"],
+.foodMark[data-food="water"] {
+  background: #f4ead7;
+}
+
+.foodMark[data-food="lentils"],
+.foodMark[data-food="dal"] {
+  background: #c98658;
+  border-radius: 50%;
+}
+
+.foodMark[data-food="yogurt"] {
+  background: linear-gradient(to bottom, #fffaf0 65%, #dce8df 65%);
+}
+
+.foodMark[data-food="fruit"],
+.foodMark[data-food="dessert"] {
+  background: #d98263;
+  border-radius: 50%;
+}
+
+.foodMark[data-food="flatbread"] {
+  background: #d7aa69;
+  border-radius: 50%;
+  height: 1.45rem;
+}
+
+.foodMark[data-food="vegetables"] {
+  background: #759a79;
+  border-radius: 50% 50% 45% 10%;
+  transform: rotate(-12deg);
+}
+
+.foodMark[data-food="chicken"],
+.foodMark[data-food="protein"] {
+  background: #bd765f;
+  border-radius: 55% 35% 50% 40%;
+}
+
+.foodMark[data-food="water"] {
+  border-color: #799e9e;
+  border-radius: 3px 3px 8px 8px;
+}
+
+.groceryPerspective {
+  background: #fffaf1;
+  border: 1px solid #d8cabb;
+  border-radius: 7px;
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  min-height: 9rem;
+  padding: 1rem;
+}
+
+.groceryPerspective p {
+  color: #685f58;
+  display: grid;
+  font-size: 0.78rem;
+  gap: 0.25rem;
+  line-height: 1.55;
+}
+
+.groceryPerspective strong {
+  color: #3c6659;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tableComparisonVisual {
+  align-items: stretch;
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: minmax(0, 1fr) 2px minmax(0, 1fr);
+}
+
+.tableComparisonVisual section {
+  background: #fffaf1;
+  border: 1px solid #d5c8b9;
+  border-radius: 7px;
+  min-width: 0;
+  padding: 0.9rem;
+}
+
+.tableComparisonVisual section > p {
+  color: #a45e48;
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tableComparisonVisual section > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+}
+
+.tableDish {
+  background: #edf0e8;
+  border-bottom: 2px solid #86a08f;
+  color: #52675e;
+  font-size: 0.65rem;
+  min-width: 3.4rem;
+  padding: 0.45rem 0.3rem;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.tableDivider {
+  background: #c8b6a5;
+  min-height: 12rem;
+  position: relative;
+  transition: transform 180ms var(--ease-standard);
+}
+
+.tableDivider::after {
+  background: #a9634c;
+  border-radius: 50%;
+  content: "";
+  height: 0.75rem;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.75rem;
+}
+
+.tableDivider[data-position="separately"] {
+  transform: translateX(0.45rem);
+}
+
+.dividerRange {
+  color: #53685f;
+  display: grid;
+  font-size: 0.72rem;
+  font-weight: 740;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.dividerRange input {
+  accent-color: #a9644e;
+  min-height: 44px;
+  width: 100%;
+}
+
+.segmentedChoice {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.segmentedChoice button {
+  border: 1px solid #aabdb1;
+  border-radius: 6px;
+  color: #4d665c;
+  font-size: 0.72rem;
+  font-weight: 740;
+  min-height: 48px;
+  padding: 0.55rem;
+}
+
+.segmentedChoice button[aria-pressed="true"] {
+  background: #406559;
+  border-color: #406559;
+  color: #fffaf1;
+}
+
+.comparisonDefinition {
+  border-left: 3px solid #c67a60;
+  color: #5f6f67;
+  margin-top: 0.9rem;
+  padding: 0.3rem 0 0.3rem 0.9rem;
+}
+
+.comparisonDefinition strong {
+  color: #375d52;
+  font-family: var(--font-serif);
+}
+
+.comparisonDefinition p,
+.plateComparison > small {
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.plateComparison > small {
+  color: #747a76;
+  display: block;
+  margin-top: 0.8rem;
+}
+
+.familyDialogue fieldset,
+.foodChoicePath fieldset,
+.supportAgreement fieldset {
+  border: 0;
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.familyDialogue legend,
+.foodChoicePath legend,
+.supportAgreement legend {
+  margin-bottom: 0.6rem;
+}
+
+.familyDialogue label,
+.foodChoicePath label,
+.supportAgreement label {
+  cursor: pointer;
+}
+
+.familyDialogue input,
+.foodChoicePath input,
+.supportAgreement input {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.familyDialogue label > span,
+.foodChoicePath label > span,
+.supportAgreement label > span {
+  align-items: center;
+  background: #fffaf1;
+  border: 1px solid #d2c4b5;
+  border-radius: 6px;
+  color: #625a54;
+  display: flex;
+  font-size: 0.77rem;
+  gap: 0.65rem;
+  line-height: 1.45;
+  min-height: 48px;
+  padding: 0.7rem 0.75rem;
+}
+
+.familyDialogue input:checked + span,
+.foodChoicePath input:checked + span,
+.supportAgreement input:checked + span {
+  background: #e4ece4;
+  border-color: #719080;
+  box-shadow: inset 3px 0 #719080;
+  color: #345a4f;
+}
+
+.familyDialogue input:focus-visible + span,
+.foodChoicePath input:focus-visible + span,
+.supportAgreement input:focus-visible + span {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.familyDialogue label small,
+.foodChoicePath label small {
+  align-items: center;
+  border-right: 1px solid #d5c9bc;
+  color: #a8614b;
+  display: flex;
+  flex: 0 0 1.65rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 1.8rem;
+}
+
+.dialogueFeedback,
+.foodChoiceConsequence,
+.supportFeedback,
+.mealFeedback {
+  background: #fffaf1;
+  border-left: 3px solid #789685;
+  color: #53685e;
+  line-height: 1.6;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.dialogueFeedback p,
+.foodChoiceConsequence p,
+.supportFeedback {
+  font-size: 0.8rem;
+}
+
+.dialogueFeedback small {
+  color: #776f69;
+  display: block;
+  line-height: 1.5;
+  margin-top: 0.6rem;
+}
+
+.optionalHint {
+  color: #77716c;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  margin-top: 0.8rem;
+}
+
+.mealBuilder {
+  min-width: 0;
+}
+
+.mealCanvas {
+  align-items: center;
+  background: #e4ece8;
+  border: 1px solid #c4d3ca;
+  border-radius: 7px;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: 1rem;
+  min-height: 13.5rem;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+.dinnerPlate {
+  align-content: center;
+  background: #fffdf6;
+  border: 5px double #c9a77d;
+  border-radius: 50%;
+  display: grid;
+  gap: 0.2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  height: 11.2rem;
+  justify-content: center;
+  overflow: hidden;
+  padding: 1.25rem;
+  width: 11.2rem;
+}
+
+.plateFood {
+  align-items: center;
+  background: #d5a165;
+  border: 1px solid rgb(79 70 55 / 0.14);
+  border-radius: 45% 55% 42% 58%;
+  color: #483f37;
+  display: flex;
+  font-size: 0.56rem;
+  font-weight: 760;
+  justify-content: center;
+  min-height: 2.2rem;
+  padding: 0.25rem;
+  text-align: center;
+}
+
+.plateFood[data-food="vegetables"] {
+  background: #88a482;
+}
+
+.plateFood[data-food="protein"] {
+  background: #c27b63;
+}
+
+.plateFood[data-food="dal"] {
+  background: #d68c55;
+}
+
+.plateFood[data-food="rice"],
+.plateFood[data-food="yogurt"] {
+  background: #efe5d1;
+}
+
+.plateFood[data-food="flatbread"] {
+  background: #d6aa70;
+}
+
+.plateFood[data-food="dessert"] {
+  background: #d99677;
+}
+
+.plateFood[data-portion="small"] {
+  margin: 0.32rem;
+}
+
+.plateFood[data-portion="large"] {
+  grid-column: span 2;
+  min-height: 2.8rem;
+}
+
+.emptyPlate {
+  align-self: center;
+  color: #8b8177;
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.waterGlass {
+  color: #4f7471;
+  display: grid;
+  font-size: 0.62rem;
+  font-weight: 760;
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.waterGlass span {
+  background: linear-gradient(to top, #93bdc0 45%, #fffaf1 45%);
+  border: 2px solid #719593;
+  border-radius: 3px 3px 8px 8px;
+  display: block;
+  height: 4.8rem;
+  width: 2.9rem;
+}
+
+.foodTray {
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 0.8rem;
+}
+
+.foodTray button {
+  font-size: 0.68rem;
+  min-height: 46px;
+}
+
+.foodTray .foodMark {
+  height: 1.35rem;
+  width: 1.35rem;
+}
+
+.portionControls {
+  border-block: 1px solid #ccbfae;
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-block: 1rem;
+}
+
+.portionControls > p {
+  color: #a05d49;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portionControls fieldset {
+  align-items: center;
+  border: 0;
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: minmax(5rem, 1fr) repeat(3, minmax(0, 1fr));
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.portionControls legend {
+  color: #4b6259;
+  float: left;
+  font-size: 0.7rem;
+  font-weight: 740;
+  padding-top: 0.65rem;
+}
+
+.portionControls label {
+  cursor: pointer;
+}
+
+.portionControls input {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.portionControls label span {
+  align-items: center;
+  border: 1px solid #cbbcac;
+  border-radius: 5px;
+  color: #6c625a;
+  display: flex;
+  font-size: 0.6rem;
+  justify-content: center;
+  min-height: 44px;
+  text-transform: capitalize;
+}
+
+.portionControls input:checked + span {
+  background: #3f6357;
+  border-color: #3f6357;
+  color: #fffaf1;
+}
+
+.portionControls input:focus-visible + span {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.mealFeedback {
+  font-size: 0.78rem;
+}
+
+.mealSafety {
+  color: #766f69;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  margin-top: 0.7rem;
+}
+
+.foodChoiceConsequence {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.foodChoiceConsequence > div {
+  border-top: 1px solid #d8cab9;
+  padding-top: 0.8rem;
+}
+
+.foodChoiceConsequence strong {
+  color: #3b6054;
+  display: block;
+  font-family: var(--font-serif);
+  margin-bottom: 0.35rem;
+}
+
+.sharedTableIllustration {
+  align-items: end;
+  display: grid;
+  grid-template-columns: 3rem 1fr 3rem;
+  margin: 0 auto 1.3rem;
+  max-width: 20rem;
+}
+
+.sharedTableIllustration > span {
+  background: #c9785e;
+  border-radius: 50% 50% 5px 5px;
+  height: 4.5rem;
+}
+
+.sharedTableIllustration > span[data-person="asha"] {
+  background: #6f927e;
+}
+
+.sharedTableIllustration > div {
+  align-items: center;
+  border-bottom: 7px solid #876f5c;
+  display: flex;
+  gap: 0.45rem;
+  justify-content: center;
+  min-height: 3rem;
+}
+
+.sharedTableIllustration > div span {
+  background: #d19a5e;
+  border: 2px solid #fffaf1;
+  border-radius: 50%;
+  height: 1.8rem;
+  width: 2.4rem;
+}
+
+.sharedTableIllustration > div span[data-dish="vegetables"] {
+  background: #7f9b76;
+}
+
+.sharedTableIllustration > div span[data-dish="protein"] {
+  background: #bd7661;
+}
+
+.supportAgreement label > span {
+  padding-left: 2.35rem;
+  position: relative;
+}
+
+.supportAgreement label > span::before {
+  align-items: center;
+  border: 1px solid #9dae9f;
+  content: "";
+  display: flex;
+  height: 1.1rem;
+  justify-content: center;
+  left: 0.75rem;
+  position: absolute;
+  width: 1.1rem;
+}
+
+.supportAgreement input:checked + span::before {
+  background: #527667;
+  box-shadow: inset 0 0 0 3px #e7eee8;
+}
+
+.submitSupport {
+  border: 1px solid #527467;
+  border-radius: 6px;
+  color: #3b6054;
+  font-size: 0.76rem;
+  font-weight: 760;
+  margin-top: 0.9rem;
+  min-height: 46px;
+  padding: 0.65rem 0.9rem;
+}
+
+.submitSupport:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.supportFeedback strong {
+  color: #385e52;
+  display: block;
+}
+
+.supportFeedback ul {
+  display: grid;
+  gap: 0.6rem;
+  list-style: none;
+  margin-top: 0.7rem;
+  padding: 0;
+}
+
+.supportFeedback li {
+  border-top: 1px solid #ddd1c2;
+  display: grid;
+  gap: 0.2rem;
+  padding-top: 0.55rem;
+}
+
+.supportFeedback li span {
+  color: #4c5f57;
+  font-weight: 730;
+}
+
+.supportFeedback li small {
+  color: #786f68;
+  line-height: 1.45;
+}
+
 /* Prediction, quiz, lesson, reflection, completion */
 .retrievalStage h2,
 .quizStage h2 {
@@ -1114,6 +1822,10 @@
     grid-template-columns: 1fr;
   }
 
+  .foodFamilyPlayer .sceneSurface {
+    grid-template-columns: 1fr;
+  }
+
   .narrative {
     border-bottom: 1px solid #ded5ca;
     border-right: 0;
@@ -1130,6 +1842,10 @@
   .completionFacts > div + div {
     border-left: 0;
     border-top: 1px solid #d6ccc0;
+  }
+
+  .mealCanvas {
+    min-height: 12rem;
   }
 }
 
@@ -1193,6 +1909,48 @@
     align-items: stretch;
     flex-direction: column;
   }
+
+  .groceryShelf,
+  .foodTray,
+  .segmentedChoice {
+    grid-template-columns: 1fr;
+  }
+
+  .tableComparisonVisual {
+    grid-template-columns: 1fr;
+  }
+
+  .tableDivider {
+    min-height: 2px;
+  }
+
+  .tableDivider::after {
+    left: 50%;
+    top: 50%;
+  }
+
+  .tableDivider[data-position="separately"] {
+    transform: translateY(0.3rem);
+  }
+
+  .portionControls fieldset {
+    grid-template-columns: 1fr;
+  }
+
+  .portionControls legend {
+    float: none;
+    padding: 0;
+  }
+
+  .mealCanvas {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .dinnerPlate {
+    height: 10.75rem;
+    width: 10.75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1205,5 +1963,12 @@
 
   .draftField {
     animation: none;
+  }
+
+  .tableDivider,
+  .groceryShelf button,
+  .foodTray button,
+  .plateFood {
+    transition: none;
   }
 }

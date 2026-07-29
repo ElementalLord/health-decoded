@@ -6,7 +6,16 @@ export type StoryInteractionType =
   | "fact-vs-story"
   | "phone-dialogue"
   | "meaningful-choice"
-  | "question-cards";
+  | "question-cards"
+  | "grocery-fear"
+  | "separate-plate"
+  | "family-dialogue"
+  | "meal-builder"
+  | "meaningful-food-choice"
+  | "shared-table";
+
+export type FoodComponent =
+  "rice" | "dal" | "vegetables" | "protein" | "flatbread" | "yogurt" | "dessert" | "water";
 
 export type StoryScene = {
   id: string;
@@ -59,6 +68,23 @@ export type InteractiveStory = {
   interpretation: string[];
   takeaway: string;
   privateReflectionPrompt: string;
+  estimatedTimeLabel?: string;
+  relatedLessonLabel?: string;
+  relatedLessonTitle?: string;
+  relatedLessonHref?: string;
+  introEyebrow?: string;
+  introHeading?: string;
+  introDescription?: string;
+  predictionChoices?: {
+    id: string;
+    label: string;
+  }[];
+  keyIdeaUnderstoodMessage?: string;
+  lessonEyebrow?: string;
+  lessonHeading?: string;
+  privateReflectionSupportPrompt?: string;
+  completionHeading?: string;
+  completionMessage?: string;
 };
 
 export type StoryStage =

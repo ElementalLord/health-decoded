@@ -34,25 +34,26 @@ test("topic browsing lists five situations without fake story previews", () => {
   ]) {
     assert.match(landing, new RegExp(topic));
   }
-  assert.equal(landing.split("<article").length - 1, 1);
+  assert.equal(landing.split("story={").length - 1, 2);
   assert.match(landing, /<small>Planned<\/small>/);
 });
 
-test("Marcus owns the only prototype preview and its cover comes first", () => {
+test("Marcus remains the Just diagnosed preview and its cover comes first", () => {
   assert.match(landing, /id="just-diagnosed-story"/);
   assert.match(landing, /Why this story matters/i);
-  assert.match(landing, /\/stories\/marcus-parking-lot/);
+  assert.match(landing, /story=\{marcusParkingLotStory\}/);
+  assert.match(landing, /href=\{`\/stories\/\$\{story\.slug\}`\}/);
   assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.previewBody"));
   assert.equal(marcusParkingLotStory.title, "Forty Minutes in the Parking Lot");
   assert.equal(marcusParkingLotStory.topic, "Just diagnosed");
 });
 
-test("the single generated cover is optimized, accessible, and reused", () => {
+test("Marcus’s generated cover remains optimized, accessible, and reused", () => {
   assert.equal(marcusParkingLotStory.imagePath, "/stories/marcus-parking-lot-cover.webp");
   assert.match(marcusParkingLotStory.imageAlt, /editorial illustration/i);
   assert.doesNotMatch(marcusParkingLotStory.imageAlt, /Photo of Marcus|real patient/i);
   assert.ok(statSync("public/stories/marcus-parking-lot-cover.webp").size > 80_000);
-  assert.equal(landing.split("marcusParkingLotStory.imagePath").length - 1, 1);
+  assert.equal(landing.split("story.imagePath").length - 1, 1);
   assert.equal(player.split("story.imagePath").length - 1, 1);
   assert.match(landing, /height=\{900\}/);
   assert.match(landing, /width=\{1600\}/);
@@ -63,7 +64,7 @@ test("the single generated cover is optimized, accessible, and reused", () => {
 test("the dedicated route selects the interactive story without changing Lesson 1", () => {
   assert.match(storyRoute, /marcusParkingLotStory\.slug/);
   assert.match(storyRoute, /<InteractiveStoryPlayer story=\{marcusParkingLotStory\} \/>/);
-  assert.match(player, /href="\/lessons\/1"/);
+  assert.match(player, /story\.relatedLessonHref \?\? "\/lessons\/1"/);
   assert.doesNotMatch(player, /completeLessonAction|saveLessonPositionAction/);
 });
 
@@ -115,11 +116,37 @@ test("every optional scene interaction is keyboard-operable and selected from st
   assert.match(interactions, /aria-expanded/);
 });
 
-test("Scene 5 contains the meaningful decision without adding it to quiz scoring", () => {
+test("Scene 5 teaches source selection without replaying Marcus's choice", () => {
   assert.equal(marcusParkingLotStory.scenes[4]?.interactionType, "meaningful-choice");
-  assert.match(interactions, /Marcus feels more overwhelmed with every tab he opens/);
-  assert.match(interactions, /Marcus chose to close the tabs and write down his questions/);
+  assert.match(interactions, /One question, one source/);
+  assert.match(interactions, /Match the source to the job/);
   assert.doesNotMatch(interactions, /quizScore|correctChoiceId/);
+});
+
+test("all six Marcus interactions add a skill instead of replaying the adjacent narrative", () => {
+  for (const newSkill of [
+    "Information sorter",
+    "A specific support request",
+    "What it cannot measure",
+    "Practice a support check-in",
+    "Match the source to the job",
+    "appointment kit",
+  ]) {
+    assert.match(interactions, new RegExp(newSkill, "i"));
+  }
+
+  for (const repeatedStoryLine of [
+    "This was the only word that stayed with him",
+    "Everything is fine.",
+    "I have diabetes.",
+    "What did the doctor tell you to do tonight?",
+    "Then come home. We’ll start there.",
+    "Marcus chose to close the tabs and write down his questions",
+    "What does this diagnosis mean for me?",
+    "Can I still live a normal life?",
+  ]) {
+    assert.doesNotMatch(interactions, new RegExp(repeatedStoryLine.replace(/[.?]/g, "\\$&")));
+  }
 });
 
 test("prediction appears after Scene 6 and never changes quiz score", () => {

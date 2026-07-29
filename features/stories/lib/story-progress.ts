@@ -1,6 +1,9 @@
 import type { StoryPreviewStatus, StoryProgress } from "@/features/stories/types/interactive-story";
 
-export const MARCUS_STORY_STORAGE_KEY = "health-decoded:story:marcus-parking-lot:progress";
+export const getStoryStorageKey = (slug: string) => `health-decoded:story:${slug}:progress`;
+
+export const MARCUS_STORY_STORAGE_KEY = getStoryStorageKey("marcus-parking-lot");
+export const ASHA_STORY_STORAGE_KEY = getStoryStorageKey("asha-rice-on-the-table");
 
 export const createInitialStoryProgress = (): StoryProgress => ({
   currentScene: 0,

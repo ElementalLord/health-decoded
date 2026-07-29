@@ -5,19 +5,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { ashaRiceOnTheTableStory } from "@/features/stories/content/asha-rice-on-the-table";
 import { marcusParkingLotStory } from "@/features/stories/content/marcus-parking-lot";
 import {
   getStoryPreviewStatus,
-  MARCUS_STORY_STORAGE_KEY,
+  getStoryStorageKey,
   parseStoryProgress,
 } from "@/features/stories/lib/story-progress";
-import type { StoryPreviewStatus } from "@/features/stories/types/interactive-story";
+import type {
+  InteractiveStory,
+  StoryPreviewStatus,
+} from "@/features/stories/types/interactive-story";
 
 import styles from "./story-landing.module.css";
 
 const situations = [
-  { label: "Just diagnosed", available: true },
-  { label: "Food and family", available: false },
+  { label: "Just diagnosed", available: true, href: "#just-diagnosed-story" },
+  { label: "Food and family", available: true, href: "#food-and-family-story" },
   { label: "Starting medication", available: false },
   { label: "A worrying reading", available: false },
   { label: "Support and boundaries", available: false },
@@ -29,17 +33,98 @@ const actionByStatus: Record<StoryPreviewStatus, string> = {
   completed: "Read Again",
 };
 
+type PreviewState = {
+  status: StoryPreviewStatus;
+  scene: number;
+};
+
+function loadPreviewState(slug: string): PreviewState {
+  const progress = parseStoryProgress(window.localStorage.getItem(getStoryStorageKey(slug)));
+  return {
+    status: getStoryPreviewStatus(progress),
+    scene: progress.currentScene + 1,
+  };
+}
+
+function StoryPreview({
+  compact,
+  progress,
+  story,
+}: {
+  compact?: boolean;
+  progress: PreviewState;
+  story: InteractiveStory;
+}) {
+  const timeLabel = story.estimatedTimeLabel ?? "5 to 7 minutes";
+  const lessonLabel = story.relatedLessonLabel ?? "Lesson 1";
+
+  return (
+    <article className={`${styles.preview} ${compact ? styles.compactPreview : ""}`}>
+      <div className={styles.cover}>
+        <Image
+          alt={story.imageAlt}
+          height={900}
+          priority
+          sizes="(max-width: 76rem) 100vw, 1120px"
+          src={story.imagePath}
+          width={1600}
+        />
+      </div>
+      <div className={styles.previewBody}>
+        <div className={styles.previewMain}>
+          <div className={styles.labels}>
+            <span>Illustrative story</span>
+            <span>{story.topic}</span>
+          </div>
+          <h3>{story.title}</h3>
+          <p className={styles.previewIntroduction}>{story.introduction}</p>
+        </div>
+        <aside className={styles.whyItMatters}>
+          <p>Why this story matters</p>
+          <span>{story.whyItMatters}</span>
+        </aside>
+        <footer className={styles.previewFooter}>
+          <div className={styles.metadata}>
+            <span>
+              <Clock3 aria-hidden="true" size={17} />
+              {timeLabel}
+            </span>
+            <span>Connected to {lessonLabel}</span>
+            {progress.status === "completed" ? (
+              <span className={styles.completedStatus}>
+                <Check aria-hidden="true" size={17} />
+                Completed
+              </span>
+            ) : progress.status === "in-progress" ? (
+              <span>Scene {progress.scene} of 6</span>
+            ) : (
+              <span>Not started</span>
+            )}
+          </div>
+          <Link className={styles.storyAction} href={`/stories/${story.slug}`}>
+            {actionByStatus[progress.status]}
+            <ArrowRight aria-hidden="true" size={18} />
+          </Link>
+        </footer>
+      </div>
+    </article>
+  );
+}
+
 export function StoryLanding() {
-  const [status, setStatus] = useState<StoryPreviewStatus>("not-started");
-  const [scene, setScene] = useState(1);
+  const [progressByStory, setProgressByStory] = useState<Record<string, PreviewState>>({
+    [marcusParkingLotStory.slug]: { status: "not-started", scene: 1 },
+    [ashaRiceOnTheTableStory.slug]: { status: "not-started", scene: 1 },
+  });
 
   useEffect(() => {
     try {
-      const progress = parseStoryProgress(window.localStorage.getItem(MARCUS_STORY_STORAGE_KEY));
-      setStatus(getStoryPreviewStatus(progress));
-      setScene(progress.currentScene + 1);
+      setProgressByStory({
+        [marcusParkingLotStory.slug]: loadPreviewState(marcusParkingLotStory.slug),
+        [ashaRiceOnTheTableStory.slug]: loadPreviewState(ashaRiceOnTheTableStory.slug),
+      });
     } catch {
-      setStatus("not-started");
+      // Both stories remain available even if browser storage is blocked.
     }
   }, []);
 
@@ -61,7 +146,7 @@ export function StoryLanding() {
           {situations.map((situation) => (
             <li key={situation.label}>
               {situation.available ? (
-                <a aria-current="page" href="#just-diagnosed-story">
+                <a href={situation.href}>
                   {situation.label}
                   <span>1 story</span>
                 </a>
@@ -76,64 +161,31 @@ export function StoryLanding() {
         </ul>
       </nav>
 
-      <section aria-labelledby="available-story-heading" id="just-diagnosed-story">
+      <section aria-labelledby="just-diagnosed-heading" id="just-diagnosed-story">
         <div className={styles.sectionHeading}>
           <p>Available now</p>
-          <h2 id="available-story-heading">Just diagnosed</h2>
+          <h2 id="just-diagnosed-heading">Just diagnosed</h2>
         </div>
+        <StoryPreview
+          progress={progressByStory[marcusParkingLotStory.slug]!}
+          story={marcusParkingLotStory}
+        />
+      </section>
 
-        <article className={styles.preview}>
-          <div className={styles.cover}>
-            <Image
-              alt={marcusParkingLotStory.imageAlt}
-              height={900}
-              priority
-              sizes="(max-width: 76rem) 100vw, 1120px"
-              src={marcusParkingLotStory.imagePath}
-              width={1600}
-            />
-          </div>
-          <div className={styles.previewBody}>
-            <div className={styles.previewMain}>
-              <div className={styles.labels}>
-                <span>Illustrative story</span>
-                <span>{marcusParkingLotStory.topic}</span>
-              </div>
-              <h3>{marcusParkingLotStory.title}</h3>
-              <p className={styles.previewIntroduction}>{marcusParkingLotStory.introduction}</p>
-            </div>
-            <aside className={styles.whyItMatters}>
-              <p>Why this story matters</p>
-              <span>{marcusParkingLotStory.whyItMatters}</span>
-            </aside>
-            <footer className={styles.previewFooter}>
-              <div className={styles.metadata}>
-                <span>
-                  <Clock3 aria-hidden="true" size={17} />5 to 7 minutes
-                </span>
-                <span>Connected to Lesson 1</span>
-                {status === "completed" ? (
-                  <span className={styles.completedStatus}>
-                    <Check aria-hidden="true" size={17} />
-                    Completed
-                  </span>
-                ) : status === "in-progress" ? (
-                  <span>Scene {scene} of 6</span>
-                ) : (
-                  <span>Not started</span>
-                )}
-              </div>
-              <Link className={styles.storyAction} href="/stories/marcus-parking-lot">
-                {actionByStatus[status]}
-                <ArrowRight aria-hidden="true" size={18} />
-              </Link>
-            </footer>
-          </div>
-        </article>
+      <section aria-labelledby="food-and-family-heading" id="food-and-family-story">
+        <div className={styles.sectionHeading}>
+          <p>Available now</p>
+          <h2 id="food-and-family-heading">Food and family</h2>
+        </div>
+        <StoryPreview
+          compact
+          progress={progressByStory[ashaRiceOnTheTableStory.slug]!}
+          story={ashaRiceOnTheTableStory}
+        />
       </section>
 
       <p className={styles.prototypeNote}>
-        One story is available in this prototype. Future situations are labeled without creating
+        Two stories are available in this prototype. Future situations are labeled without creating
         empty story previews.
       </p>
     </main>

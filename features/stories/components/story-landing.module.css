@@ -122,6 +122,29 @@
   overflow: hidden;
 }
 
+.compactPreview {
+  display: grid;
+  grid-template-columns: minmax(19rem, 0.9fr) minmax(0, 1.1fr);
+}
+
+.compactPreview .cover {
+  aspect-ratio: auto;
+  min-height: 100%;
+}
+
+.compactPreview .previewBody {
+  align-content: center;
+  display: grid;
+}
+
+.compactPreview h3 {
+  font-size: clamp(2.3rem, 4.2vw, 4rem);
+}
+
+.compactPreview .whyItMatters {
+  margin-top: 2rem;
+}
+
 .cover {
   aspect-ratio: 16 / 9;
   background: #dfe7e3;
@@ -271,6 +294,14 @@
 
   .storyAction {
     align-self: flex-start;
+  }
+
+  .compactPreview {
+    display: block;
+  }
+
+  .compactPreview .cover {
+    aspect-ratio: 16 / 9;
   }
 }
 
