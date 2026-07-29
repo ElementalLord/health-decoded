@@ -81,20 +81,20 @@ function ContextScene() {
 
       <g transform="translate(376 128)">
         <circle fill="#fffaf2" r="42" stroke="#9db3a8" strokeWidth="4" />
-        <circle cy="-15" fill="#dfa77d" r="12" />
+        <circle cy="-13" fill="#dfa77d" r="9" />
         <path
-          d="M0 0v22M0 8l-18 16M0 8l18 16M0 22l-14 20M0 22l14 20"
+          d="M0-3v14M0 3l-12 11M0 3l12 11M0 11l-10 18M0 11l10 18"
           fill="none"
           stroke="#587b6c"
           strokeLinecap="round"
-          strokeWidth="6"
+          strokeWidth="5"
         >
           <animateTransform
             attributeName="transform"
             dur="2.4s"
             repeatCount="indefinite"
             type="rotate"
-            values="-3 0 8;3 0 8;-3 0 8"
+            values="-3 0 4;3 0 4;-3 0 4"
           />
         </path>
         <path d="M0 42v54" stroke="#9db3a8" strokeLinecap="round" strokeWidth="4" />
@@ -277,7 +277,7 @@ function SourceScene() {
   );
 }
 
-const ENERGY_TRACK = "M302 188 C382 132 470 132 540 182";
+const ENERGY_TRACK = "M302 188 C370 136 442 136 510 176";
 
 function DailyScene() {
   return (
@@ -331,13 +331,8 @@ function DailyScene() {
           values="50;0"
         />
       </path>
-      <g fill="none" stroke="#527767" strokeLinecap="round" strokeWidth="8">
-        <path d="M350 164l12 17M414 151l12 17M478 159l12 17" />
-        <animate attributeName="opacity" dur="3.2s" repeatCount="indefinite" values=".25;1;.25" />
-      </g>
-
       {/* A recognizable walking person replaces the abstract muscle shape. */}
-      <g transform="translate(610 86)">
+      <g transform="translate(625 86)">
         <circle cx="0" cy="28" fill="#dfa77d" r="25" />
         <path d="M-22 18c8-22 36-22 44 0" fill="#6f5a4d" />
         <path d="M-34 70c0-26 68-26 68 0v69h-68Z" fill="#739783" />

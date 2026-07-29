@@ -24,7 +24,6 @@ import {
 } from "@/features/profile/actions/profile-settings.actions";
 import styles from "@/features/profile/components/profile-content.module.css";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
-import type { ProfileReflectionArchive } from "@/features/profile/types/profile-reflection";
 import { cn } from "@/lib/utils";
 
 const initialState: ProfileActionState = { status: "idle", message: "" };
@@ -135,21 +134,15 @@ function ProfileOrbitScene({ initials }: { initials: string }) {
 export function ProfileContent({
   data,
   memberSince,
-  reflections,
-  reflectionsUnavailable = false,
 }: {
   data: ProfileSettings;
   memberSince: string;
-  reflections: ProfileReflectionArchive;
-  reflectionsUnavailable?: boolean;
 }) {
   const [state, action, pending] = useActionState(updateDisplayNameAction, initialState);
   const hasError = state.status === "error";
   const displayName = data.displayName.trim() || "you";
   const firstName = displayName.split(/\s+/)[0] ?? "you";
   const initials = getInitials(data.displayName);
-  const featuredReflection = reflections.entries[0];
-  const recentReflections = reflections.entries.slice(1);
 
   return (
     <section className={styles.profilePage}>
@@ -165,8 +158,7 @@ export function ProfileContent({
           </h1>
           <p className={styles.heroDescription}>
             The lessons live in your journey. This is where the details that make Health Decoded
-            yours stay close—your name, the words you chose to keep, and the way you prefer to
-            learn.
+            yours stay close—your name, your account details, and the way you prefer to learn.
           </p>
           <nav aria-label="Profile actions" className={styles.heroActions}>
             <Link className={styles.quietAction} href="/settings">
@@ -175,104 +167,6 @@ export function ProfileContent({
           </nav>
         </div>
         <ProfileOrbitScene initials={initials} />
-      </section>
-
-      <section
-        aria-labelledby="reflection-title"
-        className={styles.reflectionSection}
-        id="reflections"
-      >
-        <div className={styles.sectionHeading}>
-          <div>
-            <p className="editorial-eyebrow">Your private archive</p>
-            <h2 id="reflection-title">Words you kept along the way</h2>
-          </div>
-          {reflections.total > 0 ? (
-            <p>
-              {reflections.total} saved {reflections.total === 1 ? "reflection" : "reflections"}
-            </p>
-          ) : null}
-        </div>
-
-        {reflectionsUnavailable ? (
-          <div className={styles.reflectionLoadError} role="status">
-            <NotebookPen aria-hidden="true" />
-            <div>
-              <h3>Your saved words are still private.</h3>
-              <p>
-                We could not load them just now. Refresh the page in a moment instead of assuming
-                the archive is empty.
-              </p>
-            </div>
-          </div>
-        ) : featuredReflection ? (
-          <div className={styles.reflectionLayout}>
-            <article className={styles.featuredReflection}>
-              <div className={styles.reflectionMeta}>
-                <span>Day {featuredReflection.dayNumber}</span>
-                <time dateTime={featuredReflection.createdAt}>
-                  {formatDate(featuredReflection.createdAt)}
-                </time>
-              </div>
-              <h3>{featuredReflection.lessonTitle}</h3>
-              <p>{featuredReflection.reflection}</p>
-              <Link href={`/lessons/${featuredReflection.dayNumber}`}>
-                Revisit this lesson
-                <ArrowRight aria-hidden="true" />
-              </Link>
-            </article>
-
-            {recentReflections.length > 0 ? (
-              <div aria-label="Earlier saved reflections" className={styles.reflectionList}>
-                {recentReflections.map((reflection) => (
-                  <details key={reflection.id}>
-                    <summary>
-                      <span>
-                        <span className={styles.reflectionDay}>Day {reflection.dayNumber}</span>
-                        <span className={styles.reflectionTitle}>{reflection.lessonTitle}</span>
-                      </span>
-                      <span className={styles.reflectionDate}>
-                        {formatDate(reflection.createdAt, {
-                          day: "numeric",
-                          month: "short",
-                        })}
-                      </span>
-                    </summary>
-                    <div>
-                      <p>{reflection.reflection}</p>
-                      <Link href={`/lessons/${reflection.dayNumber}`}>
-                        Revisit lesson
-                        <ArrowRight aria-hidden="true" />
-                      </Link>
-                    </div>
-                  </details>
-                ))}
-              </div>
-            ) : (
-              <div className={styles.archiveNote}>
-                <p className={styles.stripLabel}>One entry, kept with care</p>
-                <p>
-                  When another reflection is intentionally saved, it will join this private archive.
-                </p>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className={styles.reflectionEmpty}>
-            <div aria-hidden="true" className={styles.emptyJournal}>
-              <span />
-              <span />
-              <span />
-            </div>
-            <div>
-              <h3>Nothing is missing here.</h3>
-              <p>
-                You do not have any reflections saved to your profile. If you choose to save one in
-                the future, it will have a quiet place here.
-              </p>
-            </div>
-          </div>
-        )}
       </section>
 
       <section
