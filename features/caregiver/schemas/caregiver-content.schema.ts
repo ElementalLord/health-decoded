@@ -41,3 +41,12 @@ export const caregiverArticleSchema = z
   .strict();
 
 export type CaregiverArticle = z.infer<typeof caregiverArticleSchema>;
+
+export {
+  caregiverContentBlockSchema,
+  caregiverContentContractSchema,
+  caregiverDeterministicTextSchema,
+  caregiverModuleContractSchema,
+  caregiverSourceTraceSchema,
+  // @ts-expect-error -- Node's built-in TypeScript test runner requires an explicit extension.
+} from "./caregiver-content-contract.schema.ts";
