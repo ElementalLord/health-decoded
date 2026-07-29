@@ -435,6 +435,22 @@
   --orbit-delay: -9.7s;
 }
 
+.orbitPathSix {
+  --orbit-delay: -7.75s;
+  --orbit-duration: 8.5s;
+  --orbit-size: 13rem;
+}
+
+.orbitItemTiny {
+  height: 2.25rem;
+  width: 2.25rem;
+}
+
+.orbitItemTiny svg {
+  height: 1rem;
+  width: 1rem;
+}
+
 .confettiBurst {
   inset: 0;
   overflow: hidden;

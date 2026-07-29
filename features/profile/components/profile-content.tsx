@@ -88,7 +88,7 @@ function DailyProfileConfetti({ reducedMotion }: { reducedMotion: boolean }) {
 function ProfileOrbitScene({ initials }: { initials: string }) {
   return (
     <div
-      aria-label="Your profile at the center of notes, settings, lessons, medicine, and care"
+      aria-label="Your profile at the center of notes, settings, lessons, medicine, care, and your calendar"
       className={styles.orbitScene}
       role="img"
     >
@@ -121,6 +121,11 @@ function ProfileOrbitScene({ initials }: { initials: string }) {
       <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathFive}`}>
         <span className={styles.orbitItem}>
           <Stethoscope />
+        </span>
+      </span>
+      <span aria-hidden="true" className={`${styles.orbitPath} ${styles.orbitPathSix}`}>
+        <span className={`${styles.orbitItem} ${styles.orbitItemTiny}`}>
+          <CalendarDays />
         </span>
       </span>
     </div>
