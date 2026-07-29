@@ -12,7 +12,13 @@ export type StoryInteractionType =
   | "family-dialogue"
   | "meal-builder"
   | "meaningful-food-choice"
-  | "shared-table";
+  | "shared-table"
+  | "belief-mapping"
+  | "source-pathway"
+  | "perspective-switch"
+  | "question-builder"
+  | "routine-anchor"
+  | "care-toolbox";
 
 export type FoodComponent =
   "rice" | "dal" | "vegetables" | "protein" | "flatbread" | "yogurt" | "dessert" | "water";
@@ -25,7 +31,14 @@ export type StoryInteractionPurpose =
   | "prioritize"
   | "choose-response"
   | "explore-consequences"
-  | "apply";
+  | "apply"
+  | "belief-mapping"
+  | "source-evaluation"
+  | "perspective-switch"
+  | "rewrite-response"
+  | "question-building"
+  | "routine-planning"
+  | "concept-integration";
 
 export type StoryInteractionEngagement =
   "optional-exploration" | "meaningful-decision" | "knowledge-application";
@@ -39,6 +52,7 @@ export type StoryInteractionOption = {
 export type StoryInteractionDefinition = {
   id: string;
   purpose: StoryInteractionPurpose;
+  secondaryPurpose?: StoryInteractionPurpose;
   engagement: StoryInteractionEngagement;
   prompt: string;
   instructions?: string;
@@ -118,6 +132,8 @@ export type InteractiveStory = {
   privateReflectionSupportPrompt?: string;
   completionHeading?: string;
   completionMessage?: string;
+  showDetailCover?: boolean;
+  resultIdeas?: string[];
 };
 
 export type StoryStage =

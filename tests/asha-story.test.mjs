@@ -19,14 +19,15 @@ const playerStyles = readFileSync("features/stories/components/story-player.modu
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 const storyTypes = readFileSync("features/stories/types/interactive-story.ts", "utf8");
 
-test("Asha appears as the second available situation without creating future stories", () => {
+test("Asha remains the second available situation after Story 3 is added", () => {
   assert.match(landing, /id="food-and-family-story"/);
   assert.match(landing, /story=\{ashaRiceOnTheTableStory\}/);
   assert.match(landing, /story=\{marcusParkingLotStory\}/);
-  assert.match(landing, /Two stories are available/);
-  assert.equal(landing.split("story={").length - 1, 2);
+  assert.match(landing, /Three stories are available/);
+  assert.equal(landing.split("story={").length - 1, 3);
   assert.equal(ashaRiceOnTheTableStory.topic, "Food and family");
-  assert.doesNotMatch(landing, /starting-medication|worrying-reading|support-boundaries/);
+  assert.match(landing, /id="starting-medication-story"/);
+  assert.doesNotMatch(landing, /worrying-reading|support-boundaries/);
 });
 
 test("Asha’s preview preserves the requested editorial order and copy", () => {
@@ -52,7 +53,7 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
   assert.equal(ashaRiceOnTheTableStory.relatedLessonLabel, "Lesson 4");
 });
 
-test("the one Asha cover is local, optimized, accessible, and limited to the preview", () => {
+test("the one Asha cover remains limited to Asha’s preview", () => {
   assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-rice-on-the-table-cover.webp");
   assert.match(ashaRiceOnTheTableStory.imageAlt, /editorial illustration/i);
   assert.match(ashaRiceOnTheTableStory.imageAlt, /South Asian woman/i);
@@ -61,8 +62,8 @@ test("the one Asha cover is local, optimized, accessible, and limited to the pre
   assert.match(landing, /height=\{900\}/);
   assert.match(landing, /width=\{1600\}/);
   assert.equal(landing.split("story.imagePath").length - 1, 1);
-  assert.equal(player.split("story.imagePath").length - 1, 0);
-  assert.doesNotMatch(player, /styles\.hero|styles\.cover|<Image/);
+  assert.equal(ashaRiceOnTheTableStory.showDetailCover, undefined);
+  assert.match(player, /story\.showDetailCover/);
 });
 
 test("the dedicated route selects Asha’s story and does not complete Lesson 4", () => {

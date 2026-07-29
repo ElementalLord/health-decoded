@@ -1065,6 +1065,486 @@ function SharedMealSupportSelector({
   );
 }
 
+function BeliefMapping({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const assignments = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const submitted = interactionStates[`${scene.id}:complete`] === "complete";
+  const correctById: Record<string, "fear" | "understanding"> = {
+    "effort-proof": "fear",
+    "health-needs": "understanding",
+    "habits-stop": "fear",
+    "broader-plan": "understanding",
+  };
+  const setCategory = (id: string, category: "fear" | "understanding") => {
+    const next = [
+      ...assignments.filter((entry) => !entry.startsWith(`${id}:`)),
+      `${id}:${category}`,
+    ];
+    onStateChange(scene.id, next);
+  };
+
+  return (
+    <div className={styles.noraInteraction}>
+      <div className={styles.interactionHeader}>
+        <span>Belief map</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.beliefList}>
+        {scene.interaction.options.map((option) => {
+          const current = assignments
+            .find((entry) => entry.startsWith(`${option.id}:`))
+            ?.split(":")[1];
+          return (
+            <fieldset key={option.id}>
+              <legend>{option.label}</legend>
+              <div>
+                <button
+                  aria-pressed={current === "fear"}
+                  disabled={submitted}
+                  onClick={() => setCategory(option.id, "fear")}
+                  type="button"
+                >
+                  Fear or assumption
+                </button>
+                <button
+                  aria-pressed={current === "understanding"}
+                  disabled={submitted}
+                  onClick={() => setCategory(option.id, "understanding")}
+                  type="button"
+                >
+                  More useful understanding
+                </button>
+              </div>
+            </fieldset>
+          );
+        })}
+      </div>
+      {!submitted ? (
+        <button
+          className={styles.interactionSubmit}
+          disabled={assignments.length !== scene.interaction.options.length}
+          onClick={() => onStateChange(`${scene.id}:complete`, "complete")}
+          type="button"
+        >
+          Check the map
+        </button>
+      ) : (
+        <div aria-live="polite" className={styles.noraFeedback}>
+          <strong>
+            {
+              assignments.filter((entry) => {
+                const [id, category] = entry.split(":");
+                return correctById[id!] === category;
+              }).length
+            }{" "}
+            of 4 placed as intended
+          </strong>
+          <p>{scene.interaction.learningPoint}</p>
+          <ul>
+            {scene.interaction.options.map((option) => (
+              <li key={option.id}>
+                <Check aria-hidden="true" size={16} />
+                {correctById[option.id] === "fear"
+                  ? "Fear or assumption"
+                  : "More useful understanding"}
+                <span>{option.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SourcePathway({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const selected = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const submitted = interactionStates[`${scene.id}:complete`] === "complete";
+  const connected = new Set(["written-instructions", "pharmacist", "prescribing-professional"]);
+  const toggle = (id: string) =>
+    onStateChange(
+      scene.id,
+      selected.includes(id) ? selected.filter((item) => item !== id) : [...selected, id],
+    );
+
+  return (
+    <div className={styles.noraInteraction}>
+      <div className={styles.interactionHeader}>
+        <span>Source pathway</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      {!submitted ? (
+        <>
+          <div className={styles.sourceChoices}>
+            {scene.interaction.options.map((option) => (
+              <label key={option.id}>
+                <input
+                  checked={selected.includes(option.id)}
+                  onChange={() => toggle(option.id)}
+                  type="checkbox"
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+          <button
+            className={styles.interactionSubmit}
+            disabled={selected.length === 0}
+            onClick={() => onStateChange(`${scene.id}:complete`, "complete")}
+            type="button"
+          >
+            Organize these sources
+          </button>
+        </>
+      ) : (
+        <div aria-live="polite" className={styles.sourceResults}>
+          <section>
+            <h4>Connected to Nora’s prescription</h4>
+            {scene.interaction.options
+              .filter((option) => connected.has(option.id))
+              .map((option) => (
+                <p key={option.id}>{option.label}</p>
+              ))}
+          </section>
+          <section>
+            <h4>General or unverified experience</h4>
+            <p>An anonymous comment with no medical context</p>
+          </section>
+          <p className={styles.wideFeedback}>{scene.interaction.learningPoint}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PerspectiveSwitch({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const seen = Array.isArray(interactionStates[`${scene.id}:perspectives`])
+    ? (interactionStates[`${scene.id}:perspectives`] as string[])
+    : [];
+  const active =
+    typeof interactionStates[`${scene.id}:active`] === "string"
+      ? (interactionStates[`${scene.id}:active`] as string)
+      : "nora";
+  const selected =
+    typeof interactionStates[scene.id] === "string" ? interactionStates[scene.id] : "";
+  const perspectives = {
+    nora: ["You failed.", "This must be serious.", "You should have prevented this."],
+    sister: ["I am surprised.", "I am worried.", "I do not understand the treatment plan."],
+  };
+  const choosePerspective = (id: "nora" | "sister") => {
+    onStateChange(`${scene.id}:active`, id);
+    if (!seen.includes(id)) onStateChange(`${scene.id}:perspectives`, [...seen, id]);
+  };
+  const chooseResponse = (id: string) => {
+    onStateChange(scene.id, id);
+    onStateChange(`${scene.id}:complete`, "complete");
+  };
+
+  return (
+    <div className={styles.noraInteraction}>
+      <div className={styles.interactionHeader}>
+        <span>Perspective switch</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.perspectiveTabs} role="tablist" aria-label="Compare perspectives">
+        <button
+          aria-selected={active === "nora"}
+          onClick={() => choosePerspective("nora")}
+          role="tab"
+          type="button"
+        >
+          Nora may have heard
+        </button>
+        <button
+          aria-selected={active === "sister"}
+          onClick={() => choosePerspective("sister")}
+          role="tab"
+          type="button"
+        >
+          Her sister may have intended
+        </button>
+      </div>
+      <div aria-live="polite" className={styles.perspectiveView} role="tabpanel">
+        <ul>
+          {perspectives[active as keyof typeof perspectives].map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      </div>
+      <fieldset className={styles.responseChoices} disabled={seen.length < 2}>
+        <legend>Which response would create more room for Nora to talk?</legend>
+        {scene.interaction.options.map((option) => (
+          <button
+            aria-pressed={selected === option.id}
+            key={option.id}
+            onClick={() => chooseResponse(option.id)}
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
+      </fieldset>
+      {seen.length < 2 ? <p className={styles.noraHint}>Visit both perspectives first.</p> : null}
+      {selected ? (
+        <div aria-live="polite" className={styles.noraFeedback}>
+          <p>
+            {selected === "c"
+              ? "This response centers Nora’s experience and lets her decide how much she wants to share."
+              : "This reaction may come from concern, but it can make Nora feel that she has to justify her treatment."}
+          </p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function QuestionBuilder({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const selected = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const submitted = interactionStates[`${scene.id}:complete`] === "complete";
+  const strong = new Set(["purpose", "label", "concerns", "uncertain"]);
+  const toggle = (id: string) => {
+    if (selected.includes(id)) {
+      onStateChange(
+        scene.id,
+        selected.filter((item) => item !== id),
+      );
+      return;
+    }
+    if (selected.length < 4) onStateChange(scene.id, [...selected, id]);
+  };
+
+  return (
+    <div className={styles.noraInteraction}>
+      <div className={styles.interactionHeader}>
+        <span>Question builder</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>
+          {scene.interaction.instructions} · {selected.length} of 4 selected
+        </p>
+      </div>
+      <div className={styles.questionChoices}>
+        {scene.interaction.options.map((option) => (
+          <button
+            aria-pressed={selected.includes(option.id)}
+            disabled={submitted || (!selected.includes(option.id) && selected.length === 4)}
+            key={option.id}
+            onClick={() => toggle(option.id)}
+            type="button"
+          >
+            <span>{selected.includes(option.id) ? "Added" : "Add"}</span>
+            {option.label}
+          </button>
+        ))}
+      </div>
+      {!submitted ? (
+        <button
+          className={styles.interactionSubmit}
+          disabled={selected.length !== 4}
+          onClick={() => onStateChange(`${scene.id}:complete`, "complete")}
+          type="button"
+        >
+          Bring these questions
+        </button>
+      ) : (
+        <div aria-live="polite" className={styles.noraFeedback}>
+          <strong>
+            {selected.filter((id) => strong.has(id)).length} useful questions selected
+          </strong>
+          <p>{scene.interaction.learningPoint}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RoutineAnchor({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const selected =
+    typeof interactionStates[scene.id] === "string" ? interactionStates[scene.id] : "";
+  const connected = interactionStates[`${scene.id}:complete`] === "complete";
+  const selectedLabel = scene.interaction.options.find((option) => option.id === selected)?.label;
+
+  return (
+    <div className={styles.noraInteraction}>
+      <div className={styles.interactionHeader}>
+        <span>Routine anchor</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.routineChoices}>
+        {scene.interaction.options.map((option) => (
+          <button
+            aria-pressed={selected === option.id}
+            disabled={connected}
+            key={option.id}
+            onClick={() => onStateChange(scene.id, option.id)}
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+      {selected ? (
+        <div className={styles.routineEquation}>
+          <span>{selectedLabel}</span>
+          <b aria-hidden="true">+</b>
+          <span>Check and follow the prescription instructions</span>
+          <b aria-hidden="true">=</b>
+          <strong>A more manageable reminder</strong>
+        </div>
+      ) : null}
+      {!connected ? (
+        <button
+          className={styles.interactionSubmit}
+          disabled={!selected}
+          onClick={() => onStateChange(`${scene.id}:complete`, "complete")}
+          type="button"
+        >
+          Connect routine and instructions
+        </button>
+      ) : (
+        <div aria-live="polite" className={styles.noraFeedback}>
+          <p>{scene.interaction.learningPoint}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CareToolbox({
+  interactionStates,
+  onStateChange,
+  scene,
+}: {
+  interactionStates: StoryInteractionProps["interactionStates"];
+  onStateChange: StoryInteractionProps["onStateChange"];
+  scene: StoryScene;
+}) {
+  const tools = Array.isArray(interactionStates[scene.id])
+    ? (interactionStates[scene.id] as string[])
+    : [];
+  const complete = tools.length === scene.interaction.options.length;
+  const helpOptions = [
+    "Medication instructions",
+    "Side effects and concerns",
+    "Daily routines",
+    "Questions for appointments",
+    "Support from family or friends",
+    "I am not sure yet",
+  ];
+  const addTool = (id: string) => {
+    if (tools.includes(id)) return;
+    const next = [...tools, id];
+    onStateChange(scene.id, next);
+    if (next.length === scene.interaction.options.length) {
+      onStateChange(`${scene.id}:complete`, "complete");
+    }
+  };
+
+  return (
+    <div className={styles.noraInteraction}>
+      <div className={styles.interactionHeader}>
+        <span>Care toolbox</span>
+        <h3>{scene.interaction.prompt}</h3>
+        <p>{scene.interaction.instructions}</p>
+      </div>
+      <div className={styles.toolbox}>
+        <div aria-live="polite" className={styles.toolboxInside}>
+          <span>
+            {tools.length} of {scene.interaction.options.length} tools added
+          </span>
+          {tools.map((id) => (
+            <small key={id}>
+              {scene.interaction.options.find((option) => option.id === id)?.label}
+            </small>
+          ))}
+        </div>
+        <div className={styles.toolboxOptions}>
+          {scene.interaction.options.map((option) => (
+            <button
+              disabled={tools.includes(option.id)}
+              key={option.id}
+              onClick={() => addTool(option.id)}
+              type="button"
+            >
+              {tools.includes(option.id) ? "In the toolbox" : "Add"} · {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      {complete ? (
+        <>
+          <div aria-live="polite" className={styles.noraFeedback}>
+            <p>{scene.interaction.learningPoint}</p>
+          </div>
+          <label className={styles.optionalHelp}>
+            <span>Optional: Which part would you want more help understanding?</span>
+            <select
+              defaultValue=""
+              onChange={(event) => onStateChange(`${scene.id}:optional-help`, event.target.value)}
+            >
+              <option disabled value="">
+                Choose only if useful
+              </option>
+              {helpOptions.map((option) => (
+                <option key={option}>{option}</option>
+              ))}
+            </select>
+            <small>This unscored choice stays only with your story progress.</small>
+          </label>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
 export function StoryInteraction({
   interactionStates,
   meaningfulChoice,
@@ -1157,6 +1637,48 @@ export function StoryInteraction({
     ),
     "shared-table": () => (
       <SharedMealSupportSelector
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "belief-mapping": () => (
+      <BeliefMapping
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "source-pathway": () => (
+      <SourcePathway
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "perspective-switch": () => (
+      <PerspectiveSwitch
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "question-builder": () => (
+      <QuestionBuilder
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "routine-anchor": () => (
+      <RoutineAnchor
+        interactionStates={interactionStates}
+        onStateChange={onStateChange}
+        scene={scene}
+      />
+    ),
+    "care-toolbox": () => (
+      <CareToolbox
         interactionStates={interactionStates}
         onStateChange={onStateChange}
         scene={scene}

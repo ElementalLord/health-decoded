@@ -36,7 +36,7 @@ test("topic browsing lists five situations without fake story previews", () => {
   ]) {
     assert.match(landing, new RegExp(topic));
   }
-  assert.equal(landing.split("story={").length - 1, 2);
+  assert.equal(landing.split("story={").length - 1, 3);
   assert.match(landing, /<small>Planned<\/small>/);
 });
 
@@ -56,10 +56,10 @@ test("Marcus’s generated cover remains optimized, accessible, and appears only
   assert.doesNotMatch(marcusParkingLotStory.imageAlt, /Photo of Marcus|real patient/i);
   assert.ok(statSync("public/stories/marcus-parking-lot-cover.webp").size > 80_000);
   assert.equal(landing.split("story.imagePath").length - 1, 1);
-  assert.equal(player.split("story.imagePath").length - 1, 0);
+  assert.equal(marcusParkingLotStory.showDetailCover, undefined);
   assert.match(landing, /height=\{900\}/);
   assert.match(landing, /width=\{1600\}/);
-  assert.doesNotMatch(player, /styles\.hero|styles\.cover|<Image/);
+  assert.match(player, /story\.showDetailCover/);
 });
 
 test("a story-card click opens Scene 1 directly and completed stories start a clean reread", () => {
@@ -275,7 +275,7 @@ test("the disclosure and editorial-governance metadata make the scenario honest"
   assert.equal(marcusParkingLotStory.version, "1.0");
   assert.equal("contentWarning" in marcusParkingLotStory, false);
   assert.match(player, /story\.disclosure/);
-  assert.doesNotMatch(player, /story\.imagePath/);
+  assert.equal(marcusParkingLotStory.showDetailCover, undefined);
   assert.doesNotMatch(player, /Medically reviewed|Not medically reviewed/);
 });
 
