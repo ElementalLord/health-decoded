@@ -89,23 +89,30 @@ test("the story data contains exactly six governed progressive scenes", () => {
   assert.doesNotMatch(player, /story\.scenes\.map\(\(scene\).*<StorySceneView/s);
 });
 
-test("scene navigation advances one scene, goes back, and does not gate optional interactions", () => {
+test("scene navigation advances one scene, goes back, and gates only declared decisions", () => {
   assert.match(player, /runSceneTransition\(progress\.currentScene \+ 1, "forward"\)/);
   assert.match(player, /runSceneTransition\(progress\.currentScene - 1, "backward"\)/);
   assert.match(player, /scene\.continueLabel/);
-  assert.doesNotMatch(player, /disabled=\{[^}]*interaction/i);
+  assert.match(player, /!scene\.interaction\.requiredForProgress/);
+  assert.match(player, /disabled=\{!interactionComplete\}/);
+  assert.deepEqual(
+    marcusParkingLotStory.scenes
+      .filter((scene) => scene.interaction.requiredForProgress)
+      .map((scene) => scene.number),
+    [4, 5],
+  );
   assert.match(player, /focus\(\{ preventScroll: true \}\)/);
   assert.match(player, /behavior: prefersReducedMotion\(\) \? "auto" : "smooth"/);
 });
 
-test("every optional scene interaction is keyboard-operable and selected from story data", () => {
+test("every scene interaction is keyboard-operable and selected from story data", () => {
   for (const interactionType of [
-    "term-focus",
-    "phone-drafts",
-    "fact-vs-story",
-    "phone-dialogue",
-    "meaningful-choice",
-    "question-cards",
+    "attention-overload",
+    "emotional-interpretation",
+    "thought-sort",
+    "response-prediction",
+    "information-filter",
+    "question-prioritization",
   ]) {
     assert.match(interactions, new RegExp(`"${interactionType}"`));
   }
@@ -113,24 +120,24 @@ test("every optional scene interaction is keyboard-operable and selected from st
   assert.ok((interactions.match(/type="button"/g) ?? []).length >= 7);
   assert.ok((interactions.match(/type="radio"/g) ?? []).length >= 2);
   assert.match(interactions, /aria-pressed/);
-  assert.match(interactions, /aria-expanded/);
+  assert.match(interactions, /type="checkbox"/);
 });
 
-test("Scene 5 teaches source selection without replaying Marcus's choice", () => {
-  assert.equal(marcusParkingLotStory.scenes[4]?.interactionType, "meaningful-choice");
-  assert.match(interactions, /One question, one source/);
-  assert.match(interactions, /Match the source to the job/);
+test("Scene 5 teaches information filtering without replaying Marcus's action", () => {
+  assert.equal(marcusParkingLotStory.scenes[4]?.interactionType, "information-filter");
+  assert.match(interactions, /Turn the broad search into a question Marcus can use/);
+  assert.match(interactions, /actual context/);
   assert.doesNotMatch(interactions, /quizScore|correctChoiceId/);
 });
 
 test("all six Marcus interactions add a skill instead of replaying the adjacent narrative", () => {
   for (const newSkill of [
-    "Information sorter",
-    "A specific support request",
-    "What it cannot measure",
-    "Practice a support check-in",
-    "Match the source to the job",
-    "appointment kit",
+    "Stress can narrow attention",
+    "Interpret the pause",
+    "What Marcus knows",
+    "Prediction point",
+    "actual context",
+    "Ask first",
   ]) {
     assert.match(interactions, new RegExp(newSkill, "i"));
   }
@@ -245,7 +252,7 @@ test("responsive and reduced-motion styles protect reading and interaction", () 
   assert.match(playerStyles, /@media \(max-width: 30rem\)/);
   assert.match(playerStyles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(playerStyles, /animation: none/);
-  assert.match(playerStyles, /scene-leave-forward 150ms/);
+  assert.match(playerStyles, /scene-leave-forward 160ms/);
   assert.match(playerStyles, /scene-enter-forward 230ms cubic-bezier\(0\.22, 1, 0\.36, 1\)/);
   assert.doesNotMatch(playerStyles, /rotateY|perspective\(|scale\(/);
 });

@@ -38,7 +38,27 @@ export const marcusParkingLotStory = {
       id: "the-word-he-heard",
       number: 1,
       title: "The Word He Heard",
-      interactionType: "term-focus",
+      interactionType: "attention-overload",
+      interaction: {
+        id: "marcus-attention-overload",
+        purpose: "interpret",
+        engagement: "optional-exploration",
+        prompt:
+          "Marcus has just heard the diagnosis. Which information is he most likely to hold onto in this moment?",
+        instructions: "Choose up to two items, then consider what stress can do to attention.",
+        options: [
+          { id: "diagnosis", label: "Type 2 diabetes" },
+          { id: "a1c", label: "A1C result" },
+          { id: "prescription", label: "Prescription" },
+          { id: "follow-up", label: "Follow-up appointment" },
+          { id: "nutrition", label: "Nutrition guidance" },
+          { id: "contact", label: "Contact information" },
+        ],
+        feedbackMode: "open-interpretation",
+        requiredForProgress: false,
+        learningPoint:
+          "Stress can narrow attention toward emotionally charged information while practical details become harder to retain.",
+      },
       continueLabel: "Continue to the parking lot",
       paragraphs: [
         "The doctor turned her monitor slightly toward Marcus.",
@@ -56,7 +76,36 @@ export const marcusParkingLotStory = {
       id: "forty-minutes",
       number: 2,
       title: "Forty Minutes",
-      interactionType: "phone-drafts",
+      interactionType: "emotional-interpretation",
+      interaction: {
+        id: "marcus-message-interpretation",
+        purpose: "interpret",
+        engagement: "optional-exploration",
+        prompt: "What may be making this message difficult for Marcus to send?",
+        instructions: "Choose one or more possibilities. More than one reaction can be true.",
+        options: [
+          {
+            id: "language",
+            label: "He does not know how to explain something he barely understands",
+          },
+          {
+            id: "reaction",
+            label: "He is worried about how the other person will react",
+          },
+          {
+            id: "real",
+            label: "Saying it aloud makes the diagnosis feel more real",
+          },
+          {
+            id: "multiple",
+            label: "More than one of these may be true",
+          },
+        ],
+        feedbackMode: "open-interpretation",
+        requiredForProgress: false,
+        learningPoint:
+          "Silence after difficult news can reflect uncertainty and emotion rather than avoidance or lack of care.",
+      },
       continueLabel: "See what Marcus was thinking",
       paragraphs: [
         "Marcus reached his car but did not turn it on.",
@@ -74,7 +123,27 @@ export const marcusParkingLotStory = {
       id: "the-promise-he-thought-he-broke",
       number: 3,
       title: "The Promise He Thought He Broke",
-      interactionType: "fact-vs-story",
+      interactionType: "thought-sort",
+      interaction: {
+        id: "marcus-fact-self-blame-sort",
+        purpose: "sort",
+        engagement: "knowledge-application",
+        prompt: "Where does each thought belong?",
+        instructions:
+          "Sort each thought into what Marcus knows or what Marcus is blaming himself for.",
+        options: [
+          { id: "new-information", label: "I received new health information today." },
+          { id: "prevented", label: "I should have prevented this." },
+          { id: "results", label: "I need to understand what my results mean." },
+          { id: "takeout", label: "Every takeout meal led to this." },
+          { id: "first-step", label: "I can ask what my first step should be." },
+          { id: "failed", label: "This diagnosis proves I failed." },
+        ],
+        feedbackMode: "single-explanation",
+        requiredForProgress: false,
+        learningPoint:
+          "A diagnosis provides health information; shame can add a harsher story that the results themselves do not say.",
+      },
       continueLabel: "Continue to the phone call",
       paragraphs: [
         "Marcus’s thoughts went to his father.",
@@ -90,11 +159,51 @@ export const marcusParkingLotStory = {
       id: "then-come-home",
       number: 4,
       title: "Then Come Home",
-      interactionType: "phone-dialogue",
+      interactionType: "response-prediction",
+      interaction: {
+        id: "marcus-helpful-response-prediction",
+        purpose: "predict",
+        engagement: "meaningful-decision",
+        prompt: "Which response would be most helpful right now?",
+        instructions: "Choose a response before Marcus hears what his wife actually says.",
+        options: [
+          {
+            id: "replace-food",
+            label: "We need to replace all the food in the house tonight.",
+            feedback:
+              "This reaction is understandable, but it may add pressure before Marcus knows what applies to him.",
+          },
+          {
+            id: "all-numbers",
+            label: "Tell me every number the doctor gave you.",
+            feedback:
+              "Details may matter later, but asking for all of them now may increase the load Marcus is already carrying.",
+          },
+          {
+            id: "first-action",
+            label: "What did the doctor ask you to do first?",
+            feedback:
+              "This response creates space for the next useful step without minimizing the diagnosis.",
+          },
+          {
+            id: "nothing",
+            label: "Do not worry about it. It is probably nothing.",
+            feedback:
+              "This may provide temporary relief, but it dismisses information that deserves appropriate follow-up.",
+          },
+        ],
+        feedbackMode: "choice-consequence",
+        requiredForProgress: true,
+        learningPoint:
+          "A grounding question can bring someone from an imagined future back to the next clear action.",
+      },
       continueLabel: "Follow Marcus home",
       paragraphs: [
         "Marcus finally called his wife.",
         "He expected her to panic. Instead, she listened while he tried to repeat the few details he remembered.",
+        "After a quiet moment, she was ready to respond.",
+      ],
+      paragraphsAfterInteraction: [
         "After a quiet moment, she asked: “What did the doctor tell you to do tonight?”",
         "Marcus unfolded the papers.",
         "“Nothing tonight, really,” he said. “I need to pick up a prescription tomorrow and schedule another appointment.”",
@@ -108,13 +217,52 @@ export const marcusParkingLotStory = {
       id: "too-much-information",
       number: 5,
       title: "Too Much Information",
-      interactionType: "meaningful-choice",
+      interactionType: "information-filter",
+      interaction: {
+        id: "marcus-information-filter",
+        purpose: "apply",
+        engagement: "meaningful-decision",
+        prompt: "What would make the information more useful to Marcus?",
+        instructions:
+          "Choose an information strategy, then turn a broad search into a question connected to Marcus’s care.",
+        options: [
+          {
+            id: "every-complication",
+            label: "Read until every possible complication is understood",
+            feedback: "This adds more information before Marcus knows which details apply to him.",
+          },
+          {
+            id: "dramatic",
+            label: "Find the most dramatic explanation",
+            feedback:
+              "Emotional intensity can capture attention without making the information more personally useful.",
+          },
+          {
+            id: "personal",
+            label: "Connect one question to his own results and care instructions",
+            feedback:
+              "This connects general information to Marcus’s own care and creates a question a qualified professional can answer.",
+          },
+          {
+            id: "avoid",
+            label: "Avoid all health information permanently",
+            feedback:
+              "Stepping away can reduce overload, but permanent avoidance would also remove information that may become useful in context.",
+          },
+        ],
+        feedbackMode: "choice-consequence",
+        requiredForProgress: true,
+        learningPoint:
+          "Health information becomes more useful when a broad concern is connected to personal results, instructions, and a qualified source.",
+      },
       continueLabel: "See the questions they wrote",
       paragraphs: [
         "Later that evening, Marcus searched for Type 2 diabetes online.",
         "Within minutes, he was reading about kidney disease, vision loss, heart problems, diets, medications, and complications.",
         "Each new tab gave him more information and less understanding.",
         "He was trying to learn everything before he had learned what his own results meant.",
+      ],
+      paragraphsAfterInteraction: [
         "Marcus eventually closed his laptop.",
         "His wife placed two cups of tea on the kitchen table and pulled over a sheet of paper.",
         "Instead of searching for every possible answer, they wrote down the questions that belonged to Marcus.",
@@ -124,7 +272,24 @@ export const marcusParkingLotStory = {
       id: "three-questions",
       number: 6,
       title: "Three Questions",
-      interactionType: "question-cards",
+      interactionType: "question-prioritization",
+      interaction: {
+        id: "marcus-question-prioritization",
+        purpose: "prioritize",
+        engagement: "knowledge-application",
+        prompt: "How might Marcus organize these questions so he can address them one at a time?",
+        instructions:
+          "Place every question under Ask first, Discuss during follow-up, or Keep exploring over time. There is no perfect order.",
+        options: [
+          { id: "meaning", label: "What does this diagnosis mean for me?" },
+          { id: "first", label: "What should I do first?" },
+          { id: "normal-life", label: "Can I still live a normal life?" },
+        ],
+        feedbackMode: "open-interpretation",
+        requiredForProgress: false,
+        learningPoint:
+          "Prioritization turns an overwhelming diagnosis into questions that can be addressed one at a time without pretending every answer is immediately available.",
+      },
       continueLabel: "Pause and Think",
       paragraphs: [
         "Marcus and his wife wrote down three questions:",

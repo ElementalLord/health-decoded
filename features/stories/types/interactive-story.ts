@@ -1,12 +1,12 @@
 export type StoryReviewStatus = "not-reviewed" | "in-review" | "reviewed";
 
 export type StoryInteractionType =
-  | "term-focus"
-  | "phone-drafts"
-  | "fact-vs-story"
-  | "phone-dialogue"
-  | "meaningful-choice"
-  | "question-cards"
+  | "attention-overload"
+  | "emotional-interpretation"
+  | "thought-sort"
+  | "response-prediction"
+  | "information-filter"
+  | "question-prioritization"
   | "grocery-fear"
   | "separate-plate"
   | "family-dialogue"
@@ -17,12 +17,45 @@ export type StoryInteractionType =
 export type FoodComponent =
   "rice" | "dal" | "vegetables" | "protein" | "flatbread" | "yogurt" | "dessert" | "water";
 
+export type StoryInteractionPurpose =
+  | "interpret"
+  | "predict"
+  | "compare"
+  | "sort"
+  | "prioritize"
+  | "choose-response"
+  | "explore-consequences"
+  | "apply";
+
+export type StoryInteractionEngagement =
+  "optional-exploration" | "meaningful-decision" | "knowledge-application";
+
+export type StoryInteractionOption = {
+  id: string;
+  label: string;
+  feedback?: string;
+};
+
+export type StoryInteractionDefinition = {
+  id: string;
+  purpose: StoryInteractionPurpose;
+  engagement: StoryInteractionEngagement;
+  prompt: string;
+  instructions?: string;
+  options: StoryInteractionOption[];
+  feedbackMode: "single-explanation" | "choice-consequence" | "open-interpretation";
+  requiredForProgress: boolean;
+  learningPoint: string;
+};
+
 export type StoryScene = {
   id: string;
   number: number;
   title: string;
   paragraphs: string[];
   interactionType: StoryInteractionType;
+  interaction: StoryInteractionDefinition;
+  paragraphsAfterInteraction?: string[];
   continueLabel: string;
 };
 
@@ -105,6 +138,7 @@ export type StoryProgress = {
   completionDate: string | null;
   privateReflection: string | null;
   versionCompleted: string | null;
+  interactionVersion: number;
   stage: StoryStage;
 };
 
