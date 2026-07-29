@@ -1,14 +1,14 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, BookOpenText, Check, ChevronLeft, RotateCcw } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { StoryInteraction } from "@/features/stories/components/story-interactions";
 import {
+  calculateStoryQuizScore,
   createInitialStoryProgress,
-  getStoryPreviewStatus,
+  createStoryReviewProgress,
   getStoryStorageKey,
   parseStoryProgress,
 } from "@/features/stories/lib/story-progress";
@@ -32,13 +32,6 @@ type InteractionValue = string | number | string[];
 
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-function statusActionLabel(progress: StoryProgress) {
-  const status = getStoryPreviewStatus(progress);
-  if (status === "completed") return "Read Again";
-  if (status === "in-progress") return "Resume Story";
-  return "Begin Story";
 }
 
 function isSceneInteractionComplete(
@@ -209,8 +202,6 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const storageKey = getStoryStorageKey(story.slug);
   const storyPredictionChoices = story.predictionChoices ?? predictionChoices;
-  const estimatedTimeLabel = story.estimatedTimeLabel ?? "5 to 7 minutes";
-  const relatedLessonLabel = story.relatedLessonLabel ?? "Lesson 1";
   const relatedLessonTitle = story.relatedLessonTitle ?? "Lesson 1, The First Five Minutes";
   const relatedLessonHref = story.relatedLessonHref ?? "/lessons/1";
   const isFoodFamilyStory = story.id === "asha-rice-on-the-table";
@@ -221,8 +212,10 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   useEffect(() => {
     try {
       const saved = parseStoryProgress(window.localStorage.getItem(storageKey));
-      setProgress(saved);
-      setReflectionDraft(saved.privateReflection ?? "");
+      const shouldRestart = new URLSearchParams(window.location.search).get("restart") === "1";
+      const nextProgress = shouldRestart ? createStoryReviewProgress(saved) : saved;
+      setProgress(nextProgress);
+      setReflectionDraft(nextProgress.privateReflection ?? "");
     } finally {
       setHydrated(true);
     }
@@ -280,15 +273,6 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
     );
   };
 
-  const beginOrResume = () => {
-    if (progress.storyCompleted) {
-      updateProgress((current) => ({ ...current, currentScene: 0, stage: "story" }));
-    } else if (progress.stage === "intro") {
-      updateProgress((current) => ({ ...current, stage: "story" }));
-    }
-    requestAnimationFrame(keepPlayerInView);
-  };
-
   const continueScene = () => {
     if (!currentInteractionComplete) return;
 
@@ -299,10 +283,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
 
     updateProgress((current) => ({
       ...current,
-      completionDate: current.completionDate ?? new Date().toISOString(),
-      storyCompleted: true,
       stage: "prediction",
-      versionCompleted: current.versionCompleted ?? story.version,
     }));
     requestAnimationFrame(keepPlayerInView);
   };
@@ -324,16 +305,25 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
     if (!currentQuestion || !selectedAnswer) return null;
     return selectedAnswer === currentQuestion.correctChoiceId;
   }, [currentQuestion, selectedAnswer]);
+  const selectedChoice = currentQuestion?.choices.find((choice) => choice.id === selectedAnswer);
+  const correctChoice = currentQuestion?.choices.find(
+    (choice) => choice.id === currentQuestion.correctChoiceId,
+  );
+  const quizScore = useMemo(
+    () => calculateStoryQuizScore(story.quiz, progress.quizAnswers),
+    [progress.quizAnswers, story.quiz],
+  );
+  const keyIdeaUnderstood = quizScore >= 2;
 
   const submitQuizAnswer = () => {
     if (!currentQuestion || !quizSelection || isQuestionSubmitted) return;
     updateProgress((current) => {
       const alreadySubmitted = current.submittedQuizQuestions.includes(currentQuestion.id);
-      const correct = quizSelection === currentQuestion.correctChoiceId;
+      const quizAnswers = { ...current.quizAnswers, [currentQuestion.id]: quizSelection };
       return {
         ...current,
-        quizAnswers: { ...current.quizAnswers, [currentQuestion.id]: quizSelection },
-        quizScore: current.quizScore + (alreadySubmitted || !correct ? 0 : 1),
+        quizAnswers,
+        quizScore: calculateStoryQuizScore(story.quiz, quizAnswers),
         submittedQuizQuestions: alreadySubmitted
           ? current.submittedQuizQuestions
           : [...current.submittedQuizQuestions, currentQuestion.id],
@@ -351,11 +341,15 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
       return;
     }
 
-    updateProgress((current) => ({
-      ...current,
-      keyIdeaUnderstood: current.quizScore >= 2,
-      stage: "results",
-    }));
+    updateProgress((current) => {
+      const score = calculateStoryQuizScore(story.quiz, current.quizAnswers);
+      return {
+        ...current,
+        quizScore: score,
+        keyIdeaUnderstood: score >= 2,
+        stage: "results",
+      };
+    });
   };
 
   const reviewScene = (sceneId: string) => {
@@ -370,12 +364,15 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
     updateProgress((current) => ({
       ...current,
       privateReflection: save && trimmed ? trimmed : current.privateReflection,
+      completionDate: current.completionDate ?? new Date().toISOString(),
+      storyCompleted: true,
+      versionCompleted: current.versionCompleted ?? story.version,
       stage: "complete",
     }));
   };
 
   const reviewStory = () => {
-    updateProgress((current) => ({ ...current, currentScene: 0, stage: "story" }));
+    updateProgress(createStoryReviewProgress);
     requestAnimationFrame(keepPlayerInView);
   };
 
@@ -386,70 +383,12 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
         Back to Stories
       </Link>
 
-      <header className={styles.hero}>
-        <div className={styles.cover}>
-          <Image
-            alt={story.imageAlt}
-            height={900}
-            priority
-            sizes="(max-width: 76rem) 100vw, 1120px"
-            src={story.imagePath}
-            width={1600}
-          />
-        </div>
-        <div className={styles.heroBody}>
-          <div className={styles.storyLabels}>
-            <span>Illustrative story</span>
-            <span>{story.topic}</span>
-          </div>
-          <h1>{story.title}</h1>
-          <div className={styles.heroMeta}>
-            <span>{story.characterName}</span>
-            <span>{estimatedTimeLabel}</span>
-            <span>Related lesson: {relatedLessonLabel}</span>
-          </div>
-          <p className={styles.disclosure}>{story.disclosure}</p>
-          {story.contentWarning ? (
-            <p className={styles.contentWarning}>{story.contentWarning}</p>
-          ) : null}
-          {story.reviewStatus === "reviewed" &&
-          story.reviewerName &&
-          story.reviewerCredentials &&
-          story.reviewedAt ? (
-            <p className={styles.reviewAttribution}>
-              Reviewed by {story.reviewerName}, {story.reviewerCredentials} · {story.reviewedAt}
-            </p>
-          ) : null}
-          <button className={styles.heroAction} onClick={beginOrResume} type="button">
-            {hydrated ? statusActionLabel(progress) : "Begin Story"}
-            <ArrowRight aria-hidden="true" size={18} />
-          </button>
-        </div>
-      </header>
-
       <section
         aria-label="Interactive story player"
         className={`${styles.player} ${isFoodFamilyStory ? styles.foodFamilyPlayer : ""}`}
         ref={playerRef}
       >
-        {progress.stage === "intro" ? (
-          <div className={styles.playerIntroduction}>
-            <p>{story.introEyebrow ?? "First evening"}</p>
-            <h2 ref={stageHeadingRef} tabIndex={-1}>
-              {story.introHeading ?? "Begin where Marcus’s appointment ended."}
-            </h2>
-            <p>
-              {story.introDescription ??
-                "Six short scenes follow one evening from shock toward a manageable next step. The story moves only when you choose Continue, and the small interactions are optional."}
-            </p>
-            <button className={styles.continueButton} onClick={beginOrResume} type="button">
-              Begin Scene 1
-              <ArrowRight aria-hidden="true" size={18} />
-            </button>
-          </div>
-        ) : null}
-
-        {progress.stage === "story" ? (
+        {progress.stage === "intro" || progress.stage === "story" ? (
           <>
             <StoryProgressRail
               current={progress.currentScene}
@@ -585,6 +524,18 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
                 <strong>
                   {quizResult ? "That’s it." : "Not quite. Here is the idea to carry forward."}
                 </strong>
+                <div className={styles.answerResult}>
+                  <p>
+                    <span>Your answer</span>
+                    {selectedChoice?.label}
+                  </p>
+                  {!quizResult ? (
+                    <p>
+                      <span>Best answer</span>
+                      {correctChoice?.label}
+                    </p>
+                  ) : null}
+                </div>
                 <p>{currentQuestion.explanation}</p>
                 <button className={styles.continueButton} onClick={continueQuiz} type="button">
                   {progress.currentQuizQuestion === story.quiz.length - 1
@@ -601,15 +552,34 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
           <section className={styles.resultsStage}>
             <p className={styles.stageEyebrow}>Story completed</p>
             <h2 ref={stageHeadingRef} tabIndex={-1}>
-              Knowledge check: {progress.quizScore} of 3
+              Knowledge check: {quizScore} of {story.quiz.length}
             </h2>
             <p>
-              {progress.keyIdeaUnderstood
+              {keyIdeaUnderstood
                 ? (story.keyIdeaUnderstoodMessage ??
                   "You identified the central idea: a manageable next step can make room for action without minimizing the diagnosis.")
                 : "A few ideas may be worth reviewing."}
             </p>
-            {!progress.keyIdeaUnderstood ? (
+            <ol className={styles.resultsBreakdown}>
+              {story.quiz.map((question, index) => {
+                const answer = progress.quizAnswers[question.id];
+                const answerChoice = question.choices.find((choice) => choice.id === answer);
+                const bestChoice = question.choices.find(
+                  (choice) => choice.id === question.correctChoiceId,
+                );
+                const correct = answer === question.correctChoiceId;
+                return (
+                  <li key={question.id}>
+                    <strong>
+                      Question {index + 1} · {correct ? "Correct" : "Review"}
+                    </strong>
+                    <span>Your answer: {answerChoice?.label ?? "No answer recorded"}</span>
+                    {!correct ? <span>Best answer: {bestChoice?.label}</span> : null}
+                  </li>
+                );
+              })}
+            </ol>
+            {!keyIdeaUnderstood ? (
               <div className={styles.reviewLinks}>
                 {story.quiz
                   .filter(
@@ -736,7 +706,9 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
               </div>
               <div>
                 <dt>Knowledge check</dt>
-                <dd>{progress.quizScore} of 3</dd>
+                <dd>
+                  {quizScore} of {story.quiz.length}
+                </dd>
               </div>
               <div>
                 <dt>Related lesson</dt>
@@ -762,6 +734,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
 
       <footer className={styles.governance}>
         <p>Editorial note</p>
+        <span>{story.disclosure}</span>
         <span>{story.sourceThemeNote}</span>
         <dl>
           <div>
