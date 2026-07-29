@@ -5,6 +5,7 @@ import test from "node:test";
 const page = readFileSync("app/(app)/profile/page.tsx", "utf8");
 const component = readFileSync("features/profile/components/profile-content.tsx", "utf8");
 const settings = readFileSync("features/profile/components/settings-content.tsx", "utf8");
+const settingsAction = readFileSync("features/profile/actions/profile-settings.actions.ts", "utf8");
 const styles = readFileSync("features/profile/components/profile-content.module.css", "utf8");
 const reflectionsService = readFileSync(
   "features/profile/services/profile-reflections.server.ts",
@@ -81,11 +82,19 @@ test("the profile orbit keeps personal tools moving around the user", () => {
     "orbitPathThree",
     "orbitPathFour",
     "orbitPathFive",
+    "orbitPathSix",
   ]) {
     assert.match(component, new RegExp(`styles\\.${element}`));
   }
 
-  for (const icon of ["NotebookPen", "Settings", "Pill", "BookOpenText", "Stethoscope"]) {
+  for (const icon of [
+    "NotebookPen",
+    "Settings",
+    "Pill",
+    "BookOpenText",
+    "Stethoscope",
+    "CalendarDays",
+  ]) {
     assert.match(component, new RegExp(`<${icon}`));
   }
 
@@ -94,6 +103,8 @@ test("the profile orbit keeps personal tools moving around the user", () => {
   assert.match(styles, /--orbit-duration: 8\.5s/);
   assert.match(styles, /--orbit-delay: -5\.35s/);
   assert.match(styles, /--orbit-delay: -9\.7s/);
+  assert.match(styles, /--orbit-delay: -7\.75s/);
+  assert.match(styles, /\.orbitItemTiny/);
   assert.match(styles, /rotate\(360deg\)/);
   assert.match(styles, /rotate\(-360deg\)/);
   assert.match(styles, /will-change: transform/);
@@ -109,7 +120,19 @@ test("the profile celebrates once daily and confirms successful saves visually",
   assert.match(component, /Array\.from\(\{ length: 18 \}/);
   assert.match(component, /<CheckCircle2 aria-hidden="true"/);
   assert.match(settings, /<CheckCircle2 aria-hidden="true"/);
+  assert.match(settings, /type="submit"/);
+  assert.match(settings, /Settings saved/);
   assert.match(styles, /@keyframes profile-confetti/);
+});
+
+test("settings submit and persist deterministically for the authenticated user", () => {
+  assert.match(settings, /<form action=\{action\}/);
+  assert.match(settings, /type="submit"/);
+  assert.match(settingsAction, /\.upsert\(/);
+  assert.match(settingsAction, /\{ onConflict: "user_id" \}/);
+  assert.match(settingsAction, /\.select\("user_id"\)\s*\.maybeSingle\(\)/);
+  assert.match(settingsAction, /revalidatePath\("\/settings"\)/);
+  assert.match(settingsAction, /revalidatePath\("\/profile"\)/);
 });
 
 test("the profile has one name form and omits the redundant identity strip", () => {

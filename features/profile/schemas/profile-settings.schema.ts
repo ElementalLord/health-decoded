@@ -11,6 +11,7 @@ export const settingsUpdateSchema = z.object({
   reducedMotion: z.enum(["true", "false"]).transform((value) => value === "true"),
   timezone: z
     .string()
+    .trim()
     .max(64)
     .refine((value) => timezones.has(value), "Choose a valid timezone."),
 });

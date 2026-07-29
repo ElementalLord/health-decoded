@@ -113,22 +113,29 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
           </div>
 
           <div className="mt-5 space-y-3">
-            <Button disabled={pending} fullWidth={false}>
+            <Button disabled={pending} fullWidth={false} type="submit">
               {pending ? "Saving settings…" : "Save settings"}
             </Button>
             {state.message ? (
-              <p
+              <div
                 aria-live="polite"
                 className={cn(
-                  "motion-status flex items-center gap-2 text-sm",
-                  hasError ? "text-destructive" : "text-success",
+                  "motion-status flex max-w-2xl items-start gap-3 rounded-[9px] border px-4 py-3 text-sm",
+                  hasError
+                    ? "border-destructive/25 bg-destructive/5 text-destructive"
+                    : "border-success/25 bg-success/5 text-success",
                 )}
                 id={messageId}
                 role={hasError ? "alert" : "status"}
               >
-                {!hasError ? <CheckCircle2 aria-hidden="true" className="size-5" /> : null}
-                {state.message}
-              </p>
+                {!hasError ? (
+                  <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+                ) : null}
+                <span>
+                  {!hasError ? <strong className="block">Settings saved</strong> : null}
+                  <span className="block">{state.message}</span>
+                </span>
+              </div>
             ) : null}
           </div>
         </form>
