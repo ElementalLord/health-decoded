@@ -10,6 +10,7 @@ import {
   type CaregiverBeginningChoiceId,
 } from "../../content/caregiver-landing";
 import styles from "../../styles/caregiver-landing.module.css";
+import { caregiverModuleRegistry } from "../../content/caregiver-module-registry";
 
 export function CaregiverGuidedPath() {
   const firstChoiceRef = useRef<HTMLInputElement>(null);
@@ -58,6 +59,19 @@ export function CaregiverGuidedPath() {
               <p>{route.purpose}</p>
             </div>
             <span className={styles.moduleTime}>{route.time}</span>
+            {route.id === "CG-M2" ? (
+              <button
+                className={styles.textButton}
+                type="button"
+                onClick={() =>
+                  window.location.assign(
+                    caregiverModuleRegistry["support-without-taking-over"].route,
+                  )
+                }
+              >
+                {route.action}
+              </button>
+            ) : null}
           </li>
         ))}
       </ol>

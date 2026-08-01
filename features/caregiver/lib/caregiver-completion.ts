@@ -19,6 +19,23 @@ export interface CaregiverSectionCompletionInputs {
   readonly currentNextStepCategory: string | null;
 }
 
+export function applyCaregiverInteractionSubmission(
+  progress: CaregiverModuleProgress,
+  interactionId: string,
+): CaregiverModuleProgress {
+  const isCoreApplication = caregiverCoreApplicationByModule[progress.moduleId] === interactionId;
+  const nextProgress = {
+    ...progress,
+    state: progress.state === "notStarted" ? ("inProgress" as const) : progress.state,
+    coreApplicationCompleted: progress.coreApplicationCompleted || isCoreApplication,
+  };
+
+  return {
+    ...nextProgress,
+    state: deriveCaregiverModuleState(nextProgress),
+  };
+}
+
 export function isCaregiverModuleComplete({
   centralIdeaReached,
   coreApplicationCompleted,
