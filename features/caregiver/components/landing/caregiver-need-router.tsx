@@ -7,6 +7,7 @@ import { CaregiverFeedback } from "../foundation/caregiver-feedback";
 import { caregiverLandingContent, caregiverLandingRoutes } from "../../content/caregiver-landing";
 import type { CaregiverModuleId } from "../../content/caregiver-ids";
 import styles from "../../styles/caregiver-landing.module.css";
+import { caregiverModuleRegistry } from "../../content/caregiver-module-registry";
 
 export function CaregiverNeedRouter() {
   const firstChoiceRef = useRef<HTMLInputElement>(null);
@@ -110,7 +111,21 @@ export function CaregiverNeedRouter() {
           >
             <p>{submittedRoute.feedback}</p>
             <p>{submittedRoute.description}</p>
-            <p className={styles.destinationUnavailable}>{submittedRoute.moduleTitle}</p>
+            {submittedRoute.id === "CG-M2" ? (
+              <button
+                className={styles.actionButton}
+                type="button"
+                onClick={() =>
+                  window.location.assign(
+                    caregiverModuleRegistry["support-without-taking-over"].route,
+                  )
+                }
+              >
+                {submittedRoute.action}
+              </button>
+            ) : (
+              <p className={styles.destinationUnavailable}>{submittedRoute.moduleTitle}</p>
+            )}
             {submittedRoute.id === "CG-M4" ? (
               <Link className={styles.safetyInlineLink} href="/caregiver/urgent-help">
                 {caregiverLandingContent.safety.linkLabel}

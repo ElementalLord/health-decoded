@@ -1,4 +1,5 @@
-import type { CaregiverModuleReflectionId } from "../content/caregiver-ids.ts";
+import type { CaregiverModuleId, CaregiverModuleReflectionId } from "../content/caregiver-ids.ts";
+import type { CaregiverModuleProgress } from "./caregiver-progress.ts";
 
 export interface CaregiverSessionOnlyValue<Value> {
   readonly scope: "session-only";
@@ -7,6 +8,7 @@ export interface CaregiverSessionOnlyValue<Value> {
 }
 
 export interface CaregiverSessionState {
+  readonly moduleProgress: Partial<Record<CaregiverModuleId, CaregiverModuleProgress>>;
   readonly reflections: Partial<
     Record<CaregiverModuleReflectionId, CaregiverSessionOnlyValue<string>>
   >;
