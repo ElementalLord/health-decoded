@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 
 const icons = {
   ai: MessageCircleQuestion,
+  glossary: BookOpen,
   home: House,
   journey: Map,
   profile: UserRound,
@@ -46,7 +47,9 @@ function BottomNavigation({
         <ul
           className={cn(
             "stagger-children mx-auto grid max-w-md items-center",
-            routes.length === 6 ? "grid-cols-6" : "grid-cols-5",
+            routes.length === 8
+              ? "grid-cols-4"
+              : routes.length === 6 ? "grid-cols-6" : "grid-cols-5",
           )}
         >
           {routes.map((route) => {

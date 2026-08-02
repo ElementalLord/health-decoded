@@ -65,6 +65,11 @@ export default async function JourneyPage({
 
       <section className="motion-reveal divide-y divide-border border-y border-border">
         <ActionRow
+          description="Organize questions, changes, and what you may want to bring. Your preparation stays in this browser session."
+          href="/appointment-prep"
+          title="Prepare for an appointment"
+        />
+        <ActionRow
           description="Help without taking over."
           href="/caregiver"
           title="Support Someone You Care About"

@@ -75,6 +75,64 @@
   padding: 1.35rem 1.5rem 1.2rem;
 }
 
+.internalTools {
+  align-items: end;
+  border-bottom: 1px solid var(--editorial-rule);
+  display: grid;
+  gap: 1.5rem 3rem;
+  grid-template-columns: minmax(0, 0.75fr) minmax(19rem, 1.25fr);
+  padding: 2rem 0;
+}
+
+.internalTools > div > p {
+  color: #bb6d55;
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.internalTools h2 {
+  color: var(--editorial-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.55rem, 3vw, 2.25rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  margin-top: 0.4rem;
+}
+
+.internalTools > a {
+  align-items: center;
+  border-block: 1px solid var(--editorial-rule);
+  color: var(--editorial-ink);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 6rem;
+  padding: 1rem 0;
+}
+
+.internalTools > a strong,
+.internalTools > a small {
+  display: block;
+}
+.internalTools > a strong {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+}
+.internalTools > a small {
+  color: var(--editorial-body);
+  line-height: 1.5;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 47.99rem) {
+  .internalTools {
+    grid-template-columns: 1fr;
+  }
+}
+
 .readingRecordHeading {
   align-items: end;
   display: flex;

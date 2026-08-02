@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -568,6 +569,23 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             </div>
           </div>
         </header>
+
+        <section aria-labelledby="resource-tools-heading" className={styles.internalTools}>
+          <div>
+            <p>Health Decoded tools</p>
+            <h2 id="resource-tools-heading">Look up the language behind the care.</h2>
+          </div>
+          <Link href="/glossary">
+            <BookOpenText aria-hidden="true" size={22} strokeWidth={1.6} />
+            <span>
+              <strong>Medical Glossary</strong>
+              <small>
+                Find plain-language definitions for common diabetes and health-care terms.
+              </small>
+            </span>
+            <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
+          </Link>
+        </section>
 
         <ReadingProgressPanel total={resources.length} />
 
