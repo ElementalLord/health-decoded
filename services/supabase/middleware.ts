@@ -19,7 +19,13 @@ const protectedRoutePrefixes = [
   "/stories",
 ] as const;
 
+const publicRoutePaths = new Set(["/caregiver/urgent-help", "/caregiver/urgent-help/"]);
+
 function isProtectedRoute(pathname: string) {
+  if (publicRoutePaths.has(pathname)) {
+    return false;
+  }
+
   return protectedRoutePrefixes.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );

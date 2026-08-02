@@ -787,6 +787,7 @@ The first line names the supporter's capacity. The second uses help as leverage 
   - Plausible intention plus preferred impact: “The intention can be understandable while the action still adds pressure or removes privacy. Both belong in the map.”  
   - “Support” selected for an uninvited action: “An action does not become support from intention alone. Check whether permission, privacy, and an easy no were present.”  
   - Unknown omitted: “The scenario supports possible impacts, not Andre's exact feelings. Keep his perspective open.”
+  - Unsupported arrangement: “Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.”
 - **Learning point:** Intention explains an action; it does not settle its impact or authorize it.
 - **Required or optional:** Required.
 - **Progression behavior:** All three rows must be submitted; accuracy does not gate.
@@ -873,6 +874,7 @@ The first line names the supporter's capacity. The second uses help as leverage 
   Choices: “Is there any support agreement you want to revisit, including keeping reminders off?”; “Are you ready to admit reminders would help?”; “Can I ask your clinician instead?”  
   Preferred first choice.
 - **Consequence close:** Andre says, “Not today.” Leah replies, “Okay.” The branch ends without resolution.
+- **Neutral fallback for nonpreferred second choices:** “Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.”
 - **Learning point:** Permission is visible in what happens after no, not only in how the first offer is worded.
 - **Required or optional:** Required.
 - **Progression behavior:** Learner must reach the branch close; revisions are permitted.
@@ -900,6 +902,7 @@ The first line names the supporter's capacity. The second uses help as leverage 
   - Defense included: “The intention may be true, but placing it in the apology asks Andre to soften the impact.”  
   - Impact stated as fact: Not applicable because supplied wording preserves possibility.  
   - Change before action: “The promise is clearer after the action has been named directly.”
+  - Unsupported arrangement: “Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.”
 - **Learning point:** Repair centers the action and future behavior, not the supporter's need to be understood.
 - **Required or optional:** Required.
 - **Progression behavior:** Submission counts as application; preferred order is suggested, not a passing gate.
@@ -981,7 +984,7 @@ The first line names the supporter's capacity. The second uses help as leverage 
 
 **Completed state:** Module completed
 
-**What you practiced:** You mapped intention and impact, distinguished support from control, built a permission-based offer, accepted no, and practiced repair.
+**What you practiced:** You reached the central idea, practiced making support easier to decline, and reviewed the practical takeaway. The other activities remain available whenever you want to revisit them.
 
 **Key idea status, understood:** Key idea appears understood: permission is specific, private, declinable, and revisable.
 
