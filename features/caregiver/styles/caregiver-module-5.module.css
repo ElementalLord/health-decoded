@@ -35,10 +35,15 @@
   letter-spacing: -0.025em;
 }
 .module h2 {
-  max-width: 20ch;
+  max-width: 18ch;
   margin: 0 0 1rem;
   font-size: clamp(2rem, 4vw, 3.8rem);
   line-height: 1.05;
+}
+.module h3 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  line-height: 1.2;
 }
 .module p,
 .module li,
@@ -78,6 +83,7 @@
 .completionActions a,
 .knowledge a {
   color: var(--ink);
+  font-size: 0.9rem;
   font-weight: 720;
   text-decoration: underline;
   text-decoration-color: var(--plum);
@@ -94,10 +100,10 @@
   text-transform: uppercase;
 }
 .orientation h1 {
-  max-width: 11ch;
+  max-width: 10ch;
   margin: 0;
-  font-size: clamp(2.65rem, 4.5vw, 4.6rem);
-  line-height: 1;
+  font-size: clamp(2.8rem, 5vw, 5.2rem);
+  line-height: 0.95;
   overflow-wrap: normal;
   word-break: normal;
 }
@@ -111,7 +117,7 @@
   max-width: 42rem;
   margin-block-start: 2rem;
   color: var(--ink);
-  font-size: clamp(1.1rem, 1.7vw, 1.38rem);
+  font-size: clamp(1.12rem, 1.7vw, 1.4rem);
 }
 .centralPromise {
   grid-column: 1/-1;
@@ -425,7 +431,7 @@
   padding: 0 0 1.25rem;
   color: var(--ink);
   font-family: var(--font-fraunces), Georgia, serif;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 600;
   line-height: 1.35;
   overflow-wrap: break-word;
