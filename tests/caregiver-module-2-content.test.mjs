@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import { caregiverModule2 } from "../features/caregiver/content/caregiver-module-2.ts";
@@ -20,6 +21,10 @@ const allIds = [
   ...questionIds,
   caregiverModule2.reflection.id,
 ];
+const neutralFallback =
+  "Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.";
+const correctedCompletionCopy =
+  "You reached the central idea, practiced making support easier to decline, and reviewed the practical takeaway. The other activities remain available whenever you want to revisit them.";
 
 test("Module 2 exposes the approved deterministic identity and exact central idea", () => {
   assert.equal(caregiverModule2.id, "CG-M2");
@@ -79,4 +84,21 @@ test("approved scenario, permission, repair, scripts, quiz, reflection, and take
     caregiverModule2.takeaway.centralIdea,
     "Caring intention does not create access or authority.",
   );
+});
+
+test("Phase 4B fallback and completion copy stay synchronized with the approved sources", async () => {
+  assert.equal(caregiverModule2.interactions.intentionImpact.feedback.fallback, neutralFallback);
+  assert.equal(caregiverModule2.interactions.refusal.secondChoiceFallback, neutralFallback);
+  assert.equal(caregiverModule2.interactions.repair.feedback.fallback, neutralFallback);
+  assert.equal(caregiverModule2.completion.practiced, correctedCompletionCopy);
+
+  const [contentSource, buildSource] = await Promise.all([
+    readFile(new URL("../docs/caregiver/01-CAREGIVER-CONTENT.md", import.meta.url), "utf8"),
+    readFile(new URL("../docs/caregiver/03-CAREGIVER-CODEX-BUILD.md", import.meta.url), "utf8"),
+  ]);
+  assert.ok(contentSource.includes(neutralFallback));
+  assert.ok(contentSource.includes(correctedCompletionCopy));
+  assert.match(buildSource, /CG-M2-SOURCE-002/);
+  assert.ok(buildSource.includes(neutralFallback));
+  assert.ok(buildSource.includes(correctedCompletionCopy));
 });

@@ -11,6 +11,8 @@ export function SupportBoundaryContinuum() {
   const interaction = caregiverModule2.interactions.continuum;
   const { markInteractionSubmitted } = useCaregiverSession();
   const [placements, setPlacements] = useState<Record<string, string>>({});
+  const [attempts, setAttempts] = useState<Record<string, number>>({});
+  const [assistedPlacements, setAssistedPlacements] = useState<Record<string, boolean>>({});
   const [submitted, setSubmitted] = useState(false);
   const [submissionCount, setSubmissionCount] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
@@ -18,6 +20,22 @@ export function SupportBoundaryContinuum() {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!formRef.current?.reportValidity()) return;
+    const nextPlacements = { ...placements };
+    const nextAttempts = { ...attempts };
+    const nextAssistedPlacements: Record<string, boolean> = {};
+    interaction.behaviors.forEach((behavior) => {
+      if (placements[behavior.id] !== behavior.preferredCategory) {
+        const attempt = (nextAttempts[behavior.id] ?? 0) + 1;
+        nextAttempts[behavior.id] = attempt;
+        if (attempt >= 3) {
+          nextPlacements[behavior.id] = behavior.preferredCategory;
+          nextAssistedPlacements[behavior.id] = true;
+        }
+      }
+    });
+    setPlacements(nextPlacements);
+    setAttempts(nextAttempts);
+    setAssistedPlacements(nextAssistedPlacements);
     setSubmitted(true);
     setSubmissionCount((count) => count + 1);
     markInteractionSubmitted(interaction.id);
@@ -51,17 +69,26 @@ export function SupportBoundaryContinuum() {
       <form ref={formRef} onSubmit={submit}>
         <div className={styles.behaviorList}>
           {interaction.behaviors.map((behavior) => (
-            <fieldset key={behavior.id} className={styles.behaviorRow}>
-              <legend>{behavior.copy}</legend>
+            <div
+              key={behavior.id}
+              className={styles.behaviorRow}
+              role="group"
+              aria-labelledby={`${behavior.id}-prompt`}
+            >
+              <p id={`${behavior.id}-prompt`} className={styles.behaviorPrompt}>
+                {behavior.copy}
+              </p>
               <label>
                 <span>Closest category</span>
                 <select
                   required
+                  aria-describedby={submitted ? `${behavior.id}-feedback` : undefined}
                   value={placements[behavior.id] ?? ""}
                   onChange={(event) => {
+                    const value = event.currentTarget.value;
                     setPlacements((current) => ({
                       ...current,
-                      [behavior.id]: event.currentTarget.value,
+                      [behavior.id]: value,
                     }));
                     setSubmitted(false);
                   }}
@@ -75,11 +102,19 @@ export function SupportBoundaryContinuum() {
                 </select>
               </label>
               {submitted ? (
-                <p className={styles.itemFeedback} role="status">
+                <p id={`${behavior.id}-feedback`} className={styles.itemFeedback}>
+                  <strong>
+                    {placements[behavior.id] === behavior.preferredCategory
+                      ? "This response is ready to continue. "
+                      : "This response needs review. "}
+                  </strong>
                   <strong>{behavior.preferredCategory}.</strong> {behavior.feedback}
                 </p>
               ) : null}
-            </fieldset>
+              {assistedPlacements[behavior.id] ? (
+                <p className={styles.answerAssist}>Answer filled in after three attempts.</p>
+              ) : null}
+            </div>
           ))}
         </div>
         <div className={styles.interactionActions}>
@@ -96,6 +131,13 @@ export function SupportBoundaryContinuum() {
       {submitted ? (
         <CaregiverFeedback key={submissionCount} focusWhen heading="Review complete" tone="neutral">
           <p>{interaction.learningPoint}</p>
+          <ul className={styles.srOnly}>
+            {interaction.behaviors.map((behavior) => (
+              <li key={behavior.id}>
+                {behavior.copy}: {behavior.preferredCategory}. {behavior.feedback}
+              </li>
+            ))}
+          </ul>
         </CaregiverFeedback>
       ) : null}
     </section>

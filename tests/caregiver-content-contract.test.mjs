@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import test from "node:test";
 
 import {
@@ -136,4 +137,25 @@ test("foundation primitives expose semantic, focus, announcement, and motion-saf
   assert.match(styles, /@media \(max-width: 20rem\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(styles, /overflow-wrap: anywhere/);
+});
+
+test("caregiver controls never read a React event from inside a state update", () => {
+  const moduleRoot = "features/caregiver/components/modules";
+  const componentFiles = readdirSync(moduleRoot, { recursive: true })
+    .filter((file) => typeof file === "string" && file.endsWith(".tsx"))
+    .map((file) => join(moduleRoot, file));
+
+  for (const file of componentFiles) {
+    const source = readFileSync(file, "utf8");
+    assert.doesNotMatch(
+      source,
+      /\b(?:set[A-Z]\w*|updateRow|place)\([^;\n]*event\.currentTarget\.(?:value|checked)/,
+      `${file} must copy the input value before updating state`,
+    );
+    assert.doesNotMatch(
+      source,
+      /set[A-Z]\w*\(\s*\([^)]*\)\s*=>[\s\S]{0,300}?event\.currentTarget/,
+      `${file} must not retain a React event inside a queued state updater`,
+    );
+  }
 });

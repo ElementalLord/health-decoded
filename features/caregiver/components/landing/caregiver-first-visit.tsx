@@ -16,9 +16,9 @@ export function CaregiverFirstVisit() {
           {firstVisit.primaryAction}
           <span aria-hidden="true">↓</span>
         </Link>
-        <Link className={styles.secondaryLink} href="#caregiver-guided-path">
+        <Link className={styles.secondaryLink} href="/caregiver/modules/what-they-may-be-feeling">
           {firstVisit.secondaryAction}
-          <span aria-hidden="true">↓</span>
+          <span aria-hidden="true">→</span>
         </Link>
       </div>
     </section>

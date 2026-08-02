@@ -12,19 +12,20 @@ export function RefusalBranchingConversation() {
   const { markInteractionSubmitted } = useCaregiverSession();
   const [firstChoice, setFirstChoice] = useState("");
   const [firstSubmitted, setFirstSubmitted] = useState(false);
+  const [firstSubmissionCount, setFirstSubmissionCount] = useState(0);
   const [secondOpen, setSecondOpen] = useState(false);
   const [secondChoice, setSecondChoice] = useState("");
   const [closed, setClosed] = useState(false);
   const firstFeedback = interaction.firstChoices.find(({ id }) => id === firstChoice);
+  const secondChoiceIsPreferred = secondChoice === interaction.secondChoices[0];
   const secondHeadingRef = useRef<HTMLHeadingElement>(null);
-  const consequenceRef = useRef<HTMLDivElement>(null);
 
   function reviewFirst() {
     if (!firstChoice) return;
     setFirstSubmitted(true);
+    setFirstSubmissionCount((count) => count + 1);
     setSecondOpen(false);
     setClosed(false);
-    markInteractionSubmitted(interaction.id);
   }
 
   function continueBranch() {
@@ -37,7 +38,6 @@ export function RefusalBranchingConversation() {
     if (!secondChoice) return;
     setClosed(true);
     markInteractionSubmitted(interaction.id);
-    requestAnimationFrame(() => consequenceRef.current?.focus());
   }
 
   return (
@@ -85,7 +85,12 @@ export function RefusalBranchingConversation() {
       </div>
 
       {firstSubmitted && firstFeedback ? (
-        <CaregiverFeedback focusWhen heading={firstFeedback.label} tone="neutral">
+        <CaregiverFeedback
+          key={firstSubmissionCount}
+          focusWhen
+          heading={firstFeedback.label}
+          tone="neutral"
+        >
           <p>{firstFeedback.feedback}</p>
           {firstChoice === "accept" ? (
             <button className={styles.textAction} type="button" onClick={continueBranch}>
@@ -130,15 +135,11 @@ export function RefusalBranchingConversation() {
       ) : null}
 
       {closed ? (
-        <div
-          ref={consequenceRef}
-          className={styles.branchClose}
-          tabIndex={-1}
-          role="status"
-          aria-live="polite"
-        >
-          <p>{interaction.consequence}</p>
-          <p>{interaction.learningPoint}</p>
+        <div className={styles.branchClose}>
+          <CaregiverFeedback focusWhen heading={interaction.learningPoint} tone="neutral">
+            <p>{interaction.consequence}</p>
+            {!secondChoiceIsPreferred ? <p>{interaction.secondChoiceFallback}</p> : null}
+          </CaregiverFeedback>
         </div>
       ) : null}
     </section>

@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { caregiverModule2 } from "../../../content/caregiver-module-2";
+import { caregiverModuleRegistry } from "../../../content/caregiver-module-registry";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-2.module.css";
 
@@ -37,14 +38,14 @@ export function Module2Completion() {
           <dd>{progress.takeawayViewed ? "Viewed" : "Not yet viewed"}</dd>
         </div>
       </dl>
-      {completed ? (
-        <p>{progress.keyIdeaUnderstood === false ? completion.revisit : completion.understood}</p>
+      {completed && progress.keyIdeaUnderstood !== null ? (
+        <p>{progress.keyIdeaUnderstood ? completion.understood : completion.revisit}</p>
       ) : null}
       <div className={styles.completionActions}>
         <a href="#CG-M2-S03">{completion.review}</a>
-        <span className={styles.unavailableNext} aria-disabled="true">
+        <Link href={caregiverModuleRegistry["everyday-support-that-actually-helps"].route}>
           {completion.continue}
-        </span>
+        </Link>
         <Link href="/caregiver">{completion.return}</Link>
       </div>
     </section>

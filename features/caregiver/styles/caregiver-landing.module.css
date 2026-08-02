@@ -211,6 +211,7 @@
   inset: 2.4rem auto auto 2.8rem;
   border-radius: 50%;
   background: rgb(231 177 91 / 52%);
+  animation: caregiver-light-breathe 5.5s ease-in-out infinite;
 }
 
 .windowFrameVertical,
@@ -275,6 +276,8 @@
   border: 1px solid rgb(40 76 65 / 38%);
   border-radius: 50%;
   background: #fff7e9;
+  transform-origin: center;
+  animation: caregiver-place-settle 4.8s ease-in-out infinite;
 }
 
 .placeOne {
@@ -284,21 +287,36 @@
 .placeTwo {
   inset-inline-start: calc(50% - 2.75rem);
   background: #dce7dc;
+  animation-delay: -1.6s;
 }
 
 .placeThree {
   inset-inline-end: 11%;
   background: #dce8e8;
+  animation-delay: -3.2s;
 }
 
 .cup {
   position: absolute;
   width: 2rem;
   height: 2.4rem;
-  inset: 0.8rem auto auto 27%;
+  inset: 0.3rem auto auto calc(11% + 1.75rem);
   border: 2px solid #6f8c91;
   border-radius: 0.15rem 0.15rem 0.55rem 0.55rem;
   background: #fffaf2;
+  transform-origin: 50% 100%;
+  animation: caregiver-cup-sway 4.2s ease-in-out infinite;
+}
+
+.cup::before {
+  position: absolute;
+  width: 0.5rem;
+  height: 1.4rem;
+  inset: -1.65rem auto auto 0.65rem;
+  border-inline-start: 2px solid rgb(111 140 145 / 52%);
+  border-radius: 50%;
+  content: "";
+  animation: caregiver-steam 3s ease-in-out infinite;
 }
 
 .cup::after {
@@ -319,7 +337,9 @@
   inset: 1.1rem 26% auto auto;
   border: 1px solid #b7654d;
   transform: rotate(-4deg);
+  transform-origin: 50% 100%;
   background: #fffaf2;
+  animation: caregiver-note-swing 5s ease-in-out infinite;
 }
 
 .safetyRoute {
@@ -537,11 +557,18 @@
 
 .moduleSequence li {
   display: grid;
-  grid-template-columns: 3.3rem minmax(0, 1fr) minmax(7rem, auto);
+  grid-template-columns: 3.3rem minmax(0, 1fr) minmax(7rem, auto) minmax(12rem, auto);
   gap: 1.25rem;
   align-items: start;
   padding: 1.4rem 0;
   border-block-end: 1px solid var(--caregiver-rule);
+}
+
+.moduleSequence .textButton {
+  justify-self: end;
+  padding-inline: 0 0.1rem;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .moduleSequence p {
@@ -803,6 +830,60 @@
   }
 }
 
+@keyframes caregiver-light-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes caregiver-place-settle {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(1.035);
+  }
+}
+
+@keyframes caregiver-cup-sway {
+  0%,
+  100% {
+    transform: rotate(-1.5deg) translateY(0);
+  }
+  50% {
+    transform: rotate(1.5deg) translateY(-0.16rem);
+  }
+}
+
+@keyframes caregiver-steam {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0) skewX(-8deg);
+  }
+  50% {
+    opacity: 0.72;
+    transform: translateY(-0.35rem) skewX(10deg);
+  }
+}
+
+@keyframes caregiver-note-swing {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(1deg) translateY(-0.12rem);
+  }
+}
+
 @media (min-width: 48rem) {
   .routeFrame {
     margin: -3rem -2rem;
@@ -936,6 +1017,13 @@
     white-space: normal;
   }
 
+  .moduleSequence .textButton {
+    grid-column: 2;
+    justify-self: start;
+    width: auto;
+    white-space: normal;
+  }
+
   .toolList {
     grid-template-columns: minmax(0, 1fr);
     margin-inline-start: 0;
@@ -973,8 +1061,19 @@
 }
 
 :global([data-reduced-motion="true"]) .routeResult::before,
-:global([data-reduced-motion="true"]) .beginResult::before {
+:global([data-reduced-motion="true"]) .beginResult::before,
+:global([data-reduced-motion="true"]) .windowLight,
+:global([data-reduced-motion="true"]) .placeOne,
+:global([data-reduced-motion="true"]) .placeTwo,
+:global([data-reduced-motion="true"]) .placeThree,
+:global([data-reduced-motion="true"]) .cup,
+:global([data-reduced-motion="true"]) .cup::before,
+:global([data-reduced-motion="true"]) .notebook {
   animation: none;
+}
+
+:global([data-reduced-motion="true"]) .routeResult::before,
+:global([data-reduced-motion="true"]) .beginResult::before {
   transform: scaleY(1);
 }
 

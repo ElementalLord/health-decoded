@@ -7,7 +7,7 @@ import { CaregiverFeedback } from "../foundation/caregiver-feedback";
 import { caregiverLandingContent, caregiverLandingRoutes } from "../../content/caregiver-landing";
 import type { CaregiverModuleId } from "../../content/caregiver-ids";
 import styles from "../../styles/caregiver-landing.module.css";
-import { caregiverModuleRegistry } from "../../content/caregiver-module-registry";
+import { getImplementedCaregiverModuleById } from "../../content/caregiver-module-registry";
 
 export function CaregiverNeedRouter() {
   const firstChoiceRef = useRef<HTMLInputElement>(null);
@@ -111,18 +111,13 @@ export function CaregiverNeedRouter() {
           >
             <p>{submittedRoute.feedback}</p>
             <p>{submittedRoute.description}</p>
-            {submittedRoute.id === "CG-M2" ? (
-              <button
+            {getImplementedCaregiverModuleById(submittedRoute.id) ? (
+              <Link
                 className={styles.actionButton}
-                type="button"
-                onClick={() =>
-                  window.location.assign(
-                    caregiverModuleRegistry["support-without-taking-over"].route,
-                  )
-                }
+                href={getImplementedCaregiverModuleById(submittedRoute.id)!.route}
               >
                 {submittedRoute.action}
-              </button>
+              </Link>
             ) : (
               <p className={styles.destinationUnavailable}>{submittedRoute.moduleTitle}</p>
             )}

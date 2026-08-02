@@ -2,10 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import {
-  caregiverBeginningChoices,
-  caregiverLandingRoutes,
-} from "../features/caregiver/content/caregiver-landing.ts";
+import { caregiverLandingRoutes } from "../features/caregiver/content/caregiver-landing.ts";
 
 const needRouterSource = await readFile(
   new URL("../features/caregiver/components/landing/caregiver-need-router.tsx", import.meta.url),
@@ -40,15 +37,11 @@ test("CG-LANDING-I01 feedback is interpretive and M4 preserves only the urgent l
   assert.doesNotMatch(needRouterSource, /correct|incorrect|score|moduleCompleted/);
 });
 
-test("CG-LANDING-I02 uses native radios, explicit submission, revision, and exact feedback", () => {
-  assert.match(guidedPathSource, /data-interaction-id="CG-LANDING-I02"/);
-  assert.match(guidedPathSource, /<fieldset/);
-  assert.match(guidedPathSource, /name="caregiver-beginning-strategy"/);
-  assert.match(guidedPathSource, /type="radio"/);
-  assert.match(guidedPathSource, /submitSelection/);
-  assert.match(guidedPathSource, /changeChoice/);
-  assert.equal(caregiverBeginningChoices.length, 3);
-  assert.ok(caregiverBeginningChoices.every((choice) => choice.feedback.length > 30));
+test("the guided path keeps the module sequence without repeating the starting chooser", () => {
+  assert.match(guidedPathSource, /className=\{styles\.moduleSequence\}/);
+  assert.doesNotMatch(guidedPathSource, /data-interaction-id="CG-LANDING-I02"/);
+  assert.doesNotMatch(guidedPathSource, /name="caregiver-beginning-strategy"/);
+  assert.doesNotMatch(guidedPathSource, /submitSelection|changeChoice|beginChooser/);
   assert.doesNotMatch(guidedPathSource, /href="\/caregiver\/tools\//);
 });
 
@@ -56,7 +49,5 @@ test("feedback is announced politely and receives focus only after deliberate su
   assert.match(feedbackSource, /role=\{isAssertive \? "alert" : "status"\}/);
   assert.match(feedbackSource, /aria-live=\{isAssertive \? "assertive" : "polite"\}/);
   assert.match(needRouterSource, /focusWhen/);
-  assert.match(guidedPathSource, /focusWhen/);
   assert.doesNotMatch(needRouterSource, /onChange=\{submitSelection\}/);
-  assert.doesNotMatch(guidedPathSource, /onChange=\{submitSelection\}/);
 });

@@ -10,6 +10,7 @@ import {
   Module2AppointmentsNarrative,
   Module2BoundariesNarrative,
   Module2DistinctionNarrative,
+  Module2FurtherReading,
   Module2IntentionImpactNarrative,
   Module2PermissionNarrative,
   Module2RepairNarrative,
@@ -17,6 +18,7 @@ import {
   Module2Scripts,
 } from "./module-2-narrative";
 import { Module2Orientation } from "./module-2-orientation";
+import { Module2PracticeDrawer } from "./module-2-practice-drawer";
 import { Module2Reflection } from "./module-2-reflection";
 import { Module2Takeaway } from "./module-2-takeaway";
 import { PermissionLanguageBuilder } from "./permission-language-builder";
@@ -40,16 +42,41 @@ export function Module2Experience() {
         <ModuleVisibilityMarker onViewed={markCentralIdeaReached}>
           <Module2IntentionImpactNarrative />
         </ModuleVisibilityMarker>
-        <IntentionImpactMap />
+        <Module2PracticeDrawer
+          number="01"
+          title="Map intention and possible impact"
+          description="A short optional practice for separating what was meant from what may have landed."
+        >
+          <IntentionImpactMap />
+        </Module2PracticeDrawer>
         <Module2DistinctionNarrative />
-        <SupportBoundaryContinuum />
+        <Module2PracticeDrawer
+          number="02"
+          title="Notice when support starts becoming control"
+          description="Place everyday actions using permission, privacy, repetition, and freedom to decline."
+        >
+          <SupportBoundaryContinuum />
+        </Module2PracticeDrawer>
         <Module2PermissionNarrative />
         <PermissionLanguageBuilder />
         <Module2AppointmentsNarrative />
-        <RefusalBranchingConversation />
+        <Module2PracticeDrawer
+          number="03"
+          title="Practice hearing no without withdrawing care"
+          description="Try a brief conversation where the relationship matters more than winning agreement."
+        >
+          <RefusalBranchingConversation />
+        </Module2PracticeDrawer>
         <Module2RepairNarrative />
-        <RepairSequence />
+        <Module2PracticeDrawer
+          number="04"
+          title="Put a repair back in a usable order"
+          description="Rearrange the words so ownership and changed behavior come before reassurance."
+        >
+          <RepairSequence />
+        </Module2PracticeDrawer>
         <Module2BoundariesNarrative />
+        <Module2FurtherReading />
         <Module2Scripts />
         <Module2KnowledgeCheck />
         <Module2Reflection />

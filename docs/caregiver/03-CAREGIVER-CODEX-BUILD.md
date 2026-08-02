@@ -49,7 +49,7 @@ When two requirements appear to conflict, use this order:
 
 The first item means requirements that have actually completed the named review with verifiable reviewer identity, qualification, scope, and date. Until that evidence exists, the current `not-reviewed` content may support an internal interface prototype but must not be described as reviewed, clinically approved, expert verified, or publicly ready.
 
-The Binding Correction Register has authority only over the completion-status conflict it names. It cannot alter learner-facing copy, interaction logic, feedback, medical boundaries, privacy behavior, autonomy, consent, emergency behavior, accessibility, visual intent, source claims, or review requirements.
+The Binding Correction Register has authority only over the named conflicts it records. It cannot alter learner-facing copy, interaction logic, feedback, medical boundaries, privacy behavior, autonomy, consent, emergency behavior, accessibility, visual intent, source claims, or review requirements except where a narrow product-approved register entry explicitly does so.
 
 ### Conflict process
 
@@ -103,6 +103,22 @@ F. Reflections do not gate completion.
 G. The practical takeaway must be viewed before completion.
 
 H. All existing learner-facing content, interaction mechanics, choices, feedback, revision behavior, medical boundaries, privacy behavior, accessibility intent, visual intent, source claims, and review requirements are preserved exactly.
+
+### `CG-M2-SOURCE-002`
+
+**Status:** Resolved by product decision.
+
+**Affected source:** Missing approved fallback feedback for unsupported Module 2 interaction arrangements and completion copy that implied optional practice was completed.
+
+**Binding corrections:**
+
+A. For unsupported `CG-M2-I01` arrangements, nonpreferred `CG-M2-I04` second-stage selections, and unsupported `CG-M2-I05` arrangements, use only this exact neutral fallback after deliberate submission: “Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.” Specific authored feedback always takes priority.
+
+B. Replace the Module 2 completion practice sentence with: “You reached the central idea, practiced making support easier to decline, and reviewed the practical takeaway. The other activities remain available whenever you want to revisit them.”
+
+C. `CG-M2-I03` remains the sole Module 2 core application. The existing completion-status correction remains unchanged.
+
+D. No other module or tool content is changed.
 
 ### Exact interaction patch matrix
 
