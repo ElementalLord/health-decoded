@@ -375,9 +375,13 @@
   color: var(--ink);
 }
 .needsReview {
-  color: #704052 !important;
-  border-color: var(--plum) !important;
-  font-weight: 650;
+  color: #8a6248 !important;
+  border-color: #c7a58e !important;
+  background: #f3e5d7;
+  font-weight: 400;
+}
+.needsReview strong {
+  font-weight: 400;
 }
 .planComparison {
   display: grid;

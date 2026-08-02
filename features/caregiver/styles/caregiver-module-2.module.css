@@ -870,9 +870,10 @@
 }
 
 .offerReview {
-  color: var(--module-ink);
+  color: #8a6248;
   font-family: var(--module-serif);
   font-size: 1.2em;
+  font-weight: 400;
 }
 
 .branchingConversation {
@@ -1004,6 +1005,12 @@
 .sequenceReview {
   margin: 0;
   padding-inline-start: 1.25rem;
+  color: #8a6248;
+  font-weight: 400;
+}
+.sequenceReview strong,
+.offerReview strong {
+  font-weight: 400;
 }
 
 .primaryAction,
@@ -1107,9 +1114,12 @@
 .answerNeedsReview {
   margin: 0 0 0.4rem;
   padding-inline-start: 0.75rem;
-  border-inline-start: 3px solid var(--module-impact);
-  color: var(--module-ink);
-  font-weight: 720;
+  border-inline-start: 3px solid #c7a58e;
+  color: #8a6248;
+  font-weight: 400;
+}
+.answerNeedsReview strong {
+  font-weight: 400;
 }
 .answerAssist {
   margin: 0.65rem 0 0;
