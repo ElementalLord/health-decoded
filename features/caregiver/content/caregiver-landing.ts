@@ -93,7 +93,7 @@ export const caregiverLandingRoutes = Object.freeze([
       "Use the person's plan and appropriate professional help without diagnosing or improvising treatment.",
     time: "10 to 12 minutes",
     feedback:
-      "Start with role clarity. This route cannot assess a current situation. If someone may be in immediate danger, use the urgent route now.",
+      "Start with role clarity. This lesson helps you separate observation from interpretation and choose an appropriate source of support.",
   },
   {
     id: "CG-M5",
@@ -172,10 +172,10 @@ export const caregiverLandingContent = Object.freeze({
   safety: {
     linkLabel: "Something feels wrong right now",
     boundary:
-      "Health Decoded cannot determine what is happening or whether someone is safe. If someone may be in immediate danger, stop here and use the person's clinician-created plan if it is immediately available. Contact emergency help using the reviewed information for your region. Do not delay help to finish this page.",
+      "Health Decoded provides general education and cannot assess a current situation. Use an established plan and appropriate local help when urgent action is needed.",
     regionalActionTemplate: "View emergency help for [REGION_DISPLAY_NAME]",
     missingRegion:
-      "Local emergency details are not available in Health Decoded right now. Contact your local emergency service if someone may be in immediate danger, or contact an appropriate healthcare professional for urgent guidance. Do not use a guessed number or wait for this page to update.",
+      "Local emergency details are not available in Health Decoded right now. Use an appropriate local emergency service or healthcare professional for urgent guidance. Do not use a guessed number or wait for this page to update.",
   },
   needRouter: {
     sectionTitle: "What brought you here?",

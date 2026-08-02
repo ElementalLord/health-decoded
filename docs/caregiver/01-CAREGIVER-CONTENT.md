@@ -130,11 +130,11 @@ This document supplies exact learner-facing copy and complete experience behavio
 
 **Link label:** Something feels wrong right now
 
-**Boundary copy shown with the route:** Health Decoded cannot determine what is happening or whether someone is safe. If someone may be in immediate danger, stop here and use the person's clinician-created plan if it is immediately available. Contact emergency help using the reviewed information for your region. Do not delay help to finish this page.
+**Boundary copy shown with the route:** Health Decoded provides general education and cannot assess a current situation. Use an established plan and appropriate local help when urgent action is needed.
 
 **Regional action label:** View emergency help for [REGION_DISPLAY_NAME]
 
-**Missing-region fallback:** Local emergency details are not available in Health Decoded right now. Contact your local emergency service if someone may be in immediate danger, or contact an appropriate healthcare professional for urgent guidance. Do not use a guessed number or wait for this page to update.
+**Missing-region fallback:** Local emergency details are not available in Health Decoded right now. Use an appropriate local emergency service or healthcare professional for urgent guidance. Do not use a guessed number or wait for this page to update.
 
 ### What brought you here?
 
@@ -255,7 +255,7 @@ This document supplies exact learner-facing copy and complete experience behavio
   - M1 selected: “Start with noticing what happened without deciding what it means. This route practices curiosity, timing, and listening.”  
   - M2 selected: “Start with the line between offered help and assumed involvement. This route focuses on permission, privacy, and repair.”  
   - M3 selected: “Start with ordinary tasks. This route turns ‘Tell me if you need anything’ into support that is specific and easier to accept or decline.”  
-  - M4 selected: “Start with role clarity. This route cannot assess a current situation. If someone may be in immediate danger, use the urgent route now.”  
+  - M4 selected: “Start with role clarity. This lesson helps you separate observation from interpretation and choose an appropriate source of support.”
   - M5 selected: “Start with what is becoming hard to sustain. This route separates caring from being responsible for another adult's decisions.”
 - **Learning point:** A useful starting point depends on the current need, not on completing prerequisites.
 - **Required or optional:** Optional.
@@ -1359,7 +1359,7 @@ The tabletop workspace becomes a vertical chronological plan. Pair comparisons u
 
 **Heading:** Stop here and get urgent help.
 
-**Copy:** Health Decoded cannot determine what is happening. If someone may be in immediate danger, contact emergency help for **[REGION_DISPLAY_NAME]** now. Use the person's clinician-created emergency plan if it is immediately available, but do not delay emergency contact to search for it or finish this module.
+**Copy:** Health Decoded cannot determine what is happening. In an emergency, contact appropriate help for **[REGION_DISPLAY_NAME]**. Use the person's clinician-created emergency plan if it is immediately available, but do not delay emergency contact to search for it or finish this module.
 
 **Primary action:** Contact emergency help
 
@@ -1369,7 +1369,7 @@ The tabletop workspace becomes a vertical chronological plan. Pair comparisons u
 
 **Heading:** Local details are unavailable.
 
-**Copy:** Health Decoded cannot verify emergency contact information for your location right now. Contact your local emergency service if someone may be in immediate danger. For an urgent concern that is not an immediate emergency, contact an appropriate healthcare professional. Do not use a guessed number or wait for this page to update.
+**Copy:** Health Decoded cannot verify emergency contact information for your location right now. In an emergency, contact your local emergency service. For another urgent concern, contact an appropriate healthcare professional. Do not use a guessed number or wait for this page to update.
 
 ### Clinician-created plan
 
@@ -1407,11 +1407,11 @@ The tabletop workspace becomes a vertical chronological plan. Pair comparisons u
 
 **Three layers:** General education. The person's clinician-created plan. Professional or emergency help.
 
-### `CG-M4-S02` Immediate route
+### `CG-M4-S02` Emergency context
 
-**Visible link before any scenario:** Someone may be in immediate danger
+**Opening behavior:** Begin directly with the lesson scenario, without an interrupting alert.
 
-Activating it replaces the learning area with the immediate-danger interruption above. No answer, sign-in, or confirmation question appears first.
+The lesson continues directly into the scenario without a separate alert, confirmation step, or interruption.
 
 ### `CG-M4-S03` Illustrative Scenario: The unfinished errand
 
@@ -1497,9 +1497,9 @@ Some severe diabetes-related events can require immediate treatment. That is why
 - **Narrative information already known:** Three safety layers exist.
 - **New work required:** Assign five needs to a source.
 - **Exact learner prompt:** Choose the source that should guide each need.
-- **Controls or choices:** Layers: **General education**, **Their clinician-created plan**, **Professional or emergency help**. Needs: “Learn why individualized plans matter”; “Find their agreed supporter role”; “Know what their clinician told them to do in a known situation”; “Respond when the plan is unclear and the situation is concerning”; “Respond when someone may be in immediate danger.”
+- **Controls or choices:** Layers: **General education**, **Their clinician-created plan**, **Professional or emergency help**. Needs: “Learn why individualized plans matter”; “Find their agreed supporter role”; “Know what their clinician told them to do in a known situation”; “Respond when the plan is unclear and the situation is concerning”; “Respond to an emergency.”
 - **Logic:** General; plan; plan; professional; emergency.
-- **Exact feedback:** General: “Education explains the framework, not an individual action.” Plan: “The individualized layer belongs to the person and their care team.” Professional: “Uncertainty outside the plan requires human guidance.” Emergency: “Immediate danger interrupts education.”
+- **Exact feedback:** General: “Education explains the framework, not an individual action.” Plan: “The individualized layer belongs to the person and their care team.” Professional: “Uncertainty outside the plan requires human guidance.” Emergency: “An emergency interrupts education.”
 - **Learning point:** Safe support depends on using the right source, not gathering the most information.
 - **Required or optional:** Required unless interrupted.
 - **Progression behavior:** Submission counts.
@@ -1606,13 +1606,13 @@ Some severe diabetes-related events can require immediate treatment. That is why
 
 ### `CG-M4-Q02`
 
-- **Question:** A person feels unwell, their plan is nearby, and someone may be in immediate danger. What comes first?
+- **Question:** A person feels unwell and their plan is nearby. What comes first when emergency help may be needed?
 - **Choices:** A “Search the whole plan before calling”; B “Contact emergency help, using the plan only if it does not delay contact”; C “Finish the module”; D “Collect every medication name.”
 - **Preferred response:** B.
-- **Explanation:** Immediate danger interrupts education. The plan can support action when immediately available, but finding it must not delay emergency contact.
+- **Explanation:** An emergency interrupts education. The plan can support action when immediately available, but finding it must not delay emergency contact.
 - **Misconception tested:** Complete information must be gathered before help.
 - **Related section:** `CG-M4-S02`
-- **Review link label:** Review immediate danger
+- **Review link label:** Review emergency response
 
 ### `CG-M4-Q03`
 

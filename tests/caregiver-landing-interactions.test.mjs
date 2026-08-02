@@ -29,10 +29,10 @@ test("CG-LANDING-I01 uses one native revisable radio group and explicit actions"
   assert.equal(caregiverLandingRoutes.length, 5);
 });
 
-test("CG-LANDING-I01 feedback is interpretive and M4 preserves only the urgent link", () => {
+test("CG-LANDING-I01 feedback is interpretive and routes directly to each lesson", () => {
   assert.ok(caregiverLandingRoutes.every((route) => route.feedback.length > 30));
-  assert.match(needRouterSource, /submittedRoute\.id === "CG-M4"/);
-  assert.match(needRouterSource, /href="\/caregiver\/urgent-help"/);
+  assert.doesNotMatch(needRouterSource, /urgent-help|immediate danger/iu);
+  assert.match(needRouterSource, /getImplementedCaregiverModuleById/);
   assert.doesNotMatch(needRouterSource, /href="\/caregiver\/modules\//);
   assert.doesNotMatch(needRouterSource, /correct|incorrect|score|moduleCompleted/);
 });

@@ -59,7 +59,7 @@
 .orientation {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.85fr);
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.62fr);
   gap: clamp(2rem, 6vw, 6rem);
   align-items: center;
   min-height: 38rem;
@@ -94,12 +94,15 @@
   text-transform: uppercase;
 }
 .orientation h1 {
-  max-width: 100%;
+  max-width: 11ch;
   margin: 0;
-  font-size: clamp(2.75rem, 5vw, 5.1rem);
-  line-height: 0.98;
+  font-size: clamp(2.65rem, 4.5vw, 4.6rem);
+  line-height: 1;
   overflow-wrap: normal;
   word-break: normal;
+}
+.orientation h1:focus {
+  outline: none;
 }
 .orientationCopy {
   min-width: 0;
@@ -120,50 +123,45 @@
   line-height: 1.2;
 }
 .networkVisual {
+  position: relative;
   display: grid;
-  gap: 1.2rem;
+  gap: 1rem;
   min-height: 22rem;
   align-content: center;
-  padding: clamp(1.25rem, 4vw, 2.5rem);
-  border: 1px solid #cfbec5;
-  border-radius: 1.25rem;
-  background: #eee5e8;
+  padding-block: 2rem;
+  border-block: 1px solid var(--rule);
+  background: transparent;
   overflow: hidden;
 }
-.networkVisual p {
-  margin: 0;
-  padding: 1rem;
-  border: 1px solid #b49da6;
-  border-radius: 999px;
-  color: var(--ink);
-  background: var(--paper);
-  font-weight: 780;
-  text-align: center;
-}
-.networkVisual div {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.7rem;
-}
 .networkVisual span {
-  display: grid;
-  min-height: 6rem;
-  place-items: center;
-  padding: 0.8rem;
-  border: 1px solid #c4b2b9;
-  border-radius: 1rem;
+  margin: 0;
   color: var(--ink);
-  background: #fffaf2;
-  font-size: 0.88rem;
-  font-weight: 700;
-  text-align: center;
-  animation: m5-network-open 0.8s ease both;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  line-height: 1.05;
 }
-.networkVisual span:nth-child(2) {
-  animation-delay: 0.15s;
+.networkVisual i {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--plum);
 }
-.networkVisual span:nth-child(3) {
-  animation-delay: 0.3s;
+.networkVisual i::after {
+  position: absolute;
+  width: 0.8rem;
+  height: 0.8rem;
+  inset: -0.38rem auto auto 0;
+  border-radius: 50%;
+  background: var(--plum);
+  content: "";
+  animation: m5-network-flow 7s ease-in-out infinite;
+}
+.networkVisual p {
+  max-width: 24rem;
+  margin: 0;
+  color: var(--ink);
+  font-size: 1rem;
 }
 .moduleBody {
   width: min(100%, 78rem);
@@ -208,7 +206,7 @@
   inset: auto 12% 3rem auto;
   border-block-start: 1rem solid var(--plum);
   background: var(--paper);
-  animation: m5-folder 2s ease 0.25s 2 alternate;
+  animation: m5-folder 5s ease-in-out 0.25s infinite alternate;
 }
 .phone {
   position: absolute;
@@ -218,7 +216,7 @@
   border: 0.35rem solid var(--ink);
   border-radius: 0.7rem;
   background: var(--paper);
-  animation: m5-phone 1.5s ease 0.4s 2 alternate;
+  animation: m5-phone 4s ease-in-out 0.4s infinite alternate;
 }
 .scenario p {
   margin: 0;
@@ -228,14 +226,15 @@
 .responsibilityNarrative dl {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
+  gap: 2rem;
   margin-block: 2rem;
-  background: var(--rule);
+  background: transparent;
 }
 .responsibilityNarrative dl > div {
   min-height: 10rem;
-  padding: 1.25rem;
-  background: var(--paper);
+  padding-block: 1.25rem;
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .responsibilityNarrative dt,
 .boundaryNarrative dt,
@@ -267,12 +266,13 @@
 .boundaryNarrative dl {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--rule);
+  gap: 2rem;
+  background: transparent;
 }
 .boundaryNarrative dl > div {
-  padding: 1.25rem;
-  background: var(--paper);
+  padding-block: 1.25rem;
+  border-block-end: 1px solid var(--rule);
+  background: transparent;
 }
 .boundaryNarrative dl > div[data-kind="boundary"] {
   border-block-start: 4px solid var(--blue);
@@ -303,7 +303,7 @@
   border: 3px solid var(--blue);
   border-radius: 50%;
   background: var(--canvas);
-  animation: m5-path 1.2s ease var(--delay, 0s) 2 alternate;
+  animation: m5-path 4s ease-in-out var(--delay, 0s) infinite alternate;
 }
 .wideningPath span:nth-child(2) {
   --delay: 0.2s;
@@ -334,23 +334,25 @@
 .mapRows,
 .networkRows {
   display: grid;
-  gap: 1px;
+  gap: 0;
   margin-block: 2rem;
-  background: var(--rule);
+  background: transparent;
 }
 .mapRows label {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.75fr);
   gap: 0.75rem 1.5rem;
   align-items: center;
-  padding: 1rem;
-  border-radius: 0.8rem;
-  background: var(--paper);
+  padding: 1rem 0;
+  border-block-end: 1px solid var(--rule);
+  background: transparent;
 }
 .mapRows select,
 .networkRows select,
 .reflection textarea {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 3rem;
   border: 1px solid var(--ink);
   padding: 0.65rem;
@@ -374,14 +376,14 @@
 .planComparison {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
+  gap: 2rem;
   margin-block: 2rem;
-  background: var(--rule);
+  background: transparent;
 }
 .planComparison > div {
-  padding: 1.5rem;
-  border-radius: 1rem;
-  background: var(--paper);
+  padding-block: 1.5rem;
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .planComparison h3 {
   margin: 0;
@@ -408,15 +410,15 @@
 .knowledge fieldset {
   min-inline-size: 0;
   margin: 0 0 1.25rem;
-  padding: 1.5rem;
-  border: 1px solid #d6c8cd;
-  border-inline-start: 3px solid var(--plum);
-  border-radius: 1rem;
-  background: var(--paper);
+  padding: 0 0 1.5rem;
+  border: 0;
+  border-block-end: 1px solid var(--rule);
+  background: transparent;
 }
 .boundaryPractice legend,
 .knowledge legend {
-  float: left;
+  float: none;
+  display: block;
   width: 100%;
   max-width: 100%;
   margin: 0;
@@ -430,7 +432,7 @@
 }
 .boundaryPractice label,
 .knowledge label {
-  clear: both;
+  clear: none;
   display: flex;
   gap: 0.7rem;
   align-items: flex-start;
@@ -452,10 +454,10 @@
 .networkRows fieldset {
   min-inline-size: 0;
   margin: 0;
-  border: 1px solid #d6c8cd;
-  border-radius: 1rem;
-  padding: 1.25rem;
-  background: var(--paper);
+  border: 0;
+  border-block: 1px solid var(--rule);
+  padding: 1.25rem 0;
+  background: transparent;
 }
 .networkRows legend {
   width: 100%;
@@ -487,7 +489,7 @@
 .textAction {
   min-height: 2.8rem;
   border: 1px solid var(--ink);
-  border-radius: 999px;
+  border-radius: 0.35rem;
   padding: 0.65rem 1rem;
   color: #fff;
   background: var(--ink);
@@ -539,15 +541,15 @@
 }
 .scripts dl {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0;
   background: transparent;
 }
 .scripts dl > div {
-  padding: 1.25rem;
-  border: 1px solid #d6c8cd;
-  border-radius: 1rem;
-  background: #fbf7f0;
+  padding: 1.5rem 0;
+  border: 0;
+  border-block-end: 1px solid var(--rule);
+  background: transparent;
 }
 .scripts dl > div:last-child:nth-child(odd) {
   grid-column: 1/-1;
@@ -570,9 +572,8 @@
 }
 .completion {
   padding: clamp(2rem, 5vw, 4rem);
-  border: 1px solid #c8d5ca;
-  border-radius: 1.25rem;
-  background: var(--sage);
+  border-block: 1px solid var(--ink);
+  background: transparent;
 }
 .gates {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -583,19 +584,16 @@
   border-block: 1px solid var(--rule);
 }
 .completionActions a {
-  min-height: 2.75rem;
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid #b7a2aa;
-  border-radius: 999px;
-  padding: 0.65rem 1rem;
-  background: #faf7f4;
+  min-height: auto;
+  display: inline;
+  border: 0;
+  padding: 0;
+  background: transparent;
 }
 .completionActions a:nth-child(2) {
-  padding: 0.6rem 1rem;
-  color: #fff;
-  background: var(--ink);
-  text-decoration-color: #fff;
+  color: var(--ink);
+  background: transparent;
+  text-decoration-color: var(--plum);
 }
 @keyframes m5-network-open {
   from {
@@ -605,6 +603,15 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+@keyframes m5-network-flow {
+  0%,
+  100% {
+    left: 0;
+  }
+  50% {
+    left: calc(100% - 0.8rem);
   }
 }
 @keyframes m5-widen {
@@ -657,7 +664,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .networkVisual span,
+  .networkVisual i::after,
   .folder,
   .phone,
   .wideningPath span {

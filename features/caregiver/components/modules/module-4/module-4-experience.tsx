@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { ModuleVisibilityMarker } from "../foundation/module-visibility-marker";
 import { caregiverModule4 } from "../../../content/caregiver-module-4";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
@@ -23,10 +22,8 @@ import { Module4Reflection } from "./module-4-reflection";
 import { Module4Takeaway } from "./module-4-takeaway";
 import { ProfessionalHandoffSequence } from "./professional-handoff-sequence";
 import { UnsafeImprovisationReview } from "./unsafe-improvisation-review";
-import { UrgentSafetyInterruption } from "./urgent-safety-interruption";
 
 export function Module4Experience() {
-  const [urgent, setUrgent] = useState(false);
   const { markCentralIdeaReached } = useCaregiverSession();
   return (
     <main
@@ -36,28 +33,23 @@ export function Module4Experience() {
     >
       <Module4Orientation />
       <div className={styles.moduleBody}>
-        <UrgentSafetyInterruption onActivate={() => setUrgent(true)} />
-        {urgent ? null : (
-          <>
-            <Module4Scenario />
-            <ContextOrganizer />
-            <ModuleVisibilityMarker onViewed={markCentralIdeaReached}>
-              <Module4Notice />
-            </ModuleVisibilityMarker>
-            <Module4Plan />
-            <GuidanceSourceMatching />
-            <Module4HandoffNarrative />
-            <ProfessionalHandoffSequence />
-            <Module4UnsafeNarrative />
-            <UnsafeImprovisationReview />
-            <Module4Misunderstanding />
-            <Module4KnowledgeCheck />
-            <Module4Reflection />
-            <Module4Scripts />
-            <Module4Takeaway />
-            <Module4Completion />
-          </>
-        )}
+        <Module4Scenario />
+        <ContextOrganizer />
+        <ModuleVisibilityMarker onViewed={markCentralIdeaReached}>
+          <Module4Notice />
+        </ModuleVisibilityMarker>
+        <Module4Plan />
+        <GuidanceSourceMatching />
+        <Module4HandoffNarrative />
+        <ProfessionalHandoffSequence />
+        <Module4UnsafeNarrative />
+        <UnsafeImprovisationReview />
+        <Module4Misunderstanding />
+        <Module4KnowledgeCheck />
+        <Module4Reflection />
+        <Module4Scripts />
+        <Module4Takeaway />
+        <Module4Completion />
       </div>
     </main>
   );

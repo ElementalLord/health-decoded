@@ -10,7 +10,6 @@ export function Module2Orientation() {
     <header className={styles.orientation}>
       <nav className={styles.routeNavigation} aria-label="Module 2">
         <Link href="/caregiver">Return to Support Someone You Care About</Link>
-        <Link href="/caregiver/urgent-help">Something feels wrong right now</Link>
       </nav>
       <div className={styles.orientationCopy}>
         <p className={styles.eyebrow}>{opening.eyebrow}</p>

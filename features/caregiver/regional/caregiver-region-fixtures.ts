@@ -3,7 +3,7 @@ import type { CaregiverRegionConfiguration } from "../types/caregiver-region.ts"
 export const CAREGIVER_SAFE_FALLBACK_HEADING = "Local details are unavailable.";
 
 export const CAREGIVER_SAFE_FALLBACK_COPY =
-  "Health Decoded cannot verify emergency contact information for your location right now. Contact your local emergency service if someone may be in immediate danger. For an urgent concern that is not an immediate emergency, contact an appropriate healthcare professional. Do not use a guessed number or wait for this page to update.";
+  "Health Decoded cannot verify emergency contact information for your location right now. In an emergency, contact your local emergency service. For another urgent concern, contact an appropriate healthcare professional. Do not use a guessed number or wait for this page to update.";
 
 const foundationFixture = {
   regionId: "internal-prototype",

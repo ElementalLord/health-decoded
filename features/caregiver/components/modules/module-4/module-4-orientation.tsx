@@ -13,7 +13,6 @@ export function Module4Orientation() {
     <header className={styles.orientation}>
       <nav className={styles.routeNavigation} aria-label="Module 4">
         <Link href="/caregiver">Return to Support Someone You Care About</Link>
-        <Link href="#CG-M4-S02">Someone may be in immediate danger</Link>
       </nav>
       <div className={styles.orientationCopy}>
         <p className={styles.eyebrow}>{opening.eyebrow}</p>
