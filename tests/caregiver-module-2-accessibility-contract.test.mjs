@@ -59,6 +59,13 @@ test("feedback is announced and focus is deliberately managed after updates", ()
   assert.match(sources["module-2-reflection.tsx"], /aria-live="polite"/);
 });
 
+test("Module 2 fills an answer after three responses needing review", () => {
+  const knowledgeCheck = sources["module-2-knowledge-check.tsx"];
+  assert.match(knowledgeCheck, /attempt >= 3/);
+  assert.match(knowledgeCheck, /nextAnswers\[question\.id\] = question\.preferredIndex/);
+  assert.match(knowledgeCheck, /filled in after three attempts/);
+});
+
 test("Module 2 styles cover focus, long text, 320px, reduced motion, and overflow safety", () => {
   assert.match(styles, /:focus-visible/);
   assert.match(styles, /overflow-wrap: anywhere/);
@@ -69,7 +76,9 @@ test("Module 2 styles cover focus, long text, 320px, reduced motion, and overflo
   assert.doesNotMatch(styles, /:hover[\s\S]{0,120}(content:|display:|visibility:)/);
 });
 
-test("the prototype exposes no score, badge, certification, or endless motion", () => {
+test("the prototype exposes no score, badge, or certification and pauses looping motion", () => {
   assert.doesNotMatch(combined, /score|badge|certificat/i);
-  assert.doesNotMatch(styles, /animation-iteration-count:\s*infinite|\binfinite\b/);
+  assert.match(styles, /module-offer-pause[\s\S]*infinite/);
+  assert.match(styles, /module-permission-loop[\s\S]*infinite/);
+  assert.match(styles, /prefers-reduced-motion: reduce[\s\S]*animation-iteration-count:\s*1/);
 });

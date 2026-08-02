@@ -26,14 +26,14 @@ const orientation = await readFile(
   "utf8",
 );
 
-test("the module registry exposes only the approved Module 2 destination", () => {
+test("the module registry preserves Module 2 alongside all five implemented modules", () => {
   assert.match(registry, /\[caregiverModule2\.slug\]/);
   assert.match(registry, /`\/caregiver\/modules\/\$\{caregiverModule2\.slug\}`/);
-  assert.match(registry, /if \(slug !== caregiverModule2\.slug\) return null/);
-  assert.doesNotMatch(
-    registry,
-    /CG-M[1345]|what-they-may|everyday-support|when-something|caregiver-matters/,
-  );
+  assert.match(registry, /slug in caregiverModuleRegistry/);
+  assert.match(registry, /caregiverModule1/);
+  assert.match(registry, /caregiverModule3/);
+  assert.match(registry, /caregiverModule4/);
+  assert.match(registry, /caregiverModule5/);
 });
 
 test("unknown module slugs use not-found while the implemented route retains auth checks", () => {
@@ -46,14 +46,11 @@ test("unknown module slugs use not-found while the implemented route retains aut
   assert.match(route, /Module2Experience/);
 });
 
-test("landing activates M2 through the registry and leaves all other module destinations static", () => {
+test("landing activates all five modules through the registry lookup", () => {
   for (const source of [guided, router]) {
-    assert.match(source, /caregiverModuleRegistry\["support-without-taking-over"\]\.route/);
-    assert.match(source, /window\.location\.assign/);
-    assert.match(source, /route\.id === "CG-M2"|submittedRoute\.id === "CG-M2"/);
-    assert.doesNotMatch(source, /caregiverModuleRegistry\["(?!support-without-taking-over)/);
+    assert.match(source, /getImplementedCaregiverModuleById/);
+    assert.match(source, /getImplementedCaregiverModuleById\([^)]*\.id\)/);
   }
-  assert.match(router, /destinationUnavailable/);
 });
 
 test("urgent help remains directly reachable from Module 2", () => {

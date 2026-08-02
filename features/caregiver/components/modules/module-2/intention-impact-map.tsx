@@ -24,6 +24,8 @@ export function IntentionImpactMap() {
   const interaction = caregiverModule2.interactions.intentionImpact;
   const { markInteractionSubmitted } = useCaregiverSession();
   const [rows, setRows] = useState(initialRows);
+  const [impactAttempts, setImpactAttempts] = useState<Record<string, number>>({});
+  const [assistedImpacts, setAssistedImpacts] = useState<Record<string, boolean>>({});
   const [submitted, setSubmitted] = useState(false);
   const [submissionCount, setSubmissionCount] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
@@ -39,6 +41,22 @@ export function IntentionImpactMap() {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!formRef.current?.reportValidity()) return;
+    const nextRows = { ...rows };
+    const nextImpactAttempts = { ...impactAttempts };
+    const nextAssistedImpacts: Record<string, boolean> = {};
+    interaction.actions.forEach((action) => {
+      if (rows[action.id]?.impact !== action.preferredImpact) {
+        const attempt = (nextImpactAttempts[action.id] ?? 0) + 1;
+        nextImpactAttempts[action.id] = attempt;
+        if (attempt >= 3) {
+          nextRows[action.id] = { ...nextRows[action.id]!, impact: action.preferredImpact };
+          nextAssistedImpacts[action.id] = true;
+        }
+      }
+    });
+    setRows(nextRows);
+    setImpactAttempts(nextImpactAttempts);
+    setAssistedImpacts(nextAssistedImpacts);
     setSubmitted(true);
     setSubmissionCount((count) => count + 1);
     markInteractionSubmitted(interaction.id);
@@ -52,13 +70,13 @@ export function IntentionImpactMap() {
     (action) => rows[action.id]?.impact === action.preferredImpact,
   );
 
-  const feedback = !allUnknown
+  const feedback: string | null = !allUnknown
     ? interaction.feedback.unknown
     : includesSupport
       ? interaction.feedback.support
       : preferredImpacts
         ? interaction.feedback.preferred
-        : interaction.feedback.preferred;
+        : interaction.feedback.fallback;
 
   return (
     <section
@@ -85,9 +103,10 @@ export function IntentionImpactMap() {
                   <select
                     required
                     value={row.intention}
-                    onChange={(event) =>
-                      updateRow(action.id, { intention: event.currentTarget.value })
-                    }
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      updateRow(action.id, { intention: value });
+                    }}
                   >
                     <option value="">Choose an intention</option>
                     {interaction.intentions.map((intention) => (
@@ -103,9 +122,10 @@ export function IntentionImpactMap() {
                   <select
                     required
                     value={row.impact}
-                    onChange={(event) =>
-                      updateRow(action.id, { impact: event.currentTarget.value })
-                    }
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      updateRow(action.id, { impact: value });
+                    }}
                   >
                     <option value="">Choose an impact</option>
                     {interaction.impacts.map((impact) => (
@@ -114,25 +134,24 @@ export function IntentionImpactMap() {
                       </option>
                     ))}
                   </select>
+                  {assistedImpacts[action.id] ? (
+                    <span className={styles.answerAssist}>
+                      Answer filled in after three attempts.
+                    </span>
+                  ) : null}
                 </label>
                 <label className={styles.unknownChoice}>
                   <input
                     type="checkbox"
+                    required
                     checked={row.unknown}
-                    onChange={(event) =>
-                      updateRow(action.id, { unknown: event.currentTarget.checked })
-                    }
+                    onChange={(event) => {
+                      const checked = event.currentTarget.checked;
+                      updateRow(action.id, { unknown: checked });
+                    }}
                   />
                   <span>{interaction.unknown}</span>
                 </label>
-                {submitted ? (
-                  <p className={styles.srResult}>
-                    {action.label}: intention {row.intention}; possible impact {row.impact};{" "}
-                    {row.unknown
-                      ? interaction.unknown
-                      : "Andre's exact experience was not kept open."}
-                  </p>
-                ) : null}
               </fieldset>
             );
           })}
@@ -149,7 +168,18 @@ export function IntentionImpactMap() {
           heading={interaction.learningPoint}
           tone="neutral"
         >
-          <p>{feedback}</p>
+          {feedback ? <p>{feedback}</p> : null}
+          <ul className={styles.srOnly}>
+            {interaction.actions.map((action) => {
+              const row = rows[action.id]!;
+              return (
+                <li key={action.id}>
+                  {action.label}: intention {row.intention}; possible impact {row.impact};{" "}
+                  {interaction.unknown}
+                </li>
+              );
+            })}
+          </ul>
         </CaregiverFeedback>
       ) : null}
     </section>

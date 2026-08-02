@@ -22,6 +22,30 @@ export const caregiverModule2 = Object.freeze({
     reviewStatus:
       "Prototype-quality content requiring editorial, clinical-boundary, privacy, accessibility, cultural, and emotional-safety review.",
   },
+  passiveReading: {
+    title: "Reliable support leaves room",
+    paragraphs: [
+      "Being dependable does not mean being constantly involved. A supporter can show up, follow through on an agreed task, and still leave the other person in charge of their information, routines, and decisions.",
+      "Permission works best when it is specific. A yes to one ride, reminder, or conversation does not become permission for every future situation. Naming the boundary clearly protects both people from having to guess what the agreement includes.",
+      "If a boundary changes, repair can be ordinary and direct: acknowledge the overstep, stop the action, and ask what would feel more useful next time. Repair is not a request for reassurance; it is a change in how support is offered.",
+    ],
+    subsections: [
+      {
+        title: "Worry can be named without becoming a reason to take over",
+        paragraphs: [
+          "It is understandable to feel afraid when someone you care about is navigating a health condition. The feeling itself is not a problem. The question is what you do with it. Acting on fear by checking, directing, or accessing private information can move the burden of your anxiety onto the other person.",
+          "A more grounded response is to name your concern privately, then ask what role, if any, the person wants you to have. Their answer may be a specific task, a later conversation, or no help right now. Each answer is information about the boundary.",
+        ],
+      },
+      {
+        title: "Control can sound helpful",
+        paragraphs: [
+          "Control is not always loud. It can sound like a reminder that was never requested, a household rule that only one person must follow, or a question asked again after it has already been answered. Intent matters, but it does not erase the effect of being monitored.",
+          "Support becomes more trustworthy when declining it is easy. Offers with a clear limit, such as one ride, one errand, or one check-in at an agreed time, let the person decide without having to argue their way out of a larger plan.",
+        ],
+      },
+    ],
+  },
   sections: {
     opening: {
       id: "CG-M2-S01",
@@ -173,6 +197,8 @@ export const caregiverModule2 = Object.freeze({
           "An action does not become support from intention alone. Check whether permission, privacy, and an easy no were present.",
         unknown:
           "The scenario supports possible impacts, not Andre's exact feelings. Keep his perspective open.",
+        fallback:
+          "Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.",
       },
       learningPoint: "Intention explains an action; it does not settle its impact or authorize it.",
     },
@@ -313,6 +339,8 @@ export const caregiverModule2 = Object.freeze({
       ],
       consequence:
         "Andre says, “Not today.” Leah replies, “Okay.” The branch ends without resolution.",
+      secondChoiceFallback:
+        "Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.",
       learningPoint:
         "Permission is visible in what happens after no, not only in how the first offer is worded.",
     },
@@ -344,6 +372,8 @@ export const caregiverModule2 = Object.freeze({
         defense:
           "The intention may be true, but placing it in the apology asks Andre to soften the impact.",
         changeFirst: "The promise is clearer after the action has been named directly.",
+        fallback:
+          "Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.",
       },
       learningPoint:
         "Repair centers the action and future behavior, not the supporter's need to be understood.",
@@ -454,7 +484,7 @@ export const caregiverModule2 = Object.freeze({
   completion: {
     completed: "Module completed",
     practiced:
-      "You mapped intention and impact, distinguished support from control, built a permission-based offer, accepted no, and practiced repair.",
+      "You reached the central idea, practiced making support easier to decline, and reviewed the practical takeaway. The other activities remain available whenever you want to revisit them.",
     understood:
       "Key idea appears understood: permission is specific, private, declinable, and revisable.",
     revisit:

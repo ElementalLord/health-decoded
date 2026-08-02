@@ -44,7 +44,8 @@ test("Module 2 has no persistence, server submission, analytics, logs, AI, or UR
 
 test("the optional reflection is session-only, skippable, and explicitly clearable", () => {
   assert.match(reflection, /data-storage="session-only"/);
-  assert.match(reflection, /setReflection\(event\.currentTarget\.value\)/);
+  assert.match(reflection, /const nextValue = event\.currentTarget\.value/);
+  assert.match(reflection, /setReflection\(nextValue\)/);
   assert.match(reflection, /skipReflection/);
   assert.match(reflection, /clearReflection/);
   assert.match(reflection, /window\.confirm\("Clear reflection\?"\)/);

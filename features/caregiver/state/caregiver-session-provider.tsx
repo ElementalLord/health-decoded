@@ -8,15 +8,23 @@ import {
 } from "../lib/caregiver-completion";
 import type { CaregiverModuleProgress } from "../types/caregiver-progress";
 import type { CaregiverSessionState } from "../types/caregiver-session";
+import type { CaregiverModuleId, CaregiverModuleReflectionId } from "../content/caregiver-ids";
+
+function createInitialProgress(moduleId: CaregiverModuleId): CaregiverModuleProgress {
+  return {
+    moduleId,
+    state: "notStarted",
+    centralIdeaReached: false,
+    coreApplicationCompleted: false,
+    takeawayViewed: false,
+    keyIdeaUnderstood: null,
+    lastSectionId: null,
+  };
+}
 
 const initialModule2Progress: CaregiverModuleProgress = Object.freeze({
-  moduleId: "CG-M2",
+  ...createInitialProgress("CG-M2"),
   state: "notStarted",
-  centralIdeaReached: false,
-  coreApplicationCompleted: false,
-  takeawayViewed: false,
-  keyIdeaUnderstood: null,
-  lastSectionId: null,
 });
 
 const initialSessionState: CaregiverSessionState = Object.freeze({
@@ -42,15 +50,17 @@ const CaregiverSessionContext = createContext<CaregiverSessionContextValue | nul
 
 function updateProgress(
   session: CaregiverSessionState,
+  moduleId: CaregiverModuleId,
+  initialProgress: CaregiverModuleProgress,
   update: (progress: CaregiverModuleProgress) => CaregiverModuleProgress,
 ): CaregiverSessionState {
-  const current = session.moduleProgress["CG-M2"] ?? initialModule2Progress;
+  const current = session.moduleProgress[moduleId] ?? initialProgress;
   const next = update(current);
   return {
     ...session,
     moduleProgress: {
       ...session.moduleProgress,
-      "CG-M2": {
+      [moduleId]: {
         ...next,
         state: deriveCaregiverModuleState(next),
       },
@@ -58,71 +68,104 @@ function updateProgress(
   };
 }
 
-export function CaregiverSessionProvider({ children }: { readonly children: ReactNode }) {
-  const [session, setSession] = useState<CaregiverSessionState>(initialSessionState);
+export interface CaregiverSessionProviderProps {
+  readonly children: ReactNode;
+  readonly moduleId?: CaregiverModuleId;
+  readonly centralSectionId?: string;
+  readonly takeawaySectionId?: string;
+  readonly reflectionId?: CaregiverModuleReflectionId;
+}
+
+export function CaregiverSessionProvider({
+  children,
+  moduleId = "CG-M2",
+  centralSectionId = "CG-M2-S03",
+  takeawaySectionId = "CG-M2-S08",
+  reflectionId = "CG-M2-R01",
+}: CaregiverSessionProviderProps) {
+  const initialProgress = useMemo(() => createInitialProgress(moduleId), [moduleId]);
+  const [session, setSession] = useState<CaregiverSessionState>(() =>
+    moduleId === "CG-M2"
+      ? initialSessionState
+      : { moduleProgress: { [moduleId]: createInitialProgress(moduleId) }, reflections: {} },
+  );
   const [reflectionSkipped, setReflectionSkipped] = useState(false);
-  const progress = session.moduleProgress["CG-M2"] ?? initialModule2Progress;
-  const reflection = session.reflections["CG-M2-R01"]?.value ?? "";
+  const progress = session.moduleProgress[moduleId] ?? initialProgress;
+  const reflection = session.reflections[reflectionId]?.value ?? "";
 
   const markCentralIdeaReached = useCallback(() => {
     setSession((current) =>
-      updateProgress(current, (item) => ({
+      updateProgress(current, moduleId, initialProgress, (item) => ({
         ...item,
         centralIdeaReached: true,
-        lastSectionId: "CG-M2-S03",
+        lastSectionId: centralSectionId,
       })),
     );
-  }, []);
+  }, [centralSectionId, initialProgress, moduleId]);
 
   const markTakeawayViewed = useCallback(() => {
     setSession((current) =>
-      updateProgress(current, (item) => ({
+      updateProgress(current, moduleId, initialProgress, (item) => ({
         ...item,
         takeawayViewed: true,
-        lastSectionId: "CG-M2-S08",
+        lastSectionId: takeawaySectionId,
       })),
     );
-  }, []);
+  }, [initialProgress, moduleId, takeawaySectionId]);
 
-  const markInteractionSubmitted = useCallback((interactionId: string) => {
-    setSession((current) =>
-      updateProgress(current, (item) => applyCaregiverInteractionSubmission(item, interactionId)),
-    );
-  }, []);
+  const markInteractionSubmitted = useCallback(
+    (interactionId: string) => {
+      setSession((current) =>
+        updateProgress(current, moduleId, initialProgress, (item) =>
+          applyCaregiverInteractionSubmission(item, interactionId),
+        ),
+      );
+    },
+    [initialProgress, moduleId],
+  );
 
-  const setKeyIdeaUnderstood = useCallback((understood: boolean) => {
-    setSession((current) =>
-      updateProgress(current, (item) => ({
-        ...item,
-        keyIdeaUnderstood: understood,
-      })),
-    );
-  }, []);
+  const setKeyIdeaUnderstood = useCallback(
+    (understood: boolean) => {
+      setSession((current) =>
+        updateProgress(current, moduleId, initialProgress, (item) => ({
+          ...item,
+          keyIdeaUnderstood: understood,
+        })),
+      );
+    },
+    [initialProgress, moduleId],
+  );
 
-  const setLastSection = useCallback((sectionId: string) => {
-    if (!/^CG-M2-S0[1-8]$/.test(sectionId)) return;
-    setSession((current) =>
-      updateProgress(current, (item) => ({
-        ...item,
-        lastSectionId: sectionId,
-      })),
-    );
-  }, []);
+  const setLastSection = useCallback(
+    (sectionId: string) => {
+      if (!new RegExp(`^${moduleId}-S\\d{2}$`).test(sectionId)) return;
+      setSession((current) =>
+        updateProgress(current, moduleId, initialProgress, (item) => ({
+          ...item,
+          lastSectionId: sectionId,
+        })),
+      );
+    },
+    [initialProgress, moduleId],
+  );
 
-  const setReflection = useCallback((value: string) => {
-    setReflectionSkipped(false);
-    setSession((current) => ({
-      ...current,
-      reflections: {
-        ...current.reflections,
-        "CG-M2-R01": {
-          scope: "session-only",
-          value,
-          cleared: false,
+  const setReflection = useCallback(
+    (value: string) => {
+      setReflectionSkipped(false);
+      setSession((current) => ({
+        ...current,
+        reflections: {
+          ...current.reflections,
+          [reflectionId]: {
+            scope: "session-only",
+            value,
+            cleared: false,
+          },
         },
-      },
-    }));
-  }, []);
+      }));
+    },
+    [reflectionId],
+  );
 
   const skipReflection = useCallback(() => {
     setReflectionSkipped(true);
@@ -134,14 +177,14 @@ export function CaregiverSessionProvider({ children }: { readonly children: Reac
       ...current,
       reflections: {
         ...current.reflections,
-        "CG-M2-R01": {
+        [reflectionId]: {
           scope: "session-only",
           value: "",
           cleared: true,
         },
       },
     }));
-  }, []);
+  }, [reflectionId]);
 
   const value = useMemo<CaregiverSessionContextValue>(
     () => ({

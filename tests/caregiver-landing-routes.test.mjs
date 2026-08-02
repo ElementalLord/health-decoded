@@ -36,15 +36,16 @@ const landingStyles = await readFile(
   "utf8",
 );
 
-test("only the landing and public urgent route are actionable caregiver destinations", () => {
+test("the landing activates all five modules and preserves the urgent route", () => {
   assert.doesNotMatch(combinedRoutes, /\/caregiver\/modules\//);
   assert.doesNotMatch(combinedRoutes, /\/caregiver\/tools\//);
-  assert.doesNotMatch(guidedPathSource, /next\/link|<Link|href=/);
+  assert.match(guidedPathSource, /next\/link|<Link|href=/);
+  assert.match(guidedPathSource, /getImplementedCaregiverModuleById/);
   assert.doesNotMatch(toolsSource, /next\/link|<Link|href=|<button/);
   assert.match(combinedRoutes, /\/caregiver\/urgent-help|CaregiverUrgentHelpPage/);
 });
 
-test("unfinished modules and tools remain noninteractive labeled content", () => {
+test("all modules are linked while unfinished tools remain noninteractive labeled content", () => {
   assert.match(guidedPathSource, /<ol/);
   assert.match(guidedPathSource, /data-caregiver-destination/);
   assert.match(toolsSource, /<article/);
@@ -58,5 +59,7 @@ test("landing styles cover small layouts, long text, focus, and reduced motion",
   assert.match(landingStyles, /focus-visible/);
   assert.match(landingStyles, /prefers-reduced-motion: reduce/);
   assert.match(landingStyles, /data-reduced-motion="true"/);
-  assert.doesNotMatch(landingStyles, /animation-iteration-count:\s*infinite/);
+  assert.match(landingStyles, /caregiver-cup-sway[\s\S]*infinite/);
+  assert.match(landingStyles, /caregiver-note-swing[\s\S]*infinite/);
+  assert.match(landingStyles, /animation-iteration-count:\s*1\s*!important/);
 });

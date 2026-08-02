@@ -9,10 +9,19 @@ import styles from "../../../styles/caregiver-module-2.module.css";
 
 type RepairLineId = (typeof caregiverModule2.interactions.repair.lines)[number]["id"];
 
+const initialRepairOrder: readonly RepairLineId[] = [
+  "change",
+  "impact",
+  "defense",
+  "future",
+  "apology",
+  "action",
+];
+
 export function RepairSequence() {
   const interaction = caregiverModule2.interactions.repair;
   const { markInteractionSubmitted } = useCaregiverSession();
-  const [order, setOrder] = useState(interaction.lines.map(({ id }) => id));
+  const [order, setOrder] = useState<readonly RepairLineId[]>(initialRepairOrder);
   const [removed, setRemoved] = useState<readonly RepairLineId[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [submissionCount, setSubmissionCount] = useState(0);
@@ -26,13 +35,13 @@ export function RepairSequence() {
   const actionIndex = activeOrder.indexOf("action");
   const changeIndex = activeOrder.indexOf("change");
   const changeBeforeAction = changeIndex >= 0 && actionIndex >= 0 && changeIndex < actionIndex;
-  const feedback = defenseIncluded
+  const feedback: string | null = defenseIncluded
     ? interaction.feedback.defense
     : changeBeforeAction
       ? interaction.feedback.changeFirst
       : preferred
         ? interaction.feedback.preferred
-        : interaction.feedback.changeFirst;
+        : interaction.feedback.fallback;
 
   function move(id: RepairLineId, direction: -1 | 1) {
     setOrder((current) => {
@@ -124,7 +133,7 @@ export function RepairSequence() {
           heading={interaction.learningPoint}
           tone="neutral"
         >
-          <p>{feedback}</p>
+          {feedback ? <p>{feedback}</p> : null}
           <ol className={styles.sequenceReview}>
             {activeOrder.map((id) => (
               <li key={id}>{interaction.lines.find((line) => line.id === id)?.copy}</li>

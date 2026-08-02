@@ -44,7 +44,7 @@ export function Module2IntentionImpactNarrative() {
     >
       <p className={styles.sectionLabel}>Intention and impact</p>
       <h2 id={`${section.id}-heading`}>{section.title}</h2>
-      <div className={styles.readingMeasure}>
+      <div className={styles.readingIntro}>
         {section.paragraphs.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
@@ -97,6 +97,12 @@ export function Module2PermissionNarrative() {
           <li key={question}>{question}</li>
         ))}
       </ol>
+      <div className={styles.permissionMotion} aria-hidden="true">
+        <span>Offer</span>
+        <span>Choice</span>
+        <span>Adjust</span>
+        <i />
+      </div>
       <dl className={styles.permissionExamples}>
         {section.examples.map((example) => (
           <div key={example.label}>
@@ -121,7 +127,7 @@ export function Module2AppointmentsNarrative() {
     >
       <p className={styles.sectionLabel}>Roles stay separate</p>
       <h2 id={`${section.id}-heading`}>{section.title}</h2>
-      <div className={styles.readingMeasure}>
+      <div className={styles.readingIntro}>
         {section.paragraphs.map((paragraph, index) => (
           <p key={paragraph} className={index === 1 || index === 2 ? styles.scriptLine : undefined}>
             {paragraph}
@@ -205,6 +211,31 @@ export function Module2Scripts() {
           </div>
         ))}
       </dl>
+    </section>
+  );
+}
+
+export function Module2FurtherReading() {
+  const reading = caregiverModule2.passiveReading;
+  return (
+    <section className={styles.furtherReading} aria-labelledby="module-2-further-reading-heading">
+      <p className={styles.sectionLabel}>Read and reflect</p>
+      <h2 id="module-2-further-reading-heading">{reading.title}</h2>
+      <div className={styles.readingMeasure}>
+        {reading.paragraphs.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+      </div>
+      <div className={styles.readingSubsections}>
+        {reading.subsections.map((subsection) => (
+          <div key={subsection.title} className={styles.readingSubsection}>
+            <h3>{subsection.title}</h3>
+            {subsection.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
