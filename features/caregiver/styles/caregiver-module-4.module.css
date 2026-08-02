@@ -376,9 +376,13 @@
   color: var(--ink);
 }
 .needsReview {
-  color: #733b29 !important;
-  border-color: #a85f43 !important;
-  font-weight: 650;
+  color: #8a6248 !important;
+  border-color: #c7a58e !important;
+  background: #f3e5d7;
+  font-weight: 400;
+}
+.needsReview strong {
+  font-weight: 400;
 }
 .handoffBuilder ol {
   margin: 2rem 0;
@@ -488,7 +492,12 @@
 .questionGrid .needsReview {
   margin-block-start: 1rem;
   padding: 1rem;
+}
+.questionGrid .correct {
   background: var(--sage);
+}
+.questionGrid .needsReview {
+  background: #f3e5d7;
 }
 .reflection {
   padding: clamp(2rem, 5vw, 4rem);
