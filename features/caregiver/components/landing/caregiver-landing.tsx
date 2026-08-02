@@ -3,7 +3,6 @@ import { CaregiverGuidedPath } from "./caregiver-guided-path";
 import { CaregiverHero } from "./caregiver-hero";
 import { CaregiverNeedRouter } from "./caregiver-need-router";
 import { CaregiverPrivacyBoundary } from "./caregiver-privacy-boundary";
-import { CaregiverToolsIntroduction } from "./caregiver-tools-introduction";
 import type { CaregiverRegionalPresentation } from "../../types/caregiver-region";
 import styles from "../../styles/caregiver-landing.module.css";
 
@@ -18,7 +17,6 @@ export function CaregiverLanding({ region: _region }: CaregiverLandingProps) {
       <CaregiverFirstVisit />
       <CaregiverNeedRouter />
       <CaregiverGuidedPath />
-      <CaregiverToolsIntroduction />
       <CaregiverPrivacyBoundary />
     </div>
   );

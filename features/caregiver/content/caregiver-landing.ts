@@ -38,7 +38,6 @@ export interface CaregiverReturningStateData {
   readonly recentModuleTitle: string;
   readonly recentSectionTitle: string;
   readonly nextModuleTitle: string;
-  readonly recentToolName?: string;
 }
 
 export const caregiverLandingRoutes = Object.freeze([
@@ -216,7 +215,6 @@ export const caregiverLandingContent = Object.freeze({
     recentModuleLabel: "Most recent",
     primaryActionTemplate: "Continue [MODULE_TITLE]",
     nextRecommendationLabel: "Next on the guided path",
-    toolShortcutLabel: "Return to a recent tool",
     privateProgress:
       "Module progress is private to your account. It is not shared with the person you support, another supporter, or the AI Tutor. A completed label records participation, not expertise.",
   },

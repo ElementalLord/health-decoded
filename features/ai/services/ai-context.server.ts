@@ -166,13 +166,6 @@ function contextualSuggestions(context: TrustedAiPromptContext): readonly string
       "Can you explain this in everyday language?",
     ];
   }
-  if (context.caregiver) {
-    return [
-      "How can my spouse support me without taking over?",
-      "What is a helpful thing to say?",
-      "What should a caregiver avoid saying?",
-    ];
-  }
   if (context.glossary?.length) {
     return context.glossary.slice(0, 3).map((entry) => `What exactly is ${entry.term}?`);
   }
@@ -209,16 +202,10 @@ export async function loadTrustedAiContext({
   }
 
   const userJourney = userJourneyResponse.data;
-  const [medicationsResponse, caregiverResponse, storiesResponse] = await Promise.all([
+  const [medicationsResponse, storiesResponse] = await Promise.all([
     database
       .from("medications")
       .select("slug, generic_name, brand_names, category, content_blocks")
-      .eq("status", "published")
-      .not("published_at", "is", null)
-      .limit(12),
-    database
-      .from("caregiver_content")
-      .select("slug, journey_lesson_id, title, content_blocks, support_tip, conversation_prompt")
       .eq("status", "published")
       .not("published_at", "is", null)
       .limit(12),
@@ -230,13 +217,10 @@ export async function loadTrustedAiContext({
       .limit(12),
   ]);
 
-  if (medicationsResponse.error || caregiverResponse.error || storiesResponse.error) {
+  if (medicationsResponse.error || storiesResponse.error) {
     return contextFailure(
       "reviewed_content",
-      medicationsResponse.error?.code ??
-        caregiverResponse.error?.code ??
-        storiesResponse.error?.code ??
-        "unknown",
+      medicationsResponse.error?.code ?? storiesResponse.error?.code ?? "unknown",
     );
   }
 
@@ -249,12 +233,6 @@ export async function loadTrustedAiContext({
       title: medication.generic_name,
     }),
   );
-  const caregiverCandidates: ContentCandidate[] = (caregiverResponse.data ?? []).map((article) => ({
-    body: `${article.support_tip ?? ""} ${article.conversation_prompt ?? ""} ${reviewedExcerpt(article.content_blocks, 2_500)}`,
-    href: `/caregiver/${article.slug}`,
-    kind: "caregiver",
-    title: article.title,
-  }));
   const storyCandidates: ContentCandidate[] = (storiesResponse.data ?? []).map((story) => ({
     body: `${story.introduction ?? ""} ${story.key_takeaway ?? ""} ${reviewedExcerpt(story.content_blocks, 2_500)}`,
     href: `/stories/${story.slug}`,
@@ -266,7 +244,6 @@ export async function loadTrustedAiContext({
     const terms = questionTerms(message);
     const glossary = reviewedGlossary(message);
     const medication = selectRelevantCandidate(medicationCandidates, terms);
-    const caregiver = selectRelevantCandidate(caregiverCandidates, terms);
     const story = selectRelevantCandidate(storyCandidates, terms, 2);
     const promptContext: TrustedAiPromptContext = {
       ...(glossary.length ? { glossary } : {}),
@@ -276,16 +253,6 @@ export async function loadTrustedAiContext({
               category: medication.category ?? "Medication",
               educationalContent: medication.body,
               name: medication.title,
-            },
-          }
-        : {}),
-      ...(caregiver
-        ? {
-            caregiver: {
-              content: caregiver.body,
-              conversationPrompt: null,
-              supportTip: null,
-              title: caregiver.title,
             },
           }
         : {}),
@@ -299,7 +266,7 @@ export async function loadTrustedAiContext({
       ok: true,
       data: {
         metadata: {
-          relatedContent: [medication, caregiver, story]
+          relatedContent: [medication, story]
             .filter((candidate): candidate is ContentCandidate => Boolean(candidate))
             .map(relatedContent),
           suggestedQuestions: contextualSuggestions(promptContext),
@@ -390,14 +357,6 @@ export async function loadTrustedAiContext({
     ? lessonsById.get(currentAssignment.lesson_id)
     : undefined;
   const terms = questionTerms(message);
-  const currentCaregiver = currentAssignment
-    ? caregiverResponse.data?.find((article) => article.journey_lesson_id === currentAssignment.id)
-    : undefined;
-  const caregiver =
-    currentCaregiver && /caregiv|spouse|partner|family|support|help.*(?:them|me)/i.test(message)
-      ? (caregiverCandidates.find((candidate) => candidate.title === currentCaregiver.title) ??
-        null)
-      : selectRelevantCandidate(caregiverCandidates, terms);
   const medication = selectRelevantCandidate(medicationCandidates, terms);
   const story = selectRelevantCandidate(storyCandidates, terms, 2);
   const completedLessons = completedAssignments.flatMap((assignment) => {
@@ -465,16 +424,6 @@ export async function loadTrustedAiContext({
           },
         }
       : {}),
-    ...(caregiver
-      ? {
-          caregiver: {
-            content: caregiver.body,
-            conversationPrompt: null,
-            supportTip: null,
-            title: caregiver.title,
-          },
-        }
-      : {}),
     ...(story
       ? { stories: [{ introduction: story.body, keyTakeaway: "", title: story.title }] }
       : {}),
@@ -488,7 +437,7 @@ export async function loadTrustedAiContext({
       title: currentLesson.title,
     });
   }
-  for (const candidate of [medication, caregiver, story]) {
+  for (const candidate of [medication, story]) {
     if (candidate) related.push(relatedContent(candidate));
   }
 
