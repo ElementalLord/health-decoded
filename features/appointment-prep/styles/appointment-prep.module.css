@@ -1,0 +1,643 @@
+.entry,
+.workspace {
+  margin: 0 auto;
+  max-width: 70rem;
+  padding: 2.5rem 0 5rem;
+}
+
+.entry {
+  max-width: 62rem;
+}
+
+.entryRule {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2.5rem;
+}
+
+.entry h1,
+.workspaceHeader h1 {
+  font-family: var(--font-serif);
+  font-size: var(--text-page-title);
+  font-weight: 450;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  margin-top: 1rem;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+
+.promise {
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.35;
+  margin-top: 1.75rem;
+  max-width: 36ch;
+}
+
+.estimate,
+.workspaceHeader > p:last-child {
+  color: var(--muted-foreground);
+  line-height: 1.7;
+  margin-top: 1rem;
+}
+
+.noticeStack {
+  display: grid;
+  gap: 0;
+  margin-top: 2.5rem;
+}
+
+.notice {
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 0.5rem 2rem;
+  padding: 1.5rem 0;
+}
+
+.notice:last-child {
+  border-bottom: 1px solid var(--border);
+}
+.notice h2 {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 550;
+}
+.notice p {
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  max-width: 48rem;
+}
+
+.actions,
+.dialogActions,
+.summaryActions,
+.itemActions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.promoteRow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+}
+
+.promoteRow p {
+  color: var(--muted-foreground);
+  flex: 1 1 18rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.status {
+  background: var(--info);
+  border-left: 3px solid var(--success);
+  bottom: calc(6rem + env(safe-area-inset-bottom));
+  color: var(--info-foreground);
+  font-size: 0.875rem;
+  font-weight: 650;
+  left: 50%;
+  max-width: min(32rem, calc(100vw - 2rem));
+  padding: 0.85rem 1rem;
+  position: fixed;
+  transform: translateX(-50%);
+  width: max-content;
+  z-index: 45;
+}
+
+@media (min-width: 64rem) {
+  .status {
+    bottom: 1rem;
+  }
+}
+
+.actions {
+  margin-top: 2rem;
+}
+.returnLink,
+.urgentLink,
+.workspaceFooter a,
+.workspaceFooter button,
+.neutralReminder a {
+  align-items: center;
+  color: var(--primary);
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 650;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-warm) 45%, transparent);
+  text-underline-offset: 0.3rem;
+}
+.urgentLink {
+  color: var(--destructive);
+}
+
+.workspaceHeader {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2rem;
+}
+.workspaceHeader h1 {
+  max-width: 18ch;
+}
+.privacyBar {
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem 0;
+}
+.privacyBar p {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.sectionNav {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+  scrollbar-width: thin;
+}
+.sectionNav ol {
+  display: flex;
+  list-style: none;
+  min-width: max-content;
+}
+.sectionNav li {
+  border-right: 1px solid var(--border);
+}
+.sectionNav li:first-child {
+  border-left: 1px solid var(--border);
+}
+.sectionNav button {
+  color: var(--muted-foreground);
+  display: grid;
+  font-size: 0.8rem;
+  gap: 0.15rem;
+  min-height: 3.75rem;
+  min-width: 6.5rem;
+  padding: 0.65rem 1rem;
+  text-align: left;
+}
+.sectionNav button span {
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+}
+.sectionNav button[aria-current="step"] {
+  background: var(--card);
+  box-shadow: inset 0 -3px var(--accent-warm);
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.paper {
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  border-block: 1px solid var(--border);
+  min-height: 34rem;
+  padding: clamp(1.5rem, 4vw, 3.5rem) clamp(0rem, 3vw, 3rem);
+}
+.paper > section,
+.paper > fieldset {
+  margin: 0 auto;
+  max-width: 54rem;
+}
+.sectionTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(1.65rem, 4vw, 2.35rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.sectionLead {
+  color: var(--muted-foreground);
+  line-height: 1.7;
+  margin-top: 0.75rem;
+  max-width: 46rem;
+}
+
+.fiveAreas {
+  border-block: 1px solid var(--border);
+  display: grid;
+  margin-top: 2rem;
+}
+.fiveAreas button {
+  align-items: baseline;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  gap: 0.25rem 1rem;
+  grid-template-columns: 2.5rem 1fr;
+  min-height: 6rem;
+  padding: 1rem 0;
+  text-align: left;
+}
+.fiveAreas button:last-child {
+  border-bottom: 0;
+}
+.fiveAreas span {
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  grid-row: span 2;
+}
+.fiveAreas strong {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+.fiveAreas small {
+  color: var(--muted-foreground);
+}
+.overviewLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1.5rem;
+}
+.overviewLinks button {
+  color: var(--primary);
+  font-weight: 650;
+  min-height: 2.75rem;
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+.formGrid {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.field {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.label {
+  font-weight: 700;
+  line-height: 1.4;
+}
+.help {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.sectionHeading {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.sectionHeading p {
+  color: var(--muted-foreground);
+  margin-top: 0.4rem;
+}
+
+.itemList {
+  display: grid;
+  gap: 2rem;
+  list-style: none;
+  margin-top: 2rem;
+}
+.item {
+  border-top: 2px solid var(--border);
+  display: grid;
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+}
+.itemNumber {
+  color: var(--accent-warm);
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.itemActions {
+  border-top: 1px dashed var(--border);
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+}
+.empty {
+  border-block: 1px dashed var(--border);
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin-top: 2rem;
+  padding: 2rem 0;
+}
+.check {
+  align-items: flex-start;
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+  line-height: 1.5;
+  min-height: 2.75rem;
+  padding: 0.55rem 0;
+}
+.check input,
+.radioGroup input {
+  accent-color: var(--accent-warm);
+  flex: 0 0 auto;
+  height: 1.25rem;
+  margin-top: 0.15rem;
+  width: 1.25rem;
+}
+.neutralReminder {
+  border-left: 2px solid var(--accent-warm);
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin-top: 1.5rem;
+  padding: 0.75rem 0 0.75rem 1rem;
+}
+.subsection {
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+}
+.subsection h3,
+.checkGroup legend,
+.radioGroup legend {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 550;
+}
+.subsection .item {
+  margin-top: 1.25rem;
+}
+
+.library {
+  border-block: 1px solid var(--border);
+  margin-top: 1.5rem;
+  padding: 1rem 0;
+}
+.library summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 2.75rem;
+  padding: 0.6rem 0;
+}
+.library > div {
+  display: grid;
+}
+.library button {
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 0.25rem;
+  min-height: 4.5rem;
+  padding: 0.9rem 0;
+  text-align: left;
+}
+.library button span {
+  color: var(--accent-warm);
+  font-size: 0.75rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.checkGroup,
+.radioGroup {
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+}
+.checkGroup legend,
+.radioGroup legend {
+  padding-right: 1rem;
+}
+.documentRow {
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.4rem 0 0.9rem;
+}
+.locationControls {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.radioGroup label {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  min-height: 3rem;
+}
+.autonomy {
+  border-left: 2px solid var(--accent-warm);
+  margin-top: 2rem;
+  padding: 0.5rem 0 0.5rem 1.25rem;
+}
+.autonomy h3 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+}
+.autonomy p {
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin-top: 0.5rem;
+}
+
+.summaryActions {
+  margin-bottom: 1.25rem;
+}
+.printWarning {
+  border-block: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  padding: 1rem 0;
+}
+.summary > h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 450;
+  margin-top: 2.5rem;
+}
+.summarySection {
+  break-inside: avoid;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+}
+.summarySection > div {
+  align-items: baseline;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.summarySection h3,
+.notes h3 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 550;
+}
+.summarySection button {
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 650;
+  min-height: 2.75rem;
+  text-decoration: underline;
+}
+.summarySection ul {
+  display: grid;
+  gap: 0.65rem;
+  line-height: 1.65;
+  list-style: none;
+  margin-top: 0.75rem;
+}
+.summarySection li {
+  overflow-wrap: anywhere;
+}
+.notes {
+  break-inside: avoid;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+}
+.notes > div {
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 2rem,
+    var(--border) calc(2rem + 1px)
+  );
+  height: 10rem;
+}
+.printBoundaries {
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+.manualCopy {
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+}
+.manualCopy label {
+  font-weight: 700;
+}
+.manualCopy p {
+  color: var(--muted-foreground);
+}
+.workspaceFooter {
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+}
+
+@media (min-width: 40rem) {
+  .notice {
+    grid-template-columns: 12rem 1fr;
+  }
+  .notice p + p {
+    grid-column: 2;
+  }
+  .privacyBar {
+    grid-template-columns: 1fr 1fr;
+  }
+  .formGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fiveAreas {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .fiveAreas button {
+    align-content: start;
+    border-bottom: 0;
+    border-right: 1px solid var(--border);
+    gap: 0.65rem;
+    grid-template-columns: 1fr;
+    padding: 1.25rem;
+  }
+  .fiveAreas button:first-child {
+    padding-left: 0;
+  }
+  .fiveAreas button:last-child {
+    border-right: 0;
+    padding-right: 0;
+  }
+  .fiveAreas span {
+    grid-row: auto;
+  }
+  .documentRow {
+    align-items: center;
+    grid-template-columns: minmax(14rem, 1fr) minmax(13rem, 0.7fr);
+  }
+}
+
+@media (max-width: 24rem) {
+  .entry,
+  .workspace {
+    padding-top: 1.5rem;
+  }
+  .actions > *,
+  .dialogActions > *,
+  .summaryActions > *,
+  .itemActions > * {
+    width: 100%;
+  }
+  .paper {
+    padding-inline: 0;
+  }
+}
+
+@media print {
+  :global(body):has(.workspace) {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  :global(body):has(.workspace) > * {
+    visibility: hidden;
+  }
+  .workspace,
+  .paper,
+  .summary,
+  .summary * {
+    visibility: visible;
+  }
+  .workspace {
+    margin: 0;
+    max-width: none;
+    padding: 0;
+  }
+  .workspaceHeader,
+  .privacyBar,
+  .sectionNav,
+  .workspaceFooter,
+  .summaryActions,
+  .summarySection button,
+  .manualCopy,
+  .dialogActions {
+    display: none !important;
+  }
+  .paper {
+    background: #fff;
+    border: 0;
+    min-height: 0;
+    padding: 0;
+  }
+  .summary {
+    color: #000;
+    max-width: none !important;
+    position: absolute;
+    inset: 0;
+  }
+  .summarySection,
+  .notes,
+  .printWarning,
+  .printBoundaries {
+    border-color: #555;
+  }
+  .printWarning,
+  .printBoundaries {
+    color: #222;
+  }
+}

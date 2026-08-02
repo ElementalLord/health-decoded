@@ -13,7 +13,6 @@ export function Module5Orientation() {
     <header className={styles.orientation}>
       <nav className={styles.routeNavigation} aria-label="Module 5">
         <Link href="/caregiver">Return to Support Someone You Care About</Link>
-        <Link href="/caregiver/urgent-help">Something feels wrong right now</Link>
       </nav>
       <div className={styles.orientationCopy}>
         <p className={styles.eyebrow}>{opening.eyebrow}</p>
@@ -23,12 +22,9 @@ export function Module5Orientation() {
         <p className={styles.openingCopy}>{opening.opening}</p>
       </div>
       <div className={styles.networkVisual} aria-hidden="true">
-        <p>Your capacity</p>
-        <div>
-          <span>Shared agreement</span>
-          <span>Backup support</span>
-          <span>Professional role</span>
-        </div>
+        <span>Your capacity</span>
+        <i />
+        <p>Shared agreement · Backup support · Professional role</p>
       </div>
       <p className={styles.centralPromise}>{opening.centralIdea}</p>
     </header>

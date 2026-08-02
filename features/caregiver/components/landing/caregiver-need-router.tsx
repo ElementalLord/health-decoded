@@ -121,12 +121,6 @@ export function CaregiverNeedRouter() {
             ) : (
               <p className={styles.destinationUnavailable}>{submittedRoute.moduleTitle}</p>
             )}
-            {submittedRoute.id === "CG-M4" ? (
-              <Link className={styles.safetyInlineLink} href="/caregiver/urgent-help">
-                {caregiverLandingContent.safety.linkLabel}
-                <span aria-hidden="true">→</span>
-              </Link>
-            ) : null}
           </CaregiverFeedback>
           <button className={styles.textButton} type="button" onClick={clearSelection}>
             {needRouter.revise}

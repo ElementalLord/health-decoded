@@ -22,4 +22,6 @@ test("Module 5 exposes landmarks, heading focus, native groups, and reduced moti
   assert.match(styles, /focus-visible/);
   assert.match(styles, /prefers-reduced-motion/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
+  assert.match(styles, /m5-network-flow[\s\S]*infinite/);
+  assert.doesNotMatch(styles, /border-radius:\s*999px/);
 });

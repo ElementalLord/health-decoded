@@ -40,7 +40,7 @@ export function resolveCaregiverRegionalPresentation(
     status: region.status,
     mode: "verified",
     heading: "Stop here and get urgent help.",
-    copy: `Health Decoded cannot determine what is happening. If someone may be in immediate danger, contact emergency help for ${region.displayName} now. Use the person's clinician-created emergency plan if it is immediately available, but do not delay emergency contact to search for it or finish this module.`,
+    copy: `Health Decoded cannot determine what is happening. In an emergency, contact appropriate help for ${region.displayName}. Use the person's clinician-created emergency plan if it is immediately available, but do not delay emergency contact to search for it or finish this module.`,
     emergencyServiceLabel: region.emergencyServiceLabel,
     emergencyContact: region.emergencyContact,
     crisisServiceLabel: region.crisisServiceLabel,

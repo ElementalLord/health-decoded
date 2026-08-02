@@ -24,7 +24,6 @@ export default function CaregiverModuleError({
         Try again
       </button>
       <Link href="/caregiver">Return to Support Someone You Care About</Link>
-      <Link href="/caregiver/urgent-help">Something feels wrong right now</Link>
     </main>
   );
 }

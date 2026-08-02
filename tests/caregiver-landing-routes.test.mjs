@@ -24,11 +24,8 @@ const guidedPathSource = await readFile(
   new URL("../features/caregiver/components/landing/caregiver-guided-path.tsx", import.meta.url),
   "utf8",
 );
-const toolsSource = await readFile(
-  new URL(
-    "../features/caregiver/components/landing/caregiver-tools-introduction.tsx",
-    import.meta.url,
-  ),
+const landingSource = await readFile(
+  new URL("../features/caregiver/components/landing/caregiver-landing.tsx", import.meta.url),
   "utf8",
 );
 const landingStyles = await readFile(
@@ -36,20 +33,18 @@ const landingStyles = await readFile(
   "utf8",
 );
 
-test("the landing activates all five modules and preserves the urgent route", () => {
+test("the landing activates all five modules, defers tools, and preserves the urgent route", () => {
   assert.doesNotMatch(combinedRoutes, /\/caregiver\/modules\//);
   assert.doesNotMatch(combinedRoutes, /\/caregiver\/tools\//);
   assert.match(guidedPathSource, /next\/link|<Link|href=/);
   assert.match(guidedPathSource, /getImplementedCaregiverModuleById/);
-  assert.doesNotMatch(toolsSource, /next\/link|<Link|href=|<button/);
+  assert.doesNotMatch(landingSource, /CaregiverToolsIntroduction/);
   assert.match(combinedRoutes, /\/caregiver\/urgent-help|CaregiverUrgentHelpPage/);
 });
 
-test("all modules are linked while unfinished tools remain noninteractive labeled content", () => {
+test("all modules remain linked in the active landing experience", () => {
   assert.match(guidedPathSource, /<ol/);
   assert.match(guidedPathSource, /data-caregiver-destination/);
-  assert.match(toolsSource, /<article/);
-  assert.match(toolsSource, /data-caregiver-destination/);
 });
 
 test("landing styles cover small layouts, long text, focus, and reduced motion", () => {

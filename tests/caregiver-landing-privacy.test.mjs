@@ -41,7 +41,7 @@ test("returning-state contract accepts only privacy-safe public progress labels"
   assert.match(returningSource, /recentModuleTitle/);
   assert.match(returningSource, /recentSectionTitle/);
   assert.match(returningSource, /nextModuleTitle/);
-  assert.match(returningSource, /recentToolName/);
+  assert.doesNotMatch(returningSource, /recentToolName|toolShortcutLabel/);
   assert.doesNotMatch(
     returningSource,
     /draft|planContent|selfCheck|reflection|healthInformation|medication|reading|answer/,
