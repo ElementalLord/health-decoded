@@ -3,11 +3,9 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
-  caregiverBeginningChoices,
   caregiverLandingContent,
   caregiverLandingRoutes,
   caregiverLandingSource,
-  caregiverLandingTools,
   caregiverUrgentHelpContent,
 } from "../features/caregiver/content/caregiver-landing.ts";
 import {
@@ -51,24 +49,12 @@ test("approved hero, safety, boundary, first-visit, and interaction copy remains
   for (const copy of exactStrings) assert.ok(approvedContent.includes(copy), copy);
 });
 
-test("all approved routes, tools, choices, descriptions, and feedback are present", () => {
+test("all five active module routes, descriptions, and feedback are present", () => {
   assert.equal(caregiverLandingRoutes.length, 5);
-  assert.equal(caregiverLandingTools.length, 4);
-  assert.equal(caregiverBeginningChoices.length, 3);
 
   for (const route of caregiverLandingRoutes) {
     assert.ok(approvedContent.includes(route.title));
     assert.ok(approvedContent.includes(route.description));
     assert.ok(approvedContent.includes(route.feedback));
-  }
-
-  for (const tool of caregiverLandingTools) {
-    assert.ok(approvedContent.includes(tool.title));
-    assert.ok(approvedContent.includes(tool.description));
-  }
-
-  for (const choice of caregiverBeginningChoices) {
-    assert.ok(approvedContent.includes(choice.label));
-    assert.ok(approvedContent.includes(choice.feedback));
   }
 });

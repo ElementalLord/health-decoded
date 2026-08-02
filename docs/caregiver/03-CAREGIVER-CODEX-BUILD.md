@@ -120,6 +120,26 @@ C. `CG-M2-I03` remains the sole Module 2 core application. The existing completi
 
 D. No other module or tool content is changed.
 
+### `PROTOTYPE-SCOPE-001`
+
+**Status:** Resolved by product decision.
+
+**Affected source:** Current prototype integration and the future tool and final-completion scope in `02-CAREGIVER-TOOLS.md`.
+
+**Binding corrections:**
+
+A. The current caregiver prototype includes the caregiver landing page, public urgent-help route, and Modules 1 through 5. The caregiver tools remain approved future scope but are deferred from this prototype.
+
+B. Tool IDs, specifications, and future routes remain reserved. This correction does not retire or alter the future purpose of any approved tool.
+
+C. The prototype must not display tool links, placeholder tool controls, coming-soon tool content, unfinished tool routes, tool-specific landing destinations, or tool-related first-visit or returning-state actions. Tool-specific landing destinations are hidden rather than remapped.
+
+D. No tool route exists in the current prototype. No substitute assessment, planner, questionnaire, or tool is created.
+
+E. Final caregiver section completion remains deferred. Module completion remains session-only.
+
+F. The signed-in application landing screen must contain a direct route to `/caregiver`.
+
 ### Exact interaction patch matrix
 
 | Interaction ID | Corrected completion status | Core application | May be skipped | Behavior when skipped | Accessible after module completion |

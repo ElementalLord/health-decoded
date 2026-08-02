@@ -63,6 +63,19 @@ export default async function JourneyPage({
         totalLessons={journey.data.progress.totalDays}
       />
 
+      <section className="motion-reveal divide-y divide-border border-y border-border">
+        <ActionRow
+          description="Organize questions, changes, and what you may want to bring. Your preparation stays in this browser session."
+          href="/appointment-prep"
+          title="Prepare for an appointment"
+        />
+        <ActionRow
+          description="Help without taking over."
+          href="/caregiver"
+          title="Support Someone You Care About"
+        />
+      </section>
+
       {showCompletionArrival ? (
         <LessonCompletionArrival
           completedLessons={journey.data.progress.completedLessons}
@@ -123,11 +136,6 @@ export default async function JourneyPage({
               </p>
             </div>
             <div className="motion-cascade divide-y divide-border border-y border-border">
-              <ActionRow
-                description="Practical ways for family and friends to offer support."
-                href="/caregiver"
-                title="Caregiver guidance"
-              />
               <ActionRow
                 description="Fictional composite stories about living with Type 2 diabetes."
                 href="/stories"

@@ -1,0 +1,230 @@
+.glossary {
+  margin: 0 auto;
+  max-width: 66rem;
+  padding: 0.5rem 0 5rem;
+}
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 0 2.75rem;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: var(--text-page-title);
+  font-weight: 440;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  margin-top: 1rem;
+}
+.supporting {
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  margin-top: 1.25rem;
+}
+.boundary {
+  border-left: 2px solid var(--accent-warm);
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin-top: 1.5rem;
+  max-width: 48rem;
+  padding-left: 1rem;
+}
+.searchArea {
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 0;
+}
+.searchArea > label {
+  display: block;
+  font-weight: 750;
+  margin-bottom: 0.65rem;
+}
+.searchControl {
+  align-items: center;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  max-width: 48rem;
+  position: relative;
+}
+.searchControl > svg {
+  color: var(--muted-foreground);
+  margin-left: 1rem;
+  pointer-events: none;
+  position: absolute;
+  width: 1.1rem;
+  z-index: 1;
+}
+.searchControl input {
+  padding-left: 2.8rem;
+}
+.searchControl button {
+  margin-left: 0.75rem;
+}
+.alphabet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 1.5rem;
+}
+.alphabet button {
+  border: 1px solid var(--border);
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0.5rem;
+}
+.alphabet button:first-child {
+  padding-inline: 0.85rem;
+  width: auto;
+}
+.alphabet button[aria-pressed="true"] {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+.alphabet button:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.52;
+  text-decoration: line-through;
+}
+.resultCount {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 650;
+  padding: 1rem 0;
+}
+.groups {
+  border-top: 1px solid var(--border);
+}
+.group {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+}
+.group > h2 {
+  color: var(--accent-warm);
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1;
+  padding-top: 1.5rem;
+}
+.group dl {
+  min-width: 0;
+}
+.entry {
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  gap: 0.6rem 2rem;
+  grid-template-columns: minmax(10rem, 0.55fr) minmax(0, 1.45fr);
+  padding: 1.5rem 0;
+}
+.entry dt {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.entry dt span {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+.entry dd {
+  line-height: 1.7;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.confused {
+  background: color-mix(in srgb, var(--info) 72%, transparent);
+  border-left: 2px solid var(--success);
+  margin-top: 0.85rem;
+  padding: 0.8rem 1rem;
+}
+.confused strong {
+  display: block;
+  font-size: 0.85rem;
+}
+.confused p {
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+.noResults {
+  border-block: 1px solid var(--border);
+  padding: 3rem 0;
+}
+.noResults h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.15;
+  margin-top: 0.75rem;
+  max-width: 24ch;
+}
+.noResults > p:not(:first-child) {
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin-top: 1rem;
+}
+.noResults > div {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.noResults a {
+  color: var(--primary);
+  font-weight: 700;
+  min-height: 2.75rem;
+  padding: 0.65rem 0;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-warm);
+  text-underline-offset: 0.35rem;
+}
+@media (max-width: 40rem) {
+  .searchControl {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .searchControl button {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin: 0.4rem 0 0;
+  }
+  .group {
+    grid-template-columns: 1fr;
+  }
+  .group > h2 {
+    border-bottom: 2px solid var(--accent-warm);
+    font-size: 2rem;
+    padding: 1.5rem 0 0.6rem;
+  }
+  .entry {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 24rem) {
+  .header h1 {
+    font-size: 2.5rem;
+  }
+  .alphabet {
+    gap: 0.25rem;
+  }
+  .alphabet button {
+    min-width: 2.6rem;
+  }
+  .noResults > div > * {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glossary * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

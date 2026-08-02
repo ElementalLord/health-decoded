@@ -30,12 +30,6 @@ export function CaregiverReturningState({ progress }: CaregiverReturningStatePro
           <dt>{returning.nextRecommendationLabel}</dt>
           <dd>{nextCopy}</dd>
         </div>
-        {progress.recentToolName ? (
-          <div>
-            <dt>{returning.toolShortcutLabel}</dt>
-            <dd>{progress.recentToolName}</dd>
-          </div>
-        ) : null}
       </dl>
       <p>{returning.privateProgress}</p>
     </section>

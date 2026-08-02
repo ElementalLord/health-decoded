@@ -1,7 +1,5 @@
 import { notFound, redirect } from "next/navigation";
 
-import { CaregiverArticle } from "@/features/caregiver/components/caregiver-article";
-import { CaregiverUnavailableState } from "@/features/caregiver/components/caregiver-unavailable-state";
 import { getPublishedCaregiverArticle } from "@/features/caregiver/services/caregiver.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
@@ -18,12 +16,12 @@ export default async function CaregiverArticlePage({
   if (!slugPattern.test(slug)) notFound();
 
   const profile = await getCurrentProfile();
-  if (!profile.ok) return <CaregiverUnavailableState />;
+  if (!profile.ok) redirect("/journey");
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
   const article = await getPublishedCaregiverArticle(slug);
   if (!article.ok && article.error.code === "not_found") notFound();
-  if (!article.ok) return <CaregiverUnavailableState />;
+  if (!article.ok) notFound();
 
-  return <CaregiverArticle article={article.data} />;
+  redirect("/caregiver");
 }

@@ -34,10 +34,15 @@
   letter-spacing: -0.025em;
 }
 .module h2 {
-  max-width: 20ch;
+  max-width: 18ch;
   margin: 0 0 1rem;
-  font-size: clamp(2rem, 4vw, 3.7rem);
+  font-size: clamp(2rem, 4vw, 3.8rem);
   line-height: 1.05;
+}
+.module h3 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  line-height: 1.2;
 }
 .module p,
 .module li,
@@ -58,7 +63,7 @@
 .orientation {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.8fr);
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.62fr);
   gap: clamp(2rem, 6vw, 6rem);
   align-items: center;
   min-height: 37rem;
@@ -77,6 +82,7 @@
 .completionActions a,
 .knowledge a {
   color: var(--ink);
+  font-size: 0.9rem;
   font-weight: 720;
   text-decoration: underline;
   text-decoration-color: #af6c50;
@@ -93,12 +99,15 @@
   text-transform: uppercase;
 }
 .orientation h1 {
-  max-width: 100%;
+  max-width: 10ch;
   margin: 0;
-  font-size: clamp(2.75rem, 5vw, 5.1rem);
-  line-height: 0.98;
+  font-size: clamp(2.8rem, 5vw, 5.2rem);
+  line-height: 0.95;
   overflow-wrap: normal;
   word-break: normal;
+}
+.orientation h1:focus {
+  outline: none;
 }
 .orientationCopy {
   min-width: 0;
@@ -107,7 +116,7 @@
   max-width: 42rem;
   margin-block-start: 2rem;
   color: var(--ink);
-  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  font-size: clamp(1.12rem, 1.7vw, 1.4rem);
 }
 .sourceFolders {
   display: grid;
@@ -121,23 +130,20 @@
   display: flex;
   gap: 1rem;
   align-items: center;
-  min-height: 5.4rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--rule);
-  border-radius: 1rem;
+  min-height: 4.5rem;
+  padding: 1rem 0;
+  border-block-end: 1px solid var(--rule);
   color: var(--ink);
-  background: var(--paper);
+  background: transparent;
   font-family: var(--font-fraunces), Georgia, serif;
   font-size: 1.2rem;
   animation: m4-sort 1.1s ease both;
   animation-iteration-count: 1;
 }
 .sourceFolders li:nth-child(2) {
-  margin-inline-start: 1.5rem;
   animation-delay: 0.15s;
 }
 .sourceFolders li:nth-child(3) {
-  margin-inline-start: 3rem;
   animation-delay: 0.3s;
 }
 .sourceFolders span {
@@ -169,7 +175,7 @@
   min-height: 3rem;
   align-items: center;
   border: 1px solid #7f3224;
-  border-radius: 999px;
+  border-radius: 0.35rem;
   padding: 0.75rem 1.25rem;
   color: #fff;
   background: var(--brick);
@@ -187,40 +193,38 @@
   align-items: start;
 }
 .responseVisual {
+  position: relative;
   display: grid;
-  gap: 0.8rem;
+  gap: 0;
   min-height: 22rem;
   align-content: center;
-  padding: clamp(1.25rem, 4vw, 2.5rem);
-  border: 1px solid #b7c9c2;
-  border-radius: 1.25rem;
-  background: #e5eee9;
+  padding-block: 2rem;
+  border-block: 1px solid var(--rule);
+  background: transparent;
   overflow: hidden;
+}
+.responseVisual::after {
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  inset: 1.6rem auto auto 0;
+  border-radius: 50%;
+  background: var(--blue);
+  content: "";
+  animation: m4-observe 7s ease-in-out infinite;
 }
 .responseVisual span {
   display: flex;
-  min-height: 4.25rem;
+  min-height: 4.75rem;
   align-items: center;
-  justify-content: center;
-  border: 1px solid #a8bdb5;
-  border-radius: 0.9rem;
+  border-block-end: 1px solid var(--rule);
   color: var(--ink);
-  background: var(--paper);
-  font-weight: 760;
-  text-align: center;
-  animation: m4-step-in 0.75s ease both;
-}
-.responseVisual span:nth-of-type(2) {
-  animation-delay: 0.15s;
-}
-.responseVisual span:nth-of-type(3) {
-  animation-delay: 0.3s;
+  background: transparent;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
 }
 .responseVisual i {
-  width: 0.15rem;
-  height: 1.25rem;
-  margin-inline: auto;
-  background: var(--blue);
+  display: none;
 }
 .scenario p {
   margin: 0;
@@ -242,18 +246,19 @@
 .handoffNarrative ol {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
+  gap: 2rem;
   margin: 2rem 0;
   padding: 0;
-  background: var(--rule);
+  background: transparent;
   counter-reset: handoff;
   list-style: none;
 }
 .handoffNarrative li {
   min-height: 8rem;
-  padding: 1rem;
+  padding: 1rem 0;
+  border-block: 1px solid var(--rule);
   color: var(--ink);
-  background: var(--paper);
+  background: transparent;
   counter-increment: handoff;
 }
 .handoffNarrative li::before {
@@ -266,12 +271,13 @@
 .misunderstanding dl {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--rule);
+  gap: 2rem;
+  background: transparent;
 }
 .misunderstanding dl > div {
-  padding: 1.5rem;
-  background: var(--paper);
+  padding-block: 1.5rem;
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .misunderstanding dt,
 .scripts dt,
@@ -336,21 +342,24 @@
 }
 .sourceRows {
   display: grid;
-  gap: 1px;
+  gap: 0;
   margin-block: 2rem;
-  background: var(--rule);
+  background: transparent;
 }
 .sourceRows label {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.75fr);
   gap: 0.75rem 1.5rem;
   align-items: center;
-  padding: 1rem;
-  background: var(--paper);
+  padding: 1rem 0;
+  border-block-end: 1px solid var(--rule);
+  background: transparent;
 }
 .sourceRows select,
 .reflection textarea {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 3rem;
   border: 1px solid var(--ink);
   padding: 0.65rem;
@@ -367,9 +376,13 @@
   color: var(--ink);
 }
 .needsReview {
-  color: #733b29 !important;
-  border-color: #a85f43 !important;
-  font-weight: 650;
+  color: #8a6248 !important;
+  border-color: #c7a58e !important;
+  background: #f3e5d7;
+  font-weight: 400;
+}
+.needsReview strong {
+  font-weight: 400;
 }
 .handoffBuilder ol {
   margin: 2rem 0;
@@ -398,7 +411,7 @@
 .handoffBuilder li button {
   min-height: 2.5rem;
   border: 1px solid #86a79e;
-  border-radius: 999px;
+  border-radius: 0.35rem;
   padding: 0.55rem 0.9rem;
   color: var(--ink);
   background: #edf3ef;
@@ -426,7 +439,7 @@
 .textAction {
   min-height: 2.8rem;
   border: 1px solid var(--ink);
-  border-radius: 999px;
+  border-radius: 0.35rem;
   padding: 0.65rem 1rem;
   color: #fff;
   background: var(--ink);
@@ -452,34 +465,39 @@
 }
 .questionGrid fieldset {
   min-inline-size: 0;
-  padding: 1.5rem;
-  border: 1px solid #c7d4cf;
-  border-inline-start: 4px solid var(--blue);
-  border-radius: 1rem;
-  background: var(--paper);
+  padding: 0 0 1.5rem;
+  border: 0;
+  border-block-end: 1px solid var(--rule);
+  background: transparent;
 }
 .questionGrid legend {
-  float: left;
+  float: none;
+  display: block;
   width: 100%;
   max-width: 100%;
   margin: 0;
   padding: 0 0 1.25rem;
   color: var(--ink);
   font-family: var(--font-fraunces), Georgia, serif;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 600;
   line-height: 1.35;
   overflow-wrap: break-word;
 }
 .questionGrid label {
-  clear: both;
+  clear: none;
   padding: 0.55rem 0;
 }
 .questionGrid .correct,
 .questionGrid .needsReview {
   margin-block-start: 1rem;
   padding: 1rem;
+}
+.questionGrid .correct {
   background: var(--sage);
+}
+.questionGrid .needsReview {
+  background: #f3e5d7;
 }
 .reflection {
   padding: clamp(2rem, 5vw, 4rem);
@@ -499,15 +517,15 @@
 }
 .scripts dl {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0;
   background: transparent;
 }
 .scripts dl > div {
-  padding: 1.25rem;
-  border: 1px solid #c8d5cf;
-  border-radius: 1rem;
-  background: #fbf8f0;
+  padding: 1.5rem 0;
+  border: 0;
+  border-block-end: 1px solid var(--rule);
+  background: transparent;
 }
 .scripts dl > div:last-child:nth-child(odd) {
   grid-column: 1/-1;
@@ -530,9 +548,8 @@
 }
 .completion {
   padding: clamp(2rem, 5vw, 4rem);
-  border: 1px solid #c4d3cc;
-  border-radius: 1.25rem;
-  background: var(--sage);
+  border-block: 1px solid var(--ink);
+  background: transparent;
 }
 .gates {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -543,22 +560,19 @@
   border-block: 1px solid var(--rule);
 }
 .completionActions a {
-  min-height: 2.75rem;
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid #91aaa2;
-  border-radius: 999px;
-  padding: 0.65rem 1rem;
-  background: #f7faf7;
+  min-height: auto;
+  display: inline;
+  border: 0;
+  padding: 0;
+  background: transparent;
 }
 .completionActions a:first-child {
   order: 2;
 }
 .completionActions a:nth-child(2) {
-  padding: 0.6rem 1rem;
-  color: #fff;
-  background: var(--ink);
-  text-decoration-color: #fff;
+  color: var(--ink);
+  background: transparent;
+  text-decoration-color: #af6c50;
 }
 @keyframes m4-step-in {
   from {
@@ -583,6 +597,15 @@
 @keyframes m4-handoff {
   to {
     transform: translateX(1.2rem);
+  }
+}
+@keyframes m4-observe {
+  0%,
+  100% {
+    left: 0;
+  }
+  50% {
+    left: calc(100% - 0.75rem);
   }
 }
 @media (max-width: 48rem) {
@@ -621,7 +644,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .sourceFolders li,
-  .responseVisual span {
+  .responseVisual::after {
     animation: none;
   }
 }

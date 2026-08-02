@@ -53,7 +53,8 @@ test("landing activates all five modules through the registry lookup", () => {
   }
 });
 
-test("urgent help remains directly reachable from Module 2", () => {
+test("Module 2 navigation stays focused on the caregiver lessons", () => {
   assert.match(route, /Module2Experience/);
-  assert.match(orientation, /href="\/caregiver\/urgent-help"/);
+  assert.match(orientation, /href="\/caregiver"/);
+  assert.doesNotMatch(orientation, /urgent-help|immediate danger/iu);
 });

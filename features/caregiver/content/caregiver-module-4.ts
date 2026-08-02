@@ -18,7 +18,7 @@ export const caregiverModule4 = Object.freeze({
       "All learner-facing medical, symptom, medication, glucose, device, plan, urgent, and emergency content is not-reviewed and requires qualified clinical review before relevant external testing or public release.",
   },
   safety: {
-    immediateLink: "Someone may be in immediate danger",
+    immediateLink: "Emergency help",
     productLimit:
       "Health Decoded provides general education. It cannot diagnose symptoms, interpret a personal glucose reading, decide whether a situation is safe, or create treatment instructions.",
     plan: "Use the person's clinician-created plan for individualized instructions and the support role they agreed to. General information in this module is not a replacement for that plan. If the plan is missing, unclear, or does not fit what is happening, contact the appropriate healthcare professional.",
@@ -61,7 +61,7 @@ export const caregiverModule4 = Object.freeze({
       title: "Notice without diagnosing",
       paragraphs: [
         "Useful observations are concrete: what changed, when it began, whether the person can respond, and what they ask for. Do not turn those observations into a diagnosis.",
-        "If immediate danger may be present, urgent action comes first. Otherwise, use the person's plan and appropriate professional guidance.",
+        "When urgent action is needed, emergency help comes first. Otherwise, use the person's plan and appropriate professional guidance.",
         "Symptoms and readings have context. One number does not give this application enough information to determine safety.",
       ],
     },
@@ -154,7 +154,7 @@ export const caregiverModule4 = Object.freeze({
         },
         {
           id: "danger",
-          copy: "Respond when someone may be in immediate danger",
+          copy: "Respond to an emergency",
           preferred: 2,
           kind: "emergency",
         },
@@ -163,7 +163,7 @@ export const caregiverModule4 = Object.freeze({
         general: "Education explains the framework, not an individual action.",
         plan: "The individualized layer belongs to the person and their care team.",
         professional: "Uncertainty outside the plan requires human guidance.",
-        emergency: "Immediate danger interrupts education.",
+        emergency: "An emergency interrupts education.",
       },
       learningPoint:
         "Safe support depends on using the right source, not gathering the most information.",
@@ -244,7 +244,7 @@ export const caregiverModule4 = Object.freeze({
   },
   scripts: [
     [
-      "Ask before helping when there is no immediate danger",
+      "Ask before helping when it is not an emergency",
       "“Something seems different. Do you want me to get your plan or contact someone?”",
     ],
     [
@@ -286,7 +286,7 @@ export const caregiverModule4 = Object.freeze({
     {
       id: "CG-M4-Q02",
       question:
-        "A person feels unwell, their plan is nearby, and someone may be in immediate danger. What comes first?",
+        "A person feels unwell and their plan is nearby. What comes first when emergency help may be needed?",
       choices: [
         "Search the whole plan before calling",
         "Contact emergency help, using the plan only if it does not delay contact",
@@ -295,14 +295,14 @@ export const caregiverModule4 = Object.freeze({
       ],
       preferredIndex: 1,
       explanation:
-        "Immediate danger interrupts education. The plan can support action when immediately available, but finding it must not delay emergency contact.",
+        "An emergency interrupts education. The plan can support action when immediately available, but finding it must not delay emergency contact.",
       relatedSection: "CG-M4-S02",
-      reviewLabel: "Review immediate danger",
+      reviewLabel: "Review emergency response",
     },
     {
       id: "CG-M4-Q03",
       question:
-        "A supporter notices a change, but the person's plan does not clearly cover it and immediate danger is not apparent. What is the safest next layer?",
+        "A supporter notices a change, but the person's plan does not clearly cover it and there is no clear emergency cue. What is the safest next layer?",
       choices: [
         "Invent a response from general articles",
         "Contact an appropriate healthcare professional",
@@ -311,7 +311,7 @@ export const caregiverModule4 = Object.freeze({
       ],
       preferredIndex: 1,
       explanation:
-        "This is a gray area because the situation is concerning without an obvious emergency cue. When the plan is unclear, qualified human guidance is the next layer. If immediate danger becomes possible, emergency direction takes over.",
+        "This is uncertain because the situation is concerning without an obvious emergency cue. When the plan is unclear, qualified human guidance is the next layer. If emergency help becomes necessary, emergency direction takes over.",
       relatedSection: "CG-M4-S05",
       reviewLabel: "Review the three layers",
     },
