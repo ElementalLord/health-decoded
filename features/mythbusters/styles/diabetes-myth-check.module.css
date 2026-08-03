@@ -1,0 +1,181 @@
+.mythCheck {
+  color: #342b27;
+  margin: 0 auto;
+  max-width: 68rem;
+  padding: 2.5rem 0 5rem;
+}
+
+.hero {
+  border-bottom: 1px solid #d9d0c4;
+  max-width: 52rem;
+  padding-bottom: 2.5rem;
+}
+
+.hero h1,
+.summary h1,
+.claimPanel h1 {
+  font-family: var(--font-serif);
+  font-weight: 520;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.hero h1 {
+  font-size: clamp(2.7rem, 7vw, 5.6rem);
+  line-height: 0.96;
+  margin-top: 0.65rem;
+}
+
+.supporting {
+  color: #5f514a;
+  font-size: clamp(1.12rem, 2.4vw, 1.45rem);
+  line-height: 1.55;
+  margin-top: 1.4rem;
+  max-width: 42rem;
+}
+
+.boundary {
+  border-left: 3px solid #b97560;
+  color: #6c625d;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-top: 1.5rem;
+  max-width: 45rem;
+  padding: 0.2rem 0 0.2rem 1rem;
+}
+
+.modeSection { padding-top: 3rem; }
+.sectionHeading > p,
+.roundHeader p,
+.claimPanel > p {
+  color: #a45f4b;
+  font-size: 0.7rem;
+  font-weight: 760;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.sectionHeading h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 520;
+  letter-spacing: -0.035em;
+  margin-top: 0.45rem;
+}
+
+.modeGrid {
+  border-top: 1px solid #d9d0c4;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1.6rem;
+}
+
+.modeGrid button {
+  align-items: center;
+  border-bottom: 1px solid #d9d0c4;
+  display: grid;
+  gap: 0.25rem 1rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 7.5rem;
+  padding: 1.25rem;
+  text-align: left;
+  transition: background 180ms ease, color 180ms ease;
+}
+.modeGrid button:nth-child(odd) { border-right: 1px solid #d9d0c4; }
+.modeGrid button:hover { background: #f3ece2; }
+.modeGrid button:focus-visible,
+.answers button:focus-visible,
+.sources summary:focus-visible { outline: 3px solid #8d6253; outline-offset: 3px; }
+.modeGrid button > span {
+  color: #b97560;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  grid-row: 1 / 3;
+}
+.modeGrid strong { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 570; }
+.modeGrid small { color: #766a63; font-size: 0.88rem; line-height: 1.5; }
+.modeGrid svg { grid-column: 3; grid-row: 1 / 3; width: 1.15rem; }
+
+.round { margin: 0 auto; max-width: 52rem; }
+.roundHeader { margin-bottom: 2rem; }
+.roundHeader > div { align-items: baseline; display: flex; justify-content: space-between; margin-bottom: 0.8rem; }
+.roundHeader span { color: #756a64; font-size: 0.82rem; font-weight: 650; }
+
+.claimPanel {
+  background: #f8f3eb;
+  border: 1px solid #dbd0c3;
+  border-top: 5px solid #728e7d;
+  padding: clamp(1.4rem, 5vw, 3.25rem);
+}
+.claimPanel h1 {
+  font-size: clamp(2rem, 5vw, 3.65rem);
+  line-height: 1.08;
+  margin-top: 1rem;
+}
+.claimPanel h1:focus,
+.feedback h2:focus { outline: none; }
+
+.answers { display: grid; gap: 0.75rem; grid-template-columns: repeat(3, 1fr); margin-top: 2.5rem; }
+.answers button {
+  align-items: center;
+  background: #fffdf8;
+  border: 1px solid #bfb3a7;
+  border-radius: 10px;
+  display: inline-flex;
+  font-weight: 720;
+  justify-content: center;
+  min-height: 3.75rem;
+  padding: 0.8rem;
+}
+.answers button:hover:not(:disabled) { background: #eee6da; border-color: #7f7169; }
+.answers button:disabled { color: #756a64; cursor: default; opacity: 0.68; }
+.answers .selectedAnswer { background: #e3ebe4; border-color: #66806f; color: #314b3c; opacity: 1; }
+.answers svg { height: 1rem; width: 1rem; }
+
+.feedback {
+  border-bottom: 1px solid #d9d0c4;
+  border-inline: 1px solid #d9d0c4;
+  padding: clamp(1.4rem, 5vw, 3rem);
+}
+.feedback > p:first-child { color: #5f7969; font-size: 0.88rem; font-weight: 750; }
+.feedback h2 { font-family: var(--font-serif); font-size: 2rem; font-weight: 550; margin-top: 0.75rem; }
+.explanation { font-size: 1.04rem; line-height: 1.75; margin-top: 0.75rem; }
+.takeaway { background: #edf2ed; border-left: 3px solid #789080; margin: 1.5rem 0; padding: 1.1rem 1.25rem; }
+.takeaway strong { color: #5d7565; font-size: 0.7rem; letter-spacing: 0.13em; text-transform: uppercase; }
+.takeaway p { font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.45; margin-top: 0.35rem; }
+
+.sources { border-block: 1px solid #ded6cc; margin: 1.5rem 0; padding: 0.8rem 0; }
+.sources summary { cursor: pointer; font-size: 0.88rem; font-weight: 700; width: fit-content; }
+.sources ul { display: grid; gap: 0.9rem; list-style: none; margin-top: 1rem; }
+.sources li { display: grid; gap: 0.15rem; }
+.sources li span { color: #766a63; font-size: 0.75rem; }
+.sources a { color: #3f6552; font-weight: 650; line-height: 1.4; text-decoration: underline; text-underline-offset: 3px; }
+
+.summary { margin: 0 auto; max-width: 48rem; padding-top: 2rem; }
+.summary > h1 { font-size: clamp(2.5rem, 7vw, 5rem); line-height: 1; margin-top: 0.75rem; }
+.summary > p { color: #665a54; font-size: 1.15rem; line-height: 1.7; margin-top: 1.4rem; max-width: 40rem; }
+.revisit { border-block: 1px solid #d9d0c4; margin-top: 2.5rem; padding: 2rem 0; }
+.revisit h2 { font-family: var(--font-serif); font-size: 1.75rem; font-weight: 550; }
+.revisit ul { display: grid; gap: 0.75rem; list-style: none; margin-top: 1rem; }
+.revisit li { background: #f2eee7; line-height: 1.55; padding: 1rem 1.15rem; }
+.summaryActions { align-items: center; display: flex; flex-wrap: wrap; gap: 0.8rem 1.2rem; margin-top: 2rem; }
+.summaryActions > a { font-weight: 680; text-decoration: underline; text-underline-offset: 4px; }
+
+@media (max-width: 47.99rem) {
+  .mythCheck { padding-top: 1.5rem; }
+  .modeGrid { grid-template-columns: 1fr; }
+  .modeGrid button:nth-child(odd) { border-right: 0; }
+  .answers { grid-template-columns: 1fr; }
+  .roundHeader > div { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
+  .summaryActions { align-items: stretch; flex-direction: column; }
+  .summaryActions button, .summaryActions > a { justify-content: center; text-align: center; width: 100%; }
+}
+
+@media (max-width: 24rem) {
+  .claimPanel, .feedback { padding-inline: 1rem; }
+  .modeGrid button { padding-inline: 0.8rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modeGrid button, .answers button { transition: none; }
+}

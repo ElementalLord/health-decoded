@@ -62,7 +62,16 @@ export function Module2KnowledgeCheck() {
           >
             <legend>{question.question}</legend>
             {question.choices.map((choice, choiceIndex) => (
-              <label key={choice}>
+              <label
+                key={choice}
+                data-needs-review={
+                  submitted &&
+                  answers[question.id] === choiceIndex &&
+                  choiceIndex !== question.preferredIndex
+                    ? "true"
+                    : undefined
+                }
+              >
                 <input
                   ref={questionIndex === 0 && choiceIndex === 0 ? firstChoiceRef : undefined}
                   type="radio"
@@ -75,7 +84,7 @@ export function Module2KnowledgeCheck() {
                   }}
                 />
                 <span>
-                  <span aria-hidden="true">{String.fromCharCode(65 + choiceIndex)}</span> {choice}
+                  <span aria-hidden="true">{String.fromCharCode(65 + choiceIndex)}.</span> {choice}
                 </span>
               </label>
             ))}

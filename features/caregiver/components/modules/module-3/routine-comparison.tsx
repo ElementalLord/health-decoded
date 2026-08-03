@@ -94,7 +94,7 @@ export function RoutineComparison() {
           <p>{allPreferred ? interaction.feedback.preferred : interaction.feedback.incorrect}</p>
         </CaregiverFeedback>
       ) : null}
-      <p>{interaction.learningPoint}</p>
+      {!submitted ? <p>{interaction.learningPoint}</p> : null}
     </section>
   );
 }

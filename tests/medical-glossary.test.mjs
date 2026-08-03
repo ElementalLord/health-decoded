@@ -240,9 +240,8 @@ test("page exposes accessible search, concise announcements, semantic lists, foc
   assert.doesNotMatch(styles, /overflow-x:\s*auto/);
 });
 
-test("Resources and primary navigation provide glossary access", () => {
-  assert.match(resources, /href="\/glossary"/);
-  assert.match(resources, /Medical Glossary/);
+test("primary navigation provides glossary access without a duplicate Resources card", () => {
+  assert.doesNotMatch(resources, /href="\/glossary"/);
   assert.match(routes, /href: "\/glossary"/);
   assert.match(routes, /label: "Glossary"/);
   assert.match(bottomNav, /glossary: BookOpen/);

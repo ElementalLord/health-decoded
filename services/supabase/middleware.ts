@@ -15,6 +15,7 @@ const protectedRoutePrefixes = [
   "/profile",
   "/progress",
   "/resources",
+  "/search",
   "/settings",
   "/stories",
 ] as const;

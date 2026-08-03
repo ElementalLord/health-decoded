@@ -91,8 +91,18 @@ export function RepairSequence() {
           const line = interaction.lines.find((item) => item.id === id)!;
           const isRemoved = removed.includes(id);
           const activeIndex = activeOrder.indexOf(id);
+          const needsReview =
+            submitted &&
+            !isRemoved &&
+            (id === "defense"
+              ? defenseIncluded
+              : !defenseIncluded && activeIndex !== interaction.preferredOrder.indexOf(id));
           return (
-            <li key={id} data-removed={isRemoved ? "true" : "false"}>
+            <li
+              key={id}
+              data-removed={isRemoved ? "true" : "false"}
+              data-needs-review={needsReview ? "true" : undefined}
+            >
               <span className={styles.repairPosition}>
                 {isRemoved ? "Removed" : `Position ${activeIndex + 1}`}
               </span>

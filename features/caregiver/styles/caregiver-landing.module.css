@@ -28,9 +28,7 @@
 .landing {
   min-width: 0;
   color: var(--caregiver-body);
-  background:
-    linear-gradient(90deg, transparent 0 7%, rgb(184 101 77 / 7%) 7% 7.08%, transparent 7.08%),
-    var(--caregiver-canvas);
+  background: var(--caregiver-canvas);
   font-size: clamp(1rem, 0.98rem + 0.12vw, 1.12rem);
   line-height: 1.65;
 }
@@ -334,7 +332,7 @@
   position: absolute;
   width: 3.6rem;
   height: 2.5rem;
-  inset: 1.1rem 26% auto auto;
+  inset: 1.1rem 17% auto auto;
   border: 1px solid #b7654d;
   transform: rotate(-4deg);
   transform-origin: 50% 100%;
@@ -438,12 +436,7 @@
 }
 
 .routeChoices::before {
-  position: absolute;
-  width: 1px;
-  inset: 0 auto 0 2.05rem;
-  z-index: 0;
-  background: var(--caregiver-rule);
-  content: "";
+  content: none;
 }
 
 .routeChoice {
@@ -457,7 +450,7 @@
   padding: 1.3rem 1rem;
   border-block-end: 1px solid var(--caregiver-rule);
   color: var(--caregiver-body);
-  background: var(--caregiver-canvas);
+  background: transparent;
   cursor: pointer;
 }
 
@@ -475,8 +468,8 @@
 
 .routeChoice[data-selected="true"],
 .beginChoice[data-selected="true"] {
-  box-shadow: inset 4px 0 0 var(--caregiver-terracotta);
-  background: var(--caregiver-sage);
+  border-inline-start: 4px solid var(--caregiver-terracotta);
+  background: rgb(220 231 220 / 58%);
 }
 
 .routeChoice input,
@@ -660,10 +653,9 @@
 .privacyBoundary {
   max-width: 64rem;
   margin-block: clamp(2rem, 5vw, 5rem);
-  padding: clamp(2rem, 6vw, 5rem);
-  border: 1px solid rgb(111 140 145 / 38%);
-  border-radius: 0.55rem;
-  background: var(--caregiver-information);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
+  border-inline-start: 3px solid rgb(111 140 145 / 72%);
+  background: transparent;
 }
 
 .privacyBoundary h2 {

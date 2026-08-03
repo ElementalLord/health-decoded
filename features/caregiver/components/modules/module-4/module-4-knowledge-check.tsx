@@ -48,7 +48,14 @@ export function Module4KnowledgeCheck() {
             <fieldset key={q.id} id={q.id}>
               <legend>{q.question}</legend>
               {q.choices.map((choice, ci) => (
-                <label key={choice}>
+                <label
+                  key={choice}
+                  data-needs-review={
+                    submitted && answers[q.id] === ci && ci !== q.preferredIndex
+                      ? "true"
+                      : undefined
+                  }
+                >
                   <input
                     ref={qi === 0 && ci === 0 ? firstRef : undefined}
                     type="radio"
@@ -60,7 +67,9 @@ export function Module4KnowledgeCheck() {
                       setSubmitted(false);
                     }}
                   />
-                  <span>{choice}</span>
+                  <span>
+                    <span aria-hidden="true">{String.fromCharCode(65 + ci)}.</span> {choice}
+                  </span>
                 </label>
               ))}
               {submitted ? (
