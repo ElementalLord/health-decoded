@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/layout/app-shell";
+import { MilestoneNotificationHost } from "@/features/achievements/components/milestone-notification-host";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { getProfileSettings } from "@/features/profile/services/profile-settings.server";
 import { CURRENT_PATH_HEADER, getSafeRedirectPath } from "@/lib/auth/redirects";
@@ -19,8 +20,12 @@ export default async function ProtectedLayout({ children }: { children: ReactNod
   return settings.ok ? (
     <AppShell preferences={settings.data} routes={protectedApplicationRoutes}>
       {children}
+      <MilestoneNotificationHost />
     </AppShell>
   ) : (
-    <AppShell routes={protectedApplicationRoutes}>{children}</AppShell>
+    <AppShell routes={protectedApplicationRoutes}>
+      {children}
+      <MilestoneNotificationHost />
+    </AppShell>
   );
 }

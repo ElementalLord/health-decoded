@@ -128,7 +128,7 @@ export function SupportMenu() {
           <p>{allPreferred ? interaction.feedback.preferred : interaction.feedback.mismatch}</p>
         </CaregiverFeedback>
       ) : null}
-      <p>{interaction.learningPoint}</p>
+      {!submitted ? <p>{interaction.learningPoint}</p> : null}
     </section>
   );
 }

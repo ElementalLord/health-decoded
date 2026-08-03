@@ -13,6 +13,9 @@ export function Module3Scenario() {
         <span className={styles.snackShelf} />
         <span className={styles.recipePage}>recipe</span>
         <span className={styles.pharmacyClock}>7:00</span>
+        <span className={styles.kitchenMug} />
+        <span className={styles.fruitBowl} />
+        <span className={styles.groceryList} />
       </div>
       <div className={styles.storyText}>
         {section.paragraphs.map((paragraph) => (

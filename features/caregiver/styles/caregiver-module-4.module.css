@@ -233,15 +233,16 @@
 }
 .narrativeBand {
   max-width: 68rem;
-  padding: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
   border-inline-start: 5px solid var(--blue);
-  background: var(--sage);
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .planBoundary {
-  padding: 1.5rem;
+  padding: 1.5rem 0;
   border-block: 1px solid var(--rule);
   color: var(--ink);
-  background: var(--paper);
+  background: transparent;
 }
 .handoffNarrative ol {
   display: grid;
@@ -394,14 +395,19 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 1rem;
   align-items: center;
-  padding: 1rem;
+  padding: 1rem 0;
   border-block-end: 1px solid var(--rule);
   color: var(--ink);
-  background: var(--paper);
+  background: transparent;
 }
 .handoffBuilder li[data-excluded="true"] span {
   text-decoration: line-through;
   opacity: 0.6;
+}
+.handoffBuilder li[data-needs-review="true"] {
+  padding-inline: 0.85rem;
+  border-inline-start: 3px solid #c7a58e;
+  background: #f3e5d7;
 }
 .handoffBuilder li div {
   display: flex;
@@ -499,10 +505,17 @@
 .questionGrid .needsReview {
   background: #f3e5d7;
 }
+.questionGrid label[data-needs-review="true"] {
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  border-inline-start: 3px solid #c7a58e;
+  background: #f3e5d7;
+}
 .reflection {
-  padding: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
   border-inline-start: 4px solid var(--blue);
-  background: var(--paper);
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .reflection form > label {
   display: block;

@@ -40,8 +40,13 @@ export function ProfessionalHandoffSequence() {
       <ol>
         {order.map((id, index) => {
           const entry = item.items.find((candidate) => candidate.id === id)!;
+          const needsReview = submitted && !entry.include && !excluded.includes(entry.id);
           return (
-            <li key={id} data-excluded={excluded.includes(id)}>
+            <li
+              key={id}
+              data-excluded={excluded.includes(id)}
+              data-needs-review={needsReview ? "true" : undefined}
+            >
               <span>{entry.copy}</span>
               <div>
                 <button

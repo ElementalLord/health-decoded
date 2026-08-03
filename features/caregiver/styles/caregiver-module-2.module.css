@@ -261,9 +261,9 @@
   max-width: 67ch;
 }
 .furtherReading {
-  padding: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(1rem, 3vw, 2rem) 0 clamp(1rem, 3vw, 2rem) clamp(1rem, 3vw, 1.75rem);
   border-inline-start: 4px solid var(--module-impact);
-  background: rgb(239 230 211 / 60%);
+  background: transparent;
 }
 .furtherReading h2 {
   margin-block-start: 0;
@@ -278,8 +278,9 @@
   margin-block-start: 1.5rem;
 }
 .readingSubsection {
-  padding: 1.25rem;
-  background: rgb(255 253 248 / 58%);
+  padding: 1.25rem 0;
+  border-block-start: 1px solid var(--module-rule);
+  background: transparent;
 }
 .readingSubsection h3 {
   margin-block-end: 0.6rem;
@@ -522,9 +523,10 @@
 
 .appointmentSection {
   max-width: 70rem;
-  padding: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
   border-inline-start: 5px solid var(--module-blue);
-  background: var(--module-privacy);
+  border-block: 1px solid var(--module-rule);
+  background: transparent;
 }
 
 .scriptLine {
@@ -592,7 +594,7 @@
 
 .practiceDrawer {
   border-block: 1px solid var(--module-rule);
-  background: var(--module-paper);
+  background: transparent;
 }
 
 .practiceDrawer > summary {
@@ -655,7 +657,7 @@
 
 .consequenceMap {
   border-block: 1px solid var(--module-rule);
-  background: var(--module-paper);
+  background: transparent;
 }
 
 .mapRows {
@@ -757,7 +759,7 @@
 
 .continuum {
   border-inline-start: 4px solid var(--module-blue);
-  background: #edf3ef;
+  background: transparent;
 }
 
 .continuumLegend {
@@ -792,16 +794,17 @@
 .behaviorList {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--module-rule);
+  gap: 0 clamp(1.5rem, 4vw, 3rem);
+  border-block: 1px solid var(--module-rule);
+  background: transparent;
 }
 
 .behaviorRow {
   min-width: 0;
   margin: 0;
-  padding: 1.5rem;
+  padding: 1.5rem 0;
   border: 0;
-  background: #edf3ef;
+  background: transparent;
 }
 
 .behaviorPrompt {
@@ -821,7 +824,7 @@
 
 .permissionBuilder {
   border-block: 1px solid var(--module-rule);
-  background: #edf3ef;
+  background: transparent;
 }
 
 .builderHeading,
@@ -835,9 +838,9 @@
 .builderSentence {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
+  gap: 0 clamp(1.5rem, 4vw, 3rem);
   margin-block: 2rem;
-  background: var(--module-rule);
+  background: transparent;
 }
 
 .builderSentence > span {
@@ -845,9 +848,10 @@
   grid-template-columns: 2.2rem minmax(0, 1fr);
   gap: 0.8rem;
   align-items: baseline;
-  padding: 1.2rem;
+  padding: 1.2rem 0;
+  border-block: 1px solid var(--module-rule);
   color: var(--module-ink);
-  background: var(--module-paper);
+  background: transparent;
   font-family: var(--module-serif);
   font-size: 1.2rem;
 }
@@ -883,8 +887,9 @@
 .conversationStage {
   width: min(100%, 49rem);
   margin-inline: auto;
-  padding: clamp(1.5rem, 4vw, 3rem);
-  background: var(--module-paper);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
+  border-inline-start: 3px solid var(--module-blue);
+  background: transparent;
 }
 
 .andreLine {
@@ -964,6 +969,11 @@
 
 .repairWorkspace > li[data-removed="true"] {
   opacity: 0.58;
+}
+.repairWorkspace > li[data-needs-review="true"] {
+  padding-inline: 0.85rem;
+  border-inline-start: 3px solid #c7a58e;
+  background: #f3e5d7;
 }
 
 .repairPosition {
@@ -1102,9 +1112,18 @@
 }
 
 .questionExplanation {
-  margin-block-start: 1rem;
-  padding-inline-start: 1.5rem;
+  margin-block: 1.25rem 0.5rem;
+  padding: 1.1rem 0 1.1rem 1.5rem;
   border-inline-start: 4px solid var(--module-blue);
+}
+.questionExplanation > * + * {
+  margin-block-start: 0.85rem;
+}
+.question label[data-needs-review="true"] {
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  border-inline-start: 3px solid #c7a58e;
+  background: #f3e5d7;
 }
 .answerConfirmed {
   margin: 0 0 0.4rem;

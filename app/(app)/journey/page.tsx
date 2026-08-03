@@ -9,7 +9,11 @@ import { JourneyUnavailableState } from "@/features/journeys/components/journey-
 import { LessonCompletionArrival } from "@/features/journeys/components/lesson-completion-arrival";
 import { TodaysLessonCard } from "@/features/journeys/components/todays-lesson-card";
 import { getJourneyHomeData } from "@/features/journeys/services/journey-home.server";
+import { NextStepPanel } from "@/features/next-step/components/next-step-panel";
+import { getNextStep } from "@/features/next-step/services/next-step.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { LearningStreakPanel } from "@/features/streaks/components/learning-streak-panel";
+import { getLearningStreak } from "@/features/streaks/services/learning-streak.server";
 
 export const metadata = { title: "Your journey" };
 
@@ -49,6 +53,10 @@ export default async function JourneyPage({
     completedDay >= 1 &&
     completedDay <= journey.data.progress.totalDays &&
     completedDay <= journey.data.progress.completedLessons;
+  const [nextStep, learningStreak] = await Promise.all([
+    getNextStep(journey.data),
+    getLearningStreak(),
+  ]);
 
   return (
     <section className="space-y-12 py-3 sm:space-y-16 sm:py-6">
@@ -63,6 +71,11 @@ export default async function JourneyPage({
         totalLessons={journey.data.progress.totalDays}
       />
 
+      <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1.7fr)_minmax(15rem,0.7fr)] lg:gap-10">
+        {nextStep.ok ? <NextStepPanel selection={nextStep.data} /> : null}
+        {learningStreak.ok ? <LearningStreakPanel streak={learningStreak.data} /> : null}
+      </div>
+
       <section className="motion-reveal divide-y divide-border border-y border-border">
         <ActionRow
           description="Organize questions, changes, and what you may want to bring. Your preparation stays in this browser session."
@@ -70,9 +83,14 @@ export default async function JourneyPage({
           title="Prepare for an appointment"
         />
         <ActionRow
-          description="Help without taking over."
-          href="/caregiver"
-          title="Support Someone You Care About"
+          description="Review meaningful learning and preparation steps you have completed."
+          href="/milestones"
+          title="View your milestones"
+        />
+        <ActionRow
+          description="Revisit completed lessons, confidence check-ins, and milestones together."
+          href="/progress"
+          title="Open your learning record"
         />
       </section>
 
@@ -85,16 +103,7 @@ export default async function JourneyPage({
       ) : null}
 
       {journey.data.kind === "complete" ? (
-        <>
-          <JourneyCompleteState journey={journey.data} />
-          <div className="motion-reveal border-y border-border">
-            <ActionRow
-              description="Revisit completed lessons, confidence check-ins, and milestones together."
-              href="/progress"
-              title="Open your learning record"
-            />
-          </div>
-        </>
+        <JourneyCompleteState journey={journey.data} />
       ) : (
         <>
           <TodaysLessonCard lesson={journey.data.currentLesson} />

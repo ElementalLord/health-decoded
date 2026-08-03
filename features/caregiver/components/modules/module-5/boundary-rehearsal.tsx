@@ -52,7 +52,14 @@ export function BoundaryRehearsal() {
           <fieldset key={statement.id}>
             <legend>Original: “{statement.original}”</legend>
             {statement.choices.map((choice, ci) => (
-              <label key={choice}>
+              <label
+                key={choice}
+                data-needs-review={
+                  submitted && answers[statement.id] === ci && ci !== statement.preferred
+                    ? "true"
+                    : undefined
+                }
+              >
                 <input
                   ref={si === 0 && ci === 0 ? firstRef : undefined}
                   type="radio"
@@ -64,7 +71,9 @@ export function BoundaryRehearsal() {
                     setSubmitted(false);
                   }}
                 />
-                <span>{choice}</span>
+                <span>
+                  <span aria-hidden="true">{String.fromCharCode(65 + ci)}.</span> {choice}
+                </span>
               </label>
             ))}
             {submitted ? (

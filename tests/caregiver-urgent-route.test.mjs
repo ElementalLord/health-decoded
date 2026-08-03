@@ -73,7 +73,8 @@ test("urgent heading receives predictable focus without gating or progress mutat
   assert.match(urgentComponentSource, /headingRef\.current\?\.focus\(\)/);
   assert.match(urgentComponentSource, /<h1/);
   assert.match(urgentComponentSource, /tabIndex=\{-1\}/);
-  assert.match(urgentComponentSource, /href="\/caregiver"/);
+  assert.match(urgentComponentSource, /returnHref = "\/caregiver"/);
+  assert.match(urgentComponentSource, /returnLabel = caregiverUrgentHelpContent\.sectionName/);
   assert.doesNotMatch(
     urgentComponentSource,
     /moduleCompleted|centralIdeaReached|takeawayViewed|setProgress|animation/,

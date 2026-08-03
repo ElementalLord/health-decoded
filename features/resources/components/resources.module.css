@@ -76,11 +76,11 @@
 }
 
 .internalTools {
-  align-items: end;
+  align-items: center;
   border-bottom: 1px solid var(--editorial-rule);
   display: grid;
   gap: 1.5rem 3rem;
-  grid-template-columns: minmax(0, 0.75fr) minmax(19rem, 1.25fr);
+  grid-template-columns: minmax(16rem, 0.8fr) minmax(24rem, 1.2fr);
   padding: 2rem 0;
 }
 
@@ -100,9 +100,15 @@
   letter-spacing: -0.04em;
   line-height: 1.08;
   margin-top: 0.4rem;
+  max-width: 18ch;
 }
 
-.internalTools > a {
+.toolLinks {
+  display: grid;
+  width: 100%;
+}
+
+.toolLinks > a {
   align-items: center;
   border-block: 1px solid var(--editorial-rule);
   color: var(--editorial-ink);
@@ -113,15 +119,15 @@
   padding: 1rem 0;
 }
 
-.internalTools > a strong,
-.internalTools > a small {
+.toolLinks > a strong,
+.toolLinks > a small {
   display: block;
 }
-.internalTools > a strong {
+.toolLinks > a strong {
   font-family: var(--font-serif);
   font-size: 1.25rem;
 }
-.internalTools > a small {
+.toolLinks > a small {
   color: var(--editorial-body);
   line-height: 1.5;
   margin-top: 0.2rem;
@@ -451,35 +457,6 @@
 
 article:hover .readGuide::after {
   width: 100%;
-}
-
-.featuredLead::after,
-.wideFeature::after {
-  animation: article-dashes 14s linear infinite;
-  background:
-    repeating-linear-gradient(90deg, #c9785e 0 9px, transparent 9px 18px) 0 0 / 200% 2px no-repeat,
-    repeating-linear-gradient(180deg, #c9785e 0 9px, transparent 9px 18px) 100% 0 / 2px 200%
-      no-repeat,
-    repeating-linear-gradient(270deg, #c9785e 0 9px, transparent 9px 18px) 100% 100% / 200% 2px
-      no-repeat,
-    repeating-linear-gradient(0deg, #c9785e 0 9px, transparent 9px 18px) 0 100% / 2px 200% no-repeat;
-  border-radius: inherit;
-  content: "";
-  inset: 5px;
-  opacity: 0.62;
-  pointer-events: none;
-  position: absolute;
-  z-index: 2;
-}
-
-@keyframes article-dashes {
-  to {
-    background-position:
-      200% 0,
-      100% 200%,
-      -100% 100%,
-      0 -100%;
-  }
 }
 
 article:hover .articleLabel::before {
@@ -1735,11 +1712,6 @@ article:hover .externalArrow {
   .articleLabel::before,
   .readingRecordTrack > span {
     transition: none;
-  }
-
-  .featuredLead::after,
-  .wideFeature::after {
-    animation: none;
   }
 
   .contextMoments svg,
