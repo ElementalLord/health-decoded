@@ -52,7 +52,16 @@ export function Module3KnowledgeCheck() {
           <fieldset key={question.id} id={question.id} className={styles.question}>
             <legend>{question.question}</legend>
             {question.choices.map((choice, choiceIndex) => (
-              <label key={choice}>
+              <label
+                key={choice}
+                data-needs-review={
+                  submitted &&
+                  answers[question.id] === choiceIndex &&
+                  choiceIndex !== question.preferredIndex
+                    ? "true"
+                    : undefined
+                }
+              >
                 <input
                   ref={questionIndex === 0 && choiceIndex === 0 ? firstRef : undefined}
                   type="radio"
@@ -65,7 +74,9 @@ export function Module3KnowledgeCheck() {
                     setSubmitted(false);
                   }}
                 />
-                <span>{choice}</span>
+                <span>
+                  <span aria-hidden="true">{String.fromCharCode(65 + choiceIndex)}.</span> {choice}
+                </span>
               </label>
             ))}
             {submitted ? (

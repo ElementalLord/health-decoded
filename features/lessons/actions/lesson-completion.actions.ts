@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { recognizeMilestoneEvent } from "@/features/achievements/services/milestones.server";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { lessonCompletionSchema } from "@/features/lessons/schemas/lesson-completion.schema";
 import { completeLesson } from "@/features/lessons/services/lesson-completion.server";
@@ -87,7 +88,12 @@ export async function completeLessonAction(input: unknown): Promise<CompleteLess
     };
   }
 
+  if (completed.data.firstTimeCompletion) {
+    await recognizeMilestoneEvent({ event: "lesson_completed" }, { recordStreak: true });
+  }
+
   revalidatePath("/journey");
+  revalidatePath("/milestones");
   revalidatePath("/profile");
   return { ok: true, data: completed.data };
 }

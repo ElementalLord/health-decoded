@@ -161,6 +161,10 @@ export function ProfileContent({
             yours stay close—your name, your account details, and the way you prefer to learn.
           </p>
           <nav aria-label="Profile actions" className={styles.heroActions}>
+            <Link className={styles.primaryTextAction} href="/milestones">
+              Milestones
+              <ArrowRight aria-hidden="true" />
+            </Link>
             <Link className={styles.quietAction} href="/settings">
               Open settings
             </Link>

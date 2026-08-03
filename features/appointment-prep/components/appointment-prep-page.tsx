@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
+import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
@@ -212,6 +213,7 @@ export function AppointmentPrepPage() {
   const [copyFailed, setCopyFailed] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const addFocusRef = useRef<HTMLElement | null>(null);
+  const milestoneSignals = useRef(new Set<string>());
   const summary = useMemo(() => buildAppointmentPrepSummary(state), [state]);
   const summaryText = useMemo(() => formatSummaryForClipboard(summary), [summary]);
 
@@ -224,6 +226,39 @@ export function AppointmentPrepPage() {
       addFocusRef.current = null;
     }
   });
+  useEffect(() => {
+    const priorityCount = state.priorities.filter((item) => item.text.trim()).length;
+    if (priorityCount >= 3 && !milestoneSignals.current.has("priorities")) {
+      milestoneSignals.current.add("priorities");
+      void recognizeMilestone({ event: "appointment_priorities_completed", priorityCount });
+    }
+    const preparedQuestions = state.questions.filter((item) => item.text.trim());
+    const categoryCount = new Set(preparedQuestions.map((item) => item.category)).size;
+    if (
+      preparedQuestions.length >= 3 &&
+      categoryCount >= 2 &&
+      !milestoneSignals.current.has("questions")
+    ) {
+      milestoneSignals.current.add("questions");
+      void recognizeMilestone({
+        event: "appointment_questions_completed",
+        questionCount: preparedQuestions.length,
+        categoryCount,
+      });
+    }
+    const preparationAreas = new Set(["clarify", "changes", "understand", "ask", "bring"]);
+    const completedSectionCount = summary.sections.filter((section) =>
+      preparationAreas.has(section.id),
+    ).length;
+    if (
+      state.currentSection === "review" &&
+      completedSectionCount >= 4 &&
+      !milestoneSignals.current.has("summary")
+    ) {
+      milestoneSignals.current.add("summary");
+      void recognizeMilestone({ event: "appointment_summary_completed", completedSectionCount });
+    }
+  }, [state.currentSection, state.priorities, state.questions, summary.sections]);
 
   const replace = (next: AppointmentPrepState) => dispatch({ type: "replace", state: next });
   const navigate = (section: WorkspaceSection) => dispatch({ type: "navigate", section });
@@ -255,6 +290,7 @@ export function AppointmentPrepPage() {
     setCopyFailed(false);
     try {
       await navigator.clipboard.writeText(summaryText);
+      void recognizeMilestone({ event: "appointment_summary_exported", hasSummary: Boolean(summary.sections.length) });
       announce(appointmentPrepNotices.copied);
     } catch {
       setCopyFailed(true);
@@ -268,6 +304,7 @@ export function AppointmentPrepPage() {
       "afterprint",
       () => {
         document.title = priorTitle;
+        void recognizeMilestone({ event: "appointment_summary_exported", hasSummary: Boolean(summary.sections.length) });
       },
       { once: true },
     );
@@ -312,7 +349,7 @@ export function AppointmentPrepPage() {
           <Link className={styles.returnLink} href="/journey">
             <ArrowLeft aria-hidden="true" className="size-4" /> Return to your journey
           </Link>
-          <Link className={styles.urgentLink} href="/caregiver/urgent-help">
+          <Link className={styles.urgentLink} href="/urgent-help">
             View urgent help
           </Link>
         </div>
@@ -752,7 +789,7 @@ function Changes({ state, replace, promote, addFocusRef }: RepeaterProps) {
       <SectionAdd id="changes-title" label="Add a change" onAdd={add} title="Changes to mention" />
       <p className={styles.neutralReminder}>
         Do not delay urgent or emergency help merely to finish this workspace.{" "}
-        <Link href="/caregiver/urgent-help">View urgent help</Link>.
+        <Link href="/urgent-help">View urgent help</Link>.
       </p>
       {state.changeItems.length ? (
         <ol className={styles.itemList}>
