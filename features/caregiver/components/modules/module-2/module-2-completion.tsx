@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 
 import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { caregiverModule2 } from "../../../content/caregiver-module-2";
@@ -11,7 +13,14 @@ import styles from "../../../styles/caregiver-module-2.module.css";
 export function Module2Completion() {
   const { progress } = useCaregiverSession();
   const completed = isCaregiverModuleComplete(progress);
+  const signaled = useRef(false);
   const completion = caregiverModule2.completion;
+  useEffect(() => {
+    if (completed && !signaled.current) {
+      signaled.current = true;
+      void recognizeMilestone({ event: "caregiver_module_completed", moduleId: "CG-M2" });
+    }
+  }, [completed]);
 
   return (
     <section

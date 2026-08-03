@@ -2,6 +2,7 @@
 
 import {
   BookOpen,
+  HelpingHand,
   House,
   Library,
   ListChecks,
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 
 const icons = {
   ai: MessageCircleQuestion,
+  caregiver: HelpingHand,
   glossary: BookOpen,
   home: House,
   journey: Map,
@@ -49,7 +51,11 @@ function BottomNavigation({
             "stagger-children mx-auto grid max-w-md items-center",
             routes.length === 8
               ? "grid-cols-4"
-              : routes.length === 6 ? "grid-cols-6" : "grid-cols-5",
+              : routes.length === 7
+              ? "grid-cols-7"
+              : routes.length === 6
+                ? "grid-cols-6"
+                : "grid-cols-5",
           )}
         >
           {routes.map((route) => {

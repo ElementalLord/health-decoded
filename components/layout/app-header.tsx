@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { DesktopLayout } from "@/components/layout/desktop-layout";
+import { SearchCommand } from "@/features/universal-search/components/search-command";
 import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -30,8 +31,10 @@ function AppHeader({ routes = applicationRoutes }: { routes?: readonly Applicati
           </span>
         </Link>
 
-        <DesktopLayout>
-          <nav aria-label="Primary navigation">
+        <div className="flex min-w-0 items-center gap-3 lg:gap-6">
+          <SearchCommand />
+          <DesktopLayout>
+            <nav aria-label="Primary navigation">
             <ul className="flex items-center gap-6">
               {routes.map((route) => {
                 const active = isActiveRoute(pathname, route);
@@ -54,8 +57,9 @@ function AppHeader({ routes = applicationRoutes }: { routes?: readonly Applicati
                 );
               })}
             </ul>
-          </nav>
-        </DesktopLayout>
+            </nav>
+          </DesktopLayout>
+        </div>
       </div>
     </header>
   );

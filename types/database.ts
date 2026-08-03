@@ -491,6 +491,24 @@ export type Database = {
           },
         ];
       };
+      user_milestones: {
+        Row: {
+          milestone_id: string;
+          unlocked_at: string;
+          user_id: string;
+        };
+        Insert: {
+          milestone_id: string;
+          unlocked_at?: string;
+          user_id: string;
+        };
+        Update: {
+          milestone_id?: string;
+          unlocked_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       lessons: {
         Row: {
           content_blocks: Json;
@@ -760,6 +778,87 @@ export type Database = {
           },
         ];
       };
+      user_learning_activity_days: {
+        Row: {
+          activity_date: string;
+          created_at: string;
+          qualifying_event_type: string;
+          user_id: string;
+        };
+        Insert: {
+          activity_date: string;
+          created_at?: string;
+          qualifying_event_type: string;
+          user_id: string;
+        };
+        Update: {
+          activity_date?: string;
+          created_at?: string;
+          qualifying_event_type?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      user_learning_streaks: {
+        Row: {
+          created_at: string;
+          current_streak: number;
+          freeze_balance: number;
+          last_qualified_date: string | null;
+          longest_streak: number;
+          pending_notice: string | null;
+          timezone: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          current_streak?: number;
+          freeze_balance?: number;
+          last_qualified_date?: string | null;
+          longest_streak?: number;
+          pending_notice?: string | null;
+          timezone?: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          current_streak?: number;
+          freeze_balance?: number;
+          last_qualified_date?: string | null;
+          longest_streak?: number;
+          pending_notice?: string | null;
+          timezone?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      user_next_step_preferences: {
+        Row: {
+          last_action: string;
+          last_action_date: string;
+          last_rule_id: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          last_action?: string;
+          last_action_date: string;
+          last_rule_id: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          last_action?: string;
+          last_action_date?: string;
+          last_rule_id?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       user_settings: {
         Row: {
           created_at: string;
@@ -795,6 +894,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      acknowledge_learning_streak_notice: {
+        Args: never;
+        Returns: undefined;
+      };
       begin_or_resume_current_lesson: {
         Args: { p_day: number };
         Returns: {
@@ -825,6 +928,10 @@ export type Database = {
         };
         Returns: boolean;
       };
+      dismiss_next_step: {
+        Args: { p_rule_id: string };
+        Returns: undefined;
+      };
       evaluate_match_pair_activity: {
         Args: {
           p_activity_id: string;
@@ -843,6 +950,28 @@ export type Database = {
           initialized_journey_lesson_id: string;
           initialized_lesson_progress_id: string;
           initialized_user_journey_id: string;
+        }[];
+      };
+      initialize_learning_streak: {
+        Args: never;
+        Returns: {
+          current_streak: number;
+          freeze_balance: number;
+          last_qualified_date: string | null;
+          longest_streak: number;
+          pending_notice: string | null;
+          timezone: string;
+        }[];
+      };
+      record_learning_activity: {
+        Args: { p_event_type: string };
+        Returns: {
+          current_streak: number;
+          freeze_balance: number;
+          last_qualified_date: string | null;
+          longest_streak: number;
+          pending_notice: string | null;
+          timezone: string;
         }[];
       };
       save_lesson_block_position: {

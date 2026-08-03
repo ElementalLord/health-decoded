@@ -129,7 +129,6 @@
   height: 15rem;
   inset: 3rem auto auto 12%;
   background: #f0c886;
-  box-shadow: 0 0 5rem rgb(240 200 134 / 40%);
   animation: m1-light 6s ease-in-out infinite;
 }
 .windowFrame {
@@ -207,9 +206,9 @@
   margin-block-start: clamp(3rem, 7vw, 6.5rem);
 }
 .furtherReading {
-  padding: clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(1rem, 3vw, 2rem) 0 clamp(1rem, 3vw, 2rem) clamp(1rem, 3vw, 1.75rem);
   border-inline-start: 4px solid var(--timing);
-  background: rgb(225 234 223 / 55%);
+  background: transparent;
 }
 .furtherReading h2 {
   margin-block-start: 0;
@@ -224,8 +223,9 @@
   margin-block-start: 1.5rem;
 }
 .readingSubsection {
-  padding: 1.25rem;
-  background: rgb(255 253 248 / 58%);
+  padding: 1.25rem 0;
+  border-block-start: 1px solid var(--rule);
+  background: transparent;
 }
 .readingSubsection h3 {
   margin-block-end: 0.6rem;
@@ -417,9 +417,10 @@
 .returning {
   position: relative;
   max-width: 66rem;
-  padding: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
   border-inline-start: 5px solid var(--signal);
-  background: #e6eeea;
+  border-block: 1px solid var(--rule);
+  background: transparent;
   overflow: hidden;
 }
 .scriptLine {
@@ -594,11 +595,20 @@
   flex: 0 0 auto;
   margin-block-start: 0.2rem;
 }
+.question label[data-needs-review="true"] {
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  border-inline-start: 3px solid #c7a58e;
+  background: #f3e5d7;
+}
 .inlineFeedback,
 .questionFeedback {
   margin: 0.8rem 0 0;
   padding-inline-start: 1rem;
   border-inline-start: 3px solid var(--signal);
+}
+.questionFeedback > * + * {
+  margin-block-start: 0.85rem;
 }
 .answerConfirmed {
   margin: 0 0 0.4rem;
@@ -624,8 +634,9 @@
   display: block;
 }
 .responseBuilder {
-  padding: clamp(2rem, 5vw, 4rem);
-  background: #e7efec;
+  padding: clamp(2rem, 5vw, 4rem) 0;
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .builderGroups {
   display: grid;
@@ -690,9 +701,9 @@
 }
 .reflection {
   max-width: 62rem;
-  padding: clamp(2rem, 5vw, 4rem);
-  border: 1px solid var(--rule);
-  background: var(--paper);
+  padding: clamp(1.5rem, 4vw, 3rem) 0;
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .privacyNotice {
   padding-inline-start: 1rem;
@@ -735,7 +746,7 @@
 .completion {
   padding: clamp(2rem, 5vw, 4rem);
   border-block-start: 1px solid var(--rule);
-  background: linear-gradient(90deg, transparent, rgb(109 148 149 / 12%));
+  background: transparent;
 }
 .completionGates {
   grid-template-columns: repeat(3, minmax(0, 1fr));

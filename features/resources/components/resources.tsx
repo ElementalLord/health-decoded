@@ -8,6 +8,7 @@ import {
   BookOpenText,
   Check,
   CircleDollarSign,
+  CircleHelp,
   ClipboardCheck,
   HeartPulse,
   Quote,
@@ -19,6 +20,7 @@ import {
 } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
+import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 import type { Resource } from "@/features/stories/schemas/resource.schema";
 
 import { EditorialMotion } from "./resource-motion-scenes";
@@ -158,7 +160,14 @@ function ResourceLink({
       aria-label={`${resource.title} from ${shortSource(resource.organization)} (opens in a new tab)`}
       className={className}
       href={resource.url}
-      onClick={() => markViewed(resource.id)}
+      onClick={() => {
+        markViewed(resource.id);
+        if (resource.id === "diabetes-education-and-support")
+          void recognizeMilestone({
+            event: "verified_support_resource_opened",
+            resourceId: "diabetes-education-and-support",
+          });
+      }}
       rel="noopener noreferrer"
       target="_blank"
     >
@@ -573,18 +582,18 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
         <section aria-labelledby="resource-tools-heading" className={styles.internalTools}>
           <div>
             <p>Health Decoded tools</p>
-            <h2 id="resource-tools-heading">Look up the language behind the care.</h2>
+            <h2 id="resource-tools-heading">Put common diabetes claims to the test.</h2>
           </div>
-          <Link href="/glossary">
-            <BookOpenText aria-hidden="true" size={22} strokeWidth={1.6} />
-            <span>
-              <strong>Medical Glossary</strong>
-              <small>
-                Find plain-language definitions for common diabetes and health-care terms.
-              </small>
-            </span>
-            <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
-          </Link>
+          <div className={styles.toolLinks}>
+            <Link href="/myth-check">
+              <CircleHelp aria-hidden="true" size={22} strokeWidth={1.6} />
+              <span>
+                <strong>Diabetes Myth Check</strong>
+                <small>Test common diabetes claims and learn the evidence-backed reality.</small>
+              </span>
+              <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
+            </Link>
+          </div>
         </section>
 
         <ReadingProgressPanel total={resources.length} />

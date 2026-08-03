@@ -9,9 +9,15 @@ import styles from "../../styles/caregiver-landing.module.css";
 
 export interface CaregiverUrgentHelpPageProps {
   readonly region: CaregiverRegionalPresentation;
+  readonly returnHref?: string;
+  readonly returnLabel?: string;
 }
 
-export function CaregiverUrgentHelpPage({ region }: CaregiverUrgentHelpPageProps) {
+export function CaregiverUrgentHelpPage({
+  region,
+  returnHref = "/caregiver",
+  returnLabel = caregiverUrgentHelpContent.sectionName,
+}: CaregiverUrgentHelpPageProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -45,9 +51,9 @@ export function CaregiverUrgentHelpPage({ region }: CaregiverUrgentHelpPageProps
           <p>{caregiverUrgentHelpContent.productLimitation}</p>
         </div>
 
-        <Link className={styles.urgentBackLink} href="/caregiver">
+        <Link className={styles.urgentBackLink} href={returnHref}>
           <span aria-hidden="true">←</span>
-          {caregiverUrgentHelpContent.sectionName}
+          {returnLabel}
         </Link>
       </section>
     </div>

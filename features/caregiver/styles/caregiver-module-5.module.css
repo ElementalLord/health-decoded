@@ -265,9 +265,10 @@
 }
 .strain {
   max-width: 68rem;
-  padding: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
   border-inline-start: 5px solid var(--plum);
-  background: var(--plum-light);
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .boundaryNarrative dl {
   display: grid;
@@ -451,12 +452,28 @@
   color: var(--ink);
 }
 .boundaryPractice p.correct,
-.boundaryPractice p.needsReview,
-.knowledge .correct,
-.knowledge .needsReview {
+.knowledge .correct {
   margin-block-start: 1rem;
   padding: 1rem;
   background: var(--sage);
+}
+.boundaryPractice p.needsReview,
+.knowledge .needsReview {
+  margin-block-start: 1rem;
+  padding: 1rem;
+  background: #f3e5d7;
+}
+.knowledge label[data-needs-review="true"] {
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  border-inline-start: 3px solid #c7a58e;
+  background: #f3e5d7;
+}
+.boundaryPractice label[data-needs-review="true"] {
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  border-inline-start: 3px solid #c7a58e;
+  background: #f3e5d7;
 }
 .networkRows {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -529,9 +546,10 @@
   flex: 0 0 auto;
 }
 .reflection {
-  padding: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
   border-inline-start: 4px solid var(--plum);
-  background: var(--paper);
+  border-block: 1px solid var(--rule);
+  background: transparent;
 }
 .privacyNotice {
   max-width: 70rem;

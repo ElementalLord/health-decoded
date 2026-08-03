@@ -3,12 +3,13 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const [page, content, reducer, summary, route, journey, styles] = await Promise.all([
+const [page, content, reducer, summary, route, urgentRoute, journey, styles] = await Promise.all([
   read("features/appointment-prep/components/appointment-prep-page.tsx"),
   read("features/appointment-prep/content/appointment-prep-content.ts"),
   read("features/appointment-prep/state/appointment-prep-reducer.ts"),
   read("features/appointment-prep/lib/appointment-prep-summary.ts"),
   read("app/(app)/appointment-prep/page.tsx"),
+  read("app/(app)/urgent-help/page.tsx"),
   read("app/(app)/journey/page.tsx"),
   read("features/appointment-prep/styles/appointment-prep.module.css"),
 ]);
@@ -30,6 +31,13 @@ test("authenticated route inherits the protected app layout and keeps neutral me
   assert.doesNotMatch(route, /patient name|clinician name|diagnosis|medication/i);
   assert.match(journey, /href="\/appointment-prep"/);
   assert.match(journey, /Prepare for an appointment/);
+});
+
+test("urgent help stays in the authenticated appointment context", () => {
+  assert.match(page, /href="\/urgent-help"/);
+  assert.doesNotMatch(page, /href="\/caregiver\/urgent-help"/);
+  assert.match(urgentRoute, /returnHref="\/appointment-prep"/);
+  assert.match(urgentRoute, /returnLabel="Return to Appointment Preparation"/);
 });
 
 test("entry discloses exact privacy, sharing, clearing, copying, and medical boundaries", () => {

@@ -124,8 +124,8 @@ test("the visual hierarchy keeps articles larger and more explicit than supporti
   assert.match(styles, /grid-template-columns: minmax\(19rem, 0\.78fr\) minmax\(0, 1\.22fr\)/);
   assert.match(styles, /\.checklistWithPhoto \{\s+grid-column: 1 \/ -1;/);
   assert.match(styles, /min-height: 22rem/);
-  assert.match(styles, /@keyframes article-dashes/);
-  assert.match(styles, /\.featuredLead::after/);
+  assert.doesNotMatch(styles, /@keyframes article-dashes/);
+  assert.doesNotMatch(styles, /\.featuredLead::after/);
   assert.match(styles, /min-height: 12rem/);
   assert.match(styles, /max-height: 15rem/);
 });

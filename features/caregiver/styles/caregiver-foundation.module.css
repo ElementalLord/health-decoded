@@ -110,6 +110,10 @@
   overflow-wrap: anywhere;
 }
 
+.feedback {
+  margin-block: 1.75rem;
+}
+
 .feedback[data-tone="supportive"] {
   border-color: var(--caregiver-ink);
   background: var(--caregiver-sage);
@@ -129,6 +133,15 @@
 .feedbackHeading,
 .noticeHeading {
   color: var(--caregiver-ink);
+}
+
+.feedbackBody {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.feedbackBody > p {
+  margin: 0;
 }
 
 .feedbackBody > :first-child,
