@@ -35,12 +35,12 @@ test("the next required lesson is returned when none is in progress", () => {
 });
 
 test("optional tools use controlled progress eligibility", () => {
-  assert.deepEqual(recommendNextStep(progress({ completedLessonCount: 2 })).alternatives, []);
-  const eligible = recommendNextStep(progress({ completedLessonCount: 5 }));
-  assert.deepEqual(
-    eligible.alternatives.map((item) => item.id),
-    ["myth-check", "appointment-prep"],
+  assert.equal(
+    recommendNextStep(progress({ completedLessonCount: 2 })).primary.type,
+    "next-lesson",
   );
+  const eligible = recommendNextStep(progress({ completedLessonCount: 5 }));
+  assert.equal(eligible.primary.type, "next-lesson");
 });
 
 test("a dismissed optional recommendation rotates for seven calendar days", () => {
@@ -60,16 +60,21 @@ test("a dismissed optional recommendation rotates for seven calendar days", () =
   assert.equal(eligibleAgain.primary.id, "myth-check");
 });
 
-test("a dismissed required lesson remains an eligible alternative", () => {
+test("a required lesson cannot be dismissed", () => {
   const result = recommendNextStep({
     ...progress({ completedLessonCount: 5 }),
     lastDismissed: { id: "start-lesson-5", date: "2026-08-03" },
   });
-  assert.ok(
-    [result.primary, ...result.alternatives].some(
-      (recommendation) => recommendation.id === "start-lesson-5",
-    ),
+  assert.equal(result.primary.id, "start-lesson-5");
+});
+
+test("a just-completed lesson gets one concept-level continuation", () => {
+  const result = recommendNextStep(
+    progress({ recentCompletedLessonId: "20000000-0000-0000-0000-000000000003" }),
   );
+  assert.equal(result.primary.type, "concept-practice");
+  assert.match(result.primary.route, /^\/explain-it-back\?concept=/);
+  assert.deepEqual(Object.keys(result), ["primary"]);
 });
 
 test("recommendation engine does not read medical or AI data", async () => {
@@ -83,13 +88,18 @@ test("recommendation engine does not read medical or AI data", async () => {
 });
 
 test("Journey contains both compact features without adding navigation", async () => {
-  const [journey, routes, bottomNavigation] = await Promise.all([
+  const [journey, panel, routes, bottomNavigation] = await Promise.all([
     readFile(new URL("../app/(app)/journey/page.tsx", import.meta.url), "utf8"),
+    readFile(
+      new URL("../features/next-step/components/next-step-panel.tsx", import.meta.url),
+      "utf8",
+    ),
     readFile(new URL("../lib/routes.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/layout/bottom-navigation.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(journey, /NextStepPanel/);
   assert.match(journey, /LearningStreakPanel/);
+  assert.doesNotMatch(panel, /Other options|alternatives|Not right now/);
   assert.doesNotMatch(routes, /learning-streak|next-step/);
   assert.doesNotMatch(bottomNavigation, /Learning streak|Your Next Step/);
 });

@@ -77,16 +77,11 @@ function StoryPreview({
       <div className={styles.previewBody}>
         <div className={styles.previewMain}>
           <div className={styles.labels}>
-            <span>Illustrative story</span>
             <span>{story.topic}</span>
           </div>
           <h3>{story.title}</h3>
           <p className={styles.previewIntroduction}>{story.introduction}</p>
         </div>
-        <aside className={styles.whyItMatters}>
-          <p>Why it may stay with you</p>
-          <span>{story.whyItMatters}</span>
-        </aside>
         <footer className={styles.previewFooter}>
           <div className={styles.metadata}>
             <span>
@@ -153,10 +148,7 @@ export function StoryLanding() {
           {situations.map((situation) => (
             <li key={situation.label}>
               {situation.available ? (
-                <a href={situation.href}>
-                  {situation.label}
-                  <span>1 story</span>
-                </a>
+                <a href={situation.href}>{situation.label}</a>
               ) : (
                 <span className={styles.upcomingTopic}>
                   {situation.label}
@@ -174,7 +166,7 @@ export function StoryLanding() {
         id="just-diagnosed-story"
       >
         <div className={styles.sectionHeading}>
-          <p>Recommended place to begin</p>
+          <p>Start here</p>
           <h2 id="just-diagnosed-heading">A first evening after diagnosis</h2>
         </div>
         <StoryPreview
@@ -186,8 +178,8 @@ export function StoryLanding() {
 
       <section aria-labelledby="more-stories-heading" className={styles.moreStories}>
         <div className={styles.sectionHeading}>
-          <p>More situations</p>
-          <h2 id="more-stories-heading">Different moments, different questions</h2>
+          <p>More stories</p>
+          <h2 id="more-stories-heading">Different moments</h2>
         </div>
         <div className={styles.storyRows}>
           <div id="food-and-family-story">
@@ -222,14 +214,6 @@ export function StoryLanding() {
           </div>
         </div>
       </section>
-
-      <aside className={styles.storyNote}>
-        <p>These are illustrative, not biographical.</p>
-        <span>
-          Each story is an original composite designed to make an everyday question easier to
-          explore. It does not describe one specific person or replace individualized care.
-        </span>
-      </aside>
     </main>
   );
 }

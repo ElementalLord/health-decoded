@@ -6,6 +6,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ContextualNextStep } from "@/features/cohesion/components/contextual-next-step";
+import { getNextLearningAction } from "@/features/cohesion/lib/get-next-learning-action";
 import {
   availableGlossaryLetters,
   glossaryLetters,
@@ -16,6 +18,8 @@ import type { MedicalGlossaryEntry } from "@/features/glossary/types/medical-glo
 import styles from "@/features/glossary/styles/medical-glossary.module.css";
 
 function GlossaryEntry({ entry }: { entry: MedicalGlossaryEntry }) {
+  const continuation = getNextLearningAction({ sourceType: "glossary", sourceId: entry.id });
+
   return (
     <div className={styles.entry}>
       <dt>
@@ -33,6 +37,7 @@ function GlossaryEntry({ entry }: { entry: MedicalGlossaryEntry }) {
             <p>{entry.commonlyConfusedWith.explanation}</p>
           </aside>
         ) : null}
+        {continuation ? <ContextualNextStep action={continuation} /> : null}
       </dd>
     </div>
   );

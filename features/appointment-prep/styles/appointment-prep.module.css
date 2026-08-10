@@ -2,7 +2,7 @@
 .workspace {
   margin: 0 auto;
   max-width: 70rem;
-  padding: 2.5rem 0 5rem;
+  padding: 2rem 0 4.5rem;
 }
 
 .entry {
@@ -11,7 +11,7 @@
 
 .entryRule {
   border-bottom: 1px solid var(--border);
-  padding-bottom: 2.5rem;
+  padding-bottom: 2rem;
 }
 
 .entry h1,
@@ -45,7 +45,7 @@
 .noticeStack {
   display: grid;
   gap: 0;
-  margin-top: 2.5rem;
+  margin-top: 2rem;
 }
 
 .notice {
@@ -93,28 +93,6 @@
   line-height: 1.5;
 }
 
-.status {
-  background: var(--info);
-  border-left: 3px solid var(--success);
-  bottom: calc(6rem + env(safe-area-inset-bottom));
-  color: var(--info-foreground);
-  font-size: 0.875rem;
-  font-weight: 650;
-  left: 50%;
-  max-width: min(32rem, calc(100vw - 2rem));
-  padding: 0.85rem 1rem;
-  position: fixed;
-  transform: translateX(-50%);
-  width: max-content;
-  z-index: 45;
-}
-
-@media (min-width: 64rem) {
-  .status {
-    bottom: 1rem;
-  }
-}
-
 .actions {
   margin-top: 2rem;
 }
@@ -140,7 +118,7 @@
 
 .workspaceHeader {
   border-bottom: 1px solid var(--border);
-  padding-bottom: 2rem;
+  padding-bottom: 1.75rem;
 }
 .workspaceHeader h1 {
   max-width: 18ch;
@@ -157,11 +135,18 @@
   line-height: 1.55;
 }
 
+.workspaceBody {
+  min-width: 0;
+}
+
 .sectionNav {
-  margin: 1.5rem 0;
+  margin: 1.25rem 0;
   overflow-x: auto;
   padding: 0.25rem 0;
   scrollbar-width: thin;
+}
+.sectionNavLabel {
+  display: none;
 }
 .sectionNav ol {
   display: flex;
@@ -197,9 +182,13 @@
 
 .paper {
   background: color-mix(in srgb, var(--card) 72%, transparent);
-  border-block: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 1px 0 rgb(61 47 41 / 0.04),
+    0 12px 32px rgb(61 47 41 / 0.04);
   min-height: 34rem;
-  padding: clamp(1.5rem, 4vw, 3.5rem) clamp(0rem, 3vw, 3rem);
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem);
 }
 .paper > section,
 .paper > fieldset {
@@ -267,7 +256,7 @@
 
 .formGrid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
   margin-top: 2rem;
 }
 .field {
@@ -298,7 +287,7 @@
 
 .itemList {
   display: grid;
-  gap: 2rem;
+  gap: 1.5rem;
   list-style: none;
   margin-top: 2rem;
 }
@@ -345,11 +334,11 @@
   width: 1.25rem;
 }
 .neutralReminder {
-  border-left: 2px solid var(--accent-warm);
+  border-block: 1px solid var(--border);
   color: var(--muted-foreground);
   line-height: 1.65;
   margin-top: 1.5rem;
-  padding: 0.75rem 0 0.75rem 1rem;
+  padding: 0.75rem 0;
 }
 .subsection {
   border-top: 1px solid var(--border);
@@ -424,9 +413,9 @@
   min-height: 3rem;
 }
 .autonomy {
-  border-left: 2px solid var(--accent-warm);
+  border-block: 1px solid var(--border);
   margin-top: 2rem;
-  padding: 0.5rem 0 0.5rem 1.25rem;
+  padding: 1rem 0;
 }
 .autonomy h3 {
   font-family: var(--font-serif);
@@ -573,6 +562,69 @@
   }
 }
 
+@media (min-width: 64rem) {
+  .workspaceBody {
+    align-items: start;
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+    margin-top: 1.75rem;
+  }
+
+  .sectionNav {
+    margin: 0;
+    overflow: visible;
+    padding: 0;
+    position: sticky;
+    top: 6rem;
+  }
+
+  .sectionNavLabel {
+    color: var(--muted-foreground);
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .sectionNav ol {
+    border-block: 1px solid var(--border);
+    display: grid;
+    min-width: 0;
+  }
+
+  .sectionNav li,
+  .sectionNav li:first-child {
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  }
+
+  .sectionNav li:last-child {
+    border-bottom: 0;
+  }
+
+  .sectionNav button {
+    align-items: center;
+    gap: 0.7rem;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    min-height: 3.25rem;
+    min-width: 0;
+    padding: 0.55rem 0.7rem;
+    width: 100%;
+  }
+
+  .sectionNav button[aria-current="step"] {
+    background: color-mix(in srgb, var(--info) 58%, transparent);
+    box-shadow: inset 3px 0 var(--accent-warm);
+  }
+
+  .paper {
+    min-height: 42rem;
+  }
+}
+
 @media (max-width: 24rem) {
   .entry,
   .workspace {
@@ -607,6 +659,10 @@
     margin: 0;
     max-width: none;
     padding: 0;
+  }
+  .workspaceBody {
+    display: block;
+    margin: 0;
   }
   .workspaceHeader,
   .privacyBar,

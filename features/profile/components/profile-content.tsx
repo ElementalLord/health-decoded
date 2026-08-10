@@ -204,7 +204,7 @@ export function ProfileContent({
                 name="displayName"
                 required
               />
-              <Button disabled={pending} fullWidth={false}>
+              <Button disabled={pending} fullWidth={false} type="submit">
                 {pending ? "Saving…" : "Save name"}
               </Button>
             </div>
@@ -251,7 +251,7 @@ export function ProfileContent({
           <div className={styles.signOutRow}>
             <p>Finished for now?</p>
             <form action={logoutAction}>
-              <Button fullWidth={false} variant="secondary">
+              <Button fullWidth={false} type="submit" variant="secondary">
                 Sign out
               </Button>
             </form>

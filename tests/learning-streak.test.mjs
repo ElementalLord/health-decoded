@@ -118,11 +118,34 @@ test("server architecture rejects client dates and arbitrary streak values", asy
   assert.doesNotMatch(migration, /p_activity_date|p_current_streak|p_freeze_balance/);
 });
 
+test("new controlled event names are allowlisted without accepting arbitrary activity", async () => {
+  const [types, migration, aiService] = await Promise.all([
+    readFile(new URL("../features/streaks/types/learning-streak.ts", import.meta.url), "utf8"),
+    readFile(
+      new URL(
+        "../supabase/migrations/20260810000001_expand_learning_streak_events.sql",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+    readFile(new URL("../features/ai/services/ai-chat.server.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(types, /ai_learning_exchange_completed/);
+  assert.match(types, /clinician_questions_prepared/);
+  assert.match(migration, /Unsupported learning activity/);
+  assert.doesNotMatch(types, /meaningful_activity/);
+  assert.match(aiService, /recordQualifyingLearningActivity\("ai_learning_exchange_completed"\)/);
+});
+
+test("streak activity state can bridge only the currently available freezes", () => {
+  const recent = calculateLearningStreak(initial, "2026-08-03");
+  assert.equal(recent.currentStreak, 1);
+  // The server summary computes the visual state without recording a day or consuming a freeze.
+  assert.equal(initial.freezeBalance, 2);
+});
+
 test("timezone fallback prefers saved, then browser, then UTC", () => {
-  assert.equal(
-    resolveLearningTimezone("America/Chicago", "America/New_York"),
-    "America/Chicago",
-  );
+  assert.equal(resolveLearningTimezone("America/Chicago", "America/New_York"), "America/Chicago");
   assert.equal(resolveLearningTimezone(null, "America/New_York"), "America/New_York");
   assert.equal(resolveLearningTimezone("not/a-zone", "also/not-a-zone"), "UTC");
 });

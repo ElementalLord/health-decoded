@@ -7,6 +7,7 @@ import {
   captureBrowserTimezoneAction,
 } from "@/features/streaks/actions/learning-streak.actions";
 import type { LearningStreak } from "@/features/streaks/types/learning-streak";
+import { StreakFlame } from "@/features/streaks/components/streak-flame";
 
 export function LearningStreakPanel({ streak }: { streak: LearningStreak }) {
   useEffect(() => {
@@ -23,21 +24,28 @@ export function LearningStreakPanel({ streak }: { streak: LearningStreak }) {
   return (
     <section
       aria-labelledby="learning-streak-heading"
-      className="border-t border-border pt-5 lg:mt-2"
+      className="border-y border-border py-5 lg:mt-4"
     >
-      <p className="editorial-eyebrow">Learning streak</p>
-      <h2 className="mt-2 font-serif-display text-2xl" id="learning-streak-heading">
-        {streak.currentStreak} learning {dayLabel} in a row
-      </h2>
+      <div className="flex items-center gap-3">
+        <StreakFlame active={streak.isStreakActive} />
+        <div>
+          <p className="editorial-eyebrow">Learning streak</p>
+          <h2 className="mt-1 font-serif-display text-2xl" id="learning-streak-heading">
+            {streak.currentStreak} learning {dayLabel} in a row
+          </h2>
+        </div>
+      </div>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
         This reflects activity in Health Decoded, not your health or treatment progress.
       </p>
-      <p className="mt-4 text-sm font-medium">
-        {streak.freezeBalance} streak {freezeLabel} available
-      </p>
-      <p className="mt-1 text-sm leading-6 text-muted-foreground">
-        A freeze is used automatically when it can protect a missed day.
-      </p>
+      <div className="mt-4 border-t border-border pt-3">
+        <p className="text-sm font-medium">
+          {streak.freezeBalance} streak {freezeLabel} available
+        </p>
+        <p className="mt-1 text-sm leading-6 text-muted-foreground">
+          A freeze is used automatically when it can protect a missed day.
+        </p>
+      </div>
       {streak.pendingNotice ? (
         <p aria-live="polite" className="mt-4 text-sm font-medium" role="status">
           {streak.pendingNotice === "freeze_used"

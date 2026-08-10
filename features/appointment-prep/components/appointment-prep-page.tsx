@@ -290,7 +290,10 @@ export function AppointmentPrepPage() {
     setCopyFailed(false);
     try {
       await navigator.clipboard.writeText(summaryText);
-      void recognizeMilestone({ event: "appointment_summary_exported", hasSummary: Boolean(summary.sections.length) });
+      void recognizeMilestone({
+        event: "appointment_summary_exported",
+        hasSummary: Boolean(summary.sections.length),
+      });
       announce(appointmentPrepNotices.copied);
     } catch {
       setCopyFailed(true);
@@ -304,7 +307,10 @@ export function AppointmentPrepPage() {
       "afterprint",
       () => {
         document.title = priorTitle;
-        void recognizeMilestone({ event: "appointment_summary_exported", hasSummary: Boolean(summary.sections.length) });
+        void recognizeMilestone({
+          event: "appointment_summary_exported",
+          hasSummary: Boolean(summary.sections.length),
+        });
       },
       { once: true },
     );
@@ -373,58 +379,66 @@ export function AppointmentPrepPage() {
         <p>{appointmentPrepNotices.privacy}</p>
         <p>{appointmentPrepNotices.medical}</p>
       </div>
-      <nav aria-label="Appointment preparation sections" className={styles.sectionNav}>
-        <ol>
-          {sectionNavigation.map((section, index) => (
-            <li key={section.id}>
-              <button
-                aria-current={state.currentSection === section.key ? "step" : undefined}
-                onClick={() => navigate(section.key)}
-                type="button"
-              >
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                {section.short}
-              </button>
-            </li>
-          ))}
-        </ol>
-      </nav>
-      <div className={styles.paper}>
-        {state.currentSection === "overview" ? <Overview onNavigate={navigate} /> : null}
-        {state.currentSection === "basics" ? <Basics state={state} replace={replace} /> : null}
-        {state.currentSection === "priorities" ? (
-          <Priorities addPriority={addPriority} replace={replace} state={state} />
-        ) : null}
-        {state.currentSection === "clarify" ? (
-          <Clarify addFocusRef={addFocusRef} promote={promote} replace={replace} state={state} />
-        ) : null}
-        {state.currentSection === "changes" ? (
-          <Changes addFocusRef={addFocusRef} promote={promote} replace={replace} state={state} />
-        ) : null}
-        {state.currentSection === "understand" ? (
-          <Understanding
-            addFocusRef={addFocusRef}
-            promote={promote}
-            replace={replace}
-            state={state}
-          />
-        ) : null}
-        {state.currentSection === "ask" ? (
-          <Questions addFocusRef={addFocusRef} promote={promote} replace={replace} state={state} />
-        ) : null}
-        {state.currentSection === "bring" ? <Documents replace={replace} state={state} /> : null}
-        {state.currentSection === "access" ? <Access replace={replace} state={state} /> : null}
-        {state.currentSection === "support" ? <Support replace={replace} state={state} /> : null}
-        {state.currentSection === "review" ? (
-          <Summary
-            copyFailed={copyFailed}
-            onCopy={copySummary}
-            onEdit={navigate}
-            onPrint={printSummary}
-            summary={summary}
-            summaryText={summaryText}
-          />
-        ) : null}
+      <div className={styles.workspaceBody}>
+        <nav aria-label="Appointment preparation sections" className={styles.sectionNav}>
+          <p className={styles.sectionNavLabel}>Preparation sections</p>
+          <ol>
+            {sectionNavigation.map((section, index) => (
+              <li key={section.id}>
+                <button
+                  aria-current={state.currentSection === section.key ? "step" : undefined}
+                  onClick={() => navigate(section.key)}
+                  type="button"
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  {section.short}
+                </button>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        <div className={styles.paper}>
+          {state.currentSection === "overview" ? <Overview onNavigate={navigate} /> : null}
+          {state.currentSection === "basics" ? <Basics state={state} replace={replace} /> : null}
+          {state.currentSection === "priorities" ? (
+            <Priorities addPriority={addPriority} replace={replace} state={state} />
+          ) : null}
+          {state.currentSection === "clarify" ? (
+            <Clarify addFocusRef={addFocusRef} promote={promote} replace={replace} state={state} />
+          ) : null}
+          {state.currentSection === "changes" ? (
+            <Changes addFocusRef={addFocusRef} promote={promote} replace={replace} state={state} />
+          ) : null}
+          {state.currentSection === "understand" ? (
+            <Understanding
+              addFocusRef={addFocusRef}
+              promote={promote}
+              replace={replace}
+              state={state}
+            />
+          ) : null}
+          {state.currentSection === "ask" ? (
+            <Questions
+              addFocusRef={addFocusRef}
+              promote={promote}
+              replace={replace}
+              state={state}
+            />
+          ) : null}
+          {state.currentSection === "bring" ? <Documents replace={replace} state={state} /> : null}
+          {state.currentSection === "access" ? <Access replace={replace} state={state} /> : null}
+          {state.currentSection === "support" ? <Support replace={replace} state={state} /> : null}
+          {state.currentSection === "review" ? (
+            <Summary
+              copyFailed={copyFailed}
+              onCopy={copySummary}
+              onEdit={navigate}
+              onPrint={printSummary}
+              summary={summary}
+              summaryText={summaryText}
+            />
+          ) : null}
+        </div>
       </div>
       <footer className={styles.workspaceFooter}>
         <button onClick={() => navigate("overview")} type="button">
@@ -450,11 +464,6 @@ export function AppointmentPrepPage() {
           </Button>
         </div>
       </Modal>
-      {announcement ? (
-        <p aria-live="polite" className={styles.status}>
-          {announcement}
-        </p>
-      ) : null}
     </div>
   );
 }

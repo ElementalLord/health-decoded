@@ -25,7 +25,7 @@ test("Story 3 appears under Starting medication with its state-aware preview", (
   assert.match(landing, /id="starting-medication-story"/);
   assert.match(landing, /story=\{noraPrescriptionBagStory\}/);
   assert.match(landing, /Starting medication/);
-  assert.match(landing, /Different moments, different questions/);
+  assert.match(landing, /Different moments/);
   for (const action of ["Begin Story", "Resume Story", "Read Again"]) {
     assert.match(landing, new RegExp(action));
   }

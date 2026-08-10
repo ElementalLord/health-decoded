@@ -20,13 +20,14 @@ const stories = [
   devonNumberScreenStory,
 ];
 
-test("the landing hierarchy has one feature and deliberately varied editorial rows", () => {
+test("the landing hierarchy has one feature and a compact editorial story index", () => {
   assert.match(landing, /variant="featured"/);
   assert.match(landing, /variant="row"/);
   assert.match(landing, /variant="row-reverse"/);
-  assert.match(landing, /Recommended place to begin/);
+  assert.match(landing, /Start here/);
   assert.match(landingStyles, /\.featured[\s\S]*grid-template-columns/);
-  assert.match(landingStyles, /\.row-reverse \.cover[\s\S]*grid-column: 2/);
+  assert.match(landingStyles, /\.storyRows \{[\s\S]*border-bottom/);
+  assert.match(landingStyles, /\.storyRows \.preview[\s\S]*background: transparent/);
 });
 
 test("story preview images stay bounded beside copy and can never cover the action", () => {
@@ -35,10 +36,10 @@ test("story preview images stay bounded beside copy and can never cover the acti
   assert.match(landingStyles, /\.featured \{[\s\S]*minmax\(16rem, 0\.78fr\)/);
   assert.match(
     landingStyles,
-    /\.row,[\s\S]*grid-template-columns: minmax\(14rem, 0\.68fr\) minmax\(0, 1\.32fr\)/,
+    /\.row,[\s\S]*grid-template-columns: minmax\(11rem, 0\.38fr\) minmax\(0, 1\.62fr\)/,
   );
-  assert.match(landingStyles, /\.featured \.cover \{[\s\S]*height: clamp\(18rem, 29vw, 27rem\)/);
-  assert.match(landingStyles, /\.row \.cover,[\s\S]*height: clamp\(17rem, 27vw, 25rem\)/);
+  assert.match(landingStyles, /\.featured \.cover \{[\s\S]*height: clamp\(14rem, 21vw, 19rem\)/);
+  assert.match(landingStyles, /\.row \.cover,[\s\S]*height: clamp\(9\.5rem, 13vw, 11\.5rem\)/);
   assert.match(landingStyles, /\.cover img \{[\s\S]*max-width: 100%/);
   assert.match(landingStyles, /\.previewFooter \{[\s\S]*flex-wrap: wrap/);
   assert.match(landingStyles, /\.storyAction \{[\s\S]*z-index: 3/);

@@ -11,11 +11,13 @@ import {
   CircleHelp,
   ClipboardCheck,
   HeartPulse,
+  MessageSquareText,
   Quote,
   Salad,
   ShieldCheck,
   Sparkles,
   Stethoscope,
+  Tags,
   type LucideIcon,
 } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
@@ -582,7 +584,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
         <section aria-labelledby="resource-tools-heading" className={styles.internalTools}>
           <div>
             <p>Health Decoded tools</p>
-            <h2 id="resource-tools-heading">Put common diabetes claims to the test.</h2>
+            <h2 id="resource-tools-heading">Practice the information you use every day.</h2>
           </div>
           <div className={styles.toolLinks}>
             <Link href="/myth-check">
@@ -590,6 +592,24 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               <span>
                 <strong>Diabetes Myth Check</strong>
                 <small>Test common diabetes claims and learn the evidence-backed reality.</small>
+              </span>
+              <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
+            </Link>
+            <Link href="/decode-the-label">
+              <Tags aria-hidden="true" size={22} strokeWidth={1.6} />
+              <span>
+                <strong>Decode the Label</strong>
+                <small>
+                  Practice finding useful details on a nutrition label without judgment.
+                </small>
+              </span>
+              <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
+            </Link>
+            <Link href="/explain-it-back">
+              <MessageSquareText aria-hidden="true" size={22} strokeWidth={1.6} />
+              <span>
+                <strong>Explain It Back</strong>
+                <small>Put a diabetes concept into your own words and check the main idea.</small>
               </span>
               <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
             </Link>

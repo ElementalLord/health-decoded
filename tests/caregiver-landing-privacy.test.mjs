@@ -30,8 +30,9 @@ test("landing choices remain component state and never enter storage, URLs, AI, 
   );
 });
 
-test("production truthfully renders first visit and does not fabricate returning activity", () => {
-  assert.match(productionLandingSource, /<CaregiverFirstVisit \/>/);
+test("production keeps the direct module path without redundant introductory panels", () => {
+  assert.match(productionLandingSource, /<CaregiverGuidedPath \/>/);
+  assert.doesNotMatch(productionLandingSource, /CaregiverFirstVisit|CaregiverPrivacyBoundary/);
   assert.doesNotMatch(productionLandingSource, /CaregiverReturningState/);
   assert.doesNotMatch(productionLandingSource, /recentModuleTitle|recentToolName/);
 });

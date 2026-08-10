@@ -1,0 +1,240 @@
+import type { HealthDecodedConcept } from "@/features/cohesion/types/concept";
+
+const lessonIds = {
+  foundations: "20000000-0000-0000-0000-000000000002",
+  numbers: "20000000-0000-0000-0000-000000000003",
+  food: "20000000-0000-0000-0000-000000000004",
+} as const;
+
+export const lessonIdByDay: Readonly<Record<number, string>> = {
+  2: lessonIds.foundations,
+  3: lessonIds.numbers,
+  4: lessonIds.food,
+};
+
+export const conceptRegistry = [
+  {
+    id: "a1c",
+    title: "A1C",
+    aliases: ["Hemoglobin A1C", "HbA1c"],
+    lessonIds: [lessonIds.numbers],
+    glossaryIds: ["GLOSSARY-A1C"],
+    mythCheckIds: ["MYTH-MONITORING-01", "MYTH-MONITORING-02", "MYTH-MONITORING-07"],
+    explainItBackIds: ["a1c"],
+    resourceIds: ["understanding-a1c"],
+    storyIds: ["marcus-parking-lot"],
+    approvedSourceIds: ["NIDDK_A1C", "CDC_A1C", "ADA_A1C"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "a1c",
+        relationship: "practice",
+        title: "Explain A1C in your own words",
+        href: "/explain-it-back?concept=a1c",
+      },
+      {
+        feature: "lesson",
+        id: lessonIds.numbers,
+        relationship: "learn",
+        title: "Review how A1C differs from a glucose reading",
+        href: "/lessons/3",
+      },
+    ],
+  },
+  {
+    id: "a1c-vs-glucose",
+    title: "A1C vs. a glucose reading",
+    lessonIds: [lessonIds.numbers],
+    glossaryIds: ["GLOSSARY-A1C", "GLOSSARY-BLOOD-GLUCOSE"],
+    mythCheckIds: ["MYTH-MONITORING-02", "MYTH-MONITORING-07"],
+    explainItBackIds: ["a1c-vs-glucose"],
+    approvedSourceIds: ["NIDDK_A1C", "ADA_A1C"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "a1c-vs-glucose",
+        relationship: "practice",
+        title: "Explain the difference in your own words",
+        href: "/explain-it-back?concept=a1c-vs-glucose",
+      },
+    ],
+  },
+  {
+    id: "blood-glucose",
+    title: "Blood glucose",
+    aliases: ["Blood sugar", "Glucose"],
+    lessonIds: [lessonIds.foundations, lessonIds.numbers],
+    glossaryIds: ["GLOSSARY-BLOOD-GLUCOSE", "GLOSSARY-GLUCOSE"],
+    explainItBackIds: ["blood-glucose"],
+    resourceIds: ["monitoring-blood-sugar"],
+    storyIds: ["devon-number-screen"],
+    approvedSourceIds: ["CDC_TYPE2", "CDC_MONITORING"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "blood-glucose",
+        relationship: "practice",
+        title: "Explain blood glucose in your own words",
+        href: "/explain-it-back?concept=blood-glucose",
+      },
+    ],
+  },
+  {
+    id: "insulin-resistance",
+    title: "Insulin resistance",
+    lessonIds: [lessonIds.foundations],
+    glossaryIds: ["GLOSSARY-INSULIN-RESISTANCE"],
+    mythCheckIds: ["MYTH-BASICS-01"],
+    explainItBackIds: ["insulin-resistance"],
+    approvedSourceIds: ["CDC_TYPE2"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "insulin-resistance",
+        relationship: "practice",
+        title: "Explain insulin resistance in your own words",
+        href: "/explain-it-back?concept=insulin-resistance",
+      },
+    ],
+  },
+  {
+    id: "insulin",
+    title: "Insulin",
+    lessonIds: [lessonIds.foundations],
+    glossaryIds: ["GLOSSARY-INSULIN"],
+    mythCheckIds: ["MYTH-TREATMENT-01"],
+    explainItBackIds: ["insulin"],
+    approvedSourceIds: ["CDC_TYPE2"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "insulin",
+        relationship: "practice",
+        title: "Explain what insulin does",
+        href: "/explain-it-back?concept=insulin",
+      },
+    ],
+  },
+  {
+    id: "type-2-diabetes",
+    title: "Type 2 diabetes",
+    lessonIds: [lessonIds.foundations],
+    glossaryIds: ["GLOSSARY-TYPE-2-DIABETES"],
+    mythCheckIds: ["MYTH-BASICS-01", "MYTH-BASICS-08"],
+    explainItBackIds: ["type-2-diabetes"],
+    resourceIds: ["type-2-diabetes-basics"],
+    storyIds: ["marcus-parking-lot"],
+    approvedSourceIds: ["CDC_TYPE2", "ADA_TYPE2"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "type-2-diabetes",
+        relationship: "practice",
+        title: "Explain Type 2 diabetes in your own words",
+        href: "/explain-it-back?concept=type-2-diabetes",
+      },
+    ],
+  },
+  {
+    id: "serving-size",
+    title: "Serving size",
+    glossaryIds: ["GLOSSARY-SERVING-SIZE"],
+    explainItBackIds: ["serving-size"],
+    decodeTheLabelIds: ["decode-the-label"],
+    approvedSourceIds: ["FDA_SERVING_SIZE"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "serving-size",
+        relationship: "practice",
+        title: "Explain why serving size matters",
+        href: "/explain-it-back?concept=serving-size",
+      },
+    ],
+  },
+  {
+    id: "carbohydrates",
+    title: "Carbohydrates",
+    lessonIds: [lessonIds.food],
+    glossaryIds: ["GLOSSARY-CARBOHYDRATE"],
+    mythCheckIds: ["MYTH-FOOD-01", "MYTH-FOOD-08"],
+    explainItBackIds: ["carbohydrates"],
+    resourceIds: ["diabetes-meal-planning"],
+    approvedSourceIds: ["CDC_CARBS", "ADA_CARBS"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "carbohydrates",
+        relationship: "practice",
+        title: "Explain how carbohydrates affect blood glucose",
+        href: "/explain-it-back?concept=carbohydrates",
+      },
+    ],
+  },
+  {
+    id: "total-carbohydrate",
+    title: "Total carbohydrate",
+    lessonIds: [lessonIds.food],
+    glossaryIds: ["GLOSSARY-TOTAL-CARBOHYDRATE"],
+    mythCheckIds: ["MYTH-FOOD-05", "MYTH-FOOD-06"],
+    explainItBackIds: ["total-carbohydrate"],
+    decodeTheLabelIds: ["decode-the-label"],
+    approvedSourceIds: ["CDC_CARBS"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "total-carbohydrate",
+        relationship: "practice",
+        title: "Explain the whole carbohydrate picture",
+        href: "/explain-it-back?concept=total-carbohydrate",
+      },
+    ],
+  },
+  {
+    id: "added-sugars",
+    title: "Added sugars",
+    glossaryIds: ["GLOSSARY-ADDED-SUGAR"],
+    explainItBackIds: ["total-vs-added-sugars"],
+    decodeTheLabelIds: ["decode-the-label"],
+    destinations: [
+      {
+        feature: "explain-it-back",
+        id: "total-vs-added-sugars",
+        relationship: "clarify",
+        title: "Explain total and added sugars",
+        href: "/explain-it-back?concept=total-vs-added-sugars",
+      },
+    ],
+  },
+  {
+    id: "nutrition-labels",
+    title: "Nutrition labels",
+    glossaryIds: ["GLOSSARY-NUTRITION-FACTS-LABEL"],
+    decodeTheLabelIds: ["decode-the-label"],
+    destinations: [
+      {
+        feature: "decode-the-label",
+        id: "decode-the-label",
+        relationship: "practice",
+        title: "Practice reading a nutrition label",
+        href: "/decode-the-label",
+      },
+    ],
+  },
+  {
+    id: "fiber",
+    title: "Fiber",
+    lessonIds: [lessonIds.food],
+    glossaryIds: ["GLOSSARY-FIBER"],
+    decodeTheLabelIds: ["decode-the-label"],
+    destinations: [
+      {
+        feature: "decode-the-label",
+        id: "decode-the-label",
+        relationship: "practice",
+        title: "Practice finding fiber on a label",
+        href: "/decode-the-label",
+      },
+    ],
+  },
+] as const satisfies readonly HealthDecodedConcept[];

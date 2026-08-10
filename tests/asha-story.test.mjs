@@ -24,7 +24,6 @@ test("Asha remains the second available situation after Story 4 is added", () =>
   assert.match(landing, /id="food-and-family-story"/);
   assert.match(landing, /story=\{ashaRiceOnTheTableStory\}/);
   assert.match(landing, /story=\{marcusParkingLotStory\}/);
-  assert.match(landing, /These are illustrative, not biographical/);
   assert.equal(landing.split("story={").length - 1, 4);
   assert.equal(ashaRiceOnTheTableStory.topic, "Food and family");
   assert.match(landing, /id="starting-medication-story"/);
@@ -33,8 +32,6 @@ test("Asha remains the second available situation after Story 4 is added", () =>
 
 test("Asha’s preview preserves the requested editorial order and copy", () => {
   for (const phrase of [
-    "Illustrative story",
-    "Why it may stay with you",
     "Connected to",
     "Begin Story",
     "Resume Story",
@@ -44,8 +41,7 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
   }
   assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.labels"));
   assert.ok(landing.indexOf("styles.labels") < landing.indexOf("styles.previewIntroduction"));
-  assert.ok(landing.indexOf("styles.previewIntroduction") < landing.indexOf("styles.whyItMatters"));
-  assert.ok(landing.indexOf("styles.whyItMatters") < landing.indexOf("styles.previewFooter"));
+  assert.ok(landing.indexOf("styles.previewIntroduction") < landing.indexOf("styles.previewFooter"));
   assert.equal(
     ashaRiceOnTheTableStory.introduction,
     "After her diagnosis, Asha began removing familiar foods from her plate and eating separately from her family. One Sunday dinner helped her see that caring for her health did not require leaving her culture or the table behind.",

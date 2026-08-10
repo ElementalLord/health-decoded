@@ -18,6 +18,7 @@ import {
   normalizeAiResponseText,
 } from "@/features/ai/services/ai-response-normalizer";
 import { assessAiSafety } from "@/features/ai/services/ai-safety.server";
+import { recordQualifyingLearningActivity } from "@/features/streaks/services/learning-streak.server";
 import type {
   AiChatFailureCategory,
   AiChatRequest,
@@ -215,6 +216,11 @@ export async function createAiChatStream(
       }
       recordAiProviderSuccess();
       yield { text: parsedOutput.text, type: "delta" };
+      // This is deliberately server-side and occurs only after a non-refused, output-validated
+      // educational response has been produced. No conversation content enters the streak system.
+      if (!signal?.aborted && parsedOutput.text.trim().length > 0) {
+        await recordQualifyingLearningActivity("ai_learning_exchange_completed");
+      }
       yield { type: "done" };
       logAiOperation({
         ...loggingContext,

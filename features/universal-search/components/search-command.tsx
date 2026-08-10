@@ -76,13 +76,9 @@ export function SearchCommand() {
             ref={dialogRef}
             role="dialog"
           >
-            <div className={styles.dialogHeader}>
-              <div>
-                <p>Search Health Decoded</p>
-                <span className="sr-only" aria-live="polite">Search Health Decoded.</span>
-              </div>
-              <button aria-label="Close search" onClick={close} type="button">Esc</button>
-            </div>
+            <span aria-hidden="true" className={styles.escapeHint}>
+              Esc
+            </span>
             <SearchExperience
               compact
               inputRef={inputRef}
@@ -91,18 +87,9 @@ export function SearchCommand() {
                 router.push(route);
               }}
             />
-            <LinkToSearchPage onNavigate={() => setOpen(false)} />
           </div>
         </div>
       ) : null}
     </>
-  );
-}
-
-function LinkToSearchPage({ onNavigate }: { onNavigate: () => void }) {
-  return (
-    <a className={styles.fullSearchLink} href="/search" onClick={onNavigate}>
-      Open full search page
-    </a>
   );
 }

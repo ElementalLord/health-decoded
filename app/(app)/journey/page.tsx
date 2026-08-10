@@ -54,7 +54,7 @@ export default async function JourneyPage({
     completedDay <= journey.data.progress.totalDays &&
     completedDay <= journey.data.progress.completedLessons;
   const [nextStep, learningStreak] = await Promise.all([
-    getNextStep(journey.data),
+    getNextStep(journey.data, showCompletionArrival ? completedDay : undefined),
     getLearningStreak(),
   ]);
 
@@ -76,24 +76,6 @@ export default async function JourneyPage({
         {learningStreak.ok ? <LearningStreakPanel streak={learningStreak.data} /> : null}
       </div>
 
-      <section className="motion-reveal divide-y divide-border border-y border-border">
-        <ActionRow
-          description="Organize questions, changes, and what you may want to bring. Your preparation stays in this browser session."
-          href="/appointment-prep"
-          title="Prepare for an appointment"
-        />
-        <ActionRow
-          description="Review meaningful learning and preparation steps you have completed."
-          href="/milestones"
-          title="View your milestones"
-        />
-        <ActionRow
-          description="Revisit completed lessons, confidence check-ins, and milestones together."
-          href="/progress"
-          title="Open your learning record"
-        />
-      </section>
-
       {showCompletionArrival ? (
         <LessonCompletionArrival
           completedLessons={journey.data.progress.completedLessons}
@@ -110,7 +92,7 @@ export default async function JourneyPage({
 
           <section
             aria-labelledby="why-this-matters"
-            className="motion-reveal grid gap-5 border-l-2 border-accent-warm py-3 pl-6 sm:grid-cols-[0.55fr_1.45fr] sm:pl-9"
+            className="motion-reveal grid gap-5 border-y border-border py-6 sm:grid-cols-[0.55fr_1.45fr]"
           >
             <h2 className="editorial-eyebrow" id="why-this-matters">
               Why this matters today
@@ -151,6 +133,11 @@ export default async function JourneyPage({
                 title="Read patient stories"
               />
               <ActionRow
+                description="Help without taking over."
+                href="/caregiver"
+                title="Support Someone You Care About"
+              />
+              <ActionRow
                 description="Get calm, plain-language educational answers to your questions."
                 href="/ai"
                 title="Ask your AI guide"
@@ -159,6 +146,37 @@ export default async function JourneyPage({
           </section>
         </>
       )}
+
+      <section
+        aria-labelledby="journey-tools"
+        className="motion-reveal border-t border-border pt-7"
+      >
+        <div className="mb-4 grid gap-2 sm:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] sm:items-end">
+          <h2 className="font-serif-display text-2xl sm:text-3xl" id="journey-tools">
+            Keep your learning useful.
+          </h2>
+          <p className="max-w-2xl leading-7 text-muted-foreground">
+            Prepare for a visit, revisit what you have completed, or recognize a meaningful step.
+          </p>
+        </div>
+        <div className="divide-y divide-border border-y border-border">
+          <ActionRow
+            description="Organize questions, changes, and what you may want to bring. Your preparation stays in this browser session."
+            href="/appointment-prep"
+            title="Prepare for an appointment"
+          />
+          <ActionRow
+            description="Review meaningful learning and preparation steps you have completed."
+            href="/milestones"
+            title="View your milestones"
+          />
+          <ActionRow
+            description="Revisit completed lessons, confidence check-ins, and milestones together."
+            href="/progress"
+            title="Open your learning record"
+          />
+        </div>
+      </section>
     </section>
   );
 }

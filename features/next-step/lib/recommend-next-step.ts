@@ -3,6 +3,8 @@ import type {
   NextStepSelection,
   RecommendationProgress,
 } from "@/features/next-step/types/next-step";
+// @ts-expect-error -- Node's built-in TypeScript test runner requires an explicit extension.
+import { getNextLearningAction } from "../../cohesion/lib/get-next-learning-action.ts";
 
 const optionalRecommendations: readonly NextStepRecommendation[] = [
   {
@@ -69,6 +71,25 @@ function isDismissed(progress: RecommendationProgress, recommendation: NextStepR
 
 export function recommendNextStep(progress: RecommendationProgress): NextStepSelection {
   const candidates: NextStepRecommendation[] = [];
+  if (progress.recentCompletedLessonId) {
+    const continuation = getNextLearningAction({
+      sourceType: "lesson",
+      sourceId: progress.recentCompletedLessonId,
+    });
+    if (continuation) {
+      candidates.push({
+        id: `concept-practice-${continuation.conceptId}`,
+        type: "concept-practice",
+        title: continuation.title,
+        reason: "Practice one idea from the lesson you just completed.",
+        actionLabel: "Explain it back",
+        route: continuation.href,
+        estimatedMinutes: 3,
+        priority: 5,
+        optional: false,
+      });
+    }
+  }
   if (progress.currentLesson) {
     const inProgress = progress.currentLesson.status === "in_progress";
     candidates.push({
@@ -115,11 +136,5 @@ export function recommendNextStep(progress: RecommendationProgress): NextStepSel
   const eligible = ordered.filter((candidate) => !isDismissed(progress, candidate));
   const fallback = ordered.find((candidate) => !eligible.includes(candidate));
   const primary = eligible[0] ?? fallback ?? glossaryRecommendation;
-  const alternatives = [
-    ...eligible.slice(1),
-    ...(fallback && fallback !== primary ? [fallback] : []),
-  ]
-    .filter((candidate) => candidate.id !== primary.id)
-    .slice(0, 2);
-  return { primary, alternatives };
+  return { primary };
 }

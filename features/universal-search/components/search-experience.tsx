@@ -1,11 +1,10 @@
 "use client";
 
-import { ArrowRight, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
-import { suggestedDestinations } from "@/features/universal-search/content/suggested-search-documents";
 import type {
   RankedSearchResult,
   UniversalSearchDocument,
@@ -41,6 +40,8 @@ const typeLabels: Record<UniversalSearchResultType, string> = {
   tool: "Tool",
 };
 
+const COMMAND_RESULT_LIMIT = 6;
+
 function filterResults(results: readonly UniversalSearchDocument[], filter: FilterId) {
   if (filter === "all") return [...results];
   const definition = filters.find((candidate) => candidate.id === filter);
@@ -65,10 +66,16 @@ export function SearchExperience({
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const hasQuery = Boolean(query.trim());
-  const displayed = useMemo(
-    () => filterResults(hasQuery ? results : suggestedDestinations, filter),
+  const availableResults = useMemo(
+    () => (hasQuery ? filterResults(results, filter) : []),
     [filter, hasQuery, results],
   );
+  const displayed = useMemo(
+    () =>
+      compact && hasQuery ? availableResults.slice(0, COMMAND_RESULT_LIMIT) : availableResults,
+    [availableResults, compact, hasQuery],
+  );
+  const hasMoreResults = compact && hasQuery && availableResults.length > displayed.length;
 
   useEffect(() => {
     if (!hasQuery) {
@@ -92,7 +99,7 @@ export function SearchExperience({
         if (!response.ok) throw new Error("Search unavailable");
         const payload = (await response.json()) as { results?: RankedSearchResult[] };
         setResults(Array.isArray(payload.results) ? payload.results : []);
-      } catch (error) {
+      } catch {
         if (!controller.signal.aborted) {
           setResults([]);
           setFailed(true);
@@ -112,13 +119,6 @@ export function SearchExperience({
     document.getElementById(`search-result-${selectedIndex}`)?.scrollIntoView({ block: "nearest" });
   }, [selectedIndex]);
 
-  const grouped = displayed.reduce<
-    Partial<Record<UniversalSearchResultType, UniversalSearchDocument[]>>
-  >((groups, result) => {
-    (groups[result.type] ??= []).push(result);
-    return groups;
-  }, {});
-
   function openResult(result: UniversalSearchDocument | undefined) {
     if (!result) return;
     onNavigate?.(result.route);
@@ -126,11 +126,12 @@ export function SearchExperience({
 
   return (
     <div className={cn(styles.experience, compact && styles.compact)}>
-      <div className={styles.inputWrap}>
+      <div className={styles.searchField}>
         <Search aria-hidden="true" />
         <input
           aria-activedescendant={displayed.length ? `search-result-${selectedIndex}` : undefined}
           aria-controls="universal-search-results"
+          aria-expanded={!compact || hasQuery}
           aria-label="Search Health Decoded"
           autoComplete="off"
           onChange={(event) => setQuery(event.target.value)}
@@ -146,7 +147,7 @@ export function SearchExperience({
               openResult(displayed[selectedIndex]);
             }
           }}
-          placeholder="Search lessons, tools, terms, stories, and resources"
+          placeholder="Search Health Decoded..."
           ref={activeInputRef}
           role="combobox"
           spellCheck={false}
@@ -159,85 +160,130 @@ export function SearchExperience({
         ) : null}
       </div>
 
-      <div aria-label="Filter search results" className={styles.filters} role="group">
-        {filters.map((item) => (
-          <button
-            aria-pressed={filter === item.id}
-            key={item.id}
-            onClick={() => setFilter(item.id)}
-            type="button"
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-
-      <p aria-live="polite" className={styles.resultCount} role="status">
-        {loading
-          ? "Searching Health Decoded."
-          : hasQuery
-            ? `${displayed.length} ${displayed.length === 1 ? "result" : "results"} found.`
-            : "Suggested destinations"}
-      </p>
-
-      <div className={styles.results} id="universal-search-results">
-        {!loading && hasQuery && !displayed.length ? (
-          <section className={styles.noResults}>
-            <h2>
-              {failed
-                ? "Search is temporarily unavailable."
-                : "We couldn’t find that in Health Decoded."}
-            </h2>
-            <p>Try a shorter term or another spelling.</p>
-            <p>Still need help? Ask Health Decoded AI.</p>
-            <Link
-              className={buttonVariants({ fullWidth: false })}
-              href="/ai"
-              onClick={() => onNavigate?.("/ai")}
+      {!compact && hasQuery ? (
+        <div aria-label="Filter search results" className={styles.filters} role="group">
+          {filters.map((item) => (
+            <button
+              aria-pressed={filter === item.id}
+              key={item.id}
+              onClick={() => setFilter(item.id)}
+              type="button"
             >
-              Ask Health Decoded AI <ArrowRight aria-hidden="true" />
-            </Link>
-          </section>
-        ) : null}
+              {item.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
-        {!loading && displayed.length ? (
-          <div className={styles.groups}>
-            {Object.entries(grouped).map(([type, items]) => (
-              <section aria-labelledby={`search-group-${type}`} key={type}>
-                <h2 id={`search-group-${type}`}>{typeLabels[type as UniversalSearchResultType]}</h2>
-                <ul>
-                  {items?.map((result) => {
-                    const index = displayed.findIndex((candidate) => candidate.id === result.id);
-                    return (
-                      <li key={result.id}>
-                        <Link
-                          aria-current={index === selectedIndex ? "true" : undefined}
-                          className={styles.resultRow}
-                          href={result.route}
-                          id={`search-result-${index}`}
-                          onClick={(event) => {
-                            if (!onNavigate) return;
-                            event.preventDefault();
-                            openResult(result);
-                          }}
-                          onMouseEnter={() => setSelectedIndex(index)}
-                        >
-                          <span>
-                            <strong>{result.title}</strong>
-                            <span>{result.description}</span>
-                            {result.sectionLabel ? <em>{result.sectionLabel}</em> : null}
-                          </span>
-                          <ArrowRight aria-hidden="true" />
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            ))}
-          </div>
-        ) : null}
-      </div>
+      {!compact || hasQuery ? (
+        <p
+          aria-live="polite"
+          className={cn(styles.resultCount, compact && styles.compactResultCount)}
+          role="status"
+        >
+          {loading
+            ? "Searching Health Decoded."
+            : hasQuery
+              ? `${availableResults.length} ${availableResults.length === 1 ? "result" : "results"} found.`
+              : "Ready to search."}
+        </p>
+      ) : null}
+
+      {!compact || hasQuery ? (
+        <div className={styles.results} id="universal-search-results">
+          {!loading && hasQuery && !displayed.length ? (
+            <section className={styles.noResults}>
+              <h2>
+                {failed ? "Search is temporarily unavailable." : "No results for this search."}
+              </h2>
+              <p>Try another word or spelling.</p>
+              <Link
+                className={buttonVariants({ fullWidth: false, variant: "text" })}
+                href="/ai"
+                onClick={() => onNavigate?.("/ai")}
+              >
+                Ask Health Decoded AI
+              </Link>
+            </section>
+          ) : null}
+
+          {!loading && !hasQuery && !compact ? (
+            <section className={styles.searchPrimer}>
+              <p className="editorial-eyebrow">One search, across your learning</p>
+              <h2>Find the exact lesson, definition, story, resource, or tool you need.</h2>
+              <p>Start with a word, question, medication name, or topic.</p>
+            </section>
+          ) : null}
+
+          {!loading && hasQuery && displayed.length ? (
+            <SearchResultList
+              onNavigate={onNavigate}
+              results={displayed}
+              selectedIndex={selectedIndex}
+              showDescriptions
+              showTypeLabels
+              onSelect={setSelectedIndex}
+            />
+          ) : null}
+
+          {hasMoreResults ? (
+            <Link
+              className={styles.fullSearchLink}
+              href="/search"
+              onClick={() => onNavigate?.("/search")}
+            >
+              View all {availableResults.length} results
+            </Link>
+          ) : null}
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+function SearchResultList({
+  onNavigate,
+  onSelect,
+  results,
+  selectedIndex,
+  showDescriptions,
+  showTypeLabels,
+}: {
+  onNavigate: ((route: string) => void) | undefined;
+  onSelect: (index: number) => void;
+  results: readonly UniversalSearchDocument[];
+  selectedIndex: number;
+  showDescriptions: boolean;
+  showTypeLabels: boolean;
+}) {
+  function openResult(result: UniversalSearchDocument) {
+    onNavigate?.(result.route);
+  }
+
+  return (
+    <ul className={styles.resultList}>
+      {results.map((result, index) => (
+        <li key={result.id}>
+          <Link
+            aria-current={index === selectedIndex ? "true" : undefined}
+            className={styles.resultRow}
+            href={result.route}
+            id={`search-result-${index}`}
+            onClick={(event) => {
+              if (!onNavigate) return;
+              event.preventDefault();
+              openResult(result);
+            }}
+            onMouseEnter={() => onSelect(index)}
+          >
+            <span>
+              {showTypeLabels ? <em>{typeLabels[result.type]}</em> : null}
+              <strong>{result.title}</strong>
+              {showDescriptions ? <span>{result.description}</span> : null}
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

@@ -1,0 +1,59 @@
+.flame {
+  display: block;
+}
+
+.active .outer {
+  animation: streak-flame-outer 1.9s ease-in-out infinite alternate;
+  transform-origin: center bottom;
+}
+
+.active .middle {
+  animation: streak-flame-middle 1.55s ease-in-out -0.35s infinite alternate;
+  transform-origin: center bottom;
+}
+
+.active .inner {
+  animation: streak-flame-inner 1.7s ease-in-out -0.75s infinite alternate;
+  transform-origin: center bottom;
+}
+
+@keyframes streak-flame-outer {
+  from {
+    opacity: 0.88;
+    transform: translateY(1px) rotate(-1deg) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-1px) rotate(1deg) scale(1.03);
+  }
+}
+
+@keyframes streak-flame-middle {
+  from {
+    opacity: 0.8;
+    transform: translate(-1px, 1px) rotate(1deg) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(1px, -1px) rotate(-1deg) scale(1.04);
+  }
+}
+
+@keyframes streak-flame-inner {
+  from {
+    opacity: 0.7;
+    transform: translateY(1px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-1px) scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .active .outer,
+  .active .middle,
+  .active .inner {
+    animation: none;
+  }
+}

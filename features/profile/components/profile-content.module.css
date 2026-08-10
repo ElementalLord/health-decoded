@@ -1,6 +1,6 @@
 .profilePage {
   display: grid;
-  gap: clamp(4.5rem, 9vw, 8rem);
+  gap: clamp(2.75rem, 5vw, 4.5rem);
   margin-inline: auto;
   max-width: 70rem;
   padding-block: 0.25rem 3rem;
@@ -13,11 +13,11 @@
     linear-gradient(120deg, rgb(255 250 243 / 0.38), rgb(229 236 228 / 0.55));
   border-block: 1px solid var(--border);
   display: grid;
-  gap: clamp(2rem, 5vw, 5rem);
-  grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.95fr);
-  min-height: 28rem;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+  min-height: 20rem;
   overflow: hidden;
-  padding: clamp(2rem, 6vw, 5rem);
+  padding: clamp(2rem, 4vw, 3rem);
 }
 
 .heroCopy {
@@ -48,7 +48,7 @@
 .heroTitle {
   color: var(--info-foreground);
   font-family: var(--font-serif);
-  font-size: clamp(3rem, 6.7vw, 5.8rem);
+  font-size: clamp(3rem, 5.5vw, 4.8rem);
   font-variation-settings:
     "opsz" 72,
     "SOFT" 58;
@@ -62,8 +62,8 @@
 .heroDescription {
   color: var(--muted-foreground);
   font-size: clamp(1rem, 1.5vw, 1.12rem);
-  line-height: 1.85;
-  margin-top: 1.6rem;
+  line-height: 1.7;
+  margin-top: 1.35rem;
   max-width: 35rem;
   text-wrap: pretty;
 }
@@ -113,9 +113,9 @@
 }
 
 .scene {
-  height: 23rem;
+  height: 18rem;
   justify-self: center;
-  max-width: 28rem;
+  max-width: 22rem;
   position: relative;
   width: 100%;
 }
@@ -316,9 +316,9 @@
 }
 
 .orbitScene {
-  height: 23rem;
+  height: 18rem;
   justify-self: center;
-  max-width: 28rem;
+  max-width: 22rem;
   position: relative;
   width: 100%;
 }
@@ -641,7 +641,7 @@
 .accountSection {
   align-items: start;
   grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
-  gap: clamp(2.5rem, 7vw, 6rem);
+  gap: clamp(2.5rem, 5vw, 4rem);
 }
 
 .accountIntro {
@@ -667,8 +667,9 @@
 
 .accountPanel {
   background: var(--info);
-  border-left: 3px solid var(--success);
-  padding: clamp(1.5rem, 4vw, 3rem);
+  border-bottom: 1px solid rgb(49 71 58 / 0.12);
+  border-top: 1px solid rgb(49 71 58 / 0.12);
+  padding: clamp(1.5rem, 3.5vw, 2.5rem);
 }
 
 .nameForm label {
@@ -703,7 +704,7 @@
 
 .accountFacts {
   border-top: 1px solid rgb(49 71 58 / 0.18);
-  margin-top: 2rem;
+  margin-top: 1.6rem;
 }
 
 .accountFacts > div {
@@ -741,7 +742,7 @@
   display: flex;
   justify-content: space-between;
   gap: 1.5rem;
-  padding-top: 2rem;
+  padding-top: 1.5rem;
 }
 
 .signOutRow > p {

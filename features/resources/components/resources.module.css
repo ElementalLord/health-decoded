@@ -47,8 +47,8 @@
 }
 
 .mastheadCopy > div {
-  border-left: 2px solid #c97960;
-  padding-left: 1.25rem;
+  border-top: 2px solid #c97960;
+  padding-top: 1.25rem;
 }
 
 .mastheadCopy > div > p {
@@ -70,7 +70,7 @@
 
 .readingRecord {
   background: #eef3ed;
-  border-left: 3px solid #7da08d;
+  border-top: 3px solid #7da08d;
   margin-top: 1.5rem;
   padding: 1.35rem 1.5rem 1.2rem;
 }
@@ -105,6 +105,8 @@
 
 .toolLinks {
   display: grid;
+  gap: 0 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   width: 100%;
 }
 
@@ -117,6 +119,29 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   min-height: 6rem;
   padding: 1rem 0;
+  transition:
+    color 160ms ease,
+    transform 160ms var(--ease-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .toolLinks > a:hover {
+    color: #294f43;
+  }
+}
+
+.toolLinks > a:active {
+  transform: scale(0.985);
+}
+
+@media (max-width: 70rem) and (min-width: 48rem) {
+  .internalTools {
+    grid-template-columns: 1fr;
+  }
+
+  .toolLinks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .toolLinks > a strong,
@@ -136,6 +161,15 @@
 @media (max-width: 47.99rem) {
   .internalTools {
     grid-template-columns: 1fr;
+  }
+
+  .toolLinks {
+    gap: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .toolLinks > a + a {
+    border-top: 0;
   }
 }
 
@@ -745,7 +779,7 @@ article:hover .externalArrow {
 
 .perspective {
   background: #e9eee8;
-  border-left: 3px solid #7da08d;
+  border-top: 3px solid #7da08d;
   border-radius: 7px;
   color: #4f685f;
   display: flex;
@@ -850,7 +884,7 @@ article:hover .externalArrow {
 .wideFeature {
   background: #e7eee8;
   border: 1px solid #cad8ce;
-  border-left: 4px solid #729585;
+  border-top: 4px solid #729585;
   border-radius: 8px;
   margin-bottom: 1rem;
   position: relative;

@@ -127,6 +127,11 @@ test("settings submit and persist deterministically for the authenticated user",
 
 test("the profile has one name form and omits the redundant identity strip", () => {
   assert.equal(component.split('name="displayName"').length - 1, 1);
+  assert.match(component, /<Button disabled=\{pending\} fullWidth=\{false\} type="submit">/);
+  assert.match(
+    component,
+    /<form action=\{logoutAction\}>\s*<Button fullWidth=\{false\} type="submit" variant="secondary">/,
+  );
   assert.doesNotMatch(component, /This profile says|Your space began|Visible to/);
   assert.doesNotMatch(component, /styles\.identityStrip/);
   assert.doesNotMatch(component, />Edit your name</);

@@ -6,7 +6,8 @@ export type NextStepRecommendation = {
     | "myth-check"
     | "appointment-prep"
     | "trusted-resource"
-    | "glossary";
+    | "glossary"
+    | "concept-practice";
   title: string;
   reason: string;
   actionLabel: string;
@@ -18,7 +19,6 @@ export type NextStepRecommendation = {
 
 export type NextStepSelection = {
   primary: NextStepRecommendation;
-  alternatives: readonly NextStepRecommendation[];
 };
 
 export type RecommendationProgress = {
@@ -31,5 +31,6 @@ export type RecommendationProgress = {
   } | null;
   earnedMilestoneIds: ReadonlySet<string>;
   lastDismissed: { id: string; date: string } | null;
+  recentCompletedLessonId?: string;
   today: string;
 };

@@ -2,6 +2,7 @@ import "server-only";
 
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import type { JourneyHomeViewModel } from "@/features/journeys/types/journey-home";
+import { lessonIdByDay } from "@/features/cohesion/content/concept-registry";
 import { recommendNextStep } from "@/features/next-step/lib/recommend-next-step";
 import type { NextStepSelection } from "@/features/next-step/types/next-step";
 import { getServerDatabaseClient } from "@/lib/database/server";
@@ -10,6 +11,7 @@ import { err, ok, type Result } from "@/lib/result/result";
 
 export async function getNextStep(
   journey: JourneyHomeViewModel,
+  recentCompletedDay?: number,
 ): Promise<Result<NextStepSelection>> {
   const user = await getAuthenticatedUser();
   if (!user.ok) return err(user.error);
@@ -54,6 +56,9 @@ export async function getNextStep(
         preference.data?.last_rule_id && preference.data.last_action_date
           ? { id: preference.data.last_rule_id, date: preference.data.last_action_date }
           : null,
+      ...(recentCompletedDay && lessonIdByDay[recentCompletedDay]
+        ? { recentCompletedLessonId: lessonIdByDay[recentCompletedDay] }
+        : {}),
       today,
     }),
   );

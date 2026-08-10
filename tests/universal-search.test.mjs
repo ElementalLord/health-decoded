@@ -35,30 +35,120 @@ const lessonRows = [
 ];
 const lessons = adaptLessonSearchDocuments(lessonRows);
 const sourceFixtures = [
-  { id: "NAV-PROFILE", type: "navigation", title: "Profile", description: "Open profile.", route: "/profile", aliases: ["account"], status: "available" },
-  { id: "NAV-CAREGIVER", type: "navigation", title: "Caregiver", description: "Support someone.", route: "/caregiver", aliases: ["family help"], status: "available" },
-  { id: "NAV-JOURNEY", type: "navigation", title: "Journey", description: "Continue learning.", route: "/journey", aliases: ["learning journey"], status: "available" },
-  { id: "TOOL-MILESTONES", type: "tool", title: "Milestones", description: "View milestones.", route: "/milestones", aliases: ["badge"], status: "available" },
-  { id: "TOOL-LEARNING-STREAK", type: "tool", title: "Learning Streak", description: "View streak freezes.", route: "/journey", aliases: ["streak", "streak freeze"], status: "available" },
-  { id: "TOOL-APPOINTMENT-PREP", type: "tool", title: "Appointment Preparation", description: "Prepare questions.", route: "/appointment-prep", aliases: ["appointment"], status: "available" },
-  { id: "TOOL-MYTH-CHECK", type: "tool", title: "Diabetes Myth Check", description: "Check claims.", route: "/myth-check", aliases: ["myths"], status: "available" },
-  { id: "GLOSSARY-A1C", type: "glossary", title: "A1C", description: "An estimate of average glucose exposure.", route: "/glossary", status: "available" },
-  { id: "GLOSSARY-CONTINUOUS-GLUCOSE-MONITOR", type: "glossary", title: "Continuous glucose monitor", description: "A glucose monitoring device.", route: "/glossary", aliases: ["CGM"], status: "available" },
-  { id: "ARCHIVED-RESOURCE", type: "resource", title: "Archived guide", description: "Unavailable.", route: "/resources", status: "archived" },
+  {
+    id: "NAV-PROFILE",
+    type: "navigation",
+    title: "Profile",
+    description: "Open profile.",
+    route: "/profile",
+    aliases: ["account"],
+    status: "available",
+  },
+  {
+    id: "NAV-CAREGIVER",
+    type: "navigation",
+    title: "Caregiver",
+    description: "Support someone.",
+    route: "/caregiver",
+    aliases: ["family help"],
+    status: "available",
+  },
+  {
+    id: "NAV-JOURNEY",
+    type: "navigation",
+    title: "Journey",
+    description: "Continue learning.",
+    route: "/journey",
+    aliases: ["learning journey"],
+    status: "available",
+  },
+  {
+    id: "TOOL-MILESTONES",
+    type: "tool",
+    title: "Milestones",
+    description: "View milestones.",
+    route: "/milestones",
+    aliases: ["badge"],
+    status: "available",
+  },
+  {
+    id: "TOOL-LEARNING-STREAK",
+    type: "tool",
+    title: "Learning Streak",
+    description: "View streak freezes.",
+    route: "/journey",
+    aliases: ["streak", "streak freeze"],
+    status: "available",
+  },
+  {
+    id: "TOOL-APPOINTMENT-PREP",
+    type: "tool",
+    title: "Appointment Preparation",
+    description: "Prepare questions.",
+    route: "/appointment-prep",
+    aliases: ["appointment"],
+    status: "available",
+  },
+  {
+    id: "TOOL-MYTH-CHECK",
+    type: "tool",
+    title: "Diabetes Myth Check",
+    description: "Check claims.",
+    route: "/myth-check",
+    aliases: ["myths"],
+    status: "available",
+  },
+  {
+    id: "GLOSSARY-A1C",
+    type: "glossary",
+    title: "A1C",
+    description: "An estimate of average glucose exposure.",
+    route: "/glossary",
+    status: "available",
+  },
+  {
+    id: "GLOSSARY-CONTINUOUS-GLUCOSE-MONITOR",
+    type: "glossary",
+    title: "Continuous glucose monitor",
+    description: "A glucose monitoring device.",
+    route: "/glossary",
+    aliases: ["CGM"],
+    status: "available",
+  },
+  {
+    id: "ARCHIVED-RESOURCE",
+    type: "resource",
+    title: "Archived guide",
+    description: "Unavailable.",
+    route: "/resources",
+    status: "archived",
+  },
 ];
 const documents = [...sourceFixtures, ...lessons];
 
 test("search documents have unique stable IDs, valid types, and valid routes", () => {
   assert.equal(new Set(documents.map(({ id }) => id)).size, documents.length);
   assert.ok(documents.every(({ route }) => route.startsWith("/")));
-  assert.ok(documents.every(({ type }) => ["navigation", "lesson", "glossary", "story", "resource", "caregiver", "tool"].includes(type)));
+  assert.ok(
+    documents.every(({ type }) =>
+      ["navigation", "lesson", "glossary", "story", "resource", "caregiver", "tool"].includes(type),
+    ),
+  );
 });
 
 test("hidden, draft, archived, and unimplemented content is excluded", () => {
-  assert.equal(lessons.some(({ id }) => id.includes("hidden-lesson")), false);
-  assert.ok(documents.filter(({ status }) => status !== "available").every((document) =>
-    !searchHealthDecoded(documents, document.title).some(({ id }) => id === document.id),
-  ));
+  assert.equal(
+    lessons.some(({ id }) => id.includes("hidden-lesson")),
+    false,
+  );
+  assert.ok(
+    documents
+      .filter(({ status }) => status !== "available")
+      .every(
+        (document) =>
+          !searchHealthDecoded(documents, document.title).some(({ id }) => id === document.id),
+      ),
+  );
 });
 
 test("navigation titles and controlled aliases rank predictably", () => {
@@ -74,8 +164,13 @@ test("exact glossary terms rank above related lessons", () => {
 });
 
 test("lesson title and vocabulary search navigate to the exact lesson", () => {
-  assert.equal(searchHealthDecoded(documents, "Understanding Your Numbers")[0]?.route, "/lessons/3");
-  assert.ok(searchHealthDecoded(documents, "diagnostic tests").some(({ route }) => route === "/lessons/3"));
+  assert.equal(
+    searchHealthDecoded(documents, "Understanding Your Numbers")[0]?.route,
+    "/lessons/3",
+  );
+  assert.ok(
+    searchHealthDecoded(documents, "diagnostic tests").some(({ route }) => route === "/lessons/3"),
+  );
 });
 
 test("abbreviations and tool aliases find approved destinations", () => {
@@ -90,26 +185,37 @@ test("abbreviations and tool aliases find approved destinations", () => {
   }
 });
 
-test("empty search uses controlled suggested destinations", () => {
+test("empty command and full search avoid default destination directories", async () => {
   assert.equal(searchHealthDecoded(documents, "   ").length, 0);
   assert.equal(suggestedDestinations.length, 8);
-  assert.deepEqual(suggestedDestinations.map(({ id }) => id), [
-    "NAV-JOURNEY",
-    "NAV-PROGRESS",
-    "NAV-AI",
-    "NAV-RESOURCES",
-    "TOOL-APPOINTMENT-PREP",
-    "TOOL-GLOSSARY",
-    "TOOL-MYTH-CHECK",
-    "TOOL-MILESTONES",
-  ]);
+  assert.deepEqual(
+    suggestedDestinations.map(({ id }) => id),
+    [
+      "NAV-JOURNEY",
+      "NAV-PROGRESS",
+      "NAV-AI",
+      "NAV-RESOURCES",
+      "TOOL-APPOINTMENT-PREP",
+      "TOOL-GLOSSARY",
+      "TOOL-MYTH-CHECK",
+      "TOOL-MILESTONES",
+    ],
+  );
+  const experience = await read("features/universal-search/components/search-experience.tsx");
+  assert.match(experience, /hasQuery \? filterResults\(results, filter\) : \[\]/);
+  assert.match(experience, /!hasQuery && !compact/);
+  assert.match(experience, /className=\{styles\.searchPrimer\}/);
+  assert.match(experience, /One search, across your learning/);
+  assert.match(experience, /const COMMAND_RESULT_LIMIT = 6/);
+  assert.doesNotMatch(experience, /quickLinks|styles\.suggestions/);
+  assert.doesNotMatch(experience, /compact && hasQuery \? availableResults\.slice\(0, 7\)/);
 });
 
 test("search UI clears, shows no-results, and opens AI without transmitting a query", async () => {
   const experience = await read("features/universal-search/components/search-experience.tsx");
   assert.match(experience, /aria-label="Clear search"/);
   assert.match(experience, /setQuery\(""\)/);
-  assert.match(experience, /We couldn’t find that in Health Decoded/);
+  assert.match(experience, /No results for this search\./);
   assert.match(experience, /href="\/ai"/);
   assert.doesNotMatch(experience, /\/ai\?|searchParams|URLSearchParams/);
 });
@@ -135,7 +241,8 @@ test("private user content is not part of the controlled index", () => {
     "glucose reading history",
     "freeze usage history",
     "profile contents",
-  ]) assert.equal(serialized.includes(forbidden), false);
+  ])
+    assert.equal(serialized.includes(forbidden), false);
 });
 
 test("command supports shortcut, Escape, Enter, focus restoration, and trapping", async () => {
@@ -149,6 +256,20 @@ test("command supports shortcut, Escape, Enter, focus restoration, and trapping"
   assert.match(command, /event\.key === "Tab"/);
   assert.match(experience, /event\.key === "Enter"/);
   assert.match(experience, /event\.key === "ArrowDown"/);
+});
+
+test("command presentation stays focused while full search retains filters", async () => {
+  const [command, experience] = await Promise.all([
+    read("features/universal-search/components/search-command.tsx"),
+    read("features/universal-search/components/search-experience.tsx"),
+  ]);
+  assert.doesNotMatch(command, /Search Health Decoded<\/p>/);
+  assert.doesNotMatch(command, /Open full search page/);
+  assert.match(experience, /placeholder="Search Health Decoded\.\.\."/);
+  assert.match(command, /className=\{styles\.escapeHint\}/);
+  assert.doesNotMatch(experience, /inputClose|onClose/);
+  assert.match(experience, /!compact && hasQuery/);
+  assert.match(experience, /View all \{availableResults\.length\} results/);
 });
 
 test("Search is visible in the header but absent from permanent navigation", async () => {

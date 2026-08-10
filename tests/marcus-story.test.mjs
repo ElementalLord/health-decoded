@@ -22,7 +22,6 @@ const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 
 test("the Stories page explains that its experiences are illustrative", () => {
   assert.match(landing, /Illustrative experiences that explore the emotions, decisions/);
-  assert.match(landing, /It does not describe one specific person/);
   assert.match(landingRoute, /<StoryLanding \/>/);
   assert.doesNotMatch(landing, /testimonial|real patient|success story/i);
 });
@@ -43,7 +42,7 @@ test("topic browsing lists five situations and only marks the unbuilt topic as p
 
 test("Marcus remains the Just diagnosed preview and its cover comes first", () => {
   assert.match(landing, /id="just-diagnosed-story"/);
-  assert.match(landing, /Why it may stay with you/i);
+  assert.match(landing, /Start here/);
   assert.match(landing, /story=\{marcusParkingLotStory\}/);
   assert.match(landing, /href=\{storyHref\}/);
   assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.previewBody"));

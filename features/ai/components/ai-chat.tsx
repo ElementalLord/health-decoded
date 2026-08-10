@@ -1,7 +1,6 @@
 "use client";
 
-import { Copy, RefreshCw, Send, ShieldCheck } from "lucide-react";
-import Link from "next/link";
+import { Copy, RefreshCw, Send } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -28,29 +27,14 @@ type ChatMessage = {
 };
 
 const suggestedPrompts = [
-  {
-    question: "What is insulin resistance?",
-    topic: "Start with the basics",
-  },
-  {
-    question: "Can you explain today's lesson more simply?",
-    topic: "Review today’s lesson",
-  },
-  {
-    question: "Why does exercise help blood sugar?",
-    topic: "Connect it to daily life",
-  },
-  {
-    question: "What does metformin do?",
-    topic: "Understand a medication",
-  },
+  "What is insulin resistance?",
+  "Explain today’s lesson more simply.",
+  "What does metformin do?",
 ] as const;
 
-const flatPrimaryButton =
-  "border-[#557a69] bg-[#557a69] text-[#fffaf3] shadow-none hover:translate-y-0 hover:bg-[#496b5d] hover:shadow-none";
-const flatSecondaryButton =
-  "border-[#cbd8d0] bg-white text-[#465c51] shadow-none hover:translate-y-0 hover:border-[#91a99c] hover:bg-[#f7faf8] hover:shadow-none";
-const calmTextButton = "text-[#557a69] decoration-[#a8b9b0] hover:decoration-[#557a69]";
+const flatPrimaryButton = "shadow-none hover:translate-y-0 hover:shadow-none";
+const flatSecondaryButton = "bg-background shadow-none hover:translate-y-0 hover:shadow-none";
+const calmTextButton = "decoration-border hover:decoration-foreground";
 
 const streamErrorMessages = {
   AI_CONFIGURATION_ERROR:
@@ -348,20 +332,25 @@ export function AiChat() {
     <div className="mt-6 flex min-h-0 flex-1 flex-col sm:mt-7">
       <aside
         aria-label="Educational safety notice"
-        className="mb-5 flex gap-3 rounded-[14px] border border-[#d4dfd7] bg-[#f0f5f1] px-4 py-3.5 text-sm leading-6"
+        className="order-4 mt-6 border-t border-border pt-4 text-sm leading-6"
         id="ai-safety-notice"
         role="note"
       >
-        <ShieldCheck aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-[#658271]" />
-        <div>
-          <p className="font-semibold text-[#40594d]">A gentle safety note</p>
-          <p className="text-muted-foreground">
-            I can explain learning topics, but I cannot diagnose, interpret personal results, or
-            recommend treatment or medication changes. Urgent symptoms need local emergency care.
+        <p>
+          General diabetes education only — not diagnosis, personal result interpretation, or
+          treatment changes.
+        </p>
+        <details className="mt-2 text-muted-foreground">
+          <summary className="w-fit cursor-pointer font-medium text-foreground underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            Safety details
+          </summary>
+          <p className="mt-2 max-w-2xl">
+            This tutor can explain learning topics, but cannot diagnose, interpret personal results,
+            or recommend treatment or medication changes. Urgent symptoms need local emergency care.
           </p>
-        </div>
+        </details>
       </aside>
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="order-1 mb-3 flex items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">This conversation clears when you leave.</p>
         {messages.length ? (
           <Button
@@ -412,7 +401,10 @@ export function AiChat() {
       <section
         aria-label="AI tutor conversation"
         aria-busy={isStreaming}
-        className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-6 sm:space-y-6"
+        className={cn(
+          "min-h-0 flex-1 space-y-7 overflow-y-auto py-6 sm:space-y-9",
+          messages.length ? "order-2" : "order-3",
+        )}
       >
         {messages.length ? (
           messages.map((entry, index) => {
@@ -426,9 +418,9 @@ export function AiChat() {
               >
                 <div
                   className={cn(
-                    "max-w-[92%] sm:max-w-[86%]",
+                    isAssistant ? "w-full max-w-[44rem]" : "max-w-[92%] sm:max-w-[78%]",
                     isAssistant
-                      ? "rounded-[18px] rounded-tl-[6px] border border-[#d3dfd7] bg-[#edf4ef] px-5 py-4 sm:px-6 sm:py-5"
+                      ? "border-y border-border/70 py-5"
                       : "rounded-[18px] rounded-tr-[6px] border border-[#ddd4c9] bg-[#f2ede6] px-4 py-3 text-foreground",
                   )}
                 >
@@ -439,36 +431,12 @@ export function AiChat() {
                           Health Decoded guide
                         </p>
                         {entry.lessonContextUsed ? (
-                          <p className="mb-4 border-l-2 border-success/50 pl-3 text-xs leading-5 text-muted-foreground">
+                          <p className="mb-4 rounded-md bg-info/60 px-3 py-2 text-xs leading-5 text-muted-foreground">
                             Connected to today&apos;s lesson so this explanation fits what you are
                             learning now.
                           </p>
                         ) : null}
                         <AiResponseContent content={entry.content} />
-                        {entry.relatedContent.length ? (
-                          <div className="mt-4 border-t border-border pt-3">
-                            <p className="text-sm font-semibold text-foreground">Related content</p>
-                            <ul className="mt-2 space-y-1.5 text-sm">
-                              {entry.relatedContent.map((item) => (
-                                <li key={`${item.kind}-${item.href}`}>
-                                  <Link
-                                    className="text-primary underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                                    href={item.href}
-                                  >
-                                    {item.kind === "lesson"
-                                      ? "Lesson"
-                                      : item.kind === "medication"
-                                        ? "Medication"
-                                        : item.kind === "caregiver"
-                                          ? "Caregiver guide"
-                                          : "Learning story"}
-                                    : {item.title}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : null}
                         {!isStreaming && isLatestAssistant ? (
                           <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-3">
                             <Button
@@ -505,25 +473,6 @@ export function AiChat() {
                             </Button>
                           </div>
                         ) : null}
-                        {!isStreaming && isLatestAssistant && entry.suggestedQuestions.length ? (
-                          <div className="mt-6 border-t border-[#d5dfd8] pt-5">
-                            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#718078]">
-                              You could ask next
-                            </p>
-                            <div className="mt-3 flex flex-wrap gap-2.5">
-                              {entry.suggestedQuestions.map((suggestion) => (
-                                <button
-                                  className="max-w-full rounded-[16px] rounded-bl-[5px] border border-[#cfdcd4] bg-[#faf8f2] px-3.5 py-2.5 text-left text-sm leading-5 text-[#465c51] transition hover:border-[#8fa89b] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#789987]/35"
-                                  key={suggestion}
-                                  onClick={() => void ask(suggestion)}
-                                  type="button"
-                                >
-                                  {suggestion}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : null}
                       </>
                     ) : (
                       <div
@@ -547,44 +496,26 @@ export function AiChat() {
             );
           })
         ) : (
-          <div className="space-y-7 py-4 sm:py-7">
-            <div className="max-w-xl space-y-3">
-              <h2 className="font-serif-display text-3xl font-normal tracking-tight sm:text-4xl">
-                How can I help today?
+          <div className="space-y-4 pt-2">
+            <section
+              aria-labelledby="suggested-questions-title"
+              className="grid gap-4 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-start"
+            >
+              <h2 className="pt-3 font-serif-display text-xl" id="suggested-questions-title">
+                Try asking:
               </h2>
-              <p className="text-pretty leading-7 text-muted-foreground">
-                You can ask about today&apos;s lesson, medications, Type 2 diabetes concepts,
-                healthy habits, or any terms you don&apos;t understand. Ask for a shorter or simpler
-                answer at any time.
-              </p>
-            </div>
-
-            <section aria-labelledby="suggested-questions-title" className="space-y-3">
-              <div className="space-y-2">
-                <h3
-                  className="text-xs font-semibold uppercase tracking-[0.12em] text-[#806f63]"
-                  id="suggested-questions-title"
-                >
-                  A few gentle ways to begin
-                </h3>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Tap a thought bubble, or write your own question below.
-                </p>
-              </div>
-              <ol className="flex flex-wrap items-start gap-3">
-                {suggestedPrompts.map((prompt) => (
-                  <li className="max-w-full" key={prompt.question}>
+              <ol className="divide-y divide-border border-y border-border">
+                {suggestedPrompts.map((prompt, index) => (
+                  <li key={prompt}>
                     <button
-                      className="group flex max-w-[23rem] flex-col items-start gap-1 rounded-[18px] rounded-bl-[6px] border border-[#cfdbd3] bg-[#eef4ef] px-4 py-3 text-left transition hover:border-[#8fa89b] hover:bg-[#f6faf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#789987]/35"
-                      onClick={() => void ask(prompt.question)}
+                      className="grid min-h-14 w-full grid-cols-[2rem_minmax(0,1fr)] items-center gap-3 px-1 py-3 text-left text-sm font-semibold leading-5 transition hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      onClick={() => void ask(prompt)}
                       type="button"
                     >
-                      <span className="text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-[#718078]">
-                        {prompt.topic}
+                      <span className="font-serif-display text-lg font-normal text-accent-warm">
+                        {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="text-sm font-medium leading-5 text-[#40554b] sm:text-[0.95rem]">
-                        {prompt.question}
-                      </span>
+                      <span>{prompt}</span>
                     </button>
                   </li>
                 ))}
@@ -596,7 +527,10 @@ export function AiChat() {
       </section>
 
       <form
-        className="safe-area-bottom rounded-[16px] border border-[#cbd8d0] bg-[#faf8f2] p-4 sm:p-5"
+        className={cn(
+          "safe-area-bottom rounded-xl border border-border bg-card p-3 shadow-[0_10px_28px_rgb(61_47_41/0.045)] focus-within:border-foreground/25 focus-within:ring-2 focus-within:ring-ring/15 sm:p-4",
+          messages.length ? "order-3" : "order-2",
+        )}
         onSubmit={submit}
       >
         <label className="grid gap-2 text-sm font-semibold" htmlFor="ai-question">
@@ -604,7 +538,7 @@ export function AiChat() {
           <Textarea
             aria-describedby={`ai-safety-notice${error ? " ai-request-error" : ""}`}
             aria-invalid={Boolean(error) || undefined}
-            className="max-h-40 min-h-12 resize-none rounded-[13px] border-[#cbd8d0] bg-white shadow-none focus:border-[#789987]"
+            className="max-h-40 min-h-28 resize-none rounded-lg border-0 bg-muted/25 px-4 py-3 shadow-none hover:border-transparent focus:border-transparent focus-visible:ring-0"
             disabled={isStreaming}
             id="ai-question"
             maxLength={AI_MAX_MESSAGE_CHARACTERS}

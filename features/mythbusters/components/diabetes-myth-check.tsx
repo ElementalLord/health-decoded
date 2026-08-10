@@ -72,10 +72,7 @@ export function DiabetesMythCheck() {
   const feedbackRef = useRef<HTMLHeadingElement>(null);
 
   const current = round[index];
-  const misunderstood = useMemo(
-    () => answers.filter((answer) => !answer.understood),
-    [answers],
-  );
+  const misunderstood = useMemo(() => answers.filter((answer) => !answer.understood), [answers]);
 
   useEffect(() => {
     if (phase === "round" && !selected) claimRef.current?.focus();
@@ -109,7 +106,9 @@ export function DiabetesMythCheck() {
 
   function next() {
     if (index === round.length - 1) {
-      void recognizeMilestone({ event: isReplay ? "myth_replay_completed" : "myth_round_completed" });
+      void recognizeMilestone({
+        event: isReplay ? "myth_replay_completed" : "myth_round_completed",
+      });
       setPhase("summary");
       return;
     }
@@ -175,7 +174,10 @@ export function DiabetesMythCheck() {
           <h1 id="round-summary">You reviewed {round.length} common diabetes claims.</h1>
           <p>
             You understood {understood} {understood === 1 ? "claim" : "claims"} on the first
-            attempt. {misunderstood.length ? `${misunderstood.length} may be worth another look.` : "Every takeaway landed this time."}
+            attempt.{" "}
+            {misunderstood.length
+              ? `${misunderstood.length} may be worth another look.`
+              : "Every takeaway landed this time."}
           </p>
 
           {misunderstood.length ? (
@@ -211,11 +213,16 @@ export function DiabetesMythCheck() {
 
   return (
     <main className={styles.mythCheck}>
-      <section aria-labelledby="current-claim" className={styles.round}>
+      <section
+        aria-labelledby="current-claim"
+        className={`${styles.round} ${selected ? styles.roundAnswered : ""}`}
+      >
         <header className={styles.roundHeader}>
           <div>
             <p>{categoryLabels[current.category]}</p>
-            <span>Claim {index + 1} of {round.length}</span>
+            <span>
+              Claim {index + 1} of {round.length}
+            </span>
           </div>
           <ProgressBar
             label={`Claim ${index + 1} of ${round.length}`}
@@ -225,7 +232,9 @@ export function DiabetesMythCheck() {
 
         <div className={styles.claimPanel}>
           <p>What does the evidence say?</p>
-          <h1 id="current-claim" ref={claimRef} tabIndex={-1}>{current.claim}</h1>
+          <h1 id="current-claim" ref={claimRef} tabIndex={-1}>
+            {current.claim}
+          </h1>
           <div aria-label="Choose the best answer" className={styles.answers} role="group">
             {(["myth", "fact", "depends"] as const).map((verdict) => (
               <button
@@ -244,9 +253,19 @@ export function DiabetesMythCheck() {
         </div>
 
         {selected ? (
-          <section aria-labelledby="feedback-heading" aria-live="polite" className={styles.feedback}>
-            <p>{isCorrect ? "That’s the best answer." : `The best answer is ${verdictLabels[current.verdict]}.`}</p>
-            <h2 id="feedback-heading" ref={feedbackRef} tabIndex={-1}>Reality</h2>
+          <section
+            aria-labelledby="feedback-heading"
+            aria-live="polite"
+            className={styles.feedback}
+          >
+            <p>
+              {isCorrect
+                ? "That’s the best answer."
+                : `The best answer is ${verdictLabels[current.verdict]}.`}
+            </p>
+            <h2 id="feedback-heading" ref={feedbackRef} tabIndex={-1}>
+              Reality
+            </h2>
             <p className={styles.explanation}>{current.explanation}</p>
             <aside className={styles.takeaway}>
               <strong>Keep this with you</strong>

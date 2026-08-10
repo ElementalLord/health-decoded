@@ -28,6 +28,10 @@ export type AiProviderRequest = {
   readonly systemInstruction: string;
 };
 
+export type AiStructuredProviderRequest = AiProviderRequest & {
+  readonly responseJsonSchema: Readonly<Record<string, unknown>>;
+};
+
 export type AiProviderStreamEvent =
   | { readonly kind: "text"; readonly text: string }
   | {
@@ -40,6 +44,10 @@ export type AiProvider = {
     request: AiProviderRequest,
     signal?: AbortSignal,
   ): AsyncGenerator<AiProviderStreamEvent>;
+  generateStructuredResponse(
+    request: AiStructuredProviderRequest,
+    signal?: AbortSignal,
+  ): Promise<NormalizedAiProviderResult>;
 };
 
 export function getGeminiConfiguration():
@@ -75,6 +83,44 @@ function streamFailureCategory(category: AiProviderFailureCategory) {
 }
 
 export const aiProvider: AiProvider = {
+  async generateStructuredResponse({ prompt, responseJsonSchema, systemInstruction }, signal) {
+    if (prompt.length > AI_MAX_PROMPT_CHARACTERS) {
+      return normalizeAiProviderFailure("unexpected");
+    }
+
+    const configuration = getGeminiConfiguration();
+    if (!configuration.ok) return normalizeAiProviderFailure("configuration");
+
+    const client = new GoogleGenAI({
+      apiKey: configuration.data.apiKey,
+      apiVersion: "v1beta",
+    });
+    const securityConfig = getAiSecurityConfig();
+
+    try {
+      const response = await client.models.generateContent({
+        model: DEFAULT_AI_MODEL,
+        contents: prompt,
+        config: {
+          ...(signal ? { abortSignal: signal } : {}),
+          candidateCount: 1,
+          httpOptions: {
+            retryOptions: { attempts: 2 },
+            timeout: securityConfig.providerTimeoutMs,
+          },
+          maxOutputTokens: securityConfig.maxOutputTokens,
+          responseJsonSchema,
+          responseMimeType: "application/json",
+          systemInstruction,
+          temperature: 0,
+        },
+      });
+
+      return parseAiProviderText(response.text ?? "");
+    } catch (error) {
+      return providerFailure(error);
+    }
+  },
   async *generateResponseStream({ prompt, systemInstruction }, signal) {
     if (prompt.length > AI_MAX_PROMPT_CHARACTERS) {
       yield { category: "unexpected", kind: "error" };

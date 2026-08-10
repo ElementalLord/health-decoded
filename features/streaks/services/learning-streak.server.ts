@@ -23,6 +23,22 @@ type StreakRow = {
   pending_notice: string | null;
 };
 
+function localCalendarDate(timezone: string) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: timezone,
+    year: "numeric",
+  }).formatToParts();
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value;
+  return `${value("year")}-${value("month")}-${value("day")}`;
+}
+
+function calendarDay(value: string) {
+  return Math.floor(Date.parse(`${value}T00:00:00Z`) / 86_400_000);
+}
+
 function mapStreak(row: StreakRow): LearningStreak | null {
   if (
     !Number.isInteger(row.current_streak) ||
@@ -38,6 +54,12 @@ function mapStreak(row: StreakRow): LearningStreak | null {
   ) {
     return null;
   }
+  const today = localCalendarDate(row.timezone);
+  const lastDay = row.last_qualified_date ? calendarDay(row.last_qualified_date) : null;
+  const isStreakActive =
+    row.current_streak > 0 &&
+    lastDay !== null &&
+    calendarDay(today) - lastDay <= row.freeze_balance + 1;
   return {
     currentStreak: row.current_streak,
     longestStreak: row.longest_streak,
@@ -45,6 +67,7 @@ function mapStreak(row: StreakRow): LearningStreak | null {
     lastQualifiedDate: row.last_qualified_date,
     timezone: row.timezone,
     pendingNotice: row.pending_notice,
+    isStreakActive,
   };
 }
 
