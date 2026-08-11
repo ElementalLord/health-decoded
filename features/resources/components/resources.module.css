@@ -2,12 +2,12 @@
   --editorial-ink: var(--foreground);
   --editorial-body: #5f534d;
   --editorial-soft: #796c63;
-  --editorial-coral: #7d586b;
+  --editorial-coral: #735d68;
   --editorial-paper: #fffaf5;
-  --editorial-wash: #dfeee5;
-  --editorial-sage-strong: #c9e1d4;
-  --editorial-rose: #f2e5ea;
-  --editorial-sky: #e3ebf3;
+  --editorial-wash: #e8eee6;
+  --editorial-sage-strong: #dfe7dc;
+  --editorial-rose: #f0e9e4;
+  --editorial-sky: #e6eaeb;
   color: var(--editorial-body);
 }
 
@@ -198,7 +198,7 @@
 }
 
 .readingRecordTrack {
-  background: #c7d5e0;
+  background: #d4dcdf;
   height: 4px;
   margin-top: 0.75rem;
   overflow: hidden;

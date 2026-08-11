@@ -174,12 +174,13 @@ test("masthead stays proportionate and one plum action remains visually primary"
   assert.match(styles, /\.articleLabel::before \{\s+content: none;/);
 });
 
-test("the resources palette uses sage, rose, sky, and plum instead of gray or orange panels", () => {
+test("the resources palette uses muted sage, rose, sky, and plum paper tones", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-coral: #7d586b;/);
-  assert.match(styles, /--editorial-wash: #dfeee5;/);
-  assert.match(styles, /--editorial-rose: #f2e5ea;/);
-  assert.match(styles, /--editorial-sky: #e3ebf3;/);
+  assert.match(styles, /--editorial-coral: #735d68;/);
+  assert.match(styles, /--editorial-wash: #e8eee6;/);
+  assert.match(styles, /--editorial-sage-strong: #dfe7dc;/);
+  assert.match(styles, /--editorial-rose: #f0e9e4;/);
+  assert.match(styles, /--editorial-sky: #e6eaeb;/);
   assert.doesNotMatch(styles, /accent-warm/);
   assert.doesNotMatch(styles, /#b96c55/i);
   assert.doesNotMatch(styles, /#(?:365b51|365f56|345f55|3f6258)/i);
