@@ -2,14 +2,8 @@
   --editorial-ink: var(--foreground);
   --editorial-body: #5f534d;
   --editorial-soft: #796c63;
-  --editorial-coral: #806f61;
   --editorial-action: #e3d8cd;
   --editorial-action-hover: #d8cabd;
-  --editorial-paper: #fffaf5;
-  --editorial-wash: #e8eee6;
-  --editorial-sage-strong: #dfe7dc;
-  --editorial-rose: #f0e9e4;
-  --editorial-sky: #e6eaeb;
   color: var(--editorial-body);
 }
 
@@ -85,7 +79,7 @@
 .pathIntro > p,
 .sectionHeading > div > p,
 .sourceNoteIntro > p {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   font-size: 0.67rem;
   font-weight: 760;
   letter-spacing: 0.14em;
@@ -121,7 +115,7 @@
 
 .toolLinks > a {
   align-items: center;
-  background: var(--editorial-wash);
+  background: transparent;
   border-radius: 0.5rem;
   color: var(--editorial-ink);
   display: grid;
@@ -158,7 +152,7 @@
 }
 
 .readingRecord {
-  background: var(--editorial-sky);
+  background: transparent;
   margin-top: 1.25rem;
   padding: 1rem 1.2rem;
 }
@@ -171,7 +165,7 @@
 }
 
 .readingRecordHeading p {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   font-size: 0.64rem;
   font-weight: 760;
   letter-spacing: 0.12em;
@@ -200,14 +194,14 @@
 }
 
 .readingRecordTrack {
-  background: #d4dcdf;
+  background: var(--border);
   height: 4px;
   margin-top: 0.75rem;
   overflow: hidden;
 }
 
 .readingRecordTrack > span {
-  background: var(--editorial-coral);
+  background: var(--editorial-soft);
   display: block;
   height: 100%;
   transform-origin: left;
@@ -402,7 +396,7 @@
 
 .articleLabel {
   align-items: center;
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   display: flex;
   font-size: 0.64rem;
   font-weight: 760;
@@ -463,13 +457,13 @@
 .verified,
 .viewedState {
   align-items: center;
-  color: var(--success);
+  color: var(--editorial-soft);
   display: inline-flex;
   gap: 0.18rem;
 }
 
 .viewedState {
-  color: var(--success);
+  color: var(--editorial-soft);
   font-weight: 760;
 }
 
@@ -495,7 +489,7 @@
 }
 
 .pathSection {
-  background: var(--editorial-wash);
+  background: transparent;
   padding: 2rem 0 2.2rem;
 }
 
@@ -525,7 +519,7 @@
 }
 
 .pathCard > svg:first-child {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   grid-column: 1 / -1;
 }
 
@@ -536,7 +530,7 @@
 }
 
 .pathCard span {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   font-size: 0.61rem;
   font-weight: 760;
   letter-spacing: 0.09em;
@@ -606,17 +600,17 @@
 }
 
 .newHereGrid {
-  background: var(--editorial-rose);
+  background: transparent;
   gap: 0;
   grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
 }
 
 .newHereGrid .leadArticle {
-  background: var(--editorial-sage-strong);
+  background: transparent;
 }
 
 .newHereGrid .compactArticle {
-  background: var(--editorial-paper);
+  background: transparent;
 }
 
 .dailyLivingGrid {
@@ -633,7 +627,7 @@
 }
 
 .articleNumber {
-  color: color-mix(in srgb, var(--editorial-coral) 65%, white);
+  color: var(--editorial-soft);
   font-family: var(--font-serif);
   font-size: 3.2rem;
   font-weight: 350;
@@ -679,7 +673,7 @@
 }
 
 .sourceNote {
-  background: var(--editorial-sky);
+  background: transparent;
   border-radius: 0;
   color: var(--editorial-body);
   display: grid;
@@ -696,13 +690,13 @@
 }
 
 .sourceNoteIntro > svg {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   grid-row: 1 / 3;
   margin-right: 0.75rem;
 }
 
 .sourceNoteIntro > p {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
 }
 
 .sourceNoteIntro h2 {
@@ -744,7 +738,7 @@
 }
 
 .wideFeature {
-  background: var(--editorial-sage-strong);
+  background: transparent;
   margin-bottom: 1rem;
 }
 
@@ -845,7 +839,7 @@
 }
 
 .checkNote {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   font-size: 0.62rem;
   font-weight: 780;
   letter-spacing: 0.09em;
@@ -867,7 +861,7 @@
 }
 
 .photoInterlude {
-  background: var(--editorial-rose);
+  background: transparent;
   display: grid;
   grid-template-columns: minmax(18rem, 0.76fr) minmax(0, 1.24fr);
   margin: 1rem 0 0;
@@ -879,7 +873,7 @@
 
 .photoInterlude figcaption {
   align-self: stretch;
-  background: var(--editorial-rose);
+  background: transparent;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -887,7 +881,7 @@
 }
 
 .photoInterlude figcaption > p {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   font-size: 0.64rem;
   font-weight: 760;
   letter-spacing: 0.11em;
@@ -942,7 +936,7 @@
   .checklistArticle:hover,
   .supportFeature:hover,
   .pathCard:hover {
-    background-color: color-mix(in srgb, var(--editorial-wash) 76%, var(--editorial-paper));
+    background-color: transparent;
   }
 
   article:hover .readGuide {

@@ -138,7 +138,7 @@ test("supporting features balance landscape media with adjacent copy", () => {
 test("the reading room uses open editorial rows instead of repeated boxes", () => {
   assert.match(styles, /\.pathCard \{\s+background: transparent;\s+border: 0;/);
   assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
-  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-sky\);/);
+  assert.match(styles, /\.sourceNote \{\s+background: transparent;/);
   assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
@@ -148,15 +148,12 @@ test("the reading room uses open editorial rows instead of repeated boxes", () =
   assert.match(styles, /transform: translateY\(-1px\)/);
 });
 
-test("resource groups use colored tonal hierarchy without repeated divider lines", () => {
-  assert.match(styles, /\.newHereGrid \{\s+background: var\(--editorial-rose\);/);
-  assert.match(
-    styles,
-    /\.newHereGrid \.leadArticle \{\s+background: var\(--editorial-sage-strong\);/,
-  );
-  assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: var\(--editorial-paper\);/);
+test("resource groups keep a neutral canvas without repeated divider lines", () => {
+  assert.match(styles, /\.newHereGrid \{\s+background: transparent;/);
+  assert.match(styles, /\.newHereGrid \.leadArticle \{\s+background: transparent;/);
+  assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: transparent;/);
   assert.doesNotMatch(styles, /border-(?:top|bottom|left|right|block):/);
-  assert.match(styles, /\.wideFeature \{\s+background: var\(--editorial-sage-strong\);/);
+  assert.match(styles, /\.wideFeature \{\s+background: transparent;/);
 });
 
 test("masthead stays proportionate and one muted action remains visually primary", () => {
@@ -174,14 +171,12 @@ test("masthead stays proportionate and one muted action remains visually primary
   assert.match(styles, /\.articleLabel::before \{\s+content: none;/);
 });
 
-test("the resources palette uses muted sage, rose, sky, and taupe paper tones", () => {
+test("the resources palette reserves color for actions", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-coral: #806f61;/);
   assert.match(styles, /--editorial-action: #e3d8cd;/);
-  assert.match(styles, /--editorial-wash: #e8eee6;/);
-  assert.match(styles, /--editorial-sage-strong: #dfe7dc;/);
-  assert.match(styles, /--editorial-rose: #f0e9e4;/);
-  assert.match(styles, /--editorial-sky: #e6eaeb;/);
+  assert.match(styles, /\.readGuide \{[\s\S]*background: var\(--editorial-action\);/);
+  assert.match(styles, /\.sourceNote \{\s+background: transparent;/);
+  assert.doesNotMatch(styles, /--editorial-(?:coral|wash|sage-strong|rose|sky):/);
   assert.doesNotMatch(styles, /accent-warm/);
   assert.doesNotMatch(styles, /#b96c55/i);
   assert.doesNotMatch(styles, /#(?:365b51|365f56|345f55|3f6258)/i);
