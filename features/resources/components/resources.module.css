@@ -798,9 +798,16 @@
 
 .healthGrid > .compactArticle:last-child,
 .confidenceGrid .supportFeature {
-  background: var(--editorial-apricot);
   border: 1px solid color-mix(in srgb, var(--editorial-soft) 32%, transparent);
   grid-column: 1 / -1;
+}
+
+.dailyLivingGrid .leadArticle,
+.healthGrid .compactArticle,
+.confidenceGrid .leadArticle,
+.confidenceGrid .supportFeature {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--editorial-soft) 32%, transparent);
 }
 
 .healthGrid > .compactArticle:last-child > a,
