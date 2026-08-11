@@ -21,6 +21,13 @@ export function LearningStreakPanel({ streak }: { streak: LearningStreak }) {
 
   const dayLabel = streak.currentStreak === 1 ? "day" : "days";
   const freezeLabel = streak.freezeBalance === 1 ? "freeze" : "freezes";
+  const isFirstDay = streak.currentStreak === 1 && streak.longestStreak === 1;
+  const streakHeading =
+    streak.currentStreak === 0
+      ? "Your first learning day starts when you do"
+      : isFirstDay
+        ? "Your learning streak starts today"
+        : `${streak.currentStreak} learning ${dayLabel} in a row`;
   return (
     <section
       aria-labelledby="learning-streak-heading"
@@ -31,12 +38,14 @@ export function LearningStreakPanel({ streak }: { streak: LearningStreak }) {
         <div>
           <p className="editorial-eyebrow">Learning streak</p>
           <h2 className="mt-1 font-serif-display text-2xl" id="learning-streak-heading">
-            {streak.currentStreak} learning {dayLabel} in a row
+            {streakHeading}
           </h2>
         </div>
       </div>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-        This reflects activity in Health Decoded, not your health or treatment progress.
+        {streak.currentStreak === 0
+          ? "You’re at the start. Nothing is behind, and there is no deadline."
+          : "This reflects activity in Health Decoded, not your health or treatment progress."}
       </p>
       <div className="mt-4 border-t border-border pt-3">
         <p className="text-sm font-medium">

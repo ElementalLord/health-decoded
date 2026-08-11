@@ -65,6 +65,71 @@ export default async function JourneyPage({
     getLearningStreak(),
   ]);
   const nextStepSelection = nextStep.ok ? nextStep.data : fallbackNextStepForJourney(journey.data);
+  const learningTools = (
+    <section aria-labelledby="journey-tools" className="motion-reveal border-y border-border py-5">
+      <div className="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:items-baseline sm:gap-8">
+        <h2
+          className="font-serif-display text-2xl tracking-[-0.015em] sm:text-3xl"
+          id="journey-tools"
+        >
+          Keep your learning useful.
+        </h2>
+        <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+          A few quiet places to return to when they are useful.
+        </p>
+      </div>
+      <div className="mt-5 grid gap-6 border-t border-border pt-5 sm:grid-cols-2 sm:gap-10">
+        <section aria-labelledby="journey-tools-today">
+          <h3 className="editorial-eyebrow mb-2" id="journey-tools-today">
+            For today
+          </h3>
+          <div className="divide-y divide-border border-y border-border">
+            <JourneySpacedReview
+              compact
+              prompt={
+                !showCompletionArrival &&
+                welcome !== "1" &&
+                spacedReview.ok &&
+                spacedReview.data.automaticEligible &&
+                spacedReview.data.candidate &&
+                spacedReview.data.promptCopy
+                  ? {
+                      challengeId: spacedReview.data.candidate.challengeId,
+                      copy: spacedReview.data.promptCopy,
+                    }
+                  : null
+              }
+            />
+            <ActionRow
+              compact
+              description="Gather questions before a visit."
+              href="/appointment-prep"
+              title="Prepare for an appointment"
+            />
+          </div>
+        </section>
+        <section aria-labelledby="journey-tools-record">
+          <h3 className="editorial-eyebrow mb-2" id="journey-tools-record">
+            Your record
+          </h3>
+          <div className="divide-y divide-border border-y border-border">
+            <ActionRow
+              compact
+              description="See the meaningful steps you have reached."
+              href="/milestones"
+              title="View your milestones"
+            />
+            <ActionRow
+              compact
+              description="Revisit lessons and confidence check-ins."
+              href="/progress"
+              title="Open your learning record"
+            />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
 
   return (
     <section className="space-y-12 py-3 sm:space-y-16 sm:py-6">
@@ -93,7 +158,10 @@ export default async function JourneyPage({
       ) : null}
 
       {journey.data.kind === "complete" ? (
-        <JourneyCompleteState journey={journey.data} />
+        <>
+          {learningTools}
+          <JourneyCompleteState journey={journey.data} />
+        </>
       ) : (
         <>
           <TodaysLessonCard lesson={journey.data.currentLesson} />
@@ -155,43 +223,7 @@ export default async function JourneyPage({
         </>
       )}
 
-      <section
-        aria-labelledby="journey-tools"
-        className="motion-reveal border-t border-border pt-7"
-      >
-        <div className="mb-4 grid gap-2 sm:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] sm:items-end">
-          <h2 className="font-serif-display text-2xl sm:text-3xl" id="journey-tools">
-            Keep your learning useful.
-          </h2>
-          <p className="max-w-2xl leading-7 text-muted-foreground">
-            Prepare for a visit, revisit what you have completed, or recognize a meaningful step.
-          </p>
-        </div>
-        <div className="divide-y divide-border border-y border-border">
-          <JourneySpacedReview
-            prompt={
-              !showCompletionArrival && welcome !== "1" && spacedReview.ok && spacedReview.data.automaticEligible && spacedReview.data.candidate && spacedReview.data.promptCopy
-                ? { challengeId: spacedReview.data.candidate.challengeId, copy: spacedReview.data.promptCopy }
-                : null
-            }
-          />
-          <ActionRow
-            description="Organize questions, changes, and what you may want to bring. Your preparation stays in this browser session."
-            href="/appointment-prep"
-            title="Prepare for an appointment"
-          />
-          <ActionRow
-            description="Review meaningful learning and preparation steps you have completed."
-            href="/milestones"
-            title="View your milestones"
-          />
-          <ActionRow
-            description="Revisit completed lessons, confidence check-ins, and milestones together."
-            href="/progress"
-            title="Open your learning record"
-          />
-        </div>
-      </section>
+      {journey.data.kind !== "complete" ? learningTools : null}
 
       <footer className="flex flex-col items-start gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-xl text-sm leading-6 text-muted-foreground">

@@ -55,6 +55,18 @@ export const aiChatStreamEventSchema = z.discriminatedUnion("type", [
   z.object({ text: z.string().min(1), type: z.literal("delta") }).strict(),
   z
     .object({
+      credibleSources: z
+        .array(
+          z
+            .object({
+              href: z.string().url().startsWith("https://"),
+              organization: z.string().trim().min(1).max(80),
+              title: z.string().trim().min(1).max(180),
+            })
+            .strict(),
+        )
+        .min(1)
+        .max(3),
       lessonUsed: z.boolean(),
       relatedContent: z
         .array(

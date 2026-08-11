@@ -22,6 +22,7 @@ import {
 } from "@/features/achievements/content/milestone-definitions";
 import type { EarnedMilestone, MilestoneDefinition } from "@/features/achievements/types/milestone";
 import styles from "@/features/achievements/styles/milestones.module.css";
+import { formatDateSafely } from "@/lib/dates/format-date";
 
 const icons = {
   appointment: ClipboardCheck,
@@ -63,9 +64,7 @@ type MilestoneStyle = CSSProperties & {
 };
 
 function dateLabel(value: string) {
-  return new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "UTC" }).format(
-    new Date(value),
-  );
+  return formatDateSafely(value, { dateStyle: "medium", timeZone: "UTC" }, "en-US");
 }
 
 function MilestoneItem({
@@ -94,7 +93,13 @@ function MilestoneItem({
         <Icon />
       </span>
       <div>
-        <p>{earned ? `Earned ${dateLabel(earned.unlockedAt)}` : "Still available"}</p>
+        <p>
+          {earned
+            ? dateLabel(earned.unlockedAt)
+              ? `Earned ${dateLabel(earned.unlockedAt)}`
+              : "Earned"
+            : "Still available"}
+        </p>
         <h3>{definition.name}</h3>
         <span>{definition.description}</span>
         <small>
@@ -129,6 +134,17 @@ export function MilestonesPage({ earned }: { earned: readonly EarnedMilestone[] 
           }
         </p>
       </header>
+
+      {!earned.length ? (
+        <section aria-labelledby="first-milestone" className={styles.recent}>
+          <p className="editorial-eyebrow">You’re at the start</p>
+          <h2 id="first-milestone">Your first milestones will appear as you learn.</h2>
+          <p>
+            The available milestones below explain the learning and preparation steps Health Decoded
+            can recognize. None of them measure your health.
+          </p>
+        </section>
+      ) : null}
 
       {recent.length ? (
         <section aria-labelledby="recent-milestones" className={styles.recent}>

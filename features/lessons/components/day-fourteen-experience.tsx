@@ -20,6 +20,11 @@ import {
 } from "@/features/lessons/lib/lesson-stage-gating";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
+import {
+  safeGetLocalStorage,
+  safeRemoveLocalStorage,
+  safeSetLocalStorage,
+} from "@/lib/storage/safe-local-storage";
 
 import styles from "./day-fourteen-experience.module.css";
 
@@ -2372,7 +2377,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         if (current.has(target)) return current;
         const next = new Set(current).add(target);
         if (experience.accessMode === "active") {
-          window.localStorage.setItem(gateStorageKey, JSON.stringify([...next]));
+          safeSetLocalStorage(gateStorageKey, JSON.stringify([...next]));
         }
         return next;
       });
@@ -2400,7 +2405,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
 
   useEffect(() => {
     try {
-      const savedDraft = window.localStorage.getItem(draftKey);
+      const savedDraft = safeGetLocalStorage(draftKey);
       if (savedDraft) {
         const parsed = JSON.parse(savedDraft) as Partial<MilestoneDraft>;
         setDraft({
@@ -2412,16 +2417,14 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
 
       if (experience.accessMode !== "review") {
         let restoredReady = new Set<number>();
-        const parsedReady = JSON.parse(
-          window.localStorage.getItem(gateStorageKey) ?? "[]",
-        ) as unknown;
+        const parsedReady = JSON.parse(safeGetLocalStorage(gateStorageKey) ?? "[]") as unknown;
         if (Array.isArray(parsedReady)) {
           restoredReady = new Set(
             parsedReady.filter((value): value is number => Number.isInteger(value) && value >= 0),
           );
         }
         setReadyStages(restoredReady);
-        const storedStage = Number(window.localStorage.getItem(positionKey));
+        const storedStage = Number(safeGetLocalStorage(positionKey));
         if (Number.isInteger(storedStage) && storedStage >= 0 && storedStage < stageCount) {
           setStage(
             getLessonResumeStage({
@@ -2442,7 +2445,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
   useEffect(() => {
     if (!hydrated) return;
     try {
-      window.localStorage.setItem(draftKey, JSON.stringify(draft));
+      safeSetLocalStorage(draftKey, JSON.stringify(draft));
     } catch {
       setMessage("Your private milestone note could not be saved in this browser.");
     }
@@ -2458,7 +2461,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
 
   function saveStage(nextStage: number) {
     if (experience.accessMode === "review") return;
-    window.localStorage.setItem(positionKey, String(nextStage));
+    safeSetLocalStorage(positionKey, String(nextStage));
     const maximumBlock = Math.max(experience.blocks.length - 1, 0);
     const blockIndex = Math.min(
       maximumBlock,
@@ -2538,14 +2541,14 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         setMessage(result.message);
         return;
       }
-      window.localStorage.removeItem(positionKey);
-      window.localStorage.removeItem(gateStorageKey);
+      safeRemoveLocalStorage(positionKey);
+      safeRemoveLocalStorage(gateStorageKey);
       router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }
 
   function clearPrivateDraft() {
-    window.localStorage.removeItem(draftKey);
+    safeRemoveLocalStorage(draftKey);
     setDraft(initialDraft);
     setMessage("Your private Day 14 note was cleared from this browser.");
   }

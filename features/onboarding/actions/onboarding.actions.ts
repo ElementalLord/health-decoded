@@ -24,6 +24,11 @@ export async function completeOnboardingAction(
       message: parsed.error.issues[0]?.message ?? "Check your setup and try again.",
     };
   const result = await completeOnboarding(parsed.data);
+  if (!result.ok && result.error.code === "authorization")
+    return {
+      status: "auth",
+      message: "Your session ended. Sign in again to continue. Your starting choice is still here.",
+    };
   if (!result.ok)
     return {
       status: "error",

@@ -31,17 +31,14 @@ test("Asha remains the second available situation after Story 4 is added", () =>
 });
 
 test("Asha’s preview preserves the requested editorial order and copy", () => {
-  for (const phrase of [
-    "Connected to",
-    "Begin Story",
-    "Resume Story",
-    "Read Again",
-  ]) {
+  for (const phrase of ["Connected to", "Begin Story", "Resume Story", "Read Again"]) {
     assert.match(landing, new RegExp(phrase));
   }
   assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.labels"));
   assert.ok(landing.indexOf("styles.labels") < landing.indexOf("styles.previewIntroduction"));
-  assert.ok(landing.indexOf("styles.previewIntroduction") < landing.indexOf("styles.previewFooter"));
+  assert.ok(
+    landing.indexOf("styles.previewIntroduction") < landing.indexOf("styles.previewFooter"),
+  );
   assert.equal(
     ashaRiceOnTheTableStory.introduction,
     "After her diagnosis, Asha began removing familiar foods from her plate and eating separately from her family. One Sunday dinner helped her see that caring for her health did not require leaving her culture or the table behind.",
@@ -302,7 +299,7 @@ test("progress is story-specific and persists every requested state container", 
     assert.match(player + JSON.stringify(createInitialStoryProgress()), new RegExp(field));
   }
   assert.match(player, /getStoryStorageKey\(story\.slug\)/);
-  assert.match(player, /window\.localStorage\.setItem/);
+  assert.match(player, /safeSetLocalStorage/);
 });
 
 test("editorial governance labels Asha honestly without review or warning claims", () => {

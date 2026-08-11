@@ -30,17 +30,17 @@ test("the landing hierarchy has one feature and a compact editorial story index"
   assert.match(landingStyles, /\.storyRows \.preview[\s\S]*background: transparent/);
 });
 
-test("story preview images stay bounded beside copy and can never cover the action", () => {
+test("story preview images preserve their ratio beside copy and can never cover the action", () => {
   assert.match(landingStyles, /\.preview \{[\s\S]*contain: paint/);
   assert.match(landingStyles, /\.preview \{[\s\S]*overflow: clip/);
   assert.match(landingStyles, /\.featured \{[\s\S]*minmax\(16rem, 0\.78fr\)/);
   assert.match(
     landingStyles,
-    /\.row,[\s\S]*grid-template-columns: minmax\(11rem, 0\.38fr\) minmax\(0, 1\.62fr\)/,
+    /\.row,[\s\S]*grid-template-columns: minmax\(13rem, 0\.42fr\) minmax\(0, 1\.58fr\)/,
   );
-  assert.match(landingStyles, /\.featured \.cover \{[\s\S]*height: clamp\(14rem, 21vw, 19rem\)/);
-  assert.match(landingStyles, /\.row \.cover,[\s\S]*height: clamp\(9\.5rem, 13vw, 11\.5rem\)/);
-  assert.match(landingStyles, /\.cover img \{[\s\S]*max-width: 100%/);
+  assert.match(landingStyles, /\.featured \.cover \{[\s\S]*aspect-ratio: 16 \/ 9/);
+  assert.match(landingStyles, /\.row \.cover,[\s\S]*aspect-ratio: 16 \/ 9/);
+  assert.match(landingStyles, /\.cover img \{[\s\S]*aspect-ratio: 16 \/ 9[\s\S]*object-fit: cover/);
   assert.match(landingStyles, /\.previewFooter \{[\s\S]*flex-wrap: wrap/);
   assert.match(landingStyles, /\.storyAction \{[\s\S]*z-index: 3/);
 });

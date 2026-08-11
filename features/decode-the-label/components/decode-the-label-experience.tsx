@@ -75,6 +75,7 @@ export function DecodeTheLabelExperience() {
   const [index, setIndex] = useState(0);
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<readonly DecodeLabelAnswer[]>([]);
+  const [introImageFailed, setIntroImageFailed] = useState(false);
   const questionRef = useRef<HTMLHeadingElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
   const current = decodeLabelQuestions[index];
@@ -133,14 +134,26 @@ export function DecodeTheLabelExperience() {
             </Button>
           </div>
           <figure className={styles.introArtwork}>
-            <Image
-              alt="An illustrated pantry counter with a fictional food package turned to show its nutrition label"
-              height={1024}
-              priority
-              sizes="(max-width: 48rem) 100vw, 44vw"
-              src="/decode-the-label/pantry-label-editorial.png"
-              width={1536}
-            />
+            {introImageFailed ? (
+              <div
+                aria-label="The illustration is unavailable. The activity’s nutrition facts remain available as text."
+                className={styles.imageFallback}
+                role="img"
+              >
+                <p className="editorial-eyebrow">Illustration unavailable</p>
+                <p>The nutrition facts in the activity are still fully available as text.</p>
+              </div>
+            ) : (
+              <Image
+                alt="An illustrated pantry counter with a fictional food package turned to show its nutrition label"
+                height={1024}
+                onError={() => setIntroImageFailed(true)}
+                priority
+                sizes="(max-width: 48rem) 100vw, 44vw"
+                src="/decode-the-label/pantry-label-editorial.png"
+                width={1536}
+              />
+            )}
           </figure>
         </header>
 

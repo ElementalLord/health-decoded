@@ -18,6 +18,7 @@ import type {
   InteractiveStory,
   StoryPreviewStatus,
 } from "@/features/stories/types/interactive-story";
+import { safeGetLocalStorage } from "@/lib/storage/safe-local-storage";
 
 import styles from "./story-landing.module.css";
 
@@ -41,7 +42,7 @@ type PreviewState = {
 };
 
 function loadPreviewState(slug: string): PreviewState {
-  const progress = parseStoryProgress(window.localStorage.getItem(getStoryStorageKey(slug)));
+  const progress = parseStoryProgress(safeGetLocalStorage(getStoryStorageKey(slug)));
   return {
     status: getStoryPreviewStatus(progress),
     scene: progress.currentScene + 1,
@@ -152,7 +153,7 @@ export function StoryLanding() {
               ) : (
                 <span className={styles.upcomingTopic}>
                   {situation.label}
-                  <small>Planned</small>
+                  <small>Coming soon</small>
                 </span>
               )}
             </li>

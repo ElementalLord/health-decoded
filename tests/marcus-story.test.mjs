@@ -26,7 +26,7 @@ test("the Stories page explains that its experiences are illustrative", () => {
   assert.doesNotMatch(landing, /testimonial|real patient|success story/i);
 });
 
-test("topic browsing lists five situations and only marks the unbuilt topic as planned", () => {
+test("topic browsing lists five situations and only marks the unbuilt topic as coming soon", () => {
   for (const topic of [
     "Just diagnosed",
     "Food and family",
@@ -37,7 +37,7 @@ test("topic browsing lists five situations and only marks the unbuilt topic as p
     assert.match(landing, new RegExp(topic));
   }
   assert.equal(landing.split("story={").length - 1, 4);
-  assert.match(landing, /<small>Planned<\/small>/);
+  assert.match(landing, /<small>Coming soon<\/small>/);
 });
 
 test("Marcus remains the Just diagnosed preview and its cover comes first", () => {
@@ -241,8 +241,8 @@ test("private reflection can be saved locally or skipped", () => {
 });
 
 test("story progress persists and exposes Begin, Resume, and Read Again states", () => {
-  assert.match(player, /window\.localStorage\.getItem/);
-  assert.match(player, /window\.localStorage\.setItem/);
+  assert.match(player, /readLocalStorage/);
+  assert.match(player, /safeSetLocalStorage/);
   assert.match(player, /currentScene/);
   assert.match(player, /furthestSceneReached/);
   assert.match(player, /meaningfulChoice/);

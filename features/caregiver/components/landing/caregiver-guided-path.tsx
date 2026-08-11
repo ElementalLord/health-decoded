@@ -28,15 +28,17 @@ export function CaregiverGuidedPath() {
               <h3>{route.moduleTitle}</h3>
               <p>{route.purpose}</p>
             </div>
-            <span className={styles.moduleTime}>{route.time}</span>
-            {getImplementedCaregiverModuleById(route.id) ? (
-              <Link
-                className={styles.textButton}
-                href={getImplementedCaregiverModuleById(route.id)!.route}
-              >
-                {route.action}
-              </Link>
-            ) : null}
+            <div className={styles.moduleMeta}>
+              <span className={styles.moduleTime}>{route.time}</span>
+              {getImplementedCaregiverModuleById(route.id) ? (
+                <Link
+                  className={styles.textButton}
+                  href={getImplementedCaregiverModuleById(route.id)!.route}
+                >
+                  {route.action}
+                </Link>
+              ) : null}
+            </div>
           </li>
         ))}
       </ol>

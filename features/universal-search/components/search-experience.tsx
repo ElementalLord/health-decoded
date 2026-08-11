@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, X } from "lucide-react";
+import { RotateCw, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
@@ -41,6 +41,9 @@ const typeLabels: Record<UniversalSearchResultType, string> = {
 };
 
 const COMMAND_RESULT_LIMIT = 6;
+const MAX_SEARCH_CHARACTERS = 100;
+
+type SearchFailure = "offline" | "session" | "timeout" | "unavailable";
 
 function filterResults(results: readonly UniversalSearchDocument[], filter: FilterId) {
   if (filter === "all") return [...results];
@@ -64,8 +67,11 @@ export function SearchExperience({
   const [filter, setFilter] = useState<FilterId>("all");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failure, setFailure] = useState<SearchFailure | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
+  const [slow, setSlow] = useState(false);
   const hasQuery = Boolean(query.trim());
+  const queryTooLong = query.length > MAX_SEARCH_CHARACTERS;
   const availableResults = useMemo(
     () => (hasQuery ? filterResults(results, filter) : []),
     [filter, hasQuery, results],
@@ -81,13 +87,30 @@ export function SearchExperience({
     if (!hasQuery) {
       setResults([]);
       setLoading(false);
-      setFailed(false);
+      setFailure(null);
+      setSlow(false);
+      return;
+    }
+    if (queryTooLong) {
+      setResults([]);
+      setLoading(false);
+      setFailure(null);
+      setSlow(false);
       return;
     }
     const controller = new AbortController();
+    let abortedForTimeout = false;
+    let slowTimer: number | undefined;
+    let timeoutTimer: number | undefined;
     const timer = window.setTimeout(async () => {
       setLoading(true);
-      setFailed(false);
+      setFailure(null);
+      setSlow(false);
+      slowTimer = window.setTimeout(() => setSlow(true), 2_000);
+      timeoutTimer = window.setTimeout(() => {
+        abortedForTimeout = true;
+        controller.abort();
+      }, 10_000);
       try {
         const response = await fetch("/api/search", {
           method: "POST",
@@ -96,23 +119,36 @@ export function SearchExperience({
           body: JSON.stringify({ query }),
           signal: controller.signal,
         });
+        if (response.status === 401) {
+          setResults([]);
+          setFailure("session");
+          return;
+        }
         if (!response.ok) throw new Error("Search unavailable");
         const payload = (await response.json()) as { results?: RankedSearchResult[] };
-        setResults(Array.isArray(payload.results) ? payload.results : []);
+        if (!Array.isArray(payload.results)) throw new Error("Invalid search response");
+        setResults(payload.results);
       } catch {
-        if (!controller.signal.aborted) {
+        if (!controller.signal.aborted || abortedForTimeout) {
           setResults([]);
-          setFailed(true);
+          setFailure(
+            abortedForTimeout ? "timeout" : window.navigator.onLine ? "unavailable" : "offline",
+          );
         }
       } finally {
-        if (!controller.signal.aborted) setLoading(false);
+        if (slowTimer !== undefined) window.clearTimeout(slowTimer);
+        if (timeoutTimer !== undefined) window.clearTimeout(timeoutTimer);
+        setSlow(false);
+        if (!controller.signal.aborted || abortedForTimeout) setLoading(false);
       }
     }, 120);
     return () => {
       controller.abort();
       window.clearTimeout(timer);
+      if (slowTimer !== undefined) window.clearTimeout(slowTimer);
+      if (timeoutTimer !== undefined) window.clearTimeout(timeoutTimer);
     };
-  }, [hasQuery, query]);
+  }, [hasQuery, query, queryTooLong, retryKey]);
 
   useEffect(() => setSelectedIndex(0), [filter, query]);
   useEffect(() => {
@@ -133,6 +169,7 @@ export function SearchExperience({
           aria-controls="universal-search-results"
           aria-expanded={!compact || hasQuery}
           aria-label="Search Health Decoded"
+          aria-describedby="universal-search-limit"
           autoComplete="off"
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={(event) => {
@@ -159,6 +196,9 @@ export function SearchExperience({
           </button>
         ) : null}
       </div>
+      <p className="sr-only" id="universal-search-limit">
+        Search terms can be up to {MAX_SEARCH_CHARACTERS} characters.
+      </p>
 
       {!compact && hasQuery ? (
         <div aria-label="Filter search results" className={styles.filters} role="group">
@@ -181,11 +221,19 @@ export function SearchExperience({
           className={cn(styles.resultCount, compact && styles.compactResultCount)}
           role="status"
         >
-          {loading
-            ? "Searching Health Decoded."
-            : hasQuery
-              ? `${availableResults.length} ${availableResults.length === 1 ? "result" : "results"} found.`
-              : "Ready to search."}
+          {queryTooLong
+            ? `Search terms can be up to ${MAX_SEARCH_CHARACTERS} characters.`
+            : failure === "session"
+              ? "Your session ended."
+              : failure
+                ? "Search is unavailable."
+                : loading
+                  ? slow
+                    ? "Still searching Health Decoded."
+                    : "Searching Health Decoded."
+                  : hasQuery
+                    ? `${availableResults.length} ${availableResults.length === 1 ? "result" : "results"} found.`
+                    : "Ready to search."}
         </p>
       ) : null}
 
@@ -194,16 +242,54 @@ export function SearchExperience({
           {!loading && hasQuery && !displayed.length ? (
             <section className={styles.noResults}>
               <h2>
-                {failed ? "Search is temporarily unavailable." : "No results for this search."}
+                {queryTooLong
+                  ? "This search is too long."
+                  : failure === "session"
+                    ? "Your session ended."
+                    : failure === "offline"
+                      ? "Search needs a connection."
+                      : failure
+                        ? "We couldn’t search right now."
+                        : `No matches for “${query.trim()}”`}
               </h2>
-              <p>Try another word or spelling.</p>
-              <Link
-                className={buttonVariants({ fullWidth: false, variant: "text" })}
-                href="/ai"
-                onClick={() => onNavigate?.("/ai")}
-              >
-                Ask Health Decoded AI
-              </Link>
+              <p>
+                {queryTooLong
+                  ? `Shorten it to ${MAX_SEARCH_CHARACTERS} characters or fewer.`
+                  : failure === "session"
+                    ? "Sign in again to continue searching."
+                    : failure === "offline"
+                      ? "Reconnect, then try this search again."
+                      : failure === "timeout"
+                        ? "The search took longer than expected. Try again when you’re ready."
+                        : failure
+                          ? "Your search is still here. Try it again when you’re ready."
+                          : "Try another word or spelling."}
+              </p>
+              {failure === "session" ? (
+                <Link
+                  className={buttonVariants({ fullWidth: false, variant: "text" })}
+                  href="/login?next=/search"
+                  onClick={() => onNavigate?.("/login?next=/search")}
+                >
+                  Sign in
+                </Link>
+              ) : failure ? (
+                <button
+                  className={buttonVariants({ fullWidth: false, variant: "text" })}
+                  onClick={() => setRetryKey((value) => value + 1)}
+                  type="button"
+                >
+                  <RotateCw aria-hidden="true" className="size-4" /> Try again
+                </button>
+              ) : !queryTooLong ? (
+                <Link
+                  className={buttonVariants({ fullWidth: false, variant: "text" })}
+                  href="/ai"
+                  onClick={() => onNavigate?.("/ai")}
+                >
+                  Ask Health Decoded AI
+                </Link>
+              ) : null}
             </section>
           ) : null}
 

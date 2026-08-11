@@ -154,9 +154,10 @@ test("AI Tutor keeps the compact question-first hierarchy and safety boundary", 
   assert.doesNotMatch(page, /Ready when you are|Your private learning conversation/);
   assert.match(chat, /General diabetes education only/);
   assert.match(chat, /Safety details/);
-  assert.match(chat, /This conversation clears when you leave/);
+  assert.match(chat, /Private to this visit/);
+  assert.match(chat, /Continue learning/);
   assert.match(chat, /relatedContent/);
   assert.match(chat, /AiResponseContent/);
-  assert.equal((chat.match(/What is insulin resistance\?/g) ?? []).length, 1);
-  assert.equal((chat.match(/What does metformin do\?/g) ?? []).length, 1);
+  assert.match(chat, /AI_SUGGESTED_QUESTION_BANK/);
+  assert.match(chat, /selectSuggestedQuestions/);
 });

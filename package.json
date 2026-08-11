@@ -21,6 +21,7 @@
     "test:cohesion": "node --no-warnings --experimental-strip-types --test tests/product-cohesion.test.mjs",
     "test:streak": "node --no-warnings --experimental-strip-types --test tests/learning-streak.test.mjs",
     "test:search": "node --no-warnings --experimental-strip-types --test tests/universal-search.test.mjs",
+    "test:resilience": "node --no-warnings --experimental-strip-types --test tests/resilience-polish.test.mjs",
     "test:stories": "node --no-warnings --experimental-strip-types --test tests/marcus-story.test.mjs tests/asha-story.test.mjs tests/nora-story.test.mjs tests/devon-story.test.mjs tests/story-interaction-quality.test.mjs tests/story-experience-redesign.test.mjs",
     "test:caregiver": "node --no-warnings --experimental-strip-types --test tests/caregiver-ids.test.mjs tests/caregiver-content-contract.test.mjs tests/caregiver-completion-contract.test.mjs tests/caregiver-privacy-boundaries.test.mjs tests/caregiver-region-contract.test.mjs tests/caregiver-prototype-integration.test.mjs tests/caregiver-ai-isolation.test.mjs tests/caregiver-legacy-route.test.mjs tests/caregiver-module-1-*.test.mjs tests/caregiver-module-2-*.test.mjs tests/caregiver-module-3-*.test.mjs tests/caregiver-module-4-*.test.mjs tests/caregiver-module-5-*.test.mjs",
     "test:caregiver-landing": "node --no-warnings --experimental-strip-types --test tests/caregiver-landing-content.test.mjs tests/caregiver-landing-interactions.test.mjs tests/caregiver-landing-privacy.test.mjs tests/caregiver-urgent-route.test.mjs tests/caregiver-landing-routes.test.mjs tests/caregiver-authenticated-entry.test.mjs",
@@ -29,6 +30,12 @@
     "format:check": "prettier --check .",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "node --no-warnings --experimental-strip-types --test tests/*.test.mjs",
+    "quality:check": "node --no-warnings --experimental-strip-types scripts/quality/run-quality-check.mts",
+    "quality:routes": "npm run quality:check -- --check=routes",
+    "quality:sources": "npm run quality:check -- --check=content",
+    "quality:images": "npm run quality:check -- --check=images",
+    "quality:ai": "npm run quality:check -- --check=ai",
+    "test:quality": "node --no-warnings --experimental-strip-types --test tests/quality-system.test.mjs",
     "test:spaced-review": "node --no-warnings --experimental-strip-types --test tests/spaced-review.test.mjs"
   },
   "dependencies": {

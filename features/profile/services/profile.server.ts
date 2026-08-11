@@ -3,7 +3,6 @@ import "server-only";
 import { cache } from "react";
 
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
-import { authorizationError } from "@/lib/errors/application-error";
 import { type Profile } from "@/lib/database/models";
 import { toResult } from "@/lib/database/query";
 import { getServerDatabaseClient } from "@/lib/database/server";
@@ -16,7 +15,7 @@ export const getCurrentProfile = cache(async function getCurrentProfile(): Promi
   Result<Profile>
 > {
   const user = await getAuthenticatedUser();
-  if (!user.ok) return err(authorizationError());
+  if (!user.ok) return err(user.error);
 
   const database = await getServerDatabaseClient();
   const response = await database

@@ -19,7 +19,7 @@ export default function AuthErrorPage() {
       <PageHeader
         compact
         description="Please try again. If your link has expired, request a new one."
-        eyebrow="Something went wrong"
+        eyebrow="Sign-in link interrupted"
         title="We could not complete that request"
       />
       <div className="flex flex-col gap-3 sm:flex-row">

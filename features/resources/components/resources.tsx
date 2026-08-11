@@ -22,6 +22,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 
 import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 import type { Resource } from "@/features/stories/schemas/resource.schema";
+import { formatDateSafely } from "@/lib/dates/format-date";
 
 import styles from "./resources.module.css";
 
@@ -30,6 +31,7 @@ type ResourceId = Resource["id"];
 type ReadingProgressValue = {
   clearViewed: () => void;
   markViewed: (id: ResourceId) => void;
+  persistenceAvailable: boolean;
   viewedIds: Set<ResourceId>;
 };
 
@@ -92,8 +94,9 @@ function useReadingProgress() {
 function saveViewed(ids: Set<ResourceId>) {
   try {
     window.localStorage.setItem(VIEWED_STORAGE_KEY, JSON.stringify([...ids]));
+    return true;
   } catch {
-    // Article links remain usable when browser storage is unavailable.
+    return false;
   }
 }
 
@@ -102,16 +105,21 @@ function shortSource(organization: string) {
 }
 
 function reviewedLabel(verifiedAt: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    timeZone: "UTC",
-    year: "numeric",
-  }).format(new Date(`${verifiedAt}T00:00:00Z`));
+  return formatDateSafely(
+    `${verifiedAt}T00:00:00Z`,
+    {
+      month: "short",
+      timeZone: "UTC",
+      year: "numeric",
+    },
+    "en-US",
+  );
 }
 
 function ResourceMeta({ resource, compact = false }: { compact?: boolean; resource: Resource }) {
   const { viewedIds } = useReadingProgress();
   const viewed = viewedIds.has(resource.id);
+  const reviewed = reviewedLabel(resource.verified_at);
 
   return (
     <div className={styles.meta}>
@@ -133,10 +141,10 @@ function ResourceMeta({ resource, compact = false }: { compact?: boolean; resour
           </span>
         </>
       ) : null}
-      {!compact ? (
+      {!compact && reviewed ? (
         <>
           <span aria-hidden="true" className={styles.metaDot} />
-          <span>Reviewed {reviewedLabel(resource.verified_at)}</span>
+          <span>Reviewed {reviewed}</span>
         </>
       ) : null}
     </div>
@@ -406,7 +414,7 @@ function SupportFeature({ resource }: { resource: Resource }) {
 }
 
 function ReadingProgressPanel({ total }: { total: number }) {
-  const { clearViewed, viewedIds } = useReadingProgress();
+  const { clearViewed, persistenceAvailable, viewedIds } = useReadingProgress();
   const viewedCount = viewedIds.size;
   const percent = total === 0 ? 0 : Math.round((viewedCount / total) * 100);
 
@@ -436,7 +444,9 @@ function ReadingProgressPanel({ total }: { total: number }) {
         <span style={{ transform: `scaleX(${percent / 100})` }} />
       </div>
       <p className={styles.readingRecordNote}>
-        Articles receive a “Viewed” check when you open them. Your record stays in this browser.
+        {persistenceAvailable
+          ? "Articles receive a “Viewed” check when you open them. Your record stays in this browser."
+          : "Viewed marks will last only until this page closes because browser storage is unavailable."}
       </p>
     </section>
   );
@@ -477,6 +487,7 @@ function mustFind(resources: Resource[], id: ResourceId) {
 
 export function ResourcesList({ resources }: { resources: Resource[] }) {
   const [viewedIds, setViewedIds] = useState<Set<ResourceId>>(new Set());
+  const [persistenceAvailable, setPersistenceAvailable] = useState(true);
   const validIds = useMemo(() => new Set(resources.map(({ id }) => id)), [resources]);
 
   useEffect(() => {
@@ -495,6 +506,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
         ),
       );
     } catch {
+      setPersistenceAvailable(false);
       try {
         window.localStorage.removeItem(VIEWED_STORAGE_KEY);
       } catch {
@@ -504,20 +516,18 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
   }, [validIds]);
 
   const markViewed = (id: ResourceId) => {
-    setViewedIds((current) => {
-      if (current.has(id)) return current;
-      const next = new Set(current);
-      next.add(id);
-      saveViewed(next);
-      return next;
-    });
+    if (viewedIds.has(id)) return;
+    const next = new Set(viewedIds);
+    next.add(id);
+    setViewedIds(next);
+    if (!saveViewed(next)) setPersistenceAvailable(false);
   };
 
   const clearViewed = () => {
     try {
       window.localStorage.removeItem(VIEWED_STORAGE_KEY);
     } catch {
-      // The visible record can still reset when storage is unavailable.
+      setPersistenceAvailable(false);
     }
     setViewedIds(new Set());
   };
@@ -544,7 +554,9 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
   const emergency = pick("emergency-preparedness");
 
   return (
-    <ReadingProgressContext.Provider value={{ clearViewed, markViewed, viewedIds }}>
+    <ReadingProgressContext.Provider
+      value={{ clearViewed, markViewed, persistenceAvailable, viewedIds }}
+    >
       <div className={styles.readingRoom}>
         <header className={styles.masthead}>
           <div className={styles.mastheadRule}>

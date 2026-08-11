@@ -38,6 +38,11 @@ import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
+import {
+  safeGetLocalStorage,
+  safeRemoveLocalStorage,
+  safeSetLocalStorage,
+} from "@/lib/storage/safe-local-storage";
 
 const screenCount = 16;
 
@@ -417,7 +422,7 @@ export function FirstFiveMinutesExperience({
 
   useEffect(() => {
     if (experience.accessMode === "review") return;
-    const stored = Number(window.localStorage.getItem(storageKey));
+    const stored = Number(safeGetLocalStorage(storageKey));
     if (Number.isInteger(stored) && stored >= 0 && stored < screenCount) setScreen(stored);
   }, [experience.accessMode, storageKey]);
 
@@ -432,7 +437,7 @@ export function FirstFiveMinutesExperience({
 
   function saveScreen(nextScreen: number) {
     if (experience.accessMode === "review") return;
-    window.localStorage.setItem(storageKey, String(nextScreen));
+    safeSetLocalStorage(storageKey, String(nextScreen));
     startTransition(async () => {
       const result = await saveLessonPositionAction({
         blockIndex: persistedBlockForScreen(nextScreen),
@@ -526,7 +531,7 @@ export function FirstFiveMinutesExperience({
         setMessage(result.message);
         return;
       }
-      window.localStorage.removeItem(storageKey);
+      safeRemoveLocalStorage(storageKey);
       router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }

@@ -44,7 +44,7 @@ function BottomNavigation({
     <MobileLayout>
       <nav
         aria-label="Mobile navigation"
-        className="safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card px-1 pt-1.5"
+        className="mobile-bottom-navigation safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card px-1 pt-1.5"
       >
         <ul
           className={cn(
@@ -52,10 +52,10 @@ function BottomNavigation({
             routes.length === 8
               ? "grid-cols-4"
               : routes.length === 7
-              ? "grid-cols-7"
-              : routes.length === 6
-                ? "grid-cols-6"
-                : "grid-cols-5",
+                ? "grid-cols-7"
+                : routes.length === 6
+                  ? "grid-cols-6"
+                  : "grid-cols-5",
           )}
         >
           {routes.map((route) => {

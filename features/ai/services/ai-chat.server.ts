@@ -175,6 +175,7 @@ export async function createAiChatStream(
       let providerText = "";
 
       yield {
+        credibleSources: context.data.metadata.credibleSources,
         lessonUsed: Boolean(context.data.promptContext.lesson),
         relatedContent: context.data.metadata.relatedContent,
         suggestedQuestions: context.data.metadata.suggestedQuestions,

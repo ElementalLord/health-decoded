@@ -19,6 +19,7 @@ import type {
   StoryProgress,
   StoryScene,
 } from "@/features/stories/types/interactive-story";
+import { readLocalStorage, safeSetLocalStorage } from "@/lib/storage/safe-local-storage";
 
 import styles from "./story-player.module.css";
 
@@ -207,6 +208,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
   const [isLeaving, setIsLeaving] = useState(false);
   const [quizSelection, setQuizSelection] = useState("");
   const [reflectionDraft, setReflectionDraft] = useState("");
+  const [storageAvailable, setStorageAvailable] = useState(true);
   const playerRef = useRef<HTMLElement>(null);
   const stageHeadingRef = useRef<HTMLHeadingElement>(null);
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -222,7 +224,9 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
 
   useEffect(() => {
     try {
-      const saved = parseStoryProgress(window.localStorage.getItem(storageKey));
+      const stored = readLocalStorage(storageKey);
+      if (!stored.ok) setStorageAvailable(false);
+      const saved = parseStoryProgress(stored.value);
       const search = new URLSearchParams(window.location.search);
       const shouldRestart = search.get("restart") === "1";
       const shouldBegin = search.get("begin") === "1";
@@ -239,11 +243,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
 
   useEffect(() => {
     if (!hydrated) return;
-    try {
-      window.localStorage.setItem(storageKey, JSON.stringify(progress));
-    } catch {
-      // The story remains fully usable when browser storage is unavailable.
-    }
+    if (!safeSetLocalStorage(storageKey, JSON.stringify(progress))) setStorageAvailable(false);
   }, [hydrated, progress, storageKey]);
 
   useEffect(
@@ -706,8 +706,9 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
                 />
               </label>
               <p>
-                Saved only in this browser. It is not shared with caregivers, used for AI
-                personalization, or treated as medical data.
+                {storageAvailable
+                  ? "Saved only in this browser. It is not shared with caregivers, used for AI personalization, or treated as medical data."
+                  : "Available for this visit only because browser storage is unavailable. It is not shared with caregivers, used for AI personalization, or treated as medical data."}
               </p>
               <div className={styles.reflectionActions}>
                 <button

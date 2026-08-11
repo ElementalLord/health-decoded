@@ -89,11 +89,10 @@ export async function getJourneyHomeData(): Promise<Result<JourneyHomeViewModel>
 
     if (confidenceResponse.error) {
       logger.error("journey_home.confidence_unavailable");
-      return err(unexpectedError());
+    } else {
+      confidenceLevel =
+        (confidenceResponse.data?.confidence_level as ConfidenceLevel | undefined) ?? null;
     }
-
-    confidenceLevel =
-      (confidenceResponse.data?.confidence_level as ConfidenceLevel | undefined) ?? null;
   }
 
   const viewModel = mapJourneyHome({

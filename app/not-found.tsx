@@ -8,11 +8,19 @@ export default function NotFound() {
   return (
     <EmptyState
       action={
-        <Link className={buttonVariants({ fullWidth: false })} href="/">
-          Return home
-        </Link>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link className={buttonVariants({ fullWidth: false })} href="/journey">
+            Go to Journey
+          </Link>
+          <Link
+            className={buttonVariants({ fullWidth: false, variant: "secondary" })}
+            href="/search"
+          >
+            Search Health Decoded
+          </Link>
+        </div>
       }
-      description="The page you are looking for may have moved or no longer exists."
+      description="The page may have moved or no longer exists. Your learning progress has not changed."
       headingLevel="h1"
       icon={<Compass className="size-6" />}
       title="We couldn't find that page"

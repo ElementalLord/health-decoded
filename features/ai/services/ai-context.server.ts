@@ -1,8 +1,13 @@
 import "server-only";
 
-import { dayTwoGlossary } from "@/features/glossary/data/day-two-glossary";
+import {
+  credibleSourcesForQuestion,
+  publicCredibleSources,
+} from "@/features/ai/data/credible-sources";
+import { selectSuggestedQuestions } from "@/features/ai/data/suggested-questions";
 import type { TrustedAiPromptContext } from "@/features/ai/prompts/prompt-builder";
 import type { AiContextMetadata, AiRelatedContent } from "@/features/ai/types/ai";
+import { dayTwoGlossary } from "@/features/glossary/data/day-two-glossary";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
 
@@ -31,23 +36,23 @@ function glossaryFor(message: string) {
 
 function suggestions(context: TrustedAiPromptContext) {
   if (context.lesson) {
-    return [
+    return selectSuggestedQuestions([
       `Can you explain ${context.lesson.title.toLocaleLowerCase()} more simply?`,
       "Why does this matter in everyday life?",
       "What is the key takeaway from today’s lesson?",
-    ];
+      "How could I summarize this lesson in my own words?",
+      "What is one idea from this lesson that I can remember this week?",
+    ]);
   }
   if (context.glossary?.length) {
-    return context.glossary.slice(0, 3).map((entry) => `What exactly is ${entry.term}?`);
+    return selectSuggestedQuestions(
+      context.glossary.map((entry) => `What exactly is ${entry.term}?`),
+    );
   }
-  return [
-    "What is insulin resistance?",
-    "What does metformin do?",
-    "Can you explain Type 2 diabetes simply?",
-  ];
+  return selectSuggestedQuestions();
 }
 
-/** Loads only reviewed, published learning content for the prompt. */
+/** Adds authoritative references and any available reviewed, published learning context. */
 export async function loadTrustedAiContext({
   message,
   userId,
@@ -55,6 +60,22 @@ export async function loadTrustedAiContext({
   readonly message: string;
   readonly userId: string;
 }): Promise<ContextResult> {
+  const credibleSources = credibleSourcesForQuestion(message);
+  const baseContext: TrustedAiPromptContext = {
+    credibleSources,
+    glossary: glossaryFor(message),
+  };
+  const baseResult = {
+    ok: true as const,
+    data: {
+      metadata: {
+        credibleSources: publicCredibleSources(credibleSources),
+        relatedContent: [],
+        suggestedQuestions: suggestions(baseContext),
+      },
+      promptContext: baseContext,
+    },
+  };
   const database = await getServerDatabaseClient();
   const journeyResult = await database
     .from("user_journeys")
@@ -70,18 +91,11 @@ export async function loadTrustedAiContext({
       error_code: journeyResult.error.code,
       operation: "journey",
     });
-    return { ok: false };
+    return baseResult;
   }
 
-  const baseContext: TrustedAiPromptContext = { glossary: glossaryFor(message) };
   if (!journeyResult.data?.current_journey_lesson_id) {
-    return {
-      ok: true,
-      data: {
-        metadata: { relatedContent: [], suggestedQuestions: suggestions(baseContext) },
-        promptContext: baseContext,
-      },
-    };
+    return baseResult;
   }
 
   const assignmentResult = await database
@@ -96,7 +110,7 @@ export async function loadTrustedAiContext({
       error_code: assignmentResult.error?.code ?? "not_found",
       operation: "assignment",
     });
-    return { ok: false };
+    return baseResult;
   }
 
   const lessonResult = await database
@@ -110,7 +124,7 @@ export async function loadTrustedAiContext({
       error_code: lessonResult.error?.code ?? "not_found",
       operation: "lesson",
     });
-    return { ok: false };
+    return baseResult;
   }
 
   const lesson = lessonResult.data;
@@ -129,7 +143,11 @@ export async function loadTrustedAiContext({
   return {
     ok: true,
     data: {
-      metadata: { relatedContent, suggestedQuestions: suggestions(promptContext) },
+      metadata: {
+        credibleSources: publicCredibleSources(credibleSources),
+        relatedContent,
+        suggestedQuestions: suggestions(promptContext),
+      },
       promptContext,
     },
   };

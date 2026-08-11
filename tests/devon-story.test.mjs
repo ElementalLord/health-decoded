@@ -221,7 +221,7 @@ test("progress remains story-specific and all responsive layouts are styled", ()
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(player, /storyCompleted: true/);
   assert.match(player, /keyIdeaUnderstood: score >= 2/);
-  assert.match(player, /window\.localStorage\.setItem\(storageKey/);
+  assert.match(player, /safeSetLocalStorage\(storageKey/);
   assert.match(player, /disabled=\{!interactionComplete\}/);
   assert.match(interactions, /aria-live="polite"/);
   assert.match(interactions, /type="button"/);

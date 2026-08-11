@@ -20,7 +20,7 @@ test("profile stays distinct from Journey and Progress", () => {
   assert.doesNotMatch(page, /getProgressData/);
   assert.doesNotMatch(component, /Confidence XP|lessons done|current phase|90-day path/i);
   assert.match(component, /The lessons live in your journey/);
-  assert.match(component, /Reading comfort and motion choices\s+remain in Settings/);
+  assert.match(component, /Reading comfort and motion choices\s+remain\s+in Settings/);
 });
 
 test("profile omits the reflections archive and does not load it", () => {

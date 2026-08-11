@@ -12,7 +12,10 @@ import { createServerLogger } from "@/lib/logging/server";
 
 const logger = createServerLogger();
 
-export type ProfileActionState = { message: string; status: "error" | "idle" | "success" };
+export type ProfileActionState = {
+  message: string;
+  status: "auth" | "error" | "idle" | "success";
+};
 export async function updateDisplayNameAction(
   _: ProfileActionState,
   formData: FormData,
@@ -24,7 +27,14 @@ export async function updateDisplayNameAction(
       message: parsed.error.issues[0]?.message ?? "Check your display name.",
     };
   const user = await getAuthenticatedUser();
-  if (!user.ok) return { status: "error", message: "Please sign in again." };
+  if (!user.ok && user.error.code === "authorization")
+    return {
+      status: "auth",
+      message:
+        "Your session ended. Sign in again to continue. Your changes haven’t been saved yet.",
+    };
+  if (!user.ok)
+    return { status: "error", message: "We couldn’t save your name. Your changes are still here." };
   const database = await getServerDatabaseClient();
   const result = await database
     .from("profiles")
@@ -50,7 +60,17 @@ export async function updateSettingsAction(
   if (!parsed.success)
     return { status: "error", message: parsed.error.issues[0]?.message ?? "Check your settings." };
   const user = await getAuthenticatedUser();
-  if (!user.ok) return { status: "error", message: "Please sign in again." };
+  if (!user.ok && user.error.code === "authorization")
+    return {
+      status: "auth",
+      message:
+        "Your session ended. Sign in again to continue. Your changes haven’t been saved yet.",
+    };
+  if (!user.ok)
+    return {
+      status: "error",
+      message: "We couldn’t save your settings. Your changes are still here.",
+    };
   const database = await getServerDatabaseClient();
   const result = await database
     .from("user_settings")

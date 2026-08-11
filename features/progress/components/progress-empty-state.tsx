@@ -7,11 +7,19 @@ export function ProgressEmptyState() {
   return (
     <EmptyState
       action={
-        <Link className={buttonVariants({ fullWidth: false })} href="/journey">
-          Return to Today&apos;s Journey
-        </Link>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link className={buttonVariants({ fullWidth: false })} href="/progress">
+            Try again
+          </Link>
+          <Link
+            className={buttonVariants({ fullWidth: false, variant: "secondary" })}
+            href="/journey"
+          >
+            Return to Today&apos;s Journey
+          </Link>
+        </div>
       }
-      description="We could not load your progress right now. Please try again."
+      description="We couldn’t load your progress right now. Your learning record has not changed."
       headingLevel="h1"
       title="Your progress is unavailable"
     />

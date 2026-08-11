@@ -59,15 +59,16 @@ test("gives the AI guide transparent context and user control", () => {
   assert.match(aiSource, /Start fresh\?/);
   assert.match(aiSource, /messages in this private session will be cleared/);
   assert.match(aiSource, /aria-busy=\{isStreaming\}/);
-  assert.match(aiPageSource, /Ask Health Decoded chat workspace/);
-  assert.match(aiPageSource, /Your private learning conversation/);
-  assert.match(aiPageSource, /rounded-\[16px\]/);
-  assert.match(aiPageSource, /One question at a time is enough/);
-  assert.match(aiSource, /A few gentle ways to begin/);
-  assert.match(aiSource, /rounded-\[18px\] rounded-bl-\[6px\]/);
-  assert.match(aiSource, /You could ask next/);
+  assert.match(aiPageSource, /AI Tutor/);
+  assert.match(aiPageSource, /Ask about diabetes or something you&apos;re learning/);
+  assert.match(aiSource, /Private to this visit/);
+  assert.match(aiSource, /General diabetes education only/);
+  assert.match(aiSource, /A place to begin/);
+  assert.match(aiSource, /Continue learning/);
+  assert.match(aiSource, /rounded-\[18px\] rounded-tr-\[6px\]/);
+  assert.match(aiSource, /Ask follow-up/);
   assert.doesNotMatch(aiPageSource, /border-t-4|shadow-\[/);
-  assert.doesNotMatch(aiSource, /min-h-24|divide-y divide-border/);
+  assert.match(aiSource, /min-h-24/);
 });
 
 test("keeps completed lesson review in Progress instead of duplicating it on Journey", () => {

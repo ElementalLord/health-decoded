@@ -78,6 +78,21 @@
   width: 100%;
 }
 
+.imageFallback {
+  align-content: center;
+  display: grid;
+  gap: 0.75rem;
+  height: 100%;
+  min-height: inherit;
+  padding: clamp(2rem, 6vw, 4rem);
+}
+
+.imageFallback > p:last-child {
+  color: var(--label-body);
+  line-height: 1.7;
+  max-width: 30ch;
+}
+
 .introLower {
   display: grid;
   gap: 3rem;

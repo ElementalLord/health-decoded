@@ -31,7 +31,14 @@ export type AiRelatedContent =
       readonly title: string;
     };
 
+export type AiCredibleSource = {
+  readonly href: string;
+  readonly organization: string;
+  readonly title: string;
+};
+
 export type AiContextMetadata = {
+  readonly credibleSources: readonly AiCredibleSource[];
   readonly relatedContent: readonly AiRelatedContent[];
   readonly suggestedQuestions: readonly string[];
 };

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { AppHeader } from "@/components/layout/app-header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
+import { OfflineStatus } from "@/components/layout/offline-status";
 import { PageContainer } from "@/components/layout/page-container";
 import { RouteMotion } from "@/components/motion/route-motion";
 import { type ApplicationRoute } from "@/lib/routes";
@@ -30,6 +31,7 @@ function AppShell({
         Skip to main content
       </a>
       {routes ? <AppHeader routes={routes} /> : <AppHeader />}
+      <OfflineStatus />
       <PageContainer
         className={cn("flex-1", routes && "shell-mobile-offset")}
         id="main-content"

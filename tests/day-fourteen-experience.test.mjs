@@ -171,7 +171,7 @@ test("Day 14 gates every milestone interaction, including review mode", () => {
 
 test("Day 14 keeps the optional personal note private and revisitable on the same browser", () => {
   assert.match(experience, /day-fourteen-foundation/);
-  assert.match(experience, /window\.localStorage\.setItem\(draftKey/);
+  assert.match(experience, /safeSetLocalStorage\(draftKey/);
   assert.match(experience, /saved only in this browser/i);
   assert.match(experience, /not sent to Health Decoded as health\s+information/);
   assert.match(experience, /Clear my private Day 14 note from this browser/);

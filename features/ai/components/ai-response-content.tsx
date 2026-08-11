@@ -62,7 +62,7 @@ function renderEmphasis(text: string) {
 
 export function AiResponseContent({ className, content }: { className?: string; content: string }) {
   return (
-    <div className={cn("space-y-4 leading-7", className)}>
+    <div className={cn("break-words [overflow-wrap:anywhere] space-y-4 leading-7", className)}>
       {parseBlocks(content).map((block, index) => {
         if (block.kind === "unordered") {
           return (

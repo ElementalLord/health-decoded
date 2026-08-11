@@ -9,7 +9,11 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   noStore();
   const user = await getAuthenticatedUser();
-  if (!user.ok) return NextResponse.json({ results: [] }, { status: 401 });
+  if (!user.ok)
+    return NextResponse.json(
+      { results: [] },
+      { status: user.error.code === "authorization" ? 401 : 503 },
+    );
   let body: unknown;
   try {
     body = await request.json();

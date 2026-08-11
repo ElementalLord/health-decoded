@@ -34,6 +34,11 @@ import {
 } from "@/features/lessons/lib/lesson-stage-gating";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
+import {
+  safeGetLocalStorage,
+  safeRemoveLocalStorage,
+  safeSetLocalStorage,
+} from "@/lib/storage/safe-local-storage";
 
 const stageCount = 10;
 const dayTwelveStageGates: LessonStageGateMap = {
@@ -1513,7 +1518,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         if (current.has(target)) return current;
         const next = new Set(current).add(target);
         if (experience.accessMode === "active") {
-          window.localStorage.setItem(gateStorageKey, JSON.stringify([...next]));
+          safeSetLocalStorage(gateStorageKey, JSON.stringify([...next]));
         }
         return next;
       });
@@ -1534,7 +1539,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
     if (experience.accessMode === "review") return;
     let restoredReady = new Set<number>();
     try {
-      const parsed = JSON.parse(window.localStorage.getItem(gateStorageKey) ?? "[]") as unknown;
+      const parsed = JSON.parse(safeGetLocalStorage(gateStorageKey) ?? "[]") as unknown;
       if (Array.isArray(parsed)) {
         restoredReady = new Set(
           parsed.filter((value): value is number => Number.isInteger(value) && value >= 0),
@@ -1544,7 +1549,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
       restoredReady = new Set();
     }
     setReadyStages(restoredReady);
-    const stored = Number(window.localStorage.getItem(storageKey));
+    const stored = Number(safeGetLocalStorage(storageKey));
     if (Number.isInteger(stored) && stored >= 0 && stored < stageCount) {
       setStage(
         getLessonResumeStage({
@@ -1562,7 +1567,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
 
   function saveStage(nextStage: number) {
     if (experience.accessMode === "review") return;
-    window.localStorage.setItem(storageKey, String(nextStage));
+    safeSetLocalStorage(storageKey, String(nextStage));
     const maximumBlock = Math.max(experience.blocks.length - 1, 0);
     const blockIndex = Math.min(
       maximumBlock,
@@ -1695,8 +1700,8 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         setMessage(result.message);
         return;
       }
-      window.localStorage.removeItem(storageKey);
-      window.localStorage.removeItem(gateStorageKey);
+      safeRemoveLocalStorage(storageKey);
+      safeRemoveLocalStorage(gateStorageKey);
       router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }

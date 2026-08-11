@@ -34,6 +34,11 @@ import { LessonMotionFigure } from "@/features/lessons/components/lesson-motion-
 import { LessonStoryImage } from "@/features/lessons/components/lesson-story-image";
 import type { LessonPlayerViewModel } from "@/features/lessons/types/lesson-player";
 import { cn } from "@/lib/utils";
+import {
+  safeGetLocalStorage,
+  safeRemoveLocalStorage,
+  safeSetLocalStorage,
+} from "@/lib/storage/safe-local-storage";
 
 const stageCount = 15;
 
@@ -331,7 +336,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
 
   useEffect(() => {
     if (experience.accessMode === "review") return;
-    const stored = Number(window.localStorage.getItem(storageKey));
+    const stored = Number(safeGetLocalStorage(storageKey));
     if (Number.isInteger(stored) && stored >= 0 && stored < stageCount) setStage(stored);
   }, [experience.accessMode, storageKey]);
 
@@ -341,7 +346,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
 
   function saveStage(nextStage: number) {
     if (experience.accessMode === "review") return;
-    window.localStorage.setItem(storageKey, String(nextStage));
+    safeSetLocalStorage(storageKey, String(nextStage));
     const maximumBlock = Math.max(experience.blocks.length - 1, 0);
     const blockIndex = Math.min(
       maximumBlock,
@@ -462,7 +467,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
         setMessage(result.message);
         return;
       }
-      window.localStorage.removeItem(storageKey);
+      safeRemoveLocalStorage(storageKey);
       router.push(`/journey?completed=${experience.dayNumber}`);
     });
   }

@@ -46,7 +46,9 @@ function serviceErrorResponse(category: AiChatFailureCategory) {
 export async function POST(request: Request) {
   const user = await getAuthenticatedUser();
   if (!user.ok) {
-    return errorResponse(401, "UNAUTHORIZED", "You need to sign in to continue.");
+    return user.error.code === "authorization"
+      ? errorResponse(401, "UNAUTHORIZED", "You need to sign in to continue.")
+      : errorResponse(503, "AUTH_UNAVAILABLE", "Your session could not be checked right now.");
   }
 
   if (!hasTrustedAiRequestOrigin(request)) {

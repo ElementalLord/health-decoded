@@ -11,8 +11,8 @@ export function JourneyUnavailableState() {
           Try again
         </Link>
       }
-      description="Your learning journey is not available right now. Please try again later."
-      title="We could not load today’s journey"
+      description="Your learning progress has not changed. Try loading your Journey again."
+      title="We couldn’t load your Journey right now"
     />
   );
 }

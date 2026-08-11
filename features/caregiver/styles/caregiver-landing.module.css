@@ -72,11 +72,10 @@
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
-  gap: clamp(2rem, 7vw, 7rem);
+  grid-template-columns: minmax(0, 1.02fr) minmax(19rem, 0.98fr);
+  gap: clamp(2rem, 4vw, 4.5rem);
   align-items: center;
-  min-height: 34rem;
-  padding: clamp(3.5rem, 7vw, 6.5rem) clamp(1.25rem, 5vw, 4.5rem);
+  padding: clamp(2.75rem, 5vw, 4.5rem) clamp(1.25rem, 5vw, 4.5rem);
 }
 
 .heroCopy {
@@ -97,15 +96,15 @@
 }
 
 .heroTitle {
-  max-width: 10ch;
+  max-width: 13ch;
   margin: 0;
-  font-size: clamp(3.4rem, 8vw, 7.5rem);
-  line-height: 0.9;
+  font-size: clamp(3.5rem, 5.8vw, 5.75rem);
+  line-height: 0.94;
 }
 
 .heroExplanation {
   max-width: 38rem;
-  margin: 1.5rem 0 0;
+  margin: 1.25rem 0 0;
   color: var(--caregiver-ink);
   font-size: clamp(1.12rem, 1.5vw, 1.35rem);
 }
@@ -188,7 +187,7 @@
 
 .tableScene {
   position: relative;
-  min-height: 27rem;
+  min-height: clamp(20rem, 26vw, 22rem);
   overflow: hidden;
   border-block: 1px solid var(--caregiver-rule);
   background: #ecf1ec;
@@ -332,7 +331,7 @@
   position: absolute;
   width: 3.6rem;
   height: 2.5rem;
-  inset: 1.1rem 17% auto auto;
+  inset: 1.1rem 14% auto auto;
   border: 1px solid #b7654d;
   transform: rotate(-4deg);
   transform-origin: 50% 100%;
@@ -542,8 +541,8 @@
 
 .moduleSequence {
   display: grid;
-  max-width: 64rem;
-  margin: clamp(2.5rem, 5vw, 4rem) 0 0 auto;
+  max-width: none;
+  margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
   padding: 0;
   border-block-start: 1px solid var(--caregiver-rule);
   list-style: none;
@@ -551,17 +550,25 @@
 
 .moduleSequence li {
   display: grid;
-  grid-template-columns: 3.3rem minmax(0, 1fr) minmax(7rem, auto) minmax(12rem, auto);
-  gap: 1.25rem;
+  grid-template-columns: 4rem minmax(0, 1fr) minmax(20rem, 22rem);
+  gap: clamp(1rem, 2.5vw, 2.5rem);
   align-items: start;
-  padding: 1.2rem 0;
+  padding: 1.5rem 0;
   border-block-end: 1px solid var(--caregiver-rule);
 }
 
-.moduleSequence .textButton {
-  justify-self: end;
-  padding-inline: 0 0.1rem;
-  text-align: right;
+.moduleMeta {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+  min-width: 0;
+  text-align: left;
+}
+
+.moduleMeta .textButton {
+  min-height: auto;
+  padding: 0 0.1rem;
+  text-align: left;
   white-space: nowrap;
 }
 
@@ -1005,14 +1012,14 @@
     gap: 0.75rem;
   }
 
-  .moduleTime {
+  .moduleMeta {
     grid-column: 2;
-    white-space: normal;
+    justify-items: start;
+    margin-top: 0.5rem;
+    text-align: left;
   }
 
-  .moduleSequence .textButton {
-    grid-column: 2;
-    justify-self: start;
+  .moduleMeta .textButton {
     width: auto;
     white-space: normal;
   }

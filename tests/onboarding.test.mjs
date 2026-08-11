@@ -17,7 +17,9 @@ const [page, layout, flow, actions, service, schema, migration, journey, styles]
   ]);
 
 test("account state gates first use globally and completed users bypass it", () => {
-  assert.match(layout, /!settings\.data\.onboardingComplete && !isOnboarding/);
+  assert.match(layout, /!profile\.data\.onboarding_completed_at && !isOnboarding/);
+  assert.match(layout, /return settings\.ok \?/);
+  assert.match(layout, /<AppShell routes=\{routes\}>/);
   assert.match(layout, /redirect\("\/onboarding"\)/);
   assert.match(page, /profile\.data\.onboarding_completed_at/);
   assert.match(page, /redirect\("\/journey"\)/);

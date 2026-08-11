@@ -20,6 +20,7 @@ const initialState: ProfileActionState = { status: "idle", message: "" };
 export function SettingsContent({ data }: { data: ProfileSettings }) {
   const [state, action, pending] = useActionState(updateSettingsAction, initialState);
   const hasError = state.status === "error";
+  const sessionEnded = state.status === "auth";
   const messageId = "settings-form-message";
   const textScaleHelpId = "preferred-text-scale-help";
   const timezoneHelpId = "preferred-timezone-help";
@@ -68,7 +69,7 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
               Text size
               <Select
                 aria-describedby={`${textScaleHelpId}${state.message ? ` ${messageId}` : ""}`}
-                aria-invalid={hasError || undefined}
+                aria-invalid={hasError || sessionEnded || undefined}
                 defaultValue={data.preferredTextScale}
                 id="preferred-text-scale"
                 name="preferredTextScale"
@@ -97,7 +98,7 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
               Timezone
               <Input
                 aria-describedby={`${timezoneHelpId}${state.message ? ` ${messageId}` : ""}`}
-                aria-invalid={hasError || undefined}
+                aria-invalid={hasError || sessionEnded || undefined}
                 defaultValue={data.timezone}
                 id="preferred-timezone"
                 name="timezone"
@@ -121,19 +122,29 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
                 aria-live="polite"
                 className={cn(
                   "motion-status flex max-w-2xl items-start gap-3 rounded-[9px] border px-4 py-3 text-sm",
-                  hasError
+                  hasError || sessionEnded
                     ? "border-destructive/25 bg-destructive/5 text-destructive"
                     : "border-success/25 bg-success/5 text-success",
                 )}
                 id={messageId}
-                role={hasError ? "alert" : "status"}
+                role={hasError || sessionEnded ? "alert" : "status"}
               >
-                {!hasError ? (
+                {!hasError && !sessionEnded ? (
                   <CheckCircle2 aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
                 ) : null}
                 <span>
-                  {!hasError ? <strong className="block">Settings saved</strong> : null}
+                  {!hasError && !sessionEnded ? (
+                    <strong className="block">Settings saved</strong>
+                  ) : null}
                   <span className="block">{state.message}</span>
+                  {sessionEnded ? (
+                    <Link
+                      className="mt-2 inline-block font-semibold underline"
+                      href="/login?next=/settings"
+                    >
+                      Sign in
+                    </Link>
+                  ) : null}
                 </span>
               </div>
             ) : null}

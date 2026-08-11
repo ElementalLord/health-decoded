@@ -18,7 +18,13 @@ type JourneyReviewPrompt = {
   copy: string;
 };
 
-export function JourneySpacedReview({ prompt }: { prompt: JourneyReviewPrompt | null }) {
+export function JourneySpacedReview({
+  compact = false,
+  prompt,
+}: {
+  compact?: boolean;
+  prompt: JourneyReviewPrompt | null;
+}) {
   const [open, setOpen] = useState(false);
   const promptToken = useRef<string | null>(null);
 
@@ -27,7 +33,10 @@ export function JourneySpacedReview({ prompt }: { prompt: JourneyReviewPrompt | 
     const timer = window.setTimeout(() => {
       promptToken.current = window.crypto.randomUUID();
       setOpen(true);
-      void recordSpacedReviewPromptAction({ challengeId: prompt.challengeId, token: promptToken.current });
+      void recordSpacedReviewPromptAction({
+        challengeId: prompt.challengeId,
+        token: promptToken.current,
+      });
     }, spacedReviewConfig.journeyPromptDelayMs);
     return () => window.clearTimeout(timer);
   }, [prompt]);
@@ -40,6 +49,7 @@ export function JourneySpacedReview({ prompt }: { prompt: JourneyReviewPrompt | 
   return (
     <>
       <ActionRow
+        compact={compact}
         description="Bring back one useful concept. Health Decoded will choose it for you."
         href="/explain-it-back?mode=spaced-review"
         title="Review something"

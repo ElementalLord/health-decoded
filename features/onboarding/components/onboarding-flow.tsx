@@ -10,6 +10,7 @@ import {
   ScanText,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useActionState, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -328,9 +329,12 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
             </div>
 
             {state.message ? (
-              <p className={styles.error} role="alert">
-                {state.message}
-              </p>
+              <div className={styles.error} role="alert">
+                <p>{state.message}</p>
+                {state.status === "auth" ? (
+                  <Link href="/login?next=/onboarding">Sign in</Link>
+                ) : null}
+              </div>
             ) : null}
 
             <div className={styles.actions}>

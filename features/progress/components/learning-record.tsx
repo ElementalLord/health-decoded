@@ -8,6 +8,7 @@ import type {
   ProgressMilestoneState,
 } from "@/features/progress/types/progress";
 import { cn } from "@/lib/utils";
+import { formatDateSafely } from "@/lib/dates/format-date";
 
 const stateDetails: Record<ProgressMilestoneState, { icon: typeof Circle; label: string }> = {
   completed_with_check_in: { icon: CheckCircle2, label: "Complete" },
@@ -23,11 +24,11 @@ const learningSections = [
 ] as const;
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat(undefined, {
+  return formatDateSafely(value, {
     day: "numeric",
     month: "short",
     year: "numeric",
-  }).format(new Date(value));
+  });
 }
 
 function MilestoneEntry({
@@ -68,7 +69,8 @@ function MilestoneEntry({
         </span>
         {completion ? (
           <span className="mt-1.5 block text-xs leading-5 text-muted-foreground">
-            {formatDate(completion.completedAt)} · {completion.xpAwarded} XP
+            {formatDate(completion.completedAt) ? `${formatDate(completion.completedAt)} · ` : ""}
+            {completion.xpAwarded} XP
             {completion.confidenceLabel
               ? ` · ${completion.confidenceLabel}`
               : confidence

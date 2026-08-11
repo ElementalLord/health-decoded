@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { EmptyState } from "@/components/shared/empty-state";
 import { ProfileContent } from "@/features/profile/components/profile-content";
 import { getProfileSettings } from "@/features/profile/services/profile-settings.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { buttonVariants } from "@/components/ui/button";
 
 export const metadata = { title: "Profile" };
 
@@ -12,6 +14,11 @@ export default async function ProfilePage() {
   if (!profile.ok)
     return (
       <EmptyState
+        action={
+          <Link className={buttonVariants({ fullWidth: false })} href="/profile">
+            Try again
+          </Link>
+        }
         title="Profile unavailable"
         description="We could not load your profile right now."
         headingLevel="h1"
@@ -23,6 +30,11 @@ export default async function ProfilePage() {
   if (!settings.ok)
     return (
       <EmptyState
+        action={
+          <Link className={buttonVariants({ fullWidth: false })} href="/profile">
+            Try again
+          </Link>
+        }
         title="Profile unavailable"
         description="We could not load your profile right now."
         headingLevel="h1"

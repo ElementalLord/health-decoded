@@ -215,9 +215,21 @@ test("search UI clears, shows no-results, and opens AI without transmitting a qu
   const experience = await read("features/universal-search/components/search-experience.tsx");
   assert.match(experience, /aria-label="Clear search"/);
   assert.match(experience, /setQuery\(""\)/);
-  assert.match(experience, /No results for this search\./);
+  assert.match(experience, /No matches for/);
   assert.match(experience, /href="\/ai"/);
   assert.doesNotMatch(experience, /\/ai\?|searchParams|URLSearchParams/);
+});
+
+test("search failures, timeouts, and session loss remain distinct and recoverable", async () => {
+  const experience = await read("features/universal-search/components/search-experience.tsx");
+  assert.match(
+    experience,
+    /type SearchFailure = "offline" \| "session" \| "timeout" \| "unavailable"/,
+  );
+  assert.match(experience, /setRetryKey\(\(value\) => value \+ 1\)/);
+  assert.match(experience, /controller\.abort\(\)/);
+  assert.match(experience, /Your session ended\./);
+  assert.match(experience, /We couldn’t search right now\./);
 });
 
 test("queries remain in memory and are sent only in a no-store POST body", async () => {

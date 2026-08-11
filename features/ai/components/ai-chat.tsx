@@ -1,24 +1,30 @@
 "use client";
 
 import { Copy, RefreshCw, Send } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { AiResponseContent } from "@/features/ai/components/ai-response-content";
 import {
+  AI_SUGGESTED_QUESTION_BANK,
+  selectSuggestedQuestions,
+} from "@/features/ai/data/suggested-questions";
+import {
   AI_MAX_CONVERSATION_MESSAGES,
   AI_MAX_MESSAGE_CHARACTERS,
   AI_MAX_SESSION_HISTORY_BYTES,
 } from "@/features/ai/constants/ai-limits";
 import { aiChatStreamEventSchema } from "@/features/ai/schemas/ai-chat.schema";
-import type { AiRelatedContent } from "@/features/ai/types/ai";
+import type { AiCredibleSource, AiRelatedContent } from "@/features/ai/types/ai";
 import { cn } from "@/lib/utils";
 
 type MessageRole = "assistant" | "user";
 
 type ChatMessage = {
   readonly content: string;
+  readonly credibleSources: readonly AiCredibleSource[];
   readonly id: string;
   readonly lessonContextUsed: boolean;
   readonly relatedContent: readonly AiRelatedContent[];
@@ -26,11 +32,10 @@ type ChatMessage = {
   readonly suggestedQuestions: readonly string[];
 };
 
-const suggestedPrompts = [
-  "What is insulin resistance?",
-  "Explain today’s lesson more simply.",
-  "What does metformin do?",
-] as const;
+type RequestFailure = {
+  readonly kind: "auth" | "copy" | "request" | "timeout";
+  readonly message: string;
+};
 
 const flatPrimaryButton = "shadow-none hover:translate-y-0 hover:shadow-none";
 const flatSecondaryButton = "bg-background shadow-none hover:translate-y-0 hover:shadow-none";
@@ -39,21 +44,38 @@ const calmTextButton = "decoration-border hover:decoration-foreground";
 const streamErrorMessages = {
   AI_CONFIGURATION_ERROR:
     "The educational assistant is not configured right now. Please try again later.",
-  AI_RATE_LIMITED: "Please wait a moment before trying again.",
-  AI_TIMEOUT: "That explanation took too long. Please try again.",
-  AI_UNAVAILABLE: "The AI assistant is temporarily unavailable. Please try again.",
+  AI_RATE_LIMITED: "Health Decoded AI is receiving too many requests right now. Try again shortly.",
+  AI_TIMEOUT: "I couldn’t finish that answer. Your question is still here, so you can try again.",
+  AI_UNAVAILABLE:
+    "I couldn’t finish that answer. Your question is still here, so you can try again.",
 } as const;
 
 function errorMessageForResponse(status: number) {
-  if (status === 401) return "Your session has ended. Please sign in again.";
-  if (status === 429) return "Please wait a moment before trying again.";
-  if (status === 504) return "That explanation took too long. Please try again.";
-  return "The AI assistant is temporarily unavailable. Please try again.";
+  if (status === 401)
+    return {
+      kind: "auth",
+      message: "Your session ended. Sign in again to continue. Your question is still here.",
+    } as const;
+  if (status === 429)
+    return {
+      kind: "request",
+      message: "Health Decoded AI is receiving too many requests right now. Try again shortly.",
+    } as const;
+  if (status === 504)
+    return {
+      kind: "timeout",
+      message: "I couldn’t finish that answer. Your question is still here, so you can try again.",
+    } as const;
+  return {
+    kind: "request",
+    message: "I couldn’t finish that answer. Your question is still here, so you can try again.",
+  } as const;
 }
 
 function createMessage(role: MessageRole, content = ""): ChatMessage {
   return {
     content,
+    credibleSources: [],
     id: crypto.randomUUID(),
     lessonContextUsed: false,
     relatedContent: [],
@@ -106,11 +128,15 @@ function readStreamEvents(chunk: string, onEvent: (event: unknown) => void) {
 
 export function AiChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<readonly string[]>(
+    AI_SUGGESTED_QUESTION_BANK.slice(0, 3),
+  );
   const [message, setMessage] = useState("");
   const [lastQuestion, setLastQuestion] = useState<string | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<RequestFailure | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isTakingLonger, setIsTakingLonger] = useState(false);
   const [newConversationOpen, setNewConversationOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -126,6 +152,10 @@ export function AiChat() {
     },
     [],
   );
+
+  useEffect(() => {
+    setSuggestedPrompts(selectSuggestedQuestions());
+  }, []);
 
   useEffect(() => {
     if (!messages.length) return;
@@ -159,6 +189,7 @@ export function AiChat() {
   function setAssistantContext(
     assistantId: string,
     context: {
+      readonly credibleSources: readonly AiCredibleSource[];
       readonly lessonUsed: boolean;
       readonly relatedContent: readonly AiRelatedContent[];
       readonly suggestedQuestions: readonly string[];
@@ -169,6 +200,7 @@ export function AiChat() {
         entry.id === assistantId
           ? {
               ...entry,
+              credibleSources: context.credibleSources,
               lessonContextUsed: context.lessonUsed,
               relatedContent: context.relatedContent,
               suggestedQuestions: context.suggestedQuestions,
@@ -184,6 +216,7 @@ export function AiChat() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
     setError(null);
+    setIsTakingLonger(false);
     setNotice(null);
     setLastQuestion(question);
 
@@ -205,6 +238,12 @@ export function AiChat() {
     }
     setMessage("");
     setIsStreaming(true);
+    let timedOut = false;
+    const slowTimer = window.setTimeout(() => setIsTakingLonger(true), 5_000);
+    const timeoutTimer = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 30_000);
 
     try {
       const response = await fetch("/api/ai/chat", {
@@ -243,7 +282,7 @@ export function AiChat() {
           const event = aiChatStreamEventSchema.safeParse(unknownEvent);
           if (!event.success) {
             streamFailed = true;
-            setError(streamErrorMessages.AI_UNAVAILABLE);
+            setError({ kind: "request", message: streamErrorMessages.AI_UNAVAILABLE });
             return;
           }
 
@@ -253,7 +292,10 @@ export function AiChat() {
             setAssistantContext(assistantMessage.id, event.data);
           } else if (event.data.type === "error") {
             streamFailed = true;
-            setError(streamErrorMessages[event.data.code]);
+            setError({
+              kind: event.data.code === "AI_TIMEOUT" ? "timeout" : "request",
+              message: streamErrorMessages[event.data.code],
+            });
           } else if (event.data.type === "done") {
             receivedDone = true;
           }
@@ -265,18 +307,43 @@ export function AiChat() {
         }
       }
 
-      if (!controller.signal.aborted && (streamFailed || !receivedDone)) {
+      if (timedOut) {
+        setError({
+          kind: "timeout",
+          message:
+            "I couldn’t finish that answer. Your question is still here, so you can try again.",
+        });
+        removeEmptyAssistant();
+      } else if (!controller.signal.aborted && (streamFailed || !receivedDone)) {
         if (!streamFailed) {
-          setError("The AI assistant stopped before finishing. Please try again.");
+          setError({
+            kind: "request",
+            message:
+              "I couldn’t finish that answer. Your question is still here, so you can try again.",
+          });
         }
         removeEmptyAssistant();
       }
     } catch (caught) {
-      if (!(caught instanceof DOMException && caught.name === "AbortError")) {
-        setError("The AI assistant is temporarily unavailable. Please try again.");
+      if (timedOut) {
+        setError({
+          kind: "timeout",
+          message:
+            "I couldn’t finish that answer. Your question is still here, so you can try again.",
+        });
+        removeEmptyAssistant();
+      } else if (!(caught instanceof DOMException && caught.name === "AbortError")) {
+        setError({
+          kind: "request",
+          message:
+            "I couldn’t finish that answer. Your question is still here, so you can try again.",
+        });
         removeEmptyAssistant();
       }
     } finally {
+      window.clearTimeout(slowTimer);
+      window.clearTimeout(timeoutTimer);
+      setIsTakingLonger(false);
       if (abortControllerRef.current === controller) {
         setIsStreaming(false);
         abortControllerRef.current = null;
@@ -295,7 +362,11 @@ export function AiChat() {
       await navigator.clipboard.writeText(content);
       setCopiedMessageId(messageId);
     } catch {
-      setError("We could not copy that response. Please select the text and try again.");
+      setError({
+        kind: "copy",
+        message:
+          "Couldn’t copy automatically. The response is still here and can be selected manually.",
+      });
     }
   }
 
@@ -311,6 +382,7 @@ export function AiChat() {
     setNotice(null);
     setLastQuestion(null);
     setCopiedMessageId(null);
+    setSuggestedPrompts(selectSuggestedQuestions());
     setNewConversationOpen(false);
     requestAnimationFrame(() => inputRef.current?.focus());
   }
@@ -351,7 +423,10 @@ export function AiChat() {
         </details>
       </aside>
       <div className="order-1 mb-3 flex items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">This conversation clears when you leave.</p>
+        <p className="text-sm leading-6 text-muted-foreground">
+          <span className="font-medium text-foreground">Private to this visit.</span> Clears when
+          you leave.
+        </p>
         {messages.length ? (
           <Button
             className={flatSecondaryButton}
@@ -401,10 +476,7 @@ export function AiChat() {
       <section
         aria-label="AI tutor conversation"
         aria-busy={isStreaming}
-        className={cn(
-          "min-h-0 flex-1 space-y-7 overflow-y-auto py-6 sm:space-y-9",
-          messages.length ? "order-2" : "order-3",
-        )}
+        className={cn("order-2 min-h-0 flex-1 space-y-7 overflow-y-auto py-6 sm:space-y-9")}
       >
         {messages.length ? (
           messages.map((entry, index) => {
@@ -437,6 +509,47 @@ export function AiChat() {
                           </p>
                         ) : null}
                         <AiResponseContent content={entry.content} />
+                        {entry.credibleSources.length ? (
+                          <aside className="mt-5 border-t border-border pt-3">
+                            <p className="editorial-eyebrow mb-2">Sources</p>
+                            <ul className="space-y-1.5">
+                              {entry.credibleSources.map((source) => (
+                                <li className="text-sm leading-5" key={source.href}>
+                                  <a
+                                    className="font-semibold text-primary underline decoration-accent-warm/40 decoration-2 underline-offset-4 hover:decoration-accent-warm"
+                                    href={source.href}
+                                    rel="noreferrer"
+                                    target="_blank"
+                                  >
+                                    {source.title}
+                                  </a>{" "}
+                                  <span className="text-muted-foreground">
+                                    · {source.organization}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </aside>
+                        ) : null}
+                        {entry.relatedContent.length ? (
+                          <nav
+                            aria-label="Related learning"
+                            className="mt-5 border-t border-border pt-3"
+                          >
+                            <p className="editorial-eyebrow mb-2">Continue learning</p>
+                            <div className="flex flex-wrap gap-x-4 gap-y-2">
+                              {entry.relatedContent.map((content) => (
+                                <Link
+                                  className="text-sm font-semibold text-primary underline decoration-accent-warm/40 decoration-2 underline-offset-4 hover:decoration-accent-warm"
+                                  href={content.href}
+                                  key={content.href}
+                                >
+                                  {content.title}
+                                </Link>
+                              ))}
+                            </div>
+                          </nav>
+                        ) : null}
                         {!isStreaming && isLatestAssistant ? (
                           <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-3">
                             <Button
@@ -485,37 +598,49 @@ export function AiChat() {
                           <span className="size-1.5 animate-pulse rounded-full bg-[#789987] [animation-delay:120ms]" />
                           <span className="size-1.5 animate-pulse rounded-full bg-[#789987] [animation-delay:240ms]" />
                         </span>
-                        Taking a moment to make this clear…
+                        {isTakingLonger
+                          ? "Still working on this…"
+                          : "Taking a moment to make this clear…"}
                       </div>
                     )
                   ) : (
-                    <p className="whitespace-pre-wrap leading-7">{entry.content}</p>
+                    <p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] leading-7">
+                      {entry.content}
+                    </p>
                   )}
                 </div>
               </article>
             );
           })
         ) : (
-          <div className="space-y-4 pt-2">
+          <div className="pt-1">
             <section
               aria-labelledby="suggested-questions-title"
-              className="grid gap-4 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-start"
+              className="border-y border-border py-6 sm:py-7"
             >
-              <h2 className="pt-3 font-serif-display text-xl" id="suggested-questions-title">
-                Try asking:
-              </h2>
-              <ol className="divide-y divide-border border-y border-border">
-                {suggestedPrompts.map((prompt, index) => (
-                  <li key={prompt}>
+              <div className="max-w-xl space-y-2">
+                <h2 className="editorial-eyebrow" id="suggested-questions-title">
+                  A place to begin
+                </h2>
+                <p className="font-serif-display text-xl leading-7 text-foreground sm:text-2xl">
+                  Choose a question that feels useful now.
+                </p>
+              </div>
+              <ol className="mt-5 grid border-t border-border sm:grid-cols-3 sm:divide-x sm:divide-border sm:[&>li:first-child>button]:pl-0 sm:[&>li:last-child>button]:pr-0">
+                {suggestedPrompts.map((prompt) => (
+                  <li className="border-b border-border last:border-b-0 sm:border-b-0" key={prompt}>
                     <button
-                      className="grid min-h-14 w-full grid-cols-[2rem_minmax(0,1fr)] items-center gap-3 px-1 py-3 text-left text-sm font-semibold leading-5 transition hover:bg-muted/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="group flex min-h-20 h-full w-full items-center justify-between gap-4 py-4 text-left font-serif-display text-lg font-medium leading-6 text-foreground transition-[color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:text-primary active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:px-5"
                       onClick={() => void ask(prompt)}
                       type="button"
                     >
-                      <span className="font-serif-display text-lg font-normal text-accent-warm">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
                       <span>{prompt}</span>
+                      <span
+                        aria-hidden="true"
+                        className="shrink-0 font-sans text-base text-accent-warm transition-transform duration-[var(--duration-fast)] ease-[var(--ease-standard)] group-hover:translate-x-0.5"
+                      >
+                        →
+                      </span>
                     </button>
                   </li>
                 ))}
@@ -529,16 +654,16 @@ export function AiChat() {
       <form
         className={cn(
           "safe-area-bottom rounded-xl border border-border bg-card p-3 shadow-[0_10px_28px_rgb(61_47_41/0.045)] focus-within:border-foreground/25 focus-within:ring-2 focus-within:ring-ring/15 sm:p-4",
-          messages.length ? "order-3" : "order-2",
+          "order-3",
         )}
         onSubmit={submit}
       >
         <label className="grid gap-2 text-sm font-semibold" htmlFor="ai-question">
-          Your question
+          Ask a question
           <Textarea
             aria-describedby={`ai-safety-notice${error ? " ai-request-error" : ""}`}
             aria-invalid={Boolean(error) || undefined}
-            className="max-h-40 min-h-28 resize-none rounded-lg border-0 bg-muted/25 px-4 py-3 shadow-none hover:border-transparent focus:border-transparent focus-visible:ring-0"
+            className="max-h-40 min-h-24 resize-none rounded-lg border-0 bg-muted/25 px-4 py-3 shadow-none hover:border-transparent focus:border-transparent focus-visible:ring-0"
             disabled={isStreaming}
             id="ai-question"
             maxLength={AI_MAX_MESSAGE_CHARACTERS}
@@ -560,7 +685,7 @@ export function AiChat() {
         </label>
         <div className="mt-3 flex items-center justify-between gap-3">
           <p className="text-xs leading-5 text-muted-foreground">
-            Enter sends · Shift + Enter adds a line
+            {message.length}/{AI_MAX_MESSAGE_CHARACTERS} · Enter sends · Shift + Enter adds a line
           </p>
           {isStreaming ? (
             <Button
@@ -601,8 +726,16 @@ export function AiChat() {
             id="ai-request-error"
             role="alert"
           >
-            <p className="text-sm text-[#8b6258]">{error}</p>
-            {lastQuestion ? (
+            <p className="text-sm text-[#8b6258]">{error.message}</p>
+            {error.kind === "auth" ? (
+              <Link
+                className="text-sm font-semibold underline underline-offset-4"
+                href="/login?next=/ai"
+              >
+                Sign in
+              </Link>
+            ) : null}
+            {lastQuestion && error.kind !== "auth" && error.kind !== "copy" ? (
               <Button
                 className={calmTextButton}
                 disabled={isStreaming}

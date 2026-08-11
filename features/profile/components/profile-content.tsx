@@ -140,6 +140,7 @@ export function ProfileContent({
 }) {
   const [state, action, pending] = useActionState(updateDisplayNameAction, initialState);
   const hasError = state.status === "error";
+  const sessionEnded = state.status === "auth";
   const displayName = data.displayName.trim() || "you";
   const firstName = displayName.split(/\s+/)[0] ?? "you";
   const initials = getInitials(data.displayName);
@@ -152,21 +153,21 @@ export function ProfileContent({
           <div aria-label={`${displayName}'s initials`} className={styles.avatar} role="img">
             {initials}
           </div>
-          <p className="editorial-eyebrow">Your private space</p>
+          <p className="editorial-eyebrow">Profile</p>
           <h1 className={styles.heroTitle} id="profile-title">
-            A space that belongs to {firstName}.
+            Welcome back, {firstName}.
           </h1>
           <p className={styles.heroDescription}>
-            The lessons live in your journey. This is where the details that make Health Decoded
-            yours stay close—your name, your account details, and the way you prefer to learn.
+            The lessons live in your journey. Your name, account details, and learning preferences
+            live here.
           </p>
           <nav aria-label="Profile actions" className={styles.heroActions}>
             <Link className={styles.primaryTextAction} href="/milestones">
-              Milestones
+              View milestones
               <ArrowRight aria-hidden="true" />
             </Link>
             <Link className={styles.quietAction} href="/settings">
-              Open settings
+              Learning settings
             </Link>
           </nav>
         </div>
@@ -180,10 +181,10 @@ export function ProfileContent({
       >
         <div className={styles.accountIntro}>
           <p className="editorial-eyebrow">Account and privacy</p>
-          <h2 id="profile-details-title">The practical details, kept in their place.</h2>
+          <h2 id="profile-details-title">Your account details.</h2>
           <p>
-            Change the name Health Decoded uses for you here. Reading comfort and motion choices
-            remain in Settings, where they can be changed without cluttering this page.
+            Change the name Health Decoded uses for you. Reading comfort and motion choices remain
+            in Settings.
           </p>
           <Link className={styles.settingsLink} href="/settings">
             <Settings aria-hidden="true" />
@@ -194,11 +195,11 @@ export function ProfileContent({
 
         <div className={styles.accountPanel}>
           <form action={action} className={styles.nameForm}>
-            <label htmlFor="profile-display-name">The name you use here</label>
+            <label htmlFor="profile-display-name">Display name</label>
             <div className={styles.nameFields}>
               <Input
                 aria-describedby={state.message ? "profile-form-message" : undefined}
-                aria-invalid={hasError || undefined}
+                aria-invalid={hasError || sessionEnded || undefined}
                 defaultValue={data.displayName}
                 id="profile-display-name"
                 name="displayName"
@@ -211,12 +212,16 @@ export function ProfileContent({
             {state.message ? (
               <p
                 aria-live="polite"
-                className={cn(styles.saveStatus, hasError ? "text-destructive" : "text-success")}
+                className={cn(
+                  styles.saveStatus,
+                  hasError || sessionEnded ? "text-destructive" : "text-success",
+                )}
                 id="profile-form-message"
-                role={hasError ? "alert" : "status"}
+                role={hasError || sessionEnded ? "alert" : "status"}
               >
-                {!hasError ? <CheckCircle2 aria-hidden="true" /> : null}
+                {!hasError && !sessionEnded ? <CheckCircle2 aria-hidden="true" /> : null}
                 {state.message}
+                {sessionEnded ? <Link href="/login?next=/profile">Sign in</Link> : null}
               </p>
             ) : null}
           </form>
@@ -249,7 +254,7 @@ export function ProfileContent({
           </dl>
 
           <div className={styles.signOutRow}>
-            <p>Finished for now?</p>
+            <p>Using a shared device?</p>
             <form action={logoutAction}>
               <Button fullWidth={false} type="submit" variant="secondary">
                 Sign out
