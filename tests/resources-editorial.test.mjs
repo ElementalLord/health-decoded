@@ -138,7 +138,7 @@ test("supporting features balance landscape media with adjacent copy", () => {
 test("the reading room uses open editorial rows instead of repeated boxes", () => {
   assert.match(styles, /\.pathCard \{\s+background: transparent;\s+border: 0;/);
   assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
-  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-wash\);/);
+  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-sky\);/);
   assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
@@ -148,39 +148,38 @@ test("the reading room uses open editorial rows instead of repeated boxes", () =
   assert.match(styles, /transform: translateY\(-1px\)/);
 });
 
-test("resource groups use calm tonal hierarchy without repeated divider lines", () => {
-  assert.match(styles, /\.newHereGrid \{\s+background: color-mix\(/);
+test("resource groups use colored tonal hierarchy without repeated divider lines", () => {
+  assert.match(styles, /\.newHereGrid \{\s+background: var\(--editorial-rose\);/);
   assert.match(
     styles,
-    /\.newHereGrid \.leadArticle \{\s+background: color-mix\(in srgb, var\(--editorial-wash\) 72%, transparent\);/,
+    /\.newHereGrid \.leadArticle \{\s+background: var\(--editorial-sage-strong\);/,
   );
-  assert.match(
-    styles,
-    /\.newHereGrid \.compactArticle \{\s+background: color-mix\(in srgb, var\(--card\) 58%, transparent\);/,
-  );
+  assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: var\(--editorial-paper\);/);
   assert.doesNotMatch(styles, /border-(?:top|bottom|left|right|block):/);
-  assert.match(styles, /\.wideFeature \{\s+background: color-mix\(/);
+  assert.match(styles, /\.wideFeature \{\s+background: var\(--editorial-sage-strong\);/);
 });
 
-test("masthead stays proportionate and one neutral action remains visually primary", () => {
+test("masthead stays proportionate and one plum action remains visually primary", () => {
   assert.match(
     styles,
     /\.mastheadCopy \{[\s\S]*grid-template-columns: minmax\(0, 1\.05fr\) minmax\(24rem, 0\.95fr\);/,
   );
   assert.match(styles, /font-size: clamp\(2\.75rem, 4\.8vw, 4\.25rem\);/);
-  assert.match(styles, /\.readGuide \{[\s\S]*background: color-mix\(/);
+  assert.match(styles, /\.readGuide \{[\s\S]*background: var\(--editorial-coral\);/);
   assert.match(
     styles,
-    /article:hover \.readGuide \{\s+background: var\(--editorial-ink\);\s+color: var\(--background\);/,
+    /article:hover \.readGuide \{\s+background: #624454;\s+color: var\(--background\);/,
   );
   assert.match(styles, /\.externalArrow \{\s+display: none;/);
   assert.match(styles, /\.articleLabel::before \{\s+content: none;/);
 });
 
-test("the resources palette uses calm neutrals instead of repeated orange accents", () => {
+test("the resources palette uses sage, rose, sky, and plum instead of gray or orange panels", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-coral: color-mix\(in srgb, var\(--foreground\)/);
-  assert.match(styles, /--editorial-wash: var\(--secondary\)/);
+  assert.match(styles, /--editorial-coral: #7d586b;/);
+  assert.match(styles, /--editorial-wash: #dfeee5;/);
+  assert.match(styles, /--editorial-rose: #f2e5ea;/);
+  assert.match(styles, /--editorial-sky: #e3ebf3;/);
   assert.doesNotMatch(styles, /accent-warm/);
   assert.doesNotMatch(styles, /#b96c55/i);
   assert.doesNotMatch(styles, /#(?:365b51|365f56|345f55|3f6258)/i);

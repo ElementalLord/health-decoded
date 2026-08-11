@@ -1,10 +1,13 @@
 .readingRoom {
   --editorial-ink: var(--foreground);
-  --editorial-body: #625750;
-  --editorial-soft: var(--muted-foreground);
-  --editorial-coral: color-mix(in srgb, var(--foreground) 52%, var(--muted-foreground));
-  --editorial-paper: transparent;
-  --editorial-wash: var(--secondary);
+  --editorial-body: #5f534d;
+  --editorial-soft: #796c63;
+  --editorial-coral: #7d586b;
+  --editorial-paper: #fffaf5;
+  --editorial-wash: #dfeee5;
+  --editorial-sage-strong: #c9e1d4;
+  --editorial-rose: #f2e5ea;
+  --editorial-sky: #e3ebf3;
   color: var(--editorial-body);
 }
 
@@ -116,7 +119,7 @@
 
 .toolLinks > a {
   align-items: center;
-  background: color-mix(in srgb, var(--editorial-wash) 62%, transparent);
+  background: var(--editorial-wash);
   border-radius: 0.5rem;
   color: var(--editorial-ink);
   display: grid;
@@ -153,7 +156,7 @@
 }
 
 .readingRecord {
-  background: var(--editorial-wash);
+  background: var(--editorial-sky);
   margin-top: 1.25rem;
   padding: 1rem 1.2rem;
 }
@@ -195,7 +198,7 @@
 }
 
 .readingRecordTrack {
-  background: #dacfc2;
+  background: #c7d5e0;
   height: 4px;
   margin-top: 0.75rem;
   overflow: hidden;
@@ -272,7 +275,7 @@
 .checklistArticle,
 .supportFeature,
 .photoInterlude {
-  background: var(--editorial-paper);
+  background: transparent;
   border: 0;
   border-radius: 0;
   position: relative;
@@ -396,7 +399,7 @@
 
 .articleLabel {
   align-items: center;
-  color: var(--editorial-soft);
+  color: var(--editorial-coral);
   display: flex;
   font-size: 0.64rem;
   font-weight: 760;
@@ -413,9 +416,9 @@
 .readGuide {
   align-items: center;
   align-self: flex-start;
-  background: color-mix(in srgb, var(--editorial-ink) 9%, transparent);
+  background: var(--editorial-coral);
   border-radius: 0.4rem;
-  color: var(--editorial-ink);
+  color: #fffaf5;
   display: inline-flex;
   font-size: 0.67rem;
   font-weight: 780;
@@ -489,7 +492,7 @@
 }
 
 .pathSection {
-  background: color-mix(in srgb, var(--editorial-wash) 46%, transparent);
+  background: var(--editorial-wash);
   padding: 2rem 0 2.2rem;
 }
 
@@ -519,7 +522,7 @@
 }
 
 .pathCard > svg:first-child {
-  color: var(--editorial-soft);
+  color: var(--editorial-coral);
   grid-column: 1 / -1;
 }
 
@@ -530,7 +533,7 @@
 }
 
 .pathCard span {
-  color: var(--editorial-soft);
+  color: var(--editorial-coral);
   font-size: 0.61rem;
   font-weight: 760;
   letter-spacing: 0.09em;
@@ -600,17 +603,17 @@
 }
 
 .newHereGrid {
-  background: color-mix(in srgb, var(--editorial-wash) 48%, transparent);
+  background: var(--editorial-rose);
   gap: 0;
   grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
 }
 
 .newHereGrid .leadArticle {
-  background: color-mix(in srgb, var(--editorial-wash) 72%, transparent);
+  background: var(--editorial-sage-strong);
 }
 
 .newHereGrid .compactArticle {
-  background: color-mix(in srgb, var(--card) 58%, transparent);
+  background: var(--editorial-paper);
 }
 
 .dailyLivingGrid {
@@ -627,7 +630,7 @@
 }
 
 .articleNumber {
-  color: color-mix(in srgb, var(--editorial-ink) 34%, transparent);
+  color: color-mix(in srgb, var(--editorial-coral) 65%, white);
   font-family: var(--font-serif);
   font-size: 3.2rem;
   font-weight: 350;
@@ -673,7 +676,7 @@
 }
 
 .sourceNote {
-  background: var(--editorial-wash);
+  background: var(--editorial-sky);
   border-radius: 0;
   color: var(--editorial-body);
   display: grid;
@@ -690,13 +693,13 @@
 }
 
 .sourceNoteIntro > svg {
-  color: var(--editorial-soft);
+  color: var(--editorial-coral);
   grid-row: 1 / 3;
   margin-right: 0.75rem;
 }
 
 .sourceNoteIntro > p {
-  color: var(--editorial-soft);
+  color: var(--editorial-coral);
 }
 
 .sourceNoteIntro h2 {
@@ -738,7 +741,7 @@
 }
 
 .wideFeature {
-  background: color-mix(in srgb, var(--editorial-wash) 58%, transparent);
+  background: var(--editorial-sage-strong);
   margin-bottom: 1rem;
 }
 
@@ -839,7 +842,7 @@
 }
 
 .checkNote {
-  color: var(--editorial-soft);
+  color: var(--editorial-coral);
   font-size: 0.62rem;
   font-weight: 780;
   letter-spacing: 0.09em;
@@ -861,7 +864,7 @@
 }
 
 .photoInterlude {
-  background: var(--editorial-wash);
+  background: var(--editorial-rose);
   display: grid;
   grid-template-columns: minmax(18rem, 0.76fr) minmax(0, 1.24fr);
   margin: 1rem 0 0;
@@ -873,7 +876,7 @@
 
 .photoInterlude figcaption {
   align-self: stretch;
-  background: var(--editorial-wash);
+  background: var(--editorial-rose);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -881,7 +884,7 @@
 }
 
 .photoInterlude figcaption > p {
-  color: var(--editorial-soft);
+  color: var(--editorial-coral);
   font-size: 0.64rem;
   font-weight: 760;
   letter-spacing: 0.11em;
@@ -936,11 +939,11 @@
   .checklistArticle:hover,
   .supportFeature:hover,
   .pathCard:hover {
-    background-color: color-mix(in srgb, var(--editorial-wash) 72%, transparent);
+    background-color: color-mix(in srgb, var(--editorial-wash) 76%, var(--editorial-paper));
   }
 
   article:hover .readGuide {
-    background: var(--editorial-ink);
+    background: #624454;
     color: var(--background);
     transform: translateY(-1px);
   }
