@@ -28,7 +28,16 @@ export const explainItBackRequestSchema = z
           !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u202a-\u202e\u2066-\u2069]/u.test(value),
         "Explanation must be plain text.",
       ),
+    mode: z.enum(["practice", "spaced-review"]).default("practice"),
+    resultToken: z.uuid().optional(),
+    hadRetry: z.boolean().default(false),
+    exampleViewed: z.boolean().default(false),
   })
-  .strict();
+  .strict()
+  .superRefine((value, context) => {
+    if (value.mode === "spaced-review" && !value.resultToken) {
+      context.addIssue({ code: "custom", path: ["resultToken"], message: "A review result token is required." });
+    }
+  });
 
 export type ExplainItBackRequestInput = z.infer<typeof explainItBackRequestSchema>;

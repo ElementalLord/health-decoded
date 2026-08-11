@@ -163,6 +163,17 @@ export const toolSearchDocuments = [
     priority: 1,
     status: "available",
   },
+  {
+    id: "TOOL-SPACED-REVIEW",
+    type: "tool",
+    title: "Review something",
+    description: "Let Health Decoded choose one useful concept to bring back for a quick review.",
+    route: "/explain-it-back?mode=spaced-review",
+    aliases: ["spaced review", "quick review", "practice something"],
+    keywords: ["review", "remember", "explain it back"],
+    priority: 2,
+    status: "available",
+  },
 ] as const satisfies readonly UniversalSearchDocument[];
 
 export const glossarySearchDocuments: readonly UniversalSearchDocument[] = medicalGlossary.map(

@@ -13,9 +13,12 @@ import { TodaysLessonCard } from "@/features/journeys/components/todays-lesson-c
 import { getJourneyHomeData } from "@/features/journeys/services/journey-home.server";
 import { NextStepPanel } from "@/features/next-step/components/next-step-panel";
 import { getNextStep } from "@/features/next-step/services/next-step.server";
+import { fallbackNextStepForJourney } from "@/features/next-step/lib/recommend-next-step";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 import { LearningStreakPanel } from "@/features/streaks/components/learning-streak-panel";
 import { getLearningStreak } from "@/features/streaks/services/learning-streak.server";
+import { JourneySpacedReview } from "@/features/spaced-review/components/journey-spaced-review";
+import { getSpacedReviewOpportunity } from "@/features/spaced-review/services/spaced-review.server";
 
 export const metadata = { title: "Your journey" };
 
@@ -55,10 +58,13 @@ export default async function JourneyPage({
     completedDay >= 1 &&
     completedDay <= journey.data.progress.totalDays &&
     completedDay <= journey.data.progress.completedLessons;
+  const spacedReview = await getSpacedReviewOpportunity({ manual: false });
+  const dueReview = spacedReview.ok && spacedReview.data.due;
   const [nextStep, learningStreak] = await Promise.all([
-    getNextStep(journey.data, showCompletionArrival ? completedDay : undefined),
+    getNextStep(journey.data, showCompletionArrival ? completedDay : undefined, dueReview),
     getLearningStreak(),
   ]);
+  const nextStepSelection = nextStep.ok ? nextStep.data : fallbackNextStepForJourney(journey.data);
 
   return (
     <section className="space-y-12 py-3 sm:space-y-16 sm:py-6">
@@ -74,7 +80,7 @@ export default async function JourneyPage({
       />
 
       <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1.7fr)_minmax(15rem,0.7fr)] lg:gap-10">
-        {nextStep.ok ? <NextStepPanel selection={nextStep.data} /> : null}
+        <NextStepPanel selection={nextStepSelection} />
         {learningStreak.ok ? <LearningStreakPanel streak={learningStreak.data} /> : null}
       </div>
 
@@ -162,6 +168,13 @@ export default async function JourneyPage({
           </p>
         </div>
         <div className="divide-y divide-border border-y border-border">
+          <JourneySpacedReview
+            prompt={
+              !showCompletionArrival && welcome !== "1" && spacedReview.ok && spacedReview.data.automaticEligible && spacedReview.data.candidate && spacedReview.data.promptCopy
+                ? { challengeId: spacedReview.data.candidate.challengeId, copy: spacedReview.data.promptCopy }
+                : null
+            }
+          />
           <ActionRow
             description="Organize questions, changes, and what you may want to bring. Your preparation stays in this browser session."
             href="/appointment-prep"

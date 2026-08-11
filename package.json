@@ -27,7 +27,9 @@
     "validate:medications": "node --experimental-strip-types scripts/validate-medications.mts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --no-warnings --experimental-strip-types --test tests/*.test.mjs",
+    "test:spaced-review": "node --no-warnings --experimental-strip-types --test tests/spaced-review.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

@@ -12,6 +12,7 @@ import { err, ok, type Result } from "@/lib/result/result";
 export async function getNextStep(
   journey: JourneyHomeViewModel,
   recentCompletedDay?: number,
+  hasDueSpacedReview = false,
 ): Promise<Result<NextStepSelection>> {
   const user = await getAuthenticatedUser();
   if (!user.ok) return err(user.error);
@@ -59,6 +60,7 @@ export async function getNextStep(
       ...(recentCompletedDay && lessonIdByDay[recentCompletedDay]
         ? { recentCompletedLessonId: lessonIdByDay[recentCompletedDay] }
         : {}),
+      hasDueSpacedReview,
       today,
     }),
   );

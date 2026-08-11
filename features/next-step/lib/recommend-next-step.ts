@@ -8,6 +8,17 @@ import { getNextLearningAction } from "../../cohesion/lib/get-next-learning-acti
 
 const optionalRecommendations: readonly NextStepRecommendation[] = [
   {
+    id: "spaced-review",
+    type: "spaced-review",
+    title: "Bring one useful idea back",
+    reason: "Health Decoded has a quick review ready from something you learned earlier.",
+    actionLabel: "Review something",
+    route: "/explain-it-back?mode=spaced-review",
+    estimatedMinutes: 3,
+    priority: 25,
+    optional: true,
+  },
+  {
     id: "myth-check",
     type: "myth-check",
     title: "Check common diabetes myths",
@@ -53,10 +64,11 @@ const optionalRecommendations: readonly NextStepRecommendation[] = [
   },
 ];
 
-const mythCheckRecommendation = optionalRecommendations[0]!;
-const appointmentRecommendation = optionalRecommendations[1]!;
-const trustedResourceRecommendation = optionalRecommendations[2]!;
-const glossaryRecommendation = optionalRecommendations[3]!;
+const spacedReviewRecommendation = optionalRecommendations[0]!;
+const mythCheckRecommendation = optionalRecommendations[1]!;
+const appointmentRecommendation = optionalRecommendations[2]!;
+const trustedResourceRecommendation = optionalRecommendations[3]!;
+const glossaryRecommendation = optionalRecommendations[4]!;
 
 function calendarDay(value: string) {
   return Math.floor(Date.parse(`${value}T00:00:00Z`) / 86_400_000);
@@ -116,6 +128,9 @@ export function recommendNextStep(progress: RecommendationProgress): NextStepSel
   ) {
     candidates.push(mythCheckRecommendation);
   }
+  if (!progress.currentLesson && progress.hasDueSpacedReview) {
+    candidates.push(spacedReviewRecommendation);
+  }
   if (
     !progress.currentLesson ||
     (progress.completedLessonCount >= 5 &&
@@ -137,4 +152,23 @@ export function recommendNextStep(progress: RecommendationProgress): NextStepSel
   const fallback = ordered.find((candidate) => !eligible.includes(candidate));
   const primary = eligible[0] ?? fallback ?? glossaryRecommendation;
   return { primary };
+}
+
+export function fallbackNextStepForJourney(
+  journey: import("@/features/journeys/types/journey-home").JourneyHomeViewModel,
+): NextStepSelection {
+  if (journey.kind === "complete") return { primary: glossaryRecommendation };
+
+  return recommendNextStep({
+    completedLessonCount: journey.progress.completedLessons,
+    currentLesson: {
+      dayNumber: journey.currentLesson.dayNumber,
+      estimatedMinutes: journey.currentLesson.estimatedMinutes,
+      status: journey.currentLesson.status === "in_progress" ? "in_progress" : "not_started",
+      title: journey.currentLesson.title,
+    },
+    earnedMilestoneIds: new Set(),
+    lastDismissed: null,
+    today: "1970-01-01",
+  });
 }

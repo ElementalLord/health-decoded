@@ -1,5 +1,6 @@
 import { ExplainItBackExperience } from "@/features/explain-it-back/components/explain-it-back-experience";
 import { getExplainItBackChallenge } from "@/features/explain-it-back/content/explain-it-back-content";
+import { getSpacedReviewOpportunity } from "@/features/spaced-review/services/spaced-review.server";
 
 export const metadata = {
   title: "Explain It Back",
@@ -10,9 +11,21 @@ export const metadata = {
 export default async function ExplainItBackPage({
   searchParams,
 }: {
-  searchParams: Promise<{ concept?: string }>;
+  searchParams: Promise<{ concept?: string; mode?: string }>;
 }) {
-  const { concept } = await searchParams;
+  const { concept, mode } = await searchParams;
+  if (mode === "spaced-review") {
+    const opportunity = await getSpacedReviewOpportunity({ manual: true });
+    return (
+      <ExplainItBackExperience
+        {...(opportunity.ok && opportunity.data.candidate
+          ? { initialChallengeId: opportunity.data.candidate.challengeId }
+          : {})}
+        mode="spaced-review"
+        reviewUnavailable={!opportunity.ok}
+      />
+    );
+  }
   const initialChallengeId = concept && getExplainItBackChallenge(concept) ? concept : undefined;
   return initialChallengeId ? (
     <ExplainItBackExperience initialChallengeId={initialChallengeId} />

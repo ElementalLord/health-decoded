@@ -3,7 +3,7 @@ import {
   type UniversalSearchDocument,
 } from "@/features/universal-search/types/universal-search";
 
-const allowedRoute = /^\/(?:ai|appointment-prep|caregiver(?:\/modules\/[a-z0-9-]+)?|glossary|journey|lessons\/[1-9][0-9]*|milestones|myth-check|profile|progress|resources|settings|stories(?:\/[a-z0-9-]+)?)$/;
+const allowedRoute = /^\/(?:ai|appointment-prep|caregiver(?:\/modules\/[a-z0-9-]+)?|explain-it-back\?mode=spaced-review|glossary|journey|lessons\/[1-9][0-9]*|milestones|myth-check|profile|progress|resources|settings|stories(?:\/[a-z0-9-]+)?)$/;
 
 export function validateSearchDocuments(documents: readonly UniversalSearchDocument[]) {
   const ids = new Set<string>();

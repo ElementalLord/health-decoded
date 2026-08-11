@@ -7,7 +7,8 @@ export type NextStepRecommendation = {
     | "appointment-prep"
     | "trusted-resource"
     | "glossary"
-    | "concept-practice";
+    | "concept-practice"
+    | "spaced-review";
   title: string;
   reason: string;
   actionLabel: string;
@@ -32,5 +33,6 @@ export type RecommendationProgress = {
   earnedMilestoneIds: ReadonlySet<string>;
   lastDismissed: { id: string; date: string } | null;
   recentCompletedLessonId?: string;
+  hasDueSpacedReview?: boolean;
   today: string;
 };

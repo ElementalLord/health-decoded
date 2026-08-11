@@ -1,0 +1,20 @@
+export const spacedReviewConfig = {
+  initialIntervalDays: 3,
+  successIntervalsDays: [7, 14, 30, 60],
+  retrySuccessIntervalDays: 4,
+  almostThereIntervalDays: 2,
+  tryAgainIntervalDays: 1,
+  exampleViewedIntervalDays: 1,
+  minAutoPromptGapHours: 48,
+  maxAutoPromptsPer7Days: 3,
+  dismissSnoozeHours: 72,
+  journeyPromptDelayMs: 1_200,
+  scoring: {
+    overduePerDay: 10,
+    tryAgainPerformance: 60,
+    almostTherePerformance: 35,
+    neverReviewedPerformance: 20,
+    fewerSuccessPerStep: 4,
+    recentRepeatPenalty: 25,
+  },
+} as const;

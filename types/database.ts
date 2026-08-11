@@ -862,6 +862,60 @@ export type Database = {
         };
         Relationships: [];
       };
+      user_spaced_review_state: {
+        Row: {
+          automatic_prompt_history: string[];
+          challenge_id: string;
+          created_at: string;
+          dismissed_until: string | null;
+          last_example_session_id: string | null;
+          last_prompt_token: string | null;
+          last_prompted_at: string | null;
+          last_result_token: string | null;
+          last_reviewed_at: string | null;
+          last_verdict: string | null;
+          learned_at: string;
+          next_due_at: string;
+          successful_review_count: number;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          automatic_prompt_history?: string[];
+          challenge_id: string;
+          created_at?: string;
+          dismissed_until?: string | null;
+          last_example_session_id?: string | null;
+          last_prompt_token?: string | null;
+          last_prompted_at?: string | null;
+          last_result_token?: string | null;
+          last_reviewed_at?: string | null;
+          last_verdict?: string | null;
+          learned_at: string;
+          next_due_at: string;
+          successful_review_count?: number;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          automatic_prompt_history?: string[];
+          challenge_id?: string;
+          created_at?: string;
+          dismissed_until?: string | null;
+          last_example_session_id?: string | null;
+          last_prompt_token?: string | null;
+          last_prompted_at?: string | null;
+          last_result_token?: string | null;
+          last_reviewed_at?: string | null;
+          last_verdict?: string | null;
+          learned_at?: string;
+          next_due_at?: string;
+          successful_review_count?: number;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       user_settings: {
         Row: {
           created_at: string;
@@ -960,6 +1014,14 @@ export type Database = {
           timezone: string;
         }[];
       };
+      initialize_spaced_review_from_lessons: {
+        Args: never;
+        Returns: number;
+      };
+      record_explain_it_back_learning: {
+        Args: { p_challenge_id: string };
+        Returns: boolean;
+      };
       record_learning_activity: {
         Args: { p_event_type: string };
         Returns: {
@@ -970,6 +1032,28 @@ export type Database = {
           pending_notice: string | null;
           timezone: string;
         }[];
+      };
+      record_spaced_review_example: {
+        Args: { p_challenge_id: string; p_session_id: string };
+        Returns: boolean;
+      };
+      record_spaced_review_prompt: {
+        Args: { p_challenge_id: string; p_prompt_token: string };
+        Returns: boolean;
+      };
+      record_spaced_review_result: {
+        Args: {
+          p_challenge_id: string;
+          p_example_viewed: boolean;
+          p_had_retry: boolean;
+          p_result_token: string;
+          p_verdict: string;
+        };
+        Returns: boolean;
+      };
+      snooze_spaced_review_prompts: {
+        Args: { p_challenge_id: string };
+        Returns: boolean;
       };
       save_lesson_block_position: {
         Args: { p_block_index: number; p_lesson_progress_id: string };

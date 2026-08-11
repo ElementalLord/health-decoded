@@ -10,7 +10,8 @@ declare
     'profiles', 'user_settings', 'journeys', 'lessons', 'journey_lessons',
     'activities', 'activity_answer_keys', 'medications', 'patient_stories',
     'caregiver_content', 'user_journeys', 'lesson_progress', 'activity_progress',
-    'confidence_check_ins', 'reflection_entries', 'ai_conversations', 'ai_messages'
+    'confidence_check_ins', 'reflection_entries', 'ai_conversations', 'ai_messages',
+    'user_spaced_review_state'
   ];
 begin
   if (
@@ -191,6 +192,27 @@ begin
   ) then
     raise exception 'Activity progress writes must remain limited to trusted evaluation operations';
   end if;
+
+  if has_table_privilege('authenticated', 'public.user_spaced_review_state', 'insert')
+    or has_table_privilege('authenticated', 'public.user_spaced_review_state', 'update')
+    or has_table_privilege('authenticated', 'public.user_spaced_review_state', 'delete') then
+    raise exception 'Spaced Review state writes must remain limited to validated functions';
+  end if;
+
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'public'
+      and tablename = 'user_spaced_review_state'
+      and cmd = 'SELECT'
+      and qual like '%auth.uid()%user_id%'
+  ) then
+    raise exception 'Users must only read their own Spaced Review state';
+  end if;
+
+  if has_function_privilege('anon', 'public.record_spaced_review_result(text,text,boolean,boolean,uuid)', 'execute')
+    or not has_function_privilege('authenticated', 'public.record_spaced_review_result(text,text,boolean,boolean,uuid)', 'execute') then
+    raise exception 'Spaced Review result privileges are not restricted correctly';
+  end if;
 end;
 $$;
 
@@ -214,5 +236,8 @@ $$;
 -- 17. First completion stores exactly 75 XP; repeated and concurrent completion requests add no XP.
 -- 18. Completion advances only to the immediate published assignment after prerequisite validation.
 -- 19. The final assignment marks the journey complete only after every published assignment is complete.
+-- 20. User A cannot read or mutate User B's Spaced Review state.
+-- 21. Repeated Spaced Review result tokens update scheduling exactly once.
+-- 22. Unknown challenge IDs and arbitrary verdict values are rejected.
 
 rollback;

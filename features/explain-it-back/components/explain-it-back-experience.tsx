@@ -11,20 +11,26 @@ import {
 } from "@/features/explain-it-back/content/explain-it-back-content";
 import { hasUsefulExplanation } from "@/features/explain-it-back/services/explain-it-back-evaluator";
 import type { ExplainFeedback } from "@/features/explain-it-back/types/explain-it-back";
+import { recordSpacedReviewExampleAction } from "@/features/spaced-review/actions/spaced-review.actions";
 
 import styles from "../styles/explain-it-back.module.css";
 
 type Phase = "intro" | "browse" | "challenge";
 type EvaluationResponse =
-  | { status: "evaluated"; feedback: ExplainFeedback }
+  | { status: "evaluated"; feedback: ExplainFeedback; reviewRecorded?: boolean }
   | { status: "safety"; message: string; personalMedicalContent: boolean };
+type EvaluationFailure = { kind: "auth" | "request" | "timeout"; message: string };
 
 const groups = ["Foundations", "Food & labels"] as const;
 
 export function ExplainItBackExperience({
   initialChallengeId,
+  mode = "practice",
+  reviewUnavailable = false,
 }: {
   readonly initialChallengeId?: string;
+  readonly mode?: "practice" | "spaced-review";
+  readonly reviewUnavailable?: boolean;
 }) {
   const [phase, setPhase] = useState<Phase>(initialChallengeId ? "challenge" : "intro");
   const [challengeId, setChallengeId] = useState<string | null>(initialChallengeId ?? null);
@@ -33,17 +39,26 @@ export function ExplainItBackExperience({
   const [safetyMessage, setSafetyMessage] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
   const [showExample, setShowExample] = useState(false);
+  const [exampleViewed, setExampleViewed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<EvaluationFailure | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const reviewSessionId = useRef<string | null>(null);
+  const resultToken = useRef<string | null>(null);
   const challenge = challengeId ? getExplainItBackChallenge(challengeId) : null;
   const useful = useMemo(() => hasUsefulExplanation(explanation), [explanation]);
 
   useEffect(() => {
     headingRef.current?.focus();
   }, [phase, challengeId]);
+
+  useEffect(() => {
+    if (mode === "spaced-review" && challengeId && !reviewSessionId.current) {
+      reviewSessionId.current = window.crypto.randomUUID();
+    }
+  }, [challengeId, mode]);
 
   useEffect(() => {
     if (feedback || safetyMessage || formError) feedbackRef.current?.focus();
@@ -57,6 +72,9 @@ export function ExplainItBackExperience({
     setFormError(null);
     setAttempts(0);
     setShowExample(false);
+    setExampleViewed(false);
+    resultToken.current = null;
+    reviewSessionId.current = mode === "spaced-review" ? window.crypto.randomUUID() : null;
     setPhase("challenge");
   }
 
@@ -83,15 +101,40 @@ export function ExplainItBackExperience({
     setSubmitting(true);
     setFormError(null);
     setSafetyMessage(null);
+    const controller = new AbortController();
+    let timedOut = false;
+    let controlledFailureMessage: string | null = null;
+    const timeoutTimer = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 25_000);
     try {
+      if (mode === "spaced-review" && !resultToken.current) resultToken.current = window.crypto.randomUUID();
       const response = await fetch("/api/explain-it-back/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ challengeId: challenge.id, explanation }),
+        body: JSON.stringify({
+          challengeId: challenge.id,
+          explanation,
+          mode,
+          hadRetry: attempts > 0,
+          exampleViewed,
+          ...(mode === "spaced-review" ? { resultToken: resultToken.current } : {}),
+        }),
+        signal: controller.signal,
       });
       const body = (await response.json()) as EvaluationResponse | { error?: { message?: string } };
+      if (response.status === 401) {
+        setFormError({
+          kind: "auth",
+          message: "Your session ended. Sign in again to continue. Your answer is still here.",
+        });
+        return;
+      }
       if (!response.ok || !("status" in body)) {
-        throw new Error("error" in body ? body.error?.message : undefined);
+        controlledFailureMessage =
+          "error" in body && typeof body.error?.message === "string" ? body.error.message : null;
+        throw new Error("evaluation_failed");
       }
       setAttempts((count) => count + 1);
       if (body.status === "safety") {
@@ -100,16 +143,51 @@ export function ExplainItBackExperience({
       } else {
         setSafetyMessage(null);
         setFeedback(body.feedback);
+        resultToken.current = null;
       }
-    } catch (error) {
-      setFormError(
-        error instanceof Error && error.message
-          ? error.message
-          : "I couldn't check that explanation right now. Your answer is still here, so you can try again.",
-      );
+    } catch {
+      setFormError({
+        kind: timedOut ? "timeout" : "request",
+        message: timedOut
+          ? "I couldn't check that explanation right now. Your answer is still here, so you can try again."
+          : (controlledFailureMessage ??
+            "I couldn't check that explanation right now. Your answer is still here, so you can try again."),
+      });
     } finally {
+      window.clearTimeout(timeoutTimer);
       setSubmitting(false);
     }
+  }
+
+  async function revealExample() {
+    setShowExample(true);
+    setExampleViewed(true);
+    if (mode === "spaced-review" && challenge && reviewSessionId.current) {
+      await recordSpacedReviewExampleAction({ challengeId: challenge.id, token: reviewSessionId.current });
+    }
+  }
+
+  if (mode === "spaced-review" && !initialChallengeId) {
+    return (
+      <main className={styles.page}>
+        <section className={styles.intro}>
+          <div className={styles.introCopy}>
+            <p className="editorial-eyebrow">A quick review</p>
+            <h1 ref={headingRef} tabIndex={-1}>
+              {reviewUnavailable ? "We couldn’t choose a review right now." : "Nothing to review yet."}
+            </h1>
+            <p className={styles.introduction}>
+              {reviewUnavailable
+                ? "Your Journey is still available. Try choosing a review again in a moment."
+                : "Once you’ve worked through a few concepts, Health Decoded will bring some of them back for a quick check-in."}
+            </p>
+            <Link className={styles.journeyLink} href="/journey">
+              {reviewUnavailable ? "Try again from Journey" : "Continue learning"} <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
   }
 
   if (phase === "intro") {
@@ -191,12 +269,20 @@ export function ExplainItBackExperience({
 
   return (
     <main className={styles.page}>
-      <button className={styles.back} onClick={chooseAnother} type="button">
-        <ArrowLeft aria-hidden="true" /> All concepts
-      </button>
+      {mode === "practice" ? (
+        <button className={styles.back} onClick={chooseAnother} type="button">
+          <ArrowLeft aria-hidden="true" /> All concepts
+        </button>
+      ) : (
+        <Link className={styles.back} href="/journey">
+          <ArrowLeft aria-hidden="true" /> Not now
+        </Link>
+      )}
       <div className={styles.challengeLayout}>
         <section aria-labelledby="challenge-title" className={styles.challenge}>
-          <p className="editorial-eyebrow">Explain It Back · Concept</p>
+          <p className="editorial-eyebrow">
+            {mode === "spaced-review" ? "Quick review" : "Explain It Back · Concept"}
+          </p>
           <h1 id="challenge-title" ref={headingRef} tabIndex={-1}>
             {challenge.title}
           </h1>
@@ -251,10 +337,16 @@ export function ExplainItBackExperience({
               {formError ? (
                 <>
                   <p className={styles.feedbackLabel}>Your answer is still here.</p>
-                  <p>{formError}</p>
-                  <Button fullWidth={false} onClick={() => void submit()} variant="secondary">
-                    Try checking again
-                  </Button>
+                  <p>{formError.message}</p>
+                  {formError.kind === "auth" ? (
+                    <Link className={styles.journeyLink} href="/login?next=/explain-it-back">
+                      Sign in <ArrowRight aria-hidden="true" />
+                    </Link>
+                  ) : (
+                    <Button fullWidth={false} onClick={() => void submit()} variant="secondary">
+                      Try checking again
+                    </Button>
+                  )}
                 </>
               ) : safetyMessage ? (
                 <>
@@ -309,10 +401,17 @@ export function ExplainItBackExperience({
                       explaining the concept itself without using your own numbers.
                     </p>
                   ) : null}
+                  {mode === "spaced-review" ? (
+                    <p className={styles.personalNote}>
+                      {feedback.verdict === "got_it"
+                        ? "We’ll bring this concept back again later."
+                        : "We’ll bring this idea back again soon."}
+                    </p>
+                  ) : null}
                   <div className={styles.feedbackActions}>
                     {feedback.verdict === "got_it" ? (
                       <Link className={styles.journeyLink} href="/journey">
-                        Back to Journey <ArrowRight aria-hidden="true" />
+                        {mode === "spaced-review" ? "Done" : "Back to Journey"} <ArrowRight aria-hidden="true" />
                       </Link>
                     ) : (
                       <Button fullWidth={false} onClick={retry}>
@@ -320,7 +419,7 @@ export function ExplainItBackExperience({
                       </Button>
                     )}
                     {canShowExample && !showExample ? (
-                      <Button fullWidth={false} onClick={() => setShowExample(true)} variant="text">
+                      <Button fullWidth={false} onClick={() => void revealExample()} variant="text">
                         See an example explanation
                       </Button>
                     ) : null}
@@ -337,9 +436,13 @@ export function ExplainItBackExperience({
                     <Button fullWidth={false} onClick={retry} variant="secondary">
                       Try again
                     </Button>
-                    <Button fullWidth={false} onClick={chooseAnother} variant="text">
-                      Choose another concept
-                    </Button>
+                    {mode === "practice" ? (
+                      <Button fullWidth={false} onClick={chooseAnother} variant="text">
+                        Choose another concept
+                      </Button>
+                    ) : (
+                      <Link className={styles.journeyLink} href="/journey">Done</Link>
+                    )}
                   </div>
                 </section>
               ) : null}
