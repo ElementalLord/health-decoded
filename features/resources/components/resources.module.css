@@ -2,9 +2,9 @@
   --editorial-ink: var(--foreground);
   --editorial-body: #5f534d;
   --editorial-soft: #796c63;
-  --editorial-sage: #f2f6f1;
-  --editorial-sky: #f1f5f7;
-  --editorial-apricot: #f8f3ed;
+  --editorial-sage: #e5efe8;
+  --editorial-sky: #e7eef3;
+  --editorial-apricot: #f5eade;
   color: var(--editorial-body);
 }
 
@@ -526,16 +526,24 @@
 }
 
 .pathCard {
-  background: transparent;
+  background: var(--editorial-sage);
   border: 0;
   border-radius: 0;
   display: grid;
   gap: 0.55rem;
   grid-template-columns: 1fr auto;
-  padding: 0.85rem;
+  padding: 1rem;
   transition:
     background-color 160ms ease,
     transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.pathCard:nth-child(3n + 2) {
+  background: var(--editorial-sky);
+}
+
+.pathCard:nth-child(3n) {
+  background: var(--editorial-apricot);
 }
 
 .pathCard > svg:first-child {

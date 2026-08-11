@@ -136,7 +136,7 @@ test("supporting features balance landscape media with adjacent copy", () => {
 });
 
 test("the reading room uses open editorial rows instead of repeated boxes", () => {
-  assert.match(styles, /\.pathCard \{\s+background: transparent;\s+border: 0;/);
+  assert.match(styles, /\.pathCard \{\s+background: var\(--editorial-sage\);\s+border: 0;/);
   assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
   assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-sky\);/);
   assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
@@ -154,6 +154,8 @@ test("resource groups use barely-there card tints without repeated divider lines
   assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: var\(--editorial-sky\);/);
   assert.doesNotMatch(styles, /border-(?:top|bottom|left|right|block):/);
   assert.match(styles, /\.wideFeature \{\s+background: var\(--editorial-sage\);/);
+  assert.match(styles, /\.pathCard:nth-child\(3n \+ 2\) \{\s+background: var\(--editorial-sky\);/);
+  assert.match(styles, /\.pathCard:nth-child\(3n\) \{\s+background: var\(--editorial-apricot\);/);
 });
 
 test("masthead stays proportionate and guide actions remain clear without colored buttons", () => {
@@ -170,9 +172,9 @@ test("masthead stays proportionate and guide actions remain clear without colore
 
 test("the resources palette keeps color as a faint card treatment", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-sage: #f2f6f1;/);
-  assert.match(styles, /--editorial-sky: #f1f5f7;/);
-  assert.match(styles, /--editorial-apricot: #f8f3ed;/);
+  assert.match(styles, /--editorial-sage: #e5efe8;/);
+  assert.match(styles, /--editorial-sky: #e7eef3;/);
+  assert.match(styles, /--editorial-apricot: #f5eade;/);
   assert.match(styles, /\.readGuide \{[\s\S]*background: transparent;/);
   assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-sky\);/);
   assert.doesNotMatch(styles, /accent-warm/);
