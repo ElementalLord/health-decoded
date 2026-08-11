@@ -148,7 +148,7 @@ test("the reading room gives open editorial rows a quiet neutral boundary", () =
   assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
   assert.match(
     styles,
-    /\.dailyLivingGrid \.leadArticle,[\s\S]*\.confidenceGrid \.supportFeature \{\s+background: transparent;\s+border: 1px solid color-mix\(in srgb, var\(--editorial-soft\) 32%, transparent\);/,
+    /\.dailyLivingGrid \.leadArticle,[\s\S]*\.checklistGrid \.checklistArticle,[\s\S]*\.confidenceGrid \.supportFeature \{\s+background: transparent;\s+border: 1px solid color-mix\(in srgb, var\(--editorial-soft\) 32%, transparent\);/,
   );
   assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-blush\);/);
   assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
