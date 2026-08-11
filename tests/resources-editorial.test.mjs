@@ -119,15 +119,24 @@ test("the visual hierarchy keeps articles larger and more explicit than supporti
   assert.doesNotMatch(styles, /\.meta \{[^}]*margin-top: auto/s);
 });
 
-test("the reading room uses restrained corners, responsive layouts, and motion-safe feedback", () => {
-  assert.match(styles, /border-radius: (?:2|3)px/);
-  assert.doesNotMatch(styles, /border-radius: (?:7|8|9|10)px/);
+test("the reading room uses open editorial rows instead of repeated boxes", () => {
+  assert.match(styles, /\.pathCard \{\s+background: transparent;\s+border: 0;\s+border-top:/);
+  assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
+  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-wash\);\s+border-block:/);
+  assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
   assert.match(styles, /@media \(max-width: 34rem\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(styles, /focus-visible/);
   assert.match(styles, /transform: translate\(2px, -2px\)/);
+});
+
+test("the resources palette follows the product's warm design tokens", () => {
+  assert.match(styles, /--editorial-ink: var\(--foreground\)/);
+  assert.match(styles, /--editorial-coral: var\(--accent-warm\)/);
+  assert.match(styles, /--editorial-wash: var\(--secondary\)/);
+  assert.doesNotMatch(styles, /#(?:365b51|365f56|345f55|3f6258)/i);
 });
 
 test("article treatments avoid decorative bubble icons", () => {
