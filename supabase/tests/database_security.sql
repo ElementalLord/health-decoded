@@ -3,6 +3,7 @@
 -- local Auth fixtures and must be added before production schema promotion.
 
 begin;
+select plan(1);
 
 do $$
 declare
@@ -11,7 +12,8 @@ declare
     'activities', 'activity_answer_keys', 'medications', 'patient_stories',
     'caregiver_content', 'user_journeys', 'lesson_progress', 'activity_progress',
     'confidence_check_ins', 'reflection_entries', 'ai_conversations', 'ai_messages',
-    'user_spaced_review_state'
+    'user_milestones', 'user_learning_streaks', 'user_learning_activity_days',
+    'user_next_step_preferences', 'user_spaced_review_state'
   ];
 begin
   if (
@@ -215,6 +217,9 @@ begin
   end if;
 end;
 $$;
+
+select pass('database security metadata assertions passed');
+select * from finish();
 
 -- Pending JWT integration assertions after local Auth is available:
 -- 1. User A cannot read User B's profile, progress, or reflections.

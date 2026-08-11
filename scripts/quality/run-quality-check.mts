@@ -9,6 +9,8 @@ import * as regressionChecks from "./check-regressions.mts";
 // @ts-expect-error -- Node's built-in TypeScript runner requires explicit extensions.
 import { checkRoutes } from "./check-routes.mts";
 // @ts-expect-error -- Node's built-in TypeScript runner requires explicit extensions.
+import { checkSecurity } from "./check-security.mts";
+// @ts-expect-error -- Node's built-in TypeScript runner requires explicit extensions.
 import { qualityConfig } from "./quality.config.mts";
 import type { QualityChecker, QualityIssue } from "./types.mts";
 
@@ -23,6 +25,7 @@ const checkers: Array<{ name: string; run: QualityChecker }> = [
   { name: "spaced-review", run: checkSpacedReview },
   { name: "reliability", run: checkReliability },
   { name: "protected", run: checkProtectedContent },
+  { name: "security", run: checkSecurity },
 ];
 
 const args = process.argv.slice(2);
