@@ -136,23 +136,20 @@ test("supporting features balance landscape media with adjacent copy", () => {
 });
 
 test("the reading room uses open editorial rows instead of repeated boxes", () => {
-  assert.match(styles, /\.pathCard \{\s+background: transparent;\s+border: 0;\s+border-top:/);
+  assert.match(styles, /\.pathCard \{\s+background: transparent;\s+border: 0;/);
   assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
-  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-wash\);\s+border-block:/);
+  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-wash\);/);
   assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
   assert.match(styles, /@media \(max-width: 34rem\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(styles, /focus-visible/);
-  assert.match(styles, /transform: translate\(2px, -2px\)/);
+  assert.match(styles, /transform: translateY\(-1px\)/);
 });
 
-test("resource groups use flat tonal hierarchy without vertical accent rules", () => {
-  assert.match(
-    styles,
-    /\.newHereGrid \{[\s\S]*border-block: 1px solid var\(--editorial-rule-strong\);/,
-  );
+test("resource groups use calm tonal hierarchy without repeated divider lines", () => {
+  assert.match(styles, /\.newHereGrid \{\s+background: color-mix\(/);
   assert.match(
     styles,
     /\.newHereGrid \.leadArticle \{\s+background: color-mix\(in srgb, var\(--editorial-wash\) 72%, transparent\);/,
@@ -161,28 +158,31 @@ test("resource groups use flat tonal hierarchy without vertical accent rules", (
     styles,
     /\.newHereGrid \.compactArticle \{\s+background: color-mix\(in srgb, var\(--card\) 58%, transparent\);/,
   );
-  assert.doesNotMatch(styles, /border-left:/);
-  assert.doesNotMatch(styles, /border-right:/);
-  assert.match(styles, /\.wideFeature \{[\s\S]*border-top: 2px solid var\(--editorial-coral\);/);
+  assert.doesNotMatch(styles, /border-(?:top|bottom|left|right|block):/);
+  assert.match(styles, /\.wideFeature \{\s+background: color-mix\(/);
 });
 
-test("masthead and resource rules keep the editorial layout proportionate and visible", () => {
+test("masthead stays proportionate and one neutral action remains visually primary", () => {
   assert.match(
     styles,
     /\.mastheadCopy \{[\s\S]*grid-template-columns: minmax\(0, 1\.05fr\) minmax\(24rem, 0\.95fr\);/,
   );
   assert.match(styles, /font-size: clamp\(2\.75rem, 4\.8vw, 4\.25rem\);/);
-  assert.match(styles, /--editorial-rule-strong: color-mix\(/);
+  assert.match(styles, /\.readGuide \{[\s\S]*background: color-mix\(/);
   assert.match(
     styles,
-    /\.featuredLead,[\s\S]*\.photoInterlude \{\s+border-bottom: 1px solid var\(--editorial-rule-strong\);/,
+    /article:hover \.readGuide \{\s+background: var\(--editorial-ink\);\s+color: var\(--background\);/,
   );
+  assert.match(styles, /\.externalArrow \{\s+display: none;/);
+  assert.match(styles, /\.articleLabel::before \{\s+content: none;/);
 });
 
-test("the resources palette follows the product's warm design tokens", () => {
+test("the resources palette uses calm neutrals instead of repeated orange accents", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-coral: var\(--accent-warm\)/);
+  assert.match(styles, /--editorial-coral: color-mix\(in srgb, var\(--foreground\)/);
   assert.match(styles, /--editorial-wash: var\(--secondary\)/);
+  assert.doesNotMatch(styles, /accent-warm/);
+  assert.doesNotMatch(styles, /#b96c55/i);
   assert.doesNotMatch(styles, /#(?:365b51|365f56|345f55|3f6258)/i);
 });
 

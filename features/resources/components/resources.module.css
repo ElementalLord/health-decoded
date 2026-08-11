@@ -2,22 +2,18 @@
   --editorial-ink: var(--foreground);
   --editorial-body: #625750;
   --editorial-soft: var(--muted-foreground);
-  --editorial-rule: var(--border);
-  --editorial-coral: var(--accent-warm);
-  --editorial-rule-strong: color-mix(in srgb, var(--editorial-coral) 62%, var(--editorial-rule));
+  --editorial-coral: color-mix(in srgb, var(--foreground) 52%, var(--muted-foreground));
   --editorial-paper: transparent;
   --editorial-wash: var(--secondary);
   color: var(--editorial-body);
 }
 
 .masthead {
-  border-bottom: 1px solid var(--editorial-rule);
   padding: 0.5rem 0 2.5rem;
 }
 
 .mastheadRule {
   align-items: center;
-  border-bottom: 1px solid var(--editorial-rule);
   color: var(--editorial-soft);
   display: flex;
   font-size: 0.68rem;
@@ -51,9 +47,7 @@
 }
 
 .mastheadCopy > div {
-  border-top: 2px solid var(--editorial-coral);
   max-width: 42rem;
-  padding-top: 1rem;
 }
 
 .mastheadCopy > div > p {
@@ -75,7 +69,6 @@
 
 .internalTools {
   align-items: center;
-  border-bottom: 1px solid var(--editorial-rule);
   display: grid;
   gap: 1.25rem 2.5rem;
   grid-template-columns: minmax(14rem, 0.72fr) minmax(28rem, 1.28fr);
@@ -123,12 +116,13 @@
 
 .toolLinks > a {
   align-items: center;
-  border-block: 1px solid var(--editorial-rule);
+  background: color-mix(in srgb, var(--editorial-wash) 62%, transparent);
+  border-radius: 0.5rem;
   color: var(--editorial-ink);
   display: grid;
   gap: 0.7rem;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  padding: 0.85rem 0;
+  padding: 0.85rem;
   transition:
     color 160ms cubic-bezier(0.23, 1, 0.32, 1),
     transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
@@ -160,7 +154,6 @@
 
 .readingRecord {
   background: var(--editorial-wash);
-  border-top: 3px solid var(--editorial-coral);
   margin-top: 1.25rem;
   padding: 1rem 1.2rem;
 }
@@ -281,7 +274,6 @@
 .photoInterlude {
   background: var(--editorial-paper);
   border: 0;
-  border-top: 1px solid var(--editorial-rule-strong);
   border-radius: 0;
   position: relative;
 }
@@ -292,21 +284,8 @@
 .compactArticle,
 .wideFeature,
 .checklistArticle,
-.supportFeature,
-.photoInterlude {
-  border-bottom: 1px solid var(--editorial-rule-strong);
-}
-
-.featuredLead,
-.featuredSide,
-.leadArticle,
-.compactArticle,
-.wideFeature,
-.checklistArticle,
 .supportFeature {
-  transition:
-    background-color 160ms ease,
-    border-color 160ms ease;
+  transition: background-color 160ms ease;
 }
 
 .featuredLink {
@@ -417,7 +396,7 @@
 
 .articleLabel {
   align-items: center;
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   display: flex;
   font-size: 0.64rem;
   font-weight: 760;
@@ -428,36 +407,32 @@
 }
 
 .articleLabel::before {
-  background: var(--editorial-coral);
-  content: "";
-  height: 1px;
-  width: 0.9rem;
+  content: none;
 }
 
 .readGuide {
   align-items: center;
   align-self: flex-start;
-  color: var(--editorial-coral);
+  background: color-mix(in srgb, var(--editorial-ink) 9%, transparent);
+  border-radius: 0.4rem;
+  color: var(--editorial-ink);
   display: inline-flex;
   font-size: 0.67rem;
   font-weight: 780;
   gap: 0.3rem;
   letter-spacing: 0.065em;
   margin: 0 0 0.8rem;
-  padding-bottom: 0.18rem;
+  padding: 0.48rem 0.62rem;
   position: relative;
   text-transform: uppercase;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .readGuide::after {
-  background: var(--editorial-coral);
-  bottom: 0;
-  content: "";
-  height: 1px;
-  left: 0;
-  position: absolute;
-  transition: width 160ms cubic-bezier(0.23, 1, 0.32, 1);
-  width: 2.1rem;
+  content: none;
 }
 
 .meta {
@@ -505,13 +480,7 @@
 }
 
 .externalArrow {
-  color: var(--editorial-soft);
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  transition:
-    color 160ms ease,
-    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  display: none;
 }
 
 .featuredCopy .externalArrow {
@@ -520,8 +489,7 @@
 }
 
 .pathSection {
-  border-bottom: 1px solid var(--editorial-rule);
-  border-top: 1px solid var(--editorial-rule);
+  background: color-mix(in srgb, var(--editorial-wash) 46%, transparent);
   padding: 2rem 0 2.2rem;
 }
 
@@ -540,7 +508,6 @@
 .pathCard {
   background: transparent;
   border: 0;
-  border-top: 1px solid var(--editorial-rule);
   border-radius: 0;
   display: grid;
   gap: 0.55rem;
@@ -548,12 +515,11 @@
   padding: 0.85rem;
   transition:
     background-color 160ms ease,
-    border-color 160ms ease,
     transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .pathCard > svg:first-child {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   grid-column: 1 / -1;
 }
 
@@ -564,7 +530,7 @@
 }
 
 .pathCard span {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   font-size: 0.61rem;
   font-weight: 760;
   letter-spacing: 0.09em;
@@ -595,7 +561,6 @@
 
 .sectionHeading {
   align-items: end;
-  border-bottom: 1px solid var(--editorial-rule);
   display: grid;
   gap: 0.8rem 1.75rem;
   grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.62fr) auto;
@@ -636,14 +601,8 @@
 
 .newHereGrid {
   background: color-mix(in srgb, var(--editorial-wash) 48%, transparent);
-  border-block: 1px solid var(--editorial-rule-strong);
   gap: 0;
   grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
-}
-
-.newHereGrid .leadArticle,
-.newHereGrid .compactArticle {
-  border-top: 0;
 }
 
 .newHereGrid .leadArticle {
@@ -668,7 +627,7 @@
 }
 
 .articleNumber {
-  color: color-mix(in srgb, var(--editorial-coral) 82%, white);
+  color: color-mix(in srgb, var(--editorial-ink) 34%, transparent);
   font-family: var(--font-serif);
   font-size: 3.2rem;
   font-weight: 350;
@@ -715,7 +674,6 @@
 
 .sourceNote {
   background: var(--editorial-wash);
-  border-block: 1px solid var(--editorial-rule);
   border-radius: 0;
   color: var(--editorial-body);
   display: grid;
@@ -732,13 +690,13 @@
 }
 
 .sourceNoteIntro > svg {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   grid-row: 1 / 3;
   margin-right: 0.75rem;
 }
 
 .sourceNoteIntro > p {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
 }
 
 .sourceNoteIntro h2 {
@@ -754,8 +712,7 @@
 }
 
 .sourceExplanation > div {
-  border-top: 1px solid var(--editorial-rule);
-  padding-top: 0.8rem;
+  padding-top: 0.25rem;
 }
 
 .sourceExplanation span {
@@ -773,7 +730,6 @@
 }
 
 .sourceNoteFooter {
-  border-top: 1px solid var(--editorial-rule);
   color: var(--editorial-soft);
   font-size: 0.65rem;
   grid-column: 1 / -1;
@@ -783,7 +739,6 @@
 
 .wideFeature {
   background: color-mix(in srgb, var(--editorial-wash) 58%, transparent);
-  border-top: 2px solid var(--editorial-coral);
   margin-bottom: 1rem;
 }
 
@@ -857,10 +812,6 @@
   grid-row: 3;
 }
 
-.checklistArticle {
-  border-top: 1px solid var(--editorial-rule-strong);
-}
-
 .checklistArticle > a {
   display: block;
   height: 100%;
@@ -888,7 +839,7 @@
 }
 
 .checkNote {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   font-size: 0.62rem;
   font-weight: 780;
   letter-spacing: 0.09em;
@@ -930,7 +881,7 @@
 }
 
 .photoInterlude figcaption > p {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   font-size: 0.64rem;
   font-weight: 760;
   letter-spacing: 0.11em;
@@ -957,7 +908,6 @@
 
 .disclaimer {
   align-items: start;
-  border-top: 1px solid var(--editorial-rule);
   color: var(--editorial-soft);
   display: flex;
   font-size: 0.74rem;
@@ -968,7 +918,7 @@
 }
 
 .disclaimer svg {
-  color: var(--editorial-coral);
+  color: var(--editorial-soft);
   flex: 0 0 auto;
 }
 
@@ -986,16 +936,13 @@
   .checklistArticle:hover,
   .supportFeature:hover,
   .pathCard:hover {
-    border-color: var(--editorial-coral);
+    background-color: color-mix(in srgb, var(--editorial-wash) 72%, transparent);
   }
 
-  article:hover .externalArrow {
-    color: var(--editorial-coral);
-    transform: translate(2px, -2px);
-  }
-
-  article:hover .readGuide::after {
-    width: 100%;
+  article:hover .readGuide {
+    background: var(--editorial-ink);
+    color: var(--background);
+    transform: translateY(-1px);
   }
 
   article:hover .readingTime {
@@ -1052,10 +999,6 @@
   .toolLinks {
     gap: 0;
     grid-template-columns: 1fr;
-  }
-
-  .toolLinks > a + a {
-    border-top: 0;
   }
 
   .readingRecordHeading {
@@ -1151,11 +1094,6 @@
     padding: 1.35rem 2.75rem 1.4rem 1.3rem;
   }
 
-  .articlePhoto,
-  .photoInterlude > div {
-    border-bottom: 1px solid var(--editorial-rule);
-  }
-
   .disclaimer {
     margin-top: 3rem;
   }
@@ -1201,7 +1139,7 @@
   .pathCard,
   .toolLinks > a,
   .externalArrow,
-  .readGuide::after,
+  .readGuide,
   .readingRecordTrack > span,
   .readingTime {
     transition: none;
