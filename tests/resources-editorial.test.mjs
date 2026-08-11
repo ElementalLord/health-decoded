@@ -112,7 +112,15 @@ test("the visual hierarchy keeps articles larger and more explicit than supporti
   assert.doesNotMatch(styles, /\.featuredLead::after/);
   assert.match(
     styles,
-    /\.healthGrid > \.compactArticle:last-child,\s+\.confidenceGrid \.supportFeature \{\s+grid-column: 1 \/ -1;/,
+    /\.healthGrid > \.compactArticle:last-child,\s+\.confidenceGrid \.supportFeature \{[\s\S]*grid-column: 1 \/ -1;/,
+  );
+  assert.match(
+    styles,
+    /\.healthGrid > \.compactArticle:last-child,\s+\.confidenceGrid \.supportFeature \{[\s\S]*border: 1px solid color-mix\(in srgb, var\(--editorial-soft\) 32%, transparent\);/,
+  );
+  assert.match(
+    styles,
+    /\.healthGrid > \.compactArticle:last-child > a,\s+\.confidenceGrid \.supportFeature > a \{[\s\S]*row-gap: 1\.15rem;/,
   );
   assert.match(styles, /\.photoInterlude figcaption \{\s+align-self: stretch;/);
   assert.match(styles, /justify-content: center/);
@@ -138,7 +146,7 @@ test("supporting features balance landscape media with adjacent copy", () => {
 test("the reading room uses open editorial rows instead of repeated boxes", () => {
   assert.match(styles, /\.pathCard \{\s+background: var\(--editorial-sage\);\s+border: 0;/);
   assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
-  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-sky\);/);
+  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-blush\);/);
   assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
@@ -151,10 +159,13 @@ test("the reading room uses open editorial rows instead of repeated boxes", () =
 test("resource groups use barely-there card tints without repeated divider lines", () => {
   assert.match(styles, /\.newHereGrid \{\s+background: var\(--editorial-apricot\);/);
   assert.match(styles, /\.newHereGrid \.leadArticle \{\s+background: var\(--editorial-sage\);/);
-  assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: var\(--editorial-sky\);/);
+  assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: var\(--editorial-blush\);/);
   assert.doesNotMatch(styles, /border-(?:top|bottom|left|right|block):/);
   assert.match(styles, /\.wideFeature \{\s+background: var\(--editorial-sage\);/);
-  assert.match(styles, /\.pathCard:nth-child\(3n \+ 2\) \{\s+background: var\(--editorial-sky\);/);
+  assert.match(
+    styles,
+    /\.pathCard:nth-child\(3n \+ 2\) \{\s+background: var\(--editorial-blush\);/,
+  );
   assert.match(styles, /\.pathCard:nth-child\(3n\) \{\s+background: var\(--editorial-apricot\);/);
 });
 
@@ -173,10 +184,10 @@ test("masthead stays proportionate and guide actions remain clear without colore
 test("the resources palette keeps color as a faint card treatment", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
   assert.match(styles, /--editorial-sage: #e5efe8;/);
-  assert.match(styles, /--editorial-sky: #e7eef3;/);
+  assert.match(styles, /--editorial-blush: #f1e5df;/);
   assert.match(styles, /--editorial-apricot: #f5eade;/);
   assert.match(styles, /\.readGuide \{[\s\S]*background: transparent;/);
-  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-sky\);/);
+  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-blush\);/);
   assert.doesNotMatch(styles, /accent-warm/);
   assert.doesNotMatch(styles, /#b96c55/i);
   assert.doesNotMatch(styles, /#(?:365b51|365f56|345f55|3f6258)/i);

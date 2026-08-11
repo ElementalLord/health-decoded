@@ -3,7 +3,7 @@
   --editorial-body: #5f534d;
   --editorial-soft: #796c63;
   --editorial-sage: #e5efe8;
-  --editorial-sky: #e7eef3;
+  --editorial-blush: #f1e5df;
   --editorial-apricot: #f5eade;
   color: var(--editorial-body);
 }
@@ -129,7 +129,7 @@
 }
 
 .toolLinks > a:nth-child(2) {
-  background: var(--editorial-sky);
+  background: var(--editorial-blush);
 }
 
 .toolLinks > a:nth-child(3) {
@@ -161,7 +161,7 @@
 }
 
 .readingRecord {
-  background: var(--editorial-sky);
+  background: var(--editorial-blush);
   margin-top: 1.25rem;
   padding: 1rem 1.2rem;
 }
@@ -287,7 +287,7 @@
 }
 
 .featuredLead {
-  background: var(--editorial-sky);
+  background: var(--editorial-blush);
 }
 
 .featuredSide {
@@ -539,7 +539,7 @@
 }
 
 .pathCard:nth-child(3n + 2) {
-  background: var(--editorial-sky);
+  background: var(--editorial-blush);
 }
 
 .pathCard:nth-child(3n) {
@@ -638,7 +638,7 @@
 }
 
 .newHereGrid .compactArticle {
-  background: var(--editorial-sky);
+  background: var(--editorial-blush);
 }
 
 .dailyLivingGrid {
@@ -701,7 +701,7 @@
 }
 
 .sourceNote {
-  background: var(--editorial-sky);
+  background: var(--editorial-blush);
   border-radius: 0;
   color: var(--editorial-body);
   display: grid;
@@ -798,6 +798,8 @@
 
 .healthGrid > .compactArticle:last-child,
 .confidenceGrid .supportFeature {
+  background: var(--editorial-apricot);
+  border: 1px solid color-mix(in srgb, var(--editorial-soft) 32%, transparent);
   grid-column: 1 / -1;
 }
 
@@ -805,6 +807,7 @@
 .confidenceGrid .supportFeature > a {
   column-gap: clamp(1.5rem, 5vw, 4rem);
   display: grid;
+  row-gap: 1.15rem;
   grid-template-columns: minmax(13rem, 0.72fr) minmax(18rem, 1.28fr);
   grid-template-rows: auto auto auto;
 }
