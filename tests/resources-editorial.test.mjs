@@ -5,7 +5,6 @@ import test from "node:test";
 import { type2DiabetesResources } from "../content/resources/type-2-diabetes-resources.ts";
 
 const component = readFileSync("features/resources/components/resources.tsx", "utf8");
-const motion = readFileSync("features/resources/components/resource-motion-scenes.tsx", "utf8");
 const styles = readFileSync("features/resources/components/resources.module.css", "utf8");
 
 test("the reading room publishes 18 distinct reviewed guides", () => {
@@ -36,7 +35,6 @@ test("the page uses varied editorial treatments instead of a uniform card grid",
     "LeadArticle",
     "CompactArticle",
     "ChecklistArticle",
-    "Perspective",
     "SourceNote",
     "WideFeature",
     "SupportFeature",
@@ -54,10 +52,11 @@ test("the page uses varied editorial treatments instead of a uniform card grid",
   assert.match(component, /Living confidently/);
 });
 
-test("patient perspectives are transparent composites, not fabricated testimonials", () => {
-  assert.equal(component.split("<Perspective>").length - 1, 2);
-  assert.match(component, /Composite learner perspective/);
-  assert.match(component, /not an individual testimonial/);
+test("the page does not include testimonial or quotation panels", () => {
+  assert.doesNotMatch(component, /function Perspective\b/);
+  assert.doesNotMatch(component, /<blockquote>/);
+  assert.doesNotMatch(component, /Composite learner perspective/);
+  assert.doesNotMatch(component, /not an individual testimonial/);
 });
 
 test("editorial imagery is purposeful and production sized", () => {
@@ -78,6 +77,8 @@ test("editorial imagery is purposeful and production sized", () => {
 
   assert.match(styles, /object-fit: cover/);
   assert.doesNotMatch(styles, /object-fit: contain/);
+  assert.match(styles, /aspect-ratio: 16 \/ 10/);
+  assert.match(styles, /aspect-ratio: 3 \/ 2/);
 });
 
 test("article views persist locally and expose a clear completion record", () => {
@@ -88,46 +89,27 @@ test("article views persist locally and expose a clear completion record", () =>
   assert.match(component, /articles viewed/);
   assert.match(component, /Viewed/);
   assert.match(component, /Clear viewed history/);
+  assert.match(component, /transform: `scaleX\(\$\{percent \/ 100\}\)`/);
 });
 
-test("three supporting editorial scenes loop meaningfully and respect reduced motion", () => {
-  for (const variant of ["context", "source", "daily"]) {
-    assert.match(component, new RegExp(`EditorialMotion variant="${variant}"`));
-  }
-
-  for (const removedVariant of ["medicine", "safety", "care", "support"]) {
-    assert.doesNotMatch(component, new RegExp(`EditorialMotion variant="${removedVariant}"`));
-  }
-
-  assert.equal(component.split("<EditorialMotion").length - 1, 3);
-  assert.ok((motion.match(/repeatCount="indefinite"/g) ?? []).length >= 35);
-  assert.ok((motion.match(/<animateMotion/g) ?? []).length >= 3);
-  assert.ok((motion.match(/<animateTransform/g) ?? []).length >= 10);
-  assert.match(motion, /separate meal, movement, and sleep stations/);
-  assert.match(motion, /person taking an ordinary walk/);
-  assert.match(motion, /head, hair, face, clothing, arms, trousers, and shoes/);
-  assert.doesNotMatch(motion, /<figcaption>/);
-  assert.match(styles, /\.motionArt animateMotion/);
-});
-
-test("resource motion keeps people and traveling markers in separate visual lanes", () => {
-  assert.match(motion, /M0-3v14M0 3l-12 11M0 3l12 11M0 11l-10 18M0 11l10 18/);
-  assert.match(motion, /const ENERGY_TRACK = "M302 188 C370 136 442 136 510 176"/);
-  assert.match(motion, /transform="translate\(625 86\)"/);
-  assert.doesNotMatch(motion, /M350 164l12 17M414 151l12 17M478 159l12 17/);
+test("the reading room limits motion to short, purposeful interaction feedback", () => {
+  assert.doesNotMatch(component, /EditorialMotion/);
+  assert.doesNotMatch(styles, /@keyframes/);
+  assert.doesNotMatch(styles, /animation:/);
+  assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
+  assert.match(styles, /:active/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
 test("the visual hierarchy keeps articles larger and more explicit than supporting media", () => {
   assert.match(component, /Read the official guide/);
   assert.ok(component.split("<ReadGuide />").length - 1 >= 7);
   assert.doesNotMatch(component, /className=\{styles\.photoPair\}/);
-  assert.match(styles, /grid-template-columns: minmax\(19rem, 0\.78fr\) minmax\(0, 1\.22fr\)/);
+  assert.match(styles, /grid-template-columns: minmax\(18rem, 0\.86fr\) minmax\(0, 1\.14fr\)/);
   assert.match(styles, /\.checklistWithPhoto \{\s+grid-column: 1 \/ -1;/);
-  assert.match(styles, /min-height: 22rem/);
+  assert.doesNotMatch(styles, /min-height:\s*(?:1[5-9]|[2-9]\d)rem/);
   assert.doesNotMatch(styles, /@keyframes article-dashes/);
   assert.doesNotMatch(styles, /\.featuredLead::after/);
-  assert.match(styles, /min-height: 12rem/);
-  assert.match(styles, /max-height: 15rem/);
 });
 
 test("the reading room stays slightly rounded, responsive, focused, and motion-safe", () => {
@@ -137,7 +119,7 @@ test("the reading room stays slightly rounded, responsive, focused, and motion-s
   assert.match(styles, /@media \(max-width: 34rem\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(styles, /focus-visible/);
-  assert.match(styles, /transform: translate\(3px, -3px\)/);
+  assert.match(styles, /transform: translate\(2px, -2px\)/);
 });
 
 test("external reading links disclose their behavior", () => {
@@ -145,4 +127,18 @@ test("external reading links disclose their behavior", () => {
   assert.match(component, /target="_blank"/);
   assert.match(component, /opens in a new tab/);
   assert.match(component, /Every\s+link\s+opens on an official CDC or NIH website/);
+
+  for (const destination of [
+    "/myth-check",
+    "/decode-the-label",
+    "/explain-it-back",
+    "#new-here",
+    "#daily-living",
+    "#staying-safe",
+    "#long-term-health",
+    "#living-confidently",
+  ]) {
+    const escapedDestination = destination.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.match(component, new RegExp(`href(?:=|: )"${escapedDestination}"`));
+  }
 });

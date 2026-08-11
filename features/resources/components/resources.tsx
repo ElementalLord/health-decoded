@@ -12,7 +12,6 @@ import {
   ClipboardCheck,
   HeartPulse,
   MessageSquareText,
-  Quote,
   Salad,
   ShieldCheck,
   Sparkles,
@@ -25,7 +24,6 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 import type { Resource } from "@/features/stories/schemas/resource.schema";
 
-import { EditorialMotion } from "./resource-motion-scenes";
 import styles from "./resources.module.css";
 
 type ResourceId = Resource["id"];
@@ -352,17 +350,6 @@ function ChecklistArticle({
   );
 }
 
-function Perspective({ children }: { children: string }) {
-  return (
-    <aside aria-label="Composite learner perspective" className={styles.perspective}>
-      <Quote aria-hidden="true" size={34} strokeWidth={1.25} />
-      <blockquote>{children}</blockquote>
-      <p>Composite learner perspective</p>
-      <small>Drawn from recurring patient questions, not an individual testimonial.</small>
-    </aside>
-  );
-}
-
 function SourceNote() {
   return (
     <aside className={styles.sourceNote}>
@@ -451,7 +438,7 @@ function ReadingProgressPanel({ total }: { total: number }) {
         className={styles.readingRecordTrack}
         role="progressbar"
       >
-        <span style={{ width: `${percent}%` }} />
+        <span style={{ transform: `scaleX(${percent / 100})` }} />
       </div>
       <p className={styles.readingRecordNote}>
         Articles receive a “Viewed” check when you open them. Your record stays in this browser.
@@ -673,11 +660,9 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             <LeadArticle index="01" resource={basics} />
             <CompactArticle resource={monitoring} />
           </div>
-          <EditorialMotion variant="context" />
         </section>
 
         <SourceNote />
-        <EditorialMotion variant="source" />
 
         <section
           aria-labelledby="daily-living-heading"
@@ -693,12 +678,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           />
           <div className={styles.dailyLivingGrid}>
             <LeadArticle index="02" resource={culturalFoods} />
-            <Perspective>
-              I thought diabetes meant giving up every food I loved. What I needed was a way to keep
-              the table familiar and make balance visible.
-            </Perspective>
           </div>
-          <EditorialMotion variant="daily" />
         </section>
 
         <section
@@ -769,10 +749,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           />
           <div className={styles.confidenceGrid}>
             <LeadArticle index="03" resource={mentalHealth} />
-            <Perspective>
-              I was doing the tasks, but I was tired of thinking about diabetes all day. Naming that
-              feeling was the first useful step.
-            </Perspective>
             <WideFeature resource={education} />
             <SupportFeature resource={financialHelp} />
             <ChecklistArticle
