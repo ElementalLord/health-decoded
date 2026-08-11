@@ -138,7 +138,7 @@ test("supporting features balance landscape media with adjacent copy", () => {
 test("the reading room uses open editorial rows instead of repeated boxes", () => {
   assert.match(styles, /\.pathCard \{\s+background: transparent;\s+border: 0;/);
   assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
-  assert.match(styles, /\.sourceNote \{\s+background: transparent;/);
+  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-sky\);/);
   assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
@@ -148,40 +148,33 @@ test("the reading room uses open editorial rows instead of repeated boxes", () =
   assert.match(styles, /transform: translateY\(-1px\)/);
 });
 
-test("resource groups keep a neutral canvas without repeated divider lines", () => {
-  assert.match(styles, /\.newHereGrid \{\s+background: transparent;/);
-  assert.match(styles, /\.newHereGrid \.leadArticle \{\s+background: transparent;/);
-  assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: transparent;/);
+test("resource groups use barely-there card tints without repeated divider lines", () => {
+  assert.match(styles, /\.newHereGrid \{\s+background: var\(--editorial-apricot\);/);
+  assert.match(styles, /\.newHereGrid \.leadArticle \{\s+background: var\(--editorial-sage\);/);
+  assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: var\(--editorial-sky\);/);
   assert.doesNotMatch(styles, /border-(?:top|bottom|left|right|block):/);
-  assert.match(styles, /\.wideFeature \{\s+background: transparent;/);
+  assert.match(styles, /\.wideFeature \{\s+background: var\(--editorial-sage\);/);
 });
 
-test("masthead stays proportionate and one muted action remains visually primary", () => {
+test("masthead stays proportionate and guide actions remain clear without colored buttons", () => {
   assert.match(
     styles,
     /\.mastheadCopy \{[\s\S]*grid-template-columns: minmax\(0, 1\.05fr\) minmax\(24rem, 0\.95fr\);/,
   );
   assert.match(styles, /font-size: clamp\(2\.75rem, 4\.8vw, 4\.25rem\);/);
-  assert.match(styles, /\.readGuide \{[\s\S]*background: var\(--editorial-action\);/);
-  assert.match(
-    styles,
-    /article:hover \.readGuide \{\s+background: var\(--editorial-action-hover\);\s+box-shadow: 0 5px 16px var\(--editorial-action-glow\);\s+color: var\(--editorial-ink\);/,
-  );
+  assert.match(styles, /\.readGuide \{[\s\S]*background: transparent;/);
+  assert.match(styles, /\.readGuide \{[\s\S]*text-decoration: underline;/);
   assert.match(styles, /\.externalArrow \{\s+display: none;/);
   assert.match(styles, /\.articleLabel::before \{\s+content: none;/);
 });
 
-test("the resources palette reserves color for actions", () => {
+test("the resources palette keeps color as a faint card treatment", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-action: #f0e7df;/);
-  assert.match(styles, /--editorial-action-glow: rgba\(158, 119, 96, 0\.1\);/);
-  assert.match(styles, /\.readGuide \{[\s\S]*background: var\(--editorial-action\);/);
-  assert.match(
-    styles,
-    /\.readGuide \{[\s\S]*box-shadow: 0 3px 12px var\(--editorial-action-glow\);/,
-  );
-  assert.match(styles, /\.sourceNote \{\s+background: transparent;/);
-  assert.doesNotMatch(styles, /--editorial-(?:coral|wash|sage-strong|rose|sky):/);
+  assert.match(styles, /--editorial-sage: #f2f6f1;/);
+  assert.match(styles, /--editorial-sky: #f1f5f7;/);
+  assert.match(styles, /--editorial-apricot: #f8f3ed;/);
+  assert.match(styles, /\.readGuide \{[\s\S]*background: transparent;/);
+  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-sky\);/);
   assert.doesNotMatch(styles, /accent-warm/);
   assert.doesNotMatch(styles, /#b96c55/i);
   assert.doesNotMatch(styles, /#(?:365b51|365f56|345f55|3f6258)/i);
