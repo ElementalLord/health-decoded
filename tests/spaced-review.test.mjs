@@ -121,6 +121,7 @@ test("persistence is metadata-only, idempotent, server-timed, and owner-scoped",
   assert.match(migration, /clock_timestamp\(\)/);
   assert.match(migration, /initialize_spaced_review_from_lessons/);
   assert.match(migration, /min\(progress\.completed_at\)/);
+  assert.doesNotMatch(migration, /pg_catalog\.boolean/);
   assert.doesNotMatch(migration, /explanation\s+pg_catalog|response_text|prompt_text|medical_data/i);
   assert.doesNotMatch(migration, /policy .*insert|policy .*update/i);
 });

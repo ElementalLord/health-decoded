@@ -88,7 +88,7 @@ end;
 $$;
 
 create or replace function public.record_explain_it_back_learning(p_challenge_id pg_catalog.text)
-returns pg_catalog.boolean
+returns pg_catalog.bool
 language plpgsql
 security definer
 set search_path = ''
@@ -109,11 +109,11 @@ $$;
 create or replace function public.record_spaced_review_result(
   p_challenge_id pg_catalog.text,
   p_verdict pg_catalog.text,
-  p_had_retry pg_catalog.boolean,
-  p_example_viewed pg_catalog.boolean,
+  p_had_retry pg_catalog.bool,
+  p_example_viewed pg_catalog.bool,
   p_result_token pg_catalog.uuid
 )
-returns pg_catalog.boolean
+returns pg_catalog.bool
 language plpgsql
 security definer
 set search_path = ''
@@ -160,7 +160,7 @@ end;
 $$;
 
 create or replace function public.record_spaced_review_example(p_challenge_id pg_catalog.text, p_session_id pg_catalog.uuid)
-returns pg_catalog.boolean language plpgsql security definer set search_path = '' as $$
+returns pg_catalog.bool language plpgsql security definer set search_path = '' as $$
 declare v_user_id pg_catalog.uuid := auth.uid();
 begin
   if v_user_id is null then raise exception using errcode = '42501', message = 'Not authorized.'; end if;
@@ -175,7 +175,7 @@ end;
 $$;
 
 create or replace function public.record_spaced_review_prompt(p_challenge_id pg_catalog.text, p_prompt_token pg_catalog.uuid)
-returns pg_catalog.boolean language plpgsql security definer set search_path = '' as $$
+returns pg_catalog.bool language plpgsql security definer set search_path = '' as $$
 declare v_user_id pg_catalog.uuid := auth.uid();
 begin
   if v_user_id is null then raise exception using errcode = '42501', message = 'Not authorized.'; end if;
@@ -195,7 +195,7 @@ end;
 $$;
 
 create or replace function public.snooze_spaced_review_prompts(p_challenge_id pg_catalog.text)
-returns pg_catalog.boolean language plpgsql security definer set search_path = '' as $$
+returns pg_catalog.bool language plpgsql security definer set search_path = '' as $$
 declare v_user_id pg_catalog.uuid := auth.uid();
 begin
   if v_user_id is null then raise exception using errcode = '42501', message = 'Not authorized.'; end if;
@@ -209,13 +209,13 @@ revoke all on table public.user_spaced_review_state from anon, authenticated;
 grant select on table public.user_spaced_review_state to authenticated;
 revoke all on function public.initialize_spaced_review_from_lessons() from public;
 revoke all on function public.record_explain_it_back_learning(pg_catalog.text) from public;
-revoke all on function public.record_spaced_review_result(pg_catalog.text, pg_catalog.text, pg_catalog.boolean, pg_catalog.boolean, pg_catalog.uuid) from public;
+revoke all on function public.record_spaced_review_result(pg_catalog.text, pg_catalog.text, pg_catalog.bool, pg_catalog.bool, pg_catalog.uuid) from public;
 revoke all on function public.record_spaced_review_example(pg_catalog.text, pg_catalog.uuid) from public;
 revoke all on function public.record_spaced_review_prompt(pg_catalog.text, pg_catalog.uuid) from public;
 revoke all on function public.snooze_spaced_review_prompts(pg_catalog.text) from public;
 grant execute on function public.initialize_spaced_review_from_lessons() to authenticated;
 grant execute on function public.record_explain_it_back_learning(pg_catalog.text) to authenticated;
-grant execute on function public.record_spaced_review_result(pg_catalog.text, pg_catalog.text, pg_catalog.boolean, pg_catalog.boolean, pg_catalog.uuid) to authenticated;
+grant execute on function public.record_spaced_review_result(pg_catalog.text, pg_catalog.text, pg_catalog.bool, pg_catalog.bool, pg_catalog.uuid) to authenticated;
 grant execute on function public.record_spaced_review_example(pg_catalog.text, pg_catalog.uuid) to authenticated;
 grant execute on function public.record_spaced_review_prompt(pg_catalog.text, pg_catalog.uuid) to authenticated;
 grant execute on function public.snooze_spaced_review_prompts(pg_catalog.text) to authenticated;
