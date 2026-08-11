@@ -122,12 +122,16 @@ test("the visual hierarchy keeps articles larger and more explicit than supporti
 test("supporting features balance landscape media with adjacent copy", () => {
   assert.match(
     styles,
-    /\.featuredSide > a \{[\s\S]*grid-template-columns: minmax\(13\.5rem, 0\.82fr\) minmax\(0, 1\.18fr\);/,
+    /\.featuredSide > a \{[\s\S]*grid-template-columns: minmax\(15rem, 0\.95fr\) minmax\(0, 1\.05fr\);/,
   );
   assert.match(styles, /\.sideCopy \{[\s\S]*justify-content: center;/);
   assert.match(
     styles,
-    /@media \(max-width: 48rem\)[\s\S]*\.featuredSide > a \{\s+grid-template-columns: 1fr;/,
+    /\.featuredImage,[\s\S]*\.photoInterlude > div \{[\s\S]*border-radius: 0\.625rem;/,
+  );
+  assert.match(
+    styles,
+    /@media \(max-width: 48rem\)[\s\S]*\.featuredSide > a \{[\s\S]*grid-template-columns: 1fr;/,
   );
 });
 
@@ -145,7 +149,10 @@ test("the reading room uses open editorial rows instead of repeated boxes", () =
 });
 
 test("resource groups use flat tonal hierarchy without vertical accent rules", () => {
-  assert.match(styles, /\.newHereGrid \{[\s\S]*border-block: 1px solid var\(--editorial-rule\);/);
+  assert.match(
+    styles,
+    /\.newHereGrid \{[\s\S]*border-block: 1px solid var\(--editorial-rule-strong\);/,
+  );
   assert.match(
     styles,
     /\.newHereGrid \.leadArticle \{\s+background: color-mix\(in srgb, var\(--editorial-wash\) 72%, transparent\);/,
@@ -157,6 +164,19 @@ test("resource groups use flat tonal hierarchy without vertical accent rules", (
   assert.doesNotMatch(styles, /border-left:/);
   assert.doesNotMatch(styles, /border-right:/);
   assert.match(styles, /\.wideFeature \{[\s\S]*border-top: 2px solid var\(--editorial-coral\);/);
+});
+
+test("masthead and resource rules keep the editorial layout proportionate and visible", () => {
+  assert.match(
+    styles,
+    /\.mastheadCopy \{[\s\S]*grid-template-columns: minmax\(0, 1\.05fr\) minmax\(24rem, 0\.95fr\);/,
+  );
+  assert.match(styles, /font-size: clamp\(2\.75rem, 4\.8vw, 4\.25rem\);/);
+  assert.match(styles, /--editorial-rule-strong: color-mix\(/);
+  assert.match(
+    styles,
+    /\.featuredLead,[\s\S]*\.photoInterlude \{\s+border-bottom: 1px solid var\(--editorial-rule-strong\);/,
+  );
 });
 
 test("the resources palette follows the product's warm design tokens", () => {
