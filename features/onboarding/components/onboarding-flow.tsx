@@ -1,31 +1,128 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  ArrowRight,
+  BookOpen,
+  Check,
+  HeartHandshake,
+  MessageCircleQuestion,
+  NotebookPen,
+  ScanText,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useRef, useState, type ReactNode } from "react";
 
-import { CompanionIllustration } from "@/components/illustrations/editorial-illustrations";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ProgressBar } from "@/components/ui/progress-bar";
 import { completeOnboardingAction } from "@/features/onboarding/actions/onboarding.actions";
-import { initialOnboardingFormState } from "@/features/onboarding/types/onboarding";
+import {
+  initialOnboardingFormState,
+  type OnboardingIntent,
+  type OnboardingMode,
+} from "@/features/onboarding/types/onboarding";
 import { cn } from "@/lib/utils";
 
-const stepLabels = ["Welcome", "Your name", "Preferences", "Finish"];
-const stepTitles = [
-  "Welcome to Health Decoded",
-  "What would you like us to call you?",
-  "Reading and motion preferences",
-  "Review your setup",
-];
-const continueLabels = ["Start setup", "Save my name", "Review my choices"] as const;
+import styles from "./onboarding-flow.module.css";
 
-export function OnboardingFlow() {
+const stepNames = ["Welcome", "What you can do", "Starting point", "Your next step"] as const;
+
+const capabilities = [
+  {
+    description: "Short lessons explain the foundations step by step.",
+    icon: BookOpen,
+    title: "Learn",
+  },
+  {
+    description:
+      "Use the glossary, Myth Check, Explain It Back, and practical activities when something is confusing.",
+    icon: ScanText,
+    title: "Understand",
+  },
+  {
+    description: "Organize questions and information for a future appointment.",
+    icon: NotebookPen,
+    title: "Prepare",
+  },
+  {
+    description: "Use the AI Tutor for source-backed explanations about what you're learning.",
+    icon: MessageCircleQuestion,
+    title: "Ask",
+  },
+] as const;
+
+const intentions: Array<{
+  description: string;
+  icon: typeof BookOpen;
+  title: string;
+  value: OnboardingIntent;
+}> = [
+  {
+    description: "Start with the first lessons and build a clear foundation.",
+    icon: BookOpen,
+    title: "I was recently diagnosed",
+    value: "recently-diagnosed",
+  },
+  {
+    description: "Start with the core ideas behind Type 2 diabetes.",
+    icon: ScanText,
+    title: "I want to understand the basics",
+    value: "learn-basics",
+  },
+  {
+    description: "Start with guidance for supporting someone without taking over.",
+    icon: HeartHandshake,
+    title: "I'm helping someone else",
+    value: "support-someone",
+  },
+  {
+    description: "Organize questions, changes, and things you want to discuss.",
+    icon: NotebookPen,
+    title: "I want to prepare for an appointment",
+    value: "prepare-appointment",
+  },
+];
+
+const results: Record<
+  OnboardingIntent,
+  { action: string; copy: string; destination: string; eyebrow: string; heading: string }
+> = {
+  "recently-diagnosed": {
+    action: "Start the first lesson",
+    copy: "The first lessons are designed to make the early information easier to understand without trying to cover everything at once.",
+    destination: "/lessons/1",
+    eyebrow: "Foundation lessons",
+    heading: "Start with the foundation.",
+  },
+  "learn-basics": {
+    action: "Start learning",
+    copy: "Start with the core lessons, then use tools like Myth Check and Explain It Back when you want to test your understanding.",
+    destination: "/journey",
+    eyebrow: "Your learning path",
+    heading: "Build the big picture first.",
+  },
+  "support-someone": {
+    action: "Explore support guidance",
+    copy: "Health Decoded can help you understand how to be useful without taking over someone else's diabetes care.",
+    destination: "/caregiver",
+    eyebrow: "Support guidance",
+    heading: "Start with support that respects their choices.",
+  },
+  "prepare-appointment": {
+    action: "Prepare for an appointment",
+    copy: "Use Appointment Preparation to collect questions, changes, and things you want to bring up with a health professional.",
+    destination: "/appointment-prep",
+    eyebrow: "Appointment preparation",
+    heading: "Get your thoughts organized.",
+  },
+};
+
+function Screen({ children }: { children: ReactNode }) {
+  return <div className={styles.screen}>{children}</div>;
+}
+
+export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
+  const router = useRouter();
   const [step, setStep] = useState(0);
-  const [displayName, setDisplayName] = useState("");
-  const [textScale, setTextScale] = useState<"default" | "large">("default");
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [timezone, setTimezone] = useState("UTC");
-  const [stepError, setStepError] = useState<string | null>(null);
+  const [intent, setIntent] = useState<OnboardingIntent | null>(null);
   const [state, action, pending] = useActionState(
     completeOnboardingAction,
     initialOnboardingFormState,
@@ -34,197 +131,245 @@ export function OnboardingFlow() {
   const previousStep = useRef(step);
 
   useEffect(() => {
-    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC");
-  }, []);
-
-  useEffect(() => {
     if (previousStep.current !== step) {
       headingRef.current?.focus();
       previousStep.current = step;
     }
   }, [step]);
 
-  function continueToNextStep() {
-    if (step === 1 && !displayName.trim()) {
-      setStepError("Enter the name you would like us to use.");
-      return;
-    }
+  const result = intent ? results[intent] : null;
 
-    setStepError(null);
-    setStep((currentStep) => Math.min(currentStep + 1, stepLabels.length - 1));
+  function moveTo(nextStep: number) {
+    setStep(Math.max(0, Math.min(nextStep, stepNames.length - 1)));
   }
 
   return (
-    <section className="mx-auto max-w-2xl py-4 sm:py-8">
-      <header className="space-y-4">
-        <p className="text-sm font-medium text-muted-foreground">
-          Step {step + 1} of {stepLabels.length}: {stepLabels[step]}
-        </p>
-        <ProgressBar
-          label={`Onboarding progress: step ${step + 1} of ${stepLabels.length}`}
-          value={((step + 1) / stepLabels.length) * 100}
-        />
-        <h1
-          className="pt-3 font-serif-display text-3xl font-normal leading-tight text-balance sm:text-5xl"
-          ref={headingRef}
-          tabIndex={-1}
+    <section className={styles.shell} aria-label="Health Decoded introduction">
+      <div className={styles.topline}>
+        <div>
+          <p className="editorial-eyebrow">Health Decoded</p>
+          {mode === "preview" ? <span className={styles.previewBadge}>Preview</span> : null}
+        </div>
+        <div
+          aria-label={`${stepNames[step]}, ${step + 1} of ${stepNames.length}`}
+          className={styles.progress}
+          role="status"
         >
-          {stepTitles[step]}
-        </h1>
-      </header>
+          <span className="sr-only">
+            {stepNames[step]}, {step + 1} of {stepNames.length}
+          </span>
+          {stepNames.map((name, index) => (
+            <span
+              aria-hidden="true"
+              className={cn(styles.marker, index === step && styles.currentMarker)}
+              data-complete={index < step || undefined}
+              key={name}
+            />
+          ))}
+        </div>
+      </div>
 
-      <form action={action} className="mt-7 space-y-6 border-t border-border pt-7">
-        <input name="displayName" type="hidden" value={displayName} />
-        <input name="preferredTextScale" type="hidden" value={textScale} />
-        <input name="reducedMotion" type="hidden" value={String(reducedMotion)} />
-        <input name="locale" type="hidden" value="en" />
-        <input name="timezone" type="hidden" value={timezone} />
+      <form action={action} className={styles.form}>
+        <input name="onboardingIntent" type="hidden" value={intent ?? ""} />
 
         {step === 0 ? (
-          <div className="animate-slide-up grid gap-6 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
-            <CompanionIllustration />
-            <div>
-              <p className="text-pretty text-lg leading-8 text-muted-foreground">
-                Setup takes just a minute. We will guide you gradually, one small step at a time.
-              </p>
-              <p className="mt-5 border-l-2 border-accent-warm pl-4 font-serif-display text-xl italic leading-8">
-                No streaks. No pressure. Just gentle, daily understanding.
-              </p>
+          <Screen>
+            <div className={styles.welcomeGrid}>
+              <div className={styles.copyColumn}>
+                <p className={styles.kicker}>A clear place to begin</p>
+                <h1 className={styles.title} ref={headingRef} tabIndex={-1}>
+                  Welcome to Health Decoded
+                </h1>
+                <p className={styles.lead}>
+                  Diabetes can come with a lot of new information. Health Decoded helps you make
+                  sense of it one step at a time.
+                </p>
+                <p className={styles.supporting}>
+                  Learn the basics, prepare for appointments, check confusing claims, and find clear
+                  answers when you need them.
+                </p>
+              </div>
+
+              <div aria-hidden="true" className={styles.ecosystem}>
+                <div className={styles.ecosystemCore}>Health, decoded.</div>
+                {capabilities.map(({ icon: Icon, title }, index) => (
+                  <div className={styles.ecosystemItem} data-position={index + 1} key={title}>
+                    <Icon />
+                    <span>{title}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+
+            <div className={styles.actions}>
+              <Button onClick={() => moveTo(1)} type="button">
+                Show me around <ArrowRight aria-hidden="true" className="size-4" />
+              </Button>
+              {mode === "preview" ? (
+                <Button onClick={() => router.push("/journey")} type="button" variant="text">
+                  Return to Journey
+                </Button>
+              ) : (
+                <Button name="completionTarget" type="submit" value="journey" variant="text">
+                  Skip introduction
+                </Button>
+              )}
+            </div>
+          </Screen>
         ) : null}
 
         {step === 1 ? (
-          <label
-            className="animate-slide-up grid gap-2 text-sm font-medium"
-            htmlFor="onboarding-name"
-          >
-            Preferred name
-            <Input
-              aria-describedby={stepError ? "onboarding-name-error" : undefined}
-              aria-invalid={Boolean(stepError) || undefined}
-              autoComplete="name"
-              id="onboarding-name"
-              onChange={(event) => {
-                setDisplayName(event.target.value);
-                if (stepError) setStepError(null);
-              }}
-              required
-              value={displayName}
-            />
-          </label>
+          <Screen>
+            <div className={styles.sectionHeading}>
+              <p className={styles.kicker}>Here when you need it</p>
+              <h1 className={styles.title} ref={headingRef} tabIndex={-1}>
+                You don&apos;t have to learn everything at once.
+              </h1>
+              <p className={styles.lead}>
+                Health Decoded gives you different ways to learn depending on what you need right
+                now.
+              </p>
+            </div>
+
+            <div className={styles.capabilityList}>
+              {capabilities.map(({ description, icon: Icon, title }) => (
+                <div className={styles.capabilityRow} key={title}>
+                  <Icon aria-hidden="true" />
+                  <h2>{title}</h2>
+                  <p>{description}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.actions}>
+              <Button onClick={() => moveTo(2)} type="button">
+                Continue <ArrowRight aria-hidden="true" className="size-4" />
+              </Button>
+              <Button onClick={() => moveTo(0)} type="button" variant="text">
+                Back
+              </Button>
+            </div>
+          </Screen>
         ) : null}
 
         {step === 2 ? (
-          <fieldset className="animate-slide-up space-y-3">
-            <legend className="mb-2 font-medium">Choose what feels comfortable</legend>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label
-                className={cn(
-                  "flex min-h-20 cursor-pointer items-center gap-3 rounded-[9px] border bg-card px-4 py-3.5 shadow-[0_2px_0_rgb(61_47_41/0.08)] transition-colors",
-                  textScale === "large"
-                    ? "border-accent-warm bg-accent-warm/5"
-                    : "border-border hover:border-foreground/25",
-                )}
-              >
-                <input
-                  checked={textScale === "large"}
-                  className="size-5 shrink-0 accent-primary"
-                  onChange={(event) => setTextScale(event.target.checked ? "large" : "default")}
-                  type="checkbox"
-                />
-                <span>
-                  <span className="block font-medium">Use larger text</span>
-                  <span className="mt-1 block text-sm leading-5 text-muted-foreground">
-                    Increase the reading size throughout the app.
-                  </span>
-                </span>
-              </label>
-              <label
-                className={cn(
-                  "flex min-h-20 cursor-pointer items-center gap-3 rounded-[9px] border bg-card px-4 py-3.5 shadow-[0_2px_0_rgb(61_47_41/0.08)] transition-colors",
-                  reducedMotion
-                    ? "border-accent-warm bg-accent-warm/5"
-                    : "border-border hover:border-foreground/25",
-                )}
-              >
-                <input
-                  checked={reducedMotion}
-                  className="size-5 shrink-0 accent-primary"
-                  onChange={(event) => setReducedMotion(event.target.checked)}
-                  type="checkbox"
-                />
-                <span>
-                  <span className="block font-medium">Reduce motion</span>
-                  <span className="mt-1 block text-sm leading-5 text-muted-foreground">
-                    Keep learning animations calm and still.
-                  </span>
-                </span>
-              </label>
+          <Screen>
+            <div className={styles.sectionHeading}>
+              <p className={styles.kicker}>One simple choice</p>
+              <h1 className={styles.title} ref={headingRef} tabIndex={-1}>
+                What would be most useful right now?
+              </h1>
+              <p className={styles.lead} id="intention-help">
+                This only helps Health Decoded choose where to start. You can use everything in the
+                app anytime.
+              </p>
             </div>
-          </fieldset>
+
+            <fieldset aria-describedby="intention-help" className={styles.choiceList}>
+              <legend className="sr-only">Choose a starting preference</legend>
+              {intentions.map(({ description, icon: Icon, title, value }) => {
+                const selected = intent === value;
+                return (
+                  <label
+                    className={styles.choice}
+                    data-selected={selected || undefined}
+                    key={value}
+                  >
+                    <input
+                      checked={selected}
+                      className="sr-only"
+                      name="intent-choice"
+                      onChange={() => setIntent(value)}
+                      type="radio"
+                      value={value}
+                    />
+                    <Icon aria-hidden="true" className={styles.choiceIcon} />
+                    <span className={styles.choiceCopy}>
+                      <span className={styles.choiceTitle}>{title}</span>
+                      <span className={styles.choiceDescription}>{description}</span>
+                    </span>
+                    <span aria-hidden="true" className={styles.check}>
+                      {selected ? <Check /> : null}
+                    </span>
+                    <span className="sr-only">{selected ? "Selected" : "Not selected"}</span>
+                  </label>
+                );
+              })}
+            </fieldset>
+
+            <div className={styles.actions}>
+              <Button disabled={!intent} onClick={() => moveTo(3)} type="button">
+                Continue <ArrowRight aria-hidden="true" className="size-4" />
+              </Button>
+              <Button onClick={() => moveTo(1)} type="button" variant="text">
+                Back
+              </Button>
+            </div>
+          </Screen>
         ) : null}
 
-        {step === 3 ? (
-          <dl className="animate-slide-up divide-y divide-border border-y border-border">
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3.5">
-              <dt className="text-sm text-muted-foreground">Name</dt>
-              <dd>{displayName || "Not provided"}</dd>
+        {step === 3 && result ? (
+          <Screen>
+            <div className={styles.resultGrid}>
+              <div className={styles.resultIcon} aria-hidden="true">
+                {intent === "support-someone" ? <HeartHandshake /> : <BookOpen />}
+              </div>
+              <div className={styles.copyColumn}>
+                <p className={styles.kicker}>{result.eyebrow}</p>
+                <h1 className={styles.title} ref={headingRef} tabIndex={-1}>
+                  {result.heading}
+                </h1>
+                <p className={styles.lead}>{result.copy}</p>
+                <p className={styles.recommendationNote}>
+                  Based on what you chose, this is a useful place to start. You can go anywhere in
+                  Health Decoded afterward.
+                </p>
+              </div>
             </div>
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3.5">
-              <dt className="text-sm text-muted-foreground">Text</dt>
-              <dd>{textScale === "large" ? "Larger" : "Standard"}</dd>
-            </div>
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3.5">
-              <dt className="text-sm text-muted-foreground">Motion</dt>
-              <dd>{reducedMotion ? "Reduced" : "Standard"}</dd>
-            </div>
-          </dl>
-        ) : null}
 
-        {stepError ? (
-          <p
-            className="motion-status text-sm text-destructive"
-            id="onboarding-name-error"
-            role="alert"
-          >
-            {stepError}
-          </p>
-        ) : null}
-        {state.message ? (
-          <p aria-live="polite" className="motion-status text-sm text-destructive" role="alert">
-            {state.message}
-          </p>
-        ) : null}
+            {state.message ? (
+              <p className={styles.error} role="alert">
+                {state.message}
+              </p>
+            ) : null}
 
-        <div className="flex flex-col items-start gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
-          {step > 0 ? (
-            <Button
-              fullWidth={false}
-              onClick={() => {
-                setStepError(null);
-                setStep((currentStep) => currentStep - 1);
-              }}
-              type="button"
-              variant="text"
-            >
-              Back
-            </Button>
-          ) : null}
-          {step < stepLabels.length - 1 ? (
-            <Button
-              className={step === 0 ? "sm:ml-auto" : undefined}
-              onClick={continueToNextStep}
-              type="button"
-            >
-              {continueLabels[step]}
-            </Button>
-          ) : (
-            <Button disabled={pending} type="submit">
-              {pending ? "Saving your choices and opening your journey…" : "Finish setup"}
-            </Button>
-          )}
-        </div>
+            <div className={styles.actions}>
+              {mode === "preview" ? (
+                <Button onClick={() => router.push(result.destination)} type="button">
+                  Open this destination <ArrowRight aria-hidden="true" className="size-4" />
+                </Button>
+              ) : (
+                <Button
+                  disabled={pending}
+                  name="completionTarget"
+                  type="submit"
+                  value="recommended"
+                >
+                  {pending ? "Saving your starting point…" : result.action}
+                  {!pending ? <ArrowRight aria-hidden="true" className="size-4" /> : null}
+                </Button>
+              )}
+              {mode === "preview" ? (
+                <Button onClick={() => router.push("/journey")} type="button" variant="text">
+                  Return to Journey
+                </Button>
+              ) : (
+                <Button
+                  disabled={pending}
+                  name="completionTarget"
+                  type="submit"
+                  value="journey"
+                  variant="text"
+                >
+                  Go to Journey
+                </Button>
+              )}
+              <Button disabled={pending} onClick={() => moveTo(2)} type="button" variant="text">
+                Back
+              </Button>
+            </div>
+          </Screen>
+        ) : null}
       </form>
     </section>
   );

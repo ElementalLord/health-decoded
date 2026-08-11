@@ -677,6 +677,7 @@ export type Database = {
           display_name: string | null;
           id: string;
           onboarding_completed_at: string | null;
+          onboarding_intent: string | null;
           updated_at: string;
         };
         Insert: {
@@ -684,6 +685,7 @@ export type Database = {
           display_name?: string | null;
           id: string;
           onboarding_completed_at?: string | null;
+          onboarding_intent?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -691,6 +693,7 @@ export type Database = {
           display_name?: string | null;
           id?: string;
           onboarding_completed_at?: string | null;
+          onboarding_intent?: string | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -919,13 +922,7 @@ export type Database = {
         }[];
       };
       complete_onboarding: {
-        Args: {
-          p_display_name: string;
-          p_locale: string;
-          p_preferred_text_scale: string;
-          p_reduced_motion: boolean;
-          p_timezone: string;
-        };
+        Args: { p_onboarding_intent: string | null };
         Returns: boolean;
       };
       dismiss_next_step: {

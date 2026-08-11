@@ -6,7 +6,12 @@ import { getCurrentProfile } from "@/features/profile/services/profile.server";
 
 export const metadata = { title: "Welcome" };
 
-export default async function OnboardingPage() {
+export default async function OnboardingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ mode?: string }>;
+}) {
+  const { mode: requestedMode } = await searchParams;
   const profile = await getCurrentProfile();
   if (!profile.ok) {
     return (
@@ -17,11 +22,13 @@ export default async function OnboardingPage() {
       />
     );
   }
-  if (profile.data.onboarding_completed_at) redirect("/journey");
+  const mode =
+    profile.data.onboarding_completed_at && requestedMode === "preview" ? "preview" : "first-use";
+  if (profile.data.onboarding_completed_at && mode !== "preview") redirect("/journey");
 
   return (
-    <section className="py-8 sm:py-12">
-      <OnboardingFlow />
+    <section>
+      <OnboardingFlow mode={mode} />
     </section>
   );
 }

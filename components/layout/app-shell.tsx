@@ -15,7 +15,7 @@ function AppShell({
 }: {
   children: ReactNode;
   preferences?: ProfileSettings;
-  routes?: readonly ApplicationRoute[];
+  routes?: readonly ApplicationRoute[] | undefined;
 }) {
   return (
     <div

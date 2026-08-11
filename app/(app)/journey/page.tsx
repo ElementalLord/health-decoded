@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { ActionRow } from "@/components/shared/action-row";
+import { buttonVariants } from "@/components/ui/button";
 import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
@@ -177,6 +179,19 @@ export default async function JourneyPage({
           />
         </div>
       </section>
+
+      <footer className="flex flex-col items-start gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+          Want to revisit the short introduction? Previewing it will not change your saved starting
+          preference or learning progress.
+        </p>
+        <Link
+          className={buttonVariants({ fullWidth: false, size: "sm", variant: "secondary" })}
+          href="/onboarding?mode=preview"
+        >
+          Preview onboarding
+        </Link>
+      </footer>
     </section>
   );
 }

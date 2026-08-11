@@ -87,11 +87,11 @@ begin
 
   if has_function_privilege(
     'anon',
-    'public.complete_onboarding(text,text,text,boolean,text)',
+    'public.complete_onboarding(text)',
     'execute'
   ) or not has_function_privilege(
     'authenticated',
-    'public.complete_onboarding(text,text,text,boolean,text)',
+    'public.complete_onboarding(text)',
     'execute'
   ) then
     raise exception 'Onboarding completion privileges are not restricted correctly';

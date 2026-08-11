@@ -12,6 +12,7 @@
     "test:lessons": "node --no-warnings --experimental-strip-types --test tests/lesson-composition.test.mjs tests/lesson-motion.test.mjs tests/lesson-story-images.test.mjs tests/lesson-route-coverage.test.mjs tests/lesson-stage-gating.test.mjs tests/curriculum-distinctness.test.mjs tests/experience-emotional-design.test.mjs tests/day-seven-experience.test.mjs tests/day-eight-experience.test.mjs tests/day-nine-experience.test.mjs tests/day-ten-experience.test.mjs tests/day-eleven-experience.test.mjs tests/day-twelve-experience.test.mjs tests/day-thirteen-experience.test.mjs tests/day-fourteen-experience.test.mjs",
     "test:resources": "node --no-warnings --experimental-strip-types --test tests/resources-editorial.test.mjs",
     "test:appointment-prep": "node --no-warnings --experimental-strip-types --test tests/appointment-prep.test.mjs",
+    "test:onboarding": "node --no-warnings --experimental-strip-types --test tests/onboarding.test.mjs",
     "test:glossary": "node --no-warnings --experimental-strip-types --test tests/medical-glossary.test.mjs",
     "test:myth-check": "node --no-warnings --experimental-strip-types --test tests/myth-check.test.mjs",
     "test:explain-it-back": "node --no-warnings --experimental-strip-types --test tests/explain-it-back.test.mjs",

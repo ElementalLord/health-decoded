@@ -10,22 +10,27 @@ import { CURRENT_PATH_HEADER, getSafeRedirectPath } from "@/lib/auth/redirects";
 import { protectedApplicationRoutes } from "@/lib/routes";
 
 export default async function ProtectedLayout({ children }: { children: ReactNode }) {
+  const requestHeaders = await headers();
+  const currentPath = requestHeaders.get(CURRENT_PATH_HEADER) ?? "/journey";
+  const isOnboarding = currentPath.split("?")[0] === "/onboarding";
   const user = await getAuthenticatedUser();
   if (!user.ok) {
-    const requestHeaders = await headers();
-    const next = getSafeRedirectPath(requestHeaders.get(CURRENT_PATH_HEADER) ?? undefined);
+    const next = getSafeRedirectPath(currentPath);
     redirect(`/login?next=${encodeURIComponent(next)}`);
   }
   const settings = await getProfileSettings();
+  if (settings.ok && !settings.data.onboardingComplete && !isOnboarding) redirect("/onboarding");
+
+  const routes = isOnboarding ? undefined : protectedApplicationRoutes;
   return settings.ok ? (
-    <AppShell preferences={settings.data} routes={protectedApplicationRoutes}>
+    <AppShell preferences={settings.data} routes={routes}>
       {children}
-      <MilestoneNotificationHost />
+      {!isOnboarding ? <MilestoneNotificationHost /> : null}
     </AppShell>
   ) : (
-    <AppShell routes={protectedApplicationRoutes}>
+    <AppShell routes={routes}>
       {children}
-      <MilestoneNotificationHost />
+      {!isOnboarding ? <MilestoneNotificationHost /> : null}
     </AppShell>
   );
 }

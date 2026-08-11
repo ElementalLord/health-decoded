@@ -1,0 +1,445 @@
+.shell {
+  margin-inline: auto;
+  max-width: 68rem;
+  min-height: min(44rem, calc(100dvh - 10rem));
+  padding-block: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+.topline {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.topline > div:first-child {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.previewBadge {
+  background: var(--info);
+  border: 1px solid color-mix(in srgb, var(--success) 30%, var(--border));
+  border-radius: 999px;
+  color: var(--info-foreground);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+}
+
+.progress {
+  align-items: center;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.marker {
+  background: var(--border);
+  border-radius: 999px;
+  display: block;
+  height: 0.4rem;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    width var(--duration-fast) var(--ease-standard);
+  width: 0.4rem;
+}
+
+.marker[data-complete] {
+  background: var(--success);
+}
+
+.currentMarker {
+  background: var(--accent-warm);
+  width: 1.5rem;
+}
+
+.form {
+  margin-top: clamp(2.25rem, 6vw, 5rem);
+}
+
+.screen {
+  animation: screen-arrive var(--duration-normal) var(--ease-standard) both;
+}
+
+.welcomeGrid,
+.resultGrid {
+  display: grid;
+  gap: clamp(2.5rem, 7vw, 6rem);
+}
+
+.copyColumn {
+  max-width: 41rem;
+}
+
+.kicker {
+  color: var(--accent-warm);
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-size: clamp(2.35rem, 6.4vw, 4.8rem);
+  font-variation-settings:
+    "opsz" 60,
+    "SOFT" 65;
+  font-weight: 420;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.lead {
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  line-height: 1.65;
+  margin-top: 1.5rem;
+  max-width: 45rem;
+  text-wrap: pretty;
+}
+
+.supporting {
+  border-left: 2px solid color-mix(in srgb, var(--accent-warm) 55%, var(--border));
+  color: var(--muted-foreground);
+  line-height: 1.75;
+  margin-top: 1.5rem;
+  max-width: 39rem;
+  padding-left: 1rem;
+  text-wrap: pretty;
+}
+
+.ecosystem {
+  aspect-ratio: 1;
+  background: color-mix(in srgb, var(--card) 78%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.3rem color-mix(in srgb, var(--background) 60%, transparent);
+  max-width: 25rem;
+  position: relative;
+  width: 100%;
+}
+
+.ecosystem::before,
+.ecosystem::after {
+  border-top: 1px solid color-mix(in srgb, var(--success) 45%, var(--border));
+  content: "";
+  left: 18%;
+  position: absolute;
+  top: 50%;
+  transform: rotate(45deg);
+  width: 64%;
+}
+
+.ecosystem::after {
+  transform: rotate(-45deg);
+}
+
+.ecosystemCore {
+  align-items: center;
+  background: var(--primary);
+  border: 0.5rem solid var(--background);
+  border-radius: 50%;
+  color: var(--primary-foreground);
+  display: flex;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  inset: 35%;
+  justify-content: center;
+  line-height: 1.1;
+  padding: 0.5rem;
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+}
+
+.ecosystemItem {
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  gap: 0.4rem;
+  padding: 0.55rem 0.7rem;
+  position: absolute;
+  z-index: 1;
+}
+
+.ecosystemItem svg {
+  color: var(--accent-warm);
+  height: 1rem;
+  width: 1rem;
+}
+
+.ecosystemItem[data-position="1"] {
+  left: 8%;
+  top: 15%;
+}
+.ecosystemItem[data-position="2"] {
+  right: 2%;
+  top: 19%;
+}
+.ecosystemItem[data-position="3"] {
+  bottom: 16%;
+  left: 3%;
+}
+.ecosystemItem[data-position="4"] {
+  bottom: 12%;
+  right: 10%;
+}
+
+.sectionHeading {
+  max-width: 52rem;
+}
+
+.capabilityList,
+.choiceList {
+  border-block: 1px solid var(--border);
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+
+.capabilityRow {
+  align-items: start;
+  display: grid;
+  gap: 0.75rem 1rem;
+  grid-template-columns: auto minmax(7rem, 0.35fr) minmax(0, 1fr);
+  padding-block: 1.15rem;
+}
+
+.capabilityRow + .capabilityRow,
+.choice + .choice {
+  border-top: 1px solid var(--border);
+}
+
+.capabilityRow svg {
+  color: var(--accent-warm);
+  height: 1.2rem;
+  margin-top: 0.15rem;
+  width: 1.2rem;
+}
+
+.capabilityRow h2 {
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.capabilityRow p,
+.choiceDescription {
+  color: var(--muted-foreground);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.choiceList {
+  padding: 0;
+}
+
+.choice {
+  align-items: center;
+  cursor: pointer;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: 1rem 0.75rem;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    padding var(--duration-fast) var(--ease-standard);
+}
+
+.choice:has(input:focus-visible) {
+  border-radius: 0.45rem;
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.choice[data-selected] {
+  background: color-mix(in srgb, var(--success) 9%, transparent);
+  padding-inline: 1rem;
+}
+
+.choiceIcon {
+  color: var(--accent-warm);
+  height: 1.3rem;
+  width: 1.3rem;
+}
+
+.choiceCopy {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.choiceTitle {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 520;
+  letter-spacing: -0.02em;
+}
+
+.choiceDescription {
+  font-size: 0.9rem;
+}
+
+.check {
+  align-items: center;
+  border: 1px solid var(--input);
+  border-radius: 50%;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+}
+
+.choice[data-selected] .check {
+  background: var(--success);
+  border-color: var(--success);
+  color: var(--success-foreground);
+}
+
+.check svg {
+  height: 0.9rem;
+  stroke-width: 3;
+  width: 0.9rem;
+}
+
+.resultGrid {
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.resultIcon {
+  align-items: center;
+  background: var(--info);
+  border: 1px solid color-mix(in srgb, var(--success) 35%, var(--border));
+  border-radius: 50%;
+  color: var(--info-foreground);
+  display: flex;
+  height: clamp(6rem, 15vw, 10rem);
+  justify-content: center;
+  width: clamp(6rem, 15vw, 10rem);
+}
+
+.resultIcon svg {
+  height: 42%;
+  stroke-width: 1.5;
+  width: 42%;
+}
+
+.recommendationNote {
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-top: 1.25rem;
+  max-width: 40rem;
+}
+
+.error {
+  background: color-mix(in srgb, var(--destructive) 8%, transparent);
+  border-left: 3px solid var(--destructive);
+  color: var(--destructive);
+  margin-top: 1.5rem;
+  padding: 0.8rem 1rem;
+}
+
+.actions {
+  align-items: center;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-top: clamp(2.25rem, 6vw, 4rem);
+  padding-top: 1.25rem;
+}
+
+@media (min-width: 48rem) {
+  .welcomeGrid {
+    align-items: center;
+    grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .ecosystem {
+    justify-self: center;
+    max-width: 19rem;
+  }
+
+  .resultGrid {
+    align-items: start;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 30rem) {
+  .shell {
+    padding-block: 1.25rem;
+  }
+
+  .form {
+    margin-top: 2rem;
+  }
+
+  .capabilityRow {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .capabilityRow p {
+    grid-column: 2;
+  }
+
+  .choice {
+    align-items: start;
+    gap: 0.75rem;
+    padding-inline: 0.25rem;
+  }
+
+  .choice[data-selected] {
+    padding-inline: 0.5rem;
+  }
+
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .actions > * {
+    width: 100%;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .choice:hover {
+    background: color-mix(in srgb, var(--card) 72%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen {
+    animation: none;
+  }
+
+  .marker,
+  .choice {
+    transition: none;
+  }
+}
+
+@keyframes screen-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

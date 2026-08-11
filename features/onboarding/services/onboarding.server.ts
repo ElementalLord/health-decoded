@@ -3,13 +3,10 @@ import { getServerDatabaseClient } from "@/lib/database/server";
 import { unexpectedError } from "@/lib/errors/application-error";
 import { createServerLogger } from "@/lib/logging/server";
 import { err, ok, type Result } from "@/lib/result/result";
+import type { OnboardingIntent } from "@/features/onboarding/types/onboarding";
 
 type OnboardingValues = {
-  displayName: string;
-  locale: "en";
-  preferredTextScale: "default" | "large";
-  reducedMotion: boolean;
-  timezone: string;
+  onboardingIntent: OnboardingIntent | null;
 };
 
 const logger = createServerLogger();
@@ -20,11 +17,7 @@ export async function completeOnboarding(values: OnboardingValues): Promise<Resu
 
   const database = await getServerDatabaseClient();
   const result = await database.rpc("complete_onboarding", {
-    p_display_name: values.displayName,
-    p_locale: values.locale,
-    p_preferred_text_scale: values.preferredTextScale,
-    p_reduced_motion: values.reducedMotion,
-    p_timezone: values.timezone,
+    p_onboarding_intent: values.onboardingIntent,
   });
   if (result.error || result.data !== true) {
     logger.error("onboarding.completion_failed", {
