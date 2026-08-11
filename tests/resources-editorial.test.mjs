@@ -110,10 +110,18 @@ test("the visual hierarchy keeps articles larger and more explicit than supporti
   assert.doesNotMatch(styles, /min-height:\s*(?:1[5-9]|[2-9]\d)rem/);
   assert.doesNotMatch(styles, /@keyframes article-dashes/);
   assert.doesNotMatch(styles, /\.featuredLead::after/);
+  assert.match(
+    styles,
+    /\.healthGrid > \.compactArticle:last-child,\s+\.confidenceGrid \.supportFeature \{\s+grid-column: 1 \/ -1;/,
+  );
+  assert.match(styles, /\.photoInterlude figcaption \{\s+align-self: stretch;/);
+  assert.match(styles, /justify-content: center/);
+  assert.doesNotMatch(styles, /\.meta \{[^}]*margin-top: auto/s);
 });
 
-test("the reading room stays slightly rounded, responsive, focused, and motion-safe", () => {
-  assert.match(styles, /border-radius: (?:7|8|9|10)px/);
+test("the reading room uses restrained corners, responsive layouts, and motion-safe feedback", () => {
+  assert.match(styles, /border-radius: (?:2|3)px/);
+  assert.doesNotMatch(styles, /border-radius: (?:7|8|9|10)px/);
   assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
   assert.match(styles, /@media \(max-width: 34rem\)/);

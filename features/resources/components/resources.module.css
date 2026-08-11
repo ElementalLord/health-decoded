@@ -279,9 +279,19 @@
 .photoInterlude {
   background: var(--editorial-paper);
   border: 1px solid var(--editorial-rule);
-  border-radius: 8px;
+  border-radius: 3px;
   overflow: hidden;
   position: relative;
+}
+
+.leadArticle,
+.compactArticle,
+.wideFeature,
+.checklistArticle,
+.supportFeature {
+  border-left: 0;
+  border-radius: 0;
+  border-right: 0;
 }
 
 .featuredLead,
@@ -448,7 +458,7 @@
   font-weight: 620;
   gap: 0.36rem;
   line-height: 1.35;
-  margin-top: auto;
+  margin-top: 0;
 }
 
 .sourceMark {
@@ -519,7 +529,7 @@
 .pathCard {
   background: rgb(255 250 243 / 0.55);
   border: 1px solid var(--editorial-rule);
-  border-radius: 7px;
+  border-radius: 3px;
   display: grid;
   gap: 0.55rem;
   grid-template-columns: 1fr auto;
@@ -677,7 +687,7 @@
 
 .sourceNote {
   background: #365f56;
-  border-radius: 8px;
+  border-radius: 2px;
   color: #eaf0eb;
   display: grid;
   gap: 1.1rem 2rem;
@@ -775,6 +785,56 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.healthGrid > .compactArticle:last-child,
+.confidenceGrid .supportFeature {
+  grid-column: 1 / -1;
+}
+
+.healthGrid > .compactArticle:last-child > a,
+.confidenceGrid .supportFeature > a {
+  column-gap: clamp(1.5rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.72fr) minmax(18rem, 1.28fr);
+  grid-template-rows: auto auto auto;
+}
+
+.healthGrid > .compactArticle:last-child .articleLabel,
+.confidenceGrid .supportFeature > a > svg:first-child {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.healthGrid > .compactArticle:last-child h3,
+.confidenceGrid .supportFeature .articleLabel {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.healthGrid > .compactArticle:last-child > a > p:not(.articleLabel),
+.confidenceGrid .supportFeature h3 {
+  align-self: end;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.healthGrid > .compactArticle:last-child .readGuide,
+.confidenceGrid .supportFeature > a > p:not(.articleLabel) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.healthGrid > .compactArticle:last-child .meta,
+.confidenceGrid .supportFeature .readGuide {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.confidenceGrid .supportFeature .meta {
+  align-self: end;
+  grid-column: 2;
+  grid-row: 3;
+}
+
 .checklistArticle {
   border-top: 2px solid #88a797;
 }
@@ -809,7 +869,7 @@
 .checkIcon {
   align-items: center;
   border: 1px solid #9ab2a5;
-  border-radius: 5px;
+  border-radius: 2px;
   color: #57796a;
   display: flex;
   height: 1.9rem;
@@ -847,6 +907,7 @@
 }
 
 .photoInterlude {
+  background: #eef2ed;
   display: grid;
   grid-template-columns: minmax(18rem, 0.76fr) minmax(0, 1.24fr);
   margin: 1rem 0 0;
@@ -858,8 +919,11 @@
 }
 
 .photoInterlude figcaption {
-  align-self: center;
+  align-self: stretch;
   background: #eef2ed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: clamp(1.4rem, 3vw, 2.25rem);
 }
 
@@ -1055,8 +1119,15 @@
   .sourceNoteFooter,
   .confidenceGrid .leadArticle,
   .confidenceGrid .wideFeature,
+  .confidenceGrid .supportFeature,
+  .healthGrid > .compactArticle:last-child,
   .checklistWithPhoto {
     grid-column: auto;
+  }
+
+  .healthGrid > .compactArticle:last-child > a,
+  .confidenceGrid .supportFeature > a {
+    display: flex;
   }
 
   .wideFeature > a {
