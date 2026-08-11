@@ -40,7 +40,8 @@ test("optional lesson reflections remain private backend records", () => {
   );
   assert.match(completionAction, /\.from\("reflection_entries"\)/);
   assert.match(completionAction, /\.insert\(\{/);
-  assert.match(completionAction, /\.update\(\{ reflection: parsed\.data\.reflection \}\)/);
+  assert.match(completionAction, /const reflection = parsed\.data\.reflection/);
+  assert.match(completionAction, /\.update\(\{ reflection \}\)/);
   assert.match(completionAction, /revalidatePath\("\/profile"\)/);
 
   for (const file of [

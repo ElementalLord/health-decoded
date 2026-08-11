@@ -16,6 +16,7 @@ import { getServerDatabaseClient } from "@/lib/database/server";
 import { unexpectedError } from "@/lib/errors/application-error";
 import { createServerLogger } from "@/lib/logging/server";
 import { err, ok, type Result } from "@/lib/result/result";
+import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
 const logger = createServerLogger();
 
@@ -39,8 +40,10 @@ function mapState(row: ReviewRow): ReviewCandidate | null {
     row.successful_review_count < 0 ||
     !Number.isFinite(Date.parse(row.learned_at)) ||
     !Number.isFinite(Date.parse(row.next_due_at)) ||
-    (row.last_verdict !== null && !["got_it", "almost_there", "try_again"].includes(row.last_verdict))
-  ) return null;
+    (row.last_verdict !== null &&
+      !["got_it", "almost_there", "try_again"].includes(row.last_verdict))
+  )
+    return null;
   return {
     challengeId: row.challenge_id,
     learnedAt: row.learned_at,
@@ -70,7 +73,9 @@ export async function getSpacedReviewOpportunity(input: {
   }
   const response = await database
     .from("user_spaced_review_state")
-    .select("challenge_id, learned_at, last_reviewed_at, last_verdict, successful_review_count, next_due_at, last_prompted_at, dismissed_until, automatic_prompt_history")
+    .select(
+      "challenge_id, learned_at, last_reviewed_at, last_verdict, successful_review_count, next_due_at, last_prompted_at, dismissed_until, automatic_prompt_history",
+    )
     .eq("user_id", user.data.id);
   if (response.error) {
     logger.error("spaced_review.load_failed", { error_code: response.error.code });
@@ -83,19 +88,53 @@ export async function getSpacedReviewOpportunity(input: {
   const mostRecent = [...validCandidates]
     .filter(({ lastReviewedAt }) => lastReviewedAt)
     .sort((left, right) => Date.parse(right.lastReviewedAt!) - Date.parse(left.lastReviewedAt!))[0];
-  const selection = selectReviewCandidate({ candidates: validCandidates, now, manual: input.manual, lastSelectedId: mostRecent?.challengeId ?? null });
-  const lastPromptedAt = validCandidates.map(({ lastPromptedAt }) => lastPromptedAt).filter((value): value is string => Boolean(value)).sort().at(-1) ?? null;
-  const dismissedUntil = validCandidates.map(({ dismissedUntil }) => dismissedUntil).filter((value): value is string => Boolean(value)).sort().at(-1) ?? null;
-  const promptHistory = validCandidates.flatMap(({ automaticPromptHistory }) => automaticPromptHistory);
-  const automaticEligible = shouldOfferAutomaticReview({ selection, now, lastPromptedAt, dismissedUntil, promptHistory });
-  return ok({ ...selection, automaticEligible, promptCopy: selection.candidate ? reviewPromptCopy(selection.candidate, now) : null });
+  const selection = selectReviewCandidate({
+    candidates: validCandidates,
+    now,
+    manual: input.manual,
+    lastSelectedId: mostRecent?.challengeId ?? null,
+  });
+  const lastPromptedAt =
+    validCandidates
+      .map(({ lastPromptedAt }) => lastPromptedAt)
+      .filter((value): value is string => Boolean(value))
+      .sort()
+      .at(-1) ?? null;
+  const dismissedUntil =
+    validCandidates
+      .map(({ dismissedUntil }) => dismissedUntil)
+      .filter((value): value is string => Boolean(value))
+      .sort()
+      .at(-1) ?? null;
+  const promptHistory = validCandidates.flatMap(
+    ({ automaticPromptHistory }) => automaticPromptHistory,
+  );
+  const automaticEligible = shouldOfferAutomaticReview({
+    selection,
+    now,
+    lastPromptedAt,
+    dismissedUntil,
+    promptHistory,
+  });
+  return ok({
+    ...selection,
+    automaticEligible,
+    promptCopy: selection.candidate ? reviewPromptCopy(selection.candidate, now) : null,
+  });
 }
 
 export async function recordExplainItBackLearning(challengeId: string) {
-  const database = await getServerDatabaseClient();
-  const response = await database.rpc("record_explain_it_back_learning", { p_challenge_id: challengeId });
-  if (response.error) logger.error("spaced_review.practice_learning_failed", { error_code: response.error.code });
-  return !response.error;
+  const response = await settleOptional(
+    async () => {
+      const database = await getServerDatabaseClient();
+      return database.rpc("record_explain_it_back_learning", { p_challenge_id: challengeId });
+    },
+    null,
+    () => logger.error("spaced_review.practice_learning_rejected"),
+  );
+  if (!response || response.error)
+    logger.error("spaced_review.practice_learning_failed", { error_code: response?.error?.code });
+  return Boolean(response && !response.error);
 }
 
 export async function recordSpacedReviewResult(input: {
@@ -105,32 +144,51 @@ export async function recordSpacedReviewResult(input: {
   exampleViewed: boolean;
   resultToken: string;
 }) {
-  const database = await getServerDatabaseClient();
-  const response = await database.rpc("record_spaced_review_result", {
-    p_challenge_id: input.challengeId,
-    p_verdict: input.verdict,
-    p_had_retry: input.hadRetry,
-    p_example_viewed: input.exampleViewed,
-    p_result_token: input.resultToken,
-  });
-  if (response.error) logger.error("spaced_review.result_failed", { error_code: response.error.code });
-  return !response.error;
+  const response = await settleOptional(
+    async () => {
+      const database = await getServerDatabaseClient();
+      return database.rpc("record_spaced_review_result", {
+        p_challenge_id: input.challengeId,
+        p_verdict: input.verdict,
+        p_had_retry: input.hadRetry,
+        p_example_viewed: input.exampleViewed,
+        p_result_token: input.resultToken,
+      });
+    },
+    null,
+    () => logger.error("spaced_review.result_rejected"),
+  );
+  if (!response || response.error)
+    logger.error("spaced_review.result_failed", { error_code: response?.error?.code });
+  return Boolean(response && !response.error);
 }
 
 export async function recordSpacedReviewExample(challengeId: string, sessionId: string) {
-  const database = await getServerDatabaseClient();
-  const response = await database.rpc("record_spaced_review_example", { p_challenge_id: challengeId, p_session_id: sessionId });
-  return !response.error;
+  const response = await settleOptional(async () => {
+    const database = await getServerDatabaseClient();
+    return database.rpc("record_spaced_review_example", {
+      p_challenge_id: challengeId,
+      p_session_id: sessionId,
+    });
+  }, null);
+  return Boolean(response && !response.error);
 }
 
 export async function recordSpacedReviewPrompt(challengeId: string, promptToken: string) {
-  const database = await getServerDatabaseClient();
-  const response = await database.rpc("record_spaced_review_prompt", { p_challenge_id: challengeId, p_prompt_token: promptToken });
-  return !response.error;
+  const response = await settleOptional(async () => {
+    const database = await getServerDatabaseClient();
+    return database.rpc("record_spaced_review_prompt", {
+      p_challenge_id: challengeId,
+      p_prompt_token: promptToken,
+    });
+  }, null);
+  return Boolean(response && !response.error);
 }
 
 export async function snoozeSpacedReviewPrompts(challengeId: string) {
-  const database = await getServerDatabaseClient();
-  const response = await database.rpc("snooze_spaced_review_prompts", { p_challenge_id: challengeId });
-  return !response.error;
+  const response = await settleOptional(async () => {
+    const database = await getServerDatabaseClient();
+    return database.rpc("snooze_spaced_review_prompts", { p_challenge_id: challengeId });
+  }, null);
+  return Boolean(response && !response.error);
 }

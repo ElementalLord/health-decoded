@@ -13,6 +13,7 @@ import {
   recordExplainItBackLearning,
   recordSpacedReviewResult,
 } from "@/features/spaced-review/services/spaced-review.server";
+import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } as const;
 const error = (status: number, code: string, message: string) =>
@@ -47,13 +48,17 @@ export async function POST(request: Request) {
   if (!parsed.success)
     return error(400, "INVALID_REQUEST", "Please check your explanation and try again.");
 
-  const result = await evaluateExplanation({
-    challengeId: parsed.data.challengeId,
-    explanation: parsed.data.explanation,
-    networkKey: getAiNetworkBucketKey(request),
-    userId: user.data.id,
-    signal: request.signal,
-  });
+  const result = await settleOptional(
+    () =>
+      evaluateExplanation({
+        challengeId: parsed.data.challengeId,
+        explanation: parsed.data.explanation,
+        networkKey: getAiNetworkBucketKey(request),
+        userId: user.data.id,
+        signal: request.signal,
+      }),
+    { ok: false as const, category: "unavailable" as const },
+  );
   if (!result.ok) {
     if (result.category === "rate_limited")
       return error(429, "RATE_LIMITED", "Please wait a moment before checking again.");
@@ -79,5 +84,8 @@ export async function POST(request: Request) {
       await recordExplainItBackLearning(parsed.data.challengeId);
     }
   }
-  return NextResponse.json({ ...result, ...(reviewRecorded !== undefined ? { reviewRecorded } : {}) }, { headers });
+  return NextResponse.json(
+    { ...result, ...(reviewRecorded !== undefined ? { reviewRecorded } : {}) },
+    { headers },
+  );
 }

@@ -9,13 +9,22 @@ import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { getProfileSettings } from "@/features/profile/services/profile-settings.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 import { CURRENT_PATH_HEADER, getSafeRedirectPath } from "@/lib/auth/redirects";
+import { unexpectedError } from "@/lib/errors/application-error";
+import { createServerLogger } from "@/lib/logging/server";
+import { settleResult } from "@/lib/reliability/dependency-boundary";
 import { protectedApplicationRoutes } from "@/lib/routes";
+
+const logger = createServerLogger();
 
 export default async function ProtectedLayout({ children }: { children: ReactNode }) {
   const requestHeaders = await headers();
   const currentPath = requestHeaders.get(CURRENT_PATH_HEADER) ?? "/journey";
   const isOnboarding = currentPath.split("?")[0] === "/onboarding";
-  const user = await getAuthenticatedUser();
+  const user = await settleResult(
+    () => getAuthenticatedUser(),
+    unexpectedError(),
+    () => logger.error("authenticated_shell.auth_rejected"),
+  );
   if (!user.ok) {
     const next = getSafeRedirectPath(currentPath);
     if (user.error.code === "authorization") {
@@ -27,7 +36,11 @@ export default async function ProtectedLayout({ children }: { children: ReactNod
       </AppShell>
     );
   }
-  const profile = await getCurrentProfile();
+  const profile = await settleResult(
+    () => getCurrentProfile(),
+    unexpectedError(),
+    () => logger.error("authenticated_shell.profile_rejected"),
+  );
   if (!profile.ok) {
     const next = getSafeRedirectPath(currentPath);
     if (profile.error.code === "authorization") {
@@ -41,7 +54,11 @@ export default async function ProtectedLayout({ children }: { children: ReactNod
   }
   if (!profile.data.onboarding_completed_at && !isOnboarding) redirect("/onboarding");
 
-  const settings = await getProfileSettings();
+  const settings = await settleResult(
+    () => getProfileSettings(),
+    unexpectedError(),
+    () => logger.error("authenticated_shell.preferences_rejected"),
+  );
 
   const routes = isOnboarding ? undefined : protectedApplicationRoutes;
   return settings.ok ? (

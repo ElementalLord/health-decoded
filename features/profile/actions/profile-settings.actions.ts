@@ -9,6 +9,7 @@ import {
 } from "@/features/profile/schemas/profile-settings.schema";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
+import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
 const logger = createServerLogger();
 
@@ -35,16 +36,22 @@ export async function updateDisplayNameAction(
     };
   if (!user.ok)
     return { status: "error", message: "We couldn’t save your name. Your changes are still here." };
-  const database = await getServerDatabaseClient();
-  const result = await database
-    .from("profiles")
-    .update({ display_name: parsed.data.displayName })
-    .eq("id", user.data.id)
-    .select("id")
-    .maybeSingle();
-  if (result.error || !result.data) {
+  const result = await settleOptional(
+    async () => {
+      const database = await getServerDatabaseClient();
+      return database
+        .from("profiles")
+        .update({ display_name: parsed.data.displayName })
+        .eq("id", user.data.id)
+        .select("id")
+        .maybeSingle();
+    },
+    null,
+    () => logger.error("profile.update_rejected"),
+  );
+  if (!result || result.error || !result.data) {
     logger.error("profile.update_failed", {
-      error_code: result.error?.code ?? "missing_profile",
+      error_code: result?.error?.code ?? "missing_profile",
     });
     return { status: "error", message: "We couldn’t save your name. Please try again." };
   }
@@ -71,24 +78,30 @@ export async function updateSettingsAction(
       status: "error",
       message: "We couldn’t save your settings. Your changes are still here.",
     };
-  const database = await getServerDatabaseClient();
-  const result = await database
-    .from("user_settings")
-    .upsert(
-      {
-        user_id: user.data.id,
-        reduced_motion: parsed.data.reducedMotion,
-        preferred_text_scale: parsed.data.preferredTextScale,
-        locale: parsed.data.locale,
-        timezone: parsed.data.timezone,
-      },
-      { onConflict: "user_id" },
-    )
-    .select("user_id")
-    .maybeSingle();
-  if (result.error || !result.data) {
+  const result = await settleOptional(
+    async () => {
+      const database = await getServerDatabaseClient();
+      return database
+        .from("user_settings")
+        .upsert(
+          {
+            user_id: user.data.id,
+            reduced_motion: parsed.data.reducedMotion,
+            preferred_text_scale: parsed.data.preferredTextScale,
+            locale: parsed.data.locale,
+            timezone: parsed.data.timezone,
+          },
+          { onConflict: "user_id" },
+        )
+        .select("user_id")
+        .maybeSingle();
+    },
+    null,
+    () => logger.error("profile_settings.update_rejected"),
+  );
+  if (!result || result.error || !result.data) {
     logger.error("profile_settings.update_failed", {
-      error_code: result.error?.code ?? "missing_settings",
+      error_code: result?.error?.code ?? "missing_settings",
     });
     return { status: "error", message: "We couldn’t save your settings. Please try again." };
   }

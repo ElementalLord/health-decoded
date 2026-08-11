@@ -1,6 +1,8 @@
 import { ExplainItBackExperience } from "@/features/explain-it-back/components/explain-it-back-experience";
 import { getExplainItBackChallenge } from "@/features/explain-it-back/content/explain-it-back-content";
 import { getSpacedReviewOpportunity } from "@/features/spaced-review/services/spaced-review.server";
+import { unexpectedError } from "@/lib/errors/application-error";
+import { settleResult } from "@/lib/reliability/dependency-boundary";
 
 export const metadata = {
   title: "Explain It Back",
@@ -15,7 +17,10 @@ export default async function ExplainItBackPage({
 }) {
   const { concept, mode } = await searchParams;
   if (mode === "spaced-review") {
-    const opportunity = await getSpacedReviewOpportunity({ manual: true });
+    const opportunity = await settleResult(
+      () => getSpacedReviewOpportunity({ manual: true }),
+      unexpectedError(),
+    );
     return (
       <ExplainItBackExperience
         {...(opportunity.ok && opportunity.data.candidate

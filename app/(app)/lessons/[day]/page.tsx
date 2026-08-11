@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { LessonPlayer } from "@/features/lessons/components/lesson-player";
 import { LessonUnavailableState } from "@/features/lessons/components/lesson-unavailable-state";
@@ -11,7 +11,7 @@ export const metadata = { title: "Lesson" };
 export default async function LessonPage({ params }: { params: Promise<{ day: string }> }) {
   const { day: rawDay } = await params;
   const parsedDay = lessonDaySchema.safeParse(rawDay);
-  if (!parsedDay.success) redirect("/journey");
+  if (!parsedDay.success) notFound();
 
   const profile = await getCurrentProfile();
   if (!profile.ok) {

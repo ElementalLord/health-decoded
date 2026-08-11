@@ -10,6 +10,7 @@ import {
 } from "@/features/ai/services/ai-request-security.server";
 import type { AiChatFailureCategory, AiChatStreamEvent } from "@/features/ai/types/ai";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
+import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
 const encoder = new TextEncoder();
 const securityHeaders = {
@@ -79,13 +80,17 @@ export async function POST(request: Request) {
     return errorResponse(400, "INVALID_AI_REQUEST", "Please check your request and try again.");
   }
 
-  const result = await createAiChatStream(
-    {
-      ...parsed.data,
-      networkKey: getAiNetworkBucketKey(request),
-      userId: user.data.id,
-    },
-    request.signal,
+  const result = await settleOptional(
+    () =>
+      createAiChatStream(
+        {
+          ...parsed.data,
+          networkKey: getAiNetworkBucketKey(request),
+          userId: user.data.id,
+        },
+        request.signal,
+      ),
+    { ok: false as const, category: "unexpected" as const },
   );
   if (!result.ok) return serviceErrorResponse(result.category);
 

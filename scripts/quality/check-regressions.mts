@@ -48,6 +48,12 @@ export async function checkSpacedReview(context: QualityContext) {
   ]);
 }
 
+export async function checkReliability(context: QualityContext) {
+  return runTests(context.root, "reliability", "Fault-injection regressions", [
+    "tests/fault-injection.test.mjs",
+  ]);
+}
+
 export async function checkProtectedContent(context: QualityContext) {
   return runTests(context.root, "protected", "Protected content tests", [
     "tests/lesson-route-coverage.test.mjs",

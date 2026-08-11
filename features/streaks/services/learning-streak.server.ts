@@ -11,6 +11,7 @@ import { getServerDatabaseClient } from "@/lib/database/server";
 import { unexpectedError } from "@/lib/errors/application-error";
 import { createServerLogger } from "@/lib/logging/server";
 import { err, ok, type Result } from "@/lib/result/result";
+import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
 const logger = createServerLogger();
 
@@ -72,8 +73,15 @@ function mapStreak(row: StreakRow): LearningStreak | null {
 }
 
 export async function recordQualifyingLearningActivity(event: QualifyingLearningEvent) {
-  const database = await getServerDatabaseClient();
-  const response = await database.rpc("record_learning_activity", { p_event_type: event });
+  const response = await settleOptional(
+    async () => {
+      const database = await getServerDatabaseClient();
+      return database.rpc("record_learning_activity", { p_event_type: event });
+    },
+    null,
+    () => logger.error("learning_streak.record_rejected"),
+  );
+  if (!response) return err(unexpectedError());
   const mapped = response.data?.[0] ? mapStreak(response.data[0]) : null;
   if (response.error || !mapped) {
     logger.error("learning_streak.record_failed", { error_code: response.error?.code });

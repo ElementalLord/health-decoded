@@ -8,27 +8,35 @@ import { toResult } from "@/lib/database/query";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
 import { err, type Result } from "@/lib/result/result";
+import { unexpectedError } from "@/lib/errors/application-error";
+import { settleResult } from "@/lib/reliability/dependency-boundary";
 
 const logger = createServerLogger();
 
 export const getCurrentProfile = cache(async function getCurrentProfile(): Promise<
   Result<Profile>
 > {
-  const user = await getAuthenticatedUser();
-  if (!user.ok) return err(user.error);
+  return settleResult(
+    async () => {
+      const user = await getAuthenticatedUser();
+      if (!user.ok) return err(user.error);
 
-  const database = await getServerDatabaseClient();
-  const response = await database
-    .from("profiles")
-    .select("id, display_name, onboarding_completed_at, onboarding_intent, created_at")
-    .eq("id", user.data.id)
-    .maybeSingle();
+      const database = await getServerDatabaseClient();
+      const response = await database
+        .from("profiles")
+        .select("id, display_name, onboarding_completed_at, onboarding_intent, created_at")
+        .eq("id", user.data.id)
+        .maybeSingle();
 
-  if (response.error) {
-    logger.error("profile.load_failed", { error_code: response.error.code });
-  } else if (!response.data) {
-    logger.error("profile.missing_for_authenticated_user");
-  }
+      if (response.error) {
+        logger.error("profile.load_failed", { error_code: response.error.code });
+      } else if (!response.data) {
+        logger.error("profile.missing_for_authenticated_user");
+      }
 
-  return toResult(response);
+      return toResult(response);
+    },
+    unexpectedError(),
+    () => logger.error("profile.load_rejected"),
+  );
 });

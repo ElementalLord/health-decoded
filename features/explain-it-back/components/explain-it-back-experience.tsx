@@ -47,6 +47,9 @@ export function ExplainItBackExperience({
   const feedbackRef = useRef<HTMLDivElement>(null);
   const reviewSessionId = useRef<string | null>(null);
   const resultToken = useRef<string | null>(null);
+  const submissionController = useRef<AbortController | null>(null);
+  const submissionInFlight = useRef(false);
+  const submissionVersion = useRef(0);
   const challenge = challengeId ? getExplainItBackChallenge(challengeId) : null;
   const useful = useMemo(() => hasUsefulExplanation(explanation), [explanation]);
 
@@ -63,6 +66,15 @@ export function ExplainItBackExperience({
   useEffect(() => {
     if (feedback || safetyMessage || formError) feedbackRef.current?.focus();
   }, [feedback, formError, safetyMessage]);
+
+  useEffect(
+    () => () => {
+      submissionVersion.current += 1;
+      submissionController.current?.abort();
+      submissionInFlight.current = false;
+    },
+    [],
+  );
 
   function chooseChallenge(id: string) {
     setChallengeId(id);
@@ -97,11 +109,14 @@ export function ExplainItBackExperience({
   }
 
   async function submit() {
-    if (!challenge || !useful || submitting) return;
+    if (!challenge || !useful || submitting || submissionInFlight.current) return;
+    submissionInFlight.current = true;
     setSubmitting(true);
     setFormError(null);
     setSafetyMessage(null);
     const controller = new AbortController();
+    submissionController.current = controller;
+    const requestVersion = ++submissionVersion.current;
     let timedOut = false;
     let controlledFailureMessage: string | null = null;
     const timeoutTimer = window.setTimeout(() => {
@@ -109,7 +124,8 @@ export function ExplainItBackExperience({
       controller.abort();
     }, 25_000);
     try {
-      if (mode === "spaced-review" && !resultToken.current) resultToken.current = window.crypto.randomUUID();
+      if (mode === "spaced-review" && !resultToken.current)
+        resultToken.current = window.crypto.randomUUID();
       const response = await fetch("/api/explain-it-back/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -124,6 +140,7 @@ export function ExplainItBackExperience({
         signal: controller.signal,
       });
       const body = (await response.json()) as EvaluationResponse | { error?: { message?: string } };
+      if (requestVersion !== submissionVersion.current) return;
       if (response.status === 401) {
         setFormError({
           kind: "auth",
@@ -146,6 +163,7 @@ export function ExplainItBackExperience({
         resultToken.current = null;
       }
     } catch {
+      if (requestVersion !== submissionVersion.current) return;
       setFormError({
         kind: timedOut ? "timeout" : "request",
         message: timedOut
@@ -155,7 +173,11 @@ export function ExplainItBackExperience({
       });
     } finally {
       window.clearTimeout(timeoutTimer);
-      setSubmitting(false);
+      if (requestVersion === submissionVersion.current) {
+        submissionController.current = null;
+        submissionInFlight.current = false;
+        setSubmitting(false);
+      }
     }
   }
 
@@ -163,7 +185,10 @@ export function ExplainItBackExperience({
     setShowExample(true);
     setExampleViewed(true);
     if (mode === "spaced-review" && challenge && reviewSessionId.current) {
-      await recordSpacedReviewExampleAction({ challengeId: challenge.id, token: reviewSessionId.current });
+      await recordSpacedReviewExampleAction({
+        challengeId: challenge.id,
+        token: reviewSessionId.current,
+      });
     }
   }
 
@@ -174,7 +199,9 @@ export function ExplainItBackExperience({
           <div className={styles.introCopy}>
             <p className="editorial-eyebrow">A quick review</p>
             <h1 ref={headingRef} tabIndex={-1}>
-              {reviewUnavailable ? "We couldn’t choose a review right now." : "Nothing to review yet."}
+              {reviewUnavailable
+                ? "We couldn’t choose a review right now."
+                : "Nothing to review yet."}
             </h1>
             <p className={styles.introduction}>
               {reviewUnavailable
@@ -182,7 +209,8 @@ export function ExplainItBackExperience({
                 : "Once you’ve worked through a few concepts, Health Decoded will bring some of them back for a quick check-in."}
             </p>
             <Link className={styles.journeyLink} href="/journey">
-              {reviewUnavailable ? "Try again from Journey" : "Continue learning"} <ArrowRight aria-hidden="true" />
+              {reviewUnavailable ? "Try again from Journey" : "Continue learning"}{" "}
+              <ArrowRight aria-hidden="true" />
             </Link>
           </div>
         </section>
@@ -411,7 +439,8 @@ export function ExplainItBackExperience({
                   <div className={styles.feedbackActions}>
                     {feedback.verdict === "got_it" ? (
                       <Link className={styles.journeyLink} href="/journey">
-                        {mode === "spaced-review" ? "Done" : "Back to Journey"} <ArrowRight aria-hidden="true" />
+                        {mode === "spaced-review" ? "Done" : "Back to Journey"}{" "}
+                        <ArrowRight aria-hidden="true" />
                       </Link>
                     ) : (
                       <Button fullWidth={false} onClick={retry}>
@@ -441,7 +470,9 @@ export function ExplainItBackExperience({
                         Choose another concept
                       </Button>
                     ) : (
-                      <Link className={styles.journeyLink} href="/journey">Done</Link>
+                      <Link className={styles.journeyLink} href="/journey">
+                        Done
+                      </Link>
                     )}
                   </div>
                 </section>

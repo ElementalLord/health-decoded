@@ -19,6 +19,11 @@ import { LearningStreakPanel } from "@/features/streaks/components/learning-stre
 import { getLearningStreak } from "@/features/streaks/services/learning-streak.server";
 import { JourneySpacedReview } from "@/features/spaced-review/components/journey-spaced-review";
 import { getSpacedReviewOpportunity } from "@/features/spaced-review/services/spaced-review.server";
+import { unexpectedError } from "@/lib/errors/application-error";
+import { createServerLogger } from "@/lib/logging/server";
+import { settleResult } from "@/lib/reliability/dependency-boundary";
+
+const logger = createServerLogger();
 
 export const metadata = { title: "Your journey" };
 
@@ -28,7 +33,9 @@ export default async function JourneyPage({
   searchParams: Promise<{ completed?: string; welcome?: string }>;
 }) {
   const { completed, welcome } = await searchParams;
-  const profile = await getCurrentProfile();
+  const profile = await settleResult(getCurrentProfile, unexpectedError(), () =>
+    logger.error("journey.profile_rejected"),
+  );
 
   if (!profile.ok) {
     return (
@@ -41,7 +48,9 @@ export default async function JourneyPage({
 
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
-  const journey = await getJourneyHomeData();
+  const journey = await settleResult(getJourneyHomeData, unexpectedError(), () =>
+    logger.error("journey.core_rejected"),
+  );
 
   if (!journey.ok) {
     return (
@@ -58,11 +67,21 @@ export default async function JourneyPage({
     completedDay >= 1 &&
     completedDay <= journey.data.progress.totalDays &&
     completedDay <= journey.data.progress.completedLessons;
-  const spacedReview = await getSpacedReviewOpportunity({ manual: false });
+  const spacedReview = await settleResult(
+    () => getSpacedReviewOpportunity({ manual: false }),
+    unexpectedError(),
+    () => logger.error("journey.spaced_review_rejected"),
+  );
   const dueReview = spacedReview.ok && spacedReview.data.due;
   const [nextStep, learningStreak] = await Promise.all([
-    getNextStep(journey.data, showCompletionArrival ? completedDay : undefined, dueReview),
-    getLearningStreak(),
+    settleResult(
+      () => getNextStep(journey.data, showCompletionArrival ? completedDay : undefined, dueReview),
+      unexpectedError(),
+      () => logger.error("journey.next_step_rejected"),
+    ),
+    settleResult(getLearningStreak, unexpectedError(), () =>
+      logger.error("journey.streak_rejected"),
+    ),
   ]);
   const nextStepSelection = nextStep.ok ? nextStep.data : fallbackNextStepForJourney(journey.data);
   const learningTools = (

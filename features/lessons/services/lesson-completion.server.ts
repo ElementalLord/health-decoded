@@ -49,10 +49,16 @@ function mapCompletionResult(row: CompleteCurrentLessonRpcRow): LessonCompletion
 export async function completeLesson(
   lessonProgressId: string,
 ): Promise<Result<LessonCompletionResult, CompleteLessonServiceError>> {
-  const database = await getServerDatabaseClient();
-  const response = await database.rpc("complete_current_lesson", {
-    p_lesson_progress_id: lessonProgressId,
-  });
+  let response;
+  try {
+    const database = await getServerDatabaseClient();
+    response = await database.rpc("complete_current_lesson", {
+      p_lesson_progress_id: lessonProgressId,
+    });
+  } catch {
+    logger.error("lesson_completion.operation_rejected");
+    return err("unavailable");
+  }
   const row = response.data?.[0];
 
   if (response.error) {

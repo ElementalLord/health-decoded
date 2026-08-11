@@ -10,8 +10,17 @@ import { createServerLogger } from "@/lib/logging/server";
 const logger = createServerLogger();
 
 export const getAuthenticatedUser = cache(async function getAuthenticatedUser() {
-  const database = await getServerDatabaseClient();
-  const { data, error } = await database.auth.getUser();
+  const response = await (async () => {
+    try {
+      const database = await getServerDatabaseClient();
+      return await database.auth.getUser();
+    } catch {
+      logger.error("auth.session_check_rejected");
+      return null;
+    }
+  })();
+  if (!response) return err(unexpectedError());
+  const { data, error } = response;
 
   if (data.user) return ok(data.user);
   if (!error || error.status === 401 || error.status === 403) return err(authorizationError());

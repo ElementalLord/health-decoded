@@ -55,7 +55,7 @@ const lessonStorageSources = (
 
 test("optional account preferences do not gate every authenticated route", () => {
   assert.match(sources.layout, /getCurrentProfile\(\)/);
-  assert.match(sources.layout, /const settings = await getProfileSettings\(\)/);
+  assert.match(sources.layout, /const settings = await settleResult\([\s\S]*getProfileSettings\(\)/);
   assert.match(sources.layout, /settings\.ok \? \(/);
   assert.match(sources.layout, /<AppShell routes=\{routes\}>/);
 });
@@ -229,7 +229,10 @@ test("Explain It Back timeout and malformed output preserve the response without
 });
 
 test("Explain It Back empty input stays local and does not submit", () => {
-  assert.match(sources.explain, /if \(!challenge \|\| !useful \|\| submitting\) return/);
+  assert.match(
+    sources.explain,
+    /if \(!challenge \|\| !useful \|\| submitting \|\| submissionInFlight\.current\) return/,
+  );
   assert.match(sources.explain, /disabled=\{!useful \|\| submitting\}/);
 });
 
@@ -291,8 +294,14 @@ test("lesson and story browser-storage failure cannot interrupt the active exper
 });
 
 test("double submissions and empty mutations remain guarded", () => {
-  assert.match(sources.aiChat, /if \(isStreaming \|\| !question\.trim\(\)\) return/);
-  assert.match(sources.explain, /if \(!challenge \|\| !useful \|\| submitting\) return/);
+  assert.match(
+    sources.aiChat,
+    /if \(isStreaming \|\| requestInFlightRef\.current \|\| !question\.trim\(\)\) return/,
+  );
+  assert.match(
+    sources.explain,
+    /if \(!challenge \|\| !useful \|\| submitting \|\| submissionInFlight\.current\) return/,
+  );
   assert.match(sources.profile, /disabled=\{pending\}/);
   assert.match(sources.onboarding, /disabled=\{pending\}/);
 });

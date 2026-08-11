@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { recognizeMilestoneEvent } from "@/features/achievements/services/milestones.server";
 import type { MilestoneEvent } from "@/features/achievements/types/milestone";
+import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
 function isCount(value: unknown) {
   return Number.isInteger(value) && Number(value) >= 0 && Number(value) <= 100;
@@ -26,7 +27,11 @@ function parseEvent(input: unknown): MilestoneEvent | null {
         : null;
     case "appointment_questions_completed":
       return isCount(value.questionCount) && isCount(value.categoryCount)
-        ? { event: value.event, questionCount: Number(value.questionCount), categoryCount: Number(value.categoryCount) }
+        ? {
+            event: value.event,
+            questionCount: Number(value.questionCount),
+            categoryCount: Number(value.categoryCount),
+          }
         : null;
     case "appointment_summary_completed":
       return isCount(value.completedSectionCount)
@@ -52,8 +57,11 @@ function parseEvent(input: unknown): MilestoneEvent | null {
 export async function recognizeMilestoneAction(input: unknown) {
   const event = parseEvent(input);
   if (!event) return { ok: false as const, milestoneIds: [] as string[] };
-  const recognized = await recognizeMilestoneEvent(event, { recordStreak: true });
-  if (!recognized.ok) return { ok: false as const, milestoneIds: [] as string[] };
+  const recognized = await settleOptional(
+    () => recognizeMilestoneEvent(event, { recordStreak: true }),
+    null,
+  );
+  if (!recognized?.ok) return { ok: false as const, milestoneIds: [] as string[] };
   revalidatePath("/milestones");
   revalidatePath("/journey");
   return { ok: true as const, milestoneIds: [...recognized.data] };

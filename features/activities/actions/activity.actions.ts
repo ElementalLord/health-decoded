@@ -4,6 +4,7 @@ import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import { matchPairResponseSchema } from "@/features/activities/schemas/activity-response.schema";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
+import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
 const logger = createServerLogger();
 
@@ -22,12 +23,20 @@ export async function evaluateMatchPairAction(input: unknown): Promise<ActivityE
     return { ok: false, message: "We could not check that response right now. Please try again." };
   }
 
-  const database = await getServerDatabaseClient();
-  const response = await database.rpc("evaluate_match_pair_activity", {
-    p_activity_id: parsed.data.activityId,
-    p_lesson_progress_id: parsed.data.lessonProgressId,
-    p_response: { pairs: parsed.data.pairs },
-  });
+  const response = await settleOptional(
+    async () => {
+      const database = await getServerDatabaseClient();
+      return database.rpc("evaluate_match_pair_activity", {
+        p_activity_id: parsed.data.activityId,
+        p_lesson_progress_id: parsed.data.lessonProgressId,
+        p_response: { pairs: parsed.data.pairs },
+      });
+    },
+    null,
+    () => logger.error("activities.evaluation_rejected"),
+  );
+  if (!response)
+    return { ok: false, message: "We could not check that response right now. Please try again." };
   const evaluated = response.data?.[0];
 
   if (response.error || !evaluated || !evaluated.feedback_message) {

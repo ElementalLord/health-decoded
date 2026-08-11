@@ -140,6 +140,7 @@ export function AiChat() {
   const [newConversationOpen, setNewConversationOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const requestInFlightRef = useRef(false);
   const activeAssistantIdRef = useRef<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const conversationEndRef = useRef<HTMLDivElement>(null);
@@ -148,6 +149,7 @@ export function AiChat() {
   useEffect(
     () => () => {
       abortControllerRef.current?.abort();
+      requestInFlightRef.current = false;
       if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
     },
     [],
@@ -211,9 +213,10 @@ export function AiChat() {
   }
 
   async function ask(question: string, regenerate = false) {
-    if (isStreaming || !question.trim()) return;
+    if (isStreaming || requestInFlightRef.current || !question.trim()) return;
 
     const controller = new AbortController();
+    requestInFlightRef.current = true;
     abortControllerRef.current = controller;
     setError(null);
     setIsTakingLonger(false);
@@ -345,6 +348,7 @@ export function AiChat() {
       window.clearTimeout(timeoutTimer);
       setIsTakingLonger(false);
       if (abortControllerRef.current === controller) {
+        requestInFlightRef.current = false;
         setIsStreaming(false);
         abortControllerRef.current = null;
         activeAssistantIdRef.current = null;
@@ -391,6 +395,7 @@ export function AiChat() {
     const assistantId = activeAssistantIdRef.current;
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
+    requestInFlightRef.current = false;
     activeAssistantIdRef.current = null;
     setIsStreaming(false);
     setMessages((current) =>

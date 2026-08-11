@@ -17,15 +17,22 @@ import { getServerDatabaseClient } from "@/lib/database/server";
 
 export async function buildUniversalSearchIndex(): Promise<UniversalSearchDocument[] | null> {
   noStore();
-  const database = await getServerDatabaseClient();
-  const response = await database
-    .from("journey_lessons")
-    .select(
-      "day_number, status, lessons!inner(id, title, subtitle, primary_topic, learning_objective, status)",
-    )
-    .eq("status", "published")
-    .eq("lessons.status", "published")
-    .order("display_order", { ascending: true });
+  const response = await (async () => {
+    try {
+      const database = await getServerDatabaseClient();
+      return await database
+        .from("journey_lessons")
+        .select(
+          "day_number, status, lessons!inner(id, title, subtitle, primary_topic, learning_objective, status)",
+        )
+        .eq("status", "published")
+        .eq("lessons.status", "published")
+        .order("display_order", { ascending: true });
+    } catch {
+      return null;
+    }
+  })();
+  if (!response) return null;
   if (response.error || !response.data) return null;
   const lessons = adaptLessonSearchDocuments(response.data as SearchableLessonRow[]);
   const documents = [...staticSearchDocuments, ...lessons];

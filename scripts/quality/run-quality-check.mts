@@ -12,7 +12,8 @@ import { checkRoutes } from "./check-routes.mts";
 import { qualityConfig } from "./quality.config.mts";
 import type { QualityChecker, QualityIssue } from "./types.mts";
 
-const { checkAiEvaluations, checkProtectedContent, checkSpacedReview } = regressionChecks;
+const { checkAiEvaluations, checkProtectedContent, checkReliability, checkSpacedReview } =
+  regressionChecks;
 
 const checkers: Array<{ name: string; run: QualityChecker }> = [
   { name: "routes", run: checkRoutes },
@@ -20,6 +21,7 @@ const checkers: Array<{ name: string; run: QualityChecker }> = [
   { name: "images", run: checkImages },
   { name: "ai", run: checkAiEvaluations },
   { name: "spaced-review", run: checkSpacedReview },
+  { name: "reliability", run: checkReliability },
   { name: "protected", run: checkProtectedContent },
 ];
 
