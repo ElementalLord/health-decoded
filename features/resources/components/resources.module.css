@@ -2,7 +2,9 @@
   --editorial-ink: var(--foreground);
   --editorial-body: #5f534d;
   --editorial-soft: #796c63;
-  --editorial-coral: #735d68;
+  --editorial-coral: #806f61;
+  --editorial-action: #e3d8cd;
+  --editorial-action-hover: #d8cabd;
   --editorial-paper: #fffaf5;
   --editorial-wash: #e8eee6;
   --editorial-sage-strong: #dfe7dc;
@@ -293,6 +295,7 @@
 
 .featuredLink {
   align-items: stretch;
+  column-gap: clamp(2rem, 4vw, 3.5rem);
   display: grid;
   grid-template-columns: minmax(18rem, 0.86fr) minmax(0, 1.14fr);
 }
@@ -353,7 +356,7 @@
 
 .featuredSide > a {
   align-items: stretch;
-  column-gap: 1.25rem;
+  column-gap: clamp(1.75rem, 3vw, 2.5rem);
   display: grid;
   grid-template-columns: minmax(15rem, 0.95fr) minmax(0, 1.05fr);
   height: 100%;
@@ -416,9 +419,9 @@
 .readGuide {
   align-items: center;
   align-self: flex-start;
-  background: var(--editorial-coral);
+  background: var(--editorial-action);
   border-radius: 0.4rem;
-  color: #fffaf5;
+  color: var(--editorial-ink);
   display: inline-flex;
   font-size: 0.67rem;
   font-weight: 780;
@@ -943,8 +946,8 @@
   }
 
   article:hover .readGuide {
-    background: #624454;
-    color: var(--background);
+    background: var(--editorial-action-hover);
+    color: var(--editorial-ink);
     transform: translateY(-1px);
   }
 

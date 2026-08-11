@@ -159,24 +159,25 @@ test("resource groups use colored tonal hierarchy without repeated divider lines
   assert.match(styles, /\.wideFeature \{\s+background: var\(--editorial-sage-strong\);/);
 });
 
-test("masthead stays proportionate and one plum action remains visually primary", () => {
+test("masthead stays proportionate and one muted action remains visually primary", () => {
   assert.match(
     styles,
     /\.mastheadCopy \{[\s\S]*grid-template-columns: minmax\(0, 1\.05fr\) minmax\(24rem, 0\.95fr\);/,
   );
   assert.match(styles, /font-size: clamp\(2\.75rem, 4\.8vw, 4\.25rem\);/);
-  assert.match(styles, /\.readGuide \{[\s\S]*background: var\(--editorial-coral\);/);
+  assert.match(styles, /\.readGuide \{[\s\S]*background: var\(--editorial-action\);/);
   assert.match(
     styles,
-    /article:hover \.readGuide \{\s+background: #624454;\s+color: var\(--background\);/,
+    /article:hover \.readGuide \{\s+background: var\(--editorial-action-hover\);\s+color: var\(--editorial-ink\);/,
   );
   assert.match(styles, /\.externalArrow \{\s+display: none;/);
   assert.match(styles, /\.articleLabel::before \{\s+content: none;/);
 });
 
-test("the resources palette uses muted sage, rose, sky, and plum paper tones", () => {
+test("the resources palette uses muted sage, rose, sky, and taupe paper tones", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-coral: #735d68;/);
+  assert.match(styles, /--editorial-coral: #806f61;/);
+  assert.match(styles, /--editorial-action: #e3d8cd;/);
   assert.match(styles, /--editorial-wash: #e8eee6;/);
   assert.match(styles, /--editorial-sage-strong: #dfe7dc;/);
   assert.match(styles, /--editorial-rose: #f0e9e4;/);
