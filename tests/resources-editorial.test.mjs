@@ -119,6 +119,18 @@ test("the visual hierarchy keeps articles larger and more explicit than supporti
   assert.doesNotMatch(styles, /\.meta \{[^}]*margin-top: auto/s);
 });
 
+test("supporting features balance landscape media with adjacent copy", () => {
+  assert.match(
+    styles,
+    /\.featuredSide > a \{[\s\S]*grid-template-columns: minmax\(13\.5rem, 0\.82fr\) minmax\(0, 1\.18fr\);/,
+  );
+  assert.match(styles, /\.sideCopy \{[\s\S]*justify-content: center;/);
+  assert.match(
+    styles,
+    /@media \(max-width: 48rem\)[\s\S]*\.featuredSide > a \{\s+grid-template-columns: 1fr;/,
+  );
+});
+
 test("the reading room uses open editorial rows instead of repeated boxes", () => {
   assert.match(styles, /\.pathCard \{\s+background: transparent;\s+border: 0;\s+border-top:/);
   assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
@@ -130,6 +142,21 @@ test("the reading room uses open editorial rows instead of repeated boxes", () =
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(styles, /focus-visible/);
   assert.match(styles, /transform: translate\(2px, -2px\)/);
+});
+
+test("resource groups use flat tonal hierarchy without vertical accent rules", () => {
+  assert.match(styles, /\.newHereGrid \{[\s\S]*border-block: 1px solid var\(--editorial-rule\);/);
+  assert.match(
+    styles,
+    /\.newHereGrid \.leadArticle \{\s+background: color-mix\(in srgb, var\(--editorial-wash\) 72%, transparent\);/,
+  );
+  assert.match(
+    styles,
+    /\.newHereGrid \.compactArticle \{\s+background: color-mix\(in srgb, var\(--card\) 58%, transparent\);/,
+  );
+  assert.doesNotMatch(styles, /border-left:/);
+  assert.doesNotMatch(styles, /border-right:/);
+  assert.match(styles, /\.wideFeature \{[\s\S]*border-top: 2px solid var\(--editorial-coral\);/);
 });
 
 test("the resources palette follows the product's warm design tokens", () => {
