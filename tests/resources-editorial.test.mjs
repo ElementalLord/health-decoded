@@ -130,6 +130,13 @@ test("the reading room uses restrained corners, responsive layouts, and motion-s
   assert.match(styles, /transform: translate\(2px, -2px\)/);
 });
 
+test("article treatments avoid decorative bubble icons", () => {
+  assert.doesNotMatch(component, /CircleDollarSign/);
+  assert.doesNotMatch(component, /styles\.checkIcon/);
+  assert.doesNotMatch(styles, /\.checkIcon/);
+  assert.doesNotMatch(styles, /\.supportFeature > a > svg:first-child/);
+});
+
 test("external reading links disclose their behavior", () => {
   assert.match(component, /rel="noopener noreferrer"/);
   assert.match(component, /target="_blank"/);

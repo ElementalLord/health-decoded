@@ -7,7 +7,6 @@ import {
   ArrowUpRight,
   BookOpenText,
   Check,
-  CircleDollarSign,
   CircleHelp,
   ClipboardCheck,
   HeartPulse,
@@ -335,9 +334,6 @@ function ChecklistArticle({
           </div>
         ) : null}
         <div className={styles.checklistCopy}>
-          <div className={styles.checkIcon}>
-            <Check aria-hidden="true" size={20} strokeWidth={1.8} />
-          </div>
           <p className={styles.checkNote}>{note}</p>
           <h3>{resource.title}</h3>
           <p>{resource.description}</p>
@@ -398,7 +394,6 @@ function SupportFeature({ resource }: { resource: Resource }) {
   return (
     <article className={styles.supportFeature}>
       <ResourceLink resource={resource}>
-        <CircleDollarSign aria-hidden="true" size={28} strokeWidth={1.35} />
         <ArticleLabel resource={resource} />
         <h3>{resource.title}</h3>
         <p>{resource.description}</p>
