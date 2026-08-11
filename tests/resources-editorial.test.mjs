@@ -165,7 +165,7 @@ test("masthead stays proportionate and one muted action remains visually primary
   assert.match(styles, /\.readGuide \{[\s\S]*background: var\(--editorial-action\);/);
   assert.match(
     styles,
-    /article:hover \.readGuide \{\s+background: var\(--editorial-action-hover\);\s+color: var\(--editorial-ink\);/,
+    /article:hover \.readGuide \{\s+background: var\(--editorial-action-hover\);\s+box-shadow: 0 5px 16px var\(--editorial-action-glow\);\s+color: var\(--editorial-ink\);/,
   );
   assert.match(styles, /\.externalArrow \{\s+display: none;/);
   assert.match(styles, /\.articleLabel::before \{\s+content: none;/);
@@ -173,8 +173,13 @@ test("masthead stays proportionate and one muted action remains visually primary
 
 test("the resources palette reserves color for actions", () => {
   assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-action: #e3d8cd;/);
+  assert.match(styles, /--editorial-action: #f0e7df;/);
+  assert.match(styles, /--editorial-action-glow: rgba\(158, 119, 96, 0\.1\);/);
   assert.match(styles, /\.readGuide \{[\s\S]*background: var\(--editorial-action\);/);
+  assert.match(
+    styles,
+    /\.readGuide \{[\s\S]*box-shadow: 0 3px 12px var\(--editorial-action-glow\);/,
+  );
   assert.match(styles, /\.sourceNote \{\s+background: transparent;/);
   assert.doesNotMatch(styles, /--editorial-(?:coral|wash|sage-strong|rose|sky):/);
   assert.doesNotMatch(styles, /accent-warm/);

@@ -2,8 +2,9 @@
   --editorial-ink: var(--foreground);
   --editorial-body: #5f534d;
   --editorial-soft: #796c63;
-  --editorial-action: #e3d8cd;
-  --editorial-action-hover: #d8cabd;
+  --editorial-action: #f0e7df;
+  --editorial-action-hover: #eaded4;
+  --editorial-action-glow: rgba(158, 119, 96, 0.1);
   color: var(--editorial-body);
 }
 
@@ -415,6 +416,7 @@
   align-self: flex-start;
   background: var(--editorial-action);
   border-radius: 0.4rem;
+  box-shadow: 0 3px 12px var(--editorial-action-glow);
   color: var(--editorial-ink);
   display: inline-flex;
   font-size: 0.67rem;
@@ -941,6 +943,7 @@
 
   article:hover .readGuide {
     background: var(--editorial-action-hover);
+    box-shadow: 0 5px 16px var(--editorial-action-glow);
     color: var(--editorial-ink);
     transform: translateY(-1px);
   }
