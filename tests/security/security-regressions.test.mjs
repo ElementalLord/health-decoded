@@ -86,6 +86,18 @@ test("model endpoints authenticate before parsing or invoking providers", async 
   }
 });
 
+test("AI authentication keeps anonymous requests separate from dependency failures", async () => {
+  const [route, auth] = await Promise.all([
+    read("app/api/ai/chat/route.ts"),
+    read("features/auth/services/auth.server.ts"),
+  ]);
+  assert.match(auth, /hasSupabaseAuthSessionCookie\(cookieStore\.getAll\(\)\)/);
+  assert.match(auth, /if \(!hasSessionCookie\) return err\(authorizationError\(\)\)/);
+  assert.match(auth, /isUnauthenticatedSessionCheck\(hasSessionCookie, error\)/);
+  assert.match(route, /errorResponse\(401, "UNAUTHORIZED"/);
+  assert.match(route, /errorResponse\(503, "AUTH_UNAVAILABLE"/);
+});
+
 test("model endpoints enforce same-origin JSON and bounded bodies", async () => {
   for (const path of ["app/api/ai/chat/route.ts", "app/api/explain-it-back/evaluate/route.ts"]) {
     const source = await read(path);

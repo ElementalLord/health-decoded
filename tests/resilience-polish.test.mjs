@@ -61,8 +61,12 @@ test("optional account preferences do not gate every authenticated route", () =>
 });
 
 test("authentication outages do not masquerade as expired sessions", async () => {
-  const auth = await read("features/auth/services/auth.server.ts");
-  assert.match(auth, /error\.status === 401 \|\| error\.status === 403/);
+  const [auth, session] = await Promise.all([
+    read("features/auth/services/auth.server.ts"),
+    read("lib/auth/supabase-session.ts"),
+  ]);
+  assert.match(auth, /isUnauthenticatedSessionCheck\(hasSessionCookie, error\)/);
+  assert.match(session, /error\.status === 401 \|\| error\.status === 403/);
   assert.match(auth, /auth\.session_check_unavailable/);
   assert.match(auth, /unexpectedError\(\)/);
   assert.match(sources.layout, /SessionUnavailableState/);
