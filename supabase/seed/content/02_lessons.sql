@@ -139,8 +139,8 @@ insert into public.lessons (
   '[{"type":"summary","title":"The body system","points":["Glucose is a source of energy.","Insulin helps many cells take in glucose.","Cells may respond less effectively to insulin.","The pancreas may not meet the body’s increased insulin need.","More glucose remains in the blood."]}]'::jsonb,
   'Type 2 diabetes is not simply about whether the body makes insulin. The body may respond less effectively to insulin, and the pancreas may not make enough insulin to meet the increased need. As a result, more glucose remains in the blood.',
   'published',
-  'Implementation specification, medical review pending',
-  '2026-07-15T00:00:00Z',
+  'Health Decoded curriculum optimization review; ADA Standards of Care in Diabetes—2026; CDC diabetes guidance',
+  '2026-07-22T00:00:00Z',
   '2026-07-15T00:00:00Z'
 )
 on conflict (id) do update set

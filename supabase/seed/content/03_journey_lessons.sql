@@ -58,8 +58,8 @@ insert into public.journey_lessons (
   2,
   '30000000-0000-0000-0000-000000000001',
   'published',
-  'Implementation specification, medical review pending',
-  '2026-07-15T00:00:00Z',
+  'Health Decoded curriculum optimization review; ADA Standards of Care in Diabetes—2026; CDC diabetes guidance',
+  '2026-07-22T00:00:00Z',
   '2026-07-15T00:00:00Z'
 )
 on conflict (id) do update set
