@@ -708,7 +708,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           <EditorialPhoto
             alt="An older woman and community pharmacist building a medicine timing routine together"
             eyebrow="A routine built with someone"
-            note="The useful plan connects the exact medicine to its timing, purpose, and written instructions—without asking memory to carry everything."
+            note="The useful plan connects the exact medicine to its timing, purpose, and written instructions, without asking memory to carry everything."
             src="/resources/pharmacist-routine-editorial.png"
             title="Questions belong in the medicine routine."
           />

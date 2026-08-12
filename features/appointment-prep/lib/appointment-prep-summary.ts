@@ -37,7 +37,7 @@ export function buildAppointmentPrepSummary(state: AppointmentPrepState): Appoin
     const question = clean(item.question);
     return detail || question
       ? [
-          `${item.category || "Clarification"}: ${detail}${detail && question ? ` — ${question}` : question}`,
+          `${item.category || "Clarification"}: ${detail}${detail && question ? ` (${question})` : question}`,
         ]
       : [];
   });
@@ -56,7 +56,7 @@ export function buildAppointmentPrepSummary(state: AppointmentPrepState): Appoin
   const understanding = state.understandingItems.flatMap((item) =>
     clean(item.text)
       ? [
-          `${item.kind === "understand" ? "I think I understand" : item.kind === "unsure" ? "I am unsure about" : "I want confirmed"}: ${clean(item.text)}${clean(item.question) ? ` — ${clean(item.question)}` : ""}`,
+          `${item.kind === "understand" ? "I think I understand" : item.kind === "unsure" ? "I am unsure about" : "I want confirmed"}: ${clean(item.text)}${clean(item.question) ? ` (${clean(item.question)})` : ""}`,
         ]
       : [],
   );
@@ -78,7 +78,7 @@ export function buildAppointmentPrepSummary(state: AppointmentPrepState): Appoin
         item.location === "Another location" && clean(item.locationDetail)
           ? clean(item.locationDetail)
           : item.location;
-      return `✓ ${item.label}${location ? ` — ${location}` : ""}`;
+      return `✓ ${item.label}${location ? ` (${location})` : ""}`;
     });
   if (documents.length)
     sections.push({ id: "bring", title: "Documents and items", lines: documents });

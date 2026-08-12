@@ -25,6 +25,7 @@ const sourceSeeds = [
   ["FDA_DIABETES_SCAMS", "U.S. Food and Drug Administration", "Illegally Sold Diabetes Treatments", "https://www.fda.gov/consumers/health-fraud-scams/illegally-sold-diabetes-treatments"],
   ["FDA_HEALTH_FRAUD", "U.S. Food and Drug Administration", "Health Fraud Scams", "https://www.fda.gov/consumers/health-fraud-scams"],
   ["FDA_SCAM_SIGNS", "U.S. Food and Drug Administration", "Six Tip-offs to Rip-offs", "https://www.fda.gov/consumers/consumer-updates/6-tip-offs-rip-offs-dont-fall-health-fraud-scams"],
+  ["FDA_SERVING_SIZE", "U.S. Food and Drug Administration", "Serving Size on the Nutrition Facts Label", "https://www.fda.gov/food/nutrition-facts-label/serving-size-nutrition-facts-label"],
 ] as const;
 
 export const mythCheckSources = sourceSeeds.map(([id, organization, title, url]) => ({

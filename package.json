@@ -39,7 +39,9 @@
     "security:check": "node --no-warnings --experimental-strip-types --test tests/security/*.test.mjs && npm run quality:check -- --check=security",
     "security:db": "supabase test db && node --no-warnings --experimental-strip-types scripts/security/run-browser-rls-check.mts",
     "test:quality": "node --no-warnings --experimental-strip-types --test tests/quality-system.test.mjs",
-    "test:spaced-review": "node --no-warnings --experimental-strip-types --test tests/spaced-review.test.mjs"
+    "test:spaced-review": "node --no-warnings --experimental-strip-types --test tests/spaced-review.test.mjs",
+    "ai:eval": "node --no-warnings --experimental-strip-types --test tests/ai-evals/ai-evals.test.mjs && node --no-warnings --experimental-strip-types scripts/ai-evals/run-deterministic.mts",
+    "ai:eval:live": "node --no-warnings --experimental-strip-types scripts/ai-evals/run-live.mts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

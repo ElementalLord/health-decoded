@@ -128,6 +128,16 @@ export async function evaluateExplanation(input: {
     return { ok: false, category: "unavailable" };
   }
 
+  if (classification.personalMedicalContent) {
+    recordAiProviderSuccess();
+    return {
+      ok: true,
+      status: "safety",
+      message: personalMedicalMessage,
+      personalMedicalContent: true,
+    };
+  }
+
   recordAiProviderSuccess();
   return {
     ok: true,

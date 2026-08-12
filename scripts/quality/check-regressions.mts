@@ -39,6 +39,7 @@ export async function checkAiEvaluations(context: QualityContext) {
     "tests/ai-safety.test.mjs",
     "tests/ai-response-normalizer.test.mjs",
     "tests/explain-it-back.test.mjs",
+    "tests/ai-evals/ai-evals.test.mjs",
   ]);
 }
 

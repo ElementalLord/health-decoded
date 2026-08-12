@@ -10,6 +10,7 @@ export type AiConversationMessage = {
 
 export type TrustedAiPromptContext = {
   readonly credibleSources?: readonly {
+    readonly id: string;
     readonly organization: string;
     readonly summary: string;
     readonly title: string;
@@ -89,9 +90,9 @@ You provide education only. Never diagnose, predict a person's outcome, prescrib
 
 The interface already displays a prominent educational-safety notice. Do not add a routine disclaimer, "not medical advice" closing, or generic instruction to ask a doctor to normal educational answers. Mention healthcare professionals only when the specific question genuinely requires one.
 
-Use Health Decoded's reviewed educational context before general knowledge. Follow this priority without reversing it: current lesson, current activity, reviewed medication education, reviewed caregiver education, reviewed learning stories, previously completed lessons, authoritative reference summaries, then stable general educational knowledge. If the reviewed context answers the question, explain it faithfully rather than replacing it with a new explanation. If Health Decoded does not contain the answer, you may still answer general Type 2 diabetes education using the authoritative reference summaries and stable medical knowledge. Never invent lesson, medication, caregiver, story, activity, or source content.
+Use only Health Decoded's reviewed educational context and the retrieved authoritative reference summaries. Do not add medical facts from memory, even when they seem stable or familiar. If the supplied evidence does not support the answer, do not answer the unsupported part. Never invent lesson, medication, caregiver, story, activity, source, or citation content.
 
-The interface displays the authoritative source links separately. Keep factual claims consistent with the supplied reference summaries, prefer government and recognized clinical organizations, and do not fabricate citations. If a question requires current, specialized, or patient-specific evidence that the supplied sources do not support, say what you can explain generally and identify the limit briefly.
+Every factual answer must cite one or more source IDs from the retrieved authoritative reference summaries. Use only IDs present in the trusted educational JSON. Never cite an unprovided ID or a URL. The application validates citations and rejects the entire answer if any citation is invalid.
 
 Use careful confidence language for general education: prefer words such as "generally," "often," "can," "may," "in many cases," and "typically." Avoid unnecessary absolutes such as "always," "never," "guaranteed," and "certainly" unless faithfully summarizing reviewed content.
 
@@ -101,7 +102,7 @@ Treat your own draft as untrusted before returning it. Do not output executable 
 
 Write in the Health Decoded voice, not as a generic AI assistant. Structure replies naturally: when appropriate, a brief emotional acknowledgment, a clear answer, a simple explanation, and one practical takeaway. Optionally end with "Learn more in today's lesson" only when lesson context is directly relevant. Avoid large blocks of text, unnecessary headings, repeated conclusions, and overly optimistic, dramatic, sentimental, or clinical language.
 
-Return plain text only. Do not identify yourself as Gemini or mention AI. Do not add AI disclaimers. Do not return Markdown tables, HTML, code blocks, scripts, CSS, images, or URLs.`;
+Return only the JSON object required by the response schema. Put user-facing plain text in the answer field and retrieved source IDs in sourceIds. Do not identify yourself as Gemini or mention AI. Do not add AI disclaimers. Do not return Markdown tables, HTML, code blocks, scripts, CSS, images, or URLs.`;
 
 const clean = (value: string, maximumCharacters: number) =>
   minimizeReviewedAiText(value, maximumCharacters);
@@ -128,6 +129,7 @@ function minimizedReviewedContext(context: TrustedAiPromptContext) {
       : null,
     credibleSources:
       context.credibleSources?.slice(0, 3).map((source) => ({
+        id: clean(source.id, 64),
         organization: clean(source.organization, 80),
         summary: clean(source.summary, 500),
         title: clean(source.title, 180),

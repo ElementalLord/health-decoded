@@ -37,12 +37,28 @@ export function parseAndEnforceClassification(
   if (parsed.data.missingEssentialConceptIds.some((id) => !essentialIds.has(id))) return null;
   if (parsed.data.contradictionIds.some((id) => !allowedContradictionIds.has(id))) return null;
 
-  const covered = [...new Set(parsed.data.coveredConceptIds)];
+  for (const ids of [
+    parsed.data.coveredConceptIds,
+    parsed.data.missingEssentialConceptIds,
+    parsed.data.contradictionIds,
+  ]) {
+    if (new Set(ids).size !== ids.length) return null;
+  }
+
+  const covered = parsed.data.coveredConceptIds;
   const coveredSet = new Set(covered);
   const missing = challenge.essentialConcepts
     .map(({ id }) => id)
     .filter((id) => !coveredSet.has(id));
-  const contradictions = [...new Set(parsed.data.contradictionIds)];
+  const contradictions = parsed.data.contradictionIds;
+
+  if (
+    new Set(parsed.data.missingEssentialConceptIds).size !== missing.length ||
+    missing.some((id) => !parsed.data.missingEssentialConceptIds.includes(id))
+  ) {
+    return null;
+  }
+  if (parsed.data.offTopic && covered.length > 0) return null;
 
   let verdict: ExplainVerdict = "try_again";
   if (!parsed.data.offTopic && contradictions.length === 0) {
@@ -51,6 +67,7 @@ export function parseAndEnforceClassification(
       verdict = "almost_there";
     }
   }
+  if (parsed.data.verdict !== verdict) return null;
 
   return {
     verdict,

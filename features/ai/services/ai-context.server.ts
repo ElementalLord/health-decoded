@@ -1,6 +1,7 @@
 import "server-only";
 
 import {
+  type AiCredibleSourceContext,
   credibleSourcesForQuestion,
   publicCredibleSources,
 } from "@/features/ai/data/credible-sources";
@@ -17,6 +18,7 @@ type ContextResult =
       readonly data: {
         readonly metadata: AiContextMetadata;
         readonly promptContext: TrustedAiPromptContext;
+        readonly retrievedSources: readonly AiCredibleSourceContext[];
       };
     }
   | { readonly ok: false };
@@ -55,12 +57,20 @@ function suggestions(context: TrustedAiPromptContext) {
 /** Adds authoritative references and any available reviewed, published learning context. */
 export async function loadTrustedAiContext({
   message,
+  messages,
   userId,
 }: {
   readonly message: string;
+  readonly messages?: readonly { readonly content: string; readonly role: "assistant" | "user" }[];
   readonly userId: string;
 }): Promise<ContextResult> {
-  const credibleSources = credibleSourcesForQuestion(message);
+  const retrievalQuery = [
+    ...(messages ?? []).filter(({ role }) => role === "user").map(({ content }) => content),
+    message,
+  ]
+    .slice(-3)
+    .join(" ");
+  const credibleSources = credibleSourcesForQuestion(retrievalQuery);
   const baseContext: TrustedAiPromptContext = {
     credibleSources,
     glossary: glossaryFor(message),
@@ -74,6 +84,7 @@ export async function loadTrustedAiContext({
         suggestedQuestions: suggestions(baseContext),
       },
       promptContext: baseContext,
+      retrievedSources: credibleSources,
     },
   };
   const database = await getServerDatabaseClient();
@@ -149,6 +160,7 @@ export async function loadTrustedAiContext({
         suggestedQuestions: suggestions(promptContext),
       },
       promptContext,
+      retrievedSources: credibleSources,
     },
   };
 }

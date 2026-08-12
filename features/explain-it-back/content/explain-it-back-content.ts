@@ -158,7 +158,7 @@ export const explainItBackChallenges = [
         id: "IR-M1",
         meaning: "Insulin resistance means the body is resistant to glucose/sugar.",
         correction:
-          "‘Insulin resistance’ describes a reduced response to insulin—not resistance to glucose.",
+          "‘Insulin resistance’ describes a reduced response to insulin, not resistance to glucose.",
       },
       {
         id: "IR-M2",

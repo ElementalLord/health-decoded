@@ -77,7 +77,7 @@ test("every challenge supplies passing, almost, and failing evaluator fixtures",
     );
     const failing = parseAndEnforceClassification(
       {
-        verdict: "got_it",
+        verdict: "try_again",
         coveredConceptIds: essentialIds,
         missingEssentialConceptIds: [],
         contradictionIds: [challenge.misconceptions[0].id],

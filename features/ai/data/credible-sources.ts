@@ -1,11 +1,13 @@
 import type { AiCredibleSource } from "@/features/ai/types/ai";
 
 export type AiCredibleSourceContext = AiCredibleSource & {
+  readonly id: string;
   readonly summary: string;
 };
 
 const sources = {
   a1c: {
+    id: "NIDDK-A1C",
     href: "https://www.niddk.nih.gov/health-information/diagnostic-tests/a1c-test",
     organization: "NIDDK",
     summary:
@@ -13,6 +15,7 @@ const sources = {
     title: "The A1C Test & Diabetes",
   },
   basics: {
+    id: "CDC-DIABETES-BASICS",
     href: "https://www.cdc.gov/diabetes/about/",
     organization: "CDC",
     summary:
@@ -20,6 +23,7 @@ const sources = {
     title: "Diabetes Basics",
   },
   exercise: {
+    id: "CDC-PHYSICAL-ACTIVITY",
     href: "https://www.cdc.gov/diabetes/living-with/physical-activity.html",
     organization: "CDC",
     summary:
@@ -27,6 +31,7 @@ const sources = {
     title: "Get Active",
   },
   healthyLiving: {
+    id: "NIDDK-HEALTHY-LIVING",
     href: "https://www.niddk.nih.gov/health-information/diabetes/overview/healthy-living-with-diabetes",
     organization: "NIDDK",
     summary:
@@ -34,6 +39,7 @@ const sources = {
     title: "Healthy Living with Diabetes",
   },
   insulinResistance: {
+    id: "NIDDK-INSULIN-RESISTANCE",
     href: "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/prediabetes-insulin-resistance",
     organization: "NIDDK",
     summary:
@@ -41,6 +47,7 @@ const sources = {
     title: "Insulin Resistance & Prediabetes",
   },
   medicines: {
+    id: "NIDDK-DIABETES-MEDICINES",
     href: "https://www.niddk.nih.gov/health-information/diabetes/overview/insulin-medicines-treatments",
     organization: "NIDDK",
     summary:
@@ -48,6 +55,7 @@ const sources = {
     title: "Insulin, Medicines, & Other Diabetes Treatments",
   },
   nutrition: {
+    id: "CDC-HEALTHY-EATING",
     href: "https://www.cdc.gov/diabetes/healthy-eating/",
     organization: "CDC",
     summary:
@@ -55,6 +63,7 @@ const sources = {
     title: "Healthy Eating",
   },
   overview: {
+    id: "NIDDK-DIABETES-OVERVIEW",
     href: "https://www.niddk.nih.gov/health-information/diabetes/overview",
     organization: "NIDDK",
     summary:
@@ -71,6 +80,12 @@ function uniqueSources(selected: readonly AiCredibleSourceContext[]) {
 export function credibleSourcesForQuestion(message: string): readonly AiCredibleSourceContext[] {
   const normalized = message.toLocaleLowerCase();
 
+  const requiresSpecializedOrCurrentEvidence =
+    /\b(?:latest|newest|current|202\d)\b.{0,60}\b(?:trial|drug|device|guideline|research|firmware|therapy|model|recommendation)s?\b|\b(?:pharmacokinetic|algorithm|firmware|genetics?|gene therap(?:y|ies)|transplant|antibiotic|surgery guideline|eligibility criteria|thresholds?|renal failure)\b/i;
+  if (requiresSpecializedOrCurrentEvidence.test(message)) {
+    return [];
+  }
+
   if (/\b(a1c|hba1c|hemoglobin a1c)\b/.test(normalized)) {
     return uniqueSources([sources.a1c, sources.overview, sources.basics]);
   }
@@ -80,14 +95,22 @@ export function credibleSourcesForQuestion(message: string): readonly AiCredible
   if (/\b(exercise|walk|walking|movement|workout|active|activity)\b/.test(normalized)) {
     return uniqueSources([sources.exercise, sources.healthyLiving, sources.overview]);
   }
-  if (/\b(food|meal|eat|eating|carb|carbohydrate|nutrition|fruit|bread|plate)\b/.test(normalized)) {
+  if (
+    /\b(food|meal|eat|eating|carbs?|carbohydrates?|nutrition|fruit|bread|plate|serving size|added sugars?|total sugars?|fiber|food label|nutrition facts)\b/.test(
+      normalized,
+    )
+  ) {
     return uniqueSources([sources.nutrition, sources.healthyLiving, sources.overview]);
   }
   if (/\b(insulin resistance|prediabetes)\b/.test(normalized)) {
     return uniqueSources([sources.insulinResistance, sources.overview, sources.basics]);
   }
 
-  return uniqueSources([sources.overview, sources.basics]);
+  if (/\b(type\s*2|diabetes|blood sugar|glucose|insulin|pancreas)\b/.test(normalized)) {
+    return uniqueSources([sources.overview, sources.basics]);
+  }
+
+  return [];
 }
 
 export function publicCredibleSources(

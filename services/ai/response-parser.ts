@@ -1,6 +1,5 @@
-import "server-only";
-
-import { AI_MAX_OUTPUT_CHARACTERS } from "@/features/ai/constants/ai-limits";
+// @ts-expect-error -- Node's built-in TypeScript test runner requires explicit extensions.
+import { AI_MAX_OUTPUT_CHARACTERS } from "../../features/ai/constants/ai-limits.ts";
 
 export type AiProviderFailureCategory =
   "configuration" | "rate_limited" | "refused" | "timeout" | "unexpected";
@@ -12,7 +11,9 @@ export type NormalizedAiProviderResult =
 export function isPermittedAiTextPrefix(value: string) {
   return (
     value.length <= AI_MAX_OUTPUT_CHARACTERS &&
-    !/<\/?[a-z][^>]*>|```|https?:\/\/|www\.|!\[|^\s*\|.*\|\s*$|^\s*(?:body|html)\s*\{/im.test(value)
+    !/<\/?[a-z][^>]*>|```|https?:\/\/|javascript:|data:text\/html|www\.|!\[|^\s*\|.*\|\s*$|^\s*(?:body|html)\s*\{/im.test(
+      value,
+    )
   );
 }
 

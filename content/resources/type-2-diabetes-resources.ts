@@ -5,7 +5,7 @@ export const type2DiabetesResources = [
     organization: "Centers for Disease Control and Prevention",
     category: "Start here",
     description:
-      "A new diagnosis can make everything sound urgent. This is the clear, steady version of what Type 2 diabetes is—and what changes from here.",
+      "A new diagnosis can make everything sound urgent. This is the clear, steady version of what Type 2 diabetes is and what changes from here.",
     editorial_label: "Recommended",
     format: "Explainer",
     reading_level: "Beginner",
@@ -16,7 +16,7 @@ export const type2DiabetesResources = [
   },
   {
     id: "understanding-a1c",
-    title: "What A1C sees—and what it misses",
+    title: "What A1C sees and what it misses",
     organization: "National Institute of Diabetes and Digestive and Kidney Diseases",
     category: "Start here",
     description:
@@ -125,7 +125,7 @@ export const type2DiabetesResources = [
     organization: "Centers for Disease Control and Prevention",
     category: "Treatment & safety",
     description:
-      "Illness can rewrite the usual diabetes rules—even when you are eating less. A written sick-day plan makes the next step easier to find.",
+      "Illness can rewrite the usual diabetes rules, even when you are eating less. A written sick-day plan makes the next step easier to find.",
     editorial_label: "Care essential",
     format: "Checklist",
     reading_level: "Everyday",
@@ -200,7 +200,7 @@ export const type2DiabetesResources = [
     organization: "National Institute of Diabetes and Digestive and Kidney Diseases",
     category: "Whole-body health",
     description:
-      "Gums and blood glucose can influence each other. Here is what to watch for—and what your dentist needs to know.",
+      "Gums and blood glucose can influence each other. Here is what to watch for and what your dentist needs to know.",
     editorial_label: "Recommended",
     format: "Guide",
     reading_level: "Everyday",

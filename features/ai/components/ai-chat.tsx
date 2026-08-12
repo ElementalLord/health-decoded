@@ -414,7 +414,7 @@ export function AiChat() {
         role="note"
       >
         <p>
-          General diabetes education only — not diagnosis, personal result interpretation, or
+          General diabetes education only, not diagnosis, personal result interpretation, or
           treatment changes.
         </p>
         <details className="mt-2 text-muted-foreground">

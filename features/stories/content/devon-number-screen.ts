@@ -70,7 +70,7 @@ export const devonNumberScreenStory: InteractiveStory = {
         id: "devon-reading-boundary",
         purpose: "reading-boundary",
         engagement: "knowledge-application",
-        prompt: "Where does the reading end—and the story around it begin?",
+        prompt: "Where does the reading end, and the story around it begin?",
         instructions:
           "Place all six statements. The boundary separates information the screen can show from conclusions it cannot make.",
         options: [
@@ -168,7 +168,7 @@ export const devonNumberScreenStory: InteractiveStory = {
       paragraphsAfterInteraction: [
         "Devon followed the instructions and checked again as directed.",
         "The new result was different, but it was still above his personal range.",
-        "Better technique gave him a more useful next question—not permission to ignore the result.",
+        "Better technique gave him a more useful next question, not permission to ignore the result.",
       ],
       continueLabel: "Decide what matters now",
     },
@@ -206,7 +206,7 @@ export const devonNumberScreenStory: InteractiveStory = {
         feedbackMode: "choice-consequence",
         requiredForProgress: true,
         learningPoint:
-          "Urgency depends on symptoms, the person’s established plan, and the broader pattern—not on a universal number supplied by a general story.",
+          "Urgency depends on symptoms, the person’s established plan, and the broader pattern, not on a universal number supplied by a general story.",
       },
       continueLabel: "Prepare a useful message",
     },
@@ -283,7 +283,7 @@ export const devonNumberScreenStory: InteractiveStory = {
         feedbackMode: "single-explanation",
         requiredForProgress: true,
         learningPoint:
-          "A pattern with relevant context can support a better question than one isolated point. The care plan—not this story—determines when monitoring is useful.",
+          "A pattern with relevant context can support a better question than one isolated point. The care plan, not this story, determines when monitoring is useful.",
       },
       continueLabel: "Pause and Think",
     },

@@ -3,6 +3,11 @@ import "server-only";
 import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
+import {
+  AI_INSUFFICIENT_EVIDENCE_MESSAGE,
+  buildAiResponseJsonSchema,
+  parseAndValidateAiGroundedOutput,
+} from "@/features/ai/services/ai-grounding";
 import { assessAiOutputSafety } from "@/features/ai/services/ai-output-safety";
 import {
   consumeAiProviderBudget,
@@ -13,10 +18,6 @@ import {
   consumeAiRequestSlot,
   fingerprintAiRequest,
 } from "@/features/ai/services/ai-rate-limit.server";
-import {
-  normalizeAiResponseOpening,
-  normalizeAiResponseText,
-} from "@/features/ai/services/ai-response-normalizer";
 import { assessAiSafety } from "@/features/ai/services/ai-safety.server";
 import { recordQualifyingLearningActivity } from "@/features/streaks/services/learning-streak.server";
 import type {
@@ -25,7 +26,6 @@ import type {
   AiChatStreamEvent,
 } from "@/features/ai/types/ai";
 import { aiProvider } from "@/services/ai/provider";
-import { parseAiProviderText } from "@/services/ai/response-parser";
 
 type AiChatStreamResult =
   | { readonly ok: true; readonly data: AsyncGenerator<AiChatStreamEvent> }
@@ -73,7 +73,12 @@ export async function createAiChatStream(
   const startedAt = Date.now();
   const correlationId = crypto.randomUUID();
   const inputCount = 1 + (input.messages?.length ?? 0);
-  const safety = assessAiSafety(input.message);
+  const recentUserContext = (input.messages ?? [])
+    .filter(({ role }) => role === "user")
+    .slice(-2)
+    .map(({ content }) => content)
+    .join(" ");
+  const safety = assessAiSafety(`${recentUserContext} ${input.message}`.trim());
   const requestCategory = safety.category;
   const loggingContext = {
     operation: "chat_request" as const,
@@ -134,12 +139,19 @@ export async function createAiChatStream(
 
   const context = await loadTrustedAiContext({
     message: input.message,
+    ...(input.messages ? { messages: input.messages } : {}),
     userId: input.userId,
   });
 
   if (!context.ok) {
     logAiOperation({ ...loggingContext, outcome: "context" });
     return { ok: false, category: "context" };
+  }
+
+  const retrievedSources = context.data.retrievedSources;
+  if (retrievedSources.length === 0) {
+    logAiOperation({ ...loggingContext, outcome: "refused", refusal_type: "unsupported_medical" });
+    return refusalStream(AI_INSUFFICIENT_EVIDENCE_MESSAGE);
   }
 
   let prompt: ReturnType<typeof buildAiPrompt>;
@@ -172,39 +184,32 @@ export async function createAiChatStream(
     data: (async function* () {
       let outcome: "configuration" | "rate_limited" | "success" | "timeout" | "unexpected" =
         "success";
-      let providerText = "";
-
-      yield {
-        credibleSources: context.data.metadata.credibleSources,
-        lessonUsed: Boolean(context.data.promptContext.lesson),
-        relatedContent: context.data.metadata.relatedContent,
-        suggestedQuestions: context.data.metadata.suggestedQuestions,
-        type: "context",
-      };
-
-      for await (const event of aiProvider.generateResponseStream(prompt, signal)) {
-        if (signal?.aborted) return;
-
-        if (event.kind === "text") {
-          providerText += event.text;
-          continue;
-        }
-
-        outcome = event.category;
+      const providerResult = await aiProvider.generateStructuredResponse(
+        {
+          ...prompt,
+          responseJsonSchema: buildAiResponseJsonSchema(retrievedSources),
+        },
+        signal,
+      );
+      if (!providerResult.ok) {
+        outcome = providerResult.category === "refused" ? "unexpected" : providerResult.category;
         recordAiProviderFailure();
         logAiOperation({
           ...loggingContext,
           duration_bucket: durationBucket(Date.now() - startedAt),
           outcome,
         });
-        yield { code: providerErrorCode(event.category), type: "error" };
+        yield { code: providerErrorCode(outcome), type: "error" };
         return;
       }
-
-      const normalizedText = normalizeAiResponseText(normalizeAiResponseOpening(providerText));
-      const parsedOutput = parseAiProviderText(normalizedText);
-      const outputSafety = parsedOutput.ok ? assessAiOutputSafety(parsedOutput.text) : null;
-      if (!parsedOutput.ok || !outputSafety?.safe) {
+      let rawOutput: unknown;
+      try {
+        rawOutput = JSON.parse(providerResult.text);
+      } catch {
+        rawOutput = null;
+      }
+      const validatedOutput = parseAndValidateAiGroundedOutput(rawOutput, retrievedSources);
+      if (!validatedOutput) {
         recordAiProviderFailure();
         logAiOperation({
           ...loggingContext,
@@ -215,11 +220,20 @@ export async function createAiChatStream(
         yield { code: "AI_UNAVAILABLE", type: "error" };
         return;
       }
+      yield {
+        credibleSources: context.data.metadata.credibleSources.filter((source) =>
+          validatedOutput.sources.some((retrieved) => retrieved.href === source.href),
+        ),
+        lessonUsed: Boolean(context.data.promptContext.lesson),
+        relatedContent: context.data.metadata.relatedContent,
+        suggestedQuestions: context.data.metadata.suggestedQuestions,
+        type: "context",
+      };
       recordAiProviderSuccess();
-      yield { text: parsedOutput.text, type: "delta" };
+      yield { text: validatedOutput.answer, type: "delta" };
       // This is deliberately server-side and occurs only after a non-refused, output-validated
       // educational response has been produced. No conversation content enters the streak system.
-      if (!signal?.aborted && parsedOutput.text.trim().length > 0) {
+      if (!signal?.aborted && validatedOutput.answer.trim().length > 0) {
         await recordQualifyingLearningActivity("ai_learning_exchange_completed");
       }
       yield { type: "done" };

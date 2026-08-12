@@ -173,7 +173,7 @@ test("the final comparison selects contextual pattern without prescribing more c
   );
   assert.match(
     scene.interaction.learningPoint,
-    /care plan—not this story—determines when monitoring/i,
+    /care plan, not this story, determines when monitoring/i,
   );
   assert.doesNotMatch(JSON.stringify(scene), /test more|check more|increase.*testing|every hour/i);
 });

@@ -16,7 +16,6 @@ import {
   injectedFault,
   malformedResponse,
   partialResponse,
-  rejectDependency,
 } from "./faults/fault-scenarios.ts";
 import {
   safeGetLocalStorage,
@@ -227,7 +226,7 @@ test("Explain It Back rejects malformed and contradictory evaluator output", () 
     { ...base, contradictionIds: [challenge.misconceptions[0].id] },
     challenge,
   );
-  assert.equal(contradictory?.verdict, "try_again");
+  assert.equal(contradictory, null);
 });
 
 test("Explain It Back failures preserve input, never grade locally, and contain provider rejection", () => {

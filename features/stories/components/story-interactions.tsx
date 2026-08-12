@@ -422,8 +422,8 @@ function ThoughtSort({
           <Check aria-hidden="true" />
           <p>
             A diagnosis provides health information. Shame often adds a much harsher story that the
-            medical results themselves do not say. Lifestyle can matter without one behavior—or one
-            person’s character—being the whole explanation.
+            medical results themselves do not say. Lifestyle can matter without one behavior or one
+            person’s character being the whole explanation.
           </p>
         </div>
       )}
@@ -787,7 +787,7 @@ function SeparatePlateComparison({
         </p>
       </div>
       <small>
-        The goal is participation with agency—not a single plate copied around the table.
+        The goal is participation with agency, not a single plate copied around the table.
       </small>
     </div>
   );
@@ -968,7 +968,7 @@ function CulturalMealBuilder({
         {mealFeedback(selected, portions)}
       </p>
       <p className={styles.mealSafety}>
-        “Familiar, filling, feasible” is a sustainability check—not a personalized meal plan.
+        “Familiar, filling, feasible” is a sustainability check, not a personalized meal plan.
         Individual needs can vary based on medications, glucose patterns, preferences, and
         healthcare guidance.
       </p>

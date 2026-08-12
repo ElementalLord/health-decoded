@@ -337,7 +337,7 @@ export function ExplainItBackExperience({
             value={explanation}
           />
           <div className={styles.textareaMeta} id="explanation-help">
-            <span>We check the idea—not your writing.</span>
+            <span>We check the idea, not your writing.</span>
             <span>{explanation.length}/1000</span>
           </div>
           {!useful && explanation.length > 0 ? (
@@ -497,7 +497,7 @@ export function ExplainItBackExperience({
             <div className={styles.waitingNote}>
               <p className="editorial-eyebrow">What gets checked</p>
               <p>
-                Whether the important idea came through—not exact wording, grammar, or spelling.
+                Whether the important idea came through, not exact wording, grammar, or spelling.
               </p>
               <small>Use ⌘ Enter or Ctrl Enter when you&apos;re ready.</small>
             </div>
