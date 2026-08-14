@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+import { SunCupIllustration } from "@/components/illustrations/editorial-illustrations";
 import { ActionRow } from "@/components/shared/action-row";
 import { buttonVariants } from "@/components/ui/button";
 import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
@@ -9,7 +10,6 @@ import { JourneyGreeting } from "@/features/journeys/components/journey-greeting
 import { JourneyProgressSummary } from "@/features/journeys/components/journey-progress-summary";
 import { JourneyUnavailableState } from "@/features/journeys/components/journey-unavailable-state";
 import { LessonCompletionArrival } from "@/features/journeys/components/lesson-completion-arrival";
-import { TodaysLessonCard } from "@/features/journeys/components/todays-lesson-card";
 import { getJourneyHomeData } from "@/features/journeys/services/journey-home.server";
 import { NextStepPanel } from "@/features/next-step/components/next-step-panel";
 import { getNextStep } from "@/features/next-step/services/next-step.server";
@@ -183,15 +183,21 @@ export default async function JourneyPage({
         </>
       ) : (
         <>
-          <TodaysLessonCard lesson={journey.data.currentLesson} />
-
           <section
             aria-labelledby="why-this-matters"
-            className="motion-reveal grid gap-5 border-y border-border py-6 sm:grid-cols-[0.55fr_1.45fr]"
+            className="motion-reveal grid items-start gap-5 border-y border-border py-6 sm:grid-cols-[0.55fr_1.45fr] sm:items-center sm:gap-10"
           >
-            <h2 className="editorial-eyebrow" id="why-this-matters">
-              Why this matters today
-            </h2>
+            <div className="min-w-0">
+              <h2 className="editorial-eyebrow" id="why-this-matters">
+                Why this matters today
+              </h2>
+              <div
+                aria-hidden="true"
+                className="mt-5 hidden w-full max-w-[15rem] overflow-hidden rounded-[1.25rem] bg-[#f5eee6] sm:block"
+              >
+                <SunCupIllustration className="block h-auto w-full [aspect-ratio:24/13]" />
+              </div>
+            </div>
             <p className="max-w-3xl text-pretty font-serif-display text-2xl font-normal leading-9 text-foreground sm:text-3xl">
               {journey.data.currentLesson.whyItMatters}
             </p>
