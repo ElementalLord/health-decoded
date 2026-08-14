@@ -3,11 +3,19 @@ import Link from "next/link";
 
 import { PageHeader } from "@/components/shared/page-header";
 import { buttonVariants } from "@/components/ui/button";
+import { AuthErrorDetail } from "@/features/auth/components/auth-error-detail";
 import { cn } from "@/lib/utils";
 
 export const metadata = { title: "Sign-in problem" };
 
-export default function AuthErrorPage() {
+export default async function AuthErrorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ flow?: string }>;
+}) {
+  const { flow } = await searchParams;
+  const isRecovery = flow === "recovery";
+
   return (
     <div className="space-y-8">
       <span
@@ -18,10 +26,15 @@ export default function AuthErrorPage() {
       </span>
       <PageHeader
         compact
-        description="Please try again. If your link has expired, request a new one."
-        eyebrow="Sign-in link interrupted"
+        description={
+          isRecovery
+            ? "Your password has not been changed. Request a new reset link to try again."
+            : "Please try again. If your link has expired, request a new one."
+        }
+        eyebrow={isRecovery ? "Reset link interrupted" : "Sign-in link interrupted"}
         title="We could not complete that request"
       />
+      <AuthErrorDetail />
       <div className="flex flex-col gap-3 sm:flex-row">
         <Link className={cn(buttonVariants({ fullWidth: false }), "min-h-12 px-6")} href="/login">
           Return to sign in
@@ -31,9 +44,9 @@ export default function AuthErrorPage() {
             buttonVariants({ fullWidth: false, variant: "secondary" }),
             "min-h-12 px-6",
           )}
-          href="/verify-email"
+          href={isRecovery ? "/forgot-password" : "/verify-email"}
         >
-          Request a new link
+          {isRecovery ? "Request a new reset link" : "Request a new link"}
         </Link>
       </div>
     </div>

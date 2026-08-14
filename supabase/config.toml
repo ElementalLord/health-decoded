@@ -158,9 +158,12 @@ enabled = true
 # in emails.
 site_url = "http://localhost:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
+# Globs use `.` and `/` as separators, so `*` stays within one host label or path segment and `**`
+# spans them. GoTrue always accepts the 127.0.0.1 loopback IP, but never the `localhost` hostname,
+# which is what `next dev` actually serves on - so it has to be listed explicitly.
 additional_redirect_urls = [
-  "http://localhost:3000/auth/callback",
-  "http://127.0.0.1:3000/auth/callback",
+  "http://localhost:3000/**",
+  "http://127.0.0.1:3000/**",
 ]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
@@ -238,6 +241,12 @@ otp_expiry = 3600
 # [auth.email.template.invite]
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
+
+# A custom recovery template using {{ .TokenHash }} against /auth/callback would make cross-device
+# resets work, because verifyOtp carries none of the PKCE browser binding that {{ .ConfirmationURL }}
+# does. It is deliberately not used: {{ .RedirectTo }} renders as the Site URL no matter what
+# redirectTo the app requests, so every reset link would hard-code the production host and resets
+# from localhost and from preview deployments would break.
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
@@ -394,3 +403,32 @@ s3_region = "env(S3_REGION)"
 s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
+
+# Overrides for the linked hosted project (Vercel deployment). Everything above stays local-only for
+# `supabase start`; `supabase config push` sends the merged result of the base config and this block.
+[remotes.production]
+project_id = "ugwkrjzlslrhwqorbhfy"
+
+[remotes.production.auth]
+site_url = "https://health-decoded-elementallords-projects.vercel.app"
+# Production is covered by site_url, whose host GoTrue always accepts. Preview deployments get a
+# generated subdomain per build, so they need the wildcard or every auth email sent from a preview
+# silently redirects to production instead.
+additional_redirect_urls = [
+  "https://health-decoded-elementallords-projects.vercel.app/**",
+  "https://health-decoded-*-elementallords-projects.vercel.app/**",
+  "http://localhost:3000/**",
+  "http://127.0.0.1:3000/**",
+]
+# The settings below only restate what the hosted project already has. `config push` sends the whole
+# merged auth config, so without them the local development defaults above would be pushed too and
+# would quietly change production. Keep them in sync with the remote when it changes deliberately.
+
+[remotes.production.auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[remotes.production.auth.email]
+secure_password_change = false
+max_frequency = "1m0s"
+otp_length = 8

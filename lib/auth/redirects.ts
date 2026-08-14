@@ -1,5 +1,6 @@
 const DEFAULT_AUTHENTICATED_DESTINATION = "/journey";
 const CURRENT_PATH_HEADER = "x-health-decoded-path";
+const RESET_PASSWORD_PATH = "/reset-password";
 
 export function getSafeRedirectPath(value: string | null | undefined): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
@@ -17,4 +18,4 @@ export function getSafeRedirectPath(value: string | null | undefined): string {
   }
 }
 
-export { CURRENT_PATH_HEADER, DEFAULT_AUTHENTICATED_DESTINATION };
+export { CURRENT_PATH_HEADER, DEFAULT_AUTHENTICATED_DESTINATION, RESET_PASSWORD_PATH };

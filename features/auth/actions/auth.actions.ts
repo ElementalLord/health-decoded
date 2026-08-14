@@ -14,6 +14,7 @@ import {
   resetPasswordSchema,
   signupSchema,
 } from "@/features/auth/schemas/auth.schemas";
+import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import type { AuthFormState } from "@/features/auth/types/auth-form";
 
 const logger = createServerLogger();
@@ -165,6 +166,15 @@ export async function resetPasswordAction(
 ): Promise<AuthFormState> {
   const parsed = resetPasswordSchema.safeParse(values(formData));
   if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? "Check your information.");
+
+  // The reset link mints the session that authorises this change. Without it there is nothing to
+  // update, and Supabase would only answer with a generic error.
+  const user = await getAuthenticatedUser();
+  if (!user.ok) {
+    return failure(
+      "Your reset link is no longer valid, so your password has not been changed. Request a new link to try again.",
+    );
+  }
 
   const database = await getServerDatabaseClient();
   const { error } = await database.auth.updateUser({ password: parsed.data.password });
