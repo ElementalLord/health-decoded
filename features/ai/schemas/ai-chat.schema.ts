@@ -40,6 +40,7 @@ export const aiChatRequestSchema = z
       )
       .max(AI_MAX_CONVERSATION_MESSAGES)
       .optional(),
+    regenerate: z.boolean().optional(),
   })
   .strict();
 

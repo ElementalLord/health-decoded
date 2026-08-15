@@ -1,5 +1,9 @@
 import "server-only";
 
+import {
+  AI_DEFAULT_TEMPERATURE,
+  AI_REGENERATION_TEMPERATURE,
+} from "@/features/ai/constants/ai-models";
 import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
@@ -160,6 +164,7 @@ export async function createAiChatStream(
       context: context.data.promptContext,
       message: input.message,
       ...(input.messages?.length ? { messages: input.messages } : {}),
+      regenerate: Boolean(input.regenerate),
     });
   } catch {
     logAiOperation({ ...loggingContext, outcome: "unexpected" });
@@ -188,6 +193,7 @@ export async function createAiChatStream(
         {
           ...prompt,
           responseJsonSchema: buildAiResponseJsonSchema(retrievedSources),
+          temperature: input.regenerate ? AI_REGENERATION_TEMPERATURE : AI_DEFAULT_TEMPERATURE,
         },
         signal,
       );

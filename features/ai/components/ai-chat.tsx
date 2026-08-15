@@ -93,6 +93,14 @@ function historyBeforeRegeneration(messages: readonly ChatMessage[], question: s
   return messages.slice(0, end);
 }
 
+function lastAssistantMessage(messages: readonly ChatMessage[]) {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const entry = messages[index];
+    if (entry?.role === "assistant" && entry.content.trim()) return entry;
+  }
+  return null;
+}
+
 function boundedSessionHistory(messages: readonly ChatMessage[]) {
   const encoder = new TextEncoder();
   const selected: { content: string; role: MessageRole }[] = [];
@@ -142,6 +150,7 @@ export function AiChat() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const requestInFlightRef = useRef(false);
   const activeAssistantIdRef = useRef<string | null>(null);
+  const replacedAnswerRef = useRef<ChatMessage | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const conversationEndRef = useRef<HTMLDivElement>(null);
   const scrollFrameRef = useRef<number | null>(null);
@@ -212,6 +221,25 @@ export function AiChat() {
     );
   }
 
+  /**
+   * Drops the in-flight assistant message. A regeneration that never produced an
+   * answer must leave the conversation as it was, so the answer it replaced comes
+   * back whenever the pending message is removed with nothing in it.
+   */
+  function dropPendingAssistant(
+    assistantId: string | null,
+    replacedAnswer: ChatMessage | null,
+    force = false,
+  ) {
+    setMessages((current) => {
+      const remaining = current.filter(
+        (entry) => entry.id !== assistantId || (!force && Boolean(entry.content.trim())),
+      );
+      const removedPending = remaining.length !== current.length;
+      return removedPending && replacedAnswer ? [...remaining, replacedAnswer] : remaining;
+    });
+  }
+
   async function ask(question: string, regenerate = false) {
     if (isStreaming || requestInFlightRef.current || !question.trim()) return;
 
@@ -227,15 +255,16 @@ export function AiChat() {
     activeAssistantIdRef.current = assistantMessage.id;
     const priorMessages = regenerate ? historyBeforeRegeneration(messages, question) : messages;
     const sessionHistory = boundedSessionHistory(priorMessages);
-    const removeEmptyAssistant = () =>
-      setMessages((current) =>
-        current.filter(
-          (entry) => entry.id !== assistantMessage.id || Boolean(entry.content.trim()),
-        ),
-      );
+    const replacedAnswer = regenerate ? lastAssistantMessage(messages) : null;
+    replacedAnswerRef.current = replacedAnswer;
+    const removeEmptyAssistant = (force = false) =>
+      dropPendingAssistant(assistantMessage.id, replacedAnswer, force);
 
     if (regenerate) {
-      setMessages((current) => [...current, assistantMessage]);
+      setMessages((current) => [
+        ...current.filter((entry) => entry.id !== replacedAnswer?.id),
+        assistantMessage,
+      ]);
     } else {
       setMessages((current) => [...current, createMessage("user", question), assistantMessage]);
     }
@@ -253,6 +282,7 @@ export function AiChat() {
         body: JSON.stringify({
           message: question,
           ...(sessionHistory.length ? { messages: sessionHistory } : {}),
+          ...(regenerate ? { regenerate: true } : {}),
         }),
         headers: { accept: "text/event-stream", "content-type": "application/json" },
         method: "POST",
@@ -261,7 +291,7 @@ export function AiChat() {
 
       if (!response.ok || !response.body) {
         setError(errorMessageForResponse(response.status));
-        setMessages((current) => current.filter((entry) => entry.id !== assistantMessage.id));
+        removeEmptyAssistant(true);
         return;
       }
 
@@ -352,6 +382,7 @@ export function AiChat() {
         setIsStreaming(false);
         abortControllerRef.current = null;
         activeAssistantIdRef.current = null;
+        replacedAnswerRef.current = null;
       }
     }
   }
@@ -393,14 +424,14 @@ export function AiChat() {
 
   function stopResponse() {
     const assistantId = activeAssistantIdRef.current;
+    const replacedAnswer = replacedAnswerRef.current;
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
     requestInFlightRef.current = false;
     activeAssistantIdRef.current = null;
+    replacedAnswerRef.current = null;
     setIsStreaming(false);
-    setMessages((current) =>
-      current.filter((entry) => entry.id !== assistantId || Boolean(entry.content.trim())),
-    );
+    dropPendingAssistant(assistantId, replacedAnswer);
     setNotice("Stopped. You can rephrase the question or continue whenever you’re ready.");
     requestAnimationFrame(() => inputRef.current?.focus());
   }

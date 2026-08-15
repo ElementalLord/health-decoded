@@ -3,7 +3,7 @@ import "server-only";
 import { ApiError, GoogleGenAI } from "@google/genai";
 
 import { AI_MAX_PROMPT_CHARACTERS } from "@/features/ai/constants/ai-limits";
-import { DEFAULT_AI_MODEL } from "@/features/ai/constants/ai-models";
+import { AI_DEFAULT_TEMPERATURE, DEFAULT_AI_MODEL } from "@/features/ai/constants/ai-models";
 import { getAiSecurityConfig } from "@/features/ai/services/ai-security-config.server";
 import { getGeminiServerEnv } from "@/lib/env/server";
 import {
@@ -30,6 +30,7 @@ export type AiProviderRequest = {
 
 export type AiStructuredProviderRequest = AiProviderRequest & {
   readonly responseJsonSchema: Readonly<Record<string, unknown>>;
+  readonly temperature?: number;
 };
 
 export type AiProviderStreamEvent =
@@ -83,7 +84,10 @@ function streamFailureCategory(category: AiProviderFailureCategory) {
 }
 
 export const aiProvider: AiProvider = {
-  async generateStructuredResponse({ prompt, responseJsonSchema, systemInstruction }, signal) {
+  async generateStructuredResponse(
+    { prompt, responseJsonSchema, systemInstruction, temperature },
+    signal,
+  ) {
     if (prompt.length > AI_MAX_PROMPT_CHARACTERS) {
       return normalizeAiProviderFailure("unexpected");
     }
@@ -112,7 +116,7 @@ export const aiProvider: AiProvider = {
           responseJsonSchema,
           responseMimeType: "application/json",
           systemInstruction,
-          temperature: 0,
+          temperature: temperature ?? AI_DEFAULT_TEMPERATURE,
         },
       });
 
