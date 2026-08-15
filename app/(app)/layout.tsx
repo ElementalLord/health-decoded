@@ -36,11 +36,26 @@ export default async function ProtectedLayout({ children }: { children: ReactNod
       </AppShell>
     );
   }
-  const profile = await settleResult(
+  // Profile and settings are independent reads, so both queries are issued before
+  // either is awaited. `getProfileSettings` internally reuses the request-cached
+  // `getCurrentProfile`, so this overlaps the two round trips without duplicating
+  // the profile query.
+  const profilePromise = settleResult(
     () => getCurrentProfile(),
     unexpectedError(),
     () => logger.error("authenticated_shell.profile_rejected"),
   );
+  const settingsPromise = settleResult(
+    () => getProfileSettings(),
+    unexpectedError(),
+    () => logger.error("authenticated_shell.preferences_rejected"),
+  );
+  // `settleResult` rethrows unexpected errors, so mark the settings promise as
+  // handled for the branches below that return before awaiting it. Awaiting it
+  // later still surfaces the rejection to the error boundary as before.
+  void settingsPromise.catch(() => {});
+
+  const profile = await profilePromise;
   if (!profile.ok) {
     const next = getSafeRedirectPath(currentPath);
     if (profile.error.code === "authorization") {
@@ -54,11 +69,7 @@ export default async function ProtectedLayout({ children }: { children: ReactNod
   }
   if (!profile.data.onboarding_completed_at && !isOnboarding) redirect("/onboarding");
 
-  const settings = await settleResult(
-    () => getProfileSettings(),
-    unexpectedError(),
-    () => logger.error("authenticated_shell.preferences_rejected"),
-  );
+  const settings = await settingsPromise;
 
   const routes = isOnboarding ? undefined : protectedApplicationRoutes;
   return settings.ok ? (

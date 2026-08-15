@@ -55,9 +55,52 @@ const lessonStorageSources = (
 
 test("optional account preferences do not gate every authenticated route", () => {
   assert.match(sources.layout, /getCurrentProfile\(\)/);
-  assert.match(sources.layout, /const settings = await settleResult\([\s\S]*getProfileSettings\(\)/);
+  assert.match(
+    sources.layout,
+    /const settingsPromise = settleResult\([\s\S]*getProfileSettings\(\)/,
+  );
+  assert.match(sources.layout, /const settings = await settingsPromise/);
   assert.match(sources.layout, /settings\.ok \? \(/);
   assert.match(sources.layout, /<AppShell routes=\{routes\}>/);
+
+  // The independent profile and settings reads must stay concurrent. Ordering
+  // alone is too weak a check: `const settingsPromise = ...` can sit textually
+  // before the first await while an intervening await still serializes the two
+  // round trips. So assert that both promises are created in one uninterrupted
+  // synchronous run — no `await` may separate them.
+  const profileStart = sources.layout.indexOf("const profilePromise =");
+  const firstAwait = sources.layout.indexOf("const profile = await profilePromise");
+  assert.ok(profileStart > 0 && firstAwait > profileStart);
+  const betweenPromises = sources.layout.slice(profileStart, firstAwait).replace(/\/\/.*$/gm, "");
+  assert.match(betweenPromises, /getProfileSettings\(\)/);
+  assert.doesNotMatch(
+    betweenPromises,
+    /\bawait\b/,
+    "an await between the profile and settings reads would serialize them again",
+  );
+});
+
+test("the settings promise guard defers rejections instead of swallowing them", async () => {
+  // The layout attaches `.catch(() => {})` to the settings promise so the
+  // early-return branches do not trip an unhandled rejection. That guard must
+  // not absorb the failure: awaiting the original promise still has to throw,
+  // or an unexpected settings error would silently vanish instead of reaching
+  // the error boundary.
+  assert.match(sources.layout, /void settingsPromise\.catch\(\(\) => \{\}\)/);
+
+  const failing = Promise.reject(new Error("invariant violated"));
+  void failing.catch(() => {});
+  await assert.rejects(failing, /invariant violated/);
+
+  // And the guard genuinely prevents the unhandled rejection it exists for.
+  const unhandled = [];
+  const onUnhandled = (reason) => unhandled.push(reason);
+  process.on("unhandledRejection", onUnhandled);
+  const abandoned = Promise.reject(new Error("abandoned settings read"));
+  void abandoned.catch(() => {});
+  await new Promise((resolve) => setImmediate(resolve));
+  process.off("unhandledRejection", onUnhandled);
+  assert.deepEqual(unhandled, []);
 });
 
 test("authentication outages do not masquerade as expired sessions", async () => {

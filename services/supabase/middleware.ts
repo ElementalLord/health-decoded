@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { CURRENT_PATH_HEADER } from "@/lib/auth/redirects";
 import { getPublicEnv } from "@/lib/env/public";
+import { getCachedSigningKeys } from "@/services/supabase/signing-keys";
 import type { Database } from "@/types/database";
 
 const protectedRoutePrefixes = [
@@ -57,9 +58,22 @@ export async function refreshSession(request: NextRequest) {
       },
     },
   );
-  const { data } = await supabase.auth.getUser();
+  // `getClaims()` reads the session (refreshing it when needed, which writes the
+  // rotated cookies through `setAll` above) and then verifies the access token's
+  // signature locally against the project's public JWKS. Passing the cached key
+  // set keeps that verification network-free; if the keys are unavailable, or the
+  // project ever falls back to symmetric signing, `getClaims()` verifies against
+  // the Auth server exactly as `getUser()` did.
+  const signingKeys = await getCachedSigningKeys(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  );
+  const { data } = await supabase.auth.getClaims(
+    undefined,
+    signingKeys ? { jwks: signingKeys } : {},
+  );
 
-  if (!data.user && isProtectedRoute(request.nextUrl.pathname)) {
+  if (!data?.claims.sub && isProtectedRoute(request.nextUrl.pathname)) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.search = "";

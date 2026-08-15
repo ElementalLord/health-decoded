@@ -29,3 +29,11 @@ This internal matrix records the dependency classification used by the fault-inj
 P0 findings are failures that can lose input, falsely report a mutation, render unsupported medical AI output, or escape the authenticated shell. P1 findings are optional-dependency cascades, rejected promises, duplicate mutations, infinite pending states, or stale responses. Error logs use operation names and safe error categories only; they never include form, AI, reflection, auth token, or cookie values.
 
 `lib/reliability/dependency-boundary.ts` is intentionally narrow: it contains only branded `ExpectedDependencyFailure` values and recognized network, timeout, or external 5xx/429 failures. Unknown exceptions and invariant/programming errors rethrow to the normal route error boundary instead of being converted to an unavailable state.
+
+## Where session validation happens
+
+Middleware is a fast routing gate, not the authoritative authentication boundary. `services/supabase/middleware.ts` calls `auth.getClaims()`, which verifies the access token's ES256 signature locally against the project's public JWKS rather than calling the Auth server on every request. `services/supabase/signing-keys.ts` holds a process-level JWKS cache (with in-flight deduplication) so warm requests verify without a network call; if key discovery fails, or the project ever reverts to symmetric signing, `getClaims()` falls back to remote verification — slower, never less strict.
+
+Authoritative validation stays where data is actually read: the authenticated layout (`app/(app)/layout.tsx`) and every protected API route still call `getAuthenticatedUser()`, which performs a real `auth.getUser()` against the Auth server, and RLS remains the final boundary on all queries.
+
+The consequence is deliberate: a revoked or deleted session can pass middleware until its access token expires, but cannot reach protected application data or API results, because the authoritative checks reject it. Middleware exists to redirect unauthenticated traffic quickly, not to be the last line of defence. `tests/middleware-auth-verification.test.mjs` pins this contract, including rejection of expired, malformed, foreign-signed, and subject-swapped tokens.
