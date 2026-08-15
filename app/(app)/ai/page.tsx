@@ -4,8 +4,9 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { buttonVariants } from "@/components/ui/button";
 import { AiChat } from "@/features/ai/components/ai-chat";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { sectionIcons } from "@/lib/section-icons";
 
-export const metadata = { title: "AI tutor" };
+export const metadata = { title: "AI tutor", icons: sectionIcons("ai") };
 
 export default async function AiPage() {
   const profile = await getCurrentProfile();

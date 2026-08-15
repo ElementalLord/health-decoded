@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import { ResourcesList } from "@/features/resources/components/resources";
 import { listReviewedResources } from "@/features/resources/services/resources.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { sectionIcons } from "@/lib/section-icons";
 
-export const metadata = { title: "Resources" };
+export const metadata = { title: "Resources", icons: sectionIcons("library") };
 
 export default async function ResourcesPage() {
   const profile = await getCurrentProfile();

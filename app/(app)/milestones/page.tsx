@@ -4,8 +4,9 @@ import { MilestonesPage } from "@/features/achievements/components/milestones-pa
 import { MilestonesUnavailableState } from "@/features/achievements/components/milestones-unavailable-state";
 import { getEarnedMilestones } from "@/features/achievements/services/milestones.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { sectionIcons } from "@/lib/section-icons";
 
-export const metadata = { title: "Milestones" };
+export const metadata = { title: "Milestones", icons: sectionIcons("progress") };
 
 export default async function MilestonesRoute() {
   const profile = await getCurrentProfile();

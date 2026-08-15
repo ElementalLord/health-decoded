@@ -7,8 +7,9 @@ import { LearningRecord } from "@/features/progress/components/learning-record";
 import { ProgressEmptyState } from "@/features/progress/components/progress-empty-state";
 import { getProgressData } from "@/features/progress/services/progress.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { sectionIcons } from "@/lib/section-icons";
 
-export const metadata = { title: "Progress" };
+export const metadata = { title: "Progress", icons: sectionIcons("progress") };
 
 export default async function ProgressPage() {
   const profile = await getCurrentProfile();

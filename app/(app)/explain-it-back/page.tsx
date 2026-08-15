@@ -3,11 +3,13 @@ import { getExplainItBackChallenge } from "@/features/explain-it-back/content/ex
 import { getSpacedReviewOpportunity } from "@/features/spaced-review/services/spaced-review.server";
 import { unexpectedError } from "@/lib/errors/application-error";
 import { settleResult } from "@/lib/reliability/dependency-boundary";
+import { sectionIcons } from "@/lib/section-icons";
 
 export const metadata = {
   title: "Explain It Back",
   description:
     "Put a diabetes concept into your own words and check whether the main idea came through.",
+  icons: sectionIcons("tools"),
 };
 
 export default async function ExplainItBackPage({

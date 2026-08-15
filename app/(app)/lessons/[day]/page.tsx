@@ -5,8 +5,9 @@ import { LessonUnavailableState } from "@/features/lessons/components/lesson-una
 import { lessonDaySchema } from "@/features/lessons/schemas/lesson-route.schema";
 import { getAuthorizedLesson } from "@/features/lessons/services/lesson-player.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { sectionIcons } from "@/lib/section-icons";
 
-export const metadata = { title: "Lesson" };
+export const metadata = { title: "Lesson", icons: sectionIcons("journey") };
 
 export default async function LessonPage({ params }: { params: Promise<{ day: string }> }) {
   const { day: rawDay } = await params;

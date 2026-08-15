@@ -7,8 +7,9 @@ import { marcusParkingLotStory } from "@/features/stories/content/marcus-parking
 import { noraPrescriptionBagStory } from "@/features/stories/content/nora-prescription-bag";
 import { getStory } from "@/features/stories/services/stories.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { sectionIcons } from "@/lib/section-icons";
 
-export const metadata = { title: "Learning story" };
+export const metadata = { title: "Learning story", icons: sectionIcons("library") };
 
 export default async function StoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

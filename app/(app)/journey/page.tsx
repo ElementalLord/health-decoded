@@ -22,10 +22,11 @@ import { getSpacedReviewOpportunity } from "@/features/spaced-review/services/sp
 import { unexpectedError } from "@/lib/errors/application-error";
 import { createServerLogger } from "@/lib/logging/server";
 import { settleResult } from "@/lib/reliability/dependency-boundary";
+import { sectionIcons } from "@/lib/section-icons";
 
 const logger = createServerLogger();
 
-export const metadata = { title: "Your journey" };
+export const metadata = { title: "Your journey", icons: sectionIcons("journey") };
 
 export default async function JourneyPage({
   searchParams,

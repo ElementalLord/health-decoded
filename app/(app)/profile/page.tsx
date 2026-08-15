@@ -6,8 +6,9 @@ import { ProfileContent } from "@/features/profile/components/profile-content";
 import { getProfileSettings } from "@/features/profile/services/profile-settings.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 import { buttonVariants } from "@/components/ui/button";
+import { sectionIcons } from "@/lib/section-icons";
 
-export const metadata = { title: "Profile" };
+export const metadata = { title: "Profile", icons: sectionIcons("account") };
 
 export default async function ProfilePage() {
   const profile = await getCurrentProfile();
