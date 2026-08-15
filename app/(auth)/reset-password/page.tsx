@@ -17,7 +17,7 @@ export default async function ResetPasswordPage() {
     <div className="space-y-8">
       <PageHeader
         compact
-        description="Choose a password you'll remember easily."
+        description="Choose a password you’ll remember easily."
         eyebrow="New password"
         title="Choose a new password"
       />

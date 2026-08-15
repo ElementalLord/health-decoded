@@ -26,7 +26,7 @@ function AppHeader({ routes = applicationRoutes }: { routes?: readonly Applicati
           <span className="font-serif-display text-[length:var(--text-card-title)] font-semibold">
             Health Decoded
           </span>
-          <span className="hidden text-[0.65rem] font-bold uppercase tracking-[0.24em] text-muted-foreground sm:inline">
+          <span className="hidden text-[0.65rem] font-bold uppercase tracking-[0.25em] text-muted-foreground sm:inline">
             EDU
           </span>
         </Link>

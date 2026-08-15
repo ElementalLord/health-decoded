@@ -10,7 +10,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh bg-[#f8f4ed] text-[#382c26]">
       <a
-        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-[8px] bg-[#382c26] px-4 py-3 font-semibold text-[#fffaf3] transition-transform focus:translate-y-0"
+        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-[9px] bg-[#382c26] px-4 py-3 font-semibold text-[#fffaf3] transition-transform focus:translate-y-0"
         href="#main-content"
       >
         Skip to main content
@@ -24,7 +24,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
             <span className="font-serif-display text-xl font-semibold tracking-tight sm:text-2xl">
               Health Decoded
             </span>
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.27em] text-[#8b7a70]">
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.25em] text-[#8b7a70]">
               EDU
             </span>
           </Link>

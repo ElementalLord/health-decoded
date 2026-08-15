@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BookHeart,
   BookOpen,
   HelpingHand,
   House,
@@ -26,7 +27,7 @@ const icons = {
   profile: UserRound,
   progress: ListChecks,
   resources: Library,
-  stories: BookOpen,
+  stories: BookHeart,
 } as const;
 
 function isActiveRoute(pathname: string, route: ApplicationRoute) {

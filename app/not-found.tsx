@@ -23,7 +23,7 @@ export default function NotFound() {
       description="The page may have moved or no longer exists. Your learning progress has not changed."
       headingLevel="h1"
       icon={<Compass className="size-6" />}
-      title="We couldn't find that page"
+      title="We couldn’t find that page"
     />
   );
 }
