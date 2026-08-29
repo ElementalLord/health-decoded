@@ -77,10 +77,9 @@ test("Personal Toolkit derives from four earned non-toolkit categories", () => {
   assert.match(service, /MILESTONE-PERSONAL-TOOLKIT/);
 });
 
-test("recent milestones are ordered newest first and linked from Journey", () => {
+test("recent milestones are ordered newest first and remain available from Profile", () => {
   assert.match(service, /order\("unlocked_at", \{ ascending: false \}\)/);
-  assert.match(journey, /href="\/milestones"/);
-  assert.match(journey, /title="View your milestones"/);
+  assert.doesNotMatch(journey, /href="\/milestones"/);
   assert.match(profile, /href="\/milestones"/);
 });
 

@@ -1874,7 +1874,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 value={reflection}
               />
               <small>
-                If you complete this lesson, this reflection will be saved to your private profile.
+                This reflection will be saved to your Health Decoded account if you complete this
+                lesson. Please do not include unnecessary sensitive information.
               </small>
             </label>
             <div className={styles.teachBack}>

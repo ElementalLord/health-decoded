@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import type {
   CompletedLessonHistoryEntry,
-  ConfidenceHistoryEntry,
   ProgressMilestone,
   ProgressMilestoneState,
 } from "@/features/progress/types/progress";
@@ -11,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { formatDateSafely } from "@/lib/dates/format-date";
 
 const stateDetails: Record<ProgressMilestoneState, { icon: typeof Circle; label: string }> = {
-  completed_with_check_in: { icon: CheckCircle2, label: "Complete" },
   completed: { icon: CheckCircle2, label: "Complete" },
   current: { icon: MapPin, label: "Current lesson" },
   locked: { icon: LockKeyhole, label: "Coming up" },
@@ -33,11 +31,9 @@ function formatDate(value: string) {
 
 function MilestoneEntry({
   completion,
-  confidence,
   milestone,
 }: {
   completion: CompletedLessonHistoryEntry | undefined;
-  confidence: ConfidenceHistoryEntry | undefined;
   milestone: ProgressMilestone;
 }) {
   const details = stateDetails[milestone.state];
@@ -71,15 +67,6 @@ function MilestoneEntry({
           <span className="mt-1.5 block text-xs leading-5 text-muted-foreground">
             {formatDate(completion.completedAt) ? `${formatDate(completion.completedAt)} · ` : ""}
             {completion.xpAwarded} XP
-            {completion.confidenceLabel
-              ? ` · ${completion.confidenceLabel}`
-              : confidence
-                ? ` · ${confidence.confidenceLabel}`
-                : ""}
-          </span>
-        ) : milestone.confidenceLabel ? (
-          <span className="mt-1.5 block text-xs leading-5 text-muted-foreground">
-            {milestone.confidenceLabel}
           </span>
         ) : null}
       </span>
@@ -119,15 +106,12 @@ function MilestoneEntry({
 
 export function LearningRecord({
   completedLessons,
-  confidenceHistory,
   milestones,
 }: {
   completedLessons: CompletedLessonHistoryEntry[];
-  confidenceHistory: ConfidenceHistoryEntry[];
   milestones: ProgressMilestone[];
 }) {
   const completionByDay = new Map(completedLessons.map((entry) => [entry.dayNumber, entry]));
-  const confidenceByDay = new Map(confidenceHistory.map((entry) => [entry.dayNumber, entry]));
 
   return (
     <section aria-labelledby="learning-record-title" className="space-y-5">
@@ -140,7 +124,7 @@ export function LearningRecord({
             Your learning record
           </h2>
           <p className="max-w-2xl text-pretty text-sm leading-6 text-muted-foreground">
-            Lessons, confidence check-ins, and milestones together in one place.
+            Completed lessons and milestones together in one place.
           </p>
         </div>
         <p className="text-sm font-semibold text-muted-foreground">
@@ -187,7 +171,6 @@ export function LearningRecord({
                     {sectionMilestones.map((milestone) => (
                       <MilestoneEntry
                         completion={completionByDay.get(milestone.dayNumber)}
-                        confidence={confidenceByDay.get(milestone.dayNumber)}
                         key={milestone.dayNumber}
                         milestone={milestone}
                       />
@@ -206,7 +189,7 @@ export function LearningRecord({
 
       {completedLessons.length === 0 ? (
         <p className="text-sm leading-6 text-muted-foreground">
-          Your check-ins and lesson history will build here as you learn.
+          Your lesson history will build here as you learn.
         </p>
       ) : null}
     </section>

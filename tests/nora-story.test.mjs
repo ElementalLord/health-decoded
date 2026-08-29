@@ -21,12 +21,11 @@ const interactions = readFileSync("features/stories/components/story-interaction
 const styles = readFileSync("features/stories/components/story-player.module.css", "utf8");
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 
-test("Story 3 appears under Starting medication with its state-aware preview", () => {
-  assert.match(landing, /id="starting-medication-story"/);
-  assert.match(landing, /story=\{noraPrescriptionBagStory\}/);
-  assert.match(landing, /Starting medication/);
-  assert.match(landing, /Different moments/);
-  for (const action of ["Begin Story", "Resume Story", "Read Again"]) {
+test("Story 3 remains available with its state-aware preview", () => {
+  assert.match(landing, /noraPrescriptionBagStory/);
+  assert.match(landing, /remainingStories\.map/);
+  assert.match(landing, /getRecommendedStorySlug/);
+  for (const action of ["Start", "Continue", "Read again"]) {
     assert.match(landing, new RegExp(action));
   }
   assert.doesNotMatch(landing, /quizScore/);

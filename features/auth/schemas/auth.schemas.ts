@@ -16,7 +16,15 @@ export const emailOtpTypeSchema = z.enum([
   "signup",
 ]);
 export const signupSchema = z
-  .object({ email, password: newPassword, passwordConfirmation: newPassword })
+  .object({
+    email,
+    password: newPassword,
+    passwordConfirmation: newPassword,
+    legalAcceptance: z.literal(
+      "on",
+      "You must agree to the Terms of Use and acknowledge the Privacy Policy.",
+    ),
+  })
   .refine((value) => value.password === value.passwordConfirmation, {
     message: "Passwords do not match.",
     path: ["passwordConfirmation"],

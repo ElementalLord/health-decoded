@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,7 @@ export function AuthForm({
   next?: string;
 }) {
   const [state, formAction, pending] = useActionState(action, { status: "idle", message: null });
+  const [legalAccepted, setLegalAccepted] = useState(false);
   const needsEmail =
     mode === "login" ||
     mode === "signup" ||
@@ -110,6 +111,32 @@ export function AuthForm({
           />
         </label>
       ) : null}
+      {mode === "signup" ? (
+        <label
+          className="flex items-start gap-3 text-sm leading-6 text-muted-foreground"
+          htmlFor="signup-legal-acceptance"
+        >
+          <input
+            checked={legalAccepted}
+            className="mt-1 size-4 shrink-0 rounded border-input accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+            id="signup-legal-acceptance"
+            name="legalAcceptance"
+            onChange={(event) => setLegalAccepted(event.target.checked)}
+            type="checkbox"
+          />
+          <span>
+            I agree to the{" "}
+            <Link className="font-medium text-primary underline underline-offset-4" href="/terms">
+              Terms of Use
+            </Link>{" "}
+            and acknowledge the{" "}
+            <Link className="font-medium text-primary underline underline-offset-4" href="/privacy">
+              Privacy Policy
+            </Link>
+            .
+          </span>
+        </label>
+      ) : null}
       {state.message ? (
         <p
           aria-live="polite"
@@ -124,7 +151,7 @@ export function AuthForm({
           {state.message}
         </p>
       ) : null}
-      <Button disabled={pending} type="submit">
+      <Button disabled={pending || (mode === "signup" && !legalAccepted)} type="submit">
         {pending ? pendingLabel : submitLabel}
       </Button>
       {mode === "login" ? (
@@ -143,6 +170,17 @@ export function AuthForm({
           Already have an account?{" "}
           <Link className="text-primary underline" href="/login">
             Sign in
+          </Link>
+        </p>
+      ) : null}
+      {mode !== "signup" ? (
+        <p className="text-sm text-muted-foreground">
+          <Link className="text-primary underline" href="/privacy">
+            Privacy Policy
+          </Link>{" "}
+          ·{" "}
+          <Link className="text-primary underline" href="/terms">
+            Terms of Use
           </Link>
         </p>
       ) : null}

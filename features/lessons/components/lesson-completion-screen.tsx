@@ -77,7 +77,7 @@ export function LessonCompletionScreen({
           )}
           {completion.xpAwarded > 0 ? (
             <p className="text-sm font-medium text-primary">
-              This lesson added {completion.xpAwarded} Confidence XP to your learning record.
+              This lesson added {completion.xpAwarded} Learning XP to your learning record.
             </p>
           ) : null}
         </div>

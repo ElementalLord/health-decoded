@@ -59,7 +59,7 @@ export function LearningStreakPanel({ streak }: { streak: LearningStreak }) {
         <p aria-live="polite" className="mt-4 text-sm font-medium" role="status">
           {streak.pendingNotice === "freeze_used"
             ? "A streak freeze covered the missed day."
-            : "Today starts a new learning streak."}
+            : "Your previous streak ended. Your next learning day starts a new streak."}
         </p>
       ) : null}
     </section>

@@ -70,24 +70,9 @@ export async function getProgressData(): Promise<Result<ProgressViewModel>> {
     return err(unexpectedError());
   }
 
-  const progressIds = progressRows.map((progress) => progress.id);
-  const confidenceResponse = progressIds.length
-    ? await database
-        .from("confidence_check_ins")
-        .select("lesson_progress_id, confidence_level, created_at")
-        .in("lesson_progress_id", progressIds)
-    : { data: [], error: null };
-  const confidenceRows = confidenceResponse.data;
-
-  if (confidenceResponse.error || !confidenceRows) {
-    logger.error("progress.confidence_unavailable");
-    return err(unexpectedError());
-  }
-
   const viewModel = mapProgress({
     assignments,
     completedAt: userJourney.completed_at,
-    confidenceRows,
     currentJourneyLessonId: userJourney.current_journey_lesson_id,
     journeyTitle: journey.title,
     progressRows,

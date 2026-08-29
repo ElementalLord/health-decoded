@@ -20,30 +20,28 @@ const playerStyles = readFileSync("features/stories/components/story-player.modu
 const landingRoute = readFileSync("app/(app)/stories/page.tsx", "utf8");
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 
-test("the Stories page explains that its experiences are illustrative", () => {
-  assert.match(landing, /Illustrative experiences that explore the emotions, decisions/);
+test("the Stories page introduces its real-life focus", () => {
+  assert.match(landing, /Real-life moments with Type 2 diabetes/);
   assert.match(landingRoute, /<StoryLanding \/>/);
   assert.doesNotMatch(landing, /testimonial|real patient|success story/i);
 });
 
-test("topic browsing lists five situations and only marks the unbuilt topic as coming soon", () => {
-  for (const topic of [
-    "Just diagnosed",
-    "Food and family",
-    "Starting medication",
-    "A worrying reading",
-    "Support and boundaries",
+test("the Stories page presents its four stories without a browse strip", () => {
+  for (const storyName of [
+    "marcusParkingLotStory",
+    "ashaRiceOnTheTableStory",
+    "noraPrescriptionBagStory",
+    "devonNumberScreenStory",
   ]) {
-    assert.match(landing, new RegExp(topic));
+    assert.match(landing, new RegExp(storyName));
   }
-  assert.equal(landing.split("story={").length - 1, 4);
-  assert.match(landing, /<small>Coming soon<\/small>/);
+  assert.doesNotMatch(landing, /Browse stories by situation/);
 });
 
-test("Marcus remains the Just diagnosed preview and its cover comes first", () => {
-  assert.match(landing, /id="just-diagnosed-story"/);
-  assert.match(landing, /Start here/);
-  assert.match(landing, /story=\{marcusParkingLotStory\}/);
+test("Marcus remains available while the featured story is selected dynamically", () => {
+  assert.match(landing, /id="recommended-story"/);
+  assert.match(landing, /getRecommendedStorySlug/);
+  assert.match(landing, /marcusParkingLotStory/);
   assert.match(landing, /href=\{storyHref\}/);
   assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.previewBody"));
   assert.equal(marcusParkingLotStory.title, "Forty Minutes in the Parking Lot");
@@ -64,8 +62,8 @@ test("Marcus’s generated cover remains optimized and is reused without duplica
 test("a new story can begin directly from the landing without repeating its cover", () => {
   assert.match(player, /progress\.stage !== "intro"/);
   assert.match(opening, /Begin Story/);
-  assert.match(landing, /Resume Story/);
-  assert.match(landing, /Read Again/);
+  assert.match(landing, /Continue/);
+  assert.match(landing, /Read again/);
   assert.match(landing, /\?begin=1/);
   assert.match(player, /resolveStoryEntryProgress/);
   assert.match(player, /progress\.stage === "intro" \?/);
@@ -240,7 +238,7 @@ test("private reflection can be saved locally or skipped", () => {
   assert.match(player, /disabled=\{!reflectionDraft\.trim\(\)\}/);
 });
 
-test("story progress persists and exposes Begin, Resume, and Read Again states", () => {
+test("story progress persists and exposes compact action states", () => {
   assert.match(player, /readLocalStorage/);
   assert.match(player, /safeSetLocalStorage/);
   assert.match(player, /currentScene/);
@@ -248,7 +246,7 @@ test("story progress persists and exposes Begin, Resume, and Read Again states",
   assert.match(player, /meaningfulChoice/);
   assert.match(player, /completionDate/);
   assert.match(player, /versionCompleted/);
-  for (const label of ["Begin Story", "Resume Story", "Read Again"]) {
+  for (const label of ["Start", "Continue", "Read again"]) {
     assert.match(landing, new RegExp(label));
   }
 

@@ -522,6 +522,7 @@ export function AiChat() {
             return (
               <article
                 className={cn("flex", isAssistant ? "justify-start" : "justify-end")}
+                data-motion-item
                 key={entry.id}
               >
                 <div

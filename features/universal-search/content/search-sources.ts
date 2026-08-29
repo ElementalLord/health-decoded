@@ -23,10 +23,10 @@ export const navigationSearchDocuments = [
     id: "NAV-PROGRESS",
     type: "navigation",
     title: "Learning Record",
-    description: "Review completed lessons and confidence check-ins.",
+    description: "Review completed lessons and milestones.",
     route: "/progress",
     aliases: ["progress", "learning history"],
-    keywords: ["completed lessons", "confidence"],
+    keywords: ["completed lessons", "milestones"],
     priority: 2,
     status: "available",
   },
@@ -214,8 +214,8 @@ export const storySearchDocuments: readonly UniversalSearchDocument[] = stories.
   status: "available",
 }));
 
-export const resourceSearchDocuments: readonly UniversalSearchDocument[] = type2DiabetesResources.map(
-  (resource) => ({
+export const resourceSearchDocuments: readonly UniversalSearchDocument[] =
+  type2DiabetesResources.map((resource) => ({
     id: `RESOURCE-${resource.id.toUpperCase()}`,
     type: "resource",
     title: resource.title,
@@ -226,8 +226,7 @@ export const resourceSearchDocuments: readonly UniversalSearchDocument[] = type2
     sectionLabel: resource.category,
     priority: 4,
     status: resource.status === "reviewed" ? "available" : "archived",
-  }),
-);
+  }));
 
 export const caregiverSearchDocuments: readonly UniversalSearchDocument[] = Object.values(
   caregiverModuleRegistry,

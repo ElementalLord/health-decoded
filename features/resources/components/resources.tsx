@@ -3,22 +3,45 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  Activity,
   ArrowRight,
   ArrowUpRight,
   BookOpenText,
   Check,
   CircleHelp,
-  ClipboardCheck,
+  Droplets,
+  Eye,
+  Gauge,
   HeartPulse,
   MessageSquareText,
-  Salad,
+  Search,
   ShieldCheck,
-  Sparkles,
+  Smile,
   Stethoscope,
   Tags,
+  Thermometer,
+  Utensils,
+  WalletCards,
+  X,
   type LucideIcon,
 } from "lucide-react";
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
 import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 import type { Resource } from "@/features/stories/schemas/resource.schema";
@@ -27,6 +50,13 @@ import { formatDateSafely } from "@/lib/dates/format-date";
 import styles from "./resources.module.css";
 
 type ResourceId = Resource["id"];
+type TopicId =
+  | "all"
+  | "just-diagnosed"
+  | "daily-living"
+  | "staying-safe"
+  | "long-term-health"
+  | "living-confidently";
 
 type ReadingProgressValue = {
   clearViewed: () => void;
@@ -35,55 +65,160 @@ type ReadingProgressValue = {
   viewedIds: Set<ResourceId>;
 };
 
-type ReadingPath = {
-  count: string;
+type Topic = {
   description: string;
-  href: string;
-  icon: LucideIcon;
-  title: string;
+  id: Exclude<TopicId, "all">;
+  label: string;
+  resourceIds: readonly ResourceId[];
+};
+
+type ResourceVisual = {
+  alt: string;
+  icon?: LucideIcon;
+  image?: string;
+  tone: "blue" | "clay" | "gold" | "green" | "sage";
 };
 
 const VIEWED_STORAGE_KEY = "health-decoded:resources:viewed";
 
 const ReadingProgressContext = createContext<ReadingProgressValue | null>(null);
 
-const readingPaths: ReadingPath[] = [
+const topics: readonly Topic[] = [
   {
-    count: "3 reads",
-    description: "Start with the diagnosis, A1C, and daily readings.",
-    href: "#new-here",
+    description: "Diagnosis, A1C, and daily readings.",
+    id: "just-diagnosed",
+    label: "Just diagnosed",
+    resourceIds: ["type-2-diabetes-basics", "understanding-a1c", "monitoring-blood-sugar"],
+  },
+  {
+    description: "Food, culture, and workable movement.",
+    id: "daily-living",
+    label: "Food & daily living",
+    resourceIds: ["diabetes-meal-planning", "cultural-foods", "physical-activity"],
+  },
+  {
+    description: "Medicines, lows, and sick-day plans.",
+    id: "staying-safe",
+    label: "Staying safe",
+    resourceIds: ["diabetes-treatments", "low-blood-sugar", "managing-sick-days"],
+  },
+  {
+    description: "Heart, kidneys, eyes, feet, and mouth.",
+    id: "long-term-health",
+    label: "Long-term health",
+    resourceIds: [
+      "heart-disease-and-stroke",
+      "kidney-health",
+      "eye-health",
+      "foot-care",
+      "oral-health",
+    ],
+  },
+  {
+    description: "Emotional, educational, financial, and practical support.",
+    id: "living-confidently",
+    label: "Living confidently",
+    resourceIds: [
+      "diabetes-and-mental-health",
+      "diabetes-education-and-support",
+      "financial-help",
+      "emergency-preparedness",
+    ],
+  },
+] as const;
+
+const resourceVisuals: Record<ResourceId, ResourceVisual> = {
+  "type-2-diabetes-basics": {
+    alt: "An editorial illustration introducing the essentials of Type 2 diabetes",
     icon: BookOpenText,
-    title: "Just diagnosed",
+    tone: "sage",
   },
-  {
-    count: "3 reads",
-    description: "Keep familiar food and workable movement in the picture.",
-    href: "#daily-living",
-    icon: Salad,
-    title: "Food & daily living",
+  "understanding-a1c": {
+    alt: "A patient and clinician calmly reviewing a laboratory report together",
+    image: "/resources/a1c-explained-editorial.jpg",
+    tone: "green",
   },
-  {
-    count: "3 reads",
-    description: "Make a plan for medicines, lows, and sick days.",
-    href: "#staying-safe",
-    icon: ClipboardCheck,
-    title: "Staying safe",
+  "monitoring-blood-sugar": {
+    alt: "An editorial illustration of a glucose reading seen in context",
+    icon: Gauge,
+    tone: "blue",
   },
-  {
-    count: "5 reads",
-    description: "Look after your heart, kidneys, eyes, feet, and mouth.",
-    href: "#long-term-health",
+  "diabetes-meal-planning": {
+    alt: "A multigenerational family preparing a familiar meal together",
+    image: "/resources/family-meal-editorial.jpg",
+    tone: "gold",
+  },
+  "cultural-foods": {
+    alt: "An editorial illustration celebrating familiar foods at the table",
+    icon: Utensils,
+    tone: "gold",
+  },
+  "physical-activity": {
+    alt: "Two friends sharing an easy walk on a neighborhood path",
+    image: "/resources/everyday-movement-editorial.jpg",
+    tone: "green",
+  },
+  "diabetes-treatments": {
+    alt: "An older woman and pharmacist building a medicine routine together",
+    image: "/resources/pharmacist-routine-editorial.png",
+    tone: "clay",
+  },
+  "low-blood-sugar": {
+    alt: "An editorial illustration about recognizing and treating low blood sugar",
+    icon: Droplets,
+    tone: "blue",
+  },
+  "managing-sick-days": {
+    alt: "An editorial illustration for a written diabetes sick-day plan",
+    icon: Thermometer,
+    tone: "clay",
+  },
+  "heart-disease-and-stroke": {
+    alt: "An editorial illustration connecting diabetes and heart health",
     icon: HeartPulse,
-    title: "Long-term health",
+    tone: "green",
   },
-  {
-    count: "4 reads",
-    description: "Find emotional, practical, and financial support.",
-    href: "#living-confidently",
-    icon: Sparkles,
-    title: "Living confidently",
+  "kidney-health": {
+    alt: "An editorial illustration about the quiet work of kidney screening",
+    icon: Droplets,
+    tone: "sage",
   },
-];
+  "eye-health": {
+    alt: "An editorial illustration about looking beyond clear vision",
+    icon: Eye,
+    tone: "blue",
+  },
+  "foot-care": {
+    alt: "An adult calmly checking the sole of one foot with a hand mirror",
+    image: "/resources/foot-check-natural.png",
+    tone: "gold",
+  },
+  "oral-health": {
+    alt: "An editorial illustration about diabetes and gum health",
+    icon: Smile,
+    tone: "gold",
+  },
+  "diabetes-and-mental-health": {
+    alt: "Two people sharing calm, practical support",
+    image: "/resources/everyday-support-natural.png",
+    tone: "sage",
+  },
+  "diabetes-education-and-support": {
+    alt: "A diabetes educator making care feel practical and approachable",
+    image: "/resources/community-education-editorial.png",
+    tone: "green",
+  },
+  "financial-help": {
+    alt: "An editorial illustration about finding help with the cost of care",
+    icon: WalletCards,
+    tone: "clay",
+  },
+  "emergency-preparedness": {
+    alt: "Hands organizing diabetes supplies and a checklist in an emergency bag",
+    image: "/resources/emergency-kit-natural.png",
+    tone: "blue",
+  },
+};
 
 function useReadingProgress() {
   const value = useContext(ReadingProgressContext);
@@ -107,19 +242,20 @@ function shortSource(organization: string) {
 function reviewedLabel(verifiedAt: string) {
   return formatDateSafely(
     `${verifiedAt}T00:00:00Z`,
-    {
-      month: "short",
-      timeZone: "UTC",
-      year: "numeric",
-    },
+    { month: "short", timeZone: "UTC", year: "numeric" },
     "en-US",
   );
 }
 
-function ResourceMeta({ resource, compact = false }: { compact?: boolean; resource: Resource }) {
+function ResourceMeta({
+  resource,
+  showReviewed = true,
+}: {
+  resource: Resource;
+  showReviewed?: boolean;
+}) {
   const { viewedIds } = useReadingProgress();
   const viewed = viewedIds.has(resource.id);
-  const reviewed = reviewedLabel(resource.verified_at);
 
   return (
     <div className={styles.meta}>
@@ -129,22 +265,22 @@ function ResourceMeta({ resource, compact = false }: { compact?: boolean; resour
         Verified
       </span>
       <span aria-hidden="true" className={styles.metaDot} />
-      <span>{resource.reading_level}</span>
+      <span>{resource.reading_minutes} min read</span>
       <span aria-hidden="true" className={styles.metaDot} />
-      <span className={styles.readingTime}>{resource.reading_minutes} min read</span>
+      <span>{resource.reading_level}</span>
+      {showReviewed ? (
+        <>
+          <span aria-hidden="true" className={styles.metaDot} />
+          <span>Reviewed {reviewedLabel(resource.verified_at)}</span>
+        </>
+      ) : null}
       {viewed ? (
         <>
           <span aria-hidden="true" className={styles.metaDot} />
           <span className={styles.viewedState}>
-            <Check aria-hidden="true" size={13} strokeWidth={2} />
+            <Check aria-hidden="true" size={13} strokeWidth={2.2} />
             Viewed
           </span>
-        </>
-      ) : null}
-      {!compact && reviewed ? (
-        <>
-          <span aria-hidden="true" className={styles.metaDot} />
-          <span>Reviewed {reviewed}</span>
         </>
       ) : null}
     </div>
@@ -169,11 +305,12 @@ function ResourceLink({
       href={resource.url}
       onClick={() => {
         markViewed(resource.id);
-        if (resource.id === "diabetes-education-and-support")
+        if (resource.id === "diabetes-education-and-support") {
           void recognizeMilestone({
             event: "verified_support_resource_opened",
             resourceId: "diabetes-education-and-support",
           });
+        }
       }}
       rel="noopener noreferrer"
       target="_blank"
@@ -193,223 +330,139 @@ function ArticleLabel({ resource }: { resource: Resource }) {
   );
 }
 
-function ExternalArrow() {
-  return (
-    <span aria-hidden="true" className={styles.externalArrow}>
-      <ArrowUpRight size={18} strokeWidth={1.7} />
-    </span>
-  );
-}
+function ResourceArtwork({ resource }: { resource: Resource }) {
+  const visual = resourceVisuals[resource.id] ?? {
+    alt: `An editorial illustration for ${resource.title}`,
+    icon: BookOpenText,
+    tone: "sage",
+  };
+  const Icon = visual.icon ?? Activity;
 
-function ReadGuide() {
   return (
-    <span className={styles.readGuide}>
-      Read the official guide
-      <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.8} />
-    </span>
-  );
-}
-
-function FeaturedLead({ resource }: { resource: Resource }) {
-  return (
-    <article className={styles.featuredLead}>
-      <ResourceLink className={styles.featuredLink} resource={resource}>
-        <div className={styles.featuredImage}>
-          <Image
-            alt="A patient and clinician calmly reviewing a laboratory report together"
-            fill
-            priority
-            sizes="(max-width: 767px) 100vw, 66vw"
-            src="/resources/a1c-explained-editorial.jpg"
-          />
+    <div className={styles.resourceArtwork} data-tone={visual.tone}>
+      {visual.image ? (
+        <Image
+          alt={visual.alt}
+          fill
+          sizes="(max-width: 42rem) 100vw, (max-width: 68rem) 50vw, 26vw"
+          src={visual.image}
+        />
+      ) : (
+        <div aria-label={visual.alt} className={styles.generatedArtwork} role="img">
+          <span aria-hidden="true" className={styles.artCircle} />
+          <span aria-hidden="true" className={styles.artLine} />
+          <span aria-hidden="true" className={styles.artIcon}>
+            <Icon size={42} strokeWidth={1.25} />
+          </span>
+          <span aria-hidden="true" className={styles.artIndex}>
+            {resource.format}
+          </span>
         </div>
-        <div className={styles.featuredCopy}>
-          <ArticleLabel resource={resource} />
-          <h2>{resource.title}</h2>
-          <p>{resource.description}</p>
-          <ReadGuide />
-          <ResourceMeta resource={resource} />
-          <ExternalArrow />
-        </div>
-      </ResourceLink>
-    </article>
-  );
-}
-
-function FeaturedSide({
-  alt,
-  image,
-  resource,
-}: {
-  alt: string;
-  image: string;
-  resource: Resource;
-}) {
-  return (
-    <article className={styles.featuredSide}>
-      <ResourceLink resource={resource}>
-        <div className={styles.sideImage}>
-          <Image alt={alt} fill sizes="(max-width: 767px) 100vw, 34vw" src={image} />
-        </div>
-        <div className={styles.sideCopy}>
-          <ArticleLabel resource={resource} />
-          <h3>{resource.title}</h3>
-          <p>{resource.description}</p>
-          <ReadGuide />
-          <ResourceMeta compact resource={resource} />
-          <ExternalArrow />
-        </div>
-      </ResourceLink>
-    </article>
-  );
-}
-
-function SectionHeading({
-  count,
-  description,
-  eyebrow,
-  id,
-  title,
-}: {
-  count: string;
-  description: string;
-  eyebrow: string;
-  id: string;
-  title: string;
-}) {
-  return (
-    <div className={styles.sectionHeading}>
-      <div>
-        <p>{eyebrow}</p>
-        <h2 id={id}>{title}</h2>
-      </div>
-      <p className={styles.sectionDescription}>{description}</p>
-      <span>{count}</span>
+      )}
     </div>
   );
 }
 
-function LeadArticle({ index, resource }: { index: string; resource: Resource }) {
+function ResourceGridItem({ resource }: { resource: Resource }) {
   return (
-    <article className={styles.leadArticle}>
-      <ResourceLink resource={resource}>
-        <span aria-hidden="true" className={styles.articleNumber}>
-          {index}
+    <ResourceLink className={styles.resourceLink} resource={resource}>
+      <ResourceArtwork resource={resource} />
+      <div className={styles.resourceCopy}>
+        <ArticleLabel resource={resource} />
+        <h3>{resource.title}</h3>
+        <p>{resource.description}</p>
+        <span className={styles.gridAction}>
+          Read guide
+          <ArrowUpRight aria-hidden="true" size={15} strokeWidth={1.9} />
         </span>
-        <div>
-          <ArticleLabel resource={resource} />
-          <h3>{resource.title}</h3>
-          <p>{resource.description}</p>
-          <ReadGuide />
-          <ResourceMeta resource={resource} />
-        </div>
-        <ExternalArrow />
-      </ResourceLink>
-    </article>
+        <ResourceMeta resource={resource} />
+      </div>
+    </ResourceLink>
   );
 }
 
-function CompactArticle({ resource }: { resource: Resource }) {
-  return (
-    <article className={styles.compactArticle}>
-      <ResourceLink resource={resource}>
-        <ArticleLabel resource={resource} />
-        <h3>{resource.title}</h3>
-        <p>{resource.description}</p>
-        <ReadGuide />
-        <ResourceMeta compact resource={resource} />
-        <ExternalArrow />
-      </ResourceLink>
-    </article>
-  );
-}
-
-function ChecklistArticle({
-  image,
-  note,
-  resource,
+function ResourceFilters({
+  onReset,
+  onSearchChange,
+  onTopicChange,
+  query,
+  selectedTopic,
 }: {
-  image?: { alt: string; src: string };
-  note: string;
-  resource: Resource;
+  onReset: () => void;
+  onSearchChange: (query: string) => void;
+  onTopicChange: (topic: TopicId) => void;
+  query: string;
+  selectedTopic: TopicId;
 }) {
+  const activeTopic = topics.find(({ id }) => id === selectedTopic);
+  const filtersActive = query.length > 0 || selectedTopic !== "all";
+
   return (
-    <article className={`${styles.checklistArticle} ${image ? styles.checklistWithPhoto : ""}`}>
-      <ResourceLink resource={resource}>
-        {image ? (
-          <div className={styles.articlePhoto}>
-            <Image alt={image.alt} fill sizes="(max-width: 48rem) 100vw, 44vw" src={image.src} />
+    <aside aria-label="Resource filters" className={styles.filterRail}>
+      <div className={styles.filterSticky}>
+        <div className={styles.searchGroup}>
+          <label htmlFor="resource-search">Search</label>
+          <div className={styles.searchField}>
+            <Search aria-hidden="true" size={17} strokeWidth={1.8} />
+            <input
+              autoComplete="off"
+              id="resource-search"
+              onChange={(event) => onSearchChange(event.target.value)}
+              placeholder="Search resources"
+              type="search"
+              value={query}
+            />
+            {query ? (
+              <button
+                aria-label="Clear resource search"
+                onClick={() => onSearchChange("")}
+                type="button"
+              >
+                <X aria-hidden="true" size={15} strokeWidth={2} />
+              </button>
+            ) : null}
           </div>
-        ) : null}
-        <div className={styles.checklistCopy}>
-          <p className={styles.checkNote}>{note}</p>
-          <h3>{resource.title}</h3>
-          <p>{resource.description}</p>
-          <ReadGuide />
-          <ResourceMeta compact resource={resource} />
-          <ExternalArrow />
+          <p>Search stays on this page and is never saved.</p>
         </div>
-      </ResourceLink>
-    </article>
-  );
-}
 
-function SourceNote() {
-  return (
-    <aside className={styles.sourceNote}>
-      <div className={styles.sourceNoteIntro}>
-        <Stethoscope aria-hidden="true" size={26} strokeWidth={1.45} />
-        <p>Editor&apos;s source note</p>
-        <h2>Why these two sources?</h2>
-      </div>
-      <div className={styles.sourceExplanation}>
-        <div>
-          <span>CDC</span>
-          <p>Practical public-health guidance for the routines and decisions of daily life.</p>
+        <div className={styles.topicGroup}>
+          <p className={styles.filterLabel}>Filter by topic</p>
+          <div aria-label="Resource topics" className={styles.filterList} role="group">
+            <button
+              aria-pressed={selectedTopic === "all"}
+              className={selectedTopic === "all" ? styles.activeFilter : undefined}
+              onClick={() => onTopicChange("all")}
+              type="button"
+            >
+              All resources <span>{18}</span>
+            </button>
+            {topics.map((topic) => (
+              <button
+                aria-pressed={selectedTopic === topic.id}
+                className={selectedTopic === topic.id ? styles.activeFilter : undefined}
+                key={topic.id}
+                onClick={() => onTopicChange(topic.id)}
+                type="button"
+              >
+                {topic.label} <span>{topic.resourceIds.length}</span>
+              </button>
+            ))}
+          </div>
+          <p className={styles.topicDescription}>
+            {activeTopic?.description ?? "All 18 official CDC and NIDDK guides."}
+          </p>
         </div>
-        <div>
-          <span>NIDDK</span>
-          <p>NIH health explainers with deeper detail on tests, treatments, and the whole body.</p>
-        </div>
+
+        <button
+          className={styles.resetFilters}
+          disabled={!filtersActive}
+          onClick={onReset}
+          type="button"
+        >
+          Reset filters
+        </button>
       </div>
-      <p className={styles.sourceNoteFooter}>
-        Every destination is an official .gov page and was rechecked in July 2026.
-      </p>
     </aside>
-  );
-}
-
-function WideFeature({ resource }: { resource: Resource }) {
-  return (
-    <article className={styles.wideFeature}>
-      <ResourceLink resource={resource}>
-        <div className={styles.wideFeatureTitle}>
-          <ArticleLabel resource={resource} />
-          <h3>{resource.title}</h3>
-        </div>
-        <div className={styles.wideFeatureCopy}>
-          <p>{resource.description}</p>
-          <ReadGuide />
-          <ResourceMeta resource={resource} />
-        </div>
-        <ExternalArrow />
-      </ResourceLink>
-    </article>
-  );
-}
-
-function SupportFeature({ resource }: { resource: Resource }) {
-  return (
-    <article className={styles.supportFeature}>
-      <ResourceLink resource={resource}>
-        <ArticleLabel resource={resource} />
-        <h3>{resource.title}</h3>
-        <p>{resource.description}</p>
-        <ReadGuide />
-        <ResourceMeta compact resource={resource} />
-        <ExternalArrow />
-      </ResourceLink>
-    </article>
   );
 }
 
@@ -452,52 +505,136 @@ function ReadingProgressPanel({ total }: { total: number }) {
   );
 }
 
-function EditorialPhoto({
-  alt,
-  eyebrow,
-  note,
-  src,
-  title,
-}: {
-  alt: string;
-  eyebrow: string;
-  note: string;
-  src: string;
-  title: string;
-}) {
+function FloatingTools() {
+  const reduceMotion = useReducedMotion();
+  const boundaryRef = useRef<HTMLDivElement>(null);
+  const toolsRef = useRef<HTMLElement>(null);
+  const [scrollRange, setScrollRange] = useState(0);
+  const { scrollYProgress } = useScroll({
+    offset: ["start 14%", "end 86%"],
+    target: boundaryRef,
+  });
+  const scrollTravel = useTransform(scrollYProgress, [0, 1], [0, scrollRange]);
+  const smoothScrollTravel = useSpring(scrollTravel, {
+    damping: 18,
+    mass: 0.95,
+    stiffness: 48,
+  });
+  const smoothTransform = useTransform(
+    smoothScrollTravel,
+    (value) => `translate3d(0, ${value}px, 0)`,
+  );
+
+  useEffect(() => {
+    const boundary = boundaryRef.current;
+    const tools = toolsRef.current;
+    if (!boundary || !tools) return;
+
+    const updateScrollRange = () => {
+      setScrollRange(Math.max(0, boundary.clientHeight - tools.offsetHeight));
+    };
+    const resizeObserver = new ResizeObserver(updateScrollRange);
+
+    updateScrollRange();
+    resizeObserver.observe(boundary);
+    resizeObserver.observe(tools);
+    window.addEventListener("resize", updateScrollRange);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateScrollRange);
+    };
+  }, []);
+
   return (
-    <figure className={styles.photoInterlude}>
-      <div>
-        <Image alt={alt} fill sizes="(max-width: 48rem) 100vw, 58vw" src={src} />
-      </div>
-      <figcaption>
-        <p>{eyebrow}</p>
-        <strong>{title}</strong>
-        <span>{note}</span>
-      </figcaption>
-    </figure>
+    <div className={styles.toolRailBoundary} ref={boundaryRef}>
+      <motion.nav
+        aria-label="Health Decoded tools"
+        className={styles.floatingTools}
+        ref={toolsRef}
+        style={{ transform: reduceMotion ? "none" : smoothTransform }}
+      >
+        <div className={styles.floatingToolsIntro}>
+          <p>Health Decoded tools</p>
+          <strong>Turn reading into practice</strong>
+          <span>Use a quick activity when a source leaves you with a question.</span>
+        </div>
+        <Link aria-label="Diabetes Myth Check" href="/myth-check">
+          <CircleHelp aria-hidden="true" size={20} strokeWidth={1.65} />
+          <span className={styles.floatingToolCopy}>
+            <span>
+              <strong>Diabetes Myth Check</strong>
+              <small>Test common claims against the evidence.</small>
+            </span>
+            <ArrowRight aria-hidden="true" size={15} strokeWidth={1.8} />
+          </span>
+        </Link>
+        <Link aria-label="Decode the Label" href="/decode-the-label">
+          <Tags aria-hidden="true" size={20} strokeWidth={1.65} />
+          <span className={styles.floatingToolCopy}>
+            <span>
+              <strong>Decode the Label</strong>
+              <small>Find the useful details on a nutrition label.</small>
+            </span>
+            <ArrowRight aria-hidden="true" size={15} strokeWidth={1.8} />
+          </span>
+        </Link>
+        <Link aria-label="Explain It Back" href="/explain-it-back">
+          <MessageSquareText aria-hidden="true" size={20} strokeWidth={1.65} />
+          <span className={styles.floatingToolCopy}>
+            <span>
+              <strong>Explain It Back</strong>
+              <small>Put a diabetes concept into your own words.</small>
+            </span>
+            <ArrowRight aria-hidden="true" size={15} strokeWidth={1.8} />
+          </span>
+        </Link>
+      </motion.nav>
+    </div>
   );
 }
 
-function mustFind(resources: Resource[], id: ResourceId) {
-  const resource = resources.find((item) => item.id === id);
-  if (!resource) throw new Error(`Missing curated resource: ${id}`);
-  return resource;
+function SourceNote() {
+  return (
+    <aside className={styles.sourceNote}>
+      <div className={styles.sourceNoteHeading}>
+        <Stethoscope aria-hidden="true" size={24} strokeWidth={1.45} />
+        <div>
+          <p>Editor&apos;s source note</p>
+          <h2>Why these sources?</h2>
+        </div>
+      </div>
+      <div className={styles.sourceExplanation}>
+        <div>
+          <span>CDC</span>
+          <p>Practical public-health guidance for the routines and decisions of daily life.</p>
+        </div>
+        <div>
+          <span>NIDDK</span>
+          <p>NIH health explainers with deeper detail on tests, treatments, and the whole body.</p>
+        </div>
+      </div>
+      <p className={styles.sourceNoteFooter}>
+        Every destination is an official .gov page and was rechecked in July 2026.
+      </p>
+    </aside>
+  );
 }
 
 export function ResourcesList({ resources }: { resources: Resource[] }) {
   const [viewedIds, setViewedIds] = useState<Set<ResourceId>>(new Set());
   const [persistenceAvailable, setPersistenceAvailable] = useState(true);
+  const [query, setQuery] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState<TopicId>("all");
+  const reduceMotion = useReducedMotion();
   const validIds = useMemo(() => new Set(resources.map(({ id }) => id)), [resources]);
 
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(VIEWED_STORAGE_KEY);
       if (!stored) return;
-
       const parsed: unknown = JSON.parse(stored);
       if (!Array.isArray(parsed)) return;
-
       setViewedIds(
         new Set(
           parsed.filter(
@@ -532,26 +669,34 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
     setViewedIds(new Set());
   };
 
-  const pick = (id: ResourceId) => mustFind(resources, id);
+  const filteredResources = useMemo(() => {
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    const activeTopic = topics.find(({ id }) => id === selectedTopic);
+    const topicIds = activeTopic ? new Set(activeTopic.resourceIds) : null;
 
-  const a1c = pick("understanding-a1c");
-  const mealPlanning = pick("diabetes-meal-planning");
-  const movement = pick("physical-activity");
-  const basics = pick("type-2-diabetes-basics");
-  const monitoring = pick("monitoring-blood-sugar");
-  const culturalFoods = pick("cultural-foods");
-  const treatments = pick("diabetes-treatments");
-  const lowBloodSugar = pick("low-blood-sugar");
-  const sickDays = pick("managing-sick-days");
-  const heart = pick("heart-disease-and-stroke");
-  const kidney = pick("kidney-health");
-  const eyes = pick("eye-health");
-  const feet = pick("foot-care");
-  const oral = pick("oral-health");
-  const mentalHealth = pick("diabetes-and-mental-health");
-  const education = pick("diabetes-education-and-support");
-  const financialHelp = pick("financial-help");
-  const emergency = pick("emergency-preparedness");
+    return resources.filter((resource) => {
+      if (topicIds && !topicIds.has(resource.id)) return false;
+      if (!normalizedQuery) return true;
+      return [
+        resource.title,
+        resource.description,
+        resource.organization,
+        resource.editorial_label,
+        resource.format,
+        resource.reading_level,
+      ]
+        .join(" ")
+        .toLocaleLowerCase()
+        .includes(normalizedQuery);
+    });
+  }, [query, resources, selectedTopic]);
+
+  const resetFilters = () => {
+    setQuery("");
+    setSelectedTopic("all");
+  };
+
+  const activeTopicLabel = topics.find(({ id }) => id === selectedTopic)?.label;
 
   return (
     <ReadingProgressContext.Provider
@@ -575,197 +720,81 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           </div>
         </header>
 
-        <section aria-labelledby="resource-tools-heading" className={styles.internalTools}>
-          <div>
-            <p>Health Decoded tools</p>
-            <h2 id="resource-tools-heading">Practice the information you use every day.</h2>
-          </div>
-          <div className={styles.toolLinks}>
-            <Link href="/myth-check">
-              <CircleHelp aria-hidden="true" size={22} strokeWidth={1.6} />
-              <span>
-                <strong>Diabetes Myth Check</strong>
-                <small>Test common diabetes claims and learn the evidence-backed reality.</small>
-              </span>
-              <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
-            </Link>
-            <Link href="/decode-the-label">
-              <Tags aria-hidden="true" size={22} strokeWidth={1.6} />
-              <span>
-                <strong>Decode the Label</strong>
-                <small>
-                  Practice finding useful details on a nutrition label without judgment.
-                </small>
-              </span>
-              <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
-            </Link>
-            <Link href="/explain-it-back">
-              <MessageSquareText aria-hidden="true" size={22} strokeWidth={1.6} />
-              <span>
-                <strong>Explain It Back</strong>
-                <small>Put a diabetes concept into your own words and check the main idea.</small>
-              </span>
-              <ArrowRight aria-hidden="true" size={19} strokeWidth={1.7} />
-            </Link>
-          </div>
+        <section
+          aria-label="Reading progress and source information"
+          className={styles.informationSection}
+        >
+          <ReadingProgressPanel total={resources.length} />
+          <SourceNote />
         </section>
 
-        <ReadingProgressPanel total={resources.length} />
-
-        <section aria-labelledby="recommended-heading" className={styles.featuredSection}>
-          <div className={styles.featuredHeading}>
-            <p>This week&apos;s recommended reading</p>
-            <h2 id="recommended-heading">Three places worth starting</h2>
-            <span>Selected by the Health Decoded editorial team</span>
-          </div>
-          <div className={styles.featuredGrid}>
-            <FeaturedLead resource={a1c} />
-            <div className={styles.featuredRail}>
-              <FeaturedSide
-                alt="A multigenerational family preparing a familiar meal together"
-                image="/resources/family-meal-editorial.jpg"
-                resource={mealPlanning}
-              />
-              <FeaturedSide
-                alt="Two friends sharing an easy walk on a neighborhood path"
-                image="/resources/everyday-movement-editorial.jpg"
-                resource={movement}
-              />
+        <section aria-labelledby="browse-resources-heading" className={styles.browseSection}>
+          <FloatingTools />
+          <div className={styles.browseHeading}>
+            <div>
+              <p>Curated library</p>
+              <h2 id="browse-resources-heading">Browse all resources</h2>
             </div>
+            <p>Follow the question you have today, or search across every reviewed guide.</p>
           </div>
-        </section>
 
-        <nav aria-label="Curated reading paths" className={styles.pathSection}>
-          <div className={styles.pathIntro}>
-            <p>Curated paths</p>
-            <h2>Follow the question you have today.</h2>
-          </div>
-          <div className={styles.pathGrid}>
-            {readingPaths.map(({ count, description, href, icon: Icon, title }) => (
-              <a className={styles.pathCard} href={href} key={title}>
-                <Icon aria-hidden="true" size={20} strokeWidth={1.55} />
-                <div>
-                  <span>{count}</span>
-                  <h3>{title}</h3>
-                  <p>{description}</p>
+          <div className={styles.browseLayout}>
+            <ResourceFilters
+              onReset={resetFilters}
+              onSearchChange={setQuery}
+              onTopicChange={setSelectedTopic}
+              query={query}
+              selectedTopic={selectedTopic}
+            />
+
+            <div className={styles.resultsPanel}>
+              <div className={styles.resultsHeading}>
+                <p aria-live="polite" role="status">
+                  {filteredResources.length}{" "}
+                  {filteredResources.length === 1 ? "resource" : "resources"}
+                  {activeTopicLabel ? ` · ${activeTopicLabel}` : " · All topics"}
+                </p>
+                {query ? (
+                  <span>Matching “{query.trim()}”</span>
+                ) : (
+                  <span>Official CDC & NIDDK guidance</span>
+                )}
+              </div>
+
+              {filteredResources.length > 0 ? (
+                <motion.div className={styles.resourceGrid} layout={!reduceMotion}>
+                  <AnimatePresence initial={false} mode="popLayout">
+                    {filteredResources.map((resource) => (
+                      <motion.article
+                        animate={{ opacity: 1, transform: "translateY(0px)" }}
+                        exit={{ opacity: 0, transform: reduceMotion ? "none" : "translateY(-6px)" }}
+                        initial={{
+                          opacity: 0,
+                          transform: reduceMotion ? "none" : "translateY(8px)",
+                        }}
+                        key={resource.id}
+                        layout={reduceMotion ? false : "position"}
+                        transition={{
+                          duration: reduceMotion ? 0.01 : 0.18,
+                          ease: [0.23, 1, 0.32, 1],
+                        }}
+                      >
+                        <ResourceGridItem resource={resource} />
+                      </motion.article>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
+              ) : (
+                <div className={styles.emptyResults}>
+                  <Search aria-hidden="true" size={24} strokeWidth={1.45} />
+                  <h3>No reviewed guide matches that search.</h3>
+                  <p>Try a broader phrase or return to all resources.</p>
+                  <button onClick={resetFilters} type="button">
+                    Show all resources
+                  </button>
                 </div>
-                <ArrowRight aria-hidden="true" size={17} strokeWidth={1.6} />
-              </a>
-            ))}
-          </div>
-        </nav>
-
-        <section aria-labelledby="new-here-heading" className={styles.librarySection} id="new-here">
-          <SectionHeading
-            count="3 reads across this issue"
-            description="A diagnosis, a lab result, a meter reading: begin with the language underneath them."
-            eyebrow="If you’re new here"
-            id="new-here-heading"
-            title="Make the first questions less mysterious."
-          />
-          <div className={styles.newHereGrid}>
-            <LeadArticle index="01" resource={basics} />
-            <CompactArticle resource={monitoring} />
-          </div>
-        </section>
-
-        <SourceNote />
-
-        <section
-          aria-labelledby="daily-living-heading"
-          className={styles.librarySection}
-          id="daily-living"
-        >
-          <SectionHeading
-            count="3 reads across this issue"
-            description="Useful care should make room for the food, people, and movement already in your life."
-            eyebrow="Food & daily living"
-            id="daily-living-heading"
-            title="Keep the life. Adjust the pattern."
-          />
-          <div className={styles.dailyLivingGrid}>
-            <LeadArticle index="02" resource={culturalFoods} />
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="staying-safe-heading"
-          className={styles.librarySection}
-          id="staying-safe"
-        >
-          <SectionHeading
-            count="3 reads"
-            description="The practical plans that are easiest to make before the difficult moment arrives."
-            eyebrow="Medicines & staying safe"
-            id="staying-safe-heading"
-            title="Know the next move before you need it."
-          />
-          <WideFeature resource={treatments} />
-          <div className={styles.checklistGrid}>
-            <ChecklistArticle note="Recognize · Treat · Recheck" resource={lowBloodSugar} />
-            <ChecklistArticle note="Monitor · Hydrate · Know when to call" resource={sickDays} />
-          </div>
-          <EditorialPhoto
-            alt="An older woman and community pharmacist building a medicine timing routine together"
-            eyebrow="A routine built with someone"
-            note="The useful plan connects the exact medicine to its timing, purpose, and written instructions, without asking memory to carry everything."
-            src="/resources/pharmacist-routine-editorial.png"
-            title="Questions belong in the medicine routine."
-          />
-        </section>
-
-        <section
-          aria-labelledby="long-term-health-heading"
-          className={styles.librarySection}
-          id="long-term-health"
-        >
-          <SectionHeading
-            count="5 reads"
-            description="Prevention is not about fear. It is about finding quiet changes while there is time to act."
-            eyebrow="Long-term health"
-            id="long-term-health-heading"
-            title="The whole body deserves a place in the plan."
-          />
-          <WideFeature resource={heart} />
-          <div className={styles.healthGrid}>
-            <CompactArticle resource={kidney} />
-            <CompactArticle resource={eyes} />
-            <ChecklistArticle
-              image={{
-                alt: "An adult calmly checking the sole of one foot with a hand mirror",
-                src: "/resources/foot-check-natural.png",
-              }}
-              note="Look · Feel · Act early"
-              resource={feet}
-            />
-            <CompactArticle resource={oral} />
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="living-confidently-heading"
-          className={styles.librarySection}
-          id="living-confidently"
-        >
-          <SectionHeading
-            count="4 reads"
-            description="Support can be emotional, educational, financial, or simply ready before the weather turns."
-            eyebrow="Living confidently"
-            id="living-confidently-heading"
-            title="Care works better when it does not all sit on you."
-          />
-          <div className={styles.confidenceGrid}>
-            <LeadArticle index="03" resource={mentalHealth} />
-            <WideFeature resource={education} />
-            <SupportFeature resource={financialHelp} />
-            <ChecklistArticle
-              image={{
-                alt: "Hands organizing glucose supplies, water, light, power, and a checklist in an emergency bag",
-                src: "/resources/emergency-kit-natural.png",
-              }}
-              note="Records · Supplies · Backup plan"
-              resource={emergency}
-            />
+              )}
+            </div>
           </div>
         </section>
 

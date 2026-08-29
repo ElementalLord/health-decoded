@@ -20,18 +20,17 @@ const playerStyles = readFileSync("features/stories/components/story-player.modu
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 const storyTypes = readFileSync("features/stories/types/interactive-story.ts", "utf8");
 
-test("Asha remains the second available situation after Story 4 is added", () => {
-  assert.match(landing, /id="food-and-family-story"/);
-  assert.match(landing, /story=\{ashaRiceOnTheTableStory\}/);
-  assert.match(landing, /story=\{marcusParkingLotStory\}/);
-  assert.equal(landing.split("story={").length - 1, 4);
+test("Asha remains available in the dynamically ordered story collection", () => {
+  assert.match(landing, /ashaRiceOnTheTableStory/);
+  assert.match(landing, /marcusParkingLotStory/);
+  assert.match(landing, /noraPrescriptionBagStory/);
+  assert.match(landing, /devonNumberScreenStory/);
   assert.equal(ashaRiceOnTheTableStory.topic, "Food and family");
-  assert.match(landing, /id="starting-medication-story"/);
-  assert.match(landing, /id="worrying-reading-story"/);
+  assert.match(landing, /remainingStories\.map/);
 });
 
 test("Asha’s preview preserves the requested editorial order and copy", () => {
-  for (const phrase of ["Connected to", "Begin Story", "Resume Story", "Read Again"]) {
+  for (const phrase of ["Start", "Continue", "Read again"]) {
     assert.match(landing, new RegExp(phrase));
   }
   assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.labels"));
@@ -41,7 +40,7 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
   );
   assert.equal(
     ashaRiceOnTheTableStory.introduction,
-    "After her diagnosis, Asha began removing familiar foods from her plate and eating separately from her family. One Sunday dinner helped her see that caring for her health did not require leaving her culture or the table behind.",
+    "At Sunday dinner, Asha finds a way to care for her health without leaving the table behind.",
   );
   assert.equal(ashaRiceOnTheTableStory.estimatedTimeLabel, "6 to 8 minutes");
   assert.equal(ashaRiceOnTheTableStory.relatedLessonLabel, "Lesson 4");

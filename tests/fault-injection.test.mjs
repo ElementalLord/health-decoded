@@ -136,11 +136,6 @@ test("Journey core rejection produces a controlled local error", () => {
   assert.match(entries.journey, /<JourneyUnavailableState/);
 });
 
-test("Journey confidence read failure remains optional", () => {
-  assert.match(entries.journeyService, /journey_home\.confidence_unavailable/);
-  assert.doesNotMatch(entries.journeyService, /confidence_unavailable"\);\s*return err/);
-});
-
 test("Journey has no recent-activity read that can become a page dependency", () => {
   assert.doesNotMatch(entries.journey, /getRecentActivity|getProfileReflections|recentActivity/);
   assert.match(entries.journey, /getJourneyHomeData/);

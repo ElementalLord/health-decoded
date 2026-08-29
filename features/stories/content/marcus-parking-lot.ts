@@ -35,7 +35,7 @@ export const marcusParkingLotStory = {
   imagePrompt:
     "A cinematic editorial illustration of a quiet medical-office parking lot at dusk, with a middle-aged man seen from behind sitting alone inside a parked car, folded medical papers in his lap, and a phone beside him. Restrained warm cream, muted green, blue-gray, and soft terracotta; private reflection without panic, branding, text, or dramatic medical imagery.",
   introduction:
-    "Marcus left his appointment with several pages of instructions and almost none of the words he needed. Follow the first evening after his diagnosis and the small question that helped him move forward.",
+    "Marcus leaves his appointment overwhelmed. One question helps him take the next step.",
   whyItMatters:
     "This story explores the first hours after diagnosis and why one manageable next step can be more useful than trying to understand everything at once.",
   scenes: [

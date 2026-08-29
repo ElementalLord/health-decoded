@@ -313,7 +313,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
   const [mythCompleted, setMythCompleted] = useState(0);
   const [mythFeedback, setMythFeedback] = useState<DayFourEvaluationFeedback | null>(null);
   const [receiptsSpread, setReceiptsSpread] = useState(false);
-  const [confidence, setConfidence] = useState<string | null>(null);
+  const [followUpChoice, setFollowUpChoice] = useState<string | null>(null);
   const [reflection, setReflection] = useState<(typeof reflectionOptions)[number] | null>(null);
   const [evaluations, setEvaluations] = useState<
     Partial<Record<EvaluationKey, DayFourEvaluationFeedback>>
@@ -490,7 +490,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
     if (stage === 10) return Boolean(evaluations.restaurant);
     if (stage === 11) return mythCompleted === myths.length;
     if (stage === 12) return receiptsSpread;
-    if (stage === 13) return Boolean(evaluations.teachBack) && confidence !== null;
+    if (stage === 13) return Boolean(evaluations.teachBack) && followUpChoice !== null;
     return reflection !== null;
   }
 
@@ -509,7 +509,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       "Choose a flexible restaurant strategy.",
       "Open and classify all four cupboard statements.",
       "Spread the meal receipts to reveal the longer pattern.",
-      "Choose the flexible food explanation and a confidence check.",
+      "Choose the flexible food explanation and complete an understanding check.",
       "Choose one reflection to complete Day 4.",
     ];
     return requirements[stage];
@@ -1458,13 +1458,13 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                     "I want help adapting it to my needs.",
                   ].map((choice) => (
                     <button
-                      aria-pressed={confidence === choice}
+                      aria-pressed={followUpChoice === choice}
                       className={cn(
                         "motion-tactile min-h-16 rounded-[9px] border bg-card p-4 text-left text-sm",
-                        confidence === choice && "border-success bg-info",
+                        followUpChoice === choice && "border-success bg-info",
                       )}
                       key={choice}
-                      onClick={() => setConfidence(choice)}
+                      onClick={() => setFollowUpChoice(choice)}
                       type="button"
                     >
                       {choice}

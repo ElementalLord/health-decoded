@@ -1,7 +1,3 @@
-export const confidenceLevels = ["not_yet", "somewhat", "confident"] as const;
-
-export type ConfidenceLevel = (typeof confidenceLevels)[number];
-
 export type LessonProgressStatus = "not_started" | "in_progress" | "completed";
 
 export type CurrentLessonSummary = {
@@ -28,7 +24,6 @@ export type JourneyHomeReady = {
   journeyTitle: string;
   currentLesson: CurrentLessonSummary;
   progress: JourneyProgressSummary;
-  confidenceLevel: ConfidenceLevel | null;
 };
 
 export type JourneyHomeComplete = {

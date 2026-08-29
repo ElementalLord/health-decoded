@@ -28,9 +28,11 @@ export function SearchCommand() {
   }, []);
 
   useEffect(() => setOpen(false), [pathname]);
+
   useEffect(() => {
     if (!open) return;
-    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     inputRef.current?.focus();
     return () => previouslyFocused?.focus();
   }, [open]);
@@ -42,13 +44,21 @@ export function SearchCommand() {
 
   return (
     <>
-      <button className={styles.searchTrigger} onClick={() => setOpen(true)} ref={triggerRef} type="button">
+      <button
+        className={styles.searchTrigger}
+        onClick={() => setOpen(true)}
+        ref={triggerRef}
+        type="button"
+      >
         <Search aria-hidden="true" />
         <span>Search</span>
         <kbd aria-hidden="true">⌘ / Ctrl K</kbd>
       </button>
       {open ? (
-        <div className={styles.backdrop} onMouseDown={(event) => event.target === event.currentTarget && close()}>
+        <div
+          className={styles.backdrop}
+          onMouseDown={(event) => event.target === event.currentTarget && close()}
+        >
           <div
             aria-label="Search Health Decoded"
             aria-modal="true"
@@ -59,9 +69,9 @@ export function SearchCommand() {
                 close();
               }
               if (event.key === "Tab" && dialogRef.current) {
-                const focusable = [...dialogRef.current.querySelectorAll<HTMLElement>("input, button, a[href]")].filter(
-                  (element) => !element.hasAttribute("disabled"),
-                );
+                const focusable = [
+                  ...dialogRef.current.querySelectorAll<HTMLElement>("input, button, a[href]"),
+                ].filter((element) => !element.hasAttribute("disabled"));
                 const first = focusable[0];
                 const last = focusable.at(-1);
                 if (event.shiftKey && document.activeElement === first) {

@@ -20,36 +20,33 @@ test("the reading room publishes 18 distinct reviewed guides", () => {
     assert.ok(resource.editorial_label);
     assert.ok(resource.format);
     assert.doesNotMatch(resource.description, /^(?:Learn|Understand|Discover)\b/i);
-    assert.equal(
-      component.split(`pick("${resource.id}")`).length - 1,
-      1,
-      `${resource.id} should have exactly one editorial placement`,
+
+    const escapedId = resource.id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.match(
+      component,
+      new RegExp(`"${escapedId}": \\{`),
+      `${resource.id} should have a visual treatment`,
     );
   }
 });
 
-test("the page uses varied editorial treatments instead of a uniform card grid", () => {
-  const treatments = [
-    "FeaturedLead",
-    "FeaturedSide",
-    "LeadArticle",
-    "CompactArticle",
-    "ChecklistArticle",
+test("the page is a searchable, filterable editorial resource library", () => {
+  for (const treatment of [
+    "ResourceGridItem",
+    "ResourceFilters",
+    "ReadingProgressPanel",
+    "FloatingTools",
     "SourceNote",
-    "WideFeature",
-    "SupportFeature",
-  ];
-
-  for (const treatment of treatments) {
+  ]) {
     assert.match(component, new RegExp(`function ${treatment}\\b`));
   }
 
-  assert.doesNotMatch(component, /function ResourceCard\b/);
-  assert.match(component, /This week&apos;s recommended reading/);
-  assert.match(component, /Curated paths/);
-  assert.match(component, /If you’re new here/);
-  assert.match(component, /Long-term health/);
-  assert.match(component, /Living confidently/);
+  assert.match(component, /Browse all resources/);
+  assert.match(component, /Search resources/);
+  assert.match(component, /Resource topics/);
+  assert.match(component, /filteredResources\.map/);
+  assert.doesNotMatch(component, /This week(?:&apos;|')s recommended reading/i);
+  assert.doesNotMatch(component, /Two places worth starting/i);
 });
 
 test("the page does not include testimonial or quotation panels", () => {
@@ -64,9 +61,11 @@ test("editorial imagery is purposeful and production sized", () => {
     "a1c-explained-editorial.jpg",
     "family-meal-editorial.jpg",
     "everyday-movement-editorial.jpg",
-    "foot-check-natural.png",
-    "emergency-kit-natural.png",
     "pharmacist-routine-editorial.png",
+    "foot-check-natural.png",
+    "everyday-support-natural.png",
+    "community-education-editorial.png",
+    "emergency-kit-natural.png",
   ];
 
   assert.match(component, /import Image from "next\/image"/);
@@ -76,8 +75,6 @@ test("editorial imagery is purposeful and production sized", () => {
   }
 
   assert.match(styles, /object-fit: cover/);
-  assert.doesNotMatch(styles, /object-fit: contain/);
-  assert.match(styles, /aspect-ratio: 16 \/ 10/);
   assert.match(styles, /aspect-ratio: 3 \/ 2/);
 });
 
@@ -92,116 +89,86 @@ test("article views persist locally and expose a clear completion record", () =>
   assert.match(component, /transform: `scaleX\(\$\{percent \/ 100\}\)`/);
 });
 
-test("the reading room limits motion to short, purposeful interaction feedback", () => {
-  assert.doesNotMatch(component, /EditorialMotion/);
+test("the practice rail glides smoothly within the resources section", () => {
+  assert.match(component, /useScroll\(\{/);
+  assert.match(component, /target: boundaryRef/);
+  assert.match(component, /offset: \["start 14%", "end 86%"\]/);
+  assert.match(component, /useSpring\(scrollTravel/);
+  assert.match(component, /damping: 18/);
+  assert.match(component, /mass: 0\.95/);
+  assert.match(component, /stiffness: 48/);
+  assert.match(component, /boundary\.clientHeight - tools\.offsetHeight/);
+  assert.match(component, /ResizeObserver/);
+  assert.match(component, /reduceMotion \? "none" : smoothTransform/);
   assert.doesNotMatch(styles, /@keyframes/);
   assert.doesNotMatch(styles, /animation:/);
-  assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
-  assert.match(styles, /:active/);
-  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test("the visual hierarchy keeps articles larger and more explicit than supporting media", () => {
-  assert.match(component, /Read the official guide/);
-  assert.ok(component.split("<ReadGuide />").length - 1 >= 7);
-  assert.doesNotMatch(component, /className=\{styles\.photoPair\}/);
-  assert.match(styles, /grid-template-columns: minmax\(18rem, 0\.86fr\) minmax\(0, 1\.14fr\)/);
-  assert.match(styles, /\.checklistWithPhoto \{\s+grid-column: 1 \/ -1;/);
-  assert.doesNotMatch(styles, /min-height:\s*(?:1[5-9]|[2-9]\d)rem/);
-  assert.doesNotMatch(styles, /@keyframes article-dashes/);
-  assert.doesNotMatch(styles, /\.featuredLead::after/);
-  assert.match(
-    styles,
-    /\.healthGrid > \.compactArticle:last-child,\s+\.confidenceGrid \.supportFeature \{[\s\S]*grid-column: 1 \/ -1;/,
-  );
-  assert.match(
-    styles,
-    /\.healthGrid > \.compactArticle:last-child,\s+\.confidenceGrid \.supportFeature \{[\s\S]*border: 1px solid color-mix\(in srgb, var\(--editorial-soft\) 32%, transparent\);/,
-  );
-  assert.match(
-    styles,
-    /\.healthGrid > \.compactArticle:last-child > a,\s+\.confidenceGrid \.supportFeature > a \{[\s\S]*row-gap: 1\.15rem;/,
-  );
-  assert.match(styles, /\.photoInterlude figcaption \{\s+align-self: stretch;/);
-  assert.match(styles, /justify-content: center/);
-  assert.doesNotMatch(styles, /\.meta \{[^}]*margin-top: auto/s);
+test("the practice rail is centered in the right margin and section-bound", () => {
+  assert.match(component, /<section[^>]+className=\{styles\.browseSection\}/);
+  assert.match(component, /<FloatingTools \/>[\s\S]*Browse all resources/);
+  assert.match(styles, /\.browseSection \{[\s\S]*position: relative;/);
+  assert.match(styles, /\.toolRailBoundary \{[\s\S]*left: 100%;[\s\S]*position: absolute;[\s\S]*width: calc\(\(100vw - 72rem\) \/ 2\);/);
+  assert.match(styles, /\.floatingTools \{[\s\S]*left: 50%;[\s\S]*position: absolute;[\s\S]*translate: -50% 0;/);
+  assert.doesNotMatch(styles, /position: fixed/);
 });
 
-test("supporting features balance landscape media with adjacent copy", () => {
-  assert.match(
-    styles,
-    /\.featuredSide > a \{[\s\S]*grid-template-columns: minmax\(15rem, 0\.95fr\) minmax\(0, 1\.05fr\);/,
-  );
-  assert.match(styles, /\.sideCopy \{[\s\S]*justify-content: center;/);
-  assert.match(
-    styles,
-    /\.featuredImage,[\s\S]*\.photoInterlude > div \{[\s\S]*border-radius: 0\.625rem;/,
-  );
-  assert.match(
-    styles,
-    /@media \(max-width: 48rem\)[\s\S]*\.featuredSide > a \{[\s\S]*grid-template-columns: 1fr;/,
-  );
+test("practice tools are descriptive and link to all three activities", () => {
+  assert.match(component, /Turn reading into practice/);
+  assert.match(component, /Use a quick activity when a source leaves you with a question/);
+  assert.match(component, /Test common claims against the evidence/);
+  assert.match(component, /Find the useful details on a nutrition label/);
+  assert.match(component, /Put a diabetes concept into your own words/);
+
+  for (const destination of ["/myth-check", "/decode-the-label", "/explain-it-back"]) {
+    assert.match(component, new RegExp(`href="${destination}"`));
+  }
 });
 
-test("the reading room gives open editorial rows a quiet neutral boundary", () => {
-  assert.match(styles, /\.pathCard \{\s+background: var\(--editorial-sage\);\s+border: 0;/);
-  assert.match(styles, /\.leadArticle,[\s\S]*border-radius: 0;/);
-  assert.match(
-    styles,
-    /\.dailyLivingGrid \.leadArticle,[\s\S]*\.checklistGrid \.checklistArticle,[\s\S]*\.confidenceGrid \.supportFeature \{\s+background: transparent;\s+border: 1px solid color-mix\(in srgb, var\(--editorial-soft\) 32%, transparent\);/,
-  );
-  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-blush\);/);
-  assert.doesNotMatch(styles, /border-radius: (?:[2-9]|\d{2,})px/);
-  assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px)/);
+test("reading progress and source rationale appear directly below the masthead", () => {
+  const mastheadIndex = component.indexOf("className={styles.masthead}");
+  const informationIndex = component.indexOf("className={styles.informationSection}");
+  const browseIndex = component.indexOf("className={styles.browseSection}");
+
+  assert.ok(mastheadIndex >= 0);
+  assert.ok(informationIndex > mastheadIndex);
+  assert.ok(browseIndex > informationIndex);
+  assert.match(component, /Reading progress and source information/);
+  assert.match(component, /Why these sources\?/);
+});
+
+test("the resource hierarchy remains editorial rather than card-heavy", () => {
+  assert.match(component, /Read guide/);
+  assert.match(styles, /\.resourceGrid \{[\s\S]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/);
+  assert.match(styles, /\.resourceArtwork \{[\s\S]*aspect-ratio: 3 \/ 2;/);
+  assert.match(styles, /\.resourceGrid > article \{[\s\S]*border-bottom:/);
+  assert.doesNotMatch(component, /function ResourceCard\b/);
+});
+
+test("controls and panels use restrained corner radii", () => {
+  assert.match(styles, /\.resourceArtwork \{[\s\S]*border-radius: 0\.25rem;/);
+  assert.match(styles, /\.searchField \{[\s\S]*border-radius: 0\.3rem;/);
+  assert.match(styles, /\.filterList button \{[\s\S]*border-radius: 0\.25rem;/);
+  assert.match(styles, /\.floatingTools \{[\s\S]*border-radius: 0\.4rem;/);
+  assert.doesNotMatch(styles, /border-radius:\s*(?:9999px|999px|100vw)/);
+});
+
+test("the reading room is responsive, accessible, and motion-aware", () => {
+  assert.match(styles, /@media \(min-width: 88rem\)/);
+  assert.match(styles, /@media \(max-width: 68rem\)/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
-  assert.match(styles, /@media \(max-width: 34rem\)/);
+  assert.match(styles, /@media \(max-width: 42rem\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(styles, /focus-visible/);
-  assert.match(styles, /transform: translateY\(-1px\)/);
+  assert.match(component, /aria-live="polite"/);
+  assert.match(component, /aria-pressed=/);
 });
 
-test("resource groups use barely-there card tints without repeated divider lines", () => {
-  assert.match(styles, /\.newHereGrid \{\s+background: var\(--editorial-apricot\);/);
-  assert.match(styles, /\.newHereGrid \.leadArticle \{\s+background: var\(--editorial-sage\);/);
-  assert.match(styles, /\.newHereGrid \.compactArticle \{\s+background: var\(--editorial-blush\);/);
-  assert.doesNotMatch(styles, /border-(?:top|bottom|left|right|block):/);
-  assert.match(styles, /\.wideFeature \{\s+background: var\(--editorial-sage\);/);
-  assert.match(
-    styles,
-    /\.pathCard:nth-child\(3n \+ 2\) \{\s+background: var\(--editorial-blush\);/,
-  );
-  assert.match(styles, /\.pathCard:nth-child\(3n\) \{\s+background: var\(--editorial-apricot\);/);
-});
-
-test("masthead stays proportionate and guide actions remain clear without colored buttons", () => {
-  assert.match(
-    styles,
-    /\.mastheadCopy \{[\s\S]*grid-template-columns: minmax\(0, 1\.05fr\) minmax\(24rem, 0\.95fr\);/,
-  );
-  assert.match(styles, /font-size: clamp\(2\.75rem, 4\.8vw, 4\.25rem\);/);
-  assert.match(styles, /\.readGuide \{[\s\S]*background: transparent;/);
-  assert.match(styles, /\.readGuide \{[\s\S]*text-decoration: underline;/);
-  assert.match(styles, /\.externalArrow \{\s+display: none;/);
-  assert.match(styles, /\.articleLabel::before \{\s+content: none;/);
-});
-
-test("the resources palette keeps color as a faint card treatment", () => {
-  assert.match(styles, /--editorial-ink: var\(--foreground\)/);
-  assert.match(styles, /--editorial-sage: #e5efe8;/);
-  assert.match(styles, /--editorial-blush: #f1e5df;/);
-  assert.match(styles, /--editorial-apricot: #f5eade;/);
-  assert.match(styles, /\.readGuide \{[\s\S]*background: transparent;/);
-  assert.match(styles, /\.sourceNote \{\s+background: var\(--editorial-blush\);/);
-  assert.doesNotMatch(styles, /accent-warm/);
-  assert.doesNotMatch(styles, /#b96c55/i);
-  assert.doesNotMatch(styles, /#(?:365b51|365f56|345f55|3f6258)/i);
-});
-
-test("article treatments avoid decorative bubble icons", () => {
-  assert.doesNotMatch(component, /CircleDollarSign/);
-  assert.doesNotMatch(component, /styles\.checkIcon/);
-  assert.doesNotMatch(styles, /\.checkIcon/);
-  assert.doesNotMatch(styles, /\.supportFeature > a > svg:first-child/);
+test("trusted-source guidance stays explicit", () => {
+  assert.match(component, /Practical public-health guidance/);
+  assert.match(component, /NIH health explainers with deeper detail/);
+  assert.match(component, /Every destination is an official \.gov page and was rechecked in July 2026/);
+  assert.match(component, /These readings support, but do not replace, advice from your health care team/);
 });
 
 test("external reading links disclose their behavior", () => {
@@ -209,18 +176,4 @@ test("external reading links disclose their behavior", () => {
   assert.match(component, /target="_blank"/);
   assert.match(component, /opens in a new tab/);
   assert.match(component, /Every\s+link\s+opens on an official CDC or NIH website/);
-
-  for (const destination of [
-    "/myth-check",
-    "/decode-the-label",
-    "/explain-it-back",
-    "#new-here",
-    "#daily-living",
-    "#staying-safe",
-    "#long-term-health",
-    "#living-confidently",
-  ]) {
-    const escapedDestination = destination.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    assert.match(component, new RegExp(`href(?:=|: )"${escapedDestination}"`));
-  }
 });

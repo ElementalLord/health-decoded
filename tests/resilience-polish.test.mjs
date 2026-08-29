@@ -115,14 +115,6 @@ test("authentication outages do not masquerade as expired sessions", async () =>
   assert.match(sources.layout, /SessionUnavailableState/);
 });
 
-test("Journey core remains available when confidence data fails", () => {
-  assert.match(sources.journeyService, /journey_home\.confidence_unavailable/);
-  assert.doesNotMatch(
-    sources.journeyService,
-    /journey_home\.confidence_unavailable"\);\s*return err/,
-  );
-});
-
 test("Journey keeps its core UI when streak data fails", () => {
   assert.match(sources.journey, /learningStreak\.ok \? <LearningStreakPanel/);
   assert.doesNotMatch(sources.journey, /learningStreak\.ok \? .* : <JourneyUnavailableState/);
@@ -133,7 +125,6 @@ test("Journey recommendation failure uses the deterministic lesson fallback", ()
   const result = fallbackNextStepForJourney({
     kind: "ready",
     journeyTitle: "Foundation",
-    confidenceLevel: null,
     currentLesson: {
       lessonId: "lesson-2",
       journeyLessonId: "journey-2",

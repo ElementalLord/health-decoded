@@ -349,7 +349,7 @@ function SearchResultList({
   return (
     <ul className={styles.resultList}>
       {results.map((result, index) => (
-        <li key={result.id}>
+        <li data-motion-item key={result.id}>
           <Link
             aria-current={index === selectedIndex ? "true" : undefined}
             className={styles.resultRow}

@@ -48,9 +48,9 @@ export const caregiverLandingRoutes = Object.freeze([
     moduleTitle: "What They May Be Feeling",
     description:
       "Slow down the urge to explain a reaction and practice asking what support, if any, is wanted.",
-    action: "Go to What They May Be Feeling",
-    purpose: "Practice staying curious when a reaction could mean more than one thing.",
-    time: "8 to 10 minutes",
+    action: "Open lesson",
+    purpose: "Meet reactions with curiosity, not assumptions.",
+    time: "8–10 min",
     feedback:
       "Start with noticing what happened without deciding what it means. This route practices curiosity, timing, and listening.",
   },
@@ -60,10 +60,9 @@ export const caregiverLandingRoutes = Object.freeze([
     title: "I am unsure how to help without overstepping",
     moduleTitle: "Support Without Taking Over",
     description: "Separate support from pressure, monitoring, and assumed access.",
-    action: "Go to Support Without Taking Over",
-    purpose:
-      "Learn how permission, privacy, and revisable agreements keep help from becoming control.",
-    time: "14 to 18 minutes",
+    action: "Open lesson",
+    purpose: "Offer help with permission, not pressure.",
+    time: "14–18 min",
     feedback:
       "Start with the line between offered help and assumed involvement. This route focuses on permission, privacy, and repair.",
   },
@@ -74,9 +73,9 @@ export const caregiverLandingRoutes = Object.freeze([
     moduleTitle: "Everyday Support That Actually Helps",
     description:
       "Turn broad offers into specific help with meals, errands, movement, appointments, and routines.",
-    action: "Go to Everyday Support That Actually Helps",
-    purpose: "Build specific, ordinary support around what the person actually wants.",
-    time: "10 to 13 minutes",
+    action: "Open lesson",
+    purpose: "Make everyday support specific and welcome.",
+    time: "10–13 min",
     feedback:
       "Start with ordinary tasks. This route turns ‘Tell me if you need anything’ into support that is specific and easier to accept or decline.",
   },
@@ -87,10 +86,9 @@ export const caregiverLandingRoutes = Object.freeze([
     moduleTitle: "When Something Feels Wrong",
     description:
       "Clarify your role when a situation is concerning but you do not know what it means.",
-    action: "Go to When Something Feels Wrong",
-    purpose:
-      "Use the person's plan and appropriate professional help without diagnosing or improvising treatment.",
-    time: "10 to 12 minutes",
+    action: "Open lesson",
+    purpose: "Follow the plan and know when to get professional help.",
+    time: "10–12 min",
     feedback:
       "Start with role clarity. This lesson helps you separate observation from interpretation and choose an appropriate source of support.",
   },
@@ -101,10 +99,9 @@ export const caregiverLandingRoutes = Object.freeze([
     moduleTitle: "The Caregiver Matters Too",
     description:
       "Notice what is becoming hard to sustain and make room for limits and backup support.",
-    action: "Go to The Caregiver Matters Too",
-    purpose:
-      "Recognize strain, clarify responsibility, and build support that one person can sustain.",
-    time: "10 to 13 minutes",
+    action: "Open lesson",
+    purpose: "Set limits and build support you can sustain.",
+    time: "10–13 min",
     feedback:
       "Start with what is becoming hard to sustain. This route separates caring from being responsible for another adult's decisions.",
   },
@@ -161,10 +158,8 @@ export const caregiverLandingContent = Object.freeze({
   hero: {
     eyebrow: "SUPPORT SOMEONE YOU CARE ABOUT",
     title: "Help without taking over.",
-    explanation:
-      "Diabetes can affect routines, conversations, plans, and the space between two people. This section helps you offer support that is useful, respectful, and easier to revise when needs change.",
-    audience:
-      "For partners, relatives, friends, roommates, chosen family, and anyone trying to help, whether or not you call yourself a caregiver.",
+    explanation: "Offer support that feels useful, respectful, and easy to revise.",
+    audience: "For anyone supporting someone with diabetes, regardless of what you call your role.",
     primaryAction: "Find where to begin",
     secondaryAction: "Follow the five-part path",
   },
@@ -188,8 +183,7 @@ export const caregiverLandingContent = Object.freeze({
   },
   guidedPath: {
     sectionTitle: "A guided path, when you want one",
-    introduction:
-      "The order moves from understanding to permission, daily support, safety, and sustainability. It is a recommendation, not a set of prerequisites.",
+    introduction: "Start anywhere and move at your own pace.",
     interactionTitle: "Choose how to begin",
     prompt: "What would be most useful right now?",
     submit: "Use this path",

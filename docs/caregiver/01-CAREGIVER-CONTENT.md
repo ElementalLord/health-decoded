@@ -2,24 +2,24 @@
 
 ## Document Metadata
 
-| Field | Value |
-| --- | --- |
-| Product | Health Decoded |
-| Experience | Support Someone You Care About |
-| Central promise | Help without taking over. |
-| Document role | Final learner-facing content and experience specification for the caregiver landing page and five modules |
-| Binding parent | `00-CAREGIVER-SYSTEM.md` |
-| Prototype audience | People supporting an adult with Type 2 diabetes who generally retains decision-making capacity |
-| Prototype region | United States, with all regional safety details supplied through controlled configuration |
-| Version | 1.0 |
-| Date | 2026-07-29 |
-| Content status | Finalized for product approval; multidisciplinary review flags remain open |
-| Medical review status | not-reviewed |
-| Editorial review status | not-reviewed |
-| Privacy review status | not-reviewed |
-| Accessibility review status | not-reviewed |
-| Cultural review status | not-reviewed |
-| Emotional-safety review status | not-reviewed |
+| Field                          | Value                                                                                                     |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Product                        | Health Decoded                                                                                            |
+| Experience                     | Support Someone You Care About                                                                            |
+| Central promise                | Help without taking over.                                                                                 |
+| Document role                  | Final learner-facing content and experience specification for the caregiver landing page and five modules |
+| Binding parent                 | `00-CAREGIVER-SYSTEM.md`                                                                                  |
+| Prototype audience             | People supporting an adult with Type 2 diabetes who generally retains decision-making capacity            |
+| Prototype region               | United States, with all regional safety details supplied through controlled configuration                 |
+| Version                        | 1.0                                                                                                       |
+| Date                           | 2026-07-29                                                                                                |
+| Content status                 | Finalized for product approval; multidisciplinary review flags remain open                                |
+| Medical review status          | not-reviewed                                                                                              |
+| Editorial review status        | not-reviewed                                                                                              |
+| Privacy review status          | not-reviewed                                                                                              |
+| Accessibility review status    | not-reviewed                                                                                              |
+| Cultural review status         | not-reviewed                                                                                              |
+| Emotional-safety review status | not-reviewed                                                                                              |
 
 This document supplies exact learner-facing copy and complete experience behavior for the landing page and five modules. It does not specify the four practical tools, write application code, or replace the global rules in `00-CAREGIVER-SYSTEM.md`.
 
@@ -39,48 +39,48 @@ This document supplies exact learner-facing copy and complete experience behavio
 
 ## Content ID Index
 
-| ID | Content |
-| --- | --- |
-| `CG-LANDING` | Caregiver landing page |
-| `CG-LANDING-I01` | Need-based route chooser |
-| `CG-LANDING-I02` | Guided-path starting-point chooser |
-| `CG-M1` | Module 1 |
-| `CG-M1-S01` to `CG-M1-S07` | Module 1 content sections |
-| `CG-M1-I01` to `CG-M1-I03` | Module 1 interactions |
-| `CG-M1-Q01` to `CG-M1-Q03` | Module 1 knowledge check |
-| `CG-M1-R01` | Module 1 reflection |
-| `CG-M2` | Module 2 |
-| `CG-M2-S01` to `CG-M2-S08` | Module 2 content sections |
-| `CG-M2-I01` to `CG-M2-I05` | Module 2 interactions |
-| `CG-M2-Q01` to `CG-M2-Q03` | Module 2 knowledge check |
-| `CG-M2-R01` | Module 2 reflection |
-| `CG-M3` | Module 3 |
-| `CG-M3-S01` to `CG-M3-S07` | Module 3 content sections |
-| `CG-M3-I01` to `CG-M3-I04` | Module 3 interactions |
-| `CG-M3-Q01` to `CG-M3-Q03` | Module 3 knowledge check |
-| `CG-M3-R01` | Module 3 reflection |
-| `CG-M4` | Module 4 |
-| `CG-M4-S01` to `CG-M4-S08` | Module 4 content sections |
-| `CG-M4-I01` to `CG-M4-I05` | Module 4 interactions |
-| `CG-M4-Q01` to `CG-M4-Q03` | Module 4 knowledge check |
-| `CG-M4-R01` | Module 4 reflection |
-| `CG-M5` | Module 5 |
-| `CG-M5-S01` to `CG-M5-S07` | Module 5 content sections |
-| `CG-M5-I01` to `CG-M5-I05` | Module 5 interactions |
-| `CG-M5-Q01` to `CG-M5-Q03` | Module 5 knowledge check |
-| `CG-M5-R01` | Module 5 reflection |
-| `CG-CLAIM-001` to `CG-CLAIM-014` | Sourced educational claims |
+| ID                               | Content                            |
+| -------------------------------- | ---------------------------------- |
+| `CG-LANDING`                     | Caregiver landing page             |
+| `CG-LANDING-I01`                 | Need-based route chooser           |
+| `CG-LANDING-I02`                 | Guided-path starting-point chooser |
+| `CG-M1`                          | Module 1                           |
+| `CG-M1-S01` to `CG-M1-S07`       | Module 1 content sections          |
+| `CG-M1-I01` to `CG-M1-I03`       | Module 1 interactions              |
+| `CG-M1-Q01` to `CG-M1-Q03`       | Module 1 knowledge check           |
+| `CG-M1-R01`                      | Module 1 reflection                |
+| `CG-M2`                          | Module 2                           |
+| `CG-M2-S01` to `CG-M2-S08`       | Module 2 content sections          |
+| `CG-M2-I01` to `CG-M2-I05`       | Module 2 interactions              |
+| `CG-M2-Q01` to `CG-M2-Q03`       | Module 2 knowledge check           |
+| `CG-M2-R01`                      | Module 2 reflection                |
+| `CG-M3`                          | Module 3                           |
+| `CG-M3-S01` to `CG-M3-S07`       | Module 3 content sections          |
+| `CG-M3-I01` to `CG-M3-I04`       | Module 3 interactions              |
+| `CG-M3-Q01` to `CG-M3-Q03`       | Module 3 knowledge check           |
+| `CG-M3-R01`                      | Module 3 reflection                |
+| `CG-M4`                          | Module 4                           |
+| `CG-M4-S01` to `CG-M4-S08`       | Module 4 content sections          |
+| `CG-M4-I01` to `CG-M4-I05`       | Module 4 interactions              |
+| `CG-M4-Q01` to `CG-M4-Q03`       | Module 4 knowledge check           |
+| `CG-M4-R01`                      | Module 4 reflection                |
+| `CG-M5`                          | Module 5                           |
+| `CG-M5-S01` to `CG-M5-S07`       | Module 5 content sections          |
+| `CG-M5-I01` to `CG-M5-I05`       | Module 5 interactions              |
+| `CG-M5-Q01` to `CG-M5-Q03`       | Module 5 knowledge check           |
+| `CG-M5-R01`                      | Module 5 reflection                |
+| `CG-CLAIM-001` to `CG-CLAIM-014` | Sourced educational claims         |
 
 ## Interaction Inventory
 
-| Module or page | Emotional arc | Dominant cognitive action | Dominant mechanic | Supporting mechanics | Visual metaphor | Layout rhythm | Interaction IDs | Overlap and justification |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Landing | Uncertainty to orientation to chosen entry | Identify present need and choose a starting point | Relational route line | Priority comparison | A shared entry table with several open places | Wide opening, compact safety route, branching line, guided sequence | `CG-LANDING-I01`, `CG-LANDING-I02` | Choice controls recur elsewhere because navigation requires them, but no module repeats this routing sequence |
-| Module 1 | Confusion to curiosity to patient attention | Separate observation from interpretation | Two-column evidence workbench | Timing dial; response-mode mixer | Signals seen through changing distance and light | Scene, open annotation field, narrow timing strip, dialogue practice | `CG-M1-I01` to `CG-M1-I03` | Dialogue rehearsal also appears in Modules 2 and 5, but here the task is identifying listening versus fixing |
-| Module 2 | Fear-driven action to impact recognition to permission to repair to reliability | Distinguish and choose | Consequence map | Continuum sort; sentence builder; branching conversation; repair sequencing | Shared space with individually controlled zones and consent points | Alternating scene and workspace, central branching sequence, quiet repair close | `CG-M2-I01` to `CG-M2-I05` | Classification appears in Module 4, but Module 2 classifies relationship control, not safety action |
-| Module 3 | Uncertainty to specific usefulness to shared normalcy | Match and plan | Shared-table planning workspace | Request matching; support menu; routine boundary comparison | An ordinary home table changing through the day | Horizontal planning surface, short vignettes, menu assembly, ordinary-life close | `CG-M3-I01` to `CG-M3-I04` | Planning appears in Module 5, but here it organizes concrete household help |
-| Module 4 | Alarm to slowing down to role clarity to appropriate escalation | Prioritize and escalate | Calm response sequence | Context organizer; source comparison; interruption; handoff summary; unsafe-action selection | A clearly labeled ready shelf and response folder | Immediate boundary, short scenario, ordered steps, interruption, compact handoff | `CG-M4-I01` to `CG-M4-I05` | Sequencing appears in Module 2 repair, but here order is safety-critical and urgent direction can replace learning |
-| Module 5 | Responsibility to strain recognition to shared responsibility to sustainable limits | Map and rehearse | Responsibility map | Comparison; phrase rehearsal; network map; load reflection | Weight redistributed across a widening network | Dense opening, wide map, quiet language practice, expanding network, non-celebratory close | `CG-M5-I01` to `CG-M5-I05` | Mapping appears in Module 2, but Module 5 maps ownership and backup rather than consequences |
+| Module or page | Emotional arc                                                                       | Dominant cognitive action                         | Dominant mechanic               | Supporting mechanics                                                                         | Visual metaphor                                                    | Layout rhythm                                                                              | Interaction IDs                    | Overlap and justification                                                                                          |
+| -------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Landing        | Uncertainty to orientation to chosen entry                                          | Identify present need and choose a starting point | Relational route line           | Priority comparison                                                                          | A shared entry table with several open places                      | Wide opening, compact safety route, branching line, guided sequence                        | `CG-LANDING-I01`, `CG-LANDING-I02` | Choice controls recur elsewhere because navigation requires them, but no module repeats this routing sequence      |
+| Module 1       | Confusion to curiosity to patient attention                                         | Separate observation from interpretation          | Two-column evidence workbench   | Timing dial; response-mode mixer                                                             | Signals seen through changing distance and light                   | Scene, open annotation field, narrow timing strip, dialogue practice                       | `CG-M1-I01` to `CG-M1-I03`         | Dialogue rehearsal also appears in Modules 2 and 5, but here the task is identifying listening versus fixing       |
+| Module 2       | Fear-driven action to impact recognition to permission to repair to reliability     | Distinguish and choose                            | Consequence map                 | Continuum sort; sentence builder; branching conversation; repair sequencing                  | Shared space with individually controlled zones and consent points | Alternating scene and workspace, central branching sequence, quiet repair close            | `CG-M2-I01` to `CG-M2-I05`         | Classification appears in Module 4, but Module 2 classifies relationship control, not safety action                |
+| Module 3       | Uncertainty to specific usefulness to shared normalcy                               | Match and plan                                    | Shared-table planning workspace | Request matching; support menu; routine boundary comparison                                  | An ordinary home table changing through the day                    | Horizontal planning surface, short vignettes, menu assembly, ordinary-life close           | `CG-M3-I01` to `CG-M3-I04`         | Planning appears in Module 5, but here it organizes concrete household help                                        |
+| Module 4       | Alarm to slowing down to role clarity to appropriate escalation                     | Prioritize and escalate                           | Calm response sequence          | Context organizer; source comparison; interruption; handoff summary; unsafe-action selection | A clearly labeled ready shelf and response folder                  | Immediate boundary, short scenario, ordered steps, interruption, compact handoff           | `CG-M4-I01` to `CG-M4-I05`         | Sequencing appears in Module 2 repair, but here order is safety-critical and urgent direction can replace learning |
+| Module 5       | Responsibility to strain recognition to shared responsibility to sustainable limits | Map and rehearse                                  | Responsibility map              | Comparison; phrase rehearsal; network map; load reflection                                   | Weight redistributed across a widening network                     | Dense opening, wide map, quiet language practice, expanding network, non-celebratory close | `CG-M5-I01` to `CG-M5-I05`         | Mapping appears in Module 2, but Module 5 maps ownership and backup rather than consequences                       |
 
 # LANDING PAGE
 
@@ -118,9 +118,9 @@ This document supplies exact learner-facing copy and complete experience behavio
 
 **Title:** Help without taking over.
 
-**Explanation:** Diabetes can affect routines, conversations, plans, and the space between two people. This section helps you offer support that is useful, respectful, and easier to revise when needs change.
+**Explanation:** Offer support that feels useful, respectful, and easy to revise.
 
-**Audience line:** For partners, relatives, friends, roommates, chosen family, and anyone trying to help, whether or not you call yourself a caregiver.
+**Audience line:** For anyone supporting someone with diabetes, regardless of what you call your role.
 
 **Primary action:** Find where to begin
 
@@ -173,15 +173,15 @@ This document supplies exact learner-facing copy and complete experience behavio
 
 **Section title:** A guided path, when you want one
 
-**Introduction:** The order moves from understanding to permission, daily support, safety, and sustainability. It is a recommendation, not a set of prerequisites.
+**Introduction:** Start anywhere and move at your own pace.
 
-| Order | Module | One-sentence purpose | Time |
-| --- | --- | --- | --- |
-| 1 | What They May Be Feeling | Practice staying curious when a reaction could mean more than one thing. | 8 to 10 minutes |
-| 2 | Support Without Taking Over | Learn how permission, privacy, and revisable agreements keep help from becoming control. | 14 to 18 minutes |
-| 3 | Everyday Support That Actually Helps | Build specific, ordinary support around what the person actually wants. | 10 to 13 minutes |
-| 4 | When Something Feels Wrong | Use the person's plan and appropriate professional help without diagnosing or improvising treatment. | 10 to 12 minutes |
-| 5 | The Caregiver Matters Too | Recognize strain, clarify responsibility, and build support that one person can sustain. | 10 to 13 minutes |
+| Order | Module                               | One-sentence purpose                                    | Time      |
+| ----- | ------------------------------------ | ------------------------------------------------------- | --------- |
+| 1     | What They May Be Feeling             | Meet reactions with curiosity, not assumptions.         | 8–10 min  |
+| 2     | Support Without Taking Over          | Offer help with permission, not pressure.               | 14–18 min |
+| 3     | Everyday Support That Actually Helps | Make everyday support specific and welcome.             | 10–13 min |
+| 4     | When Something Feels Wrong           | Follow the plan and know when to get professional help. | 10–12 min |
+| 5     | The Caregiver Matters Too            | Set limits and build support you can sustain.           | 10–13 min |
 
 **Progress-state language and actions:**
 
@@ -251,10 +251,10 @@ This document supplies exact learner-facing copy and complete experience behavio
 - **Exact learner prompt:** Which situation is closest to what brought you here today?
 - **Exact controls or choices:** The five route titles above as a single-select radio group; buttons **Show my starting point**, **Clear choice**, and **Open another module instead**.
 - **Logic:** Any choice is interpretive, not correct. Submission displays the matching description, destination, and a reminder that the route can be changed.
-- **Exact feedback:**  
-  - M1 selected: “Start with noticing what happened without deciding what it means. This route practices curiosity, timing, and listening.”  
-  - M2 selected: “Start with the line between offered help and assumed involvement. This route focuses on permission, privacy, and repair.”  
-  - M3 selected: “Start with ordinary tasks. This route turns ‘Tell me if you need anything’ into support that is specific and easier to accept or decline.”  
+- **Exact feedback:**
+  - M1 selected: “Start with noticing what happened without deciding what it means. This route practices curiosity, timing, and listening.”
+  - M2 selected: “Start with the line between offered help and assumed involvement. This route focuses on permission, privacy, and repair.”
+  - M3 selected: “Start with ordinary tasks. This route turns ‘Tell me if you need anything’ into support that is specific and easier to accept or decline.”
   - M4 selected: “Start with role clarity. This lesson helps you separate observation from interpretation and choose an appropriate source of support.”
   - M5 selected: “Start with what is becoming hard to sustain. This route separates caring from being responsible for another adult's decisions.”
 - **Learning point:** A useful starting point depends on the current need, not on completing prerequisites.
@@ -277,14 +277,14 @@ This document supplies exact learner-facing copy and complete experience behavio
 - **Narrative information already known:** The guided order is recommended but not locked.
 - **New work required:** Select a path based on current need and available time.
 - **Exact learner prompt:** What would be most useful right now?
-- **Exact controls or choices:**  
-  1. “Start with what is happening today”  
-  2. “Follow the recommended path from the beginning”  
+- **Exact controls or choices:**
+  1. “Start with what is happening today”
+  2. “Follow the recommended path from the beginning”
   3. “Open a practical tool”  
-  Actions: **Use this path** and **Change choice**.
-- **Logic and feedback:**  
-  - Situation today: “Use the need-based routes above. You can return to the guided path without losing progress.”  
-  - Recommended path: “Begin with What They May Be Feeling. Later modules stay open if another need becomes more urgent.”  
+     Actions: **Use this path** and **Change choice**.
+- **Logic and feedback:**
+  - Situation today: “Use the need-based routes above. You can return to the guided path without losing progress.”
+  - Recommended path: “Begin with What They May Be Feeling. Later modules stay open if another need becomes more urgent.”
   - Practical tool: “Tools can be used without module completion. Their save and privacy behavior differs by tool and will be shown before use.”
 - **Learning point:** Structure can guide attention without controlling access.
 - **Required or optional:** Optional.
@@ -433,10 +433,10 @@ If the answer is no, accept it: “Okay. I will not keep asking. If you want som
 - **Exact learner prompt:** Place each statement under **Observed** or **Possible interpretation**. Then write one other explanation that remains possible.
 - **Exact controls or choices:** Six movable statements with click, tap, and keyboard destination controls: “Mira replied after three hours”; “Mira is afraid of the medication”; “She asked not to discuss diabetes that night”; “She is angry with Jules”; “She did not answer the call”; “She does not trust him.” Text field label: “Another possible explanation, without deciding it is true.” Buttons: **Check the distinction**, **Revise**, **Clear**.
 - **Logic:** Observed items are the first, third, and fifth statements. Interpretations are the others. The text field accepts any non-identifying entry and is not scored for emotional correctness.
-- **Exact feedback:**  
-  - All categories correct: “You kept the visible events separate from the meaning attached to them. The added possibility matters because it leaves room for asking instead of assuming.”  
-  - Any interpretation placed as observed: “One or more statements describe a possible reason, not something Jules can verify from the message. Move feelings, motives, and relationship conclusions to Possible interpretation.”  
-  - Any event placed as interpretation: “One or more statements can be verified from the exchange itself. Keeping those facts clear makes uncertainty easier to hold.”  
+- **Exact feedback:**
+  - All categories correct: “You kept the visible events separate from the meaning attached to them. The added possibility matters because it leaves room for asking instead of assuming.”
+  - Any interpretation placed as observed: “One or more statements describe a possible reason, not something Jules can verify from the message. Move feelings, motives, and relationship conclusions to Possible interpretation.”
+  - Any event placed as interpretation: “One or more statements can be verified from the exchange itself. Keeping those facts clear makes uncertainty easier to hold.”
   - Text blank: “The categories are checked. Add another possible explanation if you want more practice. This field is optional.”
 - **Learning point:** Uncertainty is not inattention. It is the space that keeps observation from becoming a label.
 - **Required or optional:** Required category task; optional text.
@@ -458,20 +458,20 @@ If the answer is no, accept it: “Okay. I will not keep asking. If you want som
 - **Narrative information already known:** Mira asked not to discuss diabetes that night.
 - **New work required:** Apply timing to three later moments.
 - **Exact learner prompt:** For each moment, choose the response that best protects Mira's ability to decide whether to talk.
-- **Controls or choices:** A three-stop timeline.  
-  - **That evening:** A “Call again”; B “Reply, ‘Okay. I’ll leave it here tonight’”; C “Ask why she is avoiding it.”  
-  - **Two days later during her workday:** A “Send three questions at once”; B “Ask, ‘Is there a better time to check in, or would you rather leave it?’”; C “Contact another relative for an update.”  
+- **Controls or choices:** A three-stop timeline.
+  - **That evening:** A “Call again”; B “Reply, ‘Okay. I’ll leave it here tonight’”; C “Ask why she is avoiding it.”
+  - **Two days later during her workday:** A “Send three questions at once”; B “Ask, ‘Is there a better time to check in, or would you rather leave it?’”; C “Contact another relative for an update.”
   - **At their normal weekend call:** A “Talk normally, then ask if she wants to revisit it”; B “Begin with medication questions”; C “Avoid her because the topic feels awkward.”  
-  Button: **Review the timing**.
+    Button: **Review the timing**.
 - **Logic:** Preferred sequence B, B, A. Each stop can be revised independently.
-- **Exact feedback:**  
-  - Evening B: “This accepts the stated limit without demanding an explanation.”  
-  - Evening A or C: “Concern may be real, but another call or a why-question presses after a clear not tonight.”  
-  - Workday B: “This asks about both timing and whether the topic should be reopened.”  
-  - Workday A: “Several questions make refusal harder and repeat the pressure.”  
-  - Workday C: “Seeking private updates from someone else bypasses Mira rather than checking what she wants.”  
-  - Weekend A: “A normal conversation preserves the relationship beyond diabetes, and the later question leaves the choice with Mira.”  
-  - Weekend B: “Starting with health questions treats access as expected.”  
+- **Exact feedback:**
+  - Evening B: “This accepts the stated limit without demanding an explanation.”
+  - Evening A or C: “Concern may be real, but another call or a why-question presses after a clear not tonight.”
+  - Workday B: “This asks about both timing and whether the topic should be reopened.”
+  - Workday A: “Several questions make refusal harder and repeat the pressure.”
+  - Workday C: “Seeking private updates from someone else bypasses Mira rather than checking what she wants.”
+  - Weekend A: “A normal conversation preserves the relationship beyond diabetes, and the later question leaves the choice with Mira.”
+  - Weekend B: “Starting with health questions treats access as expected.”
   - Weekend C: “Space can be respectful when requested. Silent withdrawal is different because Mira is left to guess what changed.”
 - **Learning point:** Respecting not now includes both stopping and asking carefully before returning.
 - **Required or optional:** Required.
@@ -495,11 +495,11 @@ If the answer is no, accept it: “Okay. I will not keep asking. If you want som
 - **Exact learner prompt:** A friend says, “I spent my whole lunch break on insurance calls, and I do not want advice right now.” Build the next response.
 - **Controls or choices:** Two-part sentence builder. Opening options: “That sounds exhausting”; “You should call again tomorrow”; “At least it is handled.” Follow-up options: “Do you want to tell me what happened, or change the subject?”; “I can fix the insurance problem”; “Why did it take so long?” Button: **Hear the response**.
 - **Logic:** Preferred combination is “That sounds exhausting” plus the choice-based follow-up. Other combinations receive component-specific feedback.
-- **Exact feedback:**  
-  - Preferred: “This stays with what the friend said and offers two directions without sneaking advice back in.”  
-  - Advice opening: “The friend already declined advice. A solution offered immediately changes the kind of conversation.”  
-  - Minimizing opening: “This closes the experience before the friend has decided whether to say more.”  
-  - Fix follow-up: “The offer assumes both permission and that the problem can be taken over.”  
+- **Exact feedback:**
+  - Preferred: “This stays with what the friend said and offers two directions without sneaking advice back in.”
+  - Advice opening: “The friend already declined advice. A solution offered immediately changes the kind of conversation.”
+  - Minimizing opening: “This closes the experience before the friend has decided whether to say more.”
+  - Fix follow-up: “The offer assumes both permission and that the problem can be taken over.”
   - Why follow-up: “The question may sound like a request for justification. A choice about continuing is easier to decline.”
 - **Learning point:** Listening can include a small choice about what happens next.
 - **Required or optional:** Required.
@@ -783,9 +783,9 @@ The first line names the supporter's capacity. The second uses help as leverage 
 - **Exact learner prompt:** For each action, choose Leah's likely intention, one possible impact on Andre, and the fact that still requires Andre's perspective.
 - **Controls or choices:** Three rows: cookie comment, medication question, app access and disclosure. Intention options: reduce risk, keep a routine, seek reassurance. Impact options: support, pressure, loss of privacy, feeling discussed rather than included. Unknown toggle: “Andre's exact experience remains unknown.” Button: **Map the consequences**.
 - **Logic:** Several intention choices are plausible. Preferred impacts are pressure for repeated food or medication checking and loss of privacy for app access or disclosure. Every row requires the unknown toggle.
-- **Exact feedback:**  
-  - Plausible intention plus preferred impact: “The intention can be understandable while the action still adds pressure or removes privacy. Both belong in the map.”  
-  - “Support” selected for an uninvited action: “An action does not become support from intention alone. Check whether permission, privacy, and an easy no were present.”  
+- **Exact feedback:**
+  - Plausible intention plus preferred impact: “The intention can be understandable while the action still adds pressure or removes privacy. Both belong in the map.”
+  - “Support” selected for an uninvited action: “An action does not become support from intention alone. Check whether permission, privacy, and an easy no were present.”
   - Unknown omitted: “The scenario supports possible impacts, not Andre's exact feelings. Keep his perspective open.”
   - Unsupported arrangement: “Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.”
 - **Learning point:** Intention explains an action; it does not settle its impact or authorize it.
@@ -810,12 +810,12 @@ The first line names the supporter's capacity. The second uses help as leverage 
 - **Exact learner prompt:** Place each behavior under the closest category. Use the permission, repetition, and privacy details, not the topic alone.
 - **Controls or choices:** Categories: **Offered support**, **Pressure**, **Monitoring with an agreement**, **Surveillance**. Behaviors: “One offer to order supplies, with no repeated asking”; “A third medication text after two unanswered messages”; “A weekly check of a shared list that both people agreed to and can stop”; “Opening a glucose app in secret”; “Saying a ride is available only if the person shares a reading”; “Checking an agreed alert, then continuing after the agreement was withdrawn.” Buttons: **Review the line**, **Revise**.
 - **Logic:** Offered, pressure, agreed monitoring, surveillance, pressure/coercive condition, surveillance/unauthorized monitoring. For the fifth behavior, feedback names coercive pressure while keeping the available category.
-- **Exact feedback:** Each item receives:  
-  - One offer: “Specific, visible, and easy to decline.”  
-  - Third text: “Repetition changes the impact even when each message sounds polite.”  
-  - Shared list: “This is monitoring only within a clear, revisable agreement.”  
-  - Secret app: “Secret access removes permission and privacy.”  
-  - Conditional ride: “The condition uses needed help to force disclosure. That is coercive pressure, not an ordinary offer.”  
+- **Exact feedback:** Each item receives:
+  - One offer: “Specific, visible, and easy to decline.”
+  - Third text: “Repetition changes the impact even when each message sounds polite.”
+  - Shared list: “This is monitoring only within a clear, revisable agreement.”
+  - Secret app: “Secret access removes permission and privacy.”
+  - Conditional ride: “The condition uses needed help to force disclosure. That is coercive pressure, not an ordinary offer.”
   - Continued alert: “An old agreement does not survive withdrawal. Continued access is unauthorized.”
 - **Learning point:** The same topic can be support or control depending on permission, privacy, repetition, and freedom to decline.
 - **Required or optional:** Required.
@@ -837,12 +837,12 @@ The first line names the supporter's capacity. The second uses help as leverage 
 - **Narrative information already known:** Permission should name action, timing, and ability to change.
 - **New work required:** Construct a one-time appointment offer.
 - **Exact learner prompt:** Build an offer for a ride to an appointment. Keep the appointment private unless the person chooses to share more.
-- **Controls or choices:**  
-  - Opening: “Would you like” / “I am going to” / “You need me to”  
-  - Action: “a ride to Thursday's appointment” / “me involved in your care” / “me to handle the appointment”  
-  - Decline clause: “It is fine to say no” / “because I am worried” / “so I know what is happening”  
+- **Controls or choices:**
+  - Opening: “Would you like” / “I am going to” / “You need me to”
+  - Action: “a ride to Thursday's appointment” / “me involved in your care” / “me to handle the appointment”
+  - Decline clause: “It is fine to say no” / “because I am worried” / “so I know what is happening”
   - Role follow-up: “If you want a ride, we can separately decide whether I come inside” / “A ride means I will join you” / “You can tell me the details afterward”  
-  Button: **Review the offer**.
+    Button: **Review the offer**.
 - **Logic:** Preferred sentence uses the first option in each relevant group. Component feedback explains scope.
 - **Exact feedback:** “This offer names one action, keeps attendance separate, and makes no easier. A ride does not purchase appointment access.” Other selections receive: “This wording assumes the role,” “This scope is too broad,” “This adds emotional pressure,” or “This bundles transportation with private involvement.”
 - **Learning point:** Specific permission protects both people from reading different meanings into the same yes.
@@ -865,10 +865,10 @@ The first line names the supporter's capacity. The second uses help as leverage 
 - **Narrative information already known:** Andre asked Leah to stop checking.
 - **New work required:** Choose Leah's next line and later response when worry remains.
 - **Exact learner prompt:** Andre says, “I do not want medication reminders.” Choose Leah's next response.
-- **First choices and feedback:**  
-  - A “Okay. I will stop.” Feedback: “This accepts the answer. Leah can manage her worry without making Andre defend the boundary.”  
-  - B “But what if you forget?” Feedback: “The question reopens a decision Andre just made and asks him to manage Leah's fear.”  
-  - C “Fine, I guess you do not need me.” Feedback: “Withdrawal and guilt make no costly. The offer was not freely declinable.”  
+- **First choices and feedback:**
+  - A “Okay. I will stop.” Feedback: “This accepts the answer. Leah can manage her worry without making Andre defend the boundary.”
+  - B “But what if you forget?” Feedback: “The question reopens a decision Andre just made and asks him to manage Leah's fear.”
+  - C “Fine, I guess you do not need me.” Feedback: “Withdrawal and guilt make no costly. The offer was not freely declinable.”
   - D “What about just one reminder?” Feedback: “A smaller offer may be reasonable at another time, but bargaining immediately can turn no into a negotiation.”
 - **Second prompt after A or revision:** “Two weeks later, Leah wants to revisit household support. What can she ask?”  
   Choices: “Is there any support agreement you want to revisit, including keeping reminders off?”; “Are you ready to admit reminders would help?”; “Can I ask your clinician instead?”  
@@ -897,10 +897,10 @@ The first line names the supporter's capacity. The second uses help as leverage 
 - **Exact learner prompt:** Put the repair in a usable order. Remove the line that asks Andre to excuse the action.
 - **Controls or choices:** Lines: “I opened your health app and talked to my sister without asking”; “That may have made home feel less private”; “I am sorry”; “I will not open or share that information again”; “If I am worried, I will ask what you want me to know”; “You know I only did it because I care.” Keyboard move controls and **Remove from repair**. Button: **Review the repair**.
 - **Logic:** Preferred order is action, possible impact, apology, change, future permission. Defensive line removed.
-- **Exact feedback:**  
-  - Correct sequence: “The repair names what happened before explaining what will change. It does not require Andre to reassure Leah.”  
-  - Defense included: “The intention may be true, but placing it in the apology asks Andre to soften the impact.”  
-  - Impact stated as fact: Not applicable because supplied wording preserves possibility.  
+- **Exact feedback:**
+  - Correct sequence: “The repair names what happened before explaining what will change. It does not require Andre to reassure Leah.”
+  - Defense included: “The intention may be true, but placing it in the apology asks Andre to soften the impact.”
+  - Impact stated as fact: Not applicable because supplied wording preserves possibility.
   - Change before action: “The promise is clearer after the action has been named directly.”
   - Unsupported arrangement: “Review what the action asks of the other person, what choice remains available, and what is still unknown. You can revise your response before continuing.”
 - **Learning point:** Repair centers the action and future behavior, not the supporter's need to be understood.
@@ -1154,12 +1154,12 @@ Not every meal, outing, text, or purchase needs a diabetes explanation. Continue
 - **Narrative information already known:** Specific help can reduce decision work.
 - **New work required:** Select support based on what was actually asked.
 - **Exact learner prompt:** Match each request to the offer that answers it without adding a new role.
-- **Controls or choices:**  
-  - “Could someone drive me Tuesday?” -> “I can drive Tuesday at three.”  
-  - “Would you take notes if I invite you in?” -> “Yes. Tell me what you want captured.”  
-  - “Can you put these unopened supplies in one drawer?” -> “Yes. Which drawer should I use?”  
+- **Controls or choices:**
+  - “Could someone drive me Tuesday?” -> “I can drive Tuesday at three.”
+  - “Would you take notes if I invite you in?” -> “Yes. Tell me what you want captured.”
+  - “Can you put these unopened supplies in one drawer?” -> “Yes. Which drawer should I use?”
   - “I do not want reminders this week.” -> “Okay. I will pause them.”  
-  Distractors include asking for appointment details, inspecting supplies, and sending reminders anyway.
+    Distractors include asking for appointment details, inspecting supplies, and sending reminders anyway.
 - **Logic:** Exact matches above.
 - **Feedback:** For each preferred match: “The offer stays inside the request.” For any adjacent offer: “This may be useful in another conversation, but it adds access, checking, or a role that was not requested.”
 - **Learning point:** Useful help is not the largest action. It is the action that fits.
@@ -1853,11 +1853,11 @@ Elena and Tomas can still talk about work, music, neighbors, or dinner without e
 - **Narrative information already known:** Boundaries concern the supporter's action.
 - **New work required:** Choose a usable revision for three statements.
 - **Exact learner prompt:** Choose the revision that names capacity without controlling Tomas.
-- **Controls or choices:**  
-  - “I cannot keep doing everything” -> “I can handle one insurance call a week. We need another option for the rest.”  
-  - “If you will not listen, I am done helping” -> “I will not make medical decisions. I can still offer the two rides we agreed.”  
+- **Controls or choices:**
+  - “I cannot keep doing everything” -> “I can handle one insurance call a week. We need another option for the rest.”
+  - “If you will not listen, I am done helping” -> “I will not make medical decisions. I can still offer the two rides we agreed.”
   - “Call whenever” -> “I can answer before nine. After that, use the agreed backup or emergency plan.”  
-  Plausible distractors preserve guilt, vagueness, or control.
+    Plausible distractors preserve guilt, vagueness, or control.
 - **Logic:** Exact revisions above.
 - **Feedback:** Preferred: “This names what the supporter can do and keeps the other person's medical choices separate.” Guilt option: “This makes help conditional on obedience.” Vague option: “The feeling is clear, but the other person still cannot tell what will change.”
 - **Learning point:** A boundary becomes usable when it names a specific supporter action.
@@ -2027,37 +2027,37 @@ Ownership zones become labeled vertical groups. Plan comparisons preserve comple
 
 All statuses remain `not-reviewed`. A current source supports drafting but does not substitute for qualified review.
 
-| Claim ID | Educational claim | Source | Publication or review date | Exact content location | Uncertainty or limitation | Required review | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `CG-CLAIM-001` | Living with diabetes can involve emotional distress and substantial ongoing self-management demands. | [NIDDK, Diabetes Distress and Depression](https://www.niddk.nih.gov/health-information/professionals/diabetes-discoveries-practice/diabetes-distress-and-depression) | 2020-01-08 | `CG-M1-S03`; emotional framing only | Professional interview and synthesis; this product does not diagnose distress or depression | Clinical, editorial, emotional safety | not-reviewed |
-| `CG-CLAIM-002` | Family and friend support may help; asking how to help and listening are appropriate starting points, and desired help may change. | [CDC, Helping Friends and Family With Diabetes](https://www.cdc.gov/diabetes/caring/index.html) | 2024-05-15 | Landing, `CG-M1`, `CG-M2`, `CG-M3` | CDC page includes some broad advice not adopted here; this specification applies stricter autonomy and privacy controls | Clinical, editorial, cultural | not-reviewed |
-| `CG-CLAIM-003` | Diabetes treatment and support needs are individualized. | [CDC, Helping Friends and Family With Diabetes](https://www.cdc.gov/diabetes/caring/index.html) | 2024-05-15 | `CG-M2-S04` to `S06`; `CG-M3-S03` | Does not itself define this product's consent model | Clinical, editorial | not-reviewed |
-| `CG-CLAIM-004` | Autonomy-supportive involvement is associated with better diabetes attitudes and self-management, while nonsupportive behaviors may be counterproductive. | [Lee et al., Diabetes self-management and glycemic control: The role of autonomy support from informal health supporters](https://pubmed.ncbi.nlm.nih.gov/30652911/); [Mayberry and Osborn, Family support, medication adherence, and glycemic control](https://pubmed.ncbi.nlm.nih.gov/22538012/) | 2019; 2012 | `CG-M2` central framework | Observational associations do not prove causation; study populations and measures limit generalization | Clinical, research, cultural | not-reviewed |
-| `CG-CLAIM-005` | DSMES offers personalized education and support for practical skills and fitting diabetes care into daily life. | [CDC, About Diabetes Self-Management Education and Support](https://www.cdc.gov/diabetes/education-support-programs/index.html) | 2024-05-15 | `CG-M3-S04`; Module 4 professional-support layer | Coverage, access, and services vary | Clinical, regional, editorial | not-reviewed |
-| `CG-CLAIM-006` | Severe low blood glucose can involve loss of consciousness or seizure and requires immediate response. | [NIDDK, Low Blood Glucose](https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/low-blood-glucose-hypoglycemia) | Page current when accessed 2026-07-29 | `CG-M4-I03`; urgent examples | Symptoms vary; no threshold or treatment protocol is imported into this product | Qualified clinical, emergency, editorial | not-reviewed |
-| `CG-CLAIM-007` | DKA can occur in people with Type 2 diabetes, can be life-threatening, and broad signs such as trouble breathing, inability to keep food or drink down, or multiple DKA symptoms require emergency care. | [CDC, Diabetic Ketoacidosis](https://www.cdc.gov/diabetes/about/diabetic-ketoacidosis.html) | 2024-05-15 | Module 4 source rationale and clinical review list | Learner-facing module avoids creating a checklist or threshold; exact wording needs clinical review | Qualified clinical, emergency, editorial | not-reviewed |
-| `CG-CLAIM-008` | Prescription medicines and some devices have product-specific patient or caregiver instructions; current approved labeling matters. | [FDA, Labeling for Prescription Medicines](https://www.fda.gov/drugs/fdas-labeling-resources-human-prescription-drugs/frequently-asked-questions-about-labeling-prescription-medicines) | Updated information accessed 2026-07-29 | `CG-M4-S05`, `CG-M4-I05` | Not every instruction document is FDA-approved; product-specific verification is required | Qualified clinical, medication safety, device safety | not-reviewed |
-| `CG-CLAIM-009` | Medicine changes and questions should involve a healthcare professional rather than supporter improvisation. | [FDA, 5 Medication Safety Tips for Older Adults](https://www.fda.gov/consumers/consumer-updates/5-medication-safety-tips-older-adults) | Source current when accessed 2026-07-29 | Module 4 medication boundary | Older-adult framing is not universal; the product uses only the general professional-input principle | Qualified clinical, medication safety | not-reviewed |
-| `CG-CLAIM-010` | Caregiving can be stressful, and asking for help, rest, and support may be useful. | [National Institute on Aging, Caregiving](https://www.nia.nih.gov/health/caregiving); [NIA, Taking Care of Yourself: Tips for Caregivers](https://www.nia.nih.gov/health/caregiving/taking-care-yourself-tips-caregivers) | 2023-10-12 and current portal | `CG-M5-S04` to `S06` | Much NIA content focuses on older-adult caregiving; this module avoids universal claims and diagnoses | Clinical boundary, editorial, cultural | not-reviewed |
-| `CG-CLAIM-011` | Caregiver-support policy should address caregiver health, wellbeing, financial security, and varied caregiving roles. | [Administration for Community Living, National Strategy to Support Family Caregivers](https://acl.gov/CaregiverStrategy) | 2025-07-25 | `CG-M5-S06`; resource categories | Policy framework is broad and not diabetes-specific | Editorial, policy, cultural | not-reviewed |
-| `CG-CLAIM-012` | Some studies of caregivers for adults with Type 2 diabetes report burden and quality-of-life strain. | [Vega-Silva et al., Quality of life and caregiver burden](https://pubmed.ncbi.nlm.nih.gov/37540582/); [Bárcenas et al., Factors associated with caregiver burden](https://pubmed.ncbi.nlm.nih.gov/38688187/) | 2023; 2024 | `CG-M5-S01`, `CG-M5-S04` | Cross-sectional studies, often in specific settings and populations; no prevalence estimate or clinical label is used | Clinical, research, cultural | not-reviewed |
-| `CG-CLAIM-013` | Social support is associated with diabetes self-care across research literature, but type, quality, and context matter. | [Song et al., The Impact of Social Support on Self-care of Patients With Diabetes](https://pubmed.ncbi.nlm.nih.gov/28578632/) | 2017 | Content-wide rationale | Meta-analysis includes varied diabetes types and measures; association does not validate controlling support | Clinical, research | not-reviewed |
-| `CG-CLAIM-014` | Current emergency, professional, medicine, and device information must be regionally and product-specifically maintained. | CDC, NIDDK, FDA sources above; `00-CAREGIVER-SYSTEM.md` regional rules | Verified 2026-07-29 for drafting | Landing and Module 4 | Information can change; source owner, cadence, and expiration remain unresolved | Clinical, regional governance, privacy | not-reviewed |
+| Claim ID       | Educational claim                                                                                                                                                                                        | Source                                                                                                                                                                                                                                                                                             | Publication or review date              | Exact content location                             | Uncertainty or limitation                                                                                               | Required review                                      | Status       |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------ |
+| `CG-CLAIM-001` | Living with diabetes can involve emotional distress and substantial ongoing self-management demands.                                                                                                     | [NIDDK, Diabetes Distress and Depression](https://www.niddk.nih.gov/health-information/professionals/diabetes-discoveries-practice/diabetes-distress-and-depression)                                                                                                                               | 2020-01-08                              | `CG-M1-S03`; emotional framing only                | Professional interview and synthesis; this product does not diagnose distress or depression                             | Clinical, editorial, emotional safety                | not-reviewed |
+| `CG-CLAIM-002` | Family and friend support may help; asking how to help and listening are appropriate starting points, and desired help may change.                                                                       | [CDC, Helping Friends and Family With Diabetes](https://www.cdc.gov/diabetes/caring/index.html)                                                                                                                                                                                                    | 2024-05-15                              | Landing, `CG-M1`, `CG-M2`, `CG-M3`                 | CDC page includes some broad advice not adopted here; this specification applies stricter autonomy and privacy controls | Clinical, editorial, cultural                        | not-reviewed |
+| `CG-CLAIM-003` | Diabetes treatment and support needs are individualized.                                                                                                                                                 | [CDC, Helping Friends and Family With Diabetes](https://www.cdc.gov/diabetes/caring/index.html)                                                                                                                                                                                                    | 2024-05-15                              | `CG-M2-S04` to `S06`; `CG-M3-S03`                  | Does not itself define this product's consent model                                                                     | Clinical, editorial                                  | not-reviewed |
+| `CG-CLAIM-004` | Autonomy-supportive involvement is associated with better diabetes attitudes and self-management, while nonsupportive behaviors may be counterproductive.                                                | [Lee et al., Diabetes self-management and glycemic control: The role of autonomy support from informal health supporters](https://pubmed.ncbi.nlm.nih.gov/30652911/); [Mayberry and Osborn, Family support, medication adherence, and glycemic control](https://pubmed.ncbi.nlm.nih.gov/22538012/) | 2019; 2012                              | `CG-M2` central framework                          | Observational associations do not prove causation; study populations and measures limit generalization                  | Clinical, research, cultural                         | not-reviewed |
+| `CG-CLAIM-005` | DSMES offers personalized education and support for practical skills and fitting diabetes care into daily life.                                                                                          | [CDC, About Diabetes Self-Management Education and Support](https://www.cdc.gov/diabetes/education-support-programs/index.html)                                                                                                                                                                    | 2024-05-15                              | `CG-M3-S04`; Module 4 professional-support layer   | Coverage, access, and services vary                                                                                     | Clinical, regional, editorial                        | not-reviewed |
+| `CG-CLAIM-006` | Severe low blood glucose can involve loss of consciousness or seizure and requires immediate response.                                                                                                   | [NIDDK, Low Blood Glucose](https://www.niddk.nih.gov/health-information/diabetes/overview/preventing-problems/low-blood-glucose-hypoglycemia)                                                                                                                                                      | Page current when accessed 2026-07-29   | `CG-M4-I03`; urgent examples                       | Symptoms vary; no threshold or treatment protocol is imported into this product                                         | Qualified clinical, emergency, editorial             | not-reviewed |
+| `CG-CLAIM-007` | DKA can occur in people with Type 2 diabetes, can be life-threatening, and broad signs such as trouble breathing, inability to keep food or drink down, or multiple DKA symptoms require emergency care. | [CDC, Diabetic Ketoacidosis](https://www.cdc.gov/diabetes/about/diabetic-ketoacidosis.html)                                                                                                                                                                                                        | 2024-05-15                              | Module 4 source rationale and clinical review list | Learner-facing module avoids creating a checklist or threshold; exact wording needs clinical review                     | Qualified clinical, emergency, editorial             | not-reviewed |
+| `CG-CLAIM-008` | Prescription medicines and some devices have product-specific patient or caregiver instructions; current approved labeling matters.                                                                      | [FDA, Labeling for Prescription Medicines](https://www.fda.gov/drugs/fdas-labeling-resources-human-prescription-drugs/frequently-asked-questions-about-labeling-prescription-medicines)                                                                                                            | Updated information accessed 2026-07-29 | `CG-M4-S05`, `CG-M4-I05`                           | Not every instruction document is FDA-approved; product-specific verification is required                               | Qualified clinical, medication safety, device safety | not-reviewed |
+| `CG-CLAIM-009` | Medicine changes and questions should involve a healthcare professional rather than supporter improvisation.                                                                                             | [FDA, 5 Medication Safety Tips for Older Adults](https://www.fda.gov/consumers/consumer-updates/5-medication-safety-tips-older-adults)                                                                                                                                                             | Source current when accessed 2026-07-29 | Module 4 medication boundary                       | Older-adult framing is not universal; the product uses only the general professional-input principle                    | Qualified clinical, medication safety                | not-reviewed |
+| `CG-CLAIM-010` | Caregiving can be stressful, and asking for help, rest, and support may be useful.                                                                                                                       | [National Institute on Aging, Caregiving](https://www.nia.nih.gov/health/caregiving); [NIA, Taking Care of Yourself: Tips for Caregivers](https://www.nia.nih.gov/health/caregiving/taking-care-yourself-tips-caregivers)                                                                          | 2023-10-12 and current portal           | `CG-M5-S04` to `S06`                               | Much NIA content focuses on older-adult caregiving; this module avoids universal claims and diagnoses                   | Clinical boundary, editorial, cultural               | not-reviewed |
+| `CG-CLAIM-011` | Caregiver-support policy should address caregiver health, wellbeing, financial security, and varied caregiving roles.                                                                                    | [Administration for Community Living, National Strategy to Support Family Caregivers](https://acl.gov/CaregiverStrategy)                                                                                                                                                                           | 2025-07-25                              | `CG-M5-S06`; resource categories                   | Policy framework is broad and not diabetes-specific                                                                     | Editorial, policy, cultural                          | not-reviewed |
+| `CG-CLAIM-012` | Some studies of caregivers for adults with Type 2 diabetes report burden and quality-of-life strain.                                                                                                     | [Vega-Silva et al., Quality of life and caregiver burden](https://pubmed.ncbi.nlm.nih.gov/37540582/); [Bárcenas et al., Factors associated with caregiver burden](https://pubmed.ncbi.nlm.nih.gov/38688187/)                                                                                       | 2023; 2024                              | `CG-M5-S01`, `CG-M5-S04`                           | Cross-sectional studies, often in specific settings and populations; no prevalence estimate or clinical label is used   | Clinical, research, cultural                         | not-reviewed |
+| `CG-CLAIM-013` | Social support is associated with diabetes self-care across research literature, but type, quality, and context matter.                                                                                  | [Song et al., The Impact of Social Support on Self-care of Patients With Diabetes](https://pubmed.ncbi.nlm.nih.gov/28578632/)                                                                                                                                                                      | 2017                                    | Content-wide rationale                             | Meta-analysis includes varied diabetes types and measures; association does not validate controlling support            | Clinical, research                                   | not-reviewed |
+| `CG-CLAIM-014` | Current emergency, professional, medicine, and device information must be regionally and product-specifically maintained.                                                                                | CDC, NIDDK, FDA sources above; `00-CAREGIVER-SYSTEM.md` regional rules                                                                                                                                                                                                                             | Verified 2026-07-29 for drafting        | Landing and Module 4                               | Information can change; source owner, cadence, and expiration remain unresolved                                         | Clinical, regional governance, privacy               | not-reviewed |
 
 # CONTENT-WIDE REVIEW REQUIREMENTS
 
 ## Clinical-Review List
 
-| Review ID | Content | Reason | Required reviewer | Status |
-| --- | --- | --- | --- | --- |
-| `CG-REV-001` | Landing immediate-danger route and fallback | Emergency action and regional failure | Qualified clinician with diabetes and emergency-content competence | not-reviewed |
-| `CG-REV-002` | Module 1 emotional framing | Avoid diagnostic implication and medical attribution | Diabetes behavioral-health or psychosocial expert | not-reviewed |
-| `CG-REV-003` | Module 2 medication, reading, appointment, and app contexts | Preserve relational scope and prevent clinical inference | Diabetes clinician plus privacy reviewer | not-reviewed |
-| `CG-REV-004` | Module 3 meal and movement content | Prevent nutrition or exercise prescription and stigma | Registered dietitian nutritionist or qualified diabetes clinician, plus cultural reviewer | not-reviewed |
-| `CG-REV-005` | All Module 4 content | Highest-risk medical and emergency material | Qualified diabetes clinician and emergency-content reviewer | not-reviewed |
-| `CG-REV-006` | Module 4 regional safety strings | Current services, region label, fallback, expiration | Regional content owner and qualified clinician | not-reviewed |
-| `CG-REV-007` | Module 4 medication and device boundaries | Product labeling and medication safety | Pharmacist or qualified medication-safety reviewer; device specialist as needed | not-reviewed |
-| `CG-REV-008` | Module 5 strain language and resource categories | Avoid diagnosis and verify appropriate support routes | Behavioral-health or caregiver-support expert | not-reviewed |
+| Review ID    | Content                                                     | Reason                                                   | Required reviewer                                                                         | Status       |
+| ------------ | ----------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------ |
+| `CG-REV-001` | Landing immediate-danger route and fallback                 | Emergency action and regional failure                    | Qualified clinician with diabetes and emergency-content competence                        | not-reviewed |
+| `CG-REV-002` | Module 1 emotional framing                                  | Avoid diagnostic implication and medical attribution     | Diabetes behavioral-health or psychosocial expert                                         | not-reviewed |
+| `CG-REV-003` | Module 2 medication, reading, appointment, and app contexts | Preserve relational scope and prevent clinical inference | Diabetes clinician plus privacy reviewer                                                  | not-reviewed |
+| `CG-REV-004` | Module 3 meal and movement content                          | Prevent nutrition or exercise prescription and stigma    | Registered dietitian nutritionist or qualified diabetes clinician, plus cultural reviewer | not-reviewed |
+| `CG-REV-005` | All Module 4 content                                        | Highest-risk medical and emergency material              | Qualified diabetes clinician and emergency-content reviewer                               | not-reviewed |
+| `CG-REV-006` | Module 4 regional safety strings                            | Current services, region label, fallback, expiration     | Regional content owner and qualified clinician                                            | not-reviewed |
+| `CG-REV-007` | Module 4 medication and device boundaries                   | Product labeling and medication safety                   | Pharmacist or qualified medication-safety reviewer; device specialist as needed           | not-reviewed |
+| `CG-REV-008` | Module 5 strain language and resource categories            | Avoid diagnosis and verify appropriate support routes    | Behavioral-health or caregiver-support expert                                             | not-reviewed |
 
 ## Other Required Reviews
 
@@ -2081,14 +2081,14 @@ All statuses remain `not-reviewed`. A current source supports drafting but does 
 
 ## Cross-Module Distinctness
 
-| Page or module | Emotionally distinct | Visually distinct | Mechanically distinct | Practically distinct |
-| --- | --- | --- | --- | --- |
-| Landing | Moves uncertainty toward orientation | Shared entry table and branching route line | Need routing and path strategy | Chooses where to begin without assessment |
-| Module 1 | Confusion to patient curiosity | Distant signals and partial information | Evidence sort, timing sequence, response mixer | Helps interpret reactions without labeling |
-| Module 2 | Fear to impact recognition and repair | Shared zones with consent points | Consequence map, continuum, builder, branch, repair sequence | Defines ethical center of support and control |
-| Module 3 | Uncertainty to ordinary usefulness | Household table across a day | Meal workspace, request matching, support menu, paired routine | Turns consent into concrete daily help |
-| Module 4 | Alarm to organized escalation | Three-folder ready shelf and response lane | Context selection, source layer match, interruption, handoff, unsafe-action review | Establishes product limits and human handoff |
-| Module 5 | Responsibility to sustainable limits | Load redistribution and widening network | Ownership map, plan comparison, boundary rehearsal, network map, descriptive load review | Protects supporter capacity without taking authority |
+| Page or module | Emotionally distinct                  | Visually distinct                           | Mechanically distinct                                                                    | Practically distinct                                 |
+| -------------- | ------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Landing        | Moves uncertainty toward orientation  | Shared entry table and branching route line | Need routing and path strategy                                                           | Chooses where to begin without assessment            |
+| Module 1       | Confusion to patient curiosity        | Distant signals and partial information     | Evidence sort, timing sequence, response mixer                                           | Helps interpret reactions without labeling           |
+| Module 2       | Fear to impact recognition and repair | Shared zones with consent points            | Consequence map, continuum, builder, branch, repair sequence                             | Defines ethical center of support and control        |
+| Module 3       | Uncertainty to ordinary usefulness    | Household table across a day                | Meal workspace, request matching, support menu, paired routine                           | Turns consent into concrete daily help               |
+| Module 4       | Alarm to organized escalation         | Three-folder ready shelf and response lane  | Context selection, source layer match, interruption, handoff, unsafe-action review       | Establishes product limits and human handoff         |
+| Module 5       | Responsibility to sustainable limits  | Load redistribution and widening network    | Ownership map, plan comparison, boundary rehearsal, network map, descriptive load review | Protects supporter capacity without taking authority |
 
 ## Interaction Sequence Audit
 
@@ -2104,13 +2104,13 @@ All statuses remain `not-reviewed`. A current source supports drafting but does 
 
 ## Relationship and Scenario Audit
 
-| Module | Main relationship | Living arrangement | Central tension |
-| --- | --- | --- | --- |
-| 1 | Adult siblings | Different cities | Repeated remote questions after a request to pause |
-| 2 | Long-term partners | Same home | Food comment, medication checking, private app access, family disclosure |
-| 3 | Roommates | Same home | Unrequested kitchen changes versus requested transportation help |
-| 4 | Neighbors | Separate homes | Concerning change during an errand and uncertainty about what it means |
-| 5 | Adult daughter and father | Separate homes nearby | Assumed constant availability and insufficient backup |
+| Module | Main relationship         | Living arrangement    | Central tension                                                          |
+| ------ | ------------------------- | --------------------- | ------------------------------------------------------------------------ |
+| 1      | Adult siblings            | Different cities      | Repeated remote questions after a request to pause                       |
+| 2      | Long-term partners        | Same home             | Food comment, medication checking, private app access, family disclosure |
+| 3      | Roommates                 | Same home             | Unrequested kitchen changes versus requested transportation help         |
+| 4      | Neighbors                 | Separate homes        | Concerning change during an errand and uncertainty about what it means   |
+| 5      | Adult daughter and father | Separate homes nearby | Assumed constant availability and insufficient backup                    |
 
 No character delivers a perfect autonomy speech. No conflict is fully resolved through one ideal line. No person living with diabetes is blamed for supporter worry or exhaustion.
 
@@ -2159,27 +2159,27 @@ No character delivers a perfect autonomy speech. No conflict is fully resolved t
 
 ### 1. Content ID Index
 
-| Area | Stable IDs |
-| --- | --- |
-| Landing | `CG-LANDING`, `CG-LANDING-I01` to `CG-LANDING-I02` |
+| Area     | Stable IDs                                                                                               |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| Landing  | `CG-LANDING`, `CG-LANDING-I01` to `CG-LANDING-I02`                                                       |
 | Module 1 | `CG-M1`, `CG-M1-S01` to `CG-M1-S07`, `CG-M1-I01` to `CG-M1-I03`, `CG-M1-Q01` to `CG-M1-Q03`, `CG-M1-R01` |
 | Module 2 | `CG-M2`, `CG-M2-S01` to `CG-M2-S08`, `CG-M2-I01` to `CG-M2-I05`, `CG-M2-Q01` to `CG-M2-Q03`, `CG-M2-R01` |
 | Module 3 | `CG-M3`, `CG-M3-S01` to `CG-M3-S07`, `CG-M3-I01` to `CG-M3-I04`, `CG-M3-Q01` to `CG-M3-Q03`, `CG-M3-R01` |
 | Module 4 | `CG-M4`, `CG-M4-S01` to `CG-M4-S08`, `CG-M4-I01` to `CG-M4-I05`, `CG-M4-Q01` to `CG-M4-Q03`, `CG-M4-R01` |
 | Module 5 | `CG-M5`, `CG-M5-S01` to `CG-M5-S07`, `CG-M5-I01` to `CG-M5-I05`, `CG-M5-Q01` to `CG-M5-Q03`, `CG-M5-R01` |
-| Claims | `CG-CLAIM-001` to `CG-CLAIM-014` |
-| Reviews | `CG-REV-001` to `CG-REV-008` |
+| Claims   | `CG-CLAIM-001` to `CG-CLAIM-014`                                                                         |
+| Reviews  | `CG-REV-001` to `CG-REV-008`                                                                             |
 
 ### 2. Interaction Inventory
 
-| Area | Interaction IDs | Dominant work |
-| --- | --- | --- |
-| Landing | `CG-LANDING-I01` to `CG-LANDING-I02` | Need routing and path comparison |
-| Module 1 | `CG-M1-I01` to `CG-M1-I03` | Evidence sorting, timing, response construction |
-| Module 2 | `CG-M2-I01` to `CG-M2-I05` | Consequence mapping, continuum classification, permission construction, branching, repair sequencing |
-| Module 3 | `CG-M3-I01` to `CG-M3-I04` | Shared planning, request matching, menu organization, routine comparison |
-| Module 4 | `CG-M4-I01` to `CG-M4-I05` | Context selection, source matching, urgent interruption, handoff sequencing, unsafe-action recognition |
-| Module 5 | `CG-M5-I01` to `CG-M5-I05` | Responsibility mapping, sustainability comparison, boundary rehearsal, network planning, descriptive load review |
+| Area     | Interaction IDs                      | Dominant work                                                                                                    |
+| -------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| Landing  | `CG-LANDING-I01` to `CG-LANDING-I02` | Need routing and path comparison                                                                                 |
+| Module 1 | `CG-M1-I01` to `CG-M1-I03`           | Evidence sorting, timing, response construction                                                                  |
+| Module 2 | `CG-M2-I01` to `CG-M2-I05`           | Consequence mapping, continuum classification, permission construction, branching, repair sequencing             |
+| Module 3 | `CG-M3-I01` to `CG-M3-I04`           | Shared planning, request matching, menu organization, routine comparison                                         |
+| Module 4 | `CG-M4-I01` to `CG-M4-I05`           | Context selection, source matching, urgent interruption, handoff sequencing, unsafe-action recognition           |
+| Module 5 | `CG-M5-I01` to `CG-M5-I05`           | Responsibility mapping, sustainability comparison, boundary rehearsal, network planning, descriptive load review |
 
 ### 3. Source Table
 

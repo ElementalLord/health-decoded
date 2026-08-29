@@ -14,6 +14,10 @@ import {
   getStoryStorageKey,
   parseStoryProgress,
 } from "@/features/stories/lib/story-progress";
+import {
+  getRecommendedStorySlug,
+  prioritizeStorySlugs,
+} from "@/features/stories/lib/story-recommendation";
 import type {
   InteractiveStory,
   StoryPreviewStatus,
@@ -22,24 +26,25 @@ import { safeGetLocalStorage } from "@/lib/storage/safe-local-storage";
 
 import styles from "./story-landing.module.css";
 
-const situations = [
-  { label: "Just diagnosed", available: true, href: "#just-diagnosed-story" },
-  { label: "Food and family", available: true, href: "#food-and-family-story" },
-  { label: "Starting medication", available: true, href: "#starting-medication-story" },
-  { label: "A worrying reading", available: true, href: "#worrying-reading-story" },
-  { label: "Support and boundaries", available: false },
+const stories = [
+  marcusParkingLotStory,
+  ashaRiceOnTheTableStory,
+  noraPrescriptionBagStory,
+  devonNumberScreenStory,
 ] as const;
 
 const actionByStatus: Record<StoryPreviewStatus, string> = {
-  "not-started": "Begin Story",
-  "in-progress": "Resume Story",
-  completed: "Read Again",
+  "not-started": "Start",
+  "in-progress": "Continue",
+  completed: "Read again",
 };
 
 type PreviewState = {
   status: StoryPreviewStatus;
   scene: number;
 };
+
+const defaultPreviewState: PreviewState = { status: "not-started", scene: 1 };
 
 function loadPreviewState(slug: string): PreviewState {
   const progress = parseStoryProgress(safeGetLocalStorage(getStoryStorageKey(slug)));
@@ -58,7 +63,9 @@ function StoryPreview({
   story: InteractiveStory;
   variant: "featured" | "row" | "row-reverse";
 }) {
-  const timeLabel = story.estimatedTimeLabel ?? "5 to 7 minutes";
+  const timeLabel = (story.estimatedTimeLabel ?? "5 to 7 minutes")
+    .replace(" to ", "–")
+    .replace(" minutes", " min");
   const lessonLabel = story.relatedLessonLabel ?? "Lesson 1";
   const storyHref =
     progress.status === "not-started" ? `/stories/${story.slug}?begin=1` : `/stories/${story.slug}`;
@@ -89,7 +96,7 @@ function StoryPreview({
               <Clock3 aria-hidden="true" size={17} />
               {timeLabel}
             </span>
-            <span>Connected to {lessonLabel}</span>
+            <span>{lessonLabel}</span>
             {progress.status === "completed" ? (
               <span className={styles.completedStatus}>
                 <Check aria-hidden="true" size={17} />
@@ -98,7 +105,7 @@ function StoryPreview({
             ) : progress.status === "in-progress" ? (
               <span>Scene {progress.scene} of 6</span>
             ) : (
-              <span>Not started</span>
+              <span>New</span>
             )}
           </div>
           <Link className={styles.storyAction} href={storyHref}>
@@ -132,87 +139,65 @@ export function StoryLanding() {
     }
   }, []);
 
+  const storyBySlug = new Map(stories.map((story) => [story.slug, story]));
+  const orderedSlugs = prioritizeStorySlugs(
+    stories.map((story) => story.slug),
+    progressByStory,
+  );
+  const recommendedSlug = getRecommendedStorySlug(orderedSlugs, progressByStory);
+  const recommendedStory = recommendedSlug ? storyBySlug.get(recommendedSlug) : undefined;
+  const recommendedProgress = recommendedSlug
+    ? (progressByStory[recommendedSlug] ?? defaultPreviewState)
+    : undefined;
+  const remainingStories = orderedSlugs
+    .filter((slug) => slug !== recommendedSlug)
+    .map((slug) => storyBySlug.get(slug))
+    .filter((story): story is (typeof stories)[number] => story !== undefined);
+
   return (
     <main className={styles.page}>
       <header className={styles.intro}>
-        <p className={styles.eyebrow}>Stories</p>
         <h1>Stories</h1>
-        <p>
-          Illustrative experiences that explore the emotions, decisions, and everyday challenges
-          that can come with Type 2 diabetes.
-        </p>
+        <p>Real-life moments with Type 2 diabetes.</p>
       </header>
 
-      <nav aria-label="Browse stories by situation" className={styles.topicNav}>
-        <p>Browse by situation</p>
-        <ul>
-          {situations.map((situation) => (
-            <li key={situation.label}>
-              {situation.available ? (
-                <a href={situation.href}>{situation.label}</a>
-              ) : (
-                <span className={styles.upcomingTopic}>
-                  {situation.label}
-                  <small>Coming soon</small>
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <section
-        aria-labelledby="just-diagnosed-heading"
-        className={styles.featuredSection}
-        id="just-diagnosed-story"
-      >
-        <div className={styles.sectionHeading}>
-          <p>Start here</p>
-          <h2 id="just-diagnosed-heading">A first evening after diagnosis</h2>
-        </div>
-        <StoryPreview
-          progress={progressByStory[marcusParkingLotStory.slug]!}
-          story={marcusParkingLotStory}
-          variant="featured"
-        />
-      </section>
+      {recommendedStory && recommendedProgress ? (
+        <section
+          aria-labelledby="recommended-story-heading"
+          className={styles.featuredSection}
+          id="recommended-story"
+        >
+          <div className={styles.sectionHeading}>
+            <p>{recommendedProgress.status === "in-progress" ? "Continue" : "Recommended"}</p>
+            <h2 id="recommended-story-heading">
+              {recommendedProgress.status === "in-progress"
+                ? "Pick up where you left off"
+                : "Start with this story"}
+            </h2>
+          </div>
+          <StoryPreview
+            progress={recommendedProgress}
+            story={recommendedStory}
+            variant="featured"
+          />
+        </section>
+      ) : null}
 
       <section aria-labelledby="more-stories-heading" className={styles.moreStories}>
         <div className={styles.sectionHeading}>
           <p>More stories</p>
-          <h2 id="more-stories-heading">Different moments</h2>
+          <h2 id="more-stories-heading">More moments</h2>
         </div>
         <div className={styles.storyRows}>
-          <div id="food-and-family-story">
-            <h3 className="sr-only" id="food-and-family-heading">
-              Food and family
-            </h3>
-            <StoryPreview
-              progress={progressByStory[ashaRiceOnTheTableStory.slug]!}
-              story={ashaRiceOnTheTableStory}
-              variant="row"
-            />
-          </div>
-          <div id="starting-medication-story">
-            <h3 className="sr-only" id="starting-medication-heading">
-              Starting medication
-            </h3>
-            <StoryPreview
-              progress={progressByStory[noraPrescriptionBagStory.slug]!}
-              story={noraPrescriptionBagStory}
-              variant="row-reverse"
-            />
-          </div>
-          <div id="worrying-reading-story">
-            <h3 className="sr-only" id="worrying-reading-heading">
-              A worrying reading
-            </h3>
-            <StoryPreview
-              progress={progressByStory[devonNumberScreenStory.slug]!}
-              story={devonNumberScreenStory}
-              variant="row"
-            />
-          </div>
+          {remainingStories.map((story, index) => (
+            <div id={`${story.slug}-story`} key={story.slug}>
+              <StoryPreview
+                progress={progressByStory[story.slug] ?? defaultPreviewState}
+                story={story}
+                variant={index % 2 === 0 ? "row" : "row-reverse"}
+              />
+            </div>
+          ))}
         </div>
       </section>
     </main>

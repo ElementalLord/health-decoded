@@ -9,14 +9,12 @@ const [journeySource, actionRowSource, headerSource, bottomNavigationSource] = a
   readFile(new URL("../components/layout/bottom-navigation.tsx", import.meta.url), "utf8"),
 ]);
 
-test("the authenticated Journey landing provides one direct caregiver entry", () => {
-  assert.equal((journeySource.match(/href="\/caregiver"/g) ?? []).length, 1);
-  assert.match(journeySource, /title="Support Someone You Care About"/);
-  assert.match(journeySource, /description="Help without taking over\."/);
-  assert.match(journeySource, /<ActionRow[\s\S]*href="\/caregiver"/);
+test("the compact Journey support area does not duplicate the caregiver experience", () => {
+  assert.doesNotMatch(journeySource, /href="\/caregiver"/);
+  assert.doesNotMatch(journeySource, /title="Support Someone You Care About"/);
 });
 
-test("the caregiver entry uses the established semantic link pattern and is not global navigation", () => {
+test("shared action rows stay semantic and caregiver remains outside global navigation", () => {
   assert.match(actionRowSource, /import Link from "next\/link"/);
   assert.match(actionRowSource, /<Link[\s\S]*href=\{href\}/);
   assert.match(actionRowSource, /focus-visible:ring/);

@@ -39,7 +39,7 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
   imageAlt:
     "An editorial illustration of a South Asian woman sitting with her family at a dinner table, looking uncertain as familiar shared dishes remain in the center of the table.",
   introduction:
-    "After her diagnosis, Asha began removing familiar foods from her plate and eating separately from her family. One Sunday dinner helped her see that caring for her health did not require leaving her culture or the table behind.",
+    "At Sunday dinner, Asha finds a way to care for her health without leaving the table behind.",
   whyItMatters:
     "This story explores food fear, family meals, and how familiar carbohydrate-containing foods can remain part of a thoughtful eating pattern.",
   estimatedTimeLabel: "6 to 8 minutes",

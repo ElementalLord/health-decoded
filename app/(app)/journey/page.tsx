@@ -4,7 +4,6 @@ import Link from "next/link";
 import { SunCupIllustration } from "@/components/illustrations/editorial-illustrations";
 import { ActionRow } from "@/components/shared/action-row";
 import { buttonVariants } from "@/components/ui/button";
-import { ConfidenceCheck } from "@/features/journeys/components/confidence-check";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
 import { JourneyProgressSummary } from "@/features/journeys/components/journey-progress-summary";
@@ -85,23 +84,23 @@ export default async function JourneyPage({
     ),
   ]);
   const nextStepSelection = nextStep.ok ? nextStep.data : fallbackNextStepForJourney(journey.data);
-  const learningTools = (
+  const supportTools = (
     <section aria-labelledby="journey-tools" className="motion-reveal border-y border-border py-5">
       <div className="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:items-baseline sm:gap-8">
         <h2
           className="font-serif-display text-2xl tracking-[-0.015em] sm:text-3xl"
           id="journey-tools"
         >
-          Keep your learning useful.
+          Support for what&apos;s next.
         </h2>
         <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-          A few quiet places to return to when they are useful.
+          Review, prepare, or get a little more guidance.
         </p>
       </div>
       <div className="mt-5 grid gap-6 border-t border-border pt-5 sm:grid-cols-2 sm:gap-10">
-        <section aria-labelledby="journey-tools-today">
-          <h3 className="editorial-eyebrow mb-2" id="journey-tools-today">
-            For today
+        <section aria-labelledby="journey-tools-learning">
+          <h3 className="editorial-eyebrow mb-2" id="journey-tools-learning">
+            Keep learning
           </h3>
           <div className="divide-y divide-border border-y border-border">
             <JourneySpacedReview
@@ -122,28 +121,28 @@ export default async function JourneyPage({
             />
             <ActionRow
               compact
-              description="Gather questions before a visit."
-              href="/appointment-prep"
-              title="Prepare for an appointment"
+              description="Revisit completed lessons and milestones."
+              href="/progress"
+              title="Open your learning record"
             />
           </div>
         </section>
-        <section aria-labelledby="journey-tools-record">
-          <h3 className="editorial-eyebrow mb-2" id="journey-tools-record">
-            Your record
+        <section aria-labelledby="journey-tools-support">
+          <h3 className="editorial-eyebrow mb-2" id="journey-tools-support">
+            Get support
           </h3>
           <div className="divide-y divide-border border-y border-border">
             <ActionRow
               compact
-              description="See the meaningful steps you have reached."
-              href="/milestones"
-              title="View your milestones"
+              description="Get calm, plain-language educational answers."
+              href="/ai"
+              title="Ask your AI guide"
             />
             <ActionRow
               compact
-              description="Revisit lessons and confidence check-ins."
-              href="/progress"
-              title="Open your learning record"
+              description="Gather questions before a visit."
+              href="/appointment-prep"
+              title="Prepare for an appointment"
             />
           </div>
         </section>
@@ -179,7 +178,7 @@ export default async function JourneyPage({
 
       {journey.data.kind === "complete" ? (
         <>
-          {learningTools}
+          {supportTools}
           <JourneyCompleteState journey={journey.data} />
         </>
       ) : (
@@ -208,48 +207,10 @@ export default async function JourneyPage({
             journeyTitle={journey.data.journeyTitle}
             progress={journey.data.progress}
           />
-
-          {journey.data.currentLesson.lessonProgressId ? (
-            <ConfidenceCheck
-              initialValue={journey.data.confidenceLevel}
-              lessonProgressId={journey.data.currentLesson.lessonProgressId}
-            />
-          ) : null}
-
-          <section
-            aria-labelledby="journey-support"
-            className="motion-reveal space-y-5 border-t border-border pt-9"
-          >
-            <div className="space-y-3">
-              <h2 className="editorial-eyebrow" id="journey-support">
-                Need more support?
-              </h2>
-              <p className="max-w-2xl text-pretty leading-7 text-muted-foreground">
-                Choose the kind of support that feels useful right now.
-              </p>
-            </div>
-            <div className="motion-cascade divide-y divide-border border-y border-border">
-              <ActionRow
-                description="Fictional composite stories about living with Type 2 diabetes."
-                href="/stories"
-                title="Read patient stories"
-              />
-              <ActionRow
-                description="Help without taking over."
-                href="/caregiver"
-                title="Support Someone You Care About"
-              />
-              <ActionRow
-                description="Get calm, plain-language educational answers to your questions."
-                href="/ai"
-                title="Ask your AI guide"
-              />
-            </div>
-          </section>
         </>
       )}
 
-      {journey.data.kind !== "complete" ? learningTools : null}
+      {journey.data.kind !== "complete" ? supportTools : null}
 
       <footer className="flex flex-col items-start gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-xl text-sm leading-6 text-muted-foreground">

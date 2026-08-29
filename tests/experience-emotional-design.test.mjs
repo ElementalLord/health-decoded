@@ -85,10 +85,3 @@ test("keeps completed lesson review in Progress instead of duplicating it on Jou
   assert.match(progressSource, /tracking-tight text-success/);
   assert.match(progressSource, /text-4xl.*text-success\/85/);
 });
-
-test("acknowledges reflection without grading it", () => {
-  const confidenceActionSource = source("features/journeys/actions/confidence.actions.ts");
-
-  assert.match(confidenceActionSource, /Thank you for checking in/);
-  assert.match(confidenceActionSource, /There is no right answer/);
-});

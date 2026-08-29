@@ -201,15 +201,6 @@ export default function HomePage() {
           Start your journey <ArrowRight className="size-4" />
         </Link>
       </section>
-
-      <footer className="mx-auto max-w-[1440px] px-5 py-12 text-[#827168] md:px-10 lg:px-14">
-        <p className="text-xs font-bold uppercase tracking-[0.22em]">
-          Educational support, not medical advice
-        </p>
-        <p className="mt-3 text-sm">
-          © 2026 Health Decoded. A compassionate companion for the first 90 days.
-        </p>
-      </footer>
     </>
   );
 }

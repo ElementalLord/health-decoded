@@ -545,7 +545,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
   const [mythIndex, setMythIndex] = useState(0);
   const [mythCompleted, setMythCompleted] = useState(0);
   const [mythFeedback, setMythFeedback] = useState<DayThreeEvaluationFeedback | null>(null);
-  const [confidence, setConfidence] = useState<string | null>(null);
+  const [followUpChoice, setFollowUpChoice] = useState<string | null>(null);
   const [reflection, setReflection] = useState<(typeof reflectionOptions)[number] | null>(null);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [exitOpen, setExitOpen] = useState(false);
@@ -689,7 +689,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
     if (stage === 8) return Boolean(evaluations.pattern);
     if (stage === 9) return mythCompleted === misconceptionStatements.length;
     if (stage === 10) return Boolean(evaluations.tests);
-    if (stage === 11) return Boolean(evaluations.teachBack) && confidence !== null;
+    if (stage === 11) return Boolean(evaluations.teachBack) && followUpChoice !== null;
     return reflection !== null;
   }
 
@@ -706,7 +706,7 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
       "Choose what an A1C average cannot reconstruct.",
       "Resolve all three lab mix-ups.",
       "Choose why clinicians may compare several tests.",
-      "Interpret the sample result and choose a confidence check.",
+      "Interpret the sample result and complete an understanding check.",
       "Choose one reflection to complete Day 3.",
     ];
     return requirements[stage];
@@ -1518,13 +1518,13 @@ export function DayThreeExperience({ lesson: experience }: { lesson: LessonPlaye
                     "I would like help from my care team.",
                   ].map((choice) => (
                     <button
-                      aria-pressed={confidence === choice}
+                      aria-pressed={followUpChoice === choice}
                       className={cn(
                         "motion-tactile min-h-16 rounded-[9px] border bg-card p-4 text-left text-sm",
-                        confidence === choice && "border-success bg-info",
+                        followUpChoice === choice && "border-success bg-info",
                       )}
                       key={choice}
-                      onClick={() => setConfidence(choice)}
+                      onClick={() => setFollowUpChoice(choice)}
                       type="button"
                     >
                       {choice}

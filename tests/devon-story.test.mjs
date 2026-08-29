@@ -18,14 +18,13 @@ const player = readFileSync("features/stories/components/interactive-story-playe
 const route = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 const styles = readFileSync("features/stories/components/story-player.module.css", "utf8");
 
-test("Story 4 is available under A worrying reading with state-aware progress", () => {
-  assert.match(landing, /A worrying reading/);
-  assert.match(landing, /id="worrying-reading-story"/);
-  assert.match(landing, /story=\{devonNumberScreenStory\}/);
+test("Story 4 remains available with state-aware progress", () => {
+  assert.match(landing, /devonNumberScreenStory/);
+  assert.match(landing, /remainingStories\.map/);
   assert.match(landing, /loadPreviewState\(devonNumberScreenStory\.slug\)/);
-  assert.match(landing, /Begin Story/);
-  assert.match(landing, /Resume Story/);
-  assert.match(landing, /Read Again/);
+  assert.match(landing, /Start/);
+  assert.match(landing, /Continue/);
+  assert.match(landing, /Read again/);
 });
 
 test("Story 4 Begin enters Scene 1 instead of leaving Devon on the repeated cover", () => {

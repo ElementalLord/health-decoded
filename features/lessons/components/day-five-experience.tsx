@@ -325,7 +325,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
   const [planAnchor, setPlanAnchor] = useState<(typeof planAnchors)[number] | null>(null);
   const [planDuration, setPlanDuration] = useState<(typeof planDurations)[number] | null>(null);
   const [supportChoice, setSupportChoice] = useState<string | null>(null);
-  const [confidence, setConfidence] = useState<string | null>(null);
+  const [followUpChoice, setFollowUpChoice] = useState<string | null>(null);
   const [reflection, setReflection] = useState<(typeof reflectionOptions)[number] | null>(null);
   const [evaluations, setEvaluations] = useState<
     Partial<Record<EvaluationKey, DayFiveEvaluationFeedback>>
@@ -441,7 +441,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
         supportChoice ===
         "The people are running, reaching, and changing direction while they play."
       );
-    if (stage === 9) return Boolean(evaluations.teachBack) && confidence !== null;
+    if (stage === 9) return Boolean(evaluations.teachBack) && followUpChoice !== null;
     return reflection !== null;
   }
 
@@ -456,7 +456,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
       "Open all three narrow rules to reveal the wider truth.",
       "Open all three safety notes and choose the safe medication response.",
       "Choose why playful activity still counts as movement.",
-      "Choose the movement-mechanism explanation and a confidence response.",
+      "Choose the movement-mechanism explanation and a next-step response.",
       "Choose one reflection to complete Day 5.",
     ];
     return requirements[stage];
@@ -1610,21 +1610,21 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
             {evaluations.teachBack ? (
               <div className="border-t border-border pt-7">
                 <p className="font-semibold">
-                  How confident do you feel explaining one way movement changes glucose use?
+                  Which option best describes what you would like to do next?
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {["I can explain it", "I have the main idea", "I want to review the visual"].map(
                     (option) => (
                       <button
-                        aria-pressed={confidence === option}
+                        aria-pressed={followUpChoice === option}
                         className={cn(
                           "min-h-12 rounded-full border px-5 font-semibold",
-                          confidence === option
+                          followUpChoice === option
                             ? "border-success bg-info text-success"
                             : "border-border",
                         )}
                         key={option}
-                        onClick={() => setConfidence(option)}
+                        onClick={() => setFollowUpChoice(option)}
                         type="button"
                       >
                         {option}

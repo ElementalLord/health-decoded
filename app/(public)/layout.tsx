@@ -45,6 +45,26 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
       <main id="main-content" tabIndex={-1}>
         <RouteMotion>{children}</RouteMotion>
       </main>
+      <footer className="mx-auto w-full max-w-[1440px] px-5 py-12 text-[#827168] md:px-10 lg:px-14">
+        <p className="text-xs font-bold uppercase tracking-[0.22em]">
+          Educational support, not medical advice
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+          <span>© 2026 Health Decoded. A compassionate companion for the first 90 days.</span>
+          <Link
+            className="font-medium text-[#493a32] underline underline-offset-4 hover:text-[#b96c55]"
+            href="/privacy"
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            className="font-medium text-[#493a32] underline underline-offset-4 hover:text-[#b96c55]"
+            href="/terms"
+          >
+            Terms of Use
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }

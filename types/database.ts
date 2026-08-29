@@ -293,35 +293,6 @@ export type Database = {
           },
         ];
       };
-      confidence_check_ins: {
-        Row: {
-          confidence_level: string;
-          created_at: string;
-          id: string;
-          lesson_progress_id: string;
-        };
-        Insert: {
-          confidence_level: string;
-          created_at?: string;
-          id?: string;
-          lesson_progress_id: string;
-        };
-        Update: {
-          confidence_level?: string;
-          created_at?: string;
-          id?: string;
-          lesson_progress_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "confidence_check_ins_lesson_progress_id_fkey";
-            columns: ["lesson_progress_id"];
-            isOneToOne: true;
-            referencedRelation: "lesson_progress";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       journey_lessons: {
         Row: {
           created_at: string;
@@ -807,6 +778,7 @@ export type Database = {
           created_at: string;
           current_streak: number;
           freeze_balance: number;
+          last_continuity_date: string | null;
           last_qualified_date: string | null;
           longest_streak: number;
           pending_notice: string | null;
@@ -818,6 +790,7 @@ export type Database = {
           created_at?: string;
           current_streak?: number;
           freeze_balance?: number;
+          last_continuity_date?: string | null;
           last_qualified_date?: string | null;
           longest_streak?: number;
           pending_notice?: string | null;
@@ -829,6 +802,7 @@ export type Database = {
           created_at?: string;
           current_streak?: number;
           freeze_balance?: number;
+          last_continuity_date?: string | null;
           last_qualified_date?: string | null;
           longest_streak?: number;
           pending_notice?: string | null;
@@ -1060,13 +1034,6 @@ export type Database = {
         Returns: {
           saved_last_viewed_block: number;
           saved_lesson_progress_id: string;
-        }[];
-      };
-      upsert_confidence_check_in: {
-        Args: { p_confidence_level: string; p_lesson_progress_id: string };
-        Returns: {
-          confidence_check_in_id: string;
-          saved_confidence_level: string;
         }[];
       };
     };

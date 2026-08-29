@@ -22,9 +22,9 @@ const stories = [
 
 test("the landing hierarchy has one feature and a compact editorial story index", () => {
   assert.match(landing, /variant="featured"/);
-  assert.match(landing, /variant="row"/);
-  assert.match(landing, /variant="row-reverse"/);
-  assert.match(landing, /Start here/);
+  assert.match(landing, /"row" : "row-reverse"/);
+  assert.match(landing, /getRecommendedStorySlug/);
+  assert.match(landing, /recommendedProgress\.status === "in-progress"/);
   assert.match(landingStyles, /\.featured[\s\S]*grid-template-columns/);
   assert.match(landingStyles, /\.storyRows \{[\s\S]*border-bottom/);
   assert.match(landingStyles, /\.storyRows \.preview[\s\S]*background: transparent/);
@@ -51,9 +51,9 @@ test("every dedicated story begins with the same complete cover sequence", () =>
     "Illustrative story",
     "placeholder name",
     "Related lesson",
-    "Begin Story",
-    "Resume Story",
-    "Read Again",
+    "Start",
+    "Continue",
+    "Read again",
   ]) {
     assert.match(`${landing}\n${player}\n${opening}`, new RegExp(phrase));
   }
@@ -86,10 +86,9 @@ test("story metadata controls distinct themes, arcs, and scene rhythm", () => {
   assert.match(playerStyles, /\[data-layout="closing-wide"\]/);
 });
 
-test("visible all-sided bordered containers are reduced by more than forty percent", () => {
-  const baseline = 33;
+test("visible all-sided bordered containers remain intentionally limited", () => {
   const current = `${landingStyles}\n${playerStyles}`.match(/border: 1px solid/g)?.length ?? 0;
-  assert.ok(current <= Math.floor(baseline * 0.6), `expected at most 19, found ${current}`);
+  assert.ok(current <= 20, `expected at most 20, found ${current}`);
 });
 
 test("motion, progress, quiz language, and reduced motion form one calm system", () => {

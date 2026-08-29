@@ -42,7 +42,7 @@ export const noraPrescriptionBagStory: InteractiveStory = {
   imageAlt:
     "An editorial illustration of a woman sitting at a kitchen table while a closed pharmacy bag rests nearby.",
   introduction:
-    "Nora picked up the medication her clinician prescribed, but the pharmacy bag stayed unopened on her kitchen counter. Follow the assumptions, questions, and conversation that changed what the prescription meant to her.",
+    "Nora brings home a prescription—and the questions that come with it.",
   whyItMatters:
     "This story explores why starting medication can feel like failure and how clear questions can replace shame with informed decision-making.",
   scenes: [

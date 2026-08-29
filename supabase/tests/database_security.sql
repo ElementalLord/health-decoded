@@ -11,7 +11,7 @@ declare
     'profiles', 'user_settings', 'journeys', 'lessons', 'journey_lessons',
     'activities', 'activity_answer_keys', 'medications', 'patient_stories',
     'caregiver_content', 'user_journeys', 'lesson_progress', 'activity_progress',
-    'confidence_check_ins', 'reflection_entries', 'ai_conversations', 'ai_messages',
+    'reflection_entries', 'ai_conversations', 'ai_messages',
     'user_milestones', 'user_learning_streaks', 'user_learning_activity_days',
     'user_next_step_preferences', 'user_spaced_review_state'
   ];
@@ -67,13 +67,6 @@ begin
 
   if not exists (
     select 1 from pg_constraint
-    where conname = 'confidence_check_ins_unique_lesson_progress'
-  ) then
-    raise exception 'Confidence check-ins must be unique per lesson-progress context';
-  end if;
-
-  if not exists (
-    select 1 from pg_constraint
     where conname = 'lesson_progress_last_viewed_block_minimum'
   ) then
     raise exception 'Lesson progress must retain a bounded resume position';
@@ -123,18 +116,6 @@ begin
     or has_table_privilege('authenticated', 'public.ai_messages', 'insert')
     or has_table_privilege('authenticated', 'public.ai_messages', 'update') then
     raise exception 'Session-only AI chat tables must not accept browser writes';
-  end if;
-
-  if has_function_privilege(
-    'anon',
-    'public.upsert_confidence_check_in(uuid,text)',
-    'execute'
-  ) or not has_function_privilege(
-    'authenticated',
-    'public.upsert_confidence_check_in(uuid,text)',
-    'execute'
-  ) then
-    raise exception 'Confidence check-in privileges are not restricted correctly';
   end if;
 
   if has_function_privilege(

@@ -68,7 +68,6 @@ export const checkSecurity: QualityChecker = async ({ root }) => {
     "user_journeys",
     "lesson_progress",
     "activity_progress",
-    "confidence_check_ins",
     "reflection_entries",
     "ai_conversations",
     "ai_messages",

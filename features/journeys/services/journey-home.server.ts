@@ -1,7 +1,7 @@
 import "server-only";
 
 import { mapJourneyHome } from "@/features/journeys/mappers/journey-home.mapper";
-import type { ConfidenceLevel, JourneyHomeViewModel } from "@/features/journeys/types/journey-home";
+import type { JourneyHomeViewModel } from "@/features/journeys/types/journey-home";
 import { unexpectedError } from "@/lib/errors/application-error";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
@@ -69,36 +69,9 @@ export async function getJourneyHomeData(): Promise<Result<JourneyHomeViewModel>
     return err(unexpectedError());
   }
 
-  const progressByAssignment = new Map(
-    progressRows.map((progress) => [progress.journey_lesson_id, progress]),
-  );
-  const currentAssignment = assignments.find(
-    (assignment) => progressByAssignment.get(assignment.id)?.status !== "completed",
-  );
-  const currentProgress = currentAssignment
-    ? progressByAssignment.get(currentAssignment.id)
-    : undefined;
-  let confidenceLevel: ConfidenceLevel | null = null;
-
-  if (currentProgress) {
-    const confidenceResponse = await database
-      .from("confidence_check_ins")
-      .select("confidence_level")
-      .eq("lesson_progress_id", currentProgress.id)
-      .maybeSingle();
-
-    if (confidenceResponse.error) {
-      logger.error("journey_home.confidence_unavailable");
-    } else {
-      confidenceLevel =
-        (confidenceResponse.data?.confidence_level as ConfidenceLevel | undefined) ?? null;
-    }
-  }
-
   const viewModel = mapJourneyHome({
     assignments,
     completedAt: userJourney.completed_at,
-    confidenceLevel,
     journeyTitle: journey.title,
     progressRows,
   });

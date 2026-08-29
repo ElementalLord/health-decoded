@@ -1,5 +1,4 @@
 import type {
-  ConfidenceLevel,
   JourneyAssignmentRow,
   JourneyHomeViewModel,
   LessonProgressRow,
@@ -8,7 +7,6 @@ import type {
 type JourneyHomeMapperInput = {
   assignments: JourneyAssignmentRow[];
   completedAt: string | null;
-  confidenceLevel: ConfidenceLevel | null;
   journeyTitle: string;
   progressRows: LessonProgressRow[];
 };
@@ -16,7 +14,6 @@ type JourneyHomeMapperInput = {
 export function mapJourneyHome({
   assignments,
   completedAt,
-  confidenceLevel,
   journeyTitle,
   progressRows,
 }: JourneyHomeMapperInput): JourneyHomeViewModel | null {
@@ -80,6 +77,5 @@ export function mapJourneyHome({
       ...baseProgress,
       currentDay: currentAssignment.day_number,
     },
-    confidenceLevel,
   };
 }

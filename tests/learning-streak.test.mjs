@@ -144,6 +144,37 @@ test("streak activity state can bridge only the currently available freezes", ()
   assert.equal(initial.freezeBalance, 2);
 });
 
+test("loading the streak consumes freezes and resets an uncovered absence", async () => {
+  const [migration, service, panel] = await Promise.all([
+    readFile(
+      new URL(
+        "../supabase/migrations/20260828000002_reconcile_learning_streaks.sql",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+    readFile(
+      new URL("../features/streaks/services/learning-streak.server.ts", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../features/streaks/components/learning-streak-panel.tsx", import.meta.url),
+      "utf8",
+    ),
+  ]);
+
+  assert.match(migration, /v_missed := greatest\(v_today - v_continuity_date - 1, 0\)/);
+  assert.match(migration, /v_freezes := v_freezes - v_missed/);
+  assert.match(
+    migration,
+    /v_current := 0;\s*v_continuity_date := null;\s*v_notice := 'streak_reset'/,
+  );
+  assert.match(migration, /last_continuity_date = v_continuity_date/);
+  assert.match(service, /isStreakActive: row\.current_streak > 0/);
+  assert.doesNotMatch(service, /calendarDay\(today\).*freeze_balance/);
+  assert.match(panel, /Your previous streak ended/);
+});
+
 test("timezone fallback prefers saved, then browser, then UTC", () => {
   assert.equal(resolveLearningTimezone("America/Chicago", "America/New_York"), "America/Chicago");
   assert.equal(resolveLearningTimezone(null, "America/New_York"), "America/New_York");

@@ -42,7 +42,7 @@ export const devonNumberScreenStory: InteractiveStory = {
   imageAlt:
     "An editorial illustration of a man sitting at a kitchen table at night while looking at a glucose meter with an unreadable display.",
   introduction:
-    "Devon expected an ordinary evening. Then one unexpected glucose result made him question the meal he had eaten, the progress he thought he was making, and what might happen next.",
+    "One unexpected glucose result changes Devon's evening.",
   whyItMatters:
     "This story explores how to respond to an unexpected reading without ignoring it, treating it as a personal failure, or making decisions before considering symptoms, context, and an established care plan.",
   scenes: [

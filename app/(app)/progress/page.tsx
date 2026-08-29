@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/ui/progress-bar";
-import { ConfidenceXpSummary } from "@/features/progress/components/confidence-xp-summary";
+import { LearningXpSummary } from "@/features/progress/components/learning-xp-summary";
 import { LearningRecord } from "@/features/progress/components/learning-record";
 import { ProgressEmptyState } from "@/features/progress/components/progress-empty-state";
 import { getProgressData } from "@/features/progress/services/progress.server";
@@ -25,7 +25,7 @@ export default async function ProgressPage() {
     <section className="mx-auto max-w-5xl space-y-10 py-6 sm:space-y-12 sm:py-10">
       <div className="motion-reveal">
         <PageHeader
-          description="This is a record of your learning. Confidence can change from day to day, and lower confidence is not failure."
+          description="This is a record of the lessons and milestones you have completed."
           eyebrow="Your learning journey"
           title="Your progress"
         />
@@ -66,12 +66,11 @@ export default async function ProgressPage() {
       </section>
 
       <div className="motion-reveal">
-        <ConfidenceXpSummary total={data.totalConfidenceXp} />
+        <LearningXpSummary total={data.totalLearningXp} />
       </div>
       <div className="motion-reveal">
         <LearningRecord
           completedLessons={data.completedLessonsHistory}
-          confidenceHistory={data.confidenceHistory}
           milestones={data.milestones}
         />
       </div>
