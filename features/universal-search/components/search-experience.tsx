@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
+import { openAiTutor } from "@/features/ai/components/ai-tutor-dialog";
 import type {
   RankedSearchResult,
   UniversalSearchDocument,
@@ -55,10 +56,12 @@ export function SearchExperience({
   compact = false,
   inputRef,
   onNavigate,
+  onOpenAiTutor,
 }: {
   compact?: boolean;
   inputRef?: RefObject<HTMLInputElement | null>;
   onNavigate?: (route: string) => void;
+  onOpenAiTutor?: () => void;
 }) {
   const internalInputRef = useRef<HTMLInputElement>(null);
   const activeInputRef = inputRef ?? internalInputRef;
@@ -82,6 +85,7 @@ export function SearchExperience({
     [availableResults, compact, hasQuery],
   );
   const hasMoreResults = compact && hasQuery && availableResults.length > displayed.length;
+  const activateAiTutor = onOpenAiTutor ?? openAiTutor;
 
   useEffect(() => {
     if (!hasQuery) {
@@ -157,7 +161,11 @@ export function SearchExperience({
 
   function openResult(result: UniversalSearchDocument | undefined) {
     if (!result) return;
-    onNavigate?.(result.route);
+    if (result.action === "open-ai-tutor") {
+      activateAiTutor();
+    } else {
+      onNavigate?.(result.route);
+    }
   }
 
   return (
@@ -282,13 +290,13 @@ export function SearchExperience({
                   <RotateCw aria-hidden="true" className="size-4" /> Try again
                 </button>
               ) : !queryTooLong ? (
-                <Link
+                <button
                   className={buttonVariants({ fullWidth: false, variant: "text" })}
-                  href="/ai"
-                  onClick={() => onNavigate?.("/ai")}
+                  onClick={activateAiTutor}
+                  type="button"
                 >
                   Ask Health Decoded AI
-                </Link>
+                </button>
               ) : null}
             </section>
           ) : null}
@@ -304,6 +312,7 @@ export function SearchExperience({
           {!loading && hasQuery && displayed.length ? (
             <SearchResultList
               onNavigate={onNavigate}
+              onOpenAiTutor={activateAiTutor}
               results={displayed}
               selectedIndex={selectedIndex}
               showDescriptions
@@ -329,6 +338,7 @@ export function SearchExperience({
 
 function SearchResultList({
   onNavigate,
+  onOpenAiTutor,
   onSelect,
   results,
   selectedIndex,
@@ -336,6 +346,7 @@ function SearchResultList({
   showTypeLabels,
 }: {
   onNavigate: ((route: string) => void) | undefined;
+  onOpenAiTutor: () => void;
   onSelect: (index: number) => void;
   results: readonly UniversalSearchDocument[];
   selectedIndex: number;
@@ -343,33 +354,56 @@ function SearchResultList({
   showTypeLabels: boolean;
 }) {
   function openResult(result: UniversalSearchDocument) {
-    onNavigate?.(result.route);
+    if (result.action === "open-ai-tutor") {
+      onOpenAiTutor();
+    } else {
+      onNavigate?.(result.route);
+    }
   }
 
   return (
     <ul className={styles.resultList}>
-      {results.map((result, index) => (
-        <li data-motion-item key={result.id}>
-          <Link
-            aria-current={index === selectedIndex ? "true" : undefined}
-            className={styles.resultRow}
-            href={result.route}
-            id={`search-result-${index}`}
-            onClick={(event) => {
-              if (!onNavigate) return;
-              event.preventDefault();
-              openResult(result);
-            }}
-            onMouseEnter={() => onSelect(index)}
-          >
-            <span>
-              {showTypeLabels ? <em>{typeLabels[result.type]}</em> : null}
-              <strong>{result.title}</strong>
-              {showDescriptions ? <span>{result.description}</span> : null}
-            </span>
-          </Link>
-        </li>
-      ))}
+      {results.map((result, index) => {
+        const content = (
+          <span>
+            {showTypeLabels ? <em>{typeLabels[result.type]}</em> : null}
+            <strong>{result.title}</strong>
+            {showDescriptions ? <span>{result.description}</span> : null}
+          </span>
+        );
+
+        return (
+          <li data-motion-item key={result.id}>
+            {result.action === "open-ai-tutor" ? (
+              <button
+                aria-current={index === selectedIndex ? "true" : undefined}
+                className={styles.resultRow}
+                id={`search-result-${index}`}
+                onClick={() => openResult(result)}
+                onMouseEnter={() => onSelect(index)}
+                type="button"
+              >
+                {content}
+              </button>
+            ) : (
+              <Link
+                aria-current={index === selectedIndex ? "true" : undefined}
+                className={styles.resultRow}
+                href={result.route}
+                id={`search-result-${index}`}
+                onClick={(event) => {
+                  if (!onNavigate) return;
+                  event.preventDefault();
+                  openResult(result);
+                }}
+                onMouseEnter={() => onSelect(index)}
+              >
+                {content}
+              </Link>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }

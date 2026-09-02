@@ -8,7 +8,6 @@ import type { Database } from "@/types/database";
 
 const protectedRoutePrefixes = [
   "/account",
-  "/ai",
   "/caregiver",
   "/journey",
   "/lessons",

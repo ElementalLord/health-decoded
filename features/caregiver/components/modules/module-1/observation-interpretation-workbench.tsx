@@ -2,68 +2,39 @@
 
 import { useRef, useState } from "react";
 
-import { CaregiverFeedback } from "../../../components/foundation/caregiver-feedback";
+import { Button } from "@/components/ui/button";
 import { caregiverModule1 } from "../../../content/caregiver-module-1";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-1.module.css";
 
-type Group = (typeof caregiverModule1.interactions.observation.groups)[number] | "";
+type Group = (typeof caregiverModule1.interactions.observation.groups)[number];
 
 export function ObservationInterpretationWorkbench() {
   const interaction = caregiverModule1.interactions.observation;
-  const firstSelectRef = useRef<HTMLSelectElement>(null);
+  const promptRef = useRef<HTMLLegendElement>(null);
+  const [statementIndex, setStatementIndex] = useState(0);
   const [placements, setPlacements] = useState<Record<string, Group>>({});
-  const [attempts, setAttempts] = useState<Record<string, number>>({});
-  const [assistedPlacements, setAssistedPlacements] = useState<Record<string, boolean>>({});
   const [otherPossibility, setOtherPossibility] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [submissionCount, setSubmissionCount] = useState(0);
   const { markInteractionSubmitted } = useCaregiverSession();
-  const complete = interaction.statements.every((statement) => placements[statement.id]);
+  const statement = interaction.statements[statementIndex]!;
+  const selected = placements[statement.id];
+  const isAccurate = selected === statement.preferredGroup;
+  const isLast = statementIndex === interaction.statements.length - 1;
+  const answeredCount = Object.keys(placements).length;
 
-  const interpretationAsObserved = interaction.statements.some(
-    (statement) =>
-      statement.preferredGroup === "Possible interpretation" &&
-      placements[statement.id] === "Observed",
-  );
-  const eventAsInterpretation = interaction.statements.some(
-    (statement) =>
-      statement.preferredGroup === "Observed" &&
-      placements[statement.id] === "Possible interpretation",
-  );
-  const allCorrect = interaction.statements.every(
-    (statement) => placements[statement.id] === statement.preferredGroup,
-  );
-
-  function submit(event: React.FormEvent) {
-    event.preventDefault();
-    if (!complete) return;
-    const nextPlacements = { ...placements };
-    const nextAttempts = { ...attempts };
-    const nextAssistedPlacements: Record<string, boolean> = {};
-    interaction.statements.forEach((statement) => {
-      if (placements[statement.id] !== statement.preferredGroup) {
-        const attempt = (nextAttempts[statement.id] ?? 0) + 1;
-        nextAttempts[statement.id] = attempt;
-        if (attempt >= 3) {
-          nextPlacements[statement.id] = statement.preferredGroup;
-          nextAssistedPlacements[statement.id] = true;
-        }
-      }
-    });
+  function choose(group: Group) {
+    const nextPlacements = { ...placements, [statement.id]: group };
     setPlacements(nextPlacements);
-    setAttempts(nextAttempts);
-    setAssistedPlacements(nextAssistedPlacements);
-    setSubmitted(true);
-    setSubmissionCount((count) => count + 1);
-    markInteractionSubmitted(interaction.id);
+    if (Object.keys(nextPlacements).length === interaction.statements.length) {
+      markInteractionSubmitted(interaction.id);
+    }
   }
 
-  function clear() {
-    setPlacements({});
-    setOtherPossibility("");
-    setSubmitted(false);
-    firstSelectRef.current?.focus();
+  function move(direction: -1 | 1) {
+    setStatementIndex((current) =>
+      Math.min(interaction.statements.length - 1, Math.max(0, current + direction)),
+    );
+    requestAnimationFrame(() => promptRef.current?.focus());
   }
 
   return (
@@ -74,59 +45,102 @@ export function ObservationInterpretationWorkbench() {
       aria-labelledby={`${interaction.id}-heading`}
     >
       <div className={styles.interactionHeading}>
-        <h2 id={`${interaction.id}-heading`}>{interaction.title}</h2>
-        <p>{interaction.prompt}</p>
+        <p className={styles.eyebrow}>Notice before you name</p>
+        <h2 id={`${interaction.id}-heading`} tabIndex={-1}>
+          Observed or interpreted?
+        </h2>
+        <p>
+          Take one statement at a time. Choose what can be verified, or what may be a meaning we’re
+          adding.
+        </p>
       </div>
-      <form onSubmit={submit}>
-        <div className={styles.workbenchColumns}>
-          {interaction.groups.map((group) => (
-            <section
-              key={group}
-              aria-labelledby={`${interaction.id}-${group.replaceAll(" ", "-")}`}
-            >
-              <h3 id={`${interaction.id}-${group.replaceAll(" ", "-")}`}>{group}</h3>
-              <ul>
-                {interaction.statements
-                  .filter((statement) => placements[statement.id] === group)
-                  .map((statement) => (
-                    <li key={statement.id}>{statement.copy}</li>
-                  ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-        <div className={styles.statementList}>
-          {interaction.statements.map((statement, index) => (
-            <label key={statement.id}>
-              <span>{statement.copy}</span>
-              <select
-                ref={index === 0 ? firstSelectRef : undefined}
-                value={placements[statement.id] ?? ""}
-                required
-                onChange={(event) => {
-                  const value = event.currentTarget.value as Group;
-                  setPlacements((current) => ({ ...current, [statement.id]: value }));
-                  setSubmitted(false);
-                }}
-              >
-                <option value="">Choose a group</option>
-                {interaction.groups.map((group) => (
-                  <option key={group} value={group}>
-                    Move to {group}
-                  </option>
-                ))}
-              </select>
-              {submitted && placements[statement.id] !== statement.preferredGroup ? (
-                <span className={styles.answerNeedsReview}>
-                  This placement needs review. Place it under {statement.preferredGroup}.
+
+      <div className={styles.statementProgress} aria-label={`${answeredCount} of 6 answered`}>
+        <span aria-hidden="true" style={{ width: `${(answeredCount / 6) * 100}%` }} />
+      </div>
+
+      <form onSubmit={(event) => event.preventDefault()}>
+        <fieldset className={styles.focusedQuestion}>
+          <legend ref={promptRef} tabIndex={-1}>
+            <span>
+              Statement {statementIndex + 1} of {interaction.statements.length}
+            </span>
+            {statement.copy}
+          </legend>
+          <div className={styles.binaryChoices}>
+            {interaction.groups.map((group) => (
+              <label key={group} data-selected={selected === group ? "true" : undefined}>
+                <input
+                  checked={selected === group}
+                  name={`${interaction.id}-${statement.id}`}
+                  onChange={() => choose(group)}
+                  type="radio"
+                  value={group}
+                />
+                <span className={styles.choiceText}>
+                  <strong>{group}</strong>
+                  <small>
+                    {group === "Observed"
+                      ? "Something we can verify."
+                      : "A meaning we may be adding."}
+                  </small>
                 </span>
-              ) : null}
-              {assistedPlacements[statement.id] ? (
-                <span className={styles.answerAssist}>Answer filled in after three attempts.</span>
-              ) : null}
-            </label>
-          ))}
+                <span className={styles.choiceMark} aria-hidden="true">
+                  {selected === group ? "✓" : ""}
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div className={styles.learningFeedback} aria-live="polite" aria-atomic="true">
+          {selected ? (
+            <>
+              <p className={isAccurate ? styles.feedbackAccurate : styles.feedbackReframe}>
+                <strong>
+                  {isAccurate ? "Yes, keep that distinction." : "A useful place to pause."}
+                </strong>
+              </p>
+              <p>
+                {statement.preferredGroup === "Observed"
+                  ? "This describes something visible in the exchange, without deciding why it happened."
+                  : "This could be true, but the exchange does not verify it. Keep it as a possibility."}
+              </p>
+            </>
+          ) : (
+            <p>Choose either response. This is practice, not a test.</p>
+          )}
         </div>
+
+        <div className={styles.questionNavigation}>
+          <Button
+            disabled={statementIndex === 0}
+            fullWidth={false}
+            onClick={() => move(-1)}
+            type="button"
+            variant="secondary"
+          >
+            Previous
+          </Button>
+          {!isLast ? (
+            <Button disabled={!selected} fullWidth={false} onClick={() => move(1)} type="button">
+              Next statement
+            </Button>
+          ) : answeredCount === interaction.statements.length ? (
+            <p className={styles.activityComplete}>✓ All six statements reviewed</p>
+          ) : null}
+        </div>
+      </form>
+
+      {answeredCount === interaction.statements.length ? (
+        <div className={styles.noticeSummary} role="status">
+          <p>Notice first. Interpret carefully.</p>
+          <span>{interaction.learningPoint}</span>
+        </div>
+      ) : null}
+
+      <details className={styles.quietDetails}>
+        <summary>Try another possible explanation</summary>
         <label className={styles.optionalText}>
           <span>{interaction.textLabel}</span>
           <textarea
@@ -137,40 +151,9 @@ export function ObservationInterpretationWorkbench() {
               setOtherPossibility(value);
             }}
           />
-          <small>
-            Free text is session-only and excluded from analytics and AI Tutor transfer.
-          </small>
+          <small>Session-only and excluded from analytics and AI Tutor transfer.</small>
         </label>
-        <div className={styles.interactionActions}>
-          <button className={styles.primaryAction} type="submit" disabled={!complete}>
-            {interaction.submit}
-          </button>
-          {submitted ? (
-            <button
-              className={styles.textAction}
-              type="button"
-              onClick={() => {
-                setSubmitted(false);
-                firstSelectRef.current?.focus();
-              }}
-            >
-              {interaction.revise}
-            </button>
-          ) : null}
-          <button className={styles.textAction} type="button" onClick={clear}>
-            {interaction.clear}
-          </button>
-        </div>
-      </form>
-      {submitted ? (
-        <CaregiverFeedback key={submissionCount} focusWhen heading="Distinction reviewed">
-          {interpretationAsObserved ? <p>{interaction.feedback.interpretationAsObserved}</p> : null}
-          {eventAsInterpretation ? <p>{interaction.feedback.eventAsInterpretation}</p> : null}
-          {allCorrect && otherPossibility.trim() ? <p>{interaction.feedback.preferred}</p> : null}
-          {allCorrect && !otherPossibility.trim() ? <p>{interaction.feedback.blank}</p> : null}
-          <p>{interaction.learningPoint}</p>
-        </CaregiverFeedback>
-      ) : null}
+      </details>
     </section>
   );
 }

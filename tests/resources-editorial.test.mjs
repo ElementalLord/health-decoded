@@ -58,14 +58,24 @@ test("the page does not include testimonial or quotation panels", () => {
 
 test("editorial imagery is purposeful and production sized", () => {
   const images = [
-    "a1c-explained-editorial.jpg",
-    "family-meal-editorial.jpg",
-    "everyday-movement-editorial.jpg",
-    "pharmacist-routine-editorial.png",
-    "foot-check-natural.png",
-    "everyday-support-natural.png",
-    "community-education-editorial.png",
-    "emergency-kit-natural.png",
+    "type-2-diabetes-basics-watercolor.jpg",
+    "a1c-explained-watercolor.jpg",
+    "monitoring-blood-sugar-watercolor.jpg",
+    "family-meal-watercolor.jpg",
+    "cultural-foods-watercolor.jpg",
+    "everyday-movement-watercolor.jpg",
+    "diabetes-treatments-watercolor.jpg",
+    "low-blood-sugar-watercolor.jpg",
+    "managing-sick-days-watercolor.jpg",
+    "heart-health-watercolor.jpg",
+    "kidney-health-watercolor.jpg",
+    "eye-health-watercolor.jpg",
+    "foot-check-watercolor.jpg",
+    "oral-health-watercolor.jpg",
+    "mental-health-watercolor.jpg",
+    "community-education-watercolor.jpg",
+    "financial-help-watercolor.jpg",
+    "emergency-kit-watercolor.jpg",
   ];
 
   assert.match(component, /import Image from "next\/image"/);
@@ -73,6 +83,7 @@ test("editorial imagery is purposeful and production sized", () => {
     assert.match(component, new RegExp(`/resources/${image.replace(".", "\\.")}`));
     assert.ok(statSync(`public/resources/${image}`).size > 300_000);
   }
+  assert.equal((component.match(/image: "\/resources\//g) ?? []).length, 18);
 
   assert.match(styles, /object-fit: cover/);
   assert.match(styles, /aspect-ratio: 3 \/ 2/);
@@ -108,8 +119,14 @@ test("the practice rail is centered in the right margin and section-bound", () =
   assert.match(component, /<section[^>]+className=\{styles\.browseSection\}/);
   assert.match(component, /<FloatingTools \/>[\s\S]*Browse all resources/);
   assert.match(styles, /\.browseSection \{[\s\S]*position: relative;/);
-  assert.match(styles, /\.toolRailBoundary \{[\s\S]*left: 100%;[\s\S]*position: absolute;[\s\S]*width: calc\(\(100vw - 72rem\) \/ 2\);/);
-  assert.match(styles, /\.floatingTools \{[\s\S]*left: 50%;[\s\S]*position: absolute;[\s\S]*translate: -50% 0;/);
+  assert.match(
+    styles,
+    /\.toolRailBoundary \{[\s\S]*left: 100%;[\s\S]*position: absolute;[\s\S]*width: calc\(\(100vw - 72rem\) \/ 2\);/,
+  );
+  assert.match(
+    styles,
+    /\.floatingTools \{[\s\S]*left: 50%;[\s\S]*position: absolute;[\s\S]*translate: -50% 0;/,
+  );
   assert.doesNotMatch(styles, /position: fixed/);
 });
 
@@ -139,7 +156,10 @@ test("reading progress and source rationale appear directly below the masthead",
 
 test("the resource hierarchy remains editorial rather than card-heavy", () => {
   assert.match(component, /Read guide/);
-  assert.match(styles, /\.resourceGrid \{[\s\S]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/);
+  assert.match(
+    styles,
+    /\.resourceGrid \{[\s\S]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/,
+  );
   assert.match(styles, /\.resourceArtwork \{[\s\S]*aspect-ratio: 3 \/ 2;/);
   assert.match(styles, /\.resourceGrid > article \{[\s\S]*border-bottom:/);
   assert.doesNotMatch(component, /function ResourceCard\b/);
@@ -167,8 +187,14 @@ test("the reading room is responsive, accessible, and motion-aware", () => {
 test("trusted-source guidance stays explicit", () => {
   assert.match(component, /Practical public-health guidance/);
   assert.match(component, /NIH health explainers with deeper detail/);
-  assert.match(component, /Every destination is an official \.gov page and was rechecked in July 2026/);
-  assert.match(component, /These readings support, but do not replace, advice from your health care team/);
+  assert.match(
+    component,
+    /Every destination is an official \.gov page and was rechecked in July 2026/,
+  );
+  assert.match(
+    component,
+    /These readings support, but do not replace, advice from your health care team/,
+  );
 });
 
 test("external reading links disclose their behavior", () => {

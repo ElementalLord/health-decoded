@@ -43,20 +43,21 @@ test("Marcus remains available while the featured story is selected dynamically"
   assert.match(landing, /getRecommendedStorySlug/);
   assert.match(landing, /marcusParkingLotStory/);
   assert.match(landing, /href=\{storyHref\}/);
-  assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.previewBody"));
+  assert.ok(landing.indexOf("styles.illustration") < landing.indexOf("styles.previewBody"));
   assert.equal(marcusParkingLotStory.title, "Forty Minutes in the Parking Lot");
   assert.equal(marcusParkingLotStory.topic, "Just diagnosed");
 });
 
-test("Marcus’s generated cover remains optimized and is reused without duplicate assets", () => {
+test("Marcus’s generated cover remains optimized for the dedicated opening", () => {
   assert.equal(marcusParkingLotStory.imagePath, "/stories/marcus-parking-lot-cover.webp");
   assert.match(marcusParkingLotStory.imageAlt, /editorial illustration/i);
   assert.doesNotMatch(marcusParkingLotStory.imageAlt, /Photo of Marcus|real patient/i);
   assert.ok(statSync("public/stories/marcus-parking-lot-cover.webp").size > 80_000);
-  assert.equal(landing.split("story.imagePath").length - 1, 1);
-  assert.match(landing, /height=\{900\}/);
-  assert.match(landing, /width=\{1600\}/);
+  assert.doesNotMatch(landing, /story\.imagePath/);
+  assert.match(landing, /marcus-parking-lot-illustration\.png/);
   assert.match(opening, /src=\{story\.imagePath\}/);
+  assert.match(opening, /height=\{900\}/);
+  assert.match(opening, /width=\{1600\}/);
 });
 
 test("a new story can begin directly from the landing without repeating its cover", () => {
@@ -245,6 +246,7 @@ test("story progress persists and exposes compact action states", () => {
   assert.match(player, /furthestSceneReached/);
   assert.match(player, /meaningfulChoice/);
   assert.match(player, /completionDate/);
+  assert.match(player, /markStoryOpened/);
   assert.match(player, /versionCompleted/);
   for (const label of ["Start", "Continue", "Read again"]) {
     assert.match(landing, new RegExp(label));
@@ -293,7 +295,11 @@ test("the completion screen preserves context without rewards or medical claims"
 });
 
 test("responsive and reduced-motion styles protect reading and interaction", () => {
-  assert.match(landingStyles, /aspect-ratio: 16 \/ 9/);
+  assert.match(landingStyles, /\.storyImage \{[\s\S]*object-fit: contain/);
+  assert.match(
+    landingStyles,
+    /@media \(max-width: 42rem\)[\s\S]*\.journeyPath[\s\S]*display: none/,
+  );
   assert.match(playerStyles, /grid-template-columns: minmax\(0, 58fr\) minmax\(20rem, 42fr\)/);
   assert.match(playerStyles, /font-size: 1\.0625rem/);
   assert.match(playerStyles, /min-height: 44px/);

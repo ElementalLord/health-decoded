@@ -16,8 +16,10 @@ export function SharedPlanningWorkspace() {
   const [assistedPlacements, setAssistedPlacements] = useState<Record<string, boolean>>({});
   const [submitted, setSubmitted] = useState(false);
   const [submissionCount, setSubmissionCount] = useState(0);
+  const [activeItemIndex, setActiveItemIndex] = useState(0);
   const { markInteractionSubmitted } = useCaregiverSession();
   const requiredPlaced = ["ride", "cook", "ingredients", "shelf"].every((id) => placements[id]);
+  const activeItem = interaction.items[activeItemIndex]!;
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -49,6 +51,7 @@ export function SharedPlanningWorkspace() {
   function reset() {
     setPlacements({});
     setSubmitted(false);
+    setActiveItemIndex(0);
     firstSelectRef.current?.focus();
   }
   const preferred = interaction.items.every((item) =>
@@ -72,10 +75,34 @@ export function SharedPlanningWorkspace() {
       aria-labelledby={`${interaction.id}-heading`}
     >
       <div className={styles.workspaceHeading}>
+        <p className={styles.optionalLabel}>Optional practice</p>
         <h2 id={`${interaction.id}-heading`}>{interaction.title}</h2>
         <p>{interaction.prompt}</p>
       </div>
       <form onSubmit={submit}>
+        <div className={styles.taskCard}>
+          <p className={styles.itemProgress}>Item {activeItemIndex + 1} of {interaction.items.length}</p>
+          <label>
+            <span>{activeItem.copy}</span>
+            <select
+              ref={activeItemIndex === 0 ? firstSelectRef : undefined}
+              value={placements[activeItem.id] ?? ""}
+              onChange={(event) => {
+                const value = event.currentTarget.value as Zone;
+                setPlacements((current) => ({ ...current, [activeItem.id]: value }));
+                setSubmitted(false);
+              }}
+            >
+              <option value="">Leave off the plan</option>
+              {interaction.zones.map((zone) => <option key={zone} value={zone}>Move to {zone}</option>)}
+            </select>
+            {assistedPlacements[activeItem.id] ? <span className={styles.answerAssist}>Answer filled in after three attempts.</span> : null}
+          </label>
+          <div className={styles.itemNavigation}>
+            <button type="button" disabled={activeItemIndex === 0} onClick={() => setActiveItemIndex((index) => Math.max(0, index - 1))}>Previous item</button>
+            <button type="button" disabled={activeItemIndex === interaction.items.length - 1} onClick={() => setActiveItemIndex((index) => Math.min(interaction.items.length - 1, index + 1))}>Next item</button>
+          </div>
+        </div>
         <div className={styles.planBands}>
           {interaction.zones.map((zone) => (
             <section key={zone} aria-labelledby={`${interaction.id}-${zone.replaceAll(" ", "-")}`}>
@@ -88,32 +115,6 @@ export function SharedPlanningWorkspace() {
                   ))}
               </ul>
             </section>
-          ))}
-        </div>
-        <div className={styles.taskTray}>
-          {interaction.items.map((item, index) => (
-            <label key={item.id}>
-              <span>{item.copy}</span>
-              <select
-                ref={index === 0 ? firstSelectRef : undefined}
-                value={placements[item.id] ?? ""}
-                onChange={(event) => {
-                  const value = event.currentTarget.value as Zone;
-                  setPlacements((current) => ({ ...current, [item.id]: value }));
-                  setSubmitted(false);
-                }}
-              >
-                <option value="">Leave off the plan</option>
-                {interaction.zones.map((zone) => (
-                  <option key={zone} value={zone}>
-                    Move to {zone}
-                  </option>
-                ))}
-              </select>
-              {assistedPlacements[item.id] ? (
-                <span className={styles.answerAssist}>Answer filled in after three attempts.</span>
-              ) : null}
-            </label>
           ))}
         </div>
         <div className={styles.interactionActions}>

@@ -6,7 +6,7 @@ import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-4.module.css";
 
-export function Module4Completion() {
+export function Module4Completion({ onReview }: { onReview: () => void }) {
   const { progress } = useCaregiverSession();
   const done = isCaregiverModuleComplete(progress);
   const item = caregiverModule4.completion;
@@ -35,7 +35,7 @@ export function Module4Completion() {
       </dl>
       {done ? <p>{item.keyIdea}</p> : null}
       <div className={styles.completionActions}>
-        <a href="#CG-M4-I02">{item.review}</a>
+        <button type="button" onClick={onReview}>{item.review}</button>
         <Link href="/caregiver/modules/the-caregiver-matters-too">{item.continue}</Link>
         <Link href="/caregiver">{item.return}</Link>
       </div>

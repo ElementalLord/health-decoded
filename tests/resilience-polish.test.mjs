@@ -189,13 +189,16 @@ test("AI rate limiting remains distinct from a provider failure", () => {
 
 test("invalid provider links and citations can never reach the renderer", () => {
   assert.match(sources.aiParser, /https\?:\\\/\\\//);
-  assert.match(sources.aiSchema, /href: z\.string\(\)\.startsWith\("\/"\)/);
+  assert.match(sources.aiSchema, /href: z\.string\(\)\.url\(\)\.startsWith\("https:\/\/"\)/);
   assert.doesNotMatch(sources.aiChat, /dangerouslySetInnerHTML/);
 });
 
 test("unknown AI source IDs are not accepted from provider output", () => {
-  assert.match(sources.aiServer, /relatedContent: context\.data\.metadata\.relatedContent/);
-  assert.match(sources.aiContext, /const relatedContent: AiRelatedContent\[\]/);
+  assert.match(
+    sources.aiServer,
+    /credibleSources: context\.data\.metadata\.credibleSources\.filter/,
+  );
+  assert.doesNotMatch(sources.aiContext, /AiRelatedContent|current_journey_lesson_id/);
   assert.doesNotMatch(sources.aiParser, /relatedContent|suggestedQuestions/);
 });
 

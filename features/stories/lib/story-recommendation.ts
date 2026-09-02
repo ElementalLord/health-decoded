@@ -1,6 +1,9 @@
 import type { StoryPreviewStatus } from "@/features/stories/types/interactive-story";
 
-type StoryProgressSummary = Record<string, { status: StoryPreviewStatus }>;
+type StoryProgressSummary = Record<
+  string,
+  { lastOpenedAt?: number | null; status: StoryPreviewStatus }
+>;
 
 const recommendationRank: Record<StoryPreviewStatus, number> = {
   "in-progress": 0,
@@ -16,7 +19,12 @@ export function prioritizeStorySlugs(
     const firstStatus = progressByStory[firstSlug]?.status ?? "not-started";
     const secondStatus = progressByStory[secondSlug]?.status ?? "not-started";
 
-    return recommendationRank[firstStatus] - recommendationRank[secondStatus];
+    const rankDifference = recommendationRank[firstStatus] - recommendationRank[secondStatus];
+    if (rankDifference !== 0) return rankDifference;
+
+    const firstOpenedAt = progressByStory[firstSlug]?.lastOpenedAt ?? 0;
+    const secondOpenedAt = progressByStory[secondSlug]?.lastOpenedAt ?? 0;
+    return secondOpenedAt - firstOpenedAt;
   });
 }
 

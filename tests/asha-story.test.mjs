@@ -33,11 +33,9 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
   for (const phrase of ["Start", "Continue", "Read again"]) {
     assert.match(landing, new RegExp(phrase));
   }
-  assert.ok(landing.indexOf("styles.cover") < landing.indexOf("styles.labels"));
-  assert.ok(landing.indexOf("styles.labels") < landing.indexOf("styles.previewIntroduction"));
-  assert.ok(
-    landing.indexOf("styles.previewIntroduction") < landing.indexOf("styles.previewFooter"),
-  );
+  assert.ok(landing.indexOf("styles.illustration") < landing.indexOf("styles.topic"));
+  assert.ok(landing.indexOf("styles.topic") < landing.indexOf("styles.previewIntroduction"));
+  assert.ok(landing.indexOf("styles.previewIntroduction") < landing.indexOf("styles.metadata"));
   assert.equal(
     ashaRiceOnTheTableStory.introduction,
     "At Sunday dinner, Asha finds a way to care for her health without leaving the table behind.",
@@ -46,16 +44,17 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
   assert.equal(ashaRiceOnTheTableStory.relatedLessonLabel, "Lesson 4");
 });
 
-test("Asha’s one cover is reused consistently on preview and opening", () => {
+test("Asha’s one cover remains on the dedicated opening while the landing uses generated art", () => {
   assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-rice-on-the-table-cover.webp");
   assert.match(ashaRiceOnTheTableStory.imageAlt, /editorial illustration/i);
   assert.match(ashaRiceOnTheTableStory.imageAlt, /South Asian woman/i);
   assert.doesNotMatch(ashaRiceOnTheTableStory.imageAlt, /Photo of Asha|real patient|wrong food/i);
   assert.ok(statSync("public/stories/asha-rice-on-the-table-cover.webp").size > 80_000);
-  assert.match(landing, /height=\{900\}/);
-  assert.match(landing, /width=\{1600\}/);
-  assert.equal(landing.split("story.imagePath").length - 1, 1);
+  assert.doesNotMatch(landing, /story\.imagePath/);
+  assert.match(landing, /asha-rice-table-illustration\.webp/);
   assert.match(opening, /src=\{story\.imagePath\}/);
+  assert.match(opening, /height=\{900\}/);
+  assert.match(opening, /width=\{1600\}/);
   assert.match(playerStyles, /\.openingCover[\s\S]*aspect-ratio: 16 \/ 9/);
 });
 
@@ -284,6 +283,7 @@ test("progress is story-specific and persists every requested state container", 
   for (const field of [
     "currentScene",
     "furthestSceneReached",
+    "lastOpenedAt",
     "interactionStates",
     "meaningfulChoice",
     "prediction",
@@ -328,7 +328,8 @@ test("completion remains intentional, calm, and related to—but separate from�
 });
 
 test("responsive, accessible, and reduced-motion rules cover the story-specific UI", () => {
-  assert.match(landingStyles, /aspect-ratio: 16 \/ 9/);
+  assert.match(landingStyles, /\.storyImage \{[\s\S]*object-fit: contain/);
+  assert.match(landingStyles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(playerStyles, /grid-template-columns: minmax\(0, 52fr\) minmax\(22rem, 48fr\)/);
   assert.match(playerStyles, /font-size: 1\.0625rem/);
   assert.match(playerStyles, /min-height: 44px/);

@@ -25,12 +25,12 @@ test("Module 3 exposes landmarks, route focus, labels, native controls, and anno
 
 test("Module 3 fills an answer after three responses needing review", () => {
   assert.match(knowledgeCheck, /attempt >= 3/);
-  assert.match(knowledgeCheck, /nextAnswers\[question\.id\] = question\.preferredIndex/);
+  assert.match(knowledgeCheck, /\[question\.id\]: question\.preferredIndex/);
   assert.match(knowledgeCheck, /filled in after three attempts/);
 });
 
-test("Module 3 looping household visuals stop under reduced motion", () => {
-  assert.match(styles, /m3-bag[\s\S]*infinite/);
-  assert.match(styles, /m3-day[\s\S]*infinite/);
-  assert.match(styles, /animation-iteration-count: 1 !important/);
+test("Module 3 uses restrained motion and removes it when requested", () => {
+  assert.doesNotMatch(styles, /infinite/);
+  assert.match(styles, /prefers-reduced-motion: reduce/);
+  assert.match(styles, /\.stage:not\(\[hidden\]\) \{ animation: none; \}/);
 });

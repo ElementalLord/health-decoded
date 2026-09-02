@@ -146,18 +146,29 @@ test("blocks unsafe provider output before it can be rendered", () => {
 });
 
 test("AI Tutor keeps the compact question-first hierarchy and safety boundary", async () => {
-  const [page, chat] = await Promise.all([
-    readFile(new URL("../app/(app)/ai/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../features/ai/components/ai-chat.tsx", import.meta.url), "utf8"),
-  ]);
-  assert.match(page, />AI Tutor</);
-  assert.doesNotMatch(page, /Ready when you are|Your private learning conversation/);
+  const chat = await readFile(
+    new URL("../features/ai/components/ai-chat.tsx", import.meta.url),
+    "utf8",
+  );
   assert.match(chat, /General diabetes education only/);
   assert.match(chat, /Safety details/);
   assert.match(chat, /Private to this visit/);
-  assert.match(chat, /Continue learning/);
-  assert.match(chat, /relatedContent/);
+  assert.doesNotMatch(chat, /Connected to today&apos;s lesson|Continue learning|relatedContent/);
   assert.match(chat, /AiResponseContent/);
   assert.match(chat, /AI_SUGGESTED_QUESTION_BANK/);
   assert.match(chat, /selectSuggestedQuestions/);
+});
+
+test("AI Tutor answers without loading the learner's current lesson", async () => {
+  const [context, server] = await Promise.all([
+    readFile(new URL("../features/ai/services/ai-context.server.ts", import.meta.url), "utf8"),
+    readFile(new URL("../features/ai/services/ai-chat.server.ts", import.meta.url), "utf8"),
+  ]);
+
+  assert.doesNotMatch(
+    context,
+    /getServerDatabaseClient|user_journeys|journey_lessons|current_journey_lesson_id/,
+  );
+  assert.doesNotMatch(context, /today.s lesson|context\.lesson/iu);
+  assert.doesNotMatch(server, /lessonUsed|relatedContent/);
 });

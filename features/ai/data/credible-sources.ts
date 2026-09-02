@@ -22,6 +22,30 @@ const sources = {
       "Diabetes affects how the body turns food into energy; insulin helps glucose enter cells, and diabetes can involve too little insulin or reduced response to it.",
     title: "Diabetes Basics",
   },
+  careSchedule: {
+    id: "CDC-DIABETES-CARE-SCHEDULE",
+    href: "https://www.cdc.gov/diabetes/treatment/your-diabetes-care-schedule.html",
+    organization: "CDC",
+    summary:
+      "Regular diabetes care includes recurring appointments, laboratory tests, and preventive checks. Preparing questions and sharing concerns with the care team can help make visits more useful.",
+    title: "Your Diabetes Care Schedule",
+  },
+  cgm: {
+    id: "CDC-CONTINUOUS-GLUCOSE-MONITORS",
+    href: "https://www.cdc.gov/diabetes/treatment/continuous-glucose-monitors.html",
+    organization: "CDC",
+    summary:
+      "A continuous glucose monitor uses a sensor just under the skin to estimate glucose in the fluid between cells, updates readings every few minutes, and can show changes and trends over time.",
+    title: "Continuous Glucose Monitors",
+  },
+  education: {
+    id: "CDC-DIABETES-EDUCATION-SUPPORT",
+    href: "https://www.cdc.gov/diabetes/education-support-programs/index.html",
+    organization: "CDC",
+    summary:
+      "Diabetes self-management education and support helps people learn practical skills for everyday diabetes care, including eating, activity, medicines, monitoring, coping, and reducing risks.",
+    title: "Diabetes Self-Management Education and Support",
+  },
   exercise: {
     id: "CDC-PHYSICAL-ACTIVITY",
     href: "https://www.cdc.gov/diabetes/living-with/physical-activity.html",
@@ -53,6 +77,22 @@ const sources = {
     summary:
       "Diabetes medicines work in different ways; metformin generally reduces glucose made by the liver and helps the body use insulin better.",
     title: "Insulin, Medicines, & Other Diabetes Treatments",
+  },
+  mentalHealth: {
+    id: "CDC-DIABETES-MENTAL-HEALTH",
+    href: "https://www.cdc.gov/diabetes/living-with/mental-health.html",
+    organization: "CDC",
+    summary:
+      "Stress hormones can make blood glucose rise or fall unpredictably, and the ongoing work of diabetes care can itself be a source of stress. Activity, relaxation, connection, and adequate sleep can support coping.",
+    title: "Diabetes and Mental Health",
+  },
+  monitoring: {
+    id: "CDC-MONITORING-BLOOD-SUGAR",
+    href: "https://www.cdc.gov/diabetes/diabetes-testing/monitoring-blood-sugar.html",
+    organization: "CDC",
+    summary:
+      "Blood glucose can change throughout the day in response to factors such as food, medicines, and physical activity. A meter measures one moment, while regular monitoring can reveal patterns over time.",
+    title: "Monitoring Your Blood Sugar",
   },
   nutrition: {
     id: "CDC-HEALTHY-EATING",
@@ -87,7 +127,31 @@ export function credibleSourcesForQuestion(message: string): readonly AiCredible
   }
 
   if (/\b(a1c|hba1c|hemoglobin a1c)\b/.test(normalized)) {
-    return uniqueSources([sources.a1c, sources.overview, sources.basics]);
+    return uniqueSources([sources.a1c, sources.monitoring, sources.overview]);
+  }
+  if (/\b(continuous glucose monitor|cgm)\b/.test(normalized)) {
+    return uniqueSources([sources.cgm, sources.monitoring, sources.overview]);
+  }
+  if (/\b(stress|stressed|anxiety|anxious|mental health|diabetes distress)\b/.test(normalized)) {
+    return uniqueSources([sources.mentalHealth, sources.healthyLiving, sources.overview]);
+  }
+  if (/\b(sleep|sleeping|rest|circadian)\b/.test(normalized)) {
+    return uniqueSources([sources.mentalHealth, sources.healthyLiving, sources.overview]);
+  }
+  if (
+    /\b(checkups?|check-ups?|appointments?|healthcare visits?|health care visits?|doctor visits?|care team)\b/.test(
+      normalized,
+    )
+  ) {
+    return uniqueSources([sources.careSchedule, sources.education, sources.overview]);
+  }
+  if (
+    /\b(diabetes education|self-management education|dsmes|learn about diabetes)\b/.test(normalized)
+  ) {
+    return uniqueSources([sources.education, sources.overview, sources.basics]);
+  }
+  if (/\b(insulin (?:resistance|sensitivity)|prediabetes)\b/.test(normalized)) {
+    return uniqueSources([sources.insulinResistance, sources.exercise, sources.healthyLiving]);
   }
   if (/\b(metformin|insulin|medicine|medication|drug)\b/.test(normalized)) {
     return uniqueSources([sources.medicines, sources.overview, sources.basics]);
@@ -102,8 +166,12 @@ export function credibleSourcesForQuestion(message: string): readonly AiCredible
   ) {
     return uniqueSources([sources.nutrition, sources.healthyLiving, sources.overview]);
   }
-  if (/\b(insulin resistance|prediabetes)\b/.test(normalized)) {
-    return uniqueSources([sources.insulinResistance, sources.overview, sources.basics]);
+  if (
+    /\b(monitor|monitoring|meter|fingerstick|throughout the day|change during the day)\b/.test(
+      normalized,
+    )
+  ) {
+    return uniqueSources([sources.monitoring, sources.overview, sources.basics]);
   }
 
   if (/\b(type\s*2|diabetes|blood sugar|glucose|insulin|pancreas)\b/.test(normalized)) {

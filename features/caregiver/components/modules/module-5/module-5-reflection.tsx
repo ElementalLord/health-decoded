@@ -9,7 +9,7 @@ export function Module5Reflection() {
   const item = caregiverModule5.reflection;
   const [values, setValues] = useState(["", "", ""]);
   const [saved, setSaved] = useState(false);
-  const { setReflection, skipReflection, clearReflection } = useCaregiverSession();
+  const { reflectionSkipped, setReflection, skipReflection, clearReflection } = useCaregiverSession();
   const hasValue = values.some((value) => value.trim());
   return (
     <section
@@ -53,9 +53,11 @@ export function Module5Reflection() {
           <button className={styles.primaryAction} type="submit" disabled={!hasValue}>
             Save reflection for this session
           </button>
-          <button className={styles.textAction} type="button" onClick={skipReflection}>
-            {item.skip}
-          </button>
+          {!reflectionSkipped ? (
+            <button className={styles.skipAction} type="button" onClick={skipReflection}>
+              {item.skip}
+            </button>
+          ) : null}
           <button
             className={styles.textAction}
             type="button"
@@ -72,7 +74,9 @@ export function Module5Reflection() {
           </button>
         </div>
       </form>
-      <p aria-live="polite">{saved ? "Reflection saved for this session." : ""}</p>
+      <p aria-live="polite">
+        {saved ? "Reflection saved for this session." : reflectionSkipped ? "Reflection skipped for this session." : ""}
+      </p>
     </section>
   );
 }

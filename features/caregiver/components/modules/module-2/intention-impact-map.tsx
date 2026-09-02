@@ -2,6 +2,7 @@
 
 import { useRef, useState, type FormEvent } from "react";
 
+import { Button } from "@/components/ui/button";
 import { CaregiverFeedback } from "../../foundation/caregiver-feedback";
 import { caregiverModule2 } from "../../../content/caregiver-module-2";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
@@ -24,57 +25,63 @@ export function IntentionImpactMap() {
   const interaction = caregiverModule2.interactions.intentionImpact;
   const { markInteractionSubmitted } = useCaregiverSession();
   const [rows, setRows] = useState(initialRows);
+  const [actionIndex, setActionIndex] = useState(0);
   const [impactAttempts, setImpactAttempts] = useState<Record<string, number>>({});
   const [assistedImpacts, setAssistedImpacts] = useState<Record<string, boolean>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [reviewed, setReviewed] = useState<Record<string, boolean>>({});
+  const [completed, setCompleted] = useState(false);
   const [submissionCount, setSubmissionCount] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
+  const promptRef = useRef<HTMLLegendElement>(null);
+  const action = interaction.actions[actionIndex]!;
+  const row = rows[action.id]!;
+  const actionReviewed = Boolean(reviewed[action.id]);
 
-  function updateRow(actionId: string, update: Partial<RowState>) {
+  function updateRow(update: Partial<RowState>) {
     setRows((current) => ({
       ...current,
-      [actionId]: { ...current[actionId]!, ...update },
+      [action.id]: { ...current[action.id]!, ...update },
     }));
-    setSubmitted(false);
+    setReviewed((current) => ({ ...current, [action.id]: false }));
+    setCompleted(false);
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  function reviewAction(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!formRef.current?.reportValidity()) return;
-    const nextRows = { ...rows };
-    const nextImpactAttempts = { ...impactAttempts };
-    const nextAssistedImpacts: Record<string, boolean> = {};
-    interaction.actions.forEach((action) => {
-      if (rows[action.id]?.impact !== action.preferredImpact) {
-        const attempt = (nextImpactAttempts[action.id] ?? 0) + 1;
-        nextImpactAttempts[action.id] = attempt;
-        if (attempt >= 3) {
-          nextRows[action.id] = { ...nextRows[action.id]!, impact: action.preferredImpact };
-          nextAssistedImpacts[action.id] = true;
-        }
+    const nextAttempts = { ...impactAttempts };
+    if (row.impact !== action.preferredImpact) {
+      const attempt = (nextAttempts[action.id] ?? 0) + 1;
+      nextAttempts[action.id] = attempt;
+      if (attempt >= 3) {
+        setRows((current) => ({
+          ...current,
+          [action.id]: { ...current[action.id]!, impact: action.preferredImpact },
+        }));
+        setAssistedImpacts((current) => ({ ...current, [action.id]: true }));
       }
-    });
-    setRows(nextRows);
-    setImpactAttempts(nextImpactAttempts);
-    setAssistedImpacts(nextAssistedImpacts);
-    setSubmitted(true);
+    }
+    setImpactAttempts(nextAttempts);
+    setReviewed((current) => ({ ...current, [action.id]: true }));
     setSubmissionCount((count) => count + 1);
-    markInteractionSubmitted(interaction.id);
+
+    if (actionIndex === interaction.actions.length - 1) {
+      setCompleted(true);
+      markInteractionSubmitted(interaction.id);
+    }
   }
 
-  const allUnknown = interaction.actions.every((action) => rows[action.id]?.unknown);
-  const includesSupport = interaction.actions.some(
-    (action) => rows[action.id]?.impact === "support",
-  );
-  const preferredImpacts = interaction.actions.every(
-    (action) => rows[action.id]?.impact === action.preferredImpact,
-  );
+  function moveToAction(nextIndex: number) {
+    setActionIndex(nextIndex);
+    requestAnimationFrame(() => promptRef.current?.focus());
+  }
 
-  const feedback: string | null = !allUnknown
+  const currentImpact = assistedImpacts[action.id] ? action.preferredImpact : row.impact;
+  const feedback = !row.unknown
     ? interaction.feedback.unknown
-    : includesSupport
+    : currentImpact === "support"
       ? interaction.feedback.support
-      : preferredImpacts
+      : currentImpact === action.preferredImpact
         ? interaction.feedback.preferred
         : interaction.feedback.fallback;
 
@@ -83,103 +90,120 @@ export function IntentionImpactMap() {
       className={styles.consequenceMap}
       aria-labelledby={`${interaction.id}-heading`}
       data-interaction-id={interaction.id}
-      data-submitted={submitted ? "true" : "false"}
+      data-submitted={completed ? "true" : "false"}
     >
       <div className={styles.interactionHeading}>
-        <p className={styles.sectionLabel}>Optional practice · consequence map</p>
-        <h2 id={`${interaction.id}-heading`}>{interaction.title}</h2>
+        <p className={styles.eyebrow}>Practice · consequence map</p>
+        <h3 id={`${interaction.id}-heading`}>{interaction.title}</h3>
         <p>{interaction.prompt}</p>
       </div>
 
-      <form ref={formRef} onSubmit={submit}>
-        <div className={styles.mapRows}>
-          {interaction.actions.map((action) => {
-            const row = rows[action.id]!;
-            return (
-              <fieldset key={action.id} className={styles.mapRow}>
-                <legend>{action.label}</legend>
-                <label>
-                  <span>Leah&apos;s likely intention</span>
-                  <select
-                    required
-                    value={row.intention}
-                    onChange={(event) => {
-                      const value = event.currentTarget.value;
-                      updateRow(action.id, { intention: value });
-                    }}
-                  >
-                    <option value="">Choose an intention</option>
-                    {interaction.intentions.map((intention) => (
-                      <option key={intention} value={intention}>
-                        {intention}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <span className={styles.mapConnector} aria-hidden="true" />
-                <label>
-                  <span>One possible impact</span>
-                  <select
-                    required
-                    value={row.impact}
-                    onChange={(event) => {
-                      const value = event.currentTarget.value;
-                      updateRow(action.id, { impact: value });
-                    }}
-                  >
-                    <option value="">Choose an impact</option>
-                    {interaction.impacts.map((impact) => (
-                      <option key={impact} value={impact}>
-                        {impact}
-                      </option>
-                    ))}
-                  </select>
-                  {assistedImpacts[action.id] ? (
-                    <span className={styles.answerAssist}>
-                      Answer filled in after three attempts.
-                    </span>
-                  ) : null}
-                </label>
-                <label className={styles.unknownChoice}>
+      <p className={styles.activityProgress}>
+        Action {actionIndex + 1} of {interaction.actions.length}
+      </p>
+
+      <form ref={formRef} onSubmit={reviewAction}>
+        <fieldset className={styles.mappingPrompt}>
+          <legend ref={promptRef} tabIndex={-1}>
+            <span>
+              Action {actionIndex + 1} of {interaction.actions.length}
+            </span>
+            {action.label}
+          </legend>
+
+          <fieldset className={styles.choiceGroup}>
+            <legend>What might Leah be trying to do?</legend>
+            <div className={styles.choiceGrid}>
+              {interaction.intentions.map((intention) => (
+                <label
+                  key={intention}
+                  data-selected={row.intention === intention ? "true" : undefined}
+                >
                   <input
-                    type="checkbox"
+                    checked={row.intention === intention}
+                    name={`${action.id}-intention`}
+                    onChange={() => updateRow({ intention })}
                     required
-                    checked={row.unknown}
-                    onChange={(event) => {
-                      const checked = event.currentTarget.checked;
-                      updateRow(action.id, { unknown: checked });
-                    }}
+                    type="radio"
+                    value={intention}
                   />
-                  <span>{interaction.unknown}</span>
+                  <span>{intention}</span>
                 </label>
-              </fieldset>
-            );
-          })}
-        </div>
-        <button className={styles.primaryAction} type="submit">
-          {interaction.submit}
-        </button>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset className={styles.choiceGroup}>
+            <legend>What might this create for Andre?</legend>
+            <div className={styles.choiceGrid}>
+              {interaction.impacts.map((impact) => (
+                <label key={impact} data-selected={row.impact === impact ? "true" : undefined}>
+                  <input
+                    checked={row.impact === impact}
+                    name={`${action.id}-impact`}
+                    onChange={() => updateRow({ impact })}
+                    required
+                    type="radio"
+                    value={impact}
+                  />
+                  <span>{impact}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <label className={styles.unknownChoice} data-selected={row.unknown ? "true" : undefined}>
+            <input
+              checked={row.unknown}
+              onChange={(event) => {
+                const checked = event.currentTarget.checked;
+                updateRow({ unknown: checked });
+              }}
+              required
+              type="checkbox"
+            />
+            <span>
+              <strong>Keep his perspective open.</strong>
+              {interaction.unknown}
+            </span>
+          </label>
+        </fieldset>
+
+        <Button fullWidth={false} type="submit">
+          Review this action
+        </Button>
       </form>
 
-      {submitted ? (
+      {actionReviewed ? (
         <CaregiverFeedback
           key={submissionCount}
           focusWhen
           heading={interaction.learningPoint}
           tone="neutral"
         >
-          {feedback ? <p>{feedback}</p> : null}
-          <ul className={styles.srOnly}>
-            {interaction.actions.map((action) => {
-              const row = rows[action.id]!;
-              return (
-                <li key={action.id}>
-                  {action.label}: intention {row.intention}; possible impact {row.impact};{" "}
-                  {interaction.unknown}
-                </li>
-              );
-            })}
-          </ul>
+          <p>{feedback}</p>
+          {assistedImpacts[action.id] ? (
+            <p className={styles.answerAssist}>Answer filled in after three attempts.</p>
+          ) : null}
+          <div className={styles.feedbackActions}>
+            {actionIndex > 0 ? (
+              <Button
+                fullWidth={false}
+                onClick={() => moveToAction(actionIndex - 1)}
+                type="button"
+                variant="secondary"
+              >
+                Previous action
+              </Button>
+            ) : null}
+            {actionIndex < interaction.actions.length - 1 ? (
+              <Button fullWidth={false} onClick={() => moveToAction(actionIndex + 1)} type="button">
+                Next action
+              </Button>
+            ) : completed ? (
+              <p className={styles.activityComplete}>✓ All three actions reviewed</p>
+            ) : null}
+          </div>
         </CaregiverFeedback>
       ) : null}
     </section>

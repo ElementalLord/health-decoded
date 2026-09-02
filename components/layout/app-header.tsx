@@ -32,7 +32,9 @@ function AppHeader({ routes = applicationRoutes }: { routes?: readonly Applicati
         </Link>
 
         <div className="flex min-w-0 items-center gap-3 lg:gap-6">
-          <SearchCommand />
+          <div className="flex items-center gap-2">
+            <SearchCommand />
+          </div>
           <DesktopLayout>
             <nav aria-label="Primary navigation">
               <ul className="flex items-center gap-6">

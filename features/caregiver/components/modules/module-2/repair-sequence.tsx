@@ -83,7 +83,7 @@ export function RepairSequence() {
     >
       <div className={styles.interactionHeading}>
         <p className={styles.sectionLabel}>Optional practice · repair sequence</p>
-        <h2 id={`${interaction.id}-heading`}>{interaction.title}</h2>
+        <h3 id={`${interaction.id}-heading`}>{interaction.title}</h3>
         <p>{interaction.prompt}</p>
       </div>
       <ol ref={listRef} className={styles.repairWorkspace}>

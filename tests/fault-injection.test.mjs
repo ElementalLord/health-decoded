@@ -150,7 +150,10 @@ test("profile write rejection preserves the typed uncontrolled value and never r
 
 test("Appointment Prep clipboard denial preserves exact mounted reducer state", async () => {
   const clipboard = denyClipboard();
-  await assert.rejects(clipboard.writeText("exact appointment text"), /injected dependency failure/);
+  await assert.rejects(
+    clipboard.writeText("exact appointment text"),
+    /injected dependency failure/,
+  );
   assert.match(
     entries.appointment,
     /useReducer\(appointmentPrepReducer, initialAppointmentPrepState\)/,
@@ -194,8 +197,12 @@ test("AI provider exceptions and malformed streams become controlled unavailable
 
 test("unknown, missing, and URL-shaped AI citations cannot enter rendered provider output", () => {
   assert.match(entries.aiParser, /https\?:\\\/\\\//);
-  assert.match(entries.aiSchema, /href: z\.string\(\)\.startsWith\("\/"\)/);
-  assert.match(entries.aiServer, /relatedContent: context\.data\.metadata\.relatedContent/);
+  assert.match(entries.aiSchema, /href: z\.string\(\)\.url\(\)\.startsWith\("https:\/\/"\)/);
+  assert.match(
+    entries.aiServer,
+    /credibleSources: context\.data\.metadata\.credibleSources\.filter/,
+  );
+  assert.doesNotMatch(entries.aiServer, /lessonUsed|relatedContent/);
   assert.doesNotMatch(entries.aiParser, /relatedContent|credibleSources/);
 });
 

@@ -43,8 +43,9 @@ test("controls have semantic labels, grouping, and keyboard-compatible alternati
   assert.match(combined, /<fieldset/);
   assert.match(combined, /<legend/);
   assert.match(combined, /<label/);
-  assert.match(combined, /<select/);
+  assert.doesNotMatch(combined, /<select/);
   assert.match(combined, /type="radio"/);
+  assert.match(combined, /type="checkbox"/);
   assert.match(sources["repair-sequence.tsx"], /<button[\s\S]*Move up/);
   assert.match(sources["repair-sequence.tsx"], /<button[\s\S]*Move down/);
   assert.doesNotMatch(combined, /onMouseEnter|onMouseOver|draggable=/);
@@ -76,9 +77,10 @@ test("Module 2 styles cover focus, long text, 320px, reduced motion, and overflo
   assert.doesNotMatch(styles, /:hover[\s\S]{0,120}(content:|display:|visibility:)/);
 });
 
-test("the prototype exposes no score, badge, or certification and pauses looping motion", () => {
+test("the prototype exposes no score, badge, certification, or ambient looping motion", () => {
   assert.doesNotMatch(combined, /score|badge|certificat/i);
-  assert.match(styles, /module-offer-pause[\s\S]*infinite/);
-  assert.match(styles, /module-permission-loop[\s\S]*infinite/);
-  assert.match(styles, /prefers-reduced-motion: reduce[\s\S]*animation-iteration-count:\s*1/);
+  assert.doesNotMatch(styles, /infinite/);
+  assert.match(styles, /@keyframes stage-arrive/);
+  assert.match(styles, /prefers-reduced-motion: reduce[\s\S]*animation:\s*none/);
+  assert.match(styles, /data-reduced-motion="true"/);
 });

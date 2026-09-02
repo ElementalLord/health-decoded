@@ -7,7 +7,7 @@ import { caregiverModuleRegistry } from "../../../content/caregiver-module-regis
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-3.module.css";
 
-export function Module3Completion() {
+export function Module3Completion({ onReview }: { onReview: () => void }) {
   const { progress } = useCaregiverSession();
   const completed = isCaregiverModuleComplete(progress);
   const completion = caregiverModule3.completion;
@@ -38,7 +38,7 @@ export function Module3Completion() {
       </dl>
       {completed && progress.keyIdeaUnderstood !== null ? <p>{completion.keyIdea}</p> : null}
       <div className={styles.completionActions}>
-        <a href="#CG-M3-S04">{completion.review}</a>
+        <button type="button" onClick={onReview}>{completion.review}</button>
         <Link href={caregiverModuleRegistry["when-something-feels-wrong"].route}>
           {completion.continue}
         </Link>

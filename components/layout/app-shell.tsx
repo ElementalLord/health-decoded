@@ -1,10 +1,12 @@
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 
 import { AppHeader } from "@/components/layout/app-header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { OfflineStatus } from "@/components/layout/offline-status";
 import { PageContainer } from "@/components/layout/page-container";
 import { RouteMotion } from "@/components/motion/route-motion";
+import { AiTutorDrawer } from "@/features/ai/components/ai-tutor-drawer";
+import { FloatingAiTutorTrigger } from "@/features/ai/components/ai-tutor-trigger";
 import { type ApplicationRoute } from "@/lib/routes";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
 import { cn } from "@/lib/utils";
@@ -40,6 +42,12 @@ function AppShell({
         <RouteMotion>{children}</RouteMotion>
       </PageContainer>
       {routes ? <BottomNavigation routes={routes} /> : null}
+      {routes ? <FloatingAiTutorTrigger /> : null}
+      {routes ? (
+        <Suspense fallback={null}>
+          <AiTutorDrawer preferences={preferences} />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

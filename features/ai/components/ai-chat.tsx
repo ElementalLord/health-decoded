@@ -2,7 +2,8 @@
 
 import { Copy, RefreshCw, Send } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,7 +18,7 @@ import {
   AI_MAX_SESSION_HISTORY_BYTES,
 } from "@/features/ai/constants/ai-limits";
 import { aiChatStreamEventSchema } from "@/features/ai/schemas/ai-chat.schema";
-import type { AiCredibleSource, AiRelatedContent } from "@/features/ai/types/ai";
+import type { AiCredibleSource } from "@/features/ai/types/ai";
 import { cn } from "@/lib/utils";
 
 type MessageRole = "assistant" | "user";
@@ -26,8 +27,6 @@ type ChatMessage = {
   readonly content: string;
   readonly credibleSources: readonly AiCredibleSource[];
   readonly id: string;
-  readonly lessonContextUsed: boolean;
-  readonly relatedContent: readonly AiRelatedContent[];
   readonly role: MessageRole;
   readonly suggestedQuestions: readonly string[];
 };
@@ -77,8 +76,6 @@ function createMessage(role: MessageRole, content = ""): ChatMessage {
     content,
     credibleSources: [],
     id: crypto.randomUUID(),
-    lessonContextUsed: false,
-    relatedContent: [],
     role,
     suggestedQuestions: [],
   };
@@ -134,7 +131,22 @@ function readStreamEvents(chunk: string, onEvent: (event: unknown) => void) {
   }
 }
 
-export function AiChat() {
+export function AiChat({
+  suggestionShuffleKey = 0,
+  variant = "page",
+}: {
+  suggestionShuffleKey?: number;
+  variant?: "drawer" | "page";
+}) {
+  const isDrawer = variant === "drawer";
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const componentId = useId();
+  const inputId = `${componentId}-question`;
+  const safetyNoticeId = `${componentId}-safety-notice`;
+  const requestErrorId = `${componentId}-request-error`;
+  const newConversationConfirmationId = `${componentId}-new-conversation-confirmation`;
+  const suggestedQuestionsTitleId = `${componentId}-suggested-questions-title`;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [suggestedPrompts, setSuggestedPrompts] = useState<readonly string[]>(
     AI_SUGGESTED_QUESTION_BANK.slice(0, 3),
@@ -147,11 +159,13 @@ export function AiChat() {
   const [isTakingLonger, setIsTakingLonger] = useState(false);
   const [newConversationOpen, setNewConversationOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [signInHref, setSignInHref] = useState("/login");
   const abortControllerRef = useRef<AbortController | null>(null);
   const requestInFlightRef = useRef(false);
   const activeAssistantIdRef = useRef<string | null>(null);
   const replacedAnswerRef = useRef<ChatMessage | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const conversationRef = useRef<HTMLElement>(null);
   const conversationEndRef = useRef<HTMLDivElement>(null);
   const scrollFrameRef = useRef<number | null>(null);
 
@@ -166,7 +180,14 @@ export function AiChat() {
 
   useEffect(() => {
     setSuggestedPrompts(selectSuggestedQuestions());
-  }, []);
+  }, [suggestionShuffleKey]);
+
+  useEffect(() => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+    nextSearchParams.set("ask", "1");
+    const returnPath = `${pathname}?${nextSearchParams.toString()}${window.location.hash}`;
+    setSignInHref(`/login?next=${encodeURIComponent(returnPath)}`);
+  }, [pathname, searchParams]);
 
   useEffect(() => {
     if (!messages.length) return;
@@ -176,12 +197,17 @@ export function AiChat() {
       const reducedMotion =
         window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
         Boolean(document.querySelector("[data-reduced-motion='true']"));
-      conversationEndRef.current?.scrollIntoView({
-        behavior: reducedMotion || isStreaming ? "auto" : "smooth",
-        block: "end",
-      });
+      const behavior = reducedMotion || isStreaming ? "auto" : "smooth";
+      if (isDrawer && conversationRef.current) {
+        conversationRef.current.scrollTo({
+          behavior,
+          top: conversationRef.current.scrollHeight,
+        });
+      } else {
+        conversationEndRef.current?.scrollIntoView({ behavior, block: "end" });
+      }
     });
-  }, [isStreaming, messages]);
+  }, [isDrawer, isStreaming, messages]);
 
   function resizeInput(element: HTMLTextAreaElement) {
     element.style.height = "auto";
@@ -201,8 +227,6 @@ export function AiChat() {
     assistantId: string,
     context: {
       readonly credibleSources: readonly AiCredibleSource[];
-      readonly lessonUsed: boolean;
-      readonly relatedContent: readonly AiRelatedContent[];
       readonly suggestedQuestions: readonly string[];
     },
   ) {
@@ -212,8 +236,6 @@ export function AiChat() {
           ? {
               ...entry,
               credibleSources: context.credibleSources,
-              lessonContextUsed: context.lessonUsed,
-              relatedContent: context.relatedContent,
               suggestedQuestions: context.suggestedQuestions,
             }
           : entry,
@@ -437,20 +459,27 @@ export function AiChat() {
   }
 
   return (
-    <div className="mt-6 flex min-h-0 flex-1 flex-col sm:mt-7">
+    <div
+      className={cn("flex min-h-0 flex-1 flex-col", isDrawer ? "overflow-hidden" : "mt-6 sm:mt-7")}
+    >
       <aside
         aria-label="Educational safety notice"
-        className="order-4 mt-6 border-t border-border pt-4 text-sm leading-6"
-        id="ai-safety-notice"
+        className={cn(
+          "border-t border-border text-sm leading-6",
+          isDrawer
+            ? "order-3 shrink-0 py-4 text-[length:var(--text-caption)] leading-6"
+            : "order-4 mt-6 pt-4",
+        )}
+        id={safetyNoticeId}
         role="note"
       >
-        <p>
+        <p className={cn(isDrawer && "sr-only")}>
           General diabetes education only, not diagnosis, personal result interpretation, or
           treatment changes.
         </p>
-        <details className="mt-2 text-muted-foreground">
+        <details className={cn("text-muted-foreground", !isDrawer && "mt-2")}>
           <summary className="w-fit cursor-pointer font-medium text-foreground underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            Safety details
+            {isDrawer ? "Educational guidance only · Safety & limits" : "Safety details"}
           </summary>
           <p className="mt-2 max-w-2xl">
             This tutor can explain learning topics, but cannot diagnose, interpret personal results,
@@ -458,12 +487,25 @@ export function AiChat() {
           </p>
         </details>
       </aside>
-      <div className="order-1 mb-3 flex items-center justify-between gap-3">
+      <div
+        className={cn(
+          "order-1 flex gap-4",
+          isDrawer
+            ? "ml-auto w-fit max-w-full shrink-0 flex-col items-end py-5 text-right"
+            : "mb-3 flex-wrap items-center justify-between",
+        )}
+      >
         <p className="text-sm leading-6 text-muted-foreground">
-          <span className="font-medium text-foreground">Private to this visit.</span> Clears when
-          you leave.
+          {isDrawer ? (
+            <span className="font-medium text-foreground">Private to this session. Not saved.</span>
+          ) : (
+            <>
+              <span className="font-medium text-foreground">Private to this visit.</span> Clears
+              when you leave.
+            </>
+          )}
         </p>
-        {messages.length ? (
+        {messages.length && !isDrawer ? (
           <Button
             className={flatSecondaryButton}
             disabled={isStreaming}
@@ -479,11 +521,14 @@ export function AiChat() {
       </div>
       {newConversationOpen ? (
         <div
-          aria-labelledby="new-conversation-confirmation"
-          className="motion-status mb-5 flex flex-col gap-3 rounded-[14px] border border-[#d9d2c8] bg-[#f5f0e9] px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+          aria-labelledby={newConversationConfirmationId}
+          className={cn(
+            "motion-status order-1 mb-5 flex flex-col gap-3 rounded-[14px] border border-border bg-muted px-4 py-3",
+            !isDrawer && "sm:flex-row sm:items-center sm:justify-between",
+          )}
           role="group"
         >
-          <p className="text-sm leading-6 text-muted-foreground" id="new-conversation-confirmation">
+          <p className="text-sm leading-6 text-muted-foreground" id={newConversationConfirmationId}>
             Start fresh? The messages in this private session will be cleared from the page.
           </p>
           <div className="flex shrink-0 flex-wrap gap-3">
@@ -512,7 +557,11 @@ export function AiChat() {
       <section
         aria-label="AI tutor conversation"
         aria-busy={isStreaming}
-        className={cn("order-2 min-h-0 flex-1 space-y-7 overflow-y-auto py-6 sm:space-y-9")}
+        className={cn(
+          "order-2 min-h-0 flex-1 overflow-y-auto",
+          isDrawer ? "space-y-8 py-6 pr-1" : "space-y-7 py-6 sm:space-y-9",
+        )}
+        ref={conversationRef}
       >
         {messages.length ? (
           messages.map((entry, index) => {
@@ -527,9 +576,13 @@ export function AiChat() {
               >
                 <div
                   className={cn(
-                    isAssistant ? "w-full max-w-[44rem]" : "max-w-[92%] sm:max-w-[78%]",
                     isAssistant
-                      ? "border-y border-border/70 py-5"
+                      ? "w-full max-w-[44rem]"
+                      : isDrawer
+                        ? "max-w-[92%]"
+                        : "max-w-[92%] sm:max-w-[78%]",
+                    isAssistant
+                      ? cn("border-y border-border/70", isDrawer ? "py-4" : "py-5")
                       : "rounded-[18px] rounded-tr-[6px] border border-[#ddd4c9] bg-[#f2ede6] px-4 py-3 text-foreground",
                   )}
                 >
@@ -539,12 +592,6 @@ export function AiChat() {
                         <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-success">
                           Health Decoded guide
                         </p>
-                        {entry.lessonContextUsed ? (
-                          <p className="mb-4 rounded-md bg-info/60 px-3 py-2 text-xs leading-5 text-muted-foreground">
-                            Connected to today&apos;s lesson so this explanation fits what you are
-                            learning now.
-                          </p>
-                        ) : null}
                         <AiResponseContent content={entry.content} />
                         {entry.credibleSources.length ? (
                           <aside className="mt-5 border-t border-border pt-3">
@@ -567,25 +614,6 @@ export function AiChat() {
                               ))}
                             </ul>
                           </aside>
-                        ) : null}
-                        {entry.relatedContent.length ? (
-                          <nav
-                            aria-label="Related learning"
-                            className="mt-5 border-t border-border pt-3"
-                          >
-                            <p className="editorial-eyebrow mb-2">Continue learning</p>
-                            <div className="flex flex-wrap gap-x-4 gap-y-2">
-                              {entry.relatedContent.map((content) => (
-                                <Link
-                                  className="text-sm font-semibold text-primary underline decoration-accent-warm/40 decoration-2 underline-offset-4 hover:decoration-accent-warm"
-                                  href={content.href}
-                                  key={content.href}
-                                >
-                                  {content.title}
-                                </Link>
-                              ))}
-                            </div>
-                          </nav>
                         ) : null}
                         {!isStreaming && isLatestAssistant ? (
                           <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-3">
@@ -652,22 +680,62 @@ export function AiChat() {
         ) : (
           <div className="pt-1">
             <section
-              aria-labelledby="suggested-questions-title"
-              className="border-y border-border py-6 sm:py-7"
+              aria-labelledby={suggestedQuestionsTitleId}
+              className={cn("border-y border-border", isDrawer ? "py-6" : "py-6 sm:py-7")}
             >
-              <div className="max-w-xl space-y-2">
-                <h2 className="editorial-eyebrow" id="suggested-questions-title">
-                  A place to begin
-                </h2>
-                <p className="font-serif-display text-xl leading-7 text-foreground sm:text-2xl">
-                  Choose a question that feels useful now.
-                </p>
+              <div
+                className={cn(
+                  "flex max-w-xl items-center justify-between gap-4",
+                  !isDrawer && "flex-wrap",
+                )}
+              >
+                <div className={cn(!isDrawer && "space-y-2")}>
+                  <h2 className="editorial-eyebrow" id={suggestedQuestionsTitleId}>
+                    {isDrawer ? "Try asking" : "A place to begin"}
+                  </h2>
+                  {!isDrawer ? (
+                    <p className="font-serif-display text-xl leading-7 text-foreground sm:text-2xl">
+                      Choose a question that feels useful now.
+                    </p>
+                  ) : null}
+                </div>
+                <Button
+                  aria-label="Shuffle suggested questions"
+                  className={cn(calmTextButton, "shrink-0")}
+                  fullWidth={false}
+                  onClick={() => setSuggestedPrompts(selectSuggestedQuestions())}
+                  size="sm"
+                  type="button"
+                  variant="text"
+                >
+                  <RefreshCw aria-hidden="true" className="size-4" />
+                  Shuffle
+                </Button>
               </div>
-              <ol className="mt-5 grid border-t border-border sm:grid-cols-3 sm:divide-x sm:divide-border sm:[&>li:first-child>button]:pl-0 sm:[&>li:last-child>button]:pr-0">
+              <ol
+                aria-live="polite"
+                className={cn(
+                  "grid border-t border-border",
+                  isDrawer ? "mt-6" : "mt-5",
+                  !isDrawer &&
+                    "sm:grid-cols-3 sm:divide-x sm:divide-border sm:[&>li:first-child>button]:pl-0 sm:[&>li:last-child>button]:pr-0",
+                )}
+              >
                 {suggestedPrompts.map((prompt) => (
-                  <li className="border-b border-border last:border-b-0 sm:border-b-0" key={prompt}>
+                  <li
+                    className={cn(
+                      "border-b border-border last:border-b-0",
+                      !isDrawer && "sm:border-b-0",
+                    )}
+                    key={prompt}
+                  >
                     <button
-                      className="group flex min-h-20 h-full w-full items-center justify-between gap-4 py-4 text-left font-serif-display text-lg font-medium leading-6 text-foreground transition-[color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:text-primary active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:px-5"
+                      className={cn(
+                        "group flex h-full w-full items-center justify-between gap-4 py-4 text-left font-serif-display font-medium text-foreground transition-[color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:text-primary active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        isDrawer
+                          ? "min-h-16 py-5 text-base leading-7"
+                          : "min-h-20 text-lg leading-6 sm:px-5",
+                      )}
                       onClick={() => void ask(prompt)}
                       type="button"
                     >
@@ -690,19 +758,22 @@ export function AiChat() {
 
       <form
         className={cn(
-          "safe-area-bottom rounded-xl border border-border bg-card p-3 shadow-[0_10px_28px_rgb(61_47_41/0.045)] focus-within:border-foreground/25 focus-within:ring-2 focus-within:ring-ring/15 sm:p-4",
-          "order-3",
+          "safe-area-bottom rounded-xl border border-border bg-background shadow-[0_10px_28px_rgb(61_47_41/0.045)] focus-within:border-foreground/25 focus-within:ring-2 focus-within:ring-ring/15",
+          isDrawer ? "order-4 shrink-0 p-5" : "order-3 p-3 sm:p-4",
         )}
         onSubmit={submit}
       >
-        <label className="grid gap-2 text-sm font-semibold" htmlFor="ai-question">
-          Ask a question
+        <label className="grid gap-2 text-sm font-semibold" htmlFor={inputId}>
+          {messages.length ? "Ask a follow-up" : "Ask a question"}
           <Textarea
-            aria-describedby={`ai-safety-notice${error ? " ai-request-error" : ""}`}
+            aria-describedby={`${safetyNoticeId}${error ? ` ${requestErrorId}` : ""}`}
             aria-invalid={Boolean(error) || undefined}
-            className="max-h-40 min-h-24 resize-none rounded-lg border-0 bg-muted/25 px-4 py-3 shadow-none hover:border-transparent focus:border-transparent focus-visible:ring-0"
+            className={cn(
+              "max-h-40 resize-none rounded-lg border-0 bg-muted/45 px-4 py-3 shadow-none hover:border-transparent focus:border-transparent focus-visible:ring-0",
+              isDrawer ? "min-h-16" : "min-h-24",
+            )}
             disabled={isStreaming}
-            id="ai-question"
+            id={inputId}
             maxLength={AI_MAX_MESSAGE_CHARACTERS}
             onChange={(event) => {
               setMessage(event.target.value);
@@ -720,31 +791,46 @@ export function AiChat() {
             value={message}
           />
         </label>
-        <div className="mt-3 flex items-center justify-between gap-3">
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <p className="text-xs leading-5 text-muted-foreground">
             {message.length}/{AI_MAX_MESSAGE_CHARACTERS} · Enter sends · Shift + Enter adds a line
           </p>
-          {isStreaming ? (
-            <Button
-              className={flatSecondaryButton}
-              fullWidth={false}
-              onClick={stopResponse}
-              type="button"
-              variant="secondary"
-            >
-              Stop response
-            </Button>
-          ) : (
-            <Button
-              className={flatPrimaryButton}
-              disabled={!message.trim()}
-              fullWidth={false}
-              type="submit"
-            >
-              <Send aria-hidden="true" className="size-4" />
-              Send
-            </Button>
-          )}
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            {isDrawer && messages.length ? (
+              <Button
+                className={cn(flatSecondaryButton, "shrink-0 whitespace-nowrap px-3")}
+                disabled={isStreaming}
+                fullWidth={false}
+                onClick={() => setNewConversationOpen(true)}
+                size="sm"
+                type="button"
+                variant="secondary"
+              >
+                New conversation
+              </Button>
+            ) : null}
+            {isStreaming ? (
+              <Button
+                className={flatSecondaryButton}
+                fullWidth={false}
+                onClick={stopResponse}
+                type="button"
+                variant="secondary"
+              >
+                Stop response
+              </Button>
+            ) : (
+              <Button
+                className={flatPrimaryButton}
+                disabled={!message.trim()}
+                fullWidth={false}
+                type="submit"
+              >
+                <Send aria-hidden="true" className="size-4" />
+                Send
+              </Button>
+            )}
+          </div>
         </div>
 
         {notice ? (
@@ -760,14 +846,14 @@ export function AiChat() {
         {error ? (
           <div
             className="motion-status mt-3 flex flex-wrap items-center gap-3"
-            id="ai-request-error"
+            id={requestErrorId}
             role="alert"
           >
             <p className="text-sm text-[#8b6258]">{error.message}</p>
             {error.kind === "auth" ? (
               <Link
                 className="text-sm font-semibold underline underline-offset-4"
-                href="/login?next=/ai"
+                href={signInHref}
               >
                 Sign in
               </Link>

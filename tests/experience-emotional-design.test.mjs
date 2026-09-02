@@ -50,24 +50,23 @@ test("keeps the completion arrival truthful and non-pressuring", () => {
   assert.match(journeySource, /completedDay <= journey\.data\.progress\.completedLessons/);
 });
 
-test("gives the AI guide transparent context and user control", () => {
+test("gives the AI guide direct answers and user control", () => {
   const aiSource = source("features/ai/components/ai-chat.tsx");
-  const aiPageSource = source("app/(app)/ai/page.tsx");
+  const aiDrawerSource = source("features/ai/components/ai-tutor-drawer.tsx");
 
-  assert.match(aiSource, /Connected to today&apos;s lesson/);
+  assert.doesNotMatch(aiSource, /Connected to today&apos;s lesson|Continue learning/);
   assert.match(aiSource, /Stop response/);
   assert.match(aiSource, /Start fresh\?/);
   assert.match(aiSource, /messages in this private session will be cleared/);
   assert.match(aiSource, /aria-busy=\{isStreaming\}/);
-  assert.match(aiPageSource, /AI Tutor/);
-  assert.match(aiPageSource, /Ask about diabetes or something you&apos;re learning/);
+  assert.match(aiDrawerSource, /Your Companion/);
+  assert.match(aiDrawerSource, /Ask about what you&apos;re learning/);
   assert.match(aiSource, /Private to this visit/);
   assert.match(aiSource, /General diabetes education only/);
   assert.match(aiSource, /A place to begin/);
-  assert.match(aiSource, /Continue learning/);
   assert.match(aiSource, /rounded-\[18px\] rounded-tr-\[6px\]/);
   assert.match(aiSource, /Ask follow-up/);
-  assert.doesNotMatch(aiPageSource, /border-t-4|shadow-\[/);
+  assert.doesNotMatch(aiDrawerSource, /border-t-4/);
   assert.match(aiSource, /min-h-24/);
 });
 

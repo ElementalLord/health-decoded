@@ -53,17 +53,6 @@ export const navigationSearchDocuments = [
     status: "available",
   },
   {
-    id: "NAV-AI",
-    type: "navigation",
-    title: "AI Tutor",
-    description: "Ask general questions about diabetes education.",
-    route: "/ai",
-    aliases: ["ask ai", "health decoded ai", "ai guide"],
-    keywords: ["questions", "tutor", "chat"],
-    priority: 2,
-    status: "available",
-  },
-  {
     id: "NAV-CAREGIVER",
     type: "navigation",
     title: "Caregiver",
@@ -97,6 +86,17 @@ export const navigationSearchDocuments = [
 ] as const satisfies readonly UniversalSearchDocument[];
 
 export const toolSearchDocuments = [
+  {
+    id: "TOOL-AI-TUTOR",
+    type: "tool",
+    title: "AI Tutor",
+    description: "Ask general questions about diabetes education.",
+    action: "open-ai-tutor",
+    aliases: ["ask ai", "health decoded ai", "ai guide"],
+    keywords: ["questions", "tutor", "chat"],
+    priority: 2,
+    status: "available",
+  },
   {
     id: "TOOL-APPOINTMENT-PREP",
     type: "tool",
@@ -257,10 +257,10 @@ export const staticSearchDocuments = [
 export const suggestedSearchDocuments = [
   navigationSearchDocuments[0],
   navigationSearchDocuments[1],
-  navigationSearchDocuments[4],
-  navigationSearchDocuments[3],
   toolSearchDocuments[0],
+  navigationSearchDocuments[3],
   toolSearchDocuments[1],
   toolSearchDocuments[2],
   toolSearchDocuments[3],
+  toolSearchDocuments[4],
 ] as const;

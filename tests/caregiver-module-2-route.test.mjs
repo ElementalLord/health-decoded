@@ -25,6 +25,13 @@ const orientation = await readFile(
   ),
   "utf8",
 );
+const experience = await readFile(
+  new URL(
+    "../features/caregiver/components/modules/module-2/module-2-experience.tsx",
+    import.meta.url,
+  ),
+  "utf8",
+);
 
 test("the module registry preserves Module 2 alongside all five implemented modules", () => {
   assert.match(registry, /\[caregiverModule2\.slug\]/);
@@ -55,6 +62,6 @@ test("landing activates all five modules through the registry lookup", () => {
 
 test("Module 2 navigation stays focused on the caregiver lessons", () => {
   assert.match(route, /Module2Experience/);
-  assert.match(orientation, /href="\/caregiver"/);
-  assert.doesNotMatch(orientation, /urgent-help|immediate danger/iu);
+  assert.match(experience, /href="\/caregiver"/);
+  assert.doesNotMatch(orientation + experience, /urgent-help|immediate danger/iu);
 });

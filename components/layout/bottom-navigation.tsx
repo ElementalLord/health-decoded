@@ -53,7 +53,7 @@ function BottomNavigation({
             routes.length === 8
               ? "grid-cols-4"
               : routes.length === 7
-                ? "grid-cols-7"
+                ? "grid-cols-4"
                 : routes.length === 6
                   ? "grid-cols-6"
                   : "grid-cols-5",

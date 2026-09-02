@@ -213,11 +213,11 @@ test("visible entries remain simple and comparisons render only when present", (
   assert.doesNotMatch(page, /pronunciation|quiz|score|badge|progress|personal notes/i);
 });
 
-test("no-results state uses exact wording and a deliberate query-free AI link", () => {
+test("no-results state uses exact wording and a deliberate query-free AI action", () => {
   assert.match(page, /Can’t find the word you’re looking for\? Ask Health Decoded AI\./);
-  assert.match(page, /href="\/ai"/);
+  assert.match(page, /<AiTutorTrigger>Ask Health Decoded AI<\/AiTutorTrigger>/);
   assert.match(page, /Your search will not be sent\s+to the AI guide/);
-  assert.doesNotMatch(page, /href=\{`\/ai\?|searchParams|URLSearchParams/);
+  assert.doesNotMatch(page, /href=.*\/ai|searchParams|URLSearchParams/);
 });
 
 test("search remains memory-only with no persistence, network, analytics, AI, or logging path", () => {

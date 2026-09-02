@@ -17,6 +17,36 @@
     Arial,
     sans-serif;
 }
+
+/* Health Decoded cohesion pass shared with the staged caregiver lessons. */
+.module {
+  --canvas: var(--background);
+  --paper: var(--card);
+  --ink: var(--foreground);
+  --body: var(--muted-foreground);
+  --plum: var(--accent-warm);
+  --plum-light: color-mix(in srgb, var(--accent-warm) 9%, var(--card));
+  --sage: var(--secondary);
+  --blue: var(--primary);
+  --rule: var(--border);
+  --focus: var(--ring);
+}
+.module *, .module *::before, .module *::after { box-shadow: none !important; background-image: none !important; }
+.module h1, .module h2, .module h3, .module blockquote, .module legend, .module dd { font-family: var(--font-sans); font-optical-sizing: normal; font-variation-settings: normal; }
+.orientation h1 { max-width: 20ch; font-size: clamp(2.25rem,5vw,3.75rem); font-weight: 760; letter-spacing: -.035em; line-height: 1.05; }
+.module h2 { max-width: 24ch; font-size: clamp(1.75rem,3.4vw,2.6rem); font-weight: 740; letter-spacing: -.025em; line-height: 1.12; }
+.module h3 { font-size: clamp(1.05rem,1.8vw,1.3rem); font-weight: 720; letter-spacing: -.01em; }
+.orientation { min-height: auto; gap: clamp(2rem,4vw,3.5rem); padding-block: clamp(3rem,6vw,5rem); }
+.module button, .module [role="button"], .completionActions > * { border-radius: .375rem !important; }
+.module :is(button,a,label,summary):hover, .module :is(button,a,label,summary):active { transform: none !important; box-shadow: none !important; filter: none !important; }
+.module button[class*="bg-primary"]:hover { border-color: var(--primary) !important; background: var(--primary) !important; }
+.module button[class*="bg-card"]:hover { border-color: var(--border) !important; background: var(--card) !important; }
+.reflection { margin-top: clamp(2.25rem,4.5vw,3.5rem); padding: clamp(1.25rem,3vw,1.75rem); border: 1px solid var(--rule); border-radius: .5rem; background: var(--paper); }
+.reflection .actions { display: grid; grid-template-columns: repeat(auto-fit,minmax(12rem,1fr)); gap: .75rem; align-items: stretch; }
+.reflection .actions > * { width: 100%; min-height: 3rem; margin: 0; padding: .65rem .85rem; border: 1px solid var(--rule); border-radius: .375rem; background: var(--card); color: var(--foreground); text-align: center; text-decoration: none; }
+.reflection .actions > :first-child { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+.reflection .actions > .skipAction { border: 0 !important; background: transparent !important; color: var(--foreground); box-shadow: none !important; text-decoration: underline; text-decoration-color: color-mix(in srgb,var(--accent-warm) 45%,transparent); text-underline-offset: .3rem; }
+@media (max-width: 40rem) { .reflection .actions { grid-template-columns: 1fr; } }
 .module * {
   box-sizing: border-box;
 }
@@ -697,5 +727,62 @@
   .phone,
   .wideningPath span {
     animation: none;
+  }
+}
+
+/* Keep this guard last so Module 5 uses the same Health Decoded lesson treatment. */
+.module {
+  --canvas: var(--background);
+  --paper: var(--card);
+  --ink: var(--foreground);
+  --body: var(--muted-foreground);
+  --plum: var(--accent-warm);
+  --plum-light: color-mix(in srgb, var(--accent-warm) 9%, var(--card));
+  --sage: var(--secondary);
+  --blue: var(--primary);
+  --rule: var(--border);
+  --focus: var(--ring);
+}
+.module *, .module *::before, .module *::after { box-shadow: none !important; background-image: none !important; }
+.module h1, .module h2, .module h3, .module blockquote, .module legend, .module dd { font-family: var(--font-sans); font-optical-sizing: normal; font-variation-settings: normal; }
+.orientation h1 { max-width: 20ch; font-size: clamp(2.25rem,5vw,3.75rem); font-weight: 760; letter-spacing: -.035em; line-height: 1.05; }
+.module h2 { max-width: 24ch; font-size: clamp(1.75rem,3.4vw,2.6rem); font-weight: 740; letter-spacing: -.025em; line-height: 1.12; }
+.module h3 { font-size: clamp(1.05rem,1.8vw,1.3rem); font-weight: 720; letter-spacing: -.01em; }
+.orientation { min-height: auto; gap: clamp(2rem,4vw,3.5rem); padding-block: clamp(3rem,6vw,5rem); }
+.module button, .module [role="button"], .completionActions > * { border-radius: .375rem !important; }
+.module :is(button,a,label,summary):hover, .module :is(button,a,label,summary):active { transform: none !important; box-shadow: none !important; filter: none !important; }
+.reflection { margin-top: clamp(2.25rem,4.5vw,3.5rem); padding: clamp(1.25rem,3vw,1.75rem); border: 1px solid var(--rule); border-radius: .5rem; background: var(--paper); }
+.reflection .actions { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .75rem; align-items: stretch; }
+.reflection .actions > * { width: 100%; min-height: 3rem; margin: 0; padding: .65rem .85rem; border: 1px solid var(--rule); border-radius: .375rem; background: var(--card); color: var(--foreground); text-align: center; text-decoration: none; }
+.reflection .actions > :first-child { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+@media (max-width: 40rem) { .reflection .actions { grid-template-columns: 1fr; } }
+
+.reflection .actions {
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+.reflection .actions > .skipAction {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--foreground);
+  box-shadow: none !important;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-warm) 45%, transparent);
+  text-underline-offset: 0.3rem;
+}
+
+.module button[class*="bg-primary"]:hover {
+  border-color: var(--primary) !important;
+  background: var(--primary) !important;
+}
+
+.module button[class*="bg-card"]:hover {
+  border-color: var(--border) !important;
+  background: var(--card) !important;
+}
+
+@media (max-width: 40rem) {
+  .reflection .actions {
+    grid-template-columns: 1fr;
   }
 }

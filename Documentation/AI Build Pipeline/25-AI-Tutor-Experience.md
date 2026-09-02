@@ -29,7 +29,7 @@ The AI Tutor should feel like a calm educational companion integrated into Healt
 
 ## Navigation
 
-Add protected route `/ai` with the navigation label `Ask AI`. Use the existing navigation system. Do not add floating FABs or chat bubbles.
+Mount one protected global AI Tutor drawer in the authenticated application shell. Connect context-appropriate detached Ask triggers to that single persistent tutor rather than modeling it as a navigation destination.
 
 ## Layout
 

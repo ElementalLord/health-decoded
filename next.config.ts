@@ -52,6 +52,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [{ source: "/ai", destination: "/journey?ask=1", permanent: true }];
+  },
   async headers() {
     return [
       {

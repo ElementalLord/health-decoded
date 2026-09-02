@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import test from "node:test";
+
+import sharp from "sharp";
 
 import { ashaRiceOnTheTableStory } from "../features/stories/content/asha-rice-on-the-table.ts";
 import { devonNumberScreenStory } from "../features/stories/content/devon-number-screen.ts";
@@ -8,6 +10,7 @@ import { marcusParkingLotStory } from "../features/stories/content/marcus-parkin
 import { noraPrescriptionBagStory } from "../features/stories/content/nora-prescription-bag.ts";
 
 const landing = readFileSync("features/stories/components/story-landing.tsx", "utf8");
+const journeyPath = readFileSync("features/stories/components/story-journey-path.tsx", "utf8");
 const opening = readFileSync("features/stories/components/story-opening.tsx", "utf8");
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
 const landingStyles = readFileSync("features/stories/components/story-landing.module.css", "utf8");
@@ -20,29 +23,71 @@ const stories = [
   devonNumberScreenStory,
 ];
 
-test("the landing hierarchy has one feature and a compact editorial story index", () => {
+test("the landing hierarchy has one feature and a continuous editorial story journey", () => {
   assert.match(landing, /variant="featured"/);
   assert.match(landing, /"row" : "row-reverse"/);
   assert.match(landing, /getRecommendedStorySlug/);
   assert.match(landing, /recommendedProgress\.status === "in-progress"/);
-  assert.match(landingStyles, /\.featured[\s\S]*grid-template-columns/);
-  assert.match(landingStyles, /\.storyRows \{[\s\S]*border-bottom/);
-  assert.match(landingStyles, /\.storyRows \.preview[\s\S]*background: transparent/);
-});
-
-test("story preview images preserve their ratio beside copy and can never cover the action", () => {
-  assert.match(landingStyles, /\.preview \{[\s\S]*contain: paint/);
-  assert.match(landingStyles, /\.preview \{[\s\S]*overflow: clip/);
-  assert.match(landingStyles, /\.featured \{[\s\S]*minmax\(16rem, 0\.78fr\)/);
+  assert.match(landing, /StoryJourneyPath/);
+  assert.match(landing, /markerClassName=\{styles\.journeyMarker\}/);
+  assert.match(journeyPath, /getPointAtLength/);
+  assert.match(journeyPath, /requestAnimationFrame/);
+  assert.match(journeyPath, /ResizeObserver/);
+  assert.match(journeyPath, /addEventListener\("scroll"/);
+  assert.match(journeyPath, /document\.documentElement\.scrollHeight - window\.innerHeight/);
+  assert.doesNotMatch(journeyPath, /data-journey-obstacle|intersectsContent/);
+  assert.doesNotMatch(landing, /data-journey-obstacle/);
+  assert.match(landingStyles, /\.journeyMarker \{[\s\S]*z-index: 0/);
+  assert.match(journeyPath, /M500 15C470 155/);
+  assert.match(journeyPath, /s55 245 30 443-55 250-30 469/);
   assert.match(
     landingStyles,
-    /\.row,[\s\S]*grid-template-columns: minmax\(13rem, 0\.42fr\) minmax\(0, 1\.58fr\)/,
+    /\.featured \{[\s\S]*grid-template-areas: "art \. copy"[\s\S]*clamp\(10rem, 16vw, 12rem\)/,
   );
-  assert.match(landingStyles, /\.featured \.cover \{[\s\S]*aspect-ratio: 16 \/ 9/);
-  assert.match(landingStyles, /\.row \.cover,[\s\S]*aspect-ratio: 16 \/ 9/);
-  assert.match(landingStyles, /\.cover img \{[\s\S]*aspect-ratio: 16 \/ 9[\s\S]*object-fit: cover/);
-  assert.match(landingStyles, /\.previewFooter \{[\s\S]*flex-wrap: wrap/);
-  assert.match(landingStyles, /\.storyAction \{[\s\S]*z-index: 3/);
+  assert.match(landingStyles, /\.row \{[\s\S]*grid-template-areas: "art \. copy"/);
+  assert.match(landingStyles, /\.row-reverse \{[\s\S]*grid-template-areas: "copy \. art"/);
+  assert.doesNotMatch(landingStyles, /\.previewBody \{[^}]*box-shadow:/);
+  assert.doesNotMatch(landingStyles, /\.illustration \{[^}]*box-shadow:/);
+  assert.match(landingStyles, /\.journey \{[\s\S]*padding-bottom: clamp\(4rem, 7vw, 6rem\)/);
+  assert.match(landingStyles, /\.featured[\s\S]*grid-template-columns/);
+  assert.match(
+    landingStyles,
+    /\.row \.previewBody \{[\s\S]*padding-left: clamp\(1\.5rem, 2\.5vw, 2\.25rem\)/,
+  );
+  assert.match(
+    landingStyles,
+    /\.row-reverse \.previewBody \{[\s\S]*padding-right: clamp\(1\.5rem, 2\.5vw, 2\.25rem\)/,
+  );
+  assert.match(landingStyles, /\.storyImage \{[\s\S]*max-height: 27rem/);
+  assert.match(landingStyles, /\.featured \{[\s\S]*min-height: clamp\(23rem, 40vw, 27rem\)/);
+  assert.match(landingStyles, /\.featured \.previewBody \{[\s\S]*align-self: center/);
+  assert.match(landing, /data-story=\{story\.slug\}/);
+  assert.match(landingStyles, /\.storyRows \{[\s\S]*gap: clamp\(4\.5rem, 8vw, 7rem\)/);
+  assert.match(landingStyles, /\.moreStories \{[\s\S]*margin-top: clamp\(1\.75rem, 3vw, 2\.5rem\)/);
+  assert.doesNotMatch(landingStyles, /\.storyRows > div \{[\s\S]*border-top/);
+});
+
+test("generated raster artwork replaces code-drawn landing illustrations", async () => {
+  for (const asset of [
+    "stories-hero-illustration.webp",
+    "marcus-parking-lot-illustration.png",
+    "asha-rice-table-illustration.webp",
+    "nora-prescription-bag-illustration.webp",
+    "devon-number-screen-illustration.png",
+  ]) {
+    assert.match(landing, new RegExp(asset.replace(".", "\\.")));
+    assert.ok(statSync(`public/stories/landing/${asset}`).size > 80_000);
+    assert.equal((await sharp(`public/stories/landing/${asset}`).metadata()).hasAlpha, true);
+  }
+  assert.match(landing, /import Image from "next\/image"/);
+  assert.match(landing, /alt=""/);
+  assert.doesNotMatch(landing, /StorySketch|StoriesHeroSketch/);
+  assert.match(journeyPath, /aria-hidden="true"/);
+  assert.match(journeyPath, /strokeDasharray="2 12"/);
+  assert.match(landingStyles, /\.journeyPath \{[\s\S]*pointer-events: none/);
+  assert.match(landingStyles, /\.storyImage \{[\s\S]*object-fit: contain/);
+  assert.match(landingStyles, /\.row-reverse \{[\s\S]*grid-template-areas: "copy \. art"/);
+  assert.doesNotMatch(landing, /story\.imagePath/);
 });
 
 test("every dedicated story begins with the same complete cover sequence", () => {
@@ -97,5 +142,9 @@ test("motion, progress, quiz language, and reduced motion form one calm system",
   assert.match(player, /Worth reviewing/);
   assert.match(playerStyles, /@keyframes scene-enter-pause/);
   assert.match(playerStyles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(
+    landingStyles,
+    /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.journeyMarker[\s\S]*display: none/,
+  );
   assert.match(playerStyles, /\.completionStage[\s\S]*radial-gradient/);
 });

@@ -1,145 +1,176 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useRef, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { CaregiverFeedback } from "../../foundation/caregiver-feedback";
 import { caregiverModule2 } from "../../../content/caregiver-module-2";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-2.module.css";
 
-export function Module2KnowledgeCheck() {
+export function Module2KnowledgeCheck({
+  onReviewSection,
+}: {
+  readonly onReviewSection: (sectionId: string) => void;
+}) {
   const { setKeyIdeaUnderstood } = useCaregiverSession();
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [attempts, setAttempts] = useState<Record<string, number>>({});
   const [assistedAnswers, setAssistedAnswers] = useState<Record<string, boolean>>({});
-  const [submitted, setSubmitted] = useState(false);
-  const [submissionCount, setSubmissionCount] = useState(0);
-  const firstChoiceRef = useRef<HTMLInputElement>(null);
+  const [reviewed, setReviewed] = useState<Record<string, boolean>>({});
+  const promptRef = useRef<HTMLLegendElement>(null);
+  const question = caregiverModule2.questions[questionIndex]!;
+  const answer = answers[question.id];
+  const questionReviewed = Boolean(reviewed[question.id]);
+  const allReviewed = caregiverModule2.questions.every((item) => reviewed[item.id]);
 
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (Object.keys(answers).length !== caregiverModule2.questions.length) return;
+  function reviewAnswer() {
+    if (answer === undefined) return;
     const nextAnswers = { ...answers };
     const nextAttempts = { ...attempts };
-    const nextAssistedAnswers: Record<string, boolean> = {};
-    caregiverModule2.questions.forEach((question) => {
-      if (answers[question.id] !== question.preferredIndex) {
-        const attempt = (nextAttempts[question.id] ?? 0) + 1;
-        nextAttempts[question.id] = attempt;
-        if (attempt >= 3) {
-          nextAnswers[question.id] = question.preferredIndex;
-          nextAssistedAnswers[question.id] = true;
-        }
+    if (answer !== question.preferredIndex) {
+      const attempt = (nextAttempts[question.id] ?? 0) + 1;
+      nextAttempts[question.id] = attempt;
+      if (attempt >= 3) {
+        nextAnswers[question.id] = question.preferredIndex;
+        setAssistedAnswers((current) => ({ ...current, [question.id]: true }));
       }
-    });
+    }
+    const nextReviewed = { ...reviewed, [question.id]: true };
     setAnswers(nextAnswers);
     setAttempts(nextAttempts);
-    setAssistedAnswers(nextAssistedAnswers);
-    const understood = caregiverModule2.questions.every(
-      (question) => nextAnswers[question.id] === question.preferredIndex,
-    );
-    setKeyIdeaUnderstood(understood);
-    setSubmitted(true);
-    setSubmissionCount((count) => count + 1);
+    setReviewed(nextReviewed);
+    if (caregiverModule2.questions.every((item) => nextReviewed[item.id])) {
+      setKeyIdeaUnderstood(
+        caregiverModule2.questions.every((item) => nextAnswers[item.id] === item.preferredIndex),
+      );
+    }
   }
 
-  function revise() {
-    setSubmitted(false);
-    firstChoiceRef.current?.focus();
+  function moveToQuestion(nextIndex: number) {
+    setQuestionIndex(nextIndex);
+    requestAnimationFrame(() => promptRef.current?.focus());
   }
+
+  const displayedAnswer = assistedAnswers[question.id] ? question.preferredIndex : answer;
+  const displayedAccurate = displayedAnswer === question.preferredIndex;
 
   return (
     <section className={styles.knowledgeCheck} aria-labelledby="module-2-check-heading">
-      <p className={styles.sectionLabel}>Knowledge check</p>
-      <h2 id="module-2-check-heading">Knowledge Check</h2>
-      <form onSubmit={submit}>
-        {caregiverModule2.questions.map((question, questionIndex) => (
-          <fieldset
-            key={question.id}
-            id={question.id}
-            className={styles.question}
-            data-question-id={question.id}
-          >
-            <legend>{question.question}</legend>
+      <div className={styles.checkIntro}>
+        <p className={styles.eyebrow}>Three real-world checks</p>
+        <h2 id="module-2-check-heading" tabIndex={-1}>
+          Keep the agreement visible.
+        </h2>
+        <p>
+          Take one situation at a time. Feedback is here to help you notice scope, repetition, and
+          changing permission—not to grade you.
+        </p>
+      </div>
+
+      <form onSubmit={(event) => event.preventDefault()}>
+        <fieldset className={styles.checkQuestion} data-question-id={question.id} id={question.id}>
+          <legend ref={promptRef} tabIndex={-1}>
+            <span>
+              Question {questionIndex + 1} of {caregiverModule2.questions.length}
+            </span>
+            {question.question}
+          </legend>
+          <div className={styles.answerChoices}>
             {question.choices.map((choice, choiceIndex) => (
-              <label
-                key={choice}
-                data-needs-review={
-                  submitted &&
-                  answers[question.id] === choiceIndex &&
-                  choiceIndex !== question.preferredIndex
-                    ? "true"
-                    : undefined
-                }
-              >
+              <label key={choice} data-selected={answer === choiceIndex ? "true" : undefined}>
                 <input
-                  ref={questionIndex === 0 && choiceIndex === 0 ? firstChoiceRef : undefined}
-                  type="radio"
+                  checked={answer === choiceIndex}
                   name={question.id}
-                  value={choiceIndex}
-                  checked={answers[question.id] === choiceIndex}
                   onChange={() => {
                     setAnswers((current) => ({ ...current, [question.id]: choiceIndex }));
-                    setSubmitted(false);
+                    setReviewed((current) => ({ ...current, [question.id]: false }));
                   }}
+                  type="radio"
+                  value={choiceIndex}
                 />
-                <span>
-                  <span aria-hidden="true">{String.fromCharCode(65 + choiceIndex)}.</span> {choice}
-                </span>
+                <span aria-hidden="true">{String.fromCharCode(65 + choiceIndex)}</span>
+                <strong>{choice}</strong>
               </label>
             ))}
-            {submitted ? (
-              <div className={styles.questionExplanation}>
-                <p
-                  className={
-                    answers[question.id] === question.preferredIndex
-                      ? styles.answerConfirmed
-                      : styles.answerNeedsReview
-                  }
-                >
-                  {answers[question.id] === question.preferredIndex
-                    ? "This response is ready to continue."
-                    : "This response needs review."}
-                </p>
-                <p>{question.explanation}</p>
-                {assistedAnswers[question.id] ? (
-                  <p className={styles.answerAssist}>
-                    The answer was filled in after three attempts so you can continue.
-                  </p>
-                ) : null}
-                {answers[question.id] !== question.preferredIndex ? (
-                  <a href={`#${question.relatedSection}`}>{question.reviewLabel}</a>
-                ) : null}
-              </div>
-            ) : null}
-          </fieldset>
-        ))}
-        <div className={styles.interactionActions}>
-          <button
-            className={styles.primaryAction}
-            type="submit"
-            disabled={Object.keys(answers).length !== caregiverModule2.questions.length}
+          </div>
+        </fieldset>
+
+        {!questionReviewed ? (
+          <Button
+            disabled={answer === undefined}
+            fullWidth={false}
+            onClick={reviewAnswer}
+            type="button"
           >
-            Review complete
-          </button>
-          {submitted ? (
-            <button className={styles.textAction} type="button" onClick={revise}>
-              Revise
-            </button>
-          ) : null}
-        </div>
+            Review answer
+          </Button>
+        ) : null}
       </form>
-      {submitted ? (
-        <CaregiverFeedback key={submissionCount} focusWhen heading="Review complete" tone="neutral">
-          <p>
-            {caregiverModule2.questions.every(
-              (question) => answers[question.id] === question.preferredIndex,
-            )
-              ? caregiverModule2.completion.understood
-              : caregiverModule2.completion.revisit}
+
+      {questionReviewed ? (
+        <CaregiverFeedback
+          focusWhen
+          heading={
+            displayedAccurate
+              ? "That keeps the agreement in its current scope."
+              : "Pause and look for the missing permission."
+          }
+          tone="neutral"
+        >
+          <p className={displayedAccurate ? styles.answerConfirmed : styles.answerNeedsReview}>
+            {displayedAccurate
+              ? "This response is ready to continue."
+              : "This response needs review."}
           </p>
+          <p>{question.explanation}</p>
+          {assistedAnswers[question.id] ? (
+            <p className={styles.answerAssist}>
+              The answer was filled in after three attempts so you can continue.
+            </p>
+          ) : null}
+          {!displayedAccurate ? (
+            <Button
+              fullWidth={false}
+              onClick={() => onReviewSection(question.relatedSection)}
+              type="button"
+              variant="text"
+            >
+              {question.reviewLabel}
+            </Button>
+          ) : null}
+          <div className={styles.questionNavigation}>
+            {questionIndex > 0 ? (
+              <Button
+                fullWidth={false}
+                onClick={() => moveToQuestion(questionIndex - 1)}
+                type="button"
+                variant="secondary"
+              >
+                Previous question
+              </Button>
+            ) : null}
+            {questionIndex < caregiverModule2.questions.length - 1 ? (
+              <Button
+                fullWidth={false}
+                onClick={() => moveToQuestion(questionIndex + 1)}
+                type="button"
+              >
+                Next question
+              </Button>
+            ) : allReviewed ? (
+              <p className={styles.activityComplete}>✓ All three situations reviewed</p>
+            ) : null}
+          </div>
         </CaregiverFeedback>
       ) : null}
+
+      <p className={styles.srOnly} aria-live="polite">
+        {questionReviewed
+          ? `${displayedAccurate ? "Response ready to continue." : "Response needs review."} ${question.explanation}`
+          : ""}
+      </p>
     </section>
   );
 }

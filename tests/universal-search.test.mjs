@@ -193,7 +193,7 @@ test("empty command and full search avoid default destination directories", asyn
     [
       "NAV-JOURNEY",
       "NAV-PROGRESS",
-      "NAV-AI",
+      "TOOL-AI-TUTOR",
       "NAV-RESOURCES",
       "TOOL-APPOINTMENT-PREP",
       "TOOL-GLOSSARY",
@@ -216,8 +216,9 @@ test("search UI clears, shows no-results, and opens AI without transmitting a qu
   assert.match(experience, /aria-label="Clear search"/);
   assert.match(experience, /setQuery\(""\)/);
   assert.match(experience, /No matches for/);
-  assert.match(experience, /href="\/ai"/);
-  assert.doesNotMatch(experience, /\/ai\?|searchParams|URLSearchParams/);
+  assert.match(experience, /onClick=\{activateAiTutor\}/);
+  assert.match(experience, /result\.action === "open-ai-tutor"/);
+  assert.doesNotMatch(experience, /href=.*\/ai|\/ai\?/);
 });
 
 test("search failures, timeouts, and session loss remain distinct and recoverable", async () => {

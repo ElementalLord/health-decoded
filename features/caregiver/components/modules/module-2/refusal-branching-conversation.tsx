@@ -45,14 +45,22 @@ export function RefusalBranchingConversation() {
       className={styles.branchingConversation}
       aria-labelledby={`${interaction.id}-heading`}
       data-interaction-id={interaction.id}
+      data-submitted={closed ? "true" : "false"}
     >
       <div className={styles.interactionHeading}>
-        <p className={styles.sectionLabel}>Optional practice · branching conversation</p>
-        <h2 id={`${interaction.id}-heading`}>{interaction.title}</h2>
+        <p className={styles.eyebrow}>Practice · what happens after no</p>
+        <h2 id={`${interaction.id}-heading`} tabIndex={-1}>
+          No should not cost the relationship.
+        </h2>
+        <p>
+          Permission becomes visible after an answer is given. Argument, guilt, fear, or withdrawal
+          can make a no expensive even when the original offer sounded caring.
+        </p>
       </div>
 
       <div className={styles.conversationStage}>
-        <p className={styles.andreLine}>{interaction.prompt}</p>
+        <p className={styles.conversationLabel}>{interaction.title}</p>
+        <blockquote className={styles.andreLine}>{interaction.prompt}</blockquote>
         <fieldset>
           <legend>Choose Leah&apos;s next response.</legend>
           {interaction.firstChoices.map((choice) => (

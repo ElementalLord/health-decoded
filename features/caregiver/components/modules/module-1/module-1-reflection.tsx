@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+
+import { Button } from "@/components/ui/button";
 import { caregiverModule1 } from "../../../content/caregiver-module-1";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-1.module.css";
@@ -21,6 +23,13 @@ export function Module1Reflection() {
       setSaved(false);
     }
   }
+
+  function skipForNow() {
+    setSaved(false);
+    skipReflection();
+    requestAnimationFrame(() => document.getElementById("module-1-completion-heading")?.focus());
+  }
+
   return (
     <section
       className={styles.reflection}
@@ -49,23 +58,35 @@ export function Module1Reflection() {
           }}
         />
         <div className={styles.interactionActions}>
-          <button className={styles.primaryAction} type="submit" disabled={!value.trim()}>
+          <Button fullWidth={false} type="submit" disabled={!value.trim()}>
             Save reflection for this session
-          </button>
-          <button className={styles.textAction} type="button" onClick={skipReflection}>
-            {reflection.skip}
-          </button>
-          <button
-            className={styles.textAction}
+          </Button>
+          {!reflectionSkipped ? (
+            <Button
+              className={styles.skipAction}
+              fullWidth={false}
+              type="button"
+              variant="text"
+              onClick={skipForNow}
+            >
+              {reflection.skip}
+            </Button>
+          ) : null}
+          <Button
             type="button"
+            fullWidth={false}
+            variant="text"
             disabled={!value}
             onClick={confirmClear}
           >
             {reflection.clear}
-          </button>
+          </Button>
         </div>
       </form>
       {saved ? <p className={styles.reflectionSaved}>Reflection saved for this session.</p> : null}
+      {reflectionSkipped ? (
+        <p className={styles.reflectionStatus}>Skipped for now. You can return and write later.</p>
+      ) : null}
       <p className={styles.srOnly} aria-live="polite">
         {saved
           ? "Reflection saved for this session."

@@ -11,6 +11,7 @@ import {
   createInitialStoryProgress,
   createStoryReviewProgress,
   getStoryStorageKey,
+  markStoryOpened,
   parseStoryProgress,
   resolveStoryEntryProgress,
 } from "@/features/stories/lib/story-progress";
@@ -230,10 +231,12 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
       const search = new URLSearchParams(window.location.search);
       const shouldRestart = search.get("restart") === "1";
       const shouldBegin = search.get("begin") === "1";
-      const nextProgress = resolveStoryEntryProgress(saved, {
-        begin: shouldBegin,
-        restart: shouldRestart,
-      });
+      const nextProgress = markStoryOpened(
+        resolveStoryEntryProgress(saved, {
+          begin: shouldBegin,
+          restart: shouldRestart,
+        }),
+      );
       setProgress(nextProgress);
       setReflectionDraft(nextProgress.privateReflection ?? "");
     } finally {

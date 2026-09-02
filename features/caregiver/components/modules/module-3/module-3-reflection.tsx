@@ -52,11 +52,20 @@ export function Module3Reflection() {
           <button className={styles.primaryAction} type="submit" disabled={!value.trim()}>
             Save reflection for this session
           </button>
-          <button className={styles.textAction} type="button" onClick={skipReflection}>
-            {reflection.skip}
-          </button>
+          {!reflectionSkipped ? (
+            <button
+              className={styles.skipAction}
+              type="button"
+              onClick={() => {
+                skipReflection();
+                setSaved(false);
+              }}
+            >
+              {reflection.skip}
+            </button>
+          ) : null}
           <button
-            className={styles.textAction}
+            className={styles.clearAction}
             type="button"
             disabled={!value}
             onClick={confirmClear}

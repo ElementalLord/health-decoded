@@ -13,6 +13,7 @@ import {
 import { validateStoryInteractions } from "../features/stories/lib/validate-story-interactions.ts";
 
 const landing = readFileSync("features/stories/components/story-landing.tsx", "utf8");
+const opening = readFileSync("features/stories/components/story-opening.tsx", "utf8");
 const interactions = readFileSync("features/stories/components/story-interactions.tsx", "utf8");
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
 const route = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
@@ -35,13 +36,15 @@ test("Story 4 Begin enters Scene 1 instead of leaving Devon on the repeated cove
   assert.match(player, /resolveStoryEntryProgress/);
 });
 
-test("Devon has one optimized cover reused by preview and story opening", () => {
+test("Devon keeps one optimized opening cover and separate generated landing art", () => {
   assert.equal(devonNumberScreenStory.imagePath, "/stories/devon-number-screen-cover.webp");
   assert.match(devonNumberScreenStory.imageAlt, /editorial illustration/i);
   const asset = statSync("public/stories/devon-number-screen-cover.webp");
   assert.ok(asset.size > 40_000);
   assert.ok(asset.size < 500_000);
-  assert.match(landing, /src=\{story\.imagePath\}/);
+  assert.doesNotMatch(landing, /story\.imagePath/);
+  assert.match(landing, /devon-number-screen-illustration\.png/);
+  assert.match(opening, /src=\{story\.imagePath\}/);
 });
 
 test("the dedicated route opens Devon directly in the shared story player", () => {

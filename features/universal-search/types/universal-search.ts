@@ -10,12 +10,11 @@ export const universalSearchResultTypes = [
 
 export type UniversalSearchResultType = (typeof universalSearchResultTypes)[number];
 
-export type UniversalSearchDocument = {
+type UniversalSearchDocumentBase = {
   id: string;
   type: UniversalSearchResultType;
   title: string;
   description: string;
-  route: string;
   aliases?: readonly string[];
   keywords?: readonly string[];
   searchableText?: string;
@@ -23,5 +22,17 @@ export type UniversalSearchDocument = {
   priority?: number;
   status: "available" | "hidden" | "draft" | "archived";
 };
+
+type UniversalSearchRouteDocument = UniversalSearchDocumentBase & {
+  route: string;
+  action?: never;
+};
+
+type UniversalSearchActionDocument = UniversalSearchDocumentBase & {
+  action: "open-ai-tutor";
+  route?: never;
+};
+
+export type UniversalSearchDocument = UniversalSearchRouteDocument | UniversalSearchActionDocument;
 
 export type RankedSearchResult = UniversalSearchDocument & { score: number };

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SunCupIllustration } from "@/components/illustrations/editorial-illustrations";
 import { ActionRow } from "@/components/shared/action-row";
 import { buttonVariants } from "@/components/ui/button";
+import { AiTutorActionRow } from "@/features/ai/components/ai-tutor-trigger";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
 import { JourneyProgressSummary } from "@/features/journeys/components/journey-progress-summary";
@@ -132,10 +133,9 @@ export default async function JourneyPage({
             Get support
           </h3>
           <div className="divide-y divide-border border-y border-border">
-            <ActionRow
+            <AiTutorActionRow
               compact
               description="Get calm, plain-language educational answers."
-              href="/ai"
               title="Ask your AI guide"
             />
             <ActionRow

@@ -144,7 +144,6 @@ export async function createAiChatStream(
   const context = await loadTrustedAiContext({
     message: input.message,
     ...(input.messages ? { messages: input.messages } : {}),
-    userId: input.userId,
   });
 
   if (!context.ok) {
@@ -230,8 +229,6 @@ export async function createAiChatStream(
         credibleSources: context.data.metadata.credibleSources.filter((source) =>
           validatedOutput.sources.some((retrieved) => retrieved.href === source.href),
         ),
-        lessonUsed: Boolean(context.data.promptContext.lesson),
-        relatedContent: context.data.metadata.relatedContent,
         suggestedQuestions: context.data.metadata.suggestedQuestions,
         type: "context",
       };

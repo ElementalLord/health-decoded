@@ -12,7 +12,8 @@ test("Module 4 keeps five distinct, revisable activities", async () => {
   assert.equal(caregiverModule4.interactions.handoff.items.length, 6);
   assert.equal(caregiverModule4.interactions.improvisation.actions.length, 6);
   const sourceMatching = await read("guidance-source-matching.tsx");
-  assert.match(sourceMatching, /<select/);
+  assert.match(sourceMatching, /type="radio"/);
+  assert.match(sourceMatching, /needIndex/);
   assert.match(sourceMatching, /data-core-application="true"/);
   assert.match(sourceMatching, /attempt >= 3/);
   assert.match(sourceMatching, /event\.currentTarget\.value/);
@@ -24,7 +25,8 @@ test("handoff supports keyboard reordering and unsafe review uses native checks"
   assert.match(handoff, /Move up/);
   assert.match(handoff, /Move down/);
   assert.match(handoff, /Exclude/);
-  assert.match(unsafe, /type="checkbox"/);
+  assert.match(unsafe, /type="radio"/);
+  assert.match(unsafe, /actionIndex/);
 });
 
 test("answer activities provide the requested third-attempt assistance", async () => {

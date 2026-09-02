@@ -33,11 +33,14 @@ export function ProfessionalHandoffSequence() {
       className={styles.handoffBuilder}
       data-interaction-id={item.id}
       data-core-application="false"
+      data-optional-practice="true"
       aria-labelledby={`${item.id}-heading`}
     >
+      <p className={styles.optionalLabel}>Optional practice</p>
       <h2 id={`${item.id}-heading`}>{item.title}</h2>
       <p>{item.prompt}</p>
-      <ol>
+      <p className={styles.callLabel}>Call starts</p>
+      <ol className={styles.handoffLines}>
         {order.map((id, index) => {
           const entry = item.items.find((candidate) => candidate.id === id)!;
           const needsReview = submitted && !entry.include && !excluded.includes(entry.id);
@@ -47,8 +50,8 @@ export function ProfessionalHandoffSequence() {
               data-excluded={excluded.includes(id)}
               data-needs-review={needsReview ? "true" : undefined}
             >
-              <span>{entry.copy}</span>
-              <div>
+              <span><small>{excluded.includes(id) ? "Excluded from opening" : `Line ${index + 1}`}</small>{entry.copy}</span>
+              <div className={styles.handoffControls}>
                 <button
                   type="button"
                   disabled={index === 0 || excluded.includes(id)}

@@ -180,7 +180,8 @@
   gap: 1rem;
   margin-top: 1.5rem;
 }
-.noResults a {
+.noResults a,
+.noResults button {
   color: var(--primary);
   font-weight: 700;
   min-height: 2.75rem;

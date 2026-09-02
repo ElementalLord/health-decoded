@@ -28,7 +28,6 @@ export const protectedApplicationRoutes = [
     icon: "journey",
   },
   { href: "/caregiver", label: "Caregiver", icon: "caregiver" },
-  { href: "/ai", label: "Ask", icon: "ai" },
   { href: "/progress", label: "Progress", icon: "progress" },
   { href: "/stories", label: "Stories", icon: "stories" },
   { href: "/resources", label: "Resources", icon: "resources" },

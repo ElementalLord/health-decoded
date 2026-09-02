@@ -1130,3 +1130,37 @@
     transition-duration: 1ms !important;
   }
 }
+
+/* Caregiver entry and urgent-help controls use the same flat button language. */
+.landing button,
+.landing [role="button"],
+.urgentPage button,
+.urgentPage [role="button"] {
+  border-radius: 0.375rem !important;
+  box-shadow: none !important;
+}
+
+.landing :is(button, a, label, summary):hover,
+.landing :is(button, a, label, summary):active,
+.urgentPage :is(button, a, label, summary):hover,
+.urgentPage :is(button, a, label, summary):active {
+  transform: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.moduleSequence .textButton:hover svg {
+  transform: none;
+}
+
+.landing button[class*="bg-primary"]:hover,
+.urgentPage button[class*="bg-primary"]:hover {
+  border-color: var(--primary) !important;
+  background: var(--primary) !important;
+}
+
+.landing button[class*="bg-card"]:hover,
+.urgentPage button[class*="bg-card"]:hover {
+  border-color: var(--border) !important;
+  background: var(--card) !important;
+}

@@ -39,7 +39,7 @@ test("Story 3 Begin enters Scene 1 instead of leaving Nora on the repeated cover
   assert.match(player, /resolveStoryEntryProgress/);
 });
 
-test("the single local Nora cover is optimized and appears in both required locations", async () => {
+test("the local Nora cover stays on the opening while the landing uses generated art", async () => {
   assert.equal(noraPrescriptionBagStory.imagePath, "/stories/nora-prescription-bag-cover.webp");
   assert.match(noraPrescriptionBagStory.imageAlt, /editorial illustration/i);
   assert.doesNotMatch(noraPrescriptionBagStory.imageAlt, /real patient|Nora taking|photograph/i);
@@ -47,7 +47,8 @@ test("the single local Nora cover is optimized and appears in both required loca
   const metadata = await sharp("public/stories/nora-prescription-bag-cover.webp").metadata();
   assert.equal(metadata.width, 1600);
   assert.equal(metadata.height, 900);
-  assert.match(landing, /src=\{story\.imagePath\}/);
+  assert.doesNotMatch(landing, /story\.imagePath/);
+  assert.match(landing, /nora-prescription-bag-illustration\.webp/);
   assert.match(opening, /src=\{story\.imagePath\}/);
   assert.match(opening, /height=\{900\}/);
 });
@@ -225,6 +226,7 @@ test("Nora’s requested state uses the existing story-specific persistence cont
   for (const field of [
     "currentScene",
     "furthestSceneReached",
+    "lastOpenedAt",
     "interactionStates",
     "prediction",
     "quizAnswers",

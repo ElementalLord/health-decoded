@@ -68,18 +68,6 @@ export const aiChatStreamEventSchema = z.discriminatedUnion("type", [
         )
         .min(1)
         .max(3),
-      lessonUsed: z.boolean(),
-      relatedContent: z
-        .array(
-          z
-            .object({
-              href: z.string().startsWith("/"),
-              kind: z.enum(["caregiver", "lesson", "medication", "story"]),
-              title: z.string().trim().min(1).max(180),
-            })
-            .strict(),
-        )
-        .max(4),
       suggestedQuestions: z.array(plainTextMessage).min(1).max(3),
       type: z.literal("context"),
     })

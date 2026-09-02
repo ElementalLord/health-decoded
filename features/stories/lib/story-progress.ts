@@ -16,6 +16,7 @@ export const createInitialStoryProgress = (): StoryProgress => ({
   currentScene: 0,
   currentQuizQuestion: 0,
   furthestSceneReached: 0,
+  lastOpenedAt: null,
   interactionStates: {},
   meaningfulChoice: null,
   prediction: null,
@@ -65,6 +66,13 @@ export function resolveStoryEntryProgress(
   };
 }
 
+export function markStoryOpened(progress: StoryProgress, openedAt = Date.now()): StoryProgress {
+  return {
+    ...progress,
+    lastOpenedAt: openedAt,
+  };
+}
+
 export function calculateStoryQuizScore(
   questions: StoryQuizQuestion[],
   answers: Record<string, string>,
@@ -98,6 +106,12 @@ export function parseStoryProgress(value: string | null): StoryProgress {
         typeof parsed.furthestSceneReached === "number"
           ? Math.max(0, Math.min(5, parsed.furthestSceneReached))
           : initial.furthestSceneReached,
+      lastOpenedAt:
+        typeof parsed.lastOpenedAt === "number" &&
+        Number.isFinite(parsed.lastOpenedAt) &&
+        parsed.lastOpenedAt >= 0
+          ? parsed.lastOpenedAt
+          : initial.lastOpenedAt,
       interactionStates:
         interactionStateIsCurrent &&
         parsed.interactionStates &&

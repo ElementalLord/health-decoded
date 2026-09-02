@@ -21,14 +21,15 @@ test("I01 preserves four planning zones, six tasks, unused food-control choices,
   assert.match(interaction.feedbackGap, /does not provide feedback/);
 });
 
-test("I02 is the required four-request matcher with safe controlled dropdowns", async () => {
+test("I02 is the required four-request matcher with one-at-a-time controlled dropdowns", async () => {
   const interaction = caregiverModule3.interactions.matching;
   assert.equal(interaction.pairs.length, 4);
   assert.ok(interaction.pairs.every(({ request, offer }) => request && offer));
   const source = await read("request-matching.tsx");
   assert.match(source, /data-core-application="true"/);
   assert.match(source, /required/);
-  assert.match(source, /disabled=\{!complete\}/);
+  assert.match(source, /pairIndex/);
+  assert.match(source, /disabled=\{!matches\[pair\.id\]\}/);
   assert.match(source, /const value = event\.currentTarget\.value/);
   assert.match(source, /markInteractionSubmitted\(interaction\.id\)/);
 });
@@ -68,6 +69,6 @@ test("I01 and I02 fill dropdown answers after three responses needing review", a
     read("request-matching.tsx"),
   ]);
   assert.match(planning, /nextPlacements\[item\.id\] = \(item\.preferredZones\[0\] \?\? ""\)/);
-  assert.match(matching, /nextMatches\[pair\.id\] = pair\.id/);
+  assert.match(matching, /\[pair\.id\]: pair\.id/);
   assert.match(planning + matching, /attempt >= 3/);
 });

@@ -3,27 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Activity,
   ArrowRight,
   ArrowUpRight,
-  BookOpenText,
   Check,
   CircleHelp,
-  Droplets,
-  Eye,
-  Gauge,
-  HeartPulse,
   MessageSquareText,
   Search,
   ShieldCheck,
-  Smile,
   Stethoscope,
   Tags,
-  Thermometer,
-  Utensils,
-  WalletCards,
   X,
-  type LucideIcon,
 } from "lucide-react";
 import {
   AnimatePresence,
@@ -74,8 +63,7 @@ type Topic = {
 
 type ResourceVisual = {
   alt: string;
-  icon?: LucideIcon;
-  image?: string;
+  image: string;
   tone: "blue" | "clay" | "gold" | "green" | "sage";
 };
 
@@ -129,93 +117,93 @@ const topics: readonly Topic[] = [
 
 const resourceVisuals: Record<ResourceId, ResourceVisual> = {
   "type-2-diabetes-basics": {
-    alt: "An editorial illustration introducing the essentials of Type 2 diabetes",
-    icon: BookOpenText,
+    alt: "An overhead watercolor still life of everyday Type 2 diabetes care essentials",
+    image: "/resources/type-2-diabetes-basics-watercolor.jpg",
     tone: "sage",
   },
   "understanding-a1c": {
-    alt: "A patient and clinician calmly reviewing a laboratory report together",
-    image: "/resources/a1c-explained-editorial.jpg",
+    alt: "A symbolic watercolor of an A1C blood sample connected across three months",
+    image: "/resources/a1c-explained-watercolor.jpg",
     tone: "green",
   },
   "monitoring-blood-sugar": {
-    alt: "An editorial illustration of a glucose reading seen in context",
-    icon: Gauge,
+    alt: "A first-person watercolor of checking glucose beside a morning breakfast tray",
+    image: "/resources/monitoring-blood-sugar-watercolor.jpg",
     tone: "blue",
   },
   "diabetes-meal-planning": {
-    alt: "A multigenerational family preparing a familiar meal together",
-    image: "/resources/family-meal-editorial.jpg",
+    alt: "An overhead watercolor of hands assembling a colorful balanced plate",
+    image: "/resources/family-meal-watercolor.jpg",
     tone: "gold",
   },
   "cultural-foods": {
-    alt: "An editorial illustration celebrating familiar foods at the table",
-    icon: Utensils,
+    alt: "A festive watercolor of several generations passing dishes across a shared table",
+    image: "/resources/cultural-foods-watercolor.jpg",
     tone: "gold",
   },
   "physical-activity": {
-    alt: "Two friends sharing an easy walk on a neighborhood path",
-    image: "/resources/everyday-movement-editorial.jpg",
+    alt: "A low-angle watercolor of an older adult and dog walking up park steps",
+    image: "/resources/everyday-movement-watercolor.jpg",
     tone: "green",
   },
   "diabetes-treatments": {
-    alt: "An older woman and pharmacist building a medicine routine together",
-    image: "/resources/pharmacist-routine-editorial.png",
+    alt: "A bright watercolor still life of diabetes treatment options on pastel trays",
+    image: "/resources/diabetes-treatments-watercolor.jpg",
     tone: "clay",
   },
   "low-blood-sugar": {
-    alt: "An editorial illustration about recognizing and treating low blood sugar",
-    icon: Droplets,
+    alt: "A sunny watercolor of a hand packing a ready-for-a-low kit into a tote",
+    image: "/resources/low-blood-sugar-watercolor.jpg",
     tone: "blue",
   },
   "managing-sick-days": {
-    alt: "An editorial illustration for a written diabetes sick-day plan",
-    icon: Thermometer,
+    alt: "A rainy-day watercolor of an orderly sick-day care setup beside a bedroom",
+    image: "/resources/managing-sick-days-watercolor.jpg",
     tone: "clay",
   },
   "heart-disease-and-stroke": {
-    alt: "An editorial illustration connecting diabetes and heart health",
-    icon: HeartPulse,
+    alt: "Hands holding a botanical heart beside a sunlit walking path",
+    image: "/resources/heart-health-watercolor.jpg",
     tone: "green",
   },
   "kidney-health": {
-    alt: "An editorial illustration about the quiet work of kidney screening",
-    icon: Droplets,
+    alt: "A serene watercolor of kidneys filtering flowing blue water into testing vials",
+    image: "/resources/kidney-health-watercolor.jpg",
     tone: "sage",
   },
   "eye-health": {
-    alt: "An editorial illustration about looking beyond clear vision",
-    icon: Eye,
+    alt: "An older adult smiling during a bright and comfortable eye examination",
+    image: "/resources/eye-health-watercolor.jpg",
     tone: "blue",
   },
   "foot-care": {
-    alt: "An adult calmly checking the sole of one foot with a hand mirror",
-    image: "/resources/foot-check-natural.png",
+    alt: "An overhead watercolor of a calm foot check on patterned green tiles",
+    image: "/resources/foot-check-watercolor.jpg",
     tone: "gold",
   },
   "oral-health": {
-    alt: "An editorial illustration about diabetes and gum health",
-    icon: Smile,
+    alt: "A bright watercolor vanity scene with a natural smile and oral care tools",
+    image: "/resources/oral-health-watercolor.jpg",
     tone: "gold",
   },
   "diabetes-and-mental-health": {
-    alt: "Two people sharing calm, practical support",
-    image: "/resources/everyday-support-natural.png",
+    alt: "A reflective watercolor of a person journaling by a rainy window with a cat",
+    image: "/resources/mental-health-watercolor.jpg",
     tone: "sage",
   },
   "diabetes-education-and-support": {
     alt: "A diabetes educator making care feel practical and approachable",
-    image: "/resources/community-education-editorial.png",
+    image: "/resources/community-education-watercolor.jpg",
     tone: "green",
   },
   "financial-help": {
-    alt: "An editorial illustration about finding help with the cost of care",
-    icon: WalletCards,
+    alt: "A graphic watercolor of hands organizing care costs and calling for help",
+    image: "/resources/financial-help-watercolor.jpg",
     tone: "clay",
   },
   "emergency-preparedness": {
-    alt: "Hands organizing diabetes supplies and a checklist in an emergency bag",
-    image: "/resources/emergency-kit-natural.png",
+    alt: "A field-journal watercolor of an organized diabetes emergency backpack",
+    image: "/resources/emergency-kit-watercolor.jpg",
     tone: "blue",
   },
 };
@@ -331,34 +319,17 @@ function ArticleLabel({ resource }: { resource: Resource }) {
 }
 
 function ResourceArtwork({ resource }: { resource: Resource }) {
-  const visual = resourceVisuals[resource.id] ?? {
-    alt: `An editorial illustration for ${resource.title}`,
-    icon: BookOpenText,
-    tone: "sage",
-  };
-  const Icon = visual.icon ?? Activity;
+  const visual = resourceVisuals[resource.id];
+  if (!visual) throw new Error(`Missing artwork for resource: ${resource.id}`);
 
   return (
     <div className={styles.resourceArtwork} data-tone={visual.tone}>
-      {visual.image ? (
-        <Image
-          alt={visual.alt}
-          fill
-          sizes="(max-width: 42rem) 100vw, (max-width: 68rem) 50vw, 26vw"
-          src={visual.image}
-        />
-      ) : (
-        <div aria-label={visual.alt} className={styles.generatedArtwork} role="img">
-          <span aria-hidden="true" className={styles.artCircle} />
-          <span aria-hidden="true" className={styles.artLine} />
-          <span aria-hidden="true" className={styles.artIcon}>
-            <Icon size={42} strokeWidth={1.25} />
-          </span>
-          <span aria-hidden="true" className={styles.artIndex}>
-            {resource.format}
-          </span>
-        </div>
-      )}
+      <Image
+        alt={visual.alt}
+        fill
+        sizes="(max-width: 42rem) 100vw, (max-width: 68rem) 50vw, 26vw"
+        src={visual.image}
+      />
     </div>
   );
 }

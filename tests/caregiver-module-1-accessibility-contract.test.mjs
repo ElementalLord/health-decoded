@@ -14,25 +14,35 @@ const [experience, orientation, interaction, knowledgeCheck, styles] = await Pro
   readFile(new URL("styles/caregiver-module-1.module.css", directory), "utf8"),
 ]);
 
-test("Module 1 exposes landmarks, route focus, keyboard groups, and announcements", () => {
+test("Module 1 exposes staged landmarks, focus, native choices, and announcements", () => {
   assert.match(experience, /<main/);
+  assert.match(experience, /ProgressBar/);
+  assert.match(experience, /hidden=\{stageIndex !==/);
+  assert.match(experience, /document\.getElementById\(stage\.headingId\)\?\.focus/);
   assert.match(orientation, /<h1[\s\S]*tabIndex=\{-1\}/);
   assert.match(interaction, /<form/);
-  assert.match(interaction, /<select/);
-  assert.match(interaction, /CaregiverFeedback/);
+  assert.match(interaction, /<fieldset/);
+  assert.match(interaction, /type="radio"/);
+  assert.doesNotMatch(interaction, /<select/);
+  assert.match(interaction, /aria-live="polite"/);
+  assert.match(knowledgeCheck, /aria-live="polite"/);
   assert.match(styles, /focus-visible/);
   assert.match(styles, /@media \(max-width: 28rem\)/);
   assert.match(styles, /prefers-reduced-motion: reduce/);
 });
 
-test("Module 1 fills an answer after three responses needing review", () => {
-  assert.match(knowledgeCheck, /attempt >= 3/);
-  assert.match(knowledgeCheck, /nextAnswers\[question\.id\] = question\.preferredIndex/);
-  assert.match(knowledgeCheck, /filled in after three attempts/);
+test("Module 1 presents one practice item at a time with non-punitive feedback", () => {
+  assert.match(interaction, /statementIndex/);
+  assert.match(interaction, /This is practice, not a test/);
+  assert.match(knowledgeCheck, /questionIndex/);
+  assert.match(knowledgeCheck, /Take one at a time/);
+  assert.match(knowledgeCheck, /Select a response to see why it fits/);
 });
 
-test("Module 1 looping visual breaks stop under reduced motion", () => {
-  assert.match(styles, /m1-light[\s\S]*infinite/);
-  assert.match(styles, /m1-return[\s\S]*infinite/);
-  assert.match(styles, /animation-iteration-count: 1 !important/);
+test("Module 1 motion is event-driven, restrained, and removable", () => {
+  assert.doesNotMatch(styles, /infinite/);
+  assert.doesNotMatch(styles, /gradient\(/);
+  assert.match(styles, /stage-arrive/);
+  assert.match(styles, /animation: none/);
+  assert.match(styles, /transition: none/);
 });

@@ -175,6 +175,7 @@ export type StoryProgress = {
   currentScene: number;
   currentQuizQuestion: number;
   furthestSceneReached: number;
+  lastOpenedAt: number | null;
   interactionStates: Record<string, string | number | string[]>;
   meaningfulChoice: string | null;
   prediction: string | null;

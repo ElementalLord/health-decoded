@@ -11,14 +11,16 @@ const [experience, orientation, sources, styles] = await Promise.all(
     "styles/caregiver-module-4.module.css",
   ].map((name) => readFile(new URL(name, directory), "utf8")),
 );
-test("Module 4 exposes landmarks, heading focus, native controls, and reduced motion", () => {
+test("Module 4 exposes staged landmarks, heading focus, native controls, and reduced motion", () => {
   assert.match(experience, /<main/);
   assert.match(orientation, /tabIndex=\{-1\}/);
-  assert.match(sources, /<select/);
+  assert.match(sources, /type="radio"/);
+  assert.match(sources, /<fieldset/);
   assert.doesNotMatch(experience, /UrgentSafetyInterruption/);
   assert.match(styles, /focus-visible/);
   assert.match(styles, /prefers-reduced-motion/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
-  assert.match(styles, /m4-observe[\s\S]*infinite/);
+  assert.doesNotMatch(styles, /infinite/);
+  assert.match(styles, /\.stage:not\(\[hidden\]\) \{ animation: none; \}/);
   assert.doesNotMatch(styles, /border-radius:\s*999px/);
 });

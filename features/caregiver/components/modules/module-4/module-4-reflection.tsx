@@ -8,7 +8,7 @@ import styles from "../../../styles/caregiver-module-4.module.css";
 export function Module4Reflection() {
   const item = caregiverModule4.reflection;
   const [saved, setSaved] = useState(false);
-  const { reflection, setReflection, skipReflection, clearReflection } = useCaregiverSession();
+  const { reflection, reflectionSkipped, setReflection, skipReflection, clearReflection } = useCaregiverSession();
   return (
     <section
       className={styles.reflection}
@@ -40,22 +40,27 @@ export function Module4Reflection() {
           <button className={styles.primaryAction} type="submit" disabled={!reflection.trim()}>
             Save reflection for this session
           </button>
-          <button className={styles.textAction} type="button" onClick={skipReflection}>
-            {item.skip}
-          </button>
+          {!reflectionSkipped ? (
+            <button className={styles.skipAction} type="button" onClick={() => { skipReflection(); setSaved(false); }}>
+              {item.skip}
+            </button>
+          ) : null}
           <button
-            className={styles.textAction}
+            className={styles.clearAction}
             type="button"
             disabled={!reflection}
             onClick={() => {
-              if (window.confirm(item.clearConfirmation)) clearReflection();
+              if (!reflection || window.confirm(item.clearConfirmation)) {
+                clearReflection();
+                setSaved(false);
+              }
             }}
           >
             {item.clear}
           </button>
         </div>
       </form>
-      <p aria-live="polite">{saved ? "Reflection saved for this session." : ""}</p>
+      <p className={styles.srOnly} aria-live="polite">{saved ? "Reflection saved for this session." : reflectionSkipped ? "Reflection skipped for this session." : ""}</p>
     </section>
   );
 }
