@@ -26,6 +26,17 @@ Current server-only values:
 
 - `GEMINI_API_KEY`
 
+### Authentication email delivery
+
+Local Supabase captures confirmation and password-reset messages in Inbucket at
+`http://localhost:54324`; it does not deliver them to a real inbox.
+
+Before testing signup with non-team email addresses on the hosted app, configure a custom SMTP
+provider in Supabase under **Authentication → Email → SMTP Settings**. Supabase's default sender is
+development-only, accepts only project-team recipients, and is limited to two messages per hour.
+The signup page reports these delivery and rate-limit failures instead of incorrectly sending the
+user to the verification screen.
+
 ## Development commands
 
 ```bash

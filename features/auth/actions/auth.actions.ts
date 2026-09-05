@@ -14,6 +14,7 @@ import {
   resetPasswordSchema,
   signupSchema,
 } from "@/features/auth/schemas/auth.schemas";
+import { isObscuredExistingAccount, signupErrorMessage } from "@/features/auth/lib/signup-result";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import type { AuthFormState } from "@/features/auth/types/auth-form";
 
@@ -91,10 +92,19 @@ export async function signupAction(_: AuthFormState, formData: FormData): Promis
 
   if (error) {
     logAuthError("auth.signup_failed", error);
-    return failure(
-      authFailureMessage(error, "We could not create your account. Please try again."),
-    );
+    return failure(signupErrorMessage(error));
   }
+
+  if (isObscuredExistingAccount(data.user)) {
+    logger.info("auth.signup_existing_account");
+    return failure("An account already exists for this email. Sign in or reset your password.");
+  }
+
+  if (!data.user) {
+    logger.error("auth.signup_user_missing");
+    return failure("We could not create your account. Please try again.");
+  }
+
   redirect(data.session ? DEFAULT_AUTHENTICATED_DESTINATION : "/verify-email");
 }
 
