@@ -21,6 +21,12 @@ const protectedRoutePrefixes = [
 ] as const;
 
 const publicRoutePaths = new Set(["/caregiver/urgent-help", "/caregiver/urgent-help/"]);
+const sessionAwareAuthRoutePaths = new Set([
+  "/login",
+  "/reset-password",
+  "/signup",
+  "/verify-email",
+]);
 
 function isProtectedRoute(pathname: string) {
   if (publicRoutePaths.has(pathname)) {
@@ -42,6 +48,12 @@ export async function refreshSession(request: NextRequest) {
   requestHeaders.set(CURRENT_PATH_HEADER, `${request.nextUrl.pathname}${request.nextUrl.search}`);
   const nextResponse = () => NextResponse.next({ request: { headers: requestHeaders } });
   let response = nextResponse();
+  const protectedRoute = isProtectedRoute(request.nextUrl.pathname);
+
+  if (!protectedRoute && !sessionAwareAuthRoutePaths.has(request.nextUrl.pathname)) {
+    return response;
+  }
+
   const env = getPublicEnv();
   const supabase = createServerClient<Database>(
     env.NEXT_PUBLIC_SUPABASE_URL,
@@ -72,7 +84,7 @@ export async function refreshSession(request: NextRequest) {
     signingKeys ? { jwks: signingKeys } : {},
   );
 
-  if (!data?.claims.sub && isProtectedRoute(request.nextUrl.pathname)) {
+  if (!data?.claims.sub && protectedRoute) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.search = "";

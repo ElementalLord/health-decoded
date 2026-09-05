@@ -118,6 +118,19 @@ test("middleware keeps using the verified-claims predicate", async () => {
   assert.doesNotMatch(middleware, /auth\.getUser\(\)/);
 });
 
+test("public pages bypass session middleware so static output stays CDN-cacheable", async () => {
+  const [entrypoint, middleware] = await Promise.all([
+    readFile(new URL("../middleware.ts", import.meta.url), "utf8"),
+    readFile(new URL("../services/supabase/middleware.ts", import.meta.url), "utf8"),
+  ]);
+
+  assert.doesNotMatch(entrypoint, /\/\(\(\?!_next\/static/);
+  assert.doesNotMatch(entrypoint, /["']\/:path\*["']/);
+  assert.match(entrypoint, /"\/signup"/);
+  assert.match(entrypoint, /"\/journey\/:path\*"/);
+  assert.match(middleware, /if \(!protectedRoute && !sessionAwareAuthRoutePaths\.has/);
+});
+
 test("a valid ES256 session verifies locally with no network call", async () => {
   const { authenticated, calls } = await verify(await cookieFor(ACCOUNT_A));
   assert.equal(authenticated, true);
