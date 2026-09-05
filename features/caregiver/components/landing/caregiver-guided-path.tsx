@@ -1,110 +1,132 @@
 "use client";
 
+import type { CSSProperties, FocusEvent } from "react";
+import { useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { animate, createTimer } from "animejs";
-import { useEffect, useRef } from "react";
-import { caregiverLandingContent, caregiverLandingRoutes } from "../../content/caregiver-landing";
-import styles from "../../styles/caregiver-landing.module.css";
-import { getImplementedCaregiverModuleById } from "../../content/caregiver-module-registry";
 
-const DEFAULT_SPEED = 0.045;
-const HOVER_SPEED = 0.002;
+import { caregiverLandingContent, caregiverLandingRoutes } from "../../content/caregiver-landing";
+import { getImplementedCaregiverModuleById } from "../../content/caregiver-module-registry";
+import styles from "../../styles/caregiver-landing.module.css";
+
+const lessonArtwork = [
+  "/caregiver/landing/listen-with-curiosity-v2.jpg",
+  "/caregiver/landing/support-with-permission-v2.jpg",
+  "/caregiver/landing/everyday-support-v2.jpg",
+  "/caregiver/landing/know-the-plan-v2.jpg",
+  "/caregiver/landing/caregiver-matters-v2.jpg",
+] as const;
+
+const orbitDelays = ["0s", "-15s", "-30s", "-45s", "-60s"] as const;
+
+const lessonLabels = [
+  "Understand their feelings",
+  "Support with permission",
+  "Help with everyday life",
+  "Know when to get help",
+  "Care for your capacity",
+] as const;
+
+type OrbitStyle = CSSProperties & {
+  "--orbit-delay": string;
+};
+
+const RESTING_RATE = 1;
+const HOVER_RATE = 0;
+
+function prefersLessMotion(element: HTMLElement) {
+  return (
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    element.closest('[data-reduced-motion="true"]') !== null
+  );
+}
 
 export function CaregiverGuidedPath() {
   const { guidedPath } = caregiverLandingContent;
-  const trackRef = useRef<HTMLOListElement>(null);
-  const speedRef = useRef({ value: DEFAULT_SPEED });
-  const positionRef = useRef(0);
+  const sequenceRef = useRef<HTMLOListElement>(null);
+  const guideRef = useRef<SVGSVGElement>(null);
+  const animationsRef = useRef<Animation[]>([]);
+  const frameRef = useRef<number | null>(null);
+  const lastFrameRef = useRef<number | null>(null);
+  const rateRef = useRef(RESTING_RATE);
+  const targetRateRef = useRef(RESTING_RATE);
+  const velocityRef = useRef(0);
 
-  useEffect(() => {
-    const track = trackRef.current;
-    const firstCard = track?.children.item(0) as HTMLElement | null;
-    const middleCard = track?.children.item(caregiverLandingRoutes.length) as HTMLElement | null;
-    if (!track || !firstCard || !middleCard) return;
+  function collectOrbitAnimations() {
+    const sequence = sequenceRef.current;
+    if (!sequence || prefersLessMotion(sequence)) return [];
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reducedMotion.matches) return;
-
-    let loopWidth = middleCard.offsetLeft - firstCard.offsetLeft;
-    if (loopWidth <= 0) return;
-
-    positionRef.current = loopWidth;
-    track.style.transform = `translate3d(${-loopWidth}px, 0, 0)`;
-
-    const resizeObserver = new ResizeObserver(() => {
-      const nextLoopWidth = middleCard.offsetLeft - firstCard.offsetLeft;
-      if (nextLoopWidth <= 0) return;
-
-      const cycleProgress = (positionRef.current - loopWidth) / loopWidth;
-      loopWidth = nextLoopWidth;
-      positionRef.current = loopWidth * (1 + cycleProgress);
-    });
-    resizeObserver.observe(firstCard);
-
-    const timer = createTimer({
-      onUpdate: (self) => {
-        const nextPosition = positionRef.current + self.deltaTime * speedRef.current.value;
-        const normalizedOffset = (((nextPosition - loopWidth) % loopWidth) + loopWidth) % loopWidth;
-        positionRef.current = loopWidth + normalizedOffset;
-        track.style.transform = `translate3d(${-positionRef.current}px, 0, 0)`;
-      },
-    });
-
-    const handleVisibility = () => {
-      if (document.hidden) timer.pause();
-      else timer.resume();
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-      resizeObserver.disconnect();
-      timer.revert();
-    };
-  }, []);
-
-  function changeSpeed(value: number, duration: number) {
-    animate(speedRef.current, {
-      value,
-      duration,
-      ease: "out(4)",
-    });
+    const itemAnimations = Array.from(sequence.children).flatMap((item) => item.getAnimations());
+    const animations = [
+      ...itemAnimations,
+      ...(guideRef.current?.getAnimations({ subtree: true }) ?? []),
+    ];
+    animationsRef.current = animations;
+    return animations;
   }
 
-  const lessonCards = [0, 1, 2].flatMap((copyIndex) =>
-    caregiverLandingRoutes.map((route) => {
-      const duplicate = copyIndex !== 1;
+  function setPlaybackRate(rate: number) {
+    const animations = animationsRef.current.length
+      ? animationsRef.current
+      : collectOrbitAnimations();
 
-      return (
-        <li
-          key={`${route.id}-${copyIndex}`}
-          data-caregiver-destination={route.id}
-          data-duplicate={duplicate}
-          aria-hidden={duplicate || undefined}
-        >
-          <article>
-            <div className={styles.moduleCardHeader}>
-              <span className={styles.moduleOrder}>{String(route.order).padStart(2, "0")}</span>
-              <span className={styles.moduleTime}>{route.time}</span>
-            </div>
-            <h3>{route.moduleTitle}</h3>
-            <p>{route.purpose}</p>
-            {getImplementedCaregiverModuleById(route.id) ? (
-              <Link
-                className={styles.textButton}
-                href={getImplementedCaregiverModuleById(route.id)!.route}
-                tabIndex={duplicate ? -1 : undefined}
-              >
-                {route.action}
-                <ArrowUpRight aria-hidden="true" />
-              </Link>
-            ) : null}
-          </article>
-        </li>
-      );
-    }),
-  );
+    for (const animation of animations) animation.playbackRate = rate;
+  }
+
+  function easeOrbitToward(targetRate: number) {
+    const sequence = sequenceRef.current;
+    if (!sequence || prefersLessMotion(sequence)) return;
+
+    targetRateRef.current = targetRate;
+    if (frameRef.current !== null) return;
+
+    const step = (now: number) => {
+      const previous = lastFrameRef.current ?? now;
+      const delta = Math.min((now - previous) / 1000, 0.032);
+      const stiffness = targetRateRef.current < rateRef.current ? 16 : 12;
+      const damping = 2 * Math.sqrt(stiffness);
+      const acceleration =
+        stiffness * (targetRateRef.current - rateRef.current) - damping * velocityRef.current;
+
+      velocityRef.current += acceleration * delta;
+      rateRef.current += velocityRef.current * delta;
+      lastFrameRef.current = now;
+      setPlaybackRate(Math.max(HOVER_RATE, Math.min(RESTING_RATE, rateRef.current)));
+
+      const settled =
+        Math.abs(targetRateRef.current - rateRef.current) < 0.002 &&
+        Math.abs(velocityRef.current) < 0.002;
+
+      if (settled) {
+        rateRef.current = targetRateRef.current;
+        velocityRef.current = 0;
+        lastFrameRef.current = null;
+        frameRef.current = null;
+        setPlaybackRate(rateRef.current);
+        return;
+      }
+
+      frameRef.current = window.requestAnimationFrame(step);
+    };
+
+    frameRef.current = window.requestAnimationFrame(step);
+  }
+
+  function handleBlur(event: FocusEvent<HTMLElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      easeOrbitToward(RESTING_RATE);
+    }
+  }
+
+  useEffect(() => {
+    const discoveryFrame = window.requestAnimationFrame(collectOrbitAnimations);
+
+    return () => {
+      window.cancelAnimationFrame(discoveryFrame);
+      if (frameRef.current !== null) window.cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
 
   return (
     <section
@@ -112,23 +134,127 @@ export function CaregiverGuidedPath() {
       className={styles.guidedPath}
       aria-labelledby="caregiver-guided-path-title"
     >
-      <div className={styles.sectionHeading}>
+      <div className={styles.guidedPathHeading}>
         <p className={styles.sectionNumber}>Five short lessons</p>
         <h2 id="caregiver-guided-path-title">{guidedPath.sectionTitle}</h2>
         <p>{guidedPath.introduction}</p>
       </div>
 
-      <div
-        className={styles.moduleMarquee}
-        onMouseEnter={() => changeSpeed(HOVER_SPEED, 90)}
-        onMouseLeave={() => changeSpeed(DEFAULT_SPEED, 180)}
-        onFocusCapture={() => changeSpeed(0, 90)}
-        onBlurCapture={() => changeSpeed(DEFAULT_SPEED, 180)}
-      >
-        <ol ref={trackRef} className={styles.moduleSequence} aria-label="Caregiver lessons">
-          {lessonCards}
-        </ol>
+      <div className={styles.orbitHeart} aria-hidden="true">
+        <Image
+          className={styles.centerIllustration}
+          src="/caregiver/landing/caregiver-embrace-v1.png"
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="176px"
+        />
       </div>
+
+      <svg ref={guideRef} className={styles.orbitGuide} aria-hidden="true" viewBox="0 0 928 512">
+        <defs>
+          <mask
+            id="caregiver-orbit-guide-mask"
+            maskUnits="userSpaceOnUse"
+            x="0"
+            y="0"
+            width="928"
+            height="512"
+          >
+            <rect width="928" height="512" fill="white" />
+            <ellipse
+              className={styles.orbitGuideCutouts}
+              cx="464"
+              cy="256"
+              rx="462"
+              ry="254"
+              pathLength="100"
+            />
+          </mask>
+        </defs>
+        <ellipse
+          className={styles.orbitGuideTrack}
+          cx="464"
+          cy="256"
+          rx="462"
+          ry="254"
+          pathLength="100"
+          mask="url(#caregiver-orbit-guide-mask)"
+        />
+      </svg>
+
+      <ol ref={sequenceRef} className={styles.moduleSequence} aria-label="Caregiver lessons">
+        {caregiverLandingRoutes.map((route, index) => {
+          const implementedModule = getImplementedCaregiverModuleById(route.id);
+          const orbitStyle = {
+            "--orbit-delay": orbitDelays[index]!,
+          } as OrbitStyle;
+
+          return (
+            <li key={route.id} style={orbitStyle} data-caregiver-destination={route.id}>
+              <div className={styles.orbitCounter}>
+                <div className={styles.orbitCorrection}>
+                  {implementedModule ? (
+                    <Link
+                      className={styles.moduleCardLink}
+                      href={implementedModule.route}
+                      aria-label={`Open lesson ${route.order}: ${route.moduleTitle}`}
+                      onPointerEnter={() => easeOrbitToward(HOVER_RATE)}
+                      onPointerLeave={() => easeOrbitToward(RESTING_RATE)}
+                      onFocus={() => easeOrbitToward(HOVER_RATE)}
+                      onBlur={handleBlur}
+                    >
+                      <article className={styles.moduleCard}>
+                        <div className={styles.moduleArtwork} aria-hidden="true">
+                          <Image
+                            src={lessonArtwork[index]!}
+                            alt=""
+                            aria-hidden="true"
+                            fill
+                            sizes="(max-width: 1024px) 176px, 160px"
+                          />
+                          <span className={styles.moduleOrder}>
+                            {String(route.order).padStart(2, "0")}
+                          </span>
+                        </div>
+
+                        <div className={styles.moduleCardCopy}>
+                          <div className={styles.moduleCardHeader}>
+                            <span>Lesson {route.order}</span>
+                            <span className={styles.moduleTime}>{route.time}</span>
+                          </div>
+                          <h3>
+                            {lessonLabels[index]!}
+                            <ArrowUpRight className={styles.moduleArrow} aria-hidden="true" />
+                          </h3>
+                        </div>
+                      </article>
+                    </Link>
+                  ) : (
+                    <article className={styles.moduleCard}>
+                      <div className={styles.moduleArtwork} aria-hidden="true">
+                        <Image
+                          src={lessonArtwork[index]!}
+                          alt=""
+                          aria-hidden="true"
+                          fill
+                          sizes="(max-width: 1024px) 176px, 160px"
+                        />
+                        <span className={styles.moduleOrder}>
+                          {String(route.order).padStart(2, "0")}
+                        </span>
+                      </div>
+                      <div className={styles.moduleCardCopy}>
+                        <h3>{lessonLabels[index]!}</h3>
+                      </div>
+                    </article>
+                  )}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }

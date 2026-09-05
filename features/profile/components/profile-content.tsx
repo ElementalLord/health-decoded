@@ -13,7 +13,7 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,21 @@ import { cn } from "@/lib/utils";
 
 const initialState: ProfileActionState = { status: "idle", message: "" };
 const PROFILE_CONFETTI_KEY = "health-decoded:profile-confetti-date";
+const CONFETTI_COLORS = ["#c87860", "#6f947a", "#e0ad59", "#7f9ead"];
+
+type ConfettiParticle = {
+  angle: number;
+  angularVelocity: number;
+  color: string;
+  height: number;
+  lifetime: number;
+  rotation: number;
+  width: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+};
 
 function getInitials(displayName: string) {
   const parts = displayName.trim().split(/\s+/).filter(Boolean);
@@ -55,6 +70,7 @@ function localDateKey(date: Date) {
 }
 
 function DailyProfileConfetti({ reducedMotion }: { reducedMotion: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -69,19 +85,88 @@ function DailyProfileConfetti({ reducedMotion }: { reducedMotion: boolean }) {
 
     if (reducedMotion) return;
     setVisible(true);
-    const timer = window.setTimeout(() => setVisible(false), 2200);
+    const timer = window.setTimeout(() => setVisible(false), 3000);
     return () => window.clearTimeout(timer);
   }, [reducedMotion]);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!visible || !canvas) return;
+
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const { innerHeight: height, innerWidth: width } = window;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const particles: ConfettiParticle[] = Array.from({ length: 18 }, (_, index) => {
+      const fromLeft = index % 2 === 0;
+      const angle = ((fromLeft ? 56 : 124) + Math.random() * 22) * (Math.PI / 180);
+      const speed = 780 + Math.random() * 460;
+
+      return {
+        angle: Math.random() * Math.PI * 2,
+        angularVelocity: (Math.random() - 0.5) * 16,
+        color: CONFETTI_COLORS[index % CONFETTI_COLORS.length]!,
+        height: 5 + Math.random() * 5,
+        lifetime: 1850 + Math.random() * 650,
+        rotation: Math.random() * Math.PI * 2,
+        width: 7 + Math.random() * 7,
+        x: width * (fromLeft ? 0.13 : 0.87),
+        y: height * (0.76 + Math.random() * 0.08),
+        vx: Math.cos(angle) * speed,
+        vy: -Math.sin(angle) * speed,
+      };
+    });
+
+    let animationFrame = 0;
+    let previousTime = performance.now();
+    const startedAt = previousTime;
+
+    const render = (now: number) => {
+      const elapsed = now - startedAt;
+      const delta = Math.min((now - previousTime) / 1000, 0.04);
+      previousTime = now;
+      context.clearRect(0, 0, width, height);
+
+      for (const particle of particles) {
+        particle.vx *= 0.997 ** (delta * 60);
+        particle.vy += 1250 * delta;
+        particle.x += particle.vx * delta;
+        particle.y += particle.vy * delta;
+        particle.rotation += particle.angularVelocity * delta;
+
+        const age = elapsed / particle.lifetime;
+        if (age >= 1) continue;
+
+        context.save();
+        context.globalAlpha = age > 0.72 ? 1 - (age - 0.72) / 0.28 : 1;
+        context.translate(particle.x, particle.y);
+        context.rotate(particle.rotation);
+        context.scale(1, Math.sin(elapsed / 90 + particle.angle) * 0.35 + 0.65);
+        context.fillStyle = particle.color;
+        context.fillRect(
+          -particle.width / 2,
+          -particle.height / 2,
+          particle.width,
+          particle.height,
+        );
+        context.restore();
+      }
+
+      if (elapsed < 2600) animationFrame = window.requestAnimationFrame(render);
+    };
+
+    animationFrame = window.requestAnimationFrame(render);
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [visible]);
+
   if (!visible) return null;
 
-  return (
-    <div aria-hidden="true" className={styles.confettiBurst}>
-      {Array.from({ length: 18 }, (_, index) => (
-        <span key={index} />
-      ))}
-    </div>
-  );
+  return <canvas aria-hidden="true" className={styles.confettiBurst} ref={canvasRef} />;
 }
 
 function ProfileOrbitScene({ initials }: { initials: string }) {

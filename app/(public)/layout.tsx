@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
+import headerStyles from "@/components/layout/app-header.module.css";
 import { RouteMotion } from "@/components/motion/route-motion";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +16,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
       >
         Skip to main content
       </a>
-      <header className="sticky top-0 z-40 border-b border-[#e5ddd2] bg-[#f8f4ed]">
+      <header className={cn("sticky top-0 z-40 border-b border-[#e5ddd2]", headerStyles.appHeader)}>
         <div className="mx-auto flex min-h-[4.75rem] max-w-[1440px] items-center justify-between gap-4 px-5 md:px-10 lg:px-14">
           <Link
             className="group inline-flex min-h-11 items-baseline gap-2 transition-colors duration-[var(--duration-fast)] hover:text-[#b96c55]"

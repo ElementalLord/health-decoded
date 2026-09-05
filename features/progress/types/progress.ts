@@ -2,7 +2,9 @@ export type ProgressMilestoneState = "completed" | "current" | "locked";
 
 export type ProgressMilestone = {
   dayNumber: number;
+  estimatedMinutes: number;
   lessonTitle: string | null;
+  subtitle: string | null;
   state: ProgressMilestoneState;
   xpAwarded: number;
 };
@@ -29,7 +31,7 @@ export type ProgressAssignmentRow = {
   day_number: number;
   display_order: number;
   id: string;
-  lessons: { title: string };
+  lessons: { estimated_minutes: number; subtitle: string | null; title: string };
 };
 
 export type ProgressLessonRow = {

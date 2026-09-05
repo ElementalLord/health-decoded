@@ -102,6 +102,16 @@ export function LessonCompletionScreen({
           </Link>
           <Link
             className={cn(buttonVariants({ fullWidth: false, variant: "text" }), "min-h-11")}
+            href={
+              completion.firstTimeCompletion
+                ? `/progress?completed=${dayNumber}&xp=${completion.xpAwarded}`
+                : "/progress"
+            }
+          >
+            View updated progress
+          </Link>
+          <Link
+            className={cn(buttonVariants({ fullWidth: false, variant: "text" }), "min-h-11")}
             href="/stories"
           >
             Read a story

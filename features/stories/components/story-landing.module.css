@@ -1,7 +1,35 @@
 .page {
+  --stories-shell-bleed: 2rem;
+  isolation: isolate;
   margin-inline: auto;
   max-width: 72rem;
   padding: clamp(0.75rem, 2vw, 1.5rem) 0 clamp(4rem, 8vw, 7rem);
+  position: relative;
+}
+
+.page::before {
+  background-color: #f9f0e3;
+  background-image:
+    linear-gradient(rgb(249 240 227 / 60%), rgb(249 240 227 / 60%)),
+    url("/stories/landing/stories-page-background-v2.webp");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  content: "";
+  inset-block-end: calc(var(--stories-shell-bleed) * -1);
+  inset-block-start: calc(var(--stories-shell-bleed) * -1);
+  inset-inline-start: 50%;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%);
+  width: 100vw;
+  z-index: -1;
+}
+
+@media (min-width: 48rem) {
+  .page {
+    --stories-shell-bleed: 3rem;
+  }
 }
 
 .intro {
@@ -471,6 +499,13 @@
 }
 
 @media (max-width: 42rem) {
+  .page::before {
+    background-image:
+      linear-gradient(rgb(249 240 227 / 70%), rgb(249 240 227 / 70%)),
+      url("/stories/landing/stories-page-background-v2.webp");
+    background-size: 100% auto;
+  }
+
   .page {
     padding-top: 0;
   }

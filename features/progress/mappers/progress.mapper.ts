@@ -33,10 +33,13 @@ export function mapProgress({
   const progressByAssignment = new Map(
     progressRows.map((progress) => [progress.journey_lesson_id, progress]),
   );
-  const completedLessons = progressRows.filter((progress) => progress.status === "completed");
+  const completedProgressRows = assignments.flatMap((assignment) => {
+    const progress = progressByAssignment.get(assignment.id);
+    return progress?.status === "completed" ? [progress] : [];
+  });
   const totalLessons = assignments.length;
-  const percentage = Math.min(100, Math.round((completedLessons.length / totalLessons) * 100));
-  const journeyComplete = completedAt !== null || completedLessons.length === totalLessons;
+  const percentage = Math.min(100, Math.round((completedProgressRows.length / totalLessons) * 100));
+  const journeyComplete = completedAt !== null || completedProgressRows.length === totalLessons;
   const pointedProgress = currentJourneyLessonId
     ? progressByAssignment.get(currentJourneyLessonId)
     : undefined;
@@ -53,7 +56,9 @@ export function mapProgress({
     if (progress?.status === "completed") {
       return {
         dayNumber: assignment.day_number,
+        estimatedMinutes: assignment.lessons.estimated_minutes,
         lessonTitle: assignment.lessons.title,
+        subtitle: assignment.lessons.subtitle,
         state: "completed",
         xpAwarded: Math.max(0, progress.xp_awarded),
       };
@@ -62,7 +67,9 @@ export function mapProgress({
     if (assignment.id === currentAssignmentId) {
       return {
         dayNumber: assignment.day_number,
+        estimatedMinutes: assignment.lessons.estimated_minutes,
         lessonTitle: assignment.lessons.title,
+        subtitle: assignment.lessons.subtitle,
         state: "current",
         xpAwarded: 0,
       };
@@ -70,7 +77,9 @@ export function mapProgress({
 
     return {
       dayNumber: assignment.day_number,
+      estimatedMinutes: assignment.lessons.estimated_minutes,
       lessonTitle: null,
+      subtitle: null,
       state: "locked",
       xpAwarded: 0,
     };
@@ -93,13 +102,13 @@ export function mapProgress({
   );
 
   return {
-    completedLessons: completedLessons.length,
+    completedLessons: completedProgressRows.length,
     completedLessonsHistory,
     journeyComplete,
     journeyTitle,
     milestones,
     percentage,
-    totalLearningXp: completedLessons.reduce(
+    totalLearningXp: completedProgressRows.reduce(
       (total, progress) => total + Math.max(0, progress.xp_awarded),
       0,
     ),

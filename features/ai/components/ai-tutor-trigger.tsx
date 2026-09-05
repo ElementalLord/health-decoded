@@ -19,8 +19,8 @@ function AiTutorTrigger({ children, className }: { children: ReactNode; classNam
 function FloatingAiTutorTrigger() {
   return (
     <div className="ai-companion-trigger fixed right-4 z-[41] sm:right-6 lg:right-8">
-      <AiTutorTrigger className="group inline-flex min-h-16 items-center gap-2.5 rounded-full border border-border bg-card/95 p-1.5 pr-4 text-left text-foreground shadow-[0_10px_30px_rgb(61_47_41/0.18)] backdrop-blur-md transition-[border-color,background-color,transform,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:border-foreground/25 hover:bg-background hover:shadow-[0_14px_36px_rgb(61_47_41/0.22)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]">
-        <span className="relative size-12 shrink-0 overflow-hidden rounded-full bg-[#eee5d9] ring-1 ring-border">
+      <AiTutorTrigger className="group inline-flex min-h-16 items-center gap-2.5 rounded-full border border-[#d5c7b5] bg-[#f8eedf]/95 p-1.5 pr-4 text-left text-[#3f352f] shadow-[0_10px_30px_rgb(92_69_55/0.16)] backdrop-blur-md transition-[border-color,background-color,transform,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:border-[#b96c55]/45 hover:bg-[#f3e5d5] hover:shadow-[0_14px_36px_rgb(92_69_55/0.2)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]">
+        <span className="relative size-12 shrink-0 overflow-hidden rounded-full bg-[#eee2d3] ring-1 ring-[#d5c3b2]">
           <Image
             alt=""
             className="object-contain object-bottom transition-transform duration-[var(--duration-fast)] ease-[var(--ease-standard)] group-hover:scale-[1.04]"

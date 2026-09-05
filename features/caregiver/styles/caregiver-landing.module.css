@@ -19,18 +19,39 @@
 .routeFrame {
   min-width: 0;
   margin: -2rem -1.25rem;
-  overflow: clip;
+  overflow: visible;
   color: var(--caregiver-body);
   background: var(--caregiver-canvas);
   font-family: var(--caregiver-sans);
 }
 
 .landing {
+  position: relative;
+  z-index: 0;
   min-width: 0;
+  isolation: isolate;
   color: var(--caregiver-body);
-  background: var(--caregiver-canvas);
+  background: transparent;
   font-size: clamp(1rem, 0.98rem + 0.12vw, 1.12rem);
   line-height: 1.65;
+}
+
+.landing::before {
+  position: absolute;
+  z-index: -1;
+  width: 100vw;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  background-color: var(--caregiver-canvas);
+  background-image:
+    linear-gradient(rgb(247 241 231 / 58%), rgb(247 241 231 / 58%)),
+    url("/caregiver/landing/caregiver-whimsy-v1.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  content: "";
+  pointer-events: none;
+  transform: translateX(-50%);
 }
 
 .landing h1,
@@ -1144,7 +1165,6 @@
 .landing :is(button, a, label, summary):active,
 .urgentPage :is(button, a, label, summary):hover,
 .urgentPage :is(button, a, label, summary):active {
-  transform: none !important;
   box-shadow: none !important;
   filter: none !important;
 }
@@ -1157,6 +1177,713 @@
 .urgentPage button[class*="bg-primary"]:hover {
   border-color: var(--primary) !important;
   background: var(--primary) !important;
+}
+
+/* Landing orbit ---------------------------------------------------------- */
+
+.orbitExperience {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(100%, 74rem);
+  min-height: 0;
+  grid-template-rows: auto 50rem;
+  margin-inline: auto;
+  overflow: visible;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 62%, rgb(255 250 242 / 92%) 0 18%, transparent 39%),
+    radial-gradient(circle at 20% 22%, rgb(220 231 220 / 32%), transparent 23%),
+    radial-gradient(circle at 82% 74%, rgb(226 237 237 / 42%), transparent 24%);
+}
+
+.orbitExperience::before {
+  content: none;
+}
+
+.orbitExperience .hero {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  width: 100%;
+  min-height: 0;
+  inset: auto;
+  grid-template-columns: minmax(0, 1fr);
+  padding: clamp(2.75rem, 5vw, 4.5rem) 1.5rem clamp(1.25rem, 2vw, 1.75rem);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+  transform: none;
+  backdrop-filter: none;
+}
+
+.orbitExperience .hero::before {
+  content: none;
+}
+
+.orbitExperience .hero::after {
+  position: absolute;
+  width: 5.25rem;
+  height: 1px;
+  inset: auto auto 0 50%;
+  background: linear-gradient(90deg, transparent, rgb(183 101 77 / 58%) 22% 78%, transparent);
+  content: "";
+  transform: translateX(-50%);
+}
+
+.orbitExperience .heroCopy {
+  max-width: none;
+}
+
+.orbitExperience .heroTitle {
+  max-width: 22ch;
+  margin-inline: auto;
+  font-size: clamp(3rem, 4.8vw, 4.75rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.orbitExperience .heroExplanation {
+  max-width: 38rem;
+  margin: 1rem auto 0;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.orbitExperience .heroAudience {
+  max-width: 34rem;
+  margin: 0.45rem auto 0;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.orbitExperience .guidedPath {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  min-height: 50rem;
+  inset: auto;
+  padding: 0;
+  border: 0;
+  transform: translateY(-3rem);
+}
+
+.guidedPathHeading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.orbitGuide {
+  position: absolute;
+  z-index: 1;
+  width: min(58rem, calc(100% - 3rem));
+  height: 32rem;
+  inset: 50% auto auto 50%;
+  overflow: visible;
+  transform: translate(-50%, -50%);
+}
+
+.orbitGuideTrack {
+  fill: none;
+  stroke: rgb(40 76 65 / 30%);
+  stroke-dasharray: 0.08 0.55;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.orbitGuideCutouts {
+  fill: none;
+  stroke: black;
+  stroke-dasharray: 8 12;
+  stroke-dashoffset: 5.5;
+  stroke-linecap: butt;
+  stroke-width: 10.75rem;
+  animation: caregiver-orbit-guide-cutouts 75s linear infinite;
+  will-change: stroke-dashoffset;
+}
+
+.orbitHeart {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: 10.75rem;
+  aspect-ratio: 1;
+  inset: 50% auto auto 50%;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid rgb(40 76 65 / 16%);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+  transform: translate(-50%, -50%);
+}
+
+.orbitHeart::after {
+  content: none;
+}
+
+.centerIllustration {
+  z-index: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  transform-origin: center;
+  animation: caregiver-embrace-breathe 4.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.orbitExperience .moduleSequence {
+  position: absolute;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  display: block;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  list-style: none;
+}
+
+.orbitExperience .moduleSequence > li {
+  --module-art-size: 9.25rem;
+  --module-art-radius: 4.625rem;
+
+  position: absolute;
+  z-index: 3;
+  width: 11.5rem;
+  inset: 0 auto auto 0;
+  offset-path: ellipse(min(29rem, calc(50% - 1.5rem)) 16rem at 50% 50%);
+  offset-distance: 0%;
+  offset-anchor: 50% var(--module-art-radius);
+  offset-rotate: 0deg;
+  pointer-events: auto;
+  animation: caregiver-orbit-path 75s linear infinite;
+  animation-delay: var(--orbit-delay);
+  will-change: offset-distance;
+}
+
+.orbitExperience .moduleSequence > li:has(.moduleCard:hover),
+.orbitExperience .moduleSequence > li:has(.moduleCardLink:focus-visible) {
+  z-index: 5;
+}
+
+/* Hover and focus slow the orbit gradually in the component. A press freezes
+   the current rendered frame so the circle cannot escape before release. */
+.orbitExperience .moduleSequence:has(.moduleCardLink:active) > li,
+.orbitExperience .guidedPath:has(.moduleCardLink:active) .orbitGuideCutouts {
+  animation-play-state: paused;
+}
+
+.orbitCounter {
+  animation: none;
+}
+
+.orbitCorrection {
+  transform: none;
+}
+
+.moduleCard {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  transform-origin: center;
+  transition:
+    transform 440ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 300ms ease;
+}
+
+.moduleCardLink {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.orbitExperience .moduleCardLink:focus-visible {
+  outline: none;
+}
+
+.orbitExperience .moduleCardLink:focus-visible .moduleArtwork {
+  outline: 3px solid var(--caregiver-focus);
+  outline-offset: 4px;
+}
+
+/* Beat the older marquee-card selector: orbit lessons never have card panels. */
+.orbitExperience .moduleSequence .moduleCard {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.moduleArtwork {
+  position: relative;
+  z-index: 2;
+  width: var(--module-art-size);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid rgb(40 76 65 / 16%);
+  border-radius: 50%;
+  background: var(--caregiver-raised);
+  box-shadow: 0 0.75rem 2rem rgb(40 76 65 / 14%);
+  transition: box-shadow 440ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.orbitExperience .moduleSequence > li:nth-child(2) {
+  --module-art-size: 8.65rem;
+  --module-art-radius: 4.325rem;
+}
+
+.orbitExperience .moduleSequence > li:nth-child(3) {
+  --module-art-size: 9.8rem;
+  --module-art-radius: 4.9rem;
+}
+
+.orbitExperience .moduleSequence > li:nth-child(4) {
+  --module-art-size: 8.9rem;
+  --module-art-radius: 4.45rem;
+}
+
+.orbitExperience .moduleSequence > li:nth-child(5) {
+  --module-art-size: 9.65rem;
+  --module-art-radius: 4.825rem;
+}
+
+.moduleArtwork::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 1.8rem rgb(255 250 242 / 44%);
+  content: "";
+  pointer-events: none;
+}
+
+.moduleArtwork img {
+  object-fit: cover;
+}
+
+.orbitExperience .moduleOrder {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  width: 1.9rem;
+  aspect-ratio: 1;
+  inset: auto 0.1rem 0.1rem auto;
+  place-items: center;
+  border: 2px solid var(--caregiver-canvas);
+  border-radius: 50%;
+  color: var(--caregiver-raised);
+  background: var(--caregiver-terracotta);
+  font-family: var(--caregiver-sans);
+  font-size: 0.67rem;
+  font-weight: 780;
+}
+
+.moduleCardCopy {
+  position: relative;
+  padding: 0.7rem 0 0;
+  margin-block-start: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+  backdrop-filter: none;
+}
+
+.orbitExperience .moduleCardHeader {
+  justify-content: center;
+  gap: 0.45rem;
+  margin-block-end: 0.3rem;
+  color: var(--caregiver-terracotta);
+  font-size: 0.62rem;
+  font-weight: 760;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.orbitExperience .moduleCardHeader > span:first-child::after {
+  margin-inline-start: 0.45rem;
+  color: var(--caregiver-rule);
+  content: "·";
+}
+
+.orbitExperience .moduleTime {
+  padding: 0;
+  border: 0;
+  color: var(--caregiver-body);
+  font-size: inherit;
+  white-space: nowrap;
+}
+
+.orbitExperience .moduleCard h3 {
+  max-width: 11ch;
+  margin-inline: auto;
+  font-size: 0.98rem;
+  line-height: 1.06;
+}
+
+.orbitExperience .moduleCard p {
+  display: none;
+}
+
+.moduleArrow {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-inline-start: 0.4rem;
+  color: var(--caregiver-terracotta);
+  vertical-align: -0.08em;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.orbitExperience .moduleCard .textButton {
+  width: fit-content;
+  min-height: 1.8rem;
+  gap: 0.25rem;
+  margin-inline: auto;
+  padding: 0;
+  font-size: 0.68rem;
+  text-underline-offset: 0.22rem;
+}
+
+.orbitExperience .moduleCard .textButton svg {
+  width: 0.78rem;
+  height: 0.78rem;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.orbitExperience .moduleCardLink:focus-visible .moduleCard {
+  transform: translateY(-0.4rem) scale(1.085);
+}
+
+.orbitExperience .moduleCardLink:focus-visible .moduleArtwork {
+  box-shadow: 0 1.35rem 3.25rem rgb(40 76 65 / 20%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .orbitExperience .moduleCard:hover {
+    filter: saturate(1.04);
+    transform: translateY(-0.4rem) scale(1.085);
+  }
+
+  .orbitExperience .moduleCard:hover .moduleArrow {
+    transform: translate(0.12rem, -0.12rem);
+  }
+
+  .orbitExperience .moduleCard:hover .moduleArtwork {
+    box-shadow: 0 1.35rem 3.25rem rgb(40 76 65 / 20%);
+  }
+}
+
+.orbitExperience .moduleCard:active {
+  filter: saturate(1.02);
+  transform: translateY(-0.1rem) scale(0.985);
+  transition-duration: 90ms;
+}
+
+@keyframes caregiver-orbit-path {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes caregiver-orbit-guide-cutouts {
+  to {
+    stroke-dashoffset: -94.5;
+  }
+}
+
+@keyframes caregiver-embrace-breathe {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+
+  9% {
+    transform: scale3d(1.024, 1.024, 1);
+  }
+
+  18% {
+    transform: scale3d(1, 1, 1);
+  }
+
+  27% {
+    transform: scale3d(1.014, 1.014, 1);
+  }
+
+  40%,
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@media (max-width: 64rem) {
+  .orbitExperience {
+    display: block;
+    min-height: 0;
+    grid-template-rows: none;
+    padding-block-end: 2rem;
+    background:
+      radial-gradient(circle at 20% 14%, rgb(220 231 220 / 38%), transparent 24%),
+      radial-gradient(circle at 88% 45%, rgb(226 237 237 / 46%), transparent 27%);
+  }
+
+  .landing {
+    background-image: none;
+  }
+
+  .orbitExperience::before,
+  .orbitGuide {
+    display: none;
+  }
+
+  .orbitExperience .hero {
+    position: relative;
+    width: min(100% - 2rem, 40rem);
+    inset: auto;
+    margin: clamp(1rem, 4vw, 3rem) auto 0;
+    padding-inline: 1rem;
+    transform: none;
+  }
+
+  .orbitExperience .guidedPath {
+    position: relative;
+    inset: auto;
+    padding: clamp(3.5rem, 7vw, 5rem) 1rem 1rem;
+    transform: none;
+  }
+
+  .orbitHeart {
+    position: relative;
+    inset: auto;
+    margin: 0 auto 2.5rem;
+    transform: none;
+  }
+
+  .guidedPathHeading {
+    position: static;
+    width: min(100%, 39rem);
+    height: auto;
+    margin: 0 auto 2rem;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .guidedPathHeading > p:last-child {
+    margin-block-start: 0.8rem;
+  }
+
+  .orbitExperience .moduleSequence {
+    position: static;
+    display: grid;
+    width: min(100%, 48rem);
+    height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0 auto;
+    animation: none;
+    transform: none !important;
+  }
+
+  .orbitExperience .moduleSequence > li {
+    position: static;
+    width: auto;
+    offset-path: none;
+    animation: none;
+    transform: none;
+  }
+
+  .orbitCounter {
+    height: 100%;
+    animation: none;
+    transform: none;
+  }
+
+  .orbitCorrection {
+    height: 100%;
+    transform: none;
+  }
+
+  .moduleCard {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 7.75rem minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .moduleArtwork {
+    width: 8.4rem;
+    margin-inline-end: -0.65rem;
+  }
+
+  .moduleCardCopy {
+    min-height: 0;
+    padding: 0 0 0 1.55rem;
+    margin: 0;
+    text-align: start;
+  }
+
+  .orbitExperience .moduleCardHeader {
+    justify-content: flex-start;
+  }
+
+  .orbitExperience .moduleCard h3,
+  .orbitExperience .moduleCard .textButton {
+    margin-inline: 0;
+  }
+}
+
+@media (max-width: 40rem) {
+  .orbitExperience .hero {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .orbitExperience .heroTitle {
+    font-size: clamp(2.5rem, 12vw, 3.4rem);
+  }
+
+  .orbitExperience .moduleSequence {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .moduleCard {
+    grid-template-columns: 7.25rem minmax(0, 1fr);
+  }
+
+  .moduleArtwork {
+    width: 7.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbitExperience {
+    display: block;
+    min-height: 0;
+    grid-template-rows: none;
+    padding-block-end: 2rem;
+  }
+
+  .orbitExperience::before,
+  .orbitGuide {
+    display: none;
+  }
+
+  .orbitExperience .hero,
+  .orbitExperience .guidedPath,
+  .orbitExperience .moduleSequence,
+  .orbitExperience .moduleSequence > li {
+    position: relative;
+    inset: auto;
+    transform: none !important;
+  }
+
+  .orbitExperience .hero {
+    width: min(100% - 2rem, 40rem);
+    margin: 2rem auto 0;
+  }
+
+  .orbitExperience .guidedPath {
+    padding: 4rem 1rem 1rem;
+  }
+
+  .orbitHeart {
+    position: relative;
+    inset: auto;
+    margin: 0 auto 2.5rem;
+    transform: none;
+  }
+
+  .guidedPathHeading {
+    position: static;
+    width: min(100%, 39rem);
+    height: auto;
+    margin: 0 auto 2rem;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .orbitExperience .moduleSequence {
+    display: grid;
+    width: min(100%, 48rem);
+    height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0 auto;
+    animation: none;
+  }
+
+  .orbitExperience .moduleSequence > li {
+    width: auto;
+    offset-path: none;
+    animation: none;
+  }
+
+  .orbitCounter,
+  .orbitCorrection {
+    height: 100%;
+    animation: none;
+    transform: none;
+  }
+
+  .centerIllustration,
+  .orbitCounter {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 40rem) {
+  .orbitExperience .moduleSequence {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+:global([data-reduced-motion="true"]) .orbitExperience .moduleSequence > li,
+:global([data-reduced-motion="true"]) .centerIllustration,
+:global([data-reduced-motion="true"]) .orbitCounter {
+  animation: none !important;
+}
+
+:global([data-reduced-motion="true"]) .orbitExperience .moduleSequence > li:nth-child(1) {
+  offset-distance: 0%;
+}
+
+:global([data-reduced-motion="true"]) .orbitExperience .moduleSequence > li:nth-child(2) {
+  offset-distance: 20%;
+}
+
+:global([data-reduced-motion="true"]) .orbitExperience .moduleSequence > li:nth-child(3) {
+  offset-distance: 40%;
+}
+
+:global([data-reduced-motion="true"]) .orbitExperience .moduleSequence > li:nth-child(4) {
+  offset-distance: 60%;
+}
+
+:global([data-reduced-motion="true"]) .orbitExperience .moduleSequence > li:nth-child(5) {
+  offset-distance: 80%;
 }
 
 .landing button[class*="bg-card"]:hover,

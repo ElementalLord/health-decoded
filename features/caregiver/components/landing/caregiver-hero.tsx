@@ -12,24 +12,6 @@ export function CaregiverHero() {
         <p className={styles.heroExplanation}>{hero.explanation}</p>
         <p className={styles.heroAudience}>{hero.audience}</p>
       </div>
-
-      <div className={styles.tableScene} aria-hidden="true">
-        <div className={styles.window}>
-          <span className={styles.windowLight} />
-          <span className={styles.windowFrameVertical} />
-          <span className={styles.windowFrameHorizontal} />
-        </div>
-        <div className={styles.table}>
-          <span className={styles.tabletop} />
-          <span className={styles.tableLegLeft} />
-          <span className={styles.tableLegRight} />
-          <span className={styles.placeOne} />
-          <span className={styles.placeTwo} />
-          <span className={styles.placeThree} />
-          <span className={styles.cup} />
-          <span className={styles.notebook} />
-        </div>
-      </div>
     </header>
   );
 }

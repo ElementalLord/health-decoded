@@ -44,7 +44,7 @@ export async function getProgressData(): Promise<Result<ProgressViewModel>> {
       .maybeSingle(),
     database
       .from("journey_lessons")
-      .select("id, day_number, display_order, lessons!inner(title)")
+      .select("id, day_number, display_order, lessons!inner(title, subtitle, estimated_minutes)")
       .eq("journey_id", userJourney.journey_id)
       .eq("status", "published")
       .eq("lessons.status", "published")

@@ -10,8 +10,10 @@ export interface CaregiverLandingProps {
 export function CaregiverLanding({ region: _region }: CaregiverLandingProps) {
   return (
     <div className={styles.landing} data-caregiver-page="CG-LANDING">
-      <CaregiverHero />
-      <CaregiverGuidedPath />
+      <div className={styles.orbitExperience}>
+        <CaregiverHero />
+        <CaregiverGuidedPath />
+      </div>
     </div>
   );
 }

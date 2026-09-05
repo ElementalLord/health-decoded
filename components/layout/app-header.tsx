@@ -8,6 +8,8 @@ import { SearchCommand } from "@/features/universal-search/components/search-com
 import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
+import styles from "./app-header.module.css";
+
 function isActiveRoute(pathname: string, route: ApplicationRoute) {
   return route.href === "/" ? pathname === route.href : pathname.startsWith(route.href);
 }
@@ -17,7 +19,12 @@ function AppHeader({ routes = applicationRoutes }: { routes?: readonly Applicati
   const pathname = usePathname();
 
   return (
-    <header className="safe-area-top sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md">
+    <header
+      className={cn(
+        "safe-area-top sticky top-0 z-40 border-b border-border backdrop-blur-md",
+        styles.appHeader,
+      )}
+    >
       <div className="mx-auto flex min-h-[4.5rem] w-full max-w-[1240px] items-center justify-between gap-4 px-5 md:px-8 lg:px-10">
         <Link
           className="inline-flex min-h-11 items-baseline gap-2 rounded-[8px] text-base font-semibold tracking-tight transition-colors hover:text-accent-warm focus-visible:ring-2 focus-visible:ring-ring"

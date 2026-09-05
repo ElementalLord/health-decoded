@@ -12,6 +12,10 @@ const guidedPathSource = await readFile(
   new URL("../features/caregiver/components/landing/caregiver-guided-path.tsx", import.meta.url),
   "utf8",
 );
+const landingStyles = await readFile(
+  new URL("../features/caregiver/styles/caregiver-landing.module.css", import.meta.url),
+  "utf8",
+);
 const feedbackSource = await readFile(
   new URL("../features/caregiver/components/foundation/caregiver-feedback.tsx", import.meta.url),
   "utf8",
@@ -43,6 +47,19 @@ test("the guided path keeps the module sequence without repeating the starting c
   assert.doesNotMatch(guidedPathSource, /name="caregiver-beginning-strategy"/);
   assert.doesNotMatch(guidedPathSource, /submitSelection|changeChoice|beginChooser/);
   assert.doesNotMatch(guidedPathSource, /href="\/caregiver\/tools\//);
+});
+
+test("orbiting lesson links slow on targeting and freeze only for the active press", () => {
+  assert.match(landingStyles, /moduleSequence:has\(\.moduleCardLink:active\)/);
+  assert.match(landingStyles, /animation-play-state:\s*paused/);
+  assert.match(landingStyles, /\.moduleCardLink\s*\{[^}]*pointer-events:\s*auto/s);
+  assert.match(landingStyles, /\.moduleSequence\s*>\s*li\s*\{[^}]*pointer-events:\s*auto/s);
+  assert.match(guidedPathSource, /const HOVER_RATE = 0;/);
+  assert.match(guidedPathSource, /easeOrbitToward|playbackRate/);
+  assert.match(
+    guidedPathSource,
+    /className=\{styles\.moduleCardLink\}[\s\S]*onPointerEnter=\{\(\) => easeOrbitToward\(HOVER_RATE\)\}/,
+  );
 });
 
 test("feedback is announced politely and receives focus only after deliberate submission", () => {

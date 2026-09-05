@@ -1,0 +1,734 @@
+.experience {
+  display: grid;
+  gap: 3rem;
+}
+
+.overview {
+  align-items: center;
+  border-block: 1px solid var(--border);
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  padding-block: 2.5rem;
+}
+
+.ring {
+  align-items: center;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: 11rem;
+  contain: paint;
+}
+
+.ringSvg {
+  inset: 0;
+  position: absolute;
+  transform: rotate(-90deg);
+}
+
+.ringTrack,
+.ringValue {
+  stroke-width: 5;
+}
+
+.ringTrack {
+  stroke: color-mix(in srgb, var(--border) 58%, var(--background));
+}
+
+.ringValue {
+  stroke: var(--accent-warm);
+  stroke-dasharray: 100;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 950ms var(--ease-standard);
+}
+
+.ringNumber {
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-variation-settings:
+    "opsz" 52,
+    "SOFT" 55;
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.ringNumberValue,
+.xpNumber {
+  font-variant-numeric: tabular-nums;
+}
+
+.ringLabel,
+.lessonMeta,
+.continueMeta,
+.phaseMeta {
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.ringLabel {
+  margin-top: 0.55rem;
+}
+
+.overviewCopy {
+  min-width: 0;
+}
+
+.overviewHeadingRow {
+  align-items: end;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-top: 0.8rem;
+}
+
+.overviewTitle,
+.recordTitle {
+  font-family: var(--font-serif);
+  font-size: var(--text-section-title);
+  font-variation-settings:
+    "opsz" 28,
+    "SOFT" 65;
+  font-weight: 550;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.journeyTitle,
+.recordHeading p,
+.overviewFoot > p {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.journeyTitle {
+  margin-top: 0.3rem;
+}
+
+.lessonCount {
+  flex: none;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.progressTrack {
+  background: var(--muted);
+  height: 0.35rem;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  width: 100%;
+}
+
+.progressValue {
+  background: var(--accent-warm);
+  display: block;
+  height: 100%;
+  transform-origin: left;
+  transition: transform 950ms var(--ease-standard);
+  will-change: transform;
+  width: 100%;
+}
+
+.overviewFoot {
+  align-items: center;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+}
+
+.xp {
+  align-items: center;
+  display: flex;
+  flex: none;
+  gap: 0.65rem;
+  position: relative;
+}
+
+.xpNumber {
+  color: var(--success);
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-variation-settings:
+    "opsz" 32,
+    "SOFT" 65;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  min-width: 2.5ch;
+  text-align: right;
+}
+
+.xp strong,
+.xp small {
+  display: block;
+}
+
+.xp strong {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.xp small {
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  margin-top: 0.15rem;
+}
+
+.xpGain {
+  animation: xp-gain 1.25s var(--ease-standard) both;
+  color: var(--success);
+  font-size: 0.75rem;
+  font-weight: 750;
+  position: absolute;
+  right: 0;
+  top: -1.2rem;
+}
+
+.continueSection {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.continueRow {
+  align-items: end;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+  min-height: 9rem;
+  padding: 1.4rem 0.75rem 1.4rem 0;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    transform 200ms var(--ease-standard);
+}
+
+.continueCopy span,
+.continueAction span,
+.continueAction strong {
+  display: block;
+}
+
+.continueTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(1.65rem, 4vw, 2.25rem);
+  font-variation-settings:
+    "opsz" 36,
+    "SOFT" 65;
+  font-weight: 520;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin-top: 0.45rem;
+}
+
+.continueDescription {
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-top: 0.65rem;
+  max-width: 42rem;
+}
+
+.continueAction {
+  color: var(--muted-foreground);
+  flex: none;
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+.continueAction strong {
+  align-items: center;
+  color: var(--foreground);
+  display: flex;
+  font-size: 0.875rem;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.continueAction svg,
+.phaseCompletion svg {
+  height: 1rem;
+  transition: transform 200ms var(--ease-standard);
+  width: 1rem;
+}
+
+.phaseCompletion {
+  border-block: 1px solid color-mix(in srgb, var(--success) 40%, var(--border));
+  padding: 1.5rem 0;
+}
+
+.phaseCompletion > p:not(:first-child) {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  line-height: 1.45;
+  margin-top: 0.6rem;
+  max-width: 42rem;
+}
+
+.phaseCompletion a {
+  align-items: center;
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 700;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-warm) 45%, transparent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3rem;
+}
+
+.record {
+  padding-top: 0.5rem;
+}
+
+.recordHeading {
+  margin-bottom: 2rem;
+}
+
+.recordTitle {
+  color: var(--success);
+}
+
+.recordHeading p {
+  margin-top: 0.45rem;
+}
+
+.timeline {
+  padding-left: 3rem;
+  position: relative;
+}
+
+.timelineTrack,
+.timelineValue {
+  bottom: 2.5rem;
+  left: 0.94rem;
+  position: absolute;
+  top: 1.25rem;
+  width: 1px;
+}
+
+.timelineTrack {
+  background: var(--border);
+}
+
+.timelineValue {
+  background: var(--success);
+  transform-origin: top;
+  transition: transform 950ms var(--ease-standard);
+  will-change: transform;
+}
+
+.phase {
+  animation: phase-arrive 360ms var(--ease-standard) both;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+
+.phase:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.phaseNode {
+  align-items: center;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  height: 1.1rem;
+  justify-content: center;
+  left: -2.61rem;
+  position: absolute;
+  top: 1.8rem;
+  width: 1.1rem;
+  z-index: 1;
+}
+
+.phaseNode svg {
+  height: 0.72rem;
+  stroke-width: 2.5;
+  width: 0.72rem;
+}
+
+.phase[data-state="completed"] .phaseNode {
+  background: var(--success);
+  border-color: var(--success);
+  color: var(--success-foreground);
+}
+
+.phase[data-state="current"] .phaseNode {
+  animation: current-node 700ms var(--ease-standard) 280ms both;
+  background: var(--accent-warm);
+  border-color: var(--accent-warm);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-warm) 13%, transparent);
+}
+
+.phaseButton {
+  align-items: center;
+  cursor: pointer;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 5.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.phaseNumber {
+  color: color-mix(in srgb, var(--success) 78%, var(--background));
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 350;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.phaseTitle {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-variation-settings:
+    "opsz" 28,
+    "SOFT" 65;
+  font-weight: 580;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.phaseMeta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.35rem;
+}
+
+.phaseMeta em {
+  color: var(--accent-warm);
+  font-style: normal;
+}
+
+.phase[data-state="future"] .phaseNumber,
+.phase[data-state="future"] .phaseTitle {
+  color: var(--muted-foreground);
+}
+
+.chevron {
+  color: var(--muted-foreground);
+  height: 1.15rem;
+  transition: transform 280ms var(--ease-standard);
+  width: 1.15rem;
+}
+
+.phaseButton[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+.phaseReveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 300ms var(--ease-standard),
+    opacity 220ms ease;
+}
+
+.phaseReveal > div {
+  overflow: hidden;
+}
+
+.phaseReveal[data-open="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.lessonList {
+  border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  padding: 0.35rem 0 1rem;
+}
+
+.lessonItem {
+  margin-left: 0.3rem;
+  position: relative;
+}
+
+.lessonItem:not(:last-child)::after {
+  background: var(--border);
+  content: "";
+  height: calc(100% - 1.5rem);
+  left: 0.65rem;
+  position: absolute;
+  top: 2.25rem;
+  width: 1px;
+}
+
+.lessonLink,
+.lessonLocked {
+  align-items: start;
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 4.6rem;
+  padding: 0.9rem 0.7rem;
+}
+
+.lessonLink {
+  transition:
+    background-color 180ms ease,
+    transform 180ms var(--ease-standard);
+}
+
+.lessonMarker {
+  align-items: center;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--accent-warm);
+  display: flex;
+  height: 1.35rem;
+  justify-content: center;
+  margin-top: 0.1rem;
+  position: relative;
+  width: 1.35rem;
+  z-index: 1;
+}
+
+.lessonMarker svg {
+  height: 0.8rem;
+  stroke-width: 2.5;
+  width: 0.8rem;
+}
+
+.lessonMarker[data-achievement="true"] svg path {
+  animation: check-draw 460ms var(--ease-standard) 180ms both;
+  stroke-dasharray: 24;
+}
+
+.lessonMarkerComplete {
+  background: var(--success);
+  border-color: var(--success);
+  color: var(--success-foreground);
+}
+
+.lessonCopy span {
+  display: block;
+}
+
+.lessonTitle {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-variation-settings:
+    "opsz" 20,
+    "SOFT" 65;
+  font-weight: 570;
+  line-height: 1.35;
+  margin-top: 0.2rem;
+}
+
+.lessonDetail {
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+}
+
+.quiet {
+  color: var(--muted-foreground);
+  font-weight: 470;
+}
+
+.rowArrow {
+  color: var(--muted-foreground);
+  height: 0.95rem;
+  margin-top: 0.2rem;
+  transition: transform 180ms var(--ease-standard);
+  width: 0.95rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .continueRow:hover {
+    background: color-mix(in srgb, var(--card) 55%, transparent);
+    border-top-color: color-mix(in srgb, var(--accent-warm) 42%, var(--border));
+    transform: translateY(-1px);
+  }
+
+  .continueRow:hover .continueAction svg,
+  .phaseCompletion a:hover svg,
+  .lessonLink:hover .rowArrow {
+    transform: translateX(0.22rem);
+  }
+
+  .lessonLink:hover {
+    background: color-mix(in srgb, var(--muted) 45%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .phaseButton:hover .phaseTitle {
+    color: var(--accent-warm);
+  }
+}
+
+@media (max-width: 40rem) {
+  .experience {
+    gap: 2.5rem;
+  }
+
+  .overview {
+    gap: 1.75rem;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding-block: 2rem;
+  }
+
+  .ring {
+    width: 9.5rem;
+  }
+
+  .overviewCopy {
+    width: 100%;
+  }
+
+  .overviewHeadingRow,
+  .overviewFoot,
+  .continueRow {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .overviewHeadingRow,
+  .overviewFoot {
+    gap: 1rem;
+  }
+
+  .lessonCount {
+    order: -1;
+  }
+
+  .continueRow {
+    display: flex;
+    gap: 1.25rem;
+    min-height: 0;
+    padding-block: 1.25rem;
+  }
+
+  .continueAction {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    width: 100%;
+  }
+
+  .continueAction strong {
+    margin-top: 0;
+  }
+
+  .timeline {
+    padding-left: 2.25rem;
+  }
+
+  .timelineTrack,
+  .timelineValue {
+    left: 0.6rem;
+  }
+
+  .phaseNode {
+    left: -2.19rem;
+  }
+
+  .phaseButton {
+    gap: 0.7rem;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .phaseNumber {
+    font-size: 2rem;
+  }
+
+  .phaseTitle {
+    font-size: 1.25rem;
+  }
+
+  .lessonLink,
+  .lessonLocked {
+    padding-inline: 0.25rem;
+  }
+}
+
+@keyframes phase-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(0.3rem);
+  }
+}
+
+@keyframes current-node {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-warm) 25%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-warm) 13%, transparent);
+  }
+}
+
+@keyframes xp-gain {
+  0% {
+    opacity: 0;
+    transform: translateY(0.3rem);
+  }
+  18%,
+  70% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+}
+
+@keyframes check-draw {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ringValue,
+  .progressValue,
+  .timelineValue,
+  .chevron,
+  .phaseReveal,
+  .phase,
+  .phaseNode,
+  .lessonMarker[data-achievement="true"] svg path,
+  .xpGain {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:global([data-reduced-motion="true"]) .ringValue,
+:global([data-reduced-motion="true"]) .progressValue,
+:global([data-reduced-motion="true"]) .timelineValue,
+:global([data-reduced-motion="true"]) .chevron,
+:global([data-reduced-motion="true"]) .phaseReveal,
+:global([data-reduced-motion="true"]) .phase,
+:global([data-reduced-motion="true"]) .phaseNode,
+:global([data-reduced-motion="true"]) .lessonMarker[data-achievement="true"] svg path,
+:global([data-reduced-motion="true"]) .xpGain {
+  animation: none !important;
+  transition-duration: 0.01ms !important;
+}
