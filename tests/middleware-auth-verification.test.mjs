@@ -131,6 +131,24 @@ test("public pages bypass session middleware so static output stays CDN-cacheabl
   assert.match(middleware, /if \(!protectedRoute && !sessionAwareAuthRoutePaths\.has/);
 });
 
+test("public images inside protected page namespaces bypass authentication", async () => {
+  const middleware = await readFile(
+    new URL("../services/supabase/middleware.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(middleware, /publicImagePathPattern/);
+  assert.match(
+    middleware,
+    /publicImagePathPattern = \/\\\.\(\?:apng\|avif\|gif\|ico\|jpe\?g\|png\|svg\|webp\)\$\/i/,
+  );
+  assert.ok(
+    middleware.indexOf("publicImagePathPattern.test(pathname)") <
+      middleware.indexOf("protectedRoutePrefixes.some"),
+    "image paths must be excluded before protected route prefixes are evaluated",
+  );
+});
+
 test("a valid ES256 session verifies locally with no network call", async () => {
   const { authenticated, calls } = await verify(await cookieFor(ACCOUNT_A));
   assert.equal(authenticated, true);

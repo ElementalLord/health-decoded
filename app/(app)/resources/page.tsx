@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { ResourcesList } from "@/features/resources/components/resources";
+import styles from "@/features/resources/components/resources.module.css";
 import { listReviewedResources } from "@/features/resources/services/resources.server";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
 import { sectionIcons } from "@/lib/section-icons";
@@ -15,8 +16,10 @@ export default async function ResourcesPage() {
   const resources = listReviewedResources();
 
   return (
-    <section className="mx-auto max-w-6xl py-6 sm:py-10">
-      <ResourcesList resources={resources} />
+    <section className={styles.resourcesPage}>
+      <div className={styles.resourcesContent}>
+        <ResourcesList resources={resources} />
+      </div>
     </section>
   );
 }

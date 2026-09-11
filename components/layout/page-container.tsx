@@ -8,8 +8,8 @@ function PageContainer({ className, reading = false, ...props }: PageContainerPr
   return (
     <main
       className={cn(
-        "mx-auto w-full px-5 py-8 md:px-8 md:py-12 lg:px-10",
-        reading ? "max-w-[760px]" : "max-w-[1240px]",
+        "app-page-container mx-auto w-full px-[clamp(1.25rem,4vw,3.5rem)] py-[clamp(1.5rem,4vw,3rem)]",
+        reading ? "max-w-[800px]" : "max-w-[1400px]",
         className,
       )}
       {...props}

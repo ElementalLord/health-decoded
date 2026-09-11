@@ -30,7 +30,9 @@ export function parseAiProviderText(value: unknown): NormalizedAiProviderResult 
   return { ok: true, text: value.trim() };
 }
 
-export function normalizeAiProviderFailure(category: string): NormalizedAiProviderResult {
+export function normalizeAiProviderFailure(
+  category: string,
+): Extract<NormalizedAiProviderResult, { readonly ok: false }> {
   const knownCategories = new Set<AiProviderFailureCategory>([
     "configuration",
     "rate_limited",

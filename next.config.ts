@@ -52,6 +52,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    qualities: [75, 90],
+  },
   async redirects() {
     return [{ source: "/ai", destination: "/journey?ask=1", permanent: true }];
   },

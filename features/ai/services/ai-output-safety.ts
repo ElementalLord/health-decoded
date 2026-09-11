@@ -7,7 +7,7 @@ const executableContentPattern =
 const individualizedDiagnosisPattern =
   /\b(?:you have|you are diagnosed with|this means you have|your symptoms mean)\b.{0,80}\b(?:diabetes|hypoglycemia|hyperglycemia|condition|disease)\b/i;
 const medicationDirectionPattern =
-  /\b(?:you should|you must|you need to|i recommend (?:that )?you|it is safe for you to)\b.{0,100}\b(?:take|start|stop|skip|increase|decrease|change|adjust|double|halve)\b|(?:^|[.!?]\s+)(?:please\s+)?(?:take|start|stop|skip|increase|decrease|change|adjust|double|halve)\b.{0,80}\b(?:medication|medicine|metformin|insulin|dose|dosage|prescription|units?)\b|\b\d+(?:\.\d+)?\s*(?:units?|mg|mcg|milligrams?)\b/i;
+  /\b(?:you should|you must|you need to|i recommend (?:that )?you|it is safe for you to)\b.{0,100}\b(?:take|start|stop|skip|increase|decrease|change|adjust|double|halve)\b|(?:^|[.!?]\s+)(?:please\s+)?(?:take|start|stop|skip|increase|decrease|change|adjust|double|halve)\b.{0,80}\b(?:your\s+)?(?:medication|medicine|metformin|insulin|dose|dosage|prescription|units?)\b/i;
 const personalResultPattern =
   /\b(?:your|this)\s+(?:a1c|blood sugar|glucose|lab|test result)\b.{0,100}\b(?:means|shows|proves|indicates|is (?:safe|dangerous|normal|high|low))\b/i;
 

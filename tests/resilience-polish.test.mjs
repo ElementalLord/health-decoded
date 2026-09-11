@@ -10,6 +10,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const sources = Object.fromEntries(
   await Promise.all(
     [
+      ["rootLayout", "app/layout.tsx"],
       ["layout", "app/(app)/layout.tsx"],
       ["appError", "app/(app)/error.tsx"],
       ["globalError", "app/error.tsx"],
@@ -25,6 +26,8 @@ const sources = Object.fromEntries(
       ["aiContext", "features/ai/services/ai-context.server.ts"],
       ["aiSchema", "features/ai/schemas/ai-chat.schema.ts"],
       ["aiParser", "services/ai/response-parser.ts"],
+      ["aiSearchGrounding", "features/ai/services/ai-search-grounding.ts"],
+      ["aiProvider", "services/ai/provider.ts"],
       ["search", "features/universal-search/components/search-experience.tsx"],
       ["appointment", "features/appointment-prep/components/appointment-prep-page.tsx"],
       ["profile", "features/profile/components/profile-content.tsx"],
@@ -43,6 +46,11 @@ const sources = Object.fromEntries(
     ].map(async ([key, path]) => [key, await read(path)]),
   ),
 );
+
+test("browser extensions cannot surface a root body hydration overlay", () => {
+  assert.match(sources.rootLayout, /<body suppressHydrationWarning>/);
+  assert.doesNotMatch(sources.rootLayout, /<html[^>]*suppressHydrationWarning/);
+});
 
 const lessonComponentDirectory = new URL("../features/lessons/components/", import.meta.url);
 const lessonStorageSources = (
@@ -166,13 +174,13 @@ test("zero milestones explains the legitimate first-use state", () => {
 });
 
 test("AI slow and timeout states preserve the submitted question", () => {
-  assert.match(sources.aiChat, /Still working on this…/);
-  assert.match(sources.aiChat, /window\.setTimeout\(\(\) => setIsTakingLonger\(true\), 5_000\)/);
+  assert.match(sources.aiChat, /Preparing your answer…/);
+  assert.match(sources.aiChat, /window\.setTimeout\(\(\) => setIsTakingLonger\(true\), 3_000\)/);
   assert.match(sources.aiChat, /controller\.abort\(\)/);
   assert.match(sources.aiChat, /Your question is still here/);
   assert.match(
     sources.aiChat,
-    /setMessages\(\(current\) => \[\.\.\.current, createMessage\("user", question\)/,
+    /const userMessage = createMessage\("user", question\);[\s\S]{0,180}setMessages\(\(current\) => \[\.\.\.current, userMessage, assistantMessage\]\)/,
   );
 });
 
@@ -193,18 +201,19 @@ test("invalid provider links and citations can never reach the renderer", () => 
   assert.doesNotMatch(sources.aiChat, /dangerouslySetInnerHTML/);
 });
 
-test("unknown AI source IDs are not accepted from provider output", () => {
-  assert.match(
-    sources.aiServer,
-    /credibleSources: context\.data\.metadata\.credibleSources\.filter/,
-  );
+test("AI sources come from structured search annotations instead of model prose", () => {
+  assert.match(sources.aiProvider, /tools: \[\{ type: "google_search" \}\]/);
+  assert.match(sources.aiProvider, /parseAndValidateAiSearchGroundedOutput/);
+  assert.match(sources.aiSearchGrounding, /annotation\.url/);
+  assert.match(sources.aiSearchGrounding, /safePublicSourceUrl/);
+  assert.doesNotMatch(sources.aiServer, /sourceIds/);
   assert.doesNotMatch(sources.aiContext, /AiRelatedContent|current_journey_lesson_id/);
   assert.doesNotMatch(sources.aiParser, /relatedContent|suggestedQuestions/);
 });
 
 test("general education uses authoritative sources without an internal-content refusal", () => {
-  assert.match(sources.aiContext, /credibleSourcesForQuestion/);
-  assert.match(sources.aiServer, /credibleSources: context\.data\.metadata\.credibleSources/);
+  assert.match(sources.aiContext, /credibleSourcesForConversation/);
+  assert.match(sources.aiServer, /credibleSources: providerResult\.sources/);
   assert.doesNotMatch(
     sources.aiServer,
     /I couldn’t find enough reviewed Health Decoded information/,

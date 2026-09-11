@@ -13,6 +13,10 @@ import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
 const logger = createServerLogger();
 
+function isPendingLearningPreferencesMigration(code: string | undefined) {
+  return code === "42703" || code === "PGRST204";
+}
+
 export type ProfileActionState = {
   message: string;
   status: "auth" | "error" | "idle" | "success";
@@ -78,9 +82,31 @@ export async function updateSettingsAction(
       status: "error",
       message: "We couldn’t save your settings. Your changes are still here.",
     };
+  let usedLegacySettings = false;
   const result = await settleOptional(
     async () => {
       const database = await getServerDatabaseClient();
+      const currentResult = await database
+        .from("user_settings")
+        .upsert(
+          {
+            user_id: user.data.id,
+            learning_pace: parsed.data.learningPace,
+            lesson_reminders: parsed.data.lessonReminders,
+            reduced_motion: parsed.data.reducedMotion,
+            preferred_text_scale: parsed.data.preferredTextScale,
+            locale: parsed.data.locale,
+            timezone: parsed.data.timezone,
+          },
+          { onConflict: "user_id" },
+        )
+        .select("user_id")
+        .maybeSingle();
+
+      if (!isPendingLearningPreferencesMigration(currentResult.error?.code)) return currentResult;
+
+      usedLegacySettings = true;
+      logger.info("profile_settings.learning_preferences_migration_pending");
       return database
         .from("user_settings")
         .upsert(
@@ -110,6 +136,8 @@ export async function updateSettingsAction(
   revalidatePath("/profile");
   return {
     status: "success",
-    message: "Your preferences are saved. Health Decoded will use them from here.",
+    message: usedLegacySettings
+      ? "Your available preferences were saved. Two new choices will save after the app update finishes."
+      : "Your preferences are saved. Health Decoded will use them from here.",
   };
 }

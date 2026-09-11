@@ -133,7 +133,6 @@
   height: 100%;
   transform-origin: left;
   transition: transform 950ms var(--ease-standard);
-  will-change: transform;
   width: 100%;
 }
 
@@ -326,7 +325,6 @@
   background: var(--success);
   transform-origin: top;
   transition: transform 950ms var(--ease-standard);
-  will-change: transform;
 }
 
 .phase {
@@ -382,6 +380,25 @@
   min-height: 5.75rem;
   text-align: left;
   width: 100%;
+}
+
+.phaseButton:focus-visible {
+  box-shadow: none;
+  outline: none;
+}
+
+.phaseButton:focus-visible .phaseTitle {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-warm) 58%, transparent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.32rem;
+}
+
+.phaseButton:focus-visible .chevron {
+  border-radius: 0.2rem;
+  color: var(--accent-warm);
+  outline: 2px solid color-mix(in srgb, var(--accent-warm) 58%, transparent);
+  outline-offset: 0.25rem;
 }
 
 .phaseNumber {
@@ -583,14 +600,24 @@
   }
 
   .overview {
-    gap: 1.75rem;
-    grid-template-columns: 1fr;
-    justify-items: center;
-    padding-block: 2rem;
+    align-items: start;
+    gap: 1.25rem;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    padding-block: 1.6rem;
   }
 
   .ring {
-    width: 9.5rem;
+    position: sticky;
+    top: 5rem;
+    width: 7rem;
+  }
+
+  .ringNumber {
+    font-size: 2.15rem;
+  }
+
+  .ringLabel {
+    font-size: 0.6rem;
   }
 
   .overviewCopy {
@@ -598,15 +625,20 @@
   }
 
   .overviewHeadingRow,
-  .overviewFoot,
   .continueRow {
     align-items: start;
     flex-direction: column;
   }
 
-  .overviewHeadingRow,
-  .overviewFoot {
+  .overviewHeadingRow {
     gap: 1rem;
+  }
+
+  .overviewFoot {
+    align-items: start;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .lessonCount {
@@ -661,6 +693,23 @@
   .lessonLink,
   .lessonLocked {
     padding-inline: 0.25rem;
+  }
+}
+
+@media (max-width: 24rem) {
+  .overview {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .ring {
+    position: relative;
+    top: auto;
+    width: 8.5rem;
+  }
+
+  .overviewCopy {
+    width: 100%;
   }
 }
 

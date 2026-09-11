@@ -14,53 +14,53 @@
 
 .companionLeft {
   transform-origin: bottom center;
-  animation: lean-in-left 7s ease-in-out infinite;
+  animation: lean-in-left 7s ease-in-out 2;
 }
 
 .companionRight {
   transform-origin: bottom center;
-  animation: lean-in-right 7s ease-in-out infinite;
+  animation: lean-in-right 7s ease-in-out 2;
 }
 
 .embraceArm {
   transform-origin: 274px 207px;
-  animation: close-embrace 7s ease-in-out infinite;
+  animation: close-embrace 7s ease-in-out 2;
 }
 
 .steadyPerson {
   transform-origin: bottom center;
-  animation: steady-support 8s ease-in-out infinite;
+  animation: steady-support 8s ease-in-out 2;
 }
 
 .risingPerson {
   transform-origin: bottom center;
-  animation: rise-with-help 8s ease-in-out infinite;
+  animation: rise-with-help 8s ease-in-out 2;
 }
 
 .helpingHands {
   transform-origin: center;
-  animation: hands-connect 8s ease-in-out infinite;
+  animation: hands-connect 8s ease-in-out 2;
 }
 
 .completionScene {
   transform-origin: center bottom;
-  animation: completion-settle 6s ease-in-out infinite;
+  animation: completion-settle 6s ease-in-out 2;
 }
 
 .sunScene {
   transform-origin: center bottom;
-  animation: sun-breathe 7s ease-in-out infinite;
+  animation: sun-breathe 7s ease-in-out 2;
 }
 
 .cupScene {
   transform-origin: center bottom;
-  animation: cup-settle 6s ease-in-out infinite;
+  animation: cup-settle 6s ease-in-out 2;
 }
 
 .steamOne,
 .steamTwo {
   transform-origin: center bottom;
-  animation: steam-rise 3.8s ease-in-out infinite;
+  animation: steam-rise 3.8s ease-in-out 3;
 }
 
 .steamTwo {

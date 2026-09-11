@@ -12,6 +12,8 @@ export const browserTimezoneSchema = z
   .max(64)
   .refine((value) => timezones.has(value), "Choose a valid timezone.");
 export const settingsUpdateSchema = z.object({
+  learningPace: z.enum(["gentle", "normal", "focused"]),
+  lessonReminders: z.enum(["true", "false"]).transform((value) => value === "true"),
   locale: z.literal("en"),
   preferredTextScale: z.enum(["default", "large", "extra_large"]),
   reducedMotion: z.enum(["true", "false"]).transform((value) => value === "true"),

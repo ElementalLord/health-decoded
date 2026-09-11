@@ -5,3 +5,20 @@
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
+
+.profileAvatar {
+  align-items: center;
+  background: #cb765b;
+  border: 2px solid #fffaf2;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(23 63 53 / 0.15);
+  color: #fffaf2;
+  display: flex;
+  flex: 0 0 auto;
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  height: 2.25rem;
+  justify-content: center;
+  letter-spacing: -0.03em;
+  width: 2.25rem;
+}

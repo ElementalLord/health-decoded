@@ -893,6 +893,8 @@ export type Database = {
       user_settings: {
         Row: {
           created_at: string;
+          learning_pace: string;
+          lesson_reminders: boolean;
           locale: string;
           preferred_text_scale: string;
           reduced_motion: boolean;
@@ -902,6 +904,8 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
+          learning_pace?: string;
+          lesson_reminders?: boolean;
           locale?: string;
           preferred_text_scale?: string;
           reduced_motion?: boolean;
@@ -911,6 +915,8 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          learning_pace?: string;
+          lesson_reminders?: boolean;
           locale?: string;
           preferred_text_scale?: string;
           reduced_motion?: boolean;

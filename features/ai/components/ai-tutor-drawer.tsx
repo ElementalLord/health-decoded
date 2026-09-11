@@ -4,6 +4,8 @@ import { Dialog } from "@base-ui/react/dialog";
 import { X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
+  lazy,
+  Suspense,
   useEffect,
   useRef,
   useState,
@@ -12,9 +14,12 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 
-import { AiChat } from "@/features/ai/components/ai-chat";
 import { aiTutorDialog, openAiTutor } from "@/features/ai/components/ai-tutor-dialog";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
+
+const AiChat = lazy(() =>
+  import("@/features/ai/components/ai-chat").then((module) => ({ default: module.AiChat })),
+);
 
 const DEFAULT_DRAWER_WIDTH = 460;
 const MIN_DRAWER_WIDTH = 360;
@@ -30,6 +35,7 @@ function AiTutorDrawer({ preferences }: { preferences?: ProfileSettings | undefi
   const popupRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ pointerId: number; startWidth: number; startX: number } | null>(null);
   const [drawerWidth, setDrawerWidth] = useState(DEFAULT_DRAWER_WIDTH);
+  const [hasOpened, setHasOpened] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [suggestionShuffleKey, setSuggestionShuffleKey] = useState(0);
   const pathname = usePathname();
@@ -120,7 +126,10 @@ function AiTutorDrawer({ preferences }: { preferences?: ProfileSettings | undefi
     <Dialog.Root
       handle={aiTutorDialog}
       onOpenChange={(open) => {
-        if (open) setSuggestionShuffleKey((current) => current + 1);
+        if (open) {
+          setHasOpened(true);
+          setSuggestionShuffleKey((current) => current + 1);
+        }
       }}
     >
       <Dialog.Portal
@@ -187,7 +196,17 @@ function AiTutorDrawer({ preferences }: { preferences?: ProfileSettings | undefi
               </div>
             </header>
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-6 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-8 sm:pb-6">
-              <AiChat suggestionShuffleKey={suggestionShuffleKey} variant="drawer" />
+              {hasOpened ? (
+                <Suspense
+                  fallback={
+                    <p aria-live="polite" className="py-8 text-sm text-muted-foreground">
+                      Preparing your companion…
+                    </p>
+                  }
+                >
+                  <AiChat suggestionShuffleKey={suggestionShuffleKey} variant="drawer" />
+                </Suspense>
+              ) : null}
             </div>
           </Dialog.Popup>
         </Dialog.Viewport>

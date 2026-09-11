@@ -32,7 +32,7 @@ function AppShell({
       >
         Skip to main content
       </a>
-      {routes ? <AppHeader routes={routes} /> : <AppHeader />}
+      {routes ? <AppHeader preferences={preferences} routes={routes} /> : <AppHeader />}
       <OfflineStatus />
       <PageContainer
         className={cn("flex-1", routes && "shell-mobile-offset")}
@@ -41,7 +41,7 @@ function AppShell({
       >
         <RouteMotion>{children}</RouteMotion>
       </PageContainer>
-      {routes ? <BottomNavigation routes={routes} /> : null}
+      {routes ? <BottomNavigation preferences={preferences} routes={routes} /> : null}
       {routes ? <FloatingAiTutorTrigger /> : null}
       {routes ? (
         <Suspense fallback={null}>

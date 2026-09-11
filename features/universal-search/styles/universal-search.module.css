@@ -10,6 +10,15 @@
   background: var(--card);
   font-size: 0.875rem;
   font-weight: 600;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-instant) var(--ease-standard);
+}
+
+.searchTrigger:active {
+  transform: scale(0.97);
 }
 
 .searchTrigger:hover,
@@ -329,6 +338,30 @@
 
   .page {
     padding-block-start: 0;
+  }
+}
+
+@media (max-width: 24rem) {
+  .searchTrigger {
+    min-height: 2.65rem;
+    min-width: 2.65rem;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .searchTrigger > span,
+  .searchTrigger kbd {
+    display: none;
+  }
+
+  .dialog {
+    width: calc(100% - 1rem);
+    max-height: calc(100dvh - 1rem);
+    margin-block: 0.5rem;
+  }
+
+  .compact {
+    padding-inline: 0.65rem;
   }
 }
 

@@ -3,11 +3,12 @@
 import { Copy, RefreshCw, Send } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { AiResponseContent } from "@/features/ai/components/ai-response-content";
+import { AiSourceReportButton } from "@/features/ai/components/ai-source-report-button";
 import {
   AI_SUGGESTED_QUESTION_BANK,
   selectSuggestedQuestions,
@@ -166,14 +167,13 @@ export function AiChat({
   const replacedAnswerRef = useRef<ChatMessage | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const conversationRef = useRef<HTMLElement>(null);
-  const conversationEndRef = useRef<HTMLDivElement>(null);
-  const scrollFrameRef = useRef<number | null>(null);
+  const messageElementsRef = useRef(new Map<string, HTMLElement>());
+  const pendingScrollMessageIdRef = useRef<string | null>(null);
 
   useEffect(
     () => () => {
       abortControllerRef.current?.abort();
       requestInFlightRef.current = false;
-      if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
     },
     [],
   );
@@ -189,25 +189,31 @@ export function AiChat({
     setSignInHref(`/login?next=${encodeURIComponent(returnPath)}`);
   }, [pathname, searchParams]);
 
-  useEffect(() => {
-    if (!messages.length) return;
+  useLayoutEffect(() => {
+    const anchorId = pendingScrollMessageIdRef.current;
+    if (!anchorId) return;
 
-    if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
-    scrollFrameRef.current = requestAnimationFrame(() => {
-      const reducedMotion =
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-        Boolean(document.querySelector("[data-reduced-motion='true']"));
-      const behavior = reducedMotion || isStreaming ? "auto" : "smooth";
-      if (isDrawer && conversationRef.current) {
-        conversationRef.current.scrollTo({
-          behavior,
-          top: conversationRef.current.scrollHeight,
-        });
-      } else {
-        conversationEndRef.current?.scrollIntoView({ behavior, block: "end" });
-      }
-    });
-  }, [isDrawer, isStreaming, messages]);
+    const target = messageElementsRef.current.get(anchorId);
+    const conversation = conversationRef.current;
+    if (!target || !conversation) return;
+
+    pendingScrollMessageIdRef.current = null;
+    const reducedMotion =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      Boolean(document.querySelector("[data-reduced-motion='true']"));
+    const behavior = reducedMotion ? "auto" : "smooth";
+
+    if (isDrawer) {
+      const conversationBox = conversation.getBoundingClientRect();
+      const targetBox = target.getBoundingClientRect();
+      conversation.scrollTo({
+        behavior,
+        top: conversation.scrollTop + targetBox.top - conversationBox.top,
+      });
+    } else {
+      target.scrollIntoView({ behavior, block: "start" });
+    }
+  });
 
   function resizeInput(element: HTMLTextAreaElement) {
     element.style.height = "auto";
@@ -283,21 +289,24 @@ export function AiChat({
       dropPendingAssistant(assistantMessage.id, replacedAnswer, force);
 
     if (regenerate) {
+      pendingScrollMessageIdRef.current = assistantMessage.id;
       setMessages((current) => [
         ...current.filter((entry) => entry.id !== replacedAnswer?.id),
         assistantMessage,
       ]);
     } else {
-      setMessages((current) => [...current, createMessage("user", question), assistantMessage]);
+      const userMessage = createMessage("user", question);
+      pendingScrollMessageIdRef.current = userMessage.id;
+      setMessages((current) => [...current, userMessage, assistantMessage]);
     }
     setMessage("");
     setIsStreaming(true);
     let timedOut = false;
-    const slowTimer = window.setTimeout(() => setIsTakingLonger(true), 5_000);
+    const slowTimer = window.setTimeout(() => setIsTakingLonger(true), 3_000);
     const timeoutTimer = window.setTimeout(() => {
       timedOut = true;
       controller.abort();
-    }, 30_000);
+    }, 8_000);
 
     try {
       const response = await fetch("/api/ai/chat", {
@@ -483,7 +492,10 @@ export function AiChat({
           </summary>
           <p className="mt-2 max-w-2xl">
             This tutor can explain learning topics, but cannot diagnose, interpret personal results,
-            or recommend treatment or medication changes. Urgent symptoms need local emergency care.
+            or recommend treatment or medication changes. For factual answers, it searches for
+            credible sources such as NIH, CDC, FDA, WHO, official drug labels, professional
+            standards, and peer-reviewed research, then shows the exact links it used. Urgent
+            symptoms need local emergency care.
           </p>
         </details>
       </aside>
@@ -571,8 +583,13 @@ export function AiChat({
             return (
               <article
                 className={cn("flex", isAssistant ? "justify-start" : "justify-end")}
+                data-message-id={entry.id}
                 data-motion-item
                 key={entry.id}
+                ref={(element) => {
+                  if (element) messageElementsRef.current.set(entry.id, element);
+                  else messageElementsRef.current.delete(entry.id);
+                }}
               >
                 <div
                   className={cn(
@@ -595,10 +612,16 @@ export function AiChat({
                         <AiResponseContent content={entry.content} />
                         {entry.credibleSources.length ? (
                           <aside className="mt-5 border-t border-border pt-3">
-                            <p className="editorial-eyebrow mb-2">Sources</p>
-                            <ul className="space-y-1.5">
-                              {entry.credibleSources.map((source) => (
+                            <p className="editorial-eyebrow mb-1">Sources used for this answer</p>
+                            <p className="mb-3 text-xs leading-5 text-muted-foreground">
+                              These links come from the search citations attached to this response.
+                            </p>
+                            <ul className="space-y-3">
+                              {entry.credibleSources.map((source, sourceIndex) => (
                                 <li className="text-sm leading-5" key={source.href}>
+                                  <span className="mr-1.5 font-semibold text-muted-foreground">
+                                    {sourceIndex + 1}.
+                                  </span>
                                   <a
                                     className="font-semibold text-primary underline decoration-accent-warm/40 decoration-2 underline-offset-4 hover:decoration-accent-warm"
                                     href={source.href}
@@ -610,6 +633,15 @@ export function AiChat({
                                   <span className="text-muted-foreground">
                                     · {source.organization}
                                   </span>
+                                  <span className="mt-1 block break-all text-xs leading-5 text-muted-foreground">
+                                    {source.href}
+                                  </span>
+                                  {source.citedText ? (
+                                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                                      Supports: “{source.citedText}”
+                                    </span>
+                                  ) : null}
+                                  <AiSourceReportButton sourceTitle={source.title} />
                                 </li>
                               ))}
                             </ul>
@@ -663,9 +695,7 @@ export function AiChat({
                           <span className="size-1.5 animate-pulse rounded-full bg-[#789987] [animation-delay:120ms]" />
                           <span className="size-1.5 animate-pulse rounded-full bg-[#789987] [animation-delay:240ms]" />
                         </span>
-                        {isTakingLonger
-                          ? "Still working on this…"
-                          : "Taking a moment to make this clear…"}
+                        {isTakingLonger ? "Preparing your answer…" : "Finding the clearest answer…"}
                       </div>
                     )
                   ) : (
@@ -753,7 +783,6 @@ export function AiChat({
             </section>
           </div>
         )}
-        <div ref={conversationEndRef} />
       </section>
 
       <form

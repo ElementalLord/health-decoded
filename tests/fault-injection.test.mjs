@@ -41,6 +41,7 @@ const entries = Object.fromEntries(
       ["aiRoute", "app/api/ai/chat/route.ts"],
       ["aiServer", "features/ai/services/ai-chat.server.ts"],
       ["aiParser", "services/ai/response-parser.ts"],
+      ["aiSearchGrounding", "features/ai/services/ai-search-grounding.ts"],
       ["aiSchema", "features/ai/schemas/ai-chat.schema.ts"],
       ["explain", "features/explain-it-back/components/explain-it-back-experience.tsx"],
       ["explainRoute", "app/api/explain-it-back/evaluate/route.ts"],
@@ -105,8 +106,8 @@ test("slow dependency fixtures remain pending without blocking unrelated work", 
     assert.equal(await delayedDependency("ready", delay, scheduleImmediately)(), "ready");
   }
   assert.deepEqual(observedDelays, [10_000, 20_000, 30_000]);
-  assert.match(entries.ai, /5_000/);
-  assert.match(entries.ai, /30_000/);
+  assert.match(entries.ai, /3_000/);
+  assert.match(entries.ai, /8_000/);
   assert.match(entries.explain, /25_000/);
 });
 
@@ -195,13 +196,12 @@ test("AI provider exceptions and malformed streams become controlled unavailable
   assert.match(entries.ai, /AI_UNAVAILABLE/);
 });
 
-test("unknown, missing, and URL-shaped AI citations cannot enter rendered provider output", () => {
+test("missing, unsafe, and model-written AI citations cannot enter rendered provider output", () => {
   assert.match(entries.aiParser, /https\?:\\\/\\\//);
   assert.match(entries.aiSchema, /href: z\.string\(\)\.url\(\)\.startsWith\("https:\/\/"\)/);
-  assert.match(
-    entries.aiServer,
-    /credibleSources: context\.data\.metadata\.credibleSources\.filter/,
-  );
+  assert.match(entries.aiSearchGrounding, /annotation\.url/);
+  assert.match(entries.aiSearchGrounding, /safePublicSourceUrl/);
+  assert.match(entries.aiServer, /credibleSources: providerResult\.sources/);
   assert.doesNotMatch(entries.aiServer, /lessonUsed|relatedContent/);
   assert.doesNotMatch(entries.aiParser, /relatedContent|credibleSources/);
 });

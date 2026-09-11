@@ -101,8 +101,20 @@ export async function POST(request: Request) {
           if (request.signal.aborted) break;
           controller.enqueue(streamEvent(event));
         }
+      } catch {
+        if (!request.signal.aborted) {
+          try {
+            controller.enqueue(streamEvent({ code: "AI_UNAVAILABLE", type: "error" }));
+          } catch {
+            // The browser disconnected while the terminal event was being written.
+          }
+        }
       } finally {
-        controller.close();
+        try {
+          controller.close();
+        } catch {
+          // The stream may already be closed after a browser disconnect.
+        }
       }
     },
   });

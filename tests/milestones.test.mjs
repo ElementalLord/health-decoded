@@ -24,18 +24,37 @@ const [service, actions, migration, page, notice, journey, profile, routes, bott
 test("catalog has unique stable IDs and slugs in valid categories", () => {
   assert.equal(milestoneDefinitions.length, 14);
   assert.equal(new Set(milestoneDefinitions.map(({ id }) => id)).size, milestoneDefinitions.length);
-  assert.equal(new Set(milestoneDefinitions.map(({ slug }) => slug)).size, milestoneDefinitions.length);
-  assert.equal(new Set(milestoneDefinitions.map(({ icon }) => icon)).size, milestoneDefinitions.length);
-  const categories = new Set(["learning", "understanding", "appointment", "support", "resources", "toolkit"]);
+  assert.equal(
+    new Set(milestoneDefinitions.map(({ slug }) => slug)).size,
+    milestoneDefinitions.length,
+  );
+  assert.equal(
+    new Set(milestoneDefinitions.map(({ icon }) => icon)).size,
+    milestoneDefinitions.length,
+  );
+  const categories = new Set([
+    "learning",
+    "understanding",
+    "appointment",
+    "support",
+    "resources",
+    "toolkit",
+  ]);
   assert.ok(milestoneDefinitions.every(({ category }) => categories.has(category)));
   assert.ok(milestoneDefinitions.every(({ hidden }) => hidden === false));
 });
 
 test("criteria avoid prohibited health outcomes and competitive mechanics", () => {
   const criteria = milestoneDefinitions.map(({ criteriaLabel }) => criteriaLabel).join("\n");
-  assert.doesNotMatch(criteria, /A1C|glucose value|weight loss|body-mass|take medicine|use insulin|symptom-free|remission/i);
+  assert.doesNotMatch(
+    criteria,
+    /A1C|glucose value|weight loss|body-mass|take medicine|use insulin|symptom-free|remission/i,
+  );
   const all = JSON.stringify(milestoneDefinitions);
-  assert.doesNotMatch(all, /\b(?:points|XP|level|leaderboard|ranking|rarity|streak|gold|silver|bronze)\b/i);
+  assert.doesNotMatch(
+    all,
+    /\b(?:points|XP|level|leaderboard|ranking|rarity|streak|gold|silver|bronze)\b/i,
+  );
 });
 
 test("lesson milestones use 14 distinct stable Foundation assignments", () => {
@@ -67,8 +86,16 @@ test("feature events contain counts and fixed IDs, not private content", () => {
   assert.match(actions, /completedSectionCount/);
   assert.match(actions, /myth_round_completed/);
   assert.match(actions, /verified_support_resource_opened/);
-  assert.doesNotMatch(actions, /priorityText|questionText|answerSelections|sourceUrls|destinationHistory|symptoms|medications/i);
-  assert.deepEqual([...migration.matchAll(/^\s+(user_id|milestone_id|unlocked_at)\b/gm)].map((match) => match[1]).slice(0, 3), ["user_id", "milestone_id", "unlocked_at"]);
+  assert.doesNotMatch(
+    actions,
+    /priorityText|questionText|answerSelections|sourceUrls|destinationHistory|symptoms|medications/i,
+  );
+  assert.deepEqual(
+    [...migration.matchAll(/^\s+(user_id|milestone_id|unlocked_at)\b/gm)]
+      .map((match) => match[1])
+      .slice(0, 3),
+    ["user_id", "milestone_id", "unlocked_at"],
+  );
 });
 
 test("Personal Toolkit derives from four earned non-toolkit categories", () => {
@@ -80,7 +107,8 @@ test("Personal Toolkit derives from four earned non-toolkit categories", () => {
 test("recent milestones are ordered newest first and remain available from Profile", () => {
   assert.match(service, /order\("unlocked_at", \{ ascending: false \}\)/);
   assert.doesNotMatch(journey, /href="\/milestones"/);
-  assert.match(profile, /href="\/milestones"/);
+  assert.match(profile, /router\.push\("\/milestones"\)/);
+  assert.match(profile, /aria-label="View your milestones"/);
 });
 
 test("page presents earned and available states with a health limitation", () => {

@@ -49,9 +49,19 @@ export default async function JourneyPage({
 
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
-  const journey = await settleResult(getJourneyHomeData, unexpectedError(), () =>
-    logger.error("journey.core_rejected"),
-  );
+  const [journey, spacedReview, learningStreak] = await Promise.all([
+    settleResult(getJourneyHomeData, unexpectedError(), () =>
+      logger.error("journey.core_rejected"),
+    ),
+    settleResult(
+      () => getSpacedReviewOpportunity({ manual: false }),
+      unexpectedError(),
+      () => logger.error("journey.spaced_review_rejected"),
+    ),
+    settleResult(getLearningStreak, unexpectedError(), () =>
+      logger.error("journey.streak_rejected"),
+    ),
+  ]);
 
   if (!journey.ok) {
     return (
@@ -68,22 +78,12 @@ export default async function JourneyPage({
     completedDay >= 1 &&
     completedDay <= journey.data.progress.totalDays &&
     completedDay <= journey.data.progress.completedLessons;
-  const spacedReview = await settleResult(
-    () => getSpacedReviewOpportunity({ manual: false }),
-    unexpectedError(),
-    () => logger.error("journey.spaced_review_rejected"),
-  );
   const dueReview = spacedReview.ok && spacedReview.data.due;
-  const [nextStep, learningStreak] = await Promise.all([
-    settleResult(
-      () => getNextStep(journey.data, showCompletionArrival ? completedDay : undefined, dueReview),
-      unexpectedError(),
-      () => logger.error("journey.next_step_rejected"),
-    ),
-    settleResult(getLearningStreak, unexpectedError(), () =>
-      logger.error("journey.streak_rejected"),
-    ),
-  ]);
+  const nextStep = await settleResult(
+    () => getNextStep(journey.data, showCompletionArrival ? completedDay : undefined, dueReview),
+    unexpectedError(),
+    () => logger.error("journey.next_step_rejected"),
+  );
   const nextStepSelection = nextStep.ok ? nextStep.data : fallbackNextStepForJourney(journey.data);
   const supportTools = (
     <section aria-labelledby="journey-tools" className="motion-reveal border-y border-border py-5">
@@ -193,9 +193,9 @@ export default async function JourneyPage({
               </h2>
               <div
                 aria-hidden="true"
-                className="mt-5 hidden w-full max-w-[15rem] overflow-hidden rounded-[1.25rem] bg-[#f5eee6] sm:block"
+                className="mt-4 w-full overflow-hidden rounded-[1rem] bg-[#f5eee6] sm:mt-5 sm:max-w-[15rem] sm:rounded-[1.25rem]"
               >
-                <SunCupIllustration className="block h-auto w-full [aspect-ratio:24/13]" />
+                <SunCupIllustration className="block h-auto w-full [aspect-ratio:16/7] sm:[aspect-ratio:24/13]" />
               </div>
             </div>
             <p className="max-w-3xl text-pretty font-serif-display text-2xl font-normal leading-9 text-foreground sm:text-3xl">

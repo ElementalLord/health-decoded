@@ -298,7 +298,7 @@ test("responsive and reduced-motion styles protect reading and interaction", () 
   assert.match(landingStyles, /\.storyImage \{[\s\S]*object-fit: contain/);
   assert.match(
     landingStyles,
-    /@media \(max-width: 42rem\)[\s\S]*\.journeyPath[\s\S]*display: none/,
+    /@media \(max-width: 42rem\)[\s\S]*\.journeyPath[\s\S]*display: block/,
   );
   assert.match(playerStyles, /grid-template-columns: minmax\(0, 58fr\) minmax\(20rem, 42fr\)/);
   assert.match(playerStyles, /font-size: 1\.0625rem/);

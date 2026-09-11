@@ -18,6 +18,13 @@ export type GeminiServerEnv = z.infer<typeof geminiServerEnvSchema>;
 export type GeminiServerEnvResult =
   { readonly ok: true; readonly data: GeminiServerEnv } | { readonly ok: false };
 
+const aiGatewayServerEnvSchema = z.object({
+  token: z.string().trim().min(1),
+});
+
+export type AiGatewayServerEnvResult =
+  { readonly ok: true; readonly data: { readonly token: string } } | { readonly ok: false };
+
 export function getServerEnv() {
   if (typeof window !== "undefined") {
     throw new Error("Server environment variables cannot be accessed in the browser.");
@@ -30,6 +37,18 @@ export function getServerEnv() {
 export function getGeminiServerEnv(): GeminiServerEnvResult {
   const parsed = geminiServerEnvSchema.safeParse({
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  });
+
+  return parsed.success ? { ok: true, data: parsed.data } : { ok: false };
+}
+
+/**
+ * Vercel supplies a short-lived OIDC token automatically in deployments. A
+ * regular AI Gateway key is also supported for local development.
+ */
+export function getAiGatewayServerEnv(): AiGatewayServerEnvResult {
+  const parsed = aiGatewayServerEnvSchema.safeParse({
+    token: process.env.AI_GATEWAY_API_KEY ?? process.env.VERCEL_OIDC_TOKEN,
   });
 
   return parsed.success ? { ok: true, data: parsed.data } : { ok: false };

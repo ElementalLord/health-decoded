@@ -19,23 +19,26 @@ export default function HomePage() {
   return (
     <>
       <section className="border-b border-[#e5ddd2]" id="home">
-        <div className="mx-auto grid min-h-[calc(100dvh-4.75rem)] max-w-[1440px] gap-10 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-14">
+        <div className="mx-auto grid min-h-[calc(100svh-4.5rem)] max-w-[1440px] gap-[clamp(2.5rem,6vw,5rem)] px-[clamp(1.25rem,4vw,3.5rem)] py-[clamp(3.5rem,8vh,6.5rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="motion-cascade">
             <p className="editorial-eyebrow">A companion for the first 90 days</p>
-            <h1 className="mt-7 max-w-3xl font-serif-display text-[clamp(3.8rem,7vw,7.25rem)] font-normal leading-[0.83] tracking-[-0.055em] text-balance">
+            <h1 className="mt-6 max-w-3xl font-serif-display text-[clamp(3.05rem,11vw,7.25rem)] font-normal leading-[0.88] tracking-[-0.05em] text-balance sm:mt-7 sm:leading-[0.83] sm:tracking-[-0.055em]">
               You&apos;re not
               <br />
               fighting
               <br />
               <em className="font-normal">sugar</em> alone.
             </h1>
-            <p className="mt-9 max-w-[38rem] text-lg leading-9 text-[#827168] sm:text-xl">
+            <p className="mt-7 max-w-[38rem] text-base leading-8 text-[#827168] sm:mt-9 sm:text-xl sm:leading-9">
               A private, compassionate companion for life after a Type 2 diagnosis. One calm lesson
               at a time, at your own pace, with a guide by your side.
             </p>
             <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
               <Link
-                className={cn(buttonVariants({ fullWidth: false, size: "lg" }), "min-w-64")}
+                className={cn(
+                  buttonVariants({ fullWidth: false, size: "lg" }),
+                  "w-full max-w-full sm:w-auto sm:min-w-64",
+                )}
                 href="/signup"
               >
                 Begin your journey <ArrowRight aria-hidden="true" className="size-4" />
@@ -195,7 +198,10 @@ export default function HomePage() {
         </h2>
         <p className="mt-6 text-lg text-[#827168]">Take the first gentle step today.</p>
         <Link
-          className={cn(buttonVariants({ fullWidth: false, size: "lg" }), "mt-9 min-w-64")}
+          className={cn(
+            buttonVariants({ fullWidth: false, size: "lg" }),
+            "mt-9 w-full max-w-full sm:w-auto sm:min-w-64",
+          )}
           href="/signup"
         >
           Start your journey <ArrowRight className="size-4" />

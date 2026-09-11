@@ -10,6 +10,7 @@ export type AiChatResponse = {
 };
 
 export type AiCredibleSource = {
+  readonly citedText?: string | undefined;
   readonly href: string;
   readonly organization: string;
   readonly title: string;

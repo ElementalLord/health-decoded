@@ -74,7 +74,7 @@
   --duration-fast: 180ms;
   --duration-normal: 280ms;
   --duration-slow: 360ms;
-  --duration-page: 260ms;
+  --duration-page: 400ms;
   --duration-progress: 520ms;
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
@@ -141,6 +141,14 @@
   body {
     @apply min-h-dvh bg-background font-sans text-foreground antialiased;
     line-height: 1.5;
+    overflow-x: clip;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
   }
 
   h1,
@@ -172,20 +180,36 @@
   }
 
   .shell-mobile-offset {
-    padding-bottom: calc(12.25rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(9rem + env(safe-area-inset-bottom));
   }
 
   .ai-companion-trigger {
-    bottom: calc(8.125rem + env(safe-area-inset-bottom));
+    bottom: calc(5.25rem + env(safe-area-inset-bottom));
   }
 
-  @media (min-width: 64rem) {
+  @media (min-width: 80rem) {
     .shell-mobile-offset {
       padding-bottom: 2rem;
     }
 
     .ai-companion-trigger {
       bottom: calc(2rem + env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (max-width: 79.99rem) {
+    .ai-companion-trigger > button {
+      min-height: 3.25rem;
+      padding: 0.25rem;
+    }
+
+    .ai-companion-trigger > button > span:first-child {
+      height: 2.75rem;
+      width: 2.75rem;
+    }
+
+    .ai-companion-label {
+      display: none;
     }
   }
 
@@ -454,6 +478,19 @@
   }
 }
 
+/* Compact and mid-size computers get the same complete layout without paying
+   for scroll-linked decoration on every frame. */
+@media (max-width: 87.5rem) {
+  .motion-reveal,
+  .motion-reveal-list > *,
+  .home-scroll-fade,
+  .home-scroll-fade-list > * {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -487,8 +524,8 @@
 
 @keyframes page-in {
   from {
-    opacity: 0;
-    transform: translateY(6px);
+    opacity: 0.18;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -533,8 +570,8 @@
 
 @keyframes page-settle {
   from {
-    opacity: 0;
-    transform: translateY(6px);
+    opacity: 0.18;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -621,16 +658,36 @@
   }
 }
 
-@media (max-height: 32rem) and (max-width: 64rem) {
-  .mobile-bottom-navigation {
-    display: none;
-  }
-
+@media (max-height: 32rem) and (max-width: 79.99rem) {
   .ai-companion-trigger {
-    display: none;
+    bottom: calc(4.25rem + env(safe-area-inset-bottom));
   }
 
   .shell-mobile-offset {
-    padding-bottom: 1.5rem;
+    padding-bottom: calc(7.75rem + env(safe-area-inset-bottom));
+  }
+
+  .app-header-inner {
+    min-height: 3.5rem;
+  }
+}
+
+@media (max-width: 24rem) {
+  .app-brand {
+    max-width: calc(100vw - 5.75rem);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .mobile-bottom-navigation,
+  .ai-companion-trigger > button {
+    background: var(--card);
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .mobile-bottom-navigation {
+    border-color: var(--foreground);
   }
 }

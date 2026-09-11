@@ -1,0 +1,3 @@
+/** Broad Type 2 diabetes concepts that are safe to explain as general education. */
+export const diabetesEducationTopicPattern =
+  /\b(type\s*2|diabetes|diabetic|prediabetes|prediabetic|blood sugar|blood glucose|glucose|a1c|hba1c|insulin|pancreas|insulin resistance|hypoglyc(?:emia|emic)|hyperglyc(?:emia|emic)|continuous glucose monitor|cgm|fingerstick|carbohydrates?|nutrition|physical activity|exercise|diabetes distress|kidneys?|renal|neuropathy|nerve damage|foot care|retinopathy|eye disease|heart disease|cardiovascular|blood pressure|cholesterol|gum disease|oral health|sexual health|bladder problems?|sick days?|ketones?|diabetes complications?|diabetes risk factors?)\b/i;

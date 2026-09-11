@@ -4,6 +4,7 @@ import test from "node:test";
 
 import { credibleSourcesForQuestion } from "../../features/ai/data/credible-sources.ts";
 import { parseAndValidateAiGroundedOutput } from "../../features/ai/services/ai-grounding.ts";
+import { parseAndValidateAiSearchGroundedOutput } from "../../features/ai/services/ai-search-grounding.ts";
 import { explainItBackChallenges } from "../../features/explain-it-back/content/explain-it-back-content.ts";
 import { parseAndEnforceClassification } from "../../features/explain-it-back/services/explain-it-back-evaluator.ts";
 import { aiTutorCases } from "./ai-tutor-cases.mjs";
@@ -13,7 +14,7 @@ import { runAllEvaluations } from "./eval-engine.mjs";
 const read = (path) => readFile(new URL(`../../${path}`, import.meta.url), "utf8");
 
 test("the adversarial banks meet the intended breadth without duplicate IDs", () => {
-  assert.equal(aiTutorCases.length, 105);
+  assert.equal(aiTutorCases.length, 106);
   assert.equal(explainItBackCases.length, 50);
   assert.equal(new Set(aiTutorCases.map(({ id }) => id)).size, aiTutorCases.length);
   assert.equal(new Set(explainItBackCases.map(({ id }) => id)).size, explainItBackCases.length);
@@ -26,7 +27,32 @@ test("all deterministic adversarial cases pass their structural contract", () =>
   assert.deepEqual(failures, []);
 });
 
-test("Tutor grounding accepts only complete safe output citing retrieved source IDs", () => {
+test("Tutor search grounding accepts only safe output with structured direct citations", () => {
+  const text = "A1C reflects average blood glucose over roughly three months.";
+  const grounded = parseAndValidateAiSearchGroundedOutput({
+    steps: [
+      {
+        content: [
+          {
+            annotations: [
+              {
+                title: "NIDDK diabetes tests",
+                type: "url_citation",
+                url: "https://www.niddk.nih.gov/health-information/diabetes/overview/tests-diagnosis",
+              },
+            ],
+            text,
+            type: "text",
+          },
+        ],
+        type: "model_output",
+      },
+    ],
+  });
+  assert.equal(grounded?.answer, text);
+  assert.equal(grounded?.sources[0]?.organization, "niddk.nih.gov");
+
+  // The structured evaluator path still keeps its original fixed-ID contract.
   const sources = credibleSourcesForQuestion("What is A1C?");
   const valid = parseAndValidateAiGroundedOutput(
     {

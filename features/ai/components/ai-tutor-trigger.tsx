@@ -18,8 +18,11 @@ function AiTutorTrigger({ children, className }: { children: ReactNode; classNam
 
 function FloatingAiTutorTrigger() {
   return (
-    <div className="ai-companion-trigger fixed right-4 z-[41] sm:right-6 lg:right-8">
-      <AiTutorTrigger className="group inline-flex min-h-16 items-center gap-2.5 rounded-full border border-[#d5c7b5] bg-[#f8eedf]/95 p-1.5 pr-4 text-left text-[#3f352f] shadow-[0_10px_30px_rgb(92_69_55/0.16)] backdrop-blur-md transition-[border-color,background-color,transform,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:border-[#b96c55]/45 hover:bg-[#f3e5d5] hover:shadow-[0_14px_36px_rgb(92_69_55/0.2)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]">
+    <div className="ai-companion-trigger fixed right-4 z-[41] sm:right-6 xl:right-8">
+      <AiTutorTrigger
+        aria-label="Open Your Companion"
+        className="group inline-flex min-h-16 items-center gap-2.5 rounded-full border border-[#d5c7b5] bg-[#f8eedf]/95 p-1.5 pr-4 text-left text-[#3f352f] shadow-[0_10px_30px_rgb(92_69_55/0.16)] backdrop-blur-md transition-[border-color,background-color,transform,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:border-[#b96c55]/45 hover:bg-[#f3e5d5] hover:shadow-[0_14px_36px_rgb(92_69_55/0.2)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
+      >
         <span className="relative size-12 shrink-0 overflow-hidden rounded-full bg-[#eee2d3] ring-1 ring-[#d5c3b2]">
           <Image
             alt=""
@@ -29,7 +32,9 @@ function FloatingAiTutorTrigger() {
             src="/ai/your-companion.png"
           />
         </span>
-        <span className="whitespace-nowrap text-sm font-semibold leading-5">Your companion</span>
+        <span className="ai-companion-label whitespace-nowrap text-sm font-semibold leading-5">
+          Your companion
+        </span>
       </AiTutorTrigger>
     </div>
   );

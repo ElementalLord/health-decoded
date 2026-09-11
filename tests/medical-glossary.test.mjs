@@ -56,16 +56,18 @@ const topicSources = await Promise.all(
   termFiles.map((name) => read(`features/glossary/content/terms/${name}.ts`)),
 );
 const seeds = topicSources.flatMap((source, index) => extractSeeds(source, termFiles[index]));
-const [page, registry, sources, helper, resources, styles, routes, bottomNav] = await Promise.all([
-  read("features/glossary/components/medical-glossary-page.tsx"),
-  read("features/glossary/content/medical-glossary.ts"),
-  read("features/glossary/content/glossary-sources.ts"),
-  read("features/glossary/content/terms/create-entries.ts"),
-  read("features/resources/components/resources.tsx"),
-  read("features/glossary/styles/medical-glossary.module.css"),
-  read("lib/routes.ts"),
-  read("components/layout/bottom-navigation.tsx"),
-]);
+const [page, registry, sources, helper, resources, styles, routes, bottomNav, nextConfig] =
+  await Promise.all([
+    read("features/glossary/components/medical-glossary-page.tsx"),
+    read("features/glossary/content/medical-glossary.ts"),
+    read("features/glossary/content/glossary-sources.ts"),
+    read("features/glossary/content/terms/create-entries.ts"),
+    read("features/resources/components/resources.tsx"),
+    read("features/glossary/styles/medical-glossary.module.css"),
+    read("lib/routes.ts"),
+    read("components/layout/bottom-navigation.tsx"),
+    read("next.config.ts"),
+  ]);
 
 const slugify = (term) =>
   term
@@ -210,6 +212,8 @@ test("visible entries remain simple and comparisons render only when present", (
   assert.match(page, /<dt>/);
   assert.match(page, /<dd>/);
   assert.match(page, /entry\.commonlyConfusedWith \?/);
+  assert.match(page, /<mark>\{entry\.commonlyConfusedWith\.term\}<\/mark>/);
+  assert.match(styles, /\.confused\s*\{[^}]*background:/);
   assert.doesNotMatch(page, /pronunciation|quiz|score|badge|progress|personal notes/i);
 });
 
@@ -238,6 +242,48 @@ test("page exposes accessible search, concise announcements, semantic lists, foc
   assert.match(styles, /@media \(max-width: 24rem\)/);
   assert.match(styles, /prefers-reduced-motion/);
   assert.doesNotMatch(styles, /overflow-x:\s*auto/);
+});
+
+test("glossary results use a bounded desktop viewport with sticky letter headings", () => {
+  assert.match(page, /aria-label="Glossary results"/);
+  assert.match(page, /ref=\{resultsViewportRef\}/);
+  assert.match(page, /resultsViewportRef\.current\.scrollTop = 0/);
+  assert.match(styles, /max-height:\s*min\(68vh,\s*47\.5rem\)/);
+  assert.match(styles, /overflow-y:\s*auto/);
+  assert.match(styles, /overscroll-behavior:\s*contain/);
+  assert.match(styles, /\.group > h2[\s\S]*position:\s*sticky;[\s\S]*top:\s*0;/);
+  assert.match(page, /More words this way/);
+  assert.match(page, /scroll-cue-arrows\.png/);
+  assert.doesNotMatch(page, /setShowScrollCue|onScroll=/);
+  assert.match(styles, /@keyframes scroll-cue-float/);
+});
+
+test("glossary artwork keeps its native aspect ratio and cannot intercept the page", () => {
+  assert.match(page, /src="\/glossary\/glossary-background-wide-v2\.png"/);
+  assert.match(page, /height=\{941\}/);
+  assert.match(page, /width=\{1672\}/);
+  assert.match(page, /sizes="100vw"/);
+  assert.match(page, /className=\{styles\.glossaryContent\}/);
+  assert.match(styles, /\.glossaryBackdrop\s*\{[\s\S]*height:\s*auto/);
+  assert.match(
+    styles,
+    /\.glossary\s*\{[\s\S]*margin-block-start:\s*calc\(0rem - var\(--glossary-shell-top\)\)/,
+  );
+  assert.match(styles, /\.glossary\s*\{[\s\S]*margin-inline:\s*calc\(50% - 50vw\)/);
+  assert.match(styles, /\.glossary\s*\{[\s\S]*width:\s*100vw/);
+  assert.match(styles, /\.glossaryBackdrop\s*\{[\s\S]*max-width:\s*none/);
+  assert.match(styles, /\.glossaryContent\s*\{[\s\S]*max-width:\s*80\.5rem/);
+  assert.match(
+    styles,
+    /width:\s*min\(calc\(100% - var\(--glossary-gutter\) - var\(--glossary-gutter\)\),\s*80\.5rem\)/,
+  );
+  assert.match(styles, /pointer-events:\s*none/);
+  assert.doesNotMatch(styles, /\.glossaryBackdrop\s*\{[^}]*object-fit:\s*fill/);
+});
+
+test("glossary artwork uses a Next.js-allowed image quality", () => {
+  assert.match(page, /quality=\{90\}/);
+  assert.match(nextConfig, /qualities:\s*\[75,\s*90\]/);
 });
 
 test("primary navigation provides glossary access without a duplicate Resources card", () => {

@@ -1,22 +1,29 @@
 "use client";
 
+import { Dialog } from "@base-ui/react/dialog";
 import {
   BookHeart,
   BookOpen,
+  ChevronRight,
   HelpingHand,
   House,
   Library,
   ListChecks,
   Map,
+  Menu,
   MessageCircleQuestion,
   UserRound,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
+import type { ProfileSettings } from "@/features/profile/types/profile-settings";
 import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
-import { cn } from "@/lib/utils";
+
+import styles from "./bottom-navigation.module.css";
 
 const icons = {
   ai: MessageCircleQuestion,
@@ -34,57 +41,148 @@ function isActiveRoute(pathname: string, route: ApplicationRoute) {
   return route.href === "/" ? pathname === route.href : pathname.startsWith(route.href);
 }
 
+function navigationGroups(routes: readonly ApplicationRoute[]) {
+  if (routes.length <= 5) return { primary: [...routes], secondary: [] };
+
+  // Keep the high-frequency journey, progress, stories, and resources areas
+  // one tap away. Every other destination remains visible in the More sheet.
+  const preferredIndexes = [0, 2, 3, 4];
+  const primary = preferredIndexes
+    .map((index) => routes[index])
+    .filter((route): route is ApplicationRoute => Boolean(route));
+  const primaryHrefs = new Set(primary.map((route) => route.href));
+
+  return {
+    primary,
+    secondary: routes.filter((route) => !primaryHrefs.has(route.href)),
+  };
+}
+
 function BottomNavigation({
+  preferences,
   routes = applicationRoutes,
 }: {
+  preferences?: ProfileSettings | undefined;
   routes?: readonly ApplicationRoute[];
 }) {
+  const [moreOpen, setMoreOpen] = useState(false);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
+  const { primary, secondary } = navigationGroups(routes);
+  const moreIsActive = secondary.some((route) => isActiveRoute(pathname, route));
+
+  useEffect(() => setMoreOpen(false), [pathname]);
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 80rem)");
+    const closeAtDesktopWidth = (event: MediaQueryListEvent) => {
+      if (event.matches) setMoreOpen(false);
+    };
+    desktopQuery.addEventListener("change", closeAtDesktopWidth);
+    return () => desktopQuery.removeEventListener("change", closeAtDesktopWidth);
+  }, []);
 
   return (
     <MobileLayout>
-      <nav
-        aria-label="Mobile navigation"
-        className="mobile-bottom-navigation safe-area-bottom fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-1 pt-1.5 backdrop-blur-md"
-      >
-        <ul
-          className={cn(
-            "mx-auto grid max-w-md items-center",
-            routes.length === 8
-              ? "grid-cols-4"
-              : routes.length === 7
-                ? "grid-cols-4"
-                : routes.length === 6
-                  ? "grid-cols-6"
-                  : "grid-cols-5",
-          )}
+      <Dialog.Root onOpenChange={setMoreOpen} open={moreOpen}>
+        <nav
+          aria-label="Primary navigation"
+          className={`mobile-bottom-navigation safe-area-bottom ${styles.navigation}`}
         >
-          {routes.map((route) => {
-            const Icon = icons[route.icon];
-            const active = isActiveRoute(pathname, route);
+          <ul className={styles.tabList}>
+            {primary.map((route) => {
+              const Icon = icons[route.icon];
+              const active = isActiveRoute(pathname, route);
 
-            return (
-              <li className="min-w-0" key={route.href}>
-                <Link
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "relative mx-auto flex min-h-14 w-full min-w-0 flex-col items-center justify-center gap-1 rounded-[8px] px-0.5 text-[length:var(--text-caption)] font-medium leading-none transition-[color,background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] before:absolute before:top-0 before:h-0.5 before:w-8 before:rounded-full before:bg-accent-warm before:transition-opacity focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98]",
-                    active
-                      ? "bg-primary/[0.055] text-primary before:opacity-100"
-                      : "text-muted-foreground before:opacity-0 hover:text-foreground",
-                  )}
-                  href={route.href}
+              return (
+                <li key={route.href}>
+                  <Link
+                    aria-current={active ? "page" : undefined}
+                    className={styles.tab}
+                    data-active={active || undefined}
+                    href={route.href}
+                  >
+                    <span className={styles.iconWell}>
+                      <Icon aria-hidden="true" strokeWidth={active ? 2.25 : 1.8} />
+                    </span>
+                    <span>{route.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+
+            {secondary.length ? (
+              <li>
+                <Dialog.Trigger
+                  aria-label="Open more navigation options"
+                  className={styles.tab}
+                  data-active={moreIsActive || undefined}
                 >
-                  <Icon aria-hidden="true" className="size-5" strokeWidth={active ? 2.25 : 1.75} />
-                  <span className="block w-full truncate px-0.5 text-center">{route.label}</span>
-                </Link>
+                  <span className={styles.iconWell}>
+                    <Menu aria-hidden="true" strokeWidth={moreIsActive ? 2.25 : 1.8} />
+                  </span>
+                  <span>More</span>
+                </Dialog.Trigger>
               </li>
-            );
-          })}
-        </ul>
-      </nav>
+            ) : null}
+          </ul>
+        </nav>
+
+        {secondary.length ? (
+          <Dialog.Portal
+            data-reduced-motion={preferences?.reducedMotion}
+            data-text-scale={preferences?.preferredTextScale}
+          >
+            <Dialog.Backdrop className={styles.backdrop} />
+            <Dialog.Viewport className={styles.viewport}>
+              <Dialog.Popup className={styles.sheet} initialFocus={titleRef}>
+                <div aria-hidden="true" className={styles.grabber} />
+                <header className={styles.sheetHeader}>
+                  <div>
+                    <p className="editorial-eyebrow">Health Decoded</p>
+                    <Dialog.Title className={styles.sheetTitle} ref={titleRef} tabIndex={-1}>
+                      More places to go
+                    </Dialog.Title>
+                    <Dialog.Description className={styles.sheetDescription}>
+                      Every part of your learning space stays within reach.
+                    </Dialog.Description>
+                  </div>
+                  <Dialog.Close aria-label="Close navigation menu" className={styles.closeButton}>
+                    <X aria-hidden="true" />
+                  </Dialog.Close>
+                </header>
+
+                <ul className={styles.moreList}>
+                  {secondary.map((route) => {
+                    const Icon = icons[route.icon];
+                    const active = isActiveRoute(pathname, route);
+
+                    return (
+                      <li key={route.href}>
+                        <Link
+                          aria-current={active ? "page" : undefined}
+                          className={styles.moreLink}
+                          data-active={active || undefined}
+                          href={route.href}
+                          onClick={() => setMoreOpen(false)}
+                        >
+                          <span className={styles.moreIcon}>
+                            <Icon aria-hidden="true" strokeWidth={active ? 2.25 : 1.8} />
+                          </span>
+                          <span>{route.label}</span>
+                          <ChevronRight aria-hidden="true" className={styles.chevron} />
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </Dialog.Popup>
+            </Dialog.Viewport>
+          </Dialog.Portal>
+        ) : null}
+      </Dialog.Root>
     </MobileLayout>
   );
 }
 
-export { BottomNavigation };
+export { BottomNavigation, navigationGroups };

@@ -2,6 +2,7 @@ import "server-only";
 
 export {
   assessAiSafety,
+  buildAiSafetyInput,
   classifyAiRequest,
   type AiRefusalType,
   type AiRequestCategory,

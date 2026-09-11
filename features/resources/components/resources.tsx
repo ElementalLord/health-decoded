@@ -14,14 +14,7 @@ import {
   Tags,
   X,
 } from "lucide-react";
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   createContext,
   useContext,
@@ -597,7 +590,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
   const [persistenceAvailable, setPersistenceAvailable] = useState(true);
   const [query, setQuery] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<TopicId>("all");
-  const reduceMotion = useReducedMotion();
   const validIds = useMemo(() => new Set(resources.map(({ id }) => id)), [resources]);
 
   useEffect(() => {
@@ -733,28 +725,13 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               </div>
 
               {filteredResources.length > 0 ? (
-                <motion.div className={styles.resourceGrid} layout={!reduceMotion}>
-                  <AnimatePresence initial={false} mode="popLayout">
-                    {filteredResources.map((resource) => (
-                      <motion.article
-                        animate={{ opacity: 1, transform: "translateY(0px)" }}
-                        exit={{ opacity: 0, transform: reduceMotion ? "none" : "translateY(-6px)" }}
-                        initial={{
-                          opacity: 0,
-                          transform: reduceMotion ? "none" : "translateY(8px)",
-                        }}
-                        key={resource.id}
-                        layout={reduceMotion ? false : "position"}
-                        transition={{
-                          duration: reduceMotion ? 0.01 : 0.18,
-                          ease: [0.23, 1, 0.32, 1],
-                        }}
-                      >
-                        <ResourceGridItem resource={resource} />
-                      </motion.article>
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
+                <div className={styles.resourceGrid}>
+                  {filteredResources.map((resource) => (
+                    <article key={resource.id}>
+                      <ResourceGridItem resource={resource} />
+                    </article>
+                  ))}
+                </div>
               ) : (
                 <div className={styles.emptyResults}>
                   <Search aria-hidden="true" size={24} strokeWidth={1.45} />

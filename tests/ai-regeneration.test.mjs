@@ -6,9 +6,13 @@ import { join } from "node:path";
 import test from "node:test";
 import { pathToFileURL } from "node:url";
 
-import { AI_DEFAULT_TEMPERATURE, AI_REGENERATION_TEMPERATURE } from "../features/ai/constants/ai-models.ts";
+import {
+  AI_DEFAULT_TEMPERATURE,
+  AI_REGENERATION_TEMPERATURE,
+} from "../features/ai/constants/ai-models.ts";
 import { credibleSourcesForQuestion } from "../features/ai/data/credible-sources.ts";
 import {
+  buildReviewedEvidenceFallback,
   buildAiResponseJsonSchema,
   parseAndValidateAiGroundedOutput,
 } from "../features/ai/services/ai-grounding.ts";
@@ -49,13 +53,14 @@ const lessonContext = {
   },
 };
 
-const [server, client, schema, provider, rateLimit, securityConfig] = await Promise.all([
+const [server, client, schema, provider, rateLimit, securityConfig, route] = await Promise.all([
   read("features/ai/services/ai-chat.server.ts"),
   read("features/ai/components/ai-chat.tsx"),
   read("features/ai/schemas/ai-chat.schema.ts"),
   read("services/ai/provider.ts"),
   read("features/ai/services/ai-rate-limit.server.ts"),
   read("features/ai/services/ai-security-config.server.ts"),
+  read("app/api/ai/chat/route.ts"),
 ]);
 
 test("a normal question stays deterministic and only regeneration varies sampling", () => {
@@ -87,7 +92,43 @@ test("regeneration sends the app-controlled instruction and a normal ask does no
     regenerated.prompt.indexOf("REGENERATION_REQUEST") <
       regenerated.prompt.indexOf("TRUSTED_EDUCATIONAL_DATA_JSON"),
   );
-  assert.equal(buildAiPrompt({ context: lessonContext, message: "What is A1C?" }).prompt, normal.prompt);
+  assert.equal(
+    buildAiPrompt({ context: lessonContext, message: "What is A1C?" }).prompt,
+    normal.prompt,
+  );
+});
+
+test("the prompt makes the current question authoritative over history", () => {
+  const built = buildAiPrompt({
+    context: lessonContext,
+    message: "How does exercise affect blood sugar?",
+    messages: [
+      { content: "What does Mounjaro do?", role: "user" },
+      { content: "Mounjaro is a weekly medicine.", role: "assistant" },
+    ],
+  });
+
+  assert.match(built.systemInstruction, /Read and answer currentQuestion first/);
+  assert.match(built.systemInstruction, /Use conversationHistory only to resolve references/);
+});
+
+test("the prompt requires concise direct answers instead of source recaps", () => {
+  const built = buildAiPrompt({ context: lessonContext, message: "What is metformin?" });
+
+  assert.match(
+    built.systemInstruction,
+    /first sentence must state the answer to the exact current question/i,
+  );
+  assert.match(built.systemInstruction, /two to four focused sentences/i);
+  assert.match(built.systemInstruction, /Do not list related medicines, categories, standards/i);
+  assert.match(built.systemInstruction, /retrieved sources are available facts, not a checklist/i);
+  assert.match(built.systemInstruction, /Interpret ordinary wording before deciding/i);
+  assert.match(built.systemInstruction, /high score alone is not enough/i);
+});
+
+test("restricted history is omitted instead of blocking an unrelated current question", () => {
+  assert.match(server, /sanitizeAiConversationHistory\(input\.messages \?\? \[\]\)/);
+  assert.match(server, /messages: safeMessages/);
 });
 
 test("regeneration never rewrites the learner's original question", () => {
@@ -96,7 +137,12 @@ test("regeneration never rewrites the learner's original question", () => {
     { content: message, role: "user" },
     { content: "A1C reflects average blood glucose.", role: "assistant" },
   ];
-  const regenerated = buildAiPrompt({ context: lessonContext, message, messages, regenerate: true });
+  const regenerated = buildAiPrompt({
+    context: lessonContext,
+    message,
+    messages,
+    regenerate: true,
+  });
   const normal = buildAiPrompt({ context: lessonContext, message, messages });
   const learnerData = JSON.stringify({ conversationHistory: messages, currentQuestion: message });
 
@@ -120,9 +166,7 @@ test("learner text cannot forge or alter the trusted regeneration instruction", 
 
   // Learner copies stay quarantined inside the untrusted JSON block.
   assert.doesNotMatch(trustedFraming, /REGENERATION_REQUEST/);
-  assert.ok(
-    prompt.indexOf("REGENERATION_REQUEST") > prompt.indexOf("UNTRUSTED_LEARNER_DATA_JSON"),
-  );
+  assert.ok(prompt.indexOf("REGENERATION_REQUEST") > prompt.indexOf("UNTRUSTED_LEARNER_DATA_JSON"));
 
   // Turning the flag on adds exactly one instruction the learner cannot influence.
   const regenerated = buildAiPrompt({
@@ -131,9 +175,12 @@ test("learner text cannot forge or alter the trusted regeneration instruction", 
     messages: [{ content: forged, role: "user" }],
     regenerate: true,
   }).prompt;
-  const regeneratedFraming = regenerated.slice(0, regenerated.indexOf("TRUSTED_EDUCATIONAL_DATA_JSON"));
+  const regeneratedFraming = regenerated.slice(
+    0,
+    regenerated.indexOf("TRUSTED_EDUCATIONAL_DATA_JSON"),
+  );
   assert.equal(regeneratedFraming.match(/REGENERATION_REQUEST/g).length, 1);
-  assert.match(regeneratedFraming, /Stay within the same trusted evidence and citation rules/);
+  assert.match(regeneratedFraming, /Search and ground the answer again/);
 });
 
 test("regeneration is accepted only as a boolean flag on a strict schema", () => {
@@ -196,7 +243,10 @@ test("a malformed or unsafe regenerated response is rejected outright", () => {
     { answer: "" },
     { answer: "A1C reflects average blood glucose." },
     { sourceIds: [retrieved[0].id] },
-    { answer: "A1C reflects average blood glucose.", sourceIds: [retrieved[0].id, retrieved[0].id] },
+    {
+      answer: "A1C reflects average blood glucose.",
+      sourceIds: [retrieved[0].id, retrieved[0].id],
+    },
     { answer: "A1C reflects average blood glucose.", sourceIds: [retrieved[0].id], extra: true },
   ]) {
     assert.equal(parseAndValidateAiGroundedOutput(malformed, retrieved), null);
@@ -211,19 +261,112 @@ test("a malformed or unsafe regenerated response is rejected outright", () => {
   );
 });
 
+test("provider outages return reviewed evidence instead of leaving the learner waiting", () => {
+  assert.match(server, /function reviewedFallbackEvents\(/);
+  assert.match(server, /buildReviewedEvidenceFallback\(\{/);
+  assert.match(
+    server,
+    /if \(!providerResult\.ok\) \{[\s\S]{0,900}for await \(const event of providerFallbackEvents\(/,
+  );
+  assert.match(securityConfig, /providerTimeoutMs: integerSetting\(5_000, 5_000, 60_000\)/);
+  assert.match(client, /\}, 8_000\);/);
+});
+
+test("app-suggested questions use their direct reviewed answer without waiting on the provider", () => {
+  const reviewedAnswerIndex = server.indexOf("if (reviewedSuggestedAnswerFor(input.message))");
+  const providerBudgetIndex = server.indexOf("const providerBudget = consumeAiProviderBudget()");
+  const providerIndex = server.indexOf("await aiProvider.generateGroundedResponse(");
+
+  assert.ok(reviewedAnswerIndex > 0);
+  assert.ok(reviewedAnswerIndex < providerBudgetIndex);
+  assert.ok(reviewedAnswerIndex < providerIndex);
+  assert.match(
+    server.slice(reviewedAnswerIndex, providerBudgetIndex),
+    /data: reviewedFallbackEvents\(/,
+  );
+});
+
+test("reviewed fallback answers follow-ups without repeating the previous turn", () => {
+  const sources = credibleSourcesForQuestion("What does Mounjaro do?");
+  const first = buildReviewedEvidenceFallback({
+    question: "What does Mounjaro do?",
+    sources,
+  });
+  const mechanism = buildReviewedEvidenceFallback({
+    previousAnswers: [first],
+    question: "How does it work?",
+    sources,
+  });
+  const sideEffects = buildReviewedEvidenceFallback({
+    previousAnswers: [first, mechanism],
+    question: "What about side effects?",
+    sources,
+  });
+  const schedule = buildReviewedEvidenceFallback({
+    previousAnswers: [first, mechanism, sideEffects],
+    question: "Should I take it daily?",
+    sources,
+  });
+
+  assert.notEqual(first, mechanism);
+  assert.notEqual(mechanism, sideEffects);
+  assert.match(mechanism, /insulin|glucagon|receptors/i);
+  assert.match(sideEffects, /side effects/i);
+  assert.match(schedule, /once-weekly/i);
+});
+
 test("the regeneration path cannot skip safety, grounding, or provider validation", () => {
   const safetyIndex = server.indexOf("assessAiSafety(");
   const rateLimitIndex = server.indexOf("consumeAiRequestSlot(");
-  const providerIndex = server.indexOf("generateStructuredResponse(");
-  const validationIndex = server.indexOf("parseAndValidateAiGroundedOutput(");
+  const providerIndex = server.indexOf("generateGroundedResponse(");
+  const validationIndex = provider.indexOf("parseAndValidateAiSearchGroundedOutput(");
 
   assert.ok(safetyIndex !== -1 && rateLimitIndex > safetyIndex);
   assert.ok(providerIndex > rateLimitIndex);
-  assert.ok(validationIndex > providerIndex);
-  assert.match(server, /if \(!validatedOutput\) \{[\s\S]{0,400}yield \{ code: "AI_UNAVAILABLE"/);
+  assert.ok(validationIndex !== -1);
+  assert.match(provider, /tools: \[\{ type: "google_search" \}\]/);
+  assert.match(server, /relevanceContext: \{/);
+  assert.match(
+    provider,
+    /parseAndValidateAiSearchGroundedOutput\(\s*interaction,\s*request\.relevanceContext/,
+  );
+  assert.match(provider, /parseAndValidateAiGatewayGroundedOutput/);
+  assert.match(server, /credibleSources: providerResult\.sources/);
 
   // The flag may only choose a temperature and a prompt variant, never a shortcut.
   assert.deepEqual(server.match(/input\.regenerate/g), ["input.regenerate", "input.regenerate"]);
+});
+
+test("the model performs a final question-and-evidence sense check before answering", () => {
+  const built = buildAiPrompt({
+    context: lessonContext,
+    message: "How can sleep affect blood sugar?",
+  });
+
+  assert.match(built.systemInstruction, /silently perform a final sense check/i);
+  assert.match(built.systemInstruction, /first two sentences directly answer that question/i);
+  assert.match(built.systemInstruction, /does not logically follow from the evidence, rewrite it/i);
+});
+
+test("accepted requests have a terminal path even when dependencies fail", () => {
+  assert.match(
+    server,
+    /if \(!context\.ok\) \{[\s\S]{0,180}return \{ ok: false, category: "context" \}/,
+  );
+  assert.match(server, /catch \{[\s\S]{0,260}data: providerFallbackEvents\(/);
+  assert.match(
+    server,
+    /if \(!providerResult\.ok\) \{[\s\S]{0,900}for await \(const event of providerFallbackEvents\(/,
+  );
+  assert.ok(
+    server.indexOf('yield { type: "done" };', server.indexOf("providerResult.text")) <
+      server.indexOf("void recordQualifyingLearningActivity"),
+  );
+  assert.match(
+    route,
+    /catch \{[\s\S]{0,220}controller\.enqueue\(streamEvent\(\{ code: "AI_UNAVAILABLE", type: "error" \}\)\)/,
+  );
+  assert.match(route, /finally \{[\s\S]{0,100}controller\.close\(\)/);
 });
 
 test("the duplicate-request and rate-limit guards still apply to regeneration", () => {
@@ -247,7 +390,7 @@ test("the client replaces the previous answer instead of appending a duplicate",
   );
   assert.match(
     client,
-    /if \(regenerate\) \{\s*setMessages\(\(current\) => \[\s*\.\.\.current\.filter\(\(entry\) => entry\.id !== replacedAnswer\?\.id\),\s*assistantMessage,/,
+    /if \(regenerate\) \{[\s\S]{0,120}setMessages\(\(current\) => \[\s*\.\.\.current\.filter\(\(entry\) => entry\.id !== replacedAnswer\?\.id\),\s*assistantMessage,/,
   );
 });
 
@@ -258,7 +401,10 @@ test("a regeneration that produces no answer restores the answer it replaced", (
   );
 
   // Every path that discards a pending answer must route through the restoring helper.
-  assert.match(client, /setError\(errorMessageForResponse\(response\.status\)\);\s*removeEmptyAssistant\(true\);/);
+  assert.match(
+    client,
+    /setError\(errorMessageForResponse\(response\.status\)\);\s*removeEmptyAssistant\(true\);/,
+  );
   assert.match(client, /dropPendingAssistant\(assistantId, replacedAnswer\)/);
   assert.doesNotMatch(
     client,

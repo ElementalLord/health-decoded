@@ -11,11 +11,11 @@ function PageLoadingState({ children, className, label, ...props }: PageLoadingS
   return (
     <section
       aria-busy="true"
-      className={cn("animate-page-in motion-cascade space-y-6", className)}
+      className={cn("animate-page-in space-y-6", className)}
       role="status"
       {...props}
     >
-      <p className="editorial-eyebrow motion-status text-muted-foreground">{label}</p>
+      <p className="editorial-eyebrow text-muted-foreground">{label}</p>
       <div aria-hidden="true" className="contents">
         {children}
       </div>

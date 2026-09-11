@@ -342,6 +342,8 @@
 }
 
 .storyRows > div {
+  contain-intrinsic-size: auto 40rem;
+  content-visibility: auto;
   min-width: 0;
   scroll-margin-top: 2rem;
 }
@@ -422,10 +424,27 @@
 
 @media (max-width: 60rem) {
   .intro {
+    background:
+      radial-gradient(circle at 84% 18%, rgb(166 194 179 / 0.2), transparent 30%), #345449;
+    border-radius: 1.25rem;
+    color: #fffaf3;
     gap: 2rem;
     grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
     min-height: auto;
-    padding-bottom: 4rem;
+    overflow: hidden;
+    padding: 2.5rem clamp(1.5rem, 4vw, 2.5rem) 3.5rem;
+  }
+
+  .intro h1 {
+    color: #fffaf3;
+  }
+
+  .intro .eyebrow {
+    color: #e4a38b;
+  }
+
+  .introCopy > p:last-child {
+    color: rgb(255 250 243 / 0.76);
   }
 
   .journey {
@@ -443,6 +462,10 @@
 
   .journeyPath :global(.mobileJourneyPath) {
     display: block;
+  }
+
+  .journeyMarker {
+    display: none;
   }
 
   .featured,
@@ -512,8 +535,10 @@
 
   .intro {
     align-items: start;
+    border-radius: 0;
     grid-template-columns: 1fr;
-    padding-block: 1.5rem 3.5rem;
+    margin-inline: -1.25rem;
+    padding: 2rem 1.25rem 2.75rem;
   }
 
   .introCopy > p:last-child {
@@ -526,11 +551,14 @@
   }
 
   .journey {
-    padding-left: 0;
+    padding-left: 1.5rem;
   }
 
   .journeyPath {
-    display: none;
+    display: block;
+    left: 0;
+    opacity: 0.7;
+    width: 1.5rem;
   }
 
   .journeyMarker {

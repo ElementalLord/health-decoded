@@ -2,7 +2,7 @@ import "server-only";
 
 import {
   type AiCredibleSourceContext,
-  credibleSourcesForQuestion,
+  credibleSourcesForConversation,
   publicCredibleSources,
 } from "@/features/ai/data/credible-sources";
 import { selectSuggestedQuestions } from "@/features/ai/data/suggested-questions";
@@ -49,13 +49,10 @@ export function loadTrustedAiContext({
   readonly message: string;
   readonly messages?: readonly { readonly content: string; readonly role: "assistant" | "user" }[];
 }): Promise<ContextResult> {
-  const retrievalQuery = [
-    ...(messages ?? []).filter(({ role }) => role === "user").map(({ content }) => content),
-    message,
-  ]
-    .slice(-3)
-    .join(" ");
-  const credibleSources = credibleSourcesForQuestion(retrievalQuery);
+  const priorUserMessages = (messages ?? [])
+    .filter(({ role }) => role === "user")
+    .map(({ content }) => content);
+  const credibleSources = credibleSourcesForConversation({ message, priorUserMessages });
   const baseContext: TrustedAiPromptContext = {
     credibleSources,
     glossary: glossaryFor(message),

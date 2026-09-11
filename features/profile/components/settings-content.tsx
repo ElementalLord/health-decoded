@@ -42,6 +42,8 @@ export function SettingsContent({ data }: { data: ProfileSettings }) {
         </h2>
 
         <form action={action} className="max-w-2xl">
+          <input name="learningPace" type="hidden" value={data.learningPace} />
+          <input name="lessonReminders" type="hidden" value={String(data.lessonReminders)} />
           <input name="reducedMotion" type="hidden" value="false" />
           <input name="locale" type="hidden" value="en" />
 

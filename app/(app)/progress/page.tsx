@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/shared/page-header";
+import styles from "@/features/progress/components/progress-page.module.css";
 import { JourneyProgressExperience } from "@/features/progress/components/journey-progress-experience";
 import { ProgressEmptyState } from "@/features/progress/components/progress-empty-state";
 import { getProgressData } from "@/features/progress/services/progress.server";
@@ -33,15 +34,17 @@ export default async function ProgressPage({
     : null;
 
   return (
-    <section className="mx-auto max-w-5xl space-y-10 py-6 sm:space-y-12 sm:py-10">
-      <div>
-        <PageHeader
-          description="This is a record of the lessons and milestones you have completed."
-          eyebrow="Your learning journey"
-          title="Your progress"
-        />
+    <section className={styles.progressPage}>
+      <div className={styles.progressContent}>
+        <div>
+          <PageHeader
+            description="This is a record of the lessons and milestones you have completed."
+            eyebrow="Your learning journey"
+            title="Your progress"
+          />
+        </div>
+        <JourneyProgressExperience achievement={achievement} data={data} />
       </div>
-      <JourneyProgressExperience achievement={achievement} data={data} />
     </section>
   );
 }

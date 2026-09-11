@@ -22,7 +22,12 @@ export function StoryJourneyPath({ className, markerClassName }: StoryJourneyPat
     if (!marker || !svg) return;
 
     const mobileQuery = window.matchMedia("(max-width: 60rem)");
+    const decorativeMotionQuery = window.matchMedia(
+      "(max-width: 87.5rem), (prefers-reduced-motion: reduce)",
+    );
+    const userReducedMotion = svg.closest('[data-reduced-motion="true"]') !== null;
     let animationFrame = 0;
+    let journeyIsIntersecting = false;
 
     const updateMarker = () => {
       animationFrame = 0;
@@ -61,24 +66,45 @@ export function StoryJourneyPath({ className, markerClassName }: StoryJourneyPat
     };
 
     const scheduleMarkerUpdate = () => {
+      if (
+        document.hidden ||
+        !journeyIsIntersecting ||
+        userReducedMotion ||
+        decorativeMotionQuery.matches
+      ) {
+        marker.style.opacity = "0";
+        return;
+      }
       if (!animationFrame) animationFrame = window.requestAnimationFrame(updateMarker);
     };
 
     const resizeObserver = new ResizeObserver(scheduleMarkerUpdate);
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        journeyIsIntersecting = Boolean(entry?.isIntersecting);
+        scheduleMarkerUpdate();
+      },
+      { rootMargin: "20% 0px" },
+    );
     resizeObserver.observe(svg);
     if (svg.parentElement) resizeObserver.observe(svg.parentElement);
+    intersectionObserver.observe(svg);
 
-    scheduleMarkerUpdate();
     window.addEventListener("resize", scheduleMarkerUpdate);
     window.addEventListener("scroll", scheduleMarkerUpdate, { passive: true });
+    document.addEventListener("visibilitychange", scheduleMarkerUpdate);
     mobileQuery.addEventListener("change", scheduleMarkerUpdate);
+    decorativeMotionQuery.addEventListener("change", scheduleMarkerUpdate);
 
     return () => {
       if (animationFrame) window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", scheduleMarkerUpdate);
       window.removeEventListener("scroll", scheduleMarkerUpdate);
+      document.removeEventListener("visibilitychange", scheduleMarkerUpdate);
       mobileQuery.removeEventListener("change", scheduleMarkerUpdate);
+      decorativeMotionQuery.removeEventListener("change", scheduleMarkerUpdate);
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
     };
   }, []);
 

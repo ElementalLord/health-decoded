@@ -28,7 +28,17 @@ const sessionAwareAuthRoutePaths = new Set([
   "/verify-email",
 ]);
 
+// Several protected page namespaces also contain public artwork (for example,
+// `/resources/...jpg` and `/lessons/...jpg`). Those requests must reach Next's
+// static-file handler directly. Redirecting one to `/login` also makes the
+// `next/image` optimizer reject it, leaving the image's alt text on screen.
+const publicImagePathPattern = /\.(?:apng|avif|gif|ico|jpe?g|png|svg|webp)$/i;
+
 function isProtectedRoute(pathname: string) {
+  if (publicImagePathPattern.test(pathname)) {
+    return false;
+  }
+
   if (publicRoutePaths.has(pathname)) {
     return false;
   }

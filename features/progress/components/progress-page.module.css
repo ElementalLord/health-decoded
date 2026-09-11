@@ -1,0 +1,82 @@
+.progressPage {
+  --progress-gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --progress-section-top: clamp(1.5rem, 4vw, 2.5rem);
+  --progress-shell-top: clamp(1.5rem, 4vw, 3rem);
+
+  isolation: isolate;
+  margin-block-start: calc(0rem - var(--progress-shell-top));
+  margin-inline: calc(50% - 50vw);
+  min-height: 100%;
+  overflow: clip;
+  padding-block: calc(var(--progress-shell-top) + var(--progress-section-top)) 4rem;
+  position: relative;
+  width: 100vw;
+}
+
+.progressPage::before {
+  --progress-art-height: 56.28vw;
+
+  background-image: url("/progress/progress-background-v1.png");
+  background-position: center top;
+  background-repeat: repeat-y;
+  background-size: 100% var(--progress-art-height);
+  content: "";
+  inset: 0;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  mask-repeat: repeat-y;
+  mask-size: 100% var(--progress-art-height);
+  opacity: 0.32;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 10%,
+    #000 90%,
+    transparent 100%
+  );
+  -webkit-mask-repeat: repeat-y;
+  -webkit-mask-size: 100% var(--progress-art-height);
+}
+
+.progressContent {
+  display: grid;
+  gap: clamp(2.5rem, 4vw, 3rem);
+  margin-inline: auto;
+  max-width: 64rem;
+  position: relative;
+  width: min(calc(100% - var(--progress-gutter) - var(--progress-gutter)), 64rem);
+  z-index: 1;
+}
+
+.progressContent::before {
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--background) 92%, transparent) 8%,
+    color-mix(in srgb, var(--background) 92%, transparent) 92%,
+    transparent
+  );
+  content: "";
+  inset: -1.5rem -5rem;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+@media (max-width: 40rem) {
+  .progressPage::before {
+    --progress-art-height: 29.3rem;
+
+    background-size: 52rem var(--progress-art-height);
+    mask-size: 52rem var(--progress-art-height);
+    opacity: 0.24;
+    -webkit-mask-size: 52rem var(--progress-art-height);
+  }
+
+  .progressContent::before {
+    background: color-mix(in srgb, var(--background) 92%, transparent);
+    inset-inline: -1rem;
+  }
+}

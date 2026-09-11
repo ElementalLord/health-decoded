@@ -17,7 +17,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
         Skip to main content
       </a>
       <header className={cn("sticky top-0 z-40 border-b border-[#e5ddd2]", headerStyles.appHeader)}>
-        <div className="mx-auto flex min-h-[4.75rem] max-w-[1440px] items-center justify-between gap-4 px-5 md:px-10 lg:px-14">
+        <div className="mx-auto flex min-h-[4.5rem] max-w-[1440px] items-center justify-between gap-3 px-[clamp(1rem,4vw,3.5rem)] sm:min-h-[4.75rem] sm:gap-4">
           <Link
             className="group inline-flex min-h-11 items-baseline gap-2 transition-colors duration-[var(--duration-fast)] hover:text-[#b96c55]"
             href="/"
@@ -25,7 +25,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
             <span className="font-serif-display text-xl font-semibold tracking-tight sm:text-2xl">
               Health Decoded
             </span>
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.25em] text-[#8b7a70]">
+            <span className="hidden text-[0.65rem] font-bold uppercase tracking-[0.25em] text-[#8b7a70] sm:inline">
               EDU
             </span>
           </Link>
@@ -34,7 +34,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
             <Link
               className={cn(
                 buttonVariants({ fullWidth: false }),
-                "min-h-11 px-5 py-2.5 sm:min-w-28",
+                "min-h-11 px-3 py-2.5 sm:min-w-28 sm:px-5",
               )}
               href="/signup"
             >
@@ -46,7 +46,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
       <main id="main-content" tabIndex={-1}>
         <RouteMotion>{children}</RouteMotion>
       </main>
-      <footer className="mx-auto w-full max-w-[1440px] px-5 py-12 text-[#827168] md:px-10 lg:px-14">
+      <footer className="mx-auto w-full max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-[clamp(2.5rem,6vw,4rem)] text-[#827168]">
         <p className="text-xs font-bold uppercase tracking-[0.22em]">
           Educational support, not medical advice
         </p>

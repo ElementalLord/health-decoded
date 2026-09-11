@@ -3,12 +3,20 @@
 import { Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
-import { SearchExperience } from "@/features/universal-search/components/search-experience";
 import { openAiTutor } from "@/features/ai/components/ai-tutor-dialog";
 
 import styles from "../styles/universal-search.module.css";
+
+const loadSearchExperience = () =>
+  import("@/features/universal-search/components/search-experience");
+const preloadSearchExperience = () => {
+  void loadSearchExperience().catch(() => {});
+};
+const SearchExperience = lazy(() =>
+  loadSearchExperience().then((module) => ({ default: module.SearchExperience })),
+);
 
 export function SearchCommand() {
   const [open, setOpen] = useState(false);
@@ -22,6 +30,7 @@ export function SearchCommand() {
     function shortcut(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase("en") === "k") {
         event.preventDefault();
+        preloadSearchExperience();
         setOpen(true);
       }
     }
@@ -35,8 +44,16 @@ export function SearchCommand() {
     if (!open) return;
     const previouslyFocused =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    inputRef.current?.focus();
-    return () => previouslyFocused?.focus();
+    let active = true;
+    void loadSearchExperience()
+      .then(() => {
+        if (active) window.requestAnimationFrame(() => inputRef.current?.focus());
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+      previouslyFocused?.focus();
+    };
   }, [open]);
 
   function close() {
@@ -53,7 +70,12 @@ export function SearchCommand() {
     <>
       <button
         className={styles.searchTrigger}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          preloadSearchExperience();
+          setOpen(true);
+        }}
+        onFocus={preloadSearchExperience}
+        onPointerEnter={preloadSearchExperience}
         ref={triggerRef}
         type="button"
       >
@@ -97,15 +119,23 @@ export function SearchCommand() {
                 <span aria-hidden="true" className={styles.escapeHint}>
                   Esc
                 </span>
-                <SearchExperience
-                  compact
-                  inputRef={inputRef}
-                  onNavigate={(route) => {
-                    setOpen(false);
-                    router.push(route);
-                  }}
-                  onOpenAiTutor={openAiTutorFromSearch}
-                />
+                <Suspense
+                  fallback={
+                    <p aria-live="polite" className={styles.resultCount} role="status">
+                      Preparing search…
+                    </p>
+                  }
+                >
+                  <SearchExperience
+                    compact
+                    inputRef={inputRef}
+                    onNavigate={(route) => {
+                      setOpen(false);
+                      router.push(route);
+                    }}
+                    onOpenAiTutor={openAiTutorFromSearch}
+                  />
+                </Suspense>
               </div>
             </div>,
             document.body,

@@ -16,7 +16,7 @@ const aiSecurityConfigSchema = z
     globalProviderCallsPerMinute: integerSetting(200, 5, 10_000),
     maxOutputTokens: integerSetting(700, 100, 2_000),
     networkRequestsPerMinute: integerSetting(30, 5, 1_000),
-    providerTimeoutMs: integerSetting(30_000, 5_000, 60_000),
+    providerTimeoutMs: integerSetting(5_000, 5_000, 60_000),
     rapidRequestIntervalMs: integerSetting(750, 100, 10_000),
     requestsPerDay: integerSetting(120, 10, 10_000),
     requestsPerHour: integerSetting(40, 5, 2_000),

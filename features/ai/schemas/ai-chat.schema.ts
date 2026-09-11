@@ -60,6 +60,7 @@ export const aiChatStreamEventSchema = z.discriminatedUnion("type", [
         .array(
           z
             .object({
+              citedText: z.string().trim().min(1).max(420).optional(),
               href: z.string().url().startsWith("https://"),
               organization: z.string().trim().min(1).max(80),
               title: z.string().trim().min(1).max(180),
@@ -67,7 +68,7 @@ export const aiChatStreamEventSchema = z.discriminatedUnion("type", [
             .strict(),
         )
         .min(1)
-        .max(3),
+        .max(8),
       suggestedQuestions: z.array(plainTextMessage).min(1).max(3),
       type: z.literal("context"),
     })

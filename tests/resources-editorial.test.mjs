@@ -5,7 +5,28 @@ import test from "node:test";
 import { type2DiabetesResources } from "../content/resources/type-2-diabetes-resources.ts";
 
 const component = readFileSync("features/resources/components/resources.tsx", "utf8");
+const page = readFileSync("app/(app)/resources/page.tsx", "utf8");
 const styles = readFileSync("features/resources/components/resources.module.css", "utf8");
+
+test("the reading room background stays decorative and clear of the text column", () => {
+  assert.ok(statSync("public/resources/resources-reading-room-full-page-v14.png").size > 8_000_000);
+  assert.match(page, /className=\{styles\.resourcesPage\}/);
+  assert.match(page, /className=\{styles\.resourcesContent\}/);
+  assert.match(
+    styles,
+    /\.resourcesPage::before \{[\s\S]*resources-reading-room-full-page-v14\.png[\s\S]*background-position: center top;[\s\S]*background-repeat: no-repeat;[\s\S]*background-size: 100% auto;/,
+  );
+  assert.doesNotMatch(styles, /background-size: 100% 100%/);
+  assert.doesNotMatch(styles, /resources-reading-room-background-v10\.png/);
+  assert.doesNotMatch(styles, /resources-reading-room-middle-v11\.png/);
+  assert.doesNotMatch(styles, /\.resourcesPage::after/);
+  assert.doesNotMatch(styles, /background-repeat: repeat-y/);
+  assert.match(
+    styles,
+    /\.resourcesContent::before \{[\s\S]*var\(--background\) 94%[\s\S]*pointer-events: none;/,
+  );
+  assert.match(styles, /@media \(max-width: 68rem\) \{[\s\S]*\.resourcesPage::before/);
+});
 
 test("the reading room publishes 18 distinct reviewed guides", () => {
   assert.equal(type2DiabetesResources.length, 18);
@@ -100,7 +121,7 @@ test("article views persist locally and expose a clear completion record", () =>
   assert.match(component, /transform: `scaleX\(\$\{percent \/ 100\}\)`/);
 });
 
-test("the practice rail glides smoothly within the resources section", () => {
+test("the practice rail keeps its velocity-based delayed glide", () => {
   assert.match(component, /useScroll\(\{/);
   assert.match(component, /target: boundaryRef/);
   assert.match(component, /offset: \["start 14%", "end 86%"\]/);
@@ -111,6 +132,8 @@ test("the practice rail glides smoothly within the resources section", () => {
   assert.match(component, /boundary\.clientHeight - tools\.offsetHeight/);
   assert.match(component, /ResizeObserver/);
   assert.match(component, /reduceMotion \? "none" : smoothTransform/);
+  assert.match(styles, /\.floatingTools \{[\s\S]*display: grid/);
+  assert.match(styles, /@media \(max-width: 87\.99rem\)/);
   assert.doesNotMatch(styles, /@keyframes/);
   assert.doesNotMatch(styles, /animation:/);
 });

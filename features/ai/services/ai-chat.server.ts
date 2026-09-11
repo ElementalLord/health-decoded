@@ -5,14 +5,12 @@ import {
   AI_REGENERATION_TEMPERATURE,
 } from "@/features/ai/constants/ai-models";
 import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
+import type { AiCredibleSourceContext } from "@/features/ai/data/credible-sources";
+import { reviewedSuggestedAnswerFor } from "@/features/ai/data/reviewed-suggested-answers";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
+import { sanitizeAiConversationHistory } from "@/features/ai/services/ai-conversation-safety";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
-import {
-  AI_INSUFFICIENT_EVIDENCE_MESSAGE,
-  buildAiResponseJsonSchema,
-  parseAndValidateAiGroundedOutput,
-} from "@/features/ai/services/ai-grounding";
-import { assessAiOutputSafety } from "@/features/ai/services/ai-output-safety";
+import { buildReviewedEvidenceFallback } from "@/features/ai/services/ai-grounding";
 import {
   consumeAiProviderBudget,
   recordAiProviderFailure,
@@ -22,12 +20,13 @@ import {
   consumeAiRequestSlot,
   fingerprintAiRequest,
 } from "@/features/ai/services/ai-rate-limit.server";
-import { assessAiSafety } from "@/features/ai/services/ai-safety.server";
+import { assessAiSafety, buildAiSafetyInput } from "@/features/ai/services/ai-safety.server";
 import { recordQualifyingLearningActivity } from "@/features/streaks/services/learning-streak.server";
 import type {
   AiChatFailureCategory,
   AiChatRequest,
   AiChatStreamEvent,
+  AiContextMetadata,
 } from "@/features/ai/types/ai";
 import { aiProvider } from "@/services/ai/provider";
 
@@ -53,21 +52,68 @@ function inputCountBucket(count: number) {
   return "many" as const;
 }
 
-function providerErrorCode(category: AiChatFailureCategory) {
-  if (category === "configuration") return "AI_CONFIGURATION_ERROR" as const;
-  if (category === "rate_limited") return "AI_RATE_LIMITED" as const;
-  if (category === "timeout") return "AI_TIMEOUT" as const;
-  return "AI_UNAVAILABLE" as const;
-}
-
-function refusalStream(message: string): AiChatStreamResult {
+function refusalStream(message: string, metadata?: AiContextMetadata): AiChatStreamResult {
   return {
     ok: true,
     data: (async function* () {
+      if (metadata?.credibleSources.length) {
+        yield { ...metadata, type: "context" };
+      }
       yield { text: message, type: "delta" };
       yield { type: "done" };
     })(),
   };
+}
+
+function reviewedFallbackEvents(
+  retrievedSources: readonly AiCredibleSourceContext[],
+  metadata: AiContextMetadata,
+  question: string,
+  previousAnswers: readonly string[],
+): AsyncGenerator<AiChatStreamEvent> {
+  const reviewedSuggestedAnswer = reviewedSuggestedAnswerFor(question);
+  const preferredSources = reviewedSuggestedAnswer
+    ? retrievedSources.filter((source) =>
+        reviewedSuggestedAnswer.reviewedSourceKeys.includes(source.id),
+      )
+    : [];
+  const fallbackSources = (preferredSources.length ? preferredSources : retrievedSources).slice(
+    0,
+    2,
+  );
+  return (async function* () {
+    yield {
+      credibleSources: metadata.credibleSources.filter((source) =>
+        fallbackSources.some((retrieved) => retrieved.href === source.href),
+      ),
+      suggestedQuestions: metadata.suggestedQuestions,
+      type: "context",
+    };
+    yield {
+      text: buildReviewedEvidenceFallback({
+        previousAnswers,
+        question,
+        sources: fallbackSources,
+      }),
+      type: "delta",
+    };
+    yield { type: "done" };
+  })();
+}
+
+function providerFallbackEvents(
+  retrievedSources: readonly AiCredibleSourceContext[],
+  metadata: AiContextMetadata,
+  question: string,
+  previousAnswers: readonly string[],
+): AsyncGenerator<AiChatStreamEvent> {
+  if (retrievedSources.length > 0) {
+    return reviewedFallbackEvents(retrievedSources, metadata, question, previousAnswers);
+  }
+
+  return (async function* () {
+    yield { code: "AI_UNAVAILABLE", type: "error" };
+  })();
 }
 
 export async function createAiChatStream(
@@ -77,12 +123,10 @@ export async function createAiChatStream(
   const startedAt = Date.now();
   const correlationId = crypto.randomUUID();
   const inputCount = 1 + (input.messages?.length ?? 0);
-  const recentUserContext = (input.messages ?? [])
+  const priorUserMessages = (input.messages ?? [])
     .filter(({ role }) => role === "user")
-    .slice(-2)
-    .map(({ content }) => content)
-    .join(" ");
-  const safety = assessAiSafety(`${recentUserContext} ${input.message}`.trim());
+    .map(({ content }) => content);
+  const safety = assessAiSafety(buildAiSafetyInput({ message: input.message, priorUserMessages }));
   const requestCategory = safety.category;
   const loggingContext = {
     operation: "chat_request" as const,
@@ -115,35 +159,21 @@ export async function createAiChatStream(
 
   if (safety.kind === "refuse") {
     logAiOperation({ ...loggingContext, outcome: "refused", refusal_type: safety.refusalType });
-    return refusalStream(safety.message);
+    const refusalContext = await loadTrustedAiContext({
+      message: input.message,
+      ...(input.messages?.length ? { messages: input.messages } : {}),
+    });
+    return refusalStream(
+      safety.message,
+      refusalContext.ok ? refusalContext.data.metadata : undefined,
+    );
   }
 
-  for (const entry of input.messages ?? []) {
-    if (entry.role === "user") {
-      const historySafety = assessAiSafety(entry.content);
-      if (historySafety.kind === "refuse") {
-        logAiOperation({
-          ...loggingContext,
-          outcome: "refused",
-          refusal_type: historySafety.refusalType,
-        });
-        return refusalStream(historySafety.message);
-      }
-    } else if (!assessAiOutputSafety(entry.content).safe) {
-      logAiOperation({
-        ...loggingContext,
-        outcome: "refused",
-        refusal_type: "prompt_injection",
-      });
-      return refusalStream(
-        "I can’t use conversation history that contains unsafe or hidden instructions. Please start a new conversation and ask a Type 2 diabetes education question.",
-      );
-    }
-  }
+  const safeMessages = sanitizeAiConversationHistory(input.messages ?? []);
 
   const context = await loadTrustedAiContext({
     message: input.message,
-    ...(input.messages ? { messages: input.messages } : {}),
+    ...(safeMessages.length ? { messages: safeMessages } : {}),
   });
 
   if (!context.ok) {
@@ -152,9 +182,20 @@ export async function createAiChatStream(
   }
 
   const retrievedSources = context.data.retrievedSources;
-  if (retrievedSources.length === 0) {
-    logAiOperation({ ...loggingContext, outcome: "refused", refusal_type: "unsupported_medical" });
-    return refusalStream(AI_INSUFFICIENT_EVIDENCE_MESSAGE);
+  const previousAnswers = safeMessages
+    .filter(({ role }) => role === "assistant")
+    .map(({ content }) => content);
+  if (reviewedSuggestedAnswerFor(input.message)) {
+    logAiOperation({ ...loggingContext, outcome: "success" });
+    return {
+      ok: true,
+      data: reviewedFallbackEvents(
+        retrievedSources,
+        context.data.metadata,
+        input.message,
+        previousAnswers,
+      ),
+    };
   }
 
   let prompt: ReturnType<typeof buildAiPrompt>;
@@ -162,12 +203,20 @@ export async function createAiChatStream(
     prompt = buildAiPrompt({
       context: context.data.promptContext,
       message: input.message,
-      ...(input.messages?.length ? { messages: input.messages } : {}),
+      ...(safeMessages.length ? { messages: safeMessages } : {}),
       regenerate: Boolean(input.regenerate),
     });
   } catch {
     logAiOperation({ ...loggingContext, outcome: "unexpected" });
-    return { ok: false, category: "unexpected" };
+    return {
+      ok: true,
+      data: providerFallbackEvents(
+        retrievedSources,
+        context.data.metadata,
+        input.message,
+        previousAnswers,
+      ),
+    };
   }
 
   const providerBudget = consumeAiProviderBudget();
@@ -178,8 +227,13 @@ export async function createAiChatStream(
       security_control: providerBudget.reason === "budget" ? "provider_budget" : "provider_circuit",
     });
     return {
-      ok: false,
-      category: providerBudget.reason === "budget" ? "rate_limited" : "unexpected",
+      ok: true,
+      data: providerFallbackEvents(
+        retrievedSources,
+        context.data.metadata,
+        input.message,
+        previousAnswers,
+      ),
     };
   }
 
@@ -188,10 +242,13 @@ export async function createAiChatStream(
     data: (async function* () {
       let outcome: "configuration" | "rate_limited" | "success" | "timeout" | "unexpected" =
         "success";
-      const providerResult = await aiProvider.generateStructuredResponse(
+      const providerResult = await aiProvider.generateGroundedResponse(
         {
           ...prompt,
-          responseJsonSchema: buildAiResponseJsonSchema(retrievedSources),
+          relevanceContext: {
+            ...(priorUserMessages.length ? { previousQuestion: priorUserMessages.at(-1) } : {}),
+            question: input.message,
+          },
           temperature: input.regenerate ? AI_REGENERATION_TEMPERATURE : AI_DEFAULT_TEMPERATURE,
         },
         signal,
@@ -204,42 +261,30 @@ export async function createAiChatStream(
           duration_bucket: durationBucket(Date.now() - startedAt),
           outcome,
         });
-        yield { code: providerErrorCode(outcome), type: "error" };
-        return;
-      }
-      let rawOutput: unknown;
-      try {
-        rawOutput = JSON.parse(providerResult.text);
-      } catch {
-        rawOutput = null;
-      }
-      const validatedOutput = parseAndValidateAiGroundedOutput(rawOutput, retrievedSources);
-      if (!validatedOutput) {
-        recordAiProviderFailure();
-        logAiOperation({
-          ...loggingContext,
-          duration_bucket: durationBucket(Date.now() - startedAt),
-          outcome: "unexpected",
-          security_control: "output_validation",
-        });
-        yield { code: "AI_UNAVAILABLE", type: "error" };
+        for await (const event of providerFallbackEvents(
+          retrievedSources,
+          context.data.metadata,
+          input.message,
+          previousAnswers,
+        )) {
+          yield event;
+        }
         return;
       }
       yield {
-        credibleSources: context.data.metadata.credibleSources.filter((source) =>
-          validatedOutput.sources.some((retrieved) => retrieved.href === source.href),
-        ),
+        credibleSources: providerResult.sources,
         suggestedQuestions: context.data.metadata.suggestedQuestions,
         type: "context",
       };
       recordAiProviderSuccess();
-      yield { text: validatedOutput.answer, type: "delta" };
-      // This is deliberately server-side and occurs only after a non-refused, output-validated
-      // educational response has been produced. No conversation content enters the streak system.
-      if (!signal?.aborted && validatedOutput.answer.trim().length > 0) {
-        await recordQualifyingLearningActivity("ai_learning_exchange_completed");
-      }
+      yield { text: providerResult.text, type: "delta" };
       yield { type: "done" };
+      // Completion telemetry is optional and must never delay or invalidate the answer.
+      if (!signal?.aborted && providerResult.text.trim().length > 0) {
+        void recordQualifyingLearningActivity("ai_learning_exchange_completed").catch(() =>
+          logAiOperation({ ...loggingContext, outcome: "unexpected" }),
+        );
+      }
       logAiOperation({
         ...loggingContext,
         duration_bucket: durationBucket(Date.now() - startedAt),
