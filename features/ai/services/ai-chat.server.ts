@@ -5,12 +5,21 @@ import {
   AI_REGENERATION_TEMPERATURE,
 } from "@/features/ai/constants/ai-models";
 import { buildAiPrompt } from "@/features/ai/prompts/prompt-builder";
-import type { AiCredibleSourceContext } from "@/features/ai/data/credible-sources";
+import {
+  allCredibleSources,
+  type AiCredibleSourceContext,
+} from "@/features/ai/data/credible-sources";
 import { reviewedSuggestedAnswerFor } from "@/features/ai/data/reviewed-suggested-answers";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { sanitizeAiConversationHistory } from "@/features/ai/services/ai-conversation-safety";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
-import { buildReviewedEvidenceFallback } from "@/features/ai/services/ai-grounding";
+import {
+  buildReviewedCorpusPrompt,
+  buildReviewedCorpusResponseJsonSchema,
+  buildReviewedEvidenceFallback,
+  parseAndValidateReviewedCorpusOutput,
+  reviewedCorpusSystemInstruction,
+} from "@/features/ai/services/ai-grounding";
 import {
   consumeAiProviderBudget,
   recordAiProviderFailure,
@@ -82,13 +91,16 @@ function reviewedFallbackEvents(
     2,
   );
   return (async function* () {
-    yield {
-      credibleSources: metadata.credibleSources.filter((source) =>
-        fallbackSources.some((retrieved) => retrieved.href === source.href),
-      ),
-      suggestedQuestions: metadata.suggestedQuestions,
-      type: "context",
-    };
+    const publicFallbackSources = metadata.credibleSources.filter((source) =>
+      fallbackSources.some((retrieved) => retrieved.href === source.href),
+    );
+    if (publicFallbackSources.length) {
+      yield {
+        credibleSources: publicFallbackSources,
+        suggestedQuestions: metadata.suggestedQuestions,
+        type: "context",
+      };
+    }
     yield {
       text: buildReviewedEvidenceFallback({
         previousAnswers,
@@ -101,19 +113,83 @@ function reviewedFallbackEvents(
   })();
 }
 
-function providerFallbackEvents(
+async function* providerFallbackEvents(
   retrievedSources: readonly AiCredibleSourceContext[],
   metadata: AiContextMetadata,
   question: string,
   previousAnswers: readonly string[],
+  previousQuestion?: string,
+  generateFromReviewedCorpus = false,
+  signal?: AbortSignal,
 ): AsyncGenerator<AiChatStreamEvent> {
-  if (retrievedSources.length > 0) {
-    return reviewedFallbackEvents(retrievedSources, metadata, question, previousAnswers);
+  const structured = generateFromReviewedCorpus
+    ? await aiProvider.generateStructuredResponse(
+        {
+          prompt: buildReviewedCorpusPrompt({
+            previousAnswers,
+            previousQuestion,
+            question,
+            sources: allCredibleSources,
+          }),
+          responseJsonSchema: buildReviewedCorpusResponseJsonSchema(allCredibleSources),
+          systemInstruction: reviewedCorpusSystemInstruction,
+        },
+        signal,
+      )
+    : null;
+
+  if (structured?.ok) {
+    try {
+      const validated = parseAndValidateReviewedCorpusOutput(
+        JSON.parse(structured.text) as unknown,
+        allCredibleSources,
+        { ...(previousQuestion ? { previousQuestion } : {}), question },
+      );
+      if (validated) {
+        if (validated.sources.length) {
+          yield {
+            credibleSources: validated.sources.map(({ href, organization, title }) => ({
+              href,
+              organization,
+              title,
+            })),
+            suggestedQuestions: metadata.suggestedQuestions,
+            type: "context",
+          };
+        }
+        yield { text: validated.answer, type: "delta" };
+        yield { type: "done" };
+        return;
+      }
+    } catch {
+      // Fall through to the deterministic reviewed-evidence safety net.
+    }
   }
 
-  return (async function* () {
-    yield { code: "AI_UNAVAILABLE", type: "error" };
-  })();
+  yield* reviewedFallbackEvents(retrievedSources, metadata, question, previousAnswers);
+}
+
+async function* recordCompletedLearningExchange(
+  events: AsyncGenerator<AiChatStreamEvent>,
+  loggingContext: Omit<Parameters<typeof logAiOperation>[0], "outcome">,
+): AsyncGenerator<AiChatStreamEvent> {
+  for await (const event of events) {
+    if (event.type === "done") {
+      await recordLearningExchangeSafely(loggingContext);
+    }
+    yield event;
+  }
+}
+
+async function recordLearningExchangeSafely(
+  loggingContext: Omit<Parameters<typeof logAiOperation>[0], "outcome">,
+) {
+  try {
+    await recordQualifyingLearningActivity("ai_learning_exchange_completed");
+  } catch {
+    // Streak recording is optional and must never invalidate a completed answer.
+    logAiOperation({ ...loggingContext, outcome: "unexpected" });
+  }
 }
 
 export async function createAiChatStream(
@@ -189,11 +265,14 @@ export async function createAiChatStream(
     logAiOperation({ ...loggingContext, outcome: "success" });
     return {
       ok: true,
-      data: reviewedFallbackEvents(
-        retrievedSources,
-        context.data.metadata,
-        input.message,
-        previousAnswers,
+      data: recordCompletedLearningExchange(
+        reviewedFallbackEvents(
+          retrievedSources,
+          context.data.metadata,
+          input.message,
+          previousAnswers,
+        ),
+        loggingContext,
       ),
     };
   }
@@ -210,11 +289,15 @@ export async function createAiChatStream(
     logAiOperation({ ...loggingContext, outcome: "unexpected" });
     return {
       ok: true,
-      data: providerFallbackEvents(
-        retrievedSources,
-        context.data.metadata,
-        input.message,
-        previousAnswers,
+      data: recordCompletedLearningExchange(
+        providerFallbackEvents(
+          retrievedSources,
+          context.data.metadata,
+          input.message,
+          previousAnswers,
+          priorUserMessages.at(-1),
+        ),
+        loggingContext,
       ),
     };
   }
@@ -228,11 +311,14 @@ export async function createAiChatStream(
     });
     return {
       ok: true,
-      data: providerFallbackEvents(
-        retrievedSources,
-        context.data.metadata,
-        input.message,
-        previousAnswers,
+      data: recordCompletedLearningExchange(
+        providerFallbackEvents(
+          retrievedSources,
+          context.data.metadata,
+          input.message,
+          previousAnswers,
+        ),
+        loggingContext,
       ),
     };
   }
@@ -255,17 +341,23 @@ export async function createAiChatStream(
       );
       if (!providerResult.ok) {
         outcome = providerResult.category === "refused" ? "unexpected" : providerResult.category;
-        recordAiProviderFailure();
+        recordAiProviderFailure(outcome);
         logAiOperation({
           ...loggingContext,
           duration_bucket: durationBucket(Date.now() - startedAt),
           outcome,
         });
-        for await (const event of providerFallbackEvents(
-          retrievedSources,
-          context.data.metadata,
-          input.message,
-          previousAnswers,
+        for await (const event of recordCompletedLearningExchange(
+          providerFallbackEvents(
+            retrievedSources,
+            context.data.metadata,
+            input.message,
+            previousAnswers,
+            priorUserMessages.at(-1),
+            true,
+            signal,
+          ),
+          loggingContext,
         )) {
           yield event;
         }
@@ -278,13 +370,10 @@ export async function createAiChatStream(
       };
       recordAiProviderSuccess();
       yield { text: providerResult.text, type: "delta" };
-      yield { type: "done" };
-      // Completion telemetry is optional and must never delay or invalidate the answer.
       if (!signal?.aborted && providerResult.text.trim().length > 0) {
-        void recordQualifyingLearningActivity("ai_learning_exchange_completed").catch(() =>
-          logAiOperation({ ...loggingContext, outcome: "unexpected" }),
-        );
+        await recordLearningExchangeSafely(loggingContext);
       }
+      yield { type: "done" };
       logAiOperation({
         ...loggingContext,
         duration_bucket: durationBucket(Date.now() - startedAt),

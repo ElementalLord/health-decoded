@@ -10,11 +10,16 @@ import {
   AI_DEFAULT_TEMPERATURE,
   AI_REGENERATION_TEMPERATURE,
 } from "../features/ai/constants/ai-models.ts";
-import { credibleSourcesForQuestion } from "../features/ai/data/credible-sources.ts";
+import {
+  allCredibleSources,
+  credibleSourcesForQuestion,
+} from "../features/ai/data/credible-sources.ts";
 import {
   buildReviewedEvidenceFallback,
   buildAiResponseJsonSchema,
+  buildReviewedCorpusResponseJsonSchema,
   parseAndValidateAiGroundedOutput,
+  parseAndValidateReviewedCorpusOutput,
 } from "../features/ai/services/ai-grounding.ts";
 
 const root = new URL("../", import.meta.url);
@@ -62,6 +67,8 @@ const [server, client, schema, provider, rateLimit, securityConfig, route] = awa
   read("features/ai/services/ai-security-config.server.ts"),
   read("app/api/ai/chat/route.ts"),
 ]);
+
+const serverEnv = await read("lib/env/server.ts");
 
 test("a normal question stays deterministic and only regeneration varies sampling", () => {
   assert.equal(AI_DEFAULT_TEMPERATURE, 0);
@@ -261,15 +268,60 @@ test("a malformed or unsafe regenerated response is rejected outright", () => {
   );
 });
 
+test("reviewed-corpus generation accepts direct sourced answers and rejects related filler", () => {
+  const glucoseSource = allCredibleSources.find(({ id }) => id === "CDC-DIABETES-BASICS");
+  assert.ok(glucoseSource);
+  const schema = buildReviewedCorpusResponseJsonSchema(allCredibleSources);
+  assert.equal(schema.properties.sourceIds.minItems, 0);
+  assert.ok(schema.properties.sourceIds.items.enum.length > 20);
+
+  const direct = parseAndValidateReviewedCorpusOutput(
+    {
+      answer: "Glucose is a type of sugar that the body's cells use for energy.",
+      sourceIds: [glucoseSource.id],
+    },
+    allCredibleSources,
+    { question: "what is glucose" },
+  );
+  assert.equal(direct?.sources[0]?.id, glucoseSource.id);
+  assert.equal(
+    parseAndValidateReviewedCorpusOutput(
+      {
+        answer: "Diabetes management can include blood glucose, medicines, and preventive care.",
+        sourceIds: [glucoseSource.id],
+      },
+      allCredibleSources,
+      { question: "what is glucose" },
+    ),
+    null,
+  );
+});
+
 test("provider outages return reviewed evidence instead of leaving the learner waiting", () => {
   assert.match(server, /function reviewedFallbackEvents\(/);
   assert.match(server, /buildReviewedEvidenceFallback\(\{/);
   assert.match(
     server,
-    /if \(!providerResult\.ok\) \{[\s\S]{0,900}for await \(const event of providerFallbackEvents\(/,
+    /if \(!providerResult\.ok\) \{[\s\S]{0,900}for await \(const event of recordCompletedLearningExchange\(/,
   );
-  assert.match(securityConfig, /providerTimeoutMs: integerSetting\(5_000, 5_000, 60_000\)/);
-  assert.match(client, /\}, 8_000\);/);
+  assert.match(securityConfig, /providerTimeoutMs: integerSetting\(10_000, 10_000, 60_000\)/);
+  assert.match(client, /\}, 25_000\);/);
+  assert.match(provider, /if \(searchIsCoolingDown\(\)\)/);
+  assert.match(provider, /result\.category === "rate_limited"/);
+  assert.match(
+    securityConfig,
+    /searchRateLimitCooldownMs: integerSetting\(5 \* 60_000, 10_000, 60 \* 60_000\)/,
+  );
+  assert.doesNotMatch(server, /retrievedSources\.length > 0/);
+  assert.doesNotMatch(server, /yield \{ code: "AI_UNAVAILABLE", type: "error" \}/);
+  assert.match(server, /sources: allCredibleSources/);
+  assert.match(server, /parseAndValidateReviewedCorpusOutput/);
+  assert.match(server, /yield\* reviewedFallbackEvents/);
+});
+
+test("local Vercel CLI OIDC tokens are not mistaken for live gateway credentials", () => {
+  assert.match(serverEnv, /process\.env\.VERCEL === "1" \? process\.env\.VERCEL_OIDC_TOKEN/);
+  assert.match(serverEnv, /process\.env\.AI_GATEWAY_API_KEY \?\? vercelOidcToken/);
 });
 
 test("app-suggested questions use their direct reviewed answer without waiting on the provider", () => {
@@ -282,7 +334,7 @@ test("app-suggested questions use their direct reviewed answer without waiting o
   assert.ok(reviewedAnswerIndex < providerIndex);
   assert.match(
     server.slice(reviewedAnswerIndex, providerBudgetIndex),
-    /data: reviewedFallbackEvents\(/,
+    /data: recordCompletedLearningExchange\([\s\S]*reviewedFallbackEvents\(/,
   );
 });
 
@@ -353,14 +405,26 @@ test("accepted requests have a terminal path even when dependencies fail", () =>
     server,
     /if \(!context\.ok\) \{[\s\S]{0,180}return \{ ok: false, category: "context" \}/,
   );
-  assert.match(server, /catch \{[\s\S]{0,260}data: providerFallbackEvents\(/);
   assert.match(
     server,
-    /if \(!providerResult\.ok\) \{[\s\S]{0,900}for await \(const event of providerFallbackEvents\(/,
+    /catch \{[\s\S]{0,320}data: recordCompletedLearningExchange\([\s\S]*providerFallbackEvents\(/,
   );
-  assert.ok(
-    server.indexOf('yield { type: "done" };', server.indexOf("providerResult.text")) <
-      server.indexOf("void recordQualifyingLearningActivity"),
+  assert.match(
+    server,
+    /if \(!providerResult\.ok\) \{[\s\S]{0,900}for await \(const event of recordCompletedLearningExchange\(/,
+  );
+  const streakRecordIndex = server.indexOf(
+    "await recordLearningExchangeSafely(loggingContext)",
+    server.indexOf("providerResult.text"),
+  );
+  const doneIndex = server.indexOf(
+    'yield { type: "done" };',
+    server.indexOf("providerResult.text"),
+  );
+  assert.ok(streakRecordIndex >= 0 && streakRecordIndex < doneIndex);
+  assert.match(
+    server,
+    /async function recordLearningExchangeSafely\([\s\S]*try \{[\s\S]*await recordQualifyingLearningActivity\("ai_learning_exchange_completed"\);[\s\S]*catch \{[\s\S]*logAiOperation/,
   );
   assert.match(
     route,
@@ -377,6 +441,7 @@ test("the duplicate-request and rate-limit guards still apply to regeneration", 
   assert.doesNotMatch(rateLimit, /regenerat/i);
   assert.match(securityConfig, /duplicateRequestLimit: integerSetting\(3, 2, 20\)/);
   assert.match(securityConfig, /rapidRequestIntervalMs: integerSetting\(750, 100, 10_000\)/);
+  assert.match(rateLimit, /progressiveBlock\(existing, now, config\.abuseBlockMs, 3\)/);
 
   const rateLimitIndex = server.indexOf("consumeAiRequestSlot(");
   assert.ok(rateLimitIndex !== -1 && rateLimitIndex < server.indexOf("buildAiPrompt("));

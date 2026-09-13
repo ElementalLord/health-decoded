@@ -23,6 +23,8 @@ const [route, component, evaluator, server, apiRoute, resources, styles, provide
     read("services/ai/provider.ts"),
   ]);
 
+const providerGuard = await read("features/ai/services/ai-provider-guard.server.ts");
+
 test("the initial bank contains exactly the ten authored challenges", () => {
   assert.equal(explainItBackChallenges.length, 10);
   assert.equal(new Set(explainItBackChallenges.map(({ id }) => id)).size, 10);
@@ -173,6 +175,12 @@ test("the evaluator uses schema-constrained JSON without changing the AI Tutor s
   assert.match(provider, /async \*generateResponseStream/);
 });
 
+test("temporary primary-model capacity errors retry on a stable fallback model", () => {
+  assert.match(provider, /\[DEFAULT_AI_MODEL, FALLBACK_AI_MODEL\]/);
+  assert.match(provider, /isTemporaryModelCapacityFailure\(error\)/);
+  assert.match(provider, /model === DEFAULT_AI_MODEL[\s\S]{0,180}continue/);
+});
+
 test("the semantic contract covers analogy, negation, imperfect writing, keyword salad, and injection", () => {
   assert.match(
     evaluator,
@@ -204,6 +212,15 @@ test("model failure preserves the response and never falls back to keyword gradi
   assert.match(component, /value=\{explanation\}/);
   assert.doesNotMatch(server, /\.includes\(|keyword|\.match\(/i);
   assert.match(server, /category: "unavailable"/);
+});
+
+test("provider quota responses remain rate-limit errors instead of opening the shared circuit", () => {
+  assert.match(server, /recordAiProviderFailure\([\s\S]*providerResult\.category/);
+  assert.match(
+    providerGuard,
+    /if \(category === "rate_limited" \|\| category === "configuration"\) return/,
+  );
+  assert.match(apiRoute, /result\.category === "rate_limited"[\s\S]{0,120}429/);
 });
 
 test("raw explanations remain ephemeral and are excluded from storage, logs, streaks, and analytics", () => {

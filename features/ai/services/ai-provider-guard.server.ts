@@ -44,7 +44,16 @@ export function consumeAiProviderBudget(
   return { allowed: true };
 }
 
-export function recordAiProviderFailure(now = Date.now()) {
+export function recordAiProviderFailure(
+  category: "configuration" | "rate_limited" | "timeout" | "unexpected",
+  now = Date.now(),
+) {
+  // Quota and credential responses are actionable provider results, not signs
+  // of an unstable dependency. Opening the circuit for them hides the useful
+  // 429/configuration category from later requests (including Explain It Back)
+  // behind a generic 503 until the cooldown expires.
+  if (category === "rate_limited" || category === "configuration") return;
+
   const config = getAiSecurityConfig();
   state.consecutiveFailures += 1;
   if (state.consecutiveFailures >= config.circuitBreakerFailureThreshold) {

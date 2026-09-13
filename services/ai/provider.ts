@@ -3,7 +3,11 @@ import "server-only";
 import { ApiError, GoogleGenAI } from "@google/genai";
 
 import { AI_MAX_PROMPT_CHARACTERS } from "@/features/ai/constants/ai-limits";
-import { AI_DEFAULT_TEMPERATURE, DEFAULT_AI_MODEL } from "@/features/ai/constants/ai-models";
+import {
+  AI_DEFAULT_TEMPERATURE,
+  DEFAULT_AI_MODEL,
+  FALLBACK_AI_MODEL,
+} from "@/features/ai/constants/ai-models";
 import {
   parseAndValidateAiGatewayGroundedOutput,
   parseAndValidateAiSearchGroundedOutput,
@@ -72,6 +76,24 @@ export type AiProvider = {
   ): Promise<NormalizedAiProviderResult>;
 };
 
+const globalSearchAvailability = globalThis as typeof globalThis & {
+  healthDecodedAiSearchRetryAfter?: number;
+};
+
+function searchIsCoolingDown(now = Date.now()) {
+  return (globalSearchAvailability.healthDecodedAiSearchRetryAfter ?? 0) > now;
+}
+
+function recordSearchResult(result: AiGroundedProviderResult, now = Date.now()) {
+  if (result.ok) {
+    globalSearchAvailability.healthDecodedAiSearchRetryAfter = 0;
+  } else if (result.category === "rate_limited") {
+    globalSearchAvailability.healthDecodedAiSearchRetryAfter =
+      now + getAiSecurityConfig().searchRateLimitCooldownMs;
+  }
+  return result;
+}
+
 export function getGeminiConfiguration():
   | { readonly ok: true; readonly data: AiProviderConfiguration }
   | { readonly ok: false; readonly error: AiProviderConfigurationError } {
@@ -108,6 +130,17 @@ function providerFailure(
   return normalizeAiProviderFailure("unexpected");
 }
 
+function providerStatus(error: unknown) {
+  if (!error || typeof error !== "object") return undefined;
+  if ("status" in error && typeof error.status === "number") return error.status;
+  if ("statusCode" in error && typeof error.statusCode === "number") return error.statusCode;
+  return undefined;
+}
+
+function isTemporaryModelCapacityFailure(error: unknown) {
+  return [500, 502, 503].includes(providerStatus(error) ?? 0);
+}
+
 function streamFailureCategory(category: AiProviderFailureCategory) {
   return category === "refused" ? "unexpected" : category;
 }
@@ -135,7 +168,7 @@ async function generateGatewayGroundedResponse(
         model: "openai/gpt-5.4-mini",
         store: false,
         temperature: request.temperature ?? AI_DEFAULT_TEMPERATURE,
-        tools: [{ search_context_size: "low", type: "web_search" }],
+        tools: [{ search_context_size: "high", type: "web_search" }],
       }),
       headers: {
         Authorization: `Bearer ${token}`,
@@ -174,34 +207,45 @@ async function generateGeminiGroundedResponse(
   });
   const securityConfig = getAiSecurityConfig();
 
-  try {
-    const interaction = await client.interactions.create(
-      {
-        generation_config: {
-          max_output_tokens: securityConfig.maxOutputTokens,
-          temperature: request.temperature ?? AI_DEFAULT_TEMPERATURE,
-          tool_choice: "any",
+  for (const model of [DEFAULT_AI_MODEL, FALLBACK_AI_MODEL]) {
+    try {
+      const interaction = await client.interactions.create(
+        {
+          generation_config: {
+            max_output_tokens: securityConfig.maxOutputTokens,
+            temperature: request.temperature ?? AI_DEFAULT_TEMPERATURE,
+            tool_choice: "any",
+          },
+          input: request.prompt,
+          model,
+          store: false,
+          system_instruction: request.systemInstruction,
+          tools: [{ type: "google_search" }],
         },
-        input: request.prompt,
-        model: DEFAULT_AI_MODEL,
-        store: false,
-        system_instruction: request.systemInstruction,
-        tools: [{ type: "google_search" }],
-      },
-      {
-        ...(signal ? { fetchOptions: { signal } } : {}),
-        maxRetries: 0,
-        timeout: securityConfig.providerTimeoutMs,
-      },
-    );
+        {
+          ...(signal ? { fetchOptions: { signal } } : {}),
+          maxRetries: 0,
+          timeout: securityConfig.providerTimeoutMs,
+        },
+      );
 
-    const parsed = parseAndValidateAiSearchGroundedOutput(interaction, request.relevanceContext);
-    return parsed
-      ? { ok: true, sources: parsed.sources, text: parsed.answer }
-      : normalizeAiProviderFailure("unexpected");
-  } catch (error) {
-    return providerFailure(error);
+      const parsed = parseAndValidateAiSearchGroundedOutput(interaction, request.relevanceContext);
+      return parsed
+        ? { ok: true, sources: parsed.sources, text: parsed.answer }
+        : normalizeAiProviderFailure("unexpected");
+    } catch (error) {
+      if (
+        model === DEFAULT_AI_MODEL &&
+        isTemporaryModelCapacityFailure(error) &&
+        !signal?.aborted
+      ) {
+        continue;
+      }
+      return providerFailure(error);
+    }
   }
+
+  return normalizeAiProviderFailure("unexpected");
 }
 
 export const aiProvider: AiProvider = {
@@ -209,14 +253,18 @@ export const aiProvider: AiProvider = {
     if (request.prompt.length > AI_MAX_PROMPT_CHARACTERS) {
       return normalizeAiProviderFailure("unexpected");
     }
+    // Search quota is independent from ordinary model generation. Once the
+    // provider confirms it is exhausted, skip repeated doomed search calls for
+    // a short period so the reviewed-corpus fallback can answer promptly.
+    if (searchIsCoolingDown()) return normalizeAiProviderFailure("rate_limited");
 
     const gateway = getAiGatewayServerEnv();
     if (gateway.ok) {
       const result = await generateGatewayGroundedResponse(request, gateway.data.token, signal);
-      if (result.ok || signal?.aborted) return result;
+      if (result.ok || signal?.aborted) return recordSearchResult(result);
     }
 
-    return generateGeminiGroundedResponse(request, signal);
+    return recordSearchResult(await generateGeminiGroundedResponse(request, signal));
   },
   async generateStructuredResponse(
     { prompt, responseJsonSchema, systemInstruction, temperature },
@@ -235,29 +283,40 @@ export const aiProvider: AiProvider = {
     });
     const securityConfig = getAiSecurityConfig();
 
-    try {
-      const response = await client.models.generateContent({
-        model: DEFAULT_AI_MODEL,
-        contents: prompt,
-        config: {
-          ...(signal ? { abortSignal: signal } : {}),
-          candidateCount: 1,
-          httpOptions: {
-            retryOptions: { attempts: 2 },
-            timeout: securityConfig.providerTimeoutMs,
+    for (const model of [DEFAULT_AI_MODEL, FALLBACK_AI_MODEL]) {
+      try {
+        const response = await client.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            ...(signal ? { abortSignal: signal } : {}),
+            candidateCount: 1,
+            httpOptions: {
+              retryOptions: { attempts: 2 },
+              timeout: securityConfig.providerTimeoutMs,
+            },
+            maxOutputTokens: securityConfig.maxOutputTokens,
+            responseJsonSchema,
+            responseMimeType: "application/json",
+            systemInstruction,
+            temperature: temperature ?? AI_DEFAULT_TEMPERATURE,
           },
-          maxOutputTokens: securityConfig.maxOutputTokens,
-          responseJsonSchema,
-          responseMimeType: "application/json",
-          systemInstruction,
-          temperature: temperature ?? AI_DEFAULT_TEMPERATURE,
-        },
-      });
+        });
 
-      return parseAiProviderText(response.text ?? "");
-    } catch (error) {
-      return providerFailure(error);
+        return parseAiProviderText(response.text ?? "");
+      } catch (error) {
+        if (
+          model === DEFAULT_AI_MODEL &&
+          isTemporaryModelCapacityFailure(error) &&
+          !signal?.aborted
+        ) {
+          continue;
+        }
+        return providerFailure(error);
+      }
     }
+
+    return normalizeAiProviderFailure("unexpected");
   },
   async *generateResponseStream({ prompt, systemInstruction }, signal) {
     if (prompt.length > AI_MAX_PROMPT_CHARACTERS) {

@@ -22,6 +22,13 @@ test("general diabetes questions receive authoritative sources without Health De
 });
 
 test("topic-specific questions receive matching authoritative references", () => {
+  assert.equal(credibleSourcesForQuestion("What is insulin?")[0]?.id, "CDC-DIABETES-BASICS");
+  assert.equal(
+    credibleSourcesForQuestion("What is insulin?").some(
+      ({ id }) => id === "NIDDK-DIABETES-MEDICINES",
+    ),
+    false,
+  );
   assert.match(credibleSourcesForQuestion("What does A1C measure?")[0]?.title ?? "", /A1C/);
   assert.match(credibleSourcesForQuestion("What does metformin do?")[0]?.title ?? "", /METFORMIN/i);
   assert.match(credibleSourcesForQuestion("What does Mounjaro do?")[0]?.title ?? "", /MOUNJARO/);

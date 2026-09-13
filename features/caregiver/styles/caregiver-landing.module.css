@@ -44,7 +44,7 @@
   inset-inline-start: 50%;
   background-color: var(--caregiver-canvas);
   background-image:
-    linear-gradient(rgb(247 241 231 / 58%), rgb(247 241 231 / 58%)),
+    linear-gradient(rgb(247 241 231 / 72%), rgb(247 241 231 / 72%)),
     url("/caregiver/landing/caregiver-whimsy-v1.png");
   background-repeat: no-repeat;
   background-position: center;

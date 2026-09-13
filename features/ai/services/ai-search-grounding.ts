@@ -2,6 +2,8 @@ import { z } from "zod";
 
 // @ts-expect-error -- Node's built-in TypeScript test runner requires explicit extensions.
 import { AI_MAX_OUTPUT_CHARACTERS } from "../constants/ai-limits.ts";
+// @ts-expect-error -- Node's built-in TypeScript test runner requires explicit extensions.
+import { normalizeAiQuery } from "../data/query-normalizer.ts";
 import type { AiCredibleSource } from "../types/ai.ts";
 // @ts-expect-error -- Node's built-in TypeScript test runner requires explicit extensions.
 import { assessAiOutputSafety } from "./ai-output-safety.ts";
@@ -11,6 +13,21 @@ import { parseAiProviderText } from "../../../services/ai/response-parser.ts";
 const MAX_SEARCH_SOURCES = 8;
 const MAX_SOURCE_URL_CHARACTERS = 2_048;
 const MAX_CITED_TEXT_CHARACTERS = 420;
+
+const excludedSourceHosts = [
+  "blogspot.com",
+  "facebook.com",
+  "instagram.com",
+  "medium.com",
+  "pinterest.com",
+  "quora.com",
+  "reddit.com",
+  "substack.com",
+  "tiktok.com",
+  "tumblr.com",
+  "twitter.com",
+  "x.com",
+] as const;
 
 const citationSchema = z
   .object({
@@ -123,7 +140,7 @@ function relevanceTerm(value: string) {
 
 function relevanceTerms(value: string) {
   return new Set(
-    (value.toLocaleLowerCase().match(/[a-z0-9]+/g) ?? [])
+    (normalizeAiQuery(value).match(/[a-z0-9]+/g) ?? [])
       .filter((term) => (term.length > 3 || /\d/.test(term)) && !relevanceStopWords.has(term))
       .map(relevanceTerm),
   );
@@ -138,6 +155,26 @@ export function isAiAnswerRelevant(
   answer: string,
   { previousQuestion, question }: AiAnswerRelevanceContext,
 ) {
+  const definition = normalizeAiQuery(question).match(
+    /^(?:what (?:is|are)|define)\s+(?:a |an |the )?(.+?)[.!?]*$/,
+  );
+  if (
+    definition &&
+    !/^(?:some|common|difference|role|purpose|effect|ways?|examples?)\b/.test(definition[1] ?? "")
+  ) {
+    const subjectTerms = [...relevanceTerms(definition[1] ?? "")];
+    const firstSentence = answer.split(/(?<=[.!?])\s+/)[0]?.toLocaleLowerCase() ?? "";
+    const firstWords = firstSentence.match(/[a-z0-9]+/g)?.slice(0, 8) ?? [];
+    if (
+      subjectTerms.length > 0 &&
+      subjectTerms.length <= 3 &&
+      (!subjectTerms.every((term) => firstWords.map(relevanceTerm).includes(term)) ||
+        !/\b(?:is|are|means|refers to)\b/.test(firstSentence))
+    ) {
+      return false;
+    }
+  }
+
   let expected = relevanceTerms(question);
   if (expected.size === 0 && previousQuestion) expected = relevanceTerms(previousQuestion);
   if (expected.size === 0) return true;
@@ -176,6 +213,19 @@ function safePublicSourceUrl(value: string): URL | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Hard exclusion boundary for source classes that are unsuitable for medical
+ * grounding. This is deliberately a denylist rather than an allowlist: newly
+ * discovered government, academic, research, guideline, and medical sources
+ * remain eligible without being pre-registered in the application.
+ */
+export function isPermittedDynamicSource(url: URL) {
+  const hostname = url.hostname.toLocaleLowerCase().replace(/^www\./, "");
+  return !excludedSourceHosts.some(
+    (excluded) => hostname === excluded || hostname.endsWith(`.${excluded}`),
+  );
 }
 
 function cleanSourceLabel(value: string | undefined, fallback: string) {
@@ -237,7 +287,7 @@ export function parseAndValidateAiSearchGroundedOutput(
   for (const block of textBlocks) {
     for (const annotation of block.annotations ?? []) {
       const url = safePublicSourceUrl(annotation.url);
-      if (!url) continue;
+      if (!url || !isPermittedDynamicSource(url)) continue;
 
       const hostname = url.hostname.replace(/^www\./, "");
       const href = url.toString();

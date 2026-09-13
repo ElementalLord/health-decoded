@@ -8,6 +8,12 @@ export type ReviewedSuggestedAnswer = {
 
 const answers: readonly (ReviewedSuggestedAnswer & { readonly question: string })[] = [
   {
+    question: "What is insulin?",
+    answer:
+      "Insulin is a hormone made by the pancreas. It helps glucose move from the bloodstream into the body's cells, where glucose can be used for energy, and it signals the liver to store extra glucose for later.",
+    reviewedSourceKeys: ["CDC-DIABETES-BASICS"],
+  },
+  {
     question: "What is insulin resistance?",
     answer:
       "Insulin resistance means the body's cells do not respond to insulin as well as they should. The pancreas may make more insulin to compensate, but over time blood glucose can rise.",
@@ -153,10 +159,16 @@ const answers: readonly (ReviewedSuggestedAnswer & { readonly question: string }
   },
 ];
 
+function reviewedAnswerKey(question: string) {
+  return normalizeAiQuery(question)
+    .trim()
+    .replace(/[.!?]+$/, "");
+}
+
 const answerByQuestion = new Map(
-  answers.map(({ question, ...entry }) => [normalizeAiQuery(question), entry]),
+  answers.map(({ question, ...entry }) => [reviewedAnswerKey(question), entry]),
 );
 
 export function reviewedSuggestedAnswerFor(question: string): ReviewedSuggestedAnswer | null {
-  return answerByQuestion.get(normalizeAiQuery(question)) ?? null;
+  return answerByQuestion.get(reviewedAnswerKey(question)) ?? null;
 }

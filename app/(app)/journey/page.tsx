@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { AiTutorActionRow } from "@/features/ai/components/ai-tutor-trigger";
 import { JourneyCompleteState } from "@/features/journeys/components/journey-complete-state";
 import { JourneyGreeting } from "@/features/journeys/components/journey-greeting";
+import styles from "@/features/journeys/components/journey-page.module.css";
 import { JourneyProgressSummary } from "@/features/journeys/components/journey-progress-summary";
 import { JourneyUnavailableState } from "@/features/journeys/components/journey-unavailable-state";
 import { LessonCompletionArrival } from "@/features/journeys/components/lesson-completion-arrival";
@@ -151,79 +152,81 @@ export default async function JourneyPage({
   );
 
   return (
-    <section className="space-y-12 py-3 sm:space-y-16 sm:py-6">
-      <JourneyGreeting
-        completedLessons={journey.data.progress.completedLessons}
-        currentLessonStatus={
-          journey.data.kind === "ready" ? journey.data.currentLesson.status : undefined
-        }
-        displayName={profile.data.display_name}
-        firstVisit={welcome === "1"}
-        journeyComplete={journey.data.kind === "complete"}
-        totalLessons={journey.data.progress.totalDays}
-      />
-
-      <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1.7fr)_minmax(15rem,0.7fr)] lg:gap-10">
-        <NextStepPanel selection={nextStepSelection} />
-        {learningStreak.ok ? <LearningStreakPanel streak={learningStreak.data} /> : null}
-      </div>
-
-      {showCompletionArrival ? (
-        <LessonCompletionArrival
+    <section className={styles.journeyPage}>
+      <div className={`${styles.journeyContent} space-y-12 sm:space-y-16`}>
+        <JourneyGreeting
           completedLessons={journey.data.progress.completedLessons}
-          dayNumber={completedDay}
+          currentLessonStatus={
+            journey.data.kind === "ready" ? journey.data.currentLesson.status : undefined
+          }
+          displayName={profile.data.display_name}
+          firstVisit={welcome === "1"}
           journeyComplete={journey.data.kind === "complete"}
+          totalLessons={journey.data.progress.totalDays}
         />
-      ) : null}
 
-      {journey.data.kind === "complete" ? (
-        <>
-          {supportTools}
-          <JourneyCompleteState journey={journey.data} />
-        </>
-      ) : (
-        <>
-          <section
-            aria-labelledby="why-this-matters"
-            className="motion-reveal grid items-start gap-5 border-y border-border py-6 sm:grid-cols-[0.55fr_1.45fr] sm:items-center sm:gap-10"
-          >
-            <div className="min-w-0">
-              <h2 className="editorial-eyebrow" id="why-this-matters">
-                Why this matters today
-              </h2>
-              <div
-                aria-hidden="true"
-                className="mt-4 w-full overflow-hidden rounded-[1rem] bg-[#f5eee6] sm:mt-5 sm:max-w-[15rem] sm:rounded-[1.25rem]"
-              >
-                <SunCupIllustration className="block h-auto w-full [aspect-ratio:16/7] sm:[aspect-ratio:24/13]" />
-              </div>
-            </div>
-            <p className="max-w-3xl text-pretty font-serif-display text-2xl font-normal leading-9 text-foreground sm:text-3xl">
-              {journey.data.currentLesson.whyItMatters}
-            </p>
-          </section>
+        <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1.7fr)_minmax(15rem,0.7fr)] lg:gap-10">
+          <NextStepPanel selection={nextStepSelection} />
+          {learningStreak.ok ? <LearningStreakPanel streak={learningStreak.data} /> : null}
+        </div>
 
-          <JourneyProgressSummary
-            journeyTitle={journey.data.journeyTitle}
-            progress={journey.data.progress}
+        {showCompletionArrival ? (
+          <LessonCompletionArrival
+            completedLessons={journey.data.progress.completedLessons}
+            dayNumber={completedDay}
+            journeyComplete={journey.data.kind === "complete"}
           />
-        </>
-      )}
+        ) : null}
 
-      {journey.data.kind !== "complete" ? supportTools : null}
+        {journey.data.kind === "complete" ? (
+          <>
+            {supportTools}
+            <JourneyCompleteState journey={journey.data} />
+          </>
+        ) : (
+          <>
+            <section
+              aria-labelledby="why-this-matters"
+              className="motion-reveal grid items-start gap-5 border-y border-border py-6 sm:grid-cols-[0.55fr_1.45fr] sm:items-center sm:gap-10"
+            >
+              <div className="min-w-0">
+                <h2 className="editorial-eyebrow" id="why-this-matters">
+                  Why this matters today
+                </h2>
+                <div
+                  aria-hidden="true"
+                  className="mt-4 w-full overflow-hidden rounded-[1rem] bg-[#f5eee6] sm:mt-5 sm:max-w-[15rem] sm:rounded-[1.25rem]"
+                >
+                  <SunCupIllustration className="block h-auto w-full [aspect-ratio:16/7] sm:[aspect-ratio:24/13]" />
+                </div>
+              </div>
+              <p className="max-w-3xl text-pretty font-serif-display text-2xl font-normal leading-9 text-foreground sm:text-3xl">
+                {journey.data.currentLesson.whyItMatters}
+              </p>
+            </section>
 
-      <footer className="flex flex-col items-start gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-        <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-          Want to revisit the short introduction? Previewing it will not change your saved starting
-          preference or learning progress.
-        </p>
-        <Link
-          className={buttonVariants({ fullWidth: false, size: "sm", variant: "secondary" })}
-          href="/onboarding?mode=preview"
-        >
-          Preview onboarding
-        </Link>
-      </footer>
+            <JourneyProgressSummary
+              journeyTitle={journey.data.journeyTitle}
+              progress={journey.data.progress}
+            />
+          </>
+        )}
+
+        {journey.data.kind !== "complete" ? supportTools : null}
+
+        <footer className="flex flex-col items-start gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+            Want to revisit the short introduction? Previewing it will not change your saved
+            starting preference or learning progress.
+          </p>
+          <Link
+            className={buttonVariants({ fullWidth: false, size: "sm", variant: "secondary" })}
+            href="/onboarding?mode=preview"
+          >
+            Preview onboarding
+          </Link>
+        </footer>
+      </div>
     </section>
   );
 }

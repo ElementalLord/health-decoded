@@ -16,11 +16,12 @@ const aiSecurityConfigSchema = z
     globalProviderCallsPerMinute: integerSetting(200, 5, 10_000),
     maxOutputTokens: integerSetting(700, 100, 2_000),
     networkRequestsPerMinute: integerSetting(30, 5, 1_000),
-    providerTimeoutMs: integerSetting(5_000, 5_000, 60_000),
+    providerTimeoutMs: integerSetting(10_000, 10_000, 60_000),
     rapidRequestIntervalMs: integerSetting(750, 100, 10_000),
     requestsPerDay: integerSetting(120, 10, 10_000),
     requestsPerHour: integerSetting(40, 5, 2_000),
     requestsPerMinute: integerSetting(10, 2, 200),
+    searchRateLimitCooldownMs: integerSetting(5 * 60_000, 10_000, 60 * 60_000),
   })
   .strict();
 
@@ -48,6 +49,7 @@ export function getAiSecurityConfig(): AiSecurityConfig {
     requestsPerDay: process.env.AI_REQUESTS_PER_DAY,
     requestsPerHour: process.env.AI_REQUESTS_PER_HOUR,
     requestsPerMinute: process.env.AI_REQUESTS_PER_MINUTE,
+    searchRateLimitCooldownMs: process.env.AI_SEARCH_RATE_LIMIT_COOLDOWN_MS,
   });
 
   return parsed.success ? parsed.data : safeDefaults;

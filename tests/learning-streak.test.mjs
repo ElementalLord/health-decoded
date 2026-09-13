@@ -37,7 +37,11 @@ test("a direct event and its newly unlocked milestone count once", async () => {
     new URL("../features/achievements/services/milestones.server.ts", import.meta.url),
     "utf8",
   );
-  assert.match(service, /options\.recordStreak &&\s*!streakEvent/);
+  assert.match(
+    service,
+    /if \(options\.recordStreak && streakEvent\) await recordQualifyingLearningActivity\(streakEvent\)/,
+  );
+  assert.doesNotMatch(service, /newlyUnlocked\.some[\s\S]*recordQualifyingLearningActivity/);
 });
 
 test("next-day activity increases the streak", () => {
@@ -119,22 +123,60 @@ test("server architecture rejects client dates and arbitrary streak values", asy
 });
 
 test("new controlled event names are allowlisted without accepting arbitrary activity", async () => {
-  const [types, migration, aiService] = await Promise.all([
-    readFile(new URL("../features/streaks/types/learning-streak.ts", import.meta.url), "utf8"),
-    readFile(
-      new URL(
-        "../supabase/migrations/20260810000001_expand_learning_streak_events.sql",
-        import.meta.url,
+  const [types, migration, normalizationMigration, aiService, milestoneService] = await Promise.all(
+    [
+      readFile(new URL("../features/streaks/types/learning-streak.ts", import.meta.url), "utf8"),
+      readFile(
+        new URL(
+          "../supabase/migrations/20260810000001_expand_learning_streak_events.sql",
+          import.meta.url,
+        ),
+        "utf8",
       ),
-      "utf8",
-    ),
-    readFile(new URL("../features/ai/services/ai-chat.server.ts", import.meta.url), "utf8"),
-  ]);
+      readFile(
+        new URL(
+          "../supabase/migrations/20260912000001_normalize_learning_streak_events.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(new URL("../features/ai/services/ai-chat.server.ts", import.meta.url), "utf8"),
+      readFile(
+        new URL("../features/achievements/services/milestones.server.ts", import.meta.url),
+        "utf8",
+      ),
+    ],
+  );
   assert.match(types, /ai_learning_exchange_completed/);
   assert.match(types, /clinician_questions_prepared/);
   assert.match(migration, /Unsupported learning activity/);
   assert.doesNotMatch(types, /meaningful_activity/);
   assert.match(aiService, /recordQualifyingLearningActivity\("ai_learning_exchange_completed"\)/);
+  assert.doesNotMatch(aiService, /void recordQualifyingLearningActivity/);
+  assert.match(aiService, /async function recordLearningExchangeSafely\(/);
+  for (const event of [
+    "myth_sources_reviewed",
+    "appointment_priorities_completed",
+    "appointment_questions_completed",
+    "appointment_summary_exported",
+  ]) {
+    assert.match(types, new RegExp(event));
+    assert.match(normalizationMigration, new RegExp(event));
+    assert.match(
+      milestoneService,
+      new RegExp(`return event\\..+\\? event\\.event : null|case "${event}"`),
+    );
+  }
+  assert.match(normalizationMigration, /on conflict \(user_id, activity_date\) do nothing/);
+  assert.match(
+    normalizationMigration,
+    /drop constraint if exists user_learning_activity_days_event_valid/,
+  );
+  assert.match(
+    normalizationMigration,
+    /coalesce\(streak\.last_continuity_date, streak\.last_qualified_date\)/,
+  );
+  assert.doesNotMatch(normalizationMigration, /delete from|truncate|drop table/i);
 });
 
 test("streak activity state can bridge only the currently available freezes", () => {

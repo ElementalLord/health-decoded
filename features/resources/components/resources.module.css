@@ -8,18 +8,19 @@
   margin-inline: calc(50% - 50vw);
   min-height: 100%;
   overflow: clip;
-  padding-block: calc(var(--resources-shell-top) + 1rem) 4rem;
+  padding-block: calc(var(--resources-shell-top) + 1rem) 1.5rem;
   position: relative;
   width: 100vw;
 }
 
 .resourcesPage::before {
-  background-image: url("/resources/resources-reading-room-full-page-v14.png");
+  background-image: url("/resources/resources-reading-room-continuous-v29.webp");
   background-position: center top;
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: max(100%, 100rem) auto;
   content: "";
-  opacity: 0.46;
+  filter: saturate(0.74) contrast(0.96);
+  opacity: 0.56;
   pointer-events: none;
   position: absolute;
   inset: 0;
@@ -32,21 +33,6 @@
   position: relative;
   width: min(calc(100% - var(--resources-gutter) - var(--resources-gutter)), 72rem);
   z-index: 1;
-}
-
-.resourcesContent::before {
-  background: linear-gradient(
-    to right,
-    transparent,
-    color-mix(in srgb, var(--background) 94%, transparent) 7%,
-    color-mix(in srgb, var(--background) 94%, transparent) 93%,
-    transparent
-  );
-  content: "";
-  inset: -1.5rem -4rem;
-  pointer-events: none;
-  position: absolute;
-  z-index: -1;
 }
 
 .readingRoom {
@@ -1069,12 +1055,8 @@
 
 @media (max-width: 68rem) {
   .resourcesPage::before {
-    opacity: 0.34;
-  }
-
-  .resourcesContent::before {
-    background: color-mix(in srgb, var(--background) 94%, transparent);
-    inset-inline: -1rem;
+    background-size: auto 100%;
+    opacity: 0.36;
   }
 
   .mastheadCopy {

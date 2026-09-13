@@ -306,7 +306,7 @@ export function AiChat({
     const timeoutTimer = window.setTimeout(() => {
       timedOut = true;
       controller.abort();
-    }, 8_000);
+    }, 25_000);
 
     try {
       const response = await fetch("/api/ai/chat", {

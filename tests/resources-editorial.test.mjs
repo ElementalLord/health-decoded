@@ -9,23 +9,35 @@ const page = readFileSync("app/(app)/resources/page.tsx", "utf8");
 const styles = readFileSync("features/resources/components/resources.module.css", "utf8");
 
 test("the reading room background stays decorative and clear of the text column", () => {
-  assert.ok(statSync("public/resources/resources-reading-room-full-page-v14.png").size > 8_000_000);
+  assert.ok(
+    statSync("public/resources/resources-reading-room-continuous-v29.webp").size < 1_000_000,
+    "The full-resolution background should use an efficient delivery format",
+  );
+
   assert.match(page, /className=\{styles\.resourcesPage\}/);
   assert.match(page, /className=\{styles\.resourcesContent\}/);
   assert.match(
     styles,
-    /\.resourcesPage::before \{[\s\S]*resources-reading-room-full-page-v14\.png[\s\S]*background-position: center top;[\s\S]*background-repeat: no-repeat;[\s\S]*background-size: 100% auto;/,
+    /\.resourcesPage \{[\s\S]*padding-block: calc\(var\(--resources-shell-top\) \+ 1rem\) 1\.5rem;/,
   );
+  assert.match(
+    styles,
+    /\.resourcesPage::before \{[\s\S]*resources-reading-room-continuous-v29\.webp[\s\S]*background-position: center top;[\s\S]*background-repeat: no-repeat;[\s\S]*background-size: max\(100%, 100rem\) auto;/,
+  );
+  assert.match(styles, /filter: saturate\(0\.74\) contrast\(0\.96\);/);
+  assert.match(styles, /opacity: 0\.56;/);
+  assert.doesNotMatch(styles, /resources-reading-room-segment-/);
   assert.doesNotMatch(styles, /background-size: 100% 100%/);
   assert.doesNotMatch(styles, /resources-reading-room-background-v10\.png/);
   assert.doesNotMatch(styles, /resources-reading-room-middle-v11\.png/);
   assert.doesNotMatch(styles, /\.resourcesPage::after/);
   assert.doesNotMatch(styles, /background-repeat: repeat-y/);
+  assert.doesNotMatch(styles, /\.resourcesContent::before/);
+  assert.doesNotMatch(styles, /linear-gradient/);
   assert.match(
     styles,
-    /\.resourcesContent::before \{[\s\S]*var\(--background\) 94%[\s\S]*pointer-events: none;/,
+    /@media \(max-width: 68rem\) \{[\s\S]*\.resourcesPage::before \{[\s\S]*background-size: auto 100%;/,
   );
-  assert.match(styles, /@media \(max-width: 68rem\) \{[\s\S]*\.resourcesPage::before/);
 });
 
 test("the reading room publishes 18 distinct reviewed guides", () => {

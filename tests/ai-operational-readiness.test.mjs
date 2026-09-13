@@ -8,6 +8,7 @@ import {
 } from "../features/ai/data/credible-sources.ts";
 import { reviewedSuggestedAnswerFor } from "../features/ai/data/reviewed-suggested-answers.ts";
 import { AI_SUGGESTED_QUESTION_BANK } from "../features/ai/data/suggested-questions.ts";
+import { normalizeAiQuery } from "../features/ai/data/query-normalizer.ts";
 import { buildReviewedEvidenceFallback } from "../features/ai/services/ai-grounding.ts";
 import { isAiAnswerRelevant } from "../features/ai/services/ai-search-grounding.ts";
 import { assessAiSafety, buildAiSafetyInput } from "../features/ai/services/ai-safety-rules.ts";
@@ -57,6 +58,38 @@ test("common educational questions and misspellings retain a useful answer path"
   ]) {
     assert.equal(assessAiSafety(question).kind, "allow", question);
     assert.ok(credibleSourcesForQuestion(question).length > 0, question);
+  }
+});
+
+test("messy spelling is normalized before safety, retrieval, and grounding", () => {
+  assert.equal(
+    normalizeAiQuery("  WERE shoudl I ingect INSLIN???  "),
+    "where should i inject insulin???",
+  );
+
+  for (const question of [
+    "were shoudl i ingect inslin",
+    "wat is hyperglycemai",
+    "how ds exersise afect glocose",
+  ]) {
+    assert.equal(assessAiSafety(question).kind, "allow", question);
+  }
+
+  const injectionQuestion = "were shoudl i ingect inslin";
+  const sources = credibleSourcesForQuestion(injectionQuestion);
+  const answer = buildReviewedEvidenceFallback({ question: injectionQuestion, sources });
+  assert.equal(sources[0]?.id, "NIDDK-INSULIN-INJECTION-SITES");
+  assert.match(answer, /^Insulin shots go into the fatty tissue under the skin\./);
+  assert.match(answer, /belly, thigh, buttocks, and upper arm/i);
+});
+
+test("unusual but harmless wording is allowed instead of being shut down", () => {
+  for (const question of [
+    "okay weird question but why does sugar do that",
+    "this might sound silly—can insulin get confused",
+    "idk how to ask this, my glucose thingy keeps changing",
+  ]) {
+    assert.equal(assessAiSafety(question).kind, "allow", question);
   }
 });
 
@@ -124,6 +157,24 @@ test("short factual fallbacks answer only the named subject", () => {
   assert.match(answer, /^Metformin is an oral biguanide medicine/i);
   assert.match(answer, /reducing glucose production in the liver/i);
   assert.doesNotMatch(answer, /ADA|SGLT2|DPP-4|medication classes/i);
+});
+
+test("an insulin definition cannot fall through to metformin or general medicines", () => {
+  const question = "what is insulin";
+  const sources = credibleSourcesForQuestion(question);
+  const answer = buildReviewedEvidenceFallback({ question, sources });
+
+  assert.equal(sources[0]?.id, "CDC-DIABETES-BASICS");
+  assert.match(answer, /^Insulin is a hormone made by the pancreas\./i);
+  assert.match(answer, /cells[\s\S]*energy/i);
+  assert.doesNotMatch(answer, /metformin|diabetes medicines work/i);
+});
+
+test("reviewed answers ignore harmless terminal punctuation differences", () => {
+  assert.deepEqual(
+    reviewedSuggestedAnswerFor("what is insulin"),
+    reviewedSuggestedAnswerFor("What is insulin?"),
+  );
 });
 
 test("reviewed fallback always returns a usable response for retrieved evidence", () => {

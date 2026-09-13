@@ -103,7 +103,9 @@ export async function evaluateExplanation(input: {
     input.signal,
   );
   if (!providerResult.ok) {
-    recordAiProviderFailure();
+    recordAiProviderFailure(
+      providerResult.category === "refused" ? "unexpected" : providerResult.category,
+    );
     return {
       ok: false,
       category:
@@ -119,12 +121,12 @@ export async function evaluateExplanation(input: {
   try {
     rawClassification = JSON.parse(providerResult.text);
   } catch {
-    recordAiProviderFailure();
+    recordAiProviderFailure("unexpected");
     return { ok: false, category: "unavailable" };
   }
   const classification = parseAndEnforceClassification(rawClassification, challenge);
   if (!classification) {
-    recordAiProviderFailure();
+    recordAiProviderFailure("unexpected");
     return { ok: false, category: "unavailable" };
   }
 

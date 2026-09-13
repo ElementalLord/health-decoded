@@ -1,0 +1,54 @@
+.journeyPage {
+  --journey-gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --journey-shell-space: clamp(1.5rem, 4vw, 3rem);
+
+  background-color: #fbf8f2;
+  isolation: isolate;
+  margin-block: calc(0rem - var(--journey-shell-space));
+  margin-inline: calc(50% - 50vw);
+  min-height: 100%;
+  overflow: clip;
+  padding-block: calc(var(--journey-shell-space) + 0.75rem)
+    calc(var(--journey-shell-space) + 0.75rem);
+  position: relative;
+  width: 100vw;
+}
+
+.journeyPage::before {
+  background-image: url("/journey/journey-whimsical-background-layout-safe-v6.webp");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  content: "";
+  filter: saturate(0.62) contrast(0.9) brightness(1.08);
+  inset: 0;
+  opacity: 0.56;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+.journeyContent {
+  margin-inline: auto;
+  max-width: calc(87.5rem - var(--journey-gutter) - var(--journey-gutter));
+  position: relative;
+  width: calc(100% - var(--journey-gutter) - var(--journey-gutter));
+  z-index: 1;
+}
+
+@media (max-width: 70rem) {
+  .journeyPage::before {
+    opacity: 0.44;
+  }
+}
+
+@media (max-width: 48rem) {
+  .journeyPage {
+    --journey-gutter: clamp(1rem, 5vw, 1.5rem);
+  }
+
+  .journeyPage::before {
+    background-size: auto max(100%, 96rem);
+    opacity: 0.3;
+  }
+}

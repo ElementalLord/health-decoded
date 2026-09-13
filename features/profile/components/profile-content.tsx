@@ -218,115 +218,6 @@ function ProgressivePreference({
   );
 }
 
-function ProfileSectionOrb() {
-  const orbRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const orb = orbRef.current;
-    const settingsGrid = orb?.closest<HTMLElement>("[data-profile-settings]");
-    if (!orb || !settingsGrid) return;
-
-    const markers = Array.from(
-      settingsGrid.querySelectorAll<HTMLElement>("[data-profile-section-marker]"),
-    ).sort(
-      (first, second) =>
-        Number(first.dataset.profileSectionMarker) - Number(second.dataset.profileSectionMarker),
-    );
-    if (markers.length === 0) return;
-
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let activeIndex = -1;
-    let animationFrame = 0;
-    let hop: Animation | null = null;
-    let currentPosition = { x: 0, y: 0 };
-
-    const placeOrb = () => {
-      animationFrame = 0;
-      const documentHeight = document.documentElement.scrollHeight;
-      const maximumScroll = Math.max(1, documentHeight - window.innerHeight);
-      const gridTop = window.scrollY + settingsGrid.getBoundingClientRect().top;
-      const activationStart = Math.min(
-        maximumScroll,
-        Math.max(0, gridTop - window.innerHeight * 0.72),
-      );
-      const progress = Math.min(
-        1,
-        Math.max(
-          0,
-          (window.scrollY - activationStart) / Math.max(1, maximumScroll - activationStart),
-        ),
-      );
-      const earlyProgress = Math.min(0.999, progress + 0.2);
-      let nextIndex = Math.min(markers.length - 1, Math.floor(earlyProgress * markers.length));
-      const reachedPageEnd = window.scrollY + window.innerHeight >= documentHeight - 24;
-      if (reachedPageEnd) nextIndex = markers.length - 1;
-
-      const target = markers[nextIndex];
-      if (!target) return;
-
-      const gridRect = settingsGrid.getBoundingClientRect();
-      const targetRect = target.getBoundingClientRect();
-      const nextPosition = {
-        x: targetRect.left - gridRect.left + targetRect.width / 2,
-        y: targetRect.top - gridRect.top + targetRect.height / 2,
-      };
-      const changedSection = activeIndex !== -1 && activeIndex !== nextIndex;
-
-      orb.style.opacity = "1";
-      orb.style.left = `${nextPosition.x}px`;
-      orb.style.top = `${nextPosition.y}px`;
-
-      if (changedSection) {
-        hop?.cancel();
-        if (!reducedMotion.matches) {
-          const deltaX = currentPosition.x - nextPosition.x;
-          const deltaY = currentPosition.y - nextPosition.y;
-          hop = orb.animate(
-            [
-              {
-                transform: `translate3d(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px), 0) scale(1)`,
-              },
-              {
-                transform: `translate3d(calc(-50% + ${deltaX / 2}px), calc(-50% + ${deltaY / 2 - 24}px), 0) scale(1.16)`,
-              },
-              { transform: "translate3d(-50%, -50%, 0) scale(1)" },
-            ],
-            {
-              duration: 240,
-              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            },
-          );
-        }
-      }
-
-      activeIndex = nextIndex;
-      currentPosition = nextPosition;
-    };
-
-    const scheduleOrb = () => {
-      if (!animationFrame) animationFrame = window.requestAnimationFrame(placeOrb);
-    };
-
-    const resizeObserver = new ResizeObserver(scheduleOrb);
-    resizeObserver.observe(settingsGrid);
-    window.addEventListener("resize", scheduleOrb);
-    window.addEventListener("scroll", scheduleOrb, { passive: true });
-    reducedMotion.addEventListener("change", scheduleOrb);
-    scheduleOrb();
-
-    return () => {
-      if (animationFrame) window.cancelAnimationFrame(animationFrame);
-      hop?.cancel();
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", scheduleOrb);
-      window.removeEventListener("scroll", scheduleOrb);
-      reducedMotion.removeEventListener("change", scheduleOrb);
-    };
-  }, []);
-
-  return <span aria-hidden="true" className={styles.sectionOrb} ref={orbRef} />;
-}
-
 export function ProfileContent({
   data,
   memberSince,
@@ -389,9 +280,7 @@ export function ProfileContent({
         </div>
       </section>
 
-      <div className={styles.settingsGrid} data-profile-settings>
-        <ProfileSectionOrb />
-
+      <div className={styles.settingsGrid}>
         <div className={styles.settingsColumn}>
           <section aria-labelledby="account-heading" className={cn(styles.section, styles.account)}>
             <header className={styles.sectionHeader}>
@@ -445,14 +334,14 @@ export function ProfileContent({
                 width={1774}
               />
             </figure>
-            <figure className={cn(styles.settingsArtworkTile, styles.settingsArtworkJournal)}>
+            <figure className={cn(styles.settingsArtworkTile, styles.settingsArtworkSugarShield)}>
               <Image
                 alt=""
                 className={styles.settingsArtworkImage}
-                height={724}
+                height={1254}
                 sizes="(max-width: 960px) 30vw, 13vw"
-                src="/profile/profile-settings-watercolor-v4.png"
-                width={2172}
+                src="/profile/profile-sugar-shield-watercolor-v8.webp"
+                width={1254}
               />
             </figure>
           </div>

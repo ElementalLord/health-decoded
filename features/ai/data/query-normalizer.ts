@@ -1,8 +1,8 @@
 /**
- * Vocabulary used only to recover likely one-character spelling mistakes before
- * deterministic safety classification and evidence retrieval. A correction is
- * applied only when exactly one reviewed term is within one edit, which avoids
- * guessing when a learner's wording is ambiguous.
+ * Vocabulary used only to recover likely spelling mistakes before deterministic
+ * safety classification, evidence retrieval, and answer-relevance checks. A
+ * correction is applied only when one candidate is clearly closest, so messy
+ * typing remains usable without silently changing an ambiguous question.
  */
 const reviewedVocabulary = [
   "a1c",
@@ -24,6 +24,7 @@ const reviewedVocabulary = [
   "diet",
   "distress",
   "dulaglutide",
+  "education",
   "empagliflozin",
   "exercise",
   "glimepiride",
@@ -31,6 +32,12 @@ const reviewedVocabulary = [
   "glucagon",
   "glucose",
   "hypoglycemia",
+  "hyperglycemia",
+  "inject",
+  "injected",
+  "injecting",
+  "injection",
+  "injections",
   "insulin",
   "januvia",
   "jardiance",
@@ -49,6 +56,7 @@ const reviewedVocabulary = [
   "pioglitazone",
   "prediabetes",
   "prescription",
+  "rotate",
   "retinopathy",
   "semaglutide",
   "sitagliptin",
@@ -59,45 +67,42 @@ const reviewedVocabulary = [
   "urination",
   "wegovy",
   "zepbound",
+  "could",
+  "should",
+  "would",
 ] as const;
 
-function isOneEditAway(left: string, right: string) {
-  if (left === right) return true;
-  if (Math.abs(left.length - right.length) > 1) return false;
-
-  if (left.length === right.length) {
-    const differences: number[] = [];
-    for (let index = 0; index < left.length; index += 1) {
-      if (left[index] !== right[index]) differences.push(index);
-      if (differences.length > 2) return false;
-    }
-    if (differences.length === 1) return true;
-    const firstDifference = differences[0];
-    const secondDifference = differences[1];
-    return (
-      firstDifference !== undefined &&
-      secondDifference !== undefined &&
-      secondDifference === firstDifference + 1 &&
-      left[firstDifference] === right[secondDifference] &&
-      left[secondDifference] === right[firstDifference]
-    );
+function editDistance(left: string, right: string) {
+  const rows = Array.from({ length: left.length + 1 }, () =>
+    Array<number>(right.length + 1).fill(0),
+  );
+  for (let leftIndex = 0; leftIndex <= left.length; leftIndex += 1) rows[leftIndex]![0] = leftIndex;
+  for (let rightIndex = 0; rightIndex <= right.length; rightIndex += 1) {
+    rows[0]![rightIndex] = rightIndex;
   }
 
-  const [shorter, longer] = left.length < right.length ? [left, right] : [right, left];
-  let shortIndex = 0;
-  let longIndex = 0;
-  let skipped = false;
-  while (shortIndex < shorter.length && longIndex < longer.length) {
-    if (shorter[shortIndex] === longer[longIndex]) {
-      shortIndex += 1;
-      longIndex += 1;
-      continue;
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const substitution = left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1;
+      rows[leftIndex]![rightIndex] = Math.min(
+        rows[leftIndex - 1]![rightIndex]! + 1,
+        rows[leftIndex]![rightIndex - 1]! + 1,
+        rows[leftIndex - 1]![rightIndex - 1]! + substitution,
+      );
+      if (
+        leftIndex > 1 &&
+        rightIndex > 1 &&
+        left[leftIndex - 1] === right[rightIndex - 2] &&
+        left[leftIndex - 2] === right[rightIndex - 1]
+      ) {
+        rows[leftIndex]![rightIndex] = Math.min(
+          rows[leftIndex]![rightIndex]!,
+          rows[leftIndex - 2]![rightIndex - 2]! + 1,
+        );
+      }
     }
-    if (skipped) return false;
-    skipped = true;
-    longIndex += 1;
   }
-  return true;
+  return rows[left.length]![right.length]!;
 }
 
 function correctedToken(token: string) {
@@ -108,13 +113,25 @@ function correctedToken(token: string) {
     return token;
   }
 
-  const candidates = reviewedVocabulary.filter(
-    (term) => term.length >= 5 && isOneEditAway(token, term),
-  );
-  return candidates.length === 1 ? (candidates[0] ?? token) : token;
+  const maximumDistance = token.length >= 8 ? 2 : 1;
+  const candidates = reviewedVocabulary
+    .filter((term) => term.length >= 5 && Math.abs(token.length - term.length) <= maximumDistance)
+    .map((term) => ({ distance: editDistance(token, term), term }))
+    .filter(({ distance }) => distance <= maximumDistance)
+    .sort((left, right) => left.distance - right.distance);
+  if (!candidates.length || candidates[0]?.distance === candidates[1]?.distance) return token;
+  return candidates[0]!.term;
 }
 
-/** Lowercases a learner query and safely repairs unambiguous, minor topic-term typos. */
+/** Lowercases, tidies, and safely repairs unambiguous topic-term typos. */
 export function normalizeAiQuery(message: string) {
-  return message.toLocaleLowerCase().replace(/[a-z][a-z'-]*/g, correctedToken);
+  return message
+    .normalize("NFKC")
+    .toLocaleLowerCase()
+    .replace(/([a-z])\1{2,}/g, "$1$1")
+    .replace(/[a-z][a-z'-]*/g, correctedToken)
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^(?:wat|wht)\b/, "what")
+    .replace(/^were (?=(?:can|could|do|does|should|would)\b)/, "where ");
 }

@@ -47,8 +47,13 @@ export function getGeminiServerEnv(): GeminiServerEnvResult {
  * regular AI Gateway key is also supported for local development.
  */
 export function getAiGatewayServerEnv(): AiGatewayServerEnvResult {
+  // Vercel CLI writes a short-lived OIDC token to .env.local when it links a
+  // project. That token is only refreshed inside a Vercel deployment; treating
+  // a stale local copy as a gateway credential adds a doomed request before the
+  // Gemini fallback. An explicit gateway key remains valid in every environment.
+  const vercelOidcToken = process.env.VERCEL === "1" ? process.env.VERCEL_OIDC_TOKEN : undefined;
   const parsed = aiGatewayServerEnvSchema.safeParse({
-    token: process.env.AI_GATEWAY_API_KEY ?? process.env.VERCEL_OIDC_TOKEN,
+    token: process.env.AI_GATEWAY_API_KEY ?? vercelOidcToken,
   });
 
   return parsed.success ? { ok: true, data: parsed.data } : { ok: false };

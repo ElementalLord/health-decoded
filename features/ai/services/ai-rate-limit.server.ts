@@ -41,10 +41,17 @@ function activeSince(records: readonly RequestRecord[], start: number) {
   return records.filter((record) => record.at > start);
 }
 
-function progressiveBlock(window: RequestWindow, now: number, baseBlockMs: number) {
+function progressiveBlock(
+  window: RequestWindow,
+  now: number,
+  baseBlockMs: number,
+  violationsBeforeBlock = 1,
+) {
   const violations = Math.min(window.violations + 1, 8);
   window.violations = violations;
-  window.blockedUntil = now + Math.min(baseBlockMs * 2 ** (violations - 1), 24 * 60 * 60_000);
+  if (violations < violationsBeforeBlock) return;
+  window.blockedUntil =
+    now + Math.min(baseBlockMs * 2 ** (violations - violationsBeforeBlock), 24 * 60 * 60_000);
 }
 
 function cleanup(now: number) {
@@ -116,7 +123,10 @@ export function consumeAiRequestSlot(
   }
 
   if (reason) {
-    progressiveBlock(existing, now, config.abuseBlockMs);
+    // A fast double-submit or one quota mistake is rejected but does not lock a
+    // learner out for 30 seconds. Escalating blocks begin only after repeated
+    // violations; explicitly sensitive requests still block immediately below.
+    progressiveBlock(existing, now, config.abuseBlockMs, 3);
     userWindows.set(input.userId, existing);
     networkWindows.set(input.networkKey, activeNetworkRequests);
     cleanup(now);

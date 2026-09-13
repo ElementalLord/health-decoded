@@ -25,10 +25,16 @@ function qualifyingStreakEvent(event: MilestoneEvent): QualifyingLearningEvent |
     case "caregiver_module_completed":
     case "verified_support_resource_opened":
       return event.event;
+    case "myth_sources_reviewed":
+      return event.distinctClaimCount >= 3 ? event.event : null;
+    case "appointment_priorities_completed":
+      return event.priorityCount >= 3 ? event.event : null;
+    case "appointment_questions_completed":
+      return event.questionCount >= 3 && event.categoryCount >= 2 ? event.event : null;
     case "appointment_summary_completed":
       return event.completedSectionCount >= 4 ? event.event : null;
-    default:
-      return null;
+    case "appointment_summary_exported":
+      return event.hasSummary ? event.event : null;
   }
 }
 
@@ -138,13 +144,6 @@ export async function recognizeMilestoneEvent(
         );
       if (!toolkit.error) newlyUnlocked.push(toolkitId);
     }
-  }
-  if (
-    options.recordStreak &&
-    !streakEvent &&
-    newlyUnlocked.some((id) => id !== "MILESTONE-PERSONAL-TOOLKIT")
-  ) {
-    await recordQualifyingLearningActivity("milestone_earned");
   }
   return ok(newlyUnlocked);
 }

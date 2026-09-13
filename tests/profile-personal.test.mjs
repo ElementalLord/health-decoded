@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import test from "node:test";
 
 const page = readFileSync("app/(app)/profile/page.tsx", "utf8");
@@ -98,9 +98,15 @@ test("the profile uses the Stories watercolor language instead of a dashboard", 
   assert.match(styles, /\.preferences \{[\s\S]*border-radius/);
   assert.match(styles, /\.privacy \{[\s\S]*border-radius/);
   assert.match(styles, /\.editorialNote[\s\S]*border-radius/);
-  assert.match(component, /src="\/profile\/profile-settings-watercolor-v4\.png"/);
+  assert.match(component, /src="\/profile\/profile-sugar-shield-watercolor-v8\.webp"/);
   assert.match(component, /src="\/profile\/profile-dna-watercolor-v5\.png"/);
   assert.match(styles, /editorial-still-life\.png/);
+  assert.match(styles, /\.editorialNote::before \{[\s\S]*width: 54%/);
+  assert.match(styles, /\.editorialNote \{[\s\S]*min-height: clamp\(14rem, 20vw, 17rem\)/);
+  assert.match(
+    styles,
+    /@media \(max-width: 40rem\)[\s\S]*\.editorialNote::before \{[\s\S]*width: 78%/,
+  );
   assert.match(component, /className=\{styles\.editorialNote\}/);
   assert.match(component, /A healthier you builds a brighter tomorrow/);
   assert.doesNotMatch(styles, /margin-top: clamp\(7rem, 14vw, 12rem\)/);
@@ -112,7 +118,8 @@ test("the profile uses the Stories watercolor language instead of a dashboard", 
   assert.doesNotMatch(styles, /@keyframes profile-orbit|@keyframes profile-counter-orbit/);
   assert.ok(existsSync("public/profile/profile-journal-watercolor.png"));
   assert.ok(existsSync("public/profile/profile-page-background-v3.png"));
-  assert.ok(existsSync("public/profile/profile-settings-watercolor-v4.png"));
+  assert.ok(existsSync("public/profile/profile-sugar-shield-watercolor-v8.webp"));
+  assert.ok(statSync("public/profile/profile-sugar-shield-watercolor-v8.webp").size < 500_000);
   assert.ok(existsSync("public/profile/profile-dna-watercolor-v5.png"));
   assert.doesNotMatch(styles, /gradient\(/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
@@ -162,27 +169,11 @@ test("the hero has one prominent milestone button and the profile photo is not c
   assert.doesNotMatch(headerStyles, /\.profileMenu/);
 });
 
-test("one section orb hops between the numbered markers and respects reduced motion", () => {
-  assert.equal(component.split("<ProfileSectionOrb />").length - 1, 1);
-  assert.match(component, /closest<HTMLElement>\("\[data-profile-settings\]"\)/);
-  assert.match(component, /querySelectorAll<HTMLElement>\("\[data-profile-section-marker\]"\)/);
-  assert.match(component, /Number\(first\.dataset\.profileSectionMarker\)/);
-  assert.match(component, /window\.requestAnimationFrame\(placeOrb\)/);
-  assert.match(component, /orb\.animate\(/);
-  assert.match(component, /window\.innerHeight \* 0\.72/);
-  assert.match(component, /progress \+ 0\.2/);
-  assert.match(component, /if \(reachedPageEnd\) nextIndex = markers\.length - 1/);
-  assert.match(component, /targetRect\.left - gridRect\.left \+ targetRect\.width \/ 2/);
-  assert.match(component, /orb\.style\.left = `\$\{nextPosition\.x\}px`/);
-  assert.match(component, /translate3d\(-50%, -50%, 0\)/);
-  assert.match(component, /cubic-bezier\(0\.22, 1, 0\.36, 1\)/);
-  assert.match(component, /prefers-reduced-motion: reduce/);
-  assert.match(styles, /\.sectionOrb/);
+test("the numbered section markers remain static while scrolling", () => {
+  assert.doesNotMatch(component, /ProfileSectionOrb|placeOrb|orb\.animate/);
+  assert.doesNotMatch(component, /addEventListener\("scroll"/);
+  assert.doesNotMatch(styles, /\.sectionOrb/);
   assert.match(styles, /\.sectionMarker span[\s\S]*color: #254b40[\s\S]*z-index: 4/);
-  assert.match(
-    styles,
-    /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.sectionOrb[\s\S]*display: none/,
-  );
 });
 
 test("settings submit and persist deterministically for the authenticated user", () => {

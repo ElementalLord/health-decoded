@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
 import { mythCheckCards } from "../features/mythbusters/content/myth-check-cards.ts";
@@ -21,7 +21,9 @@ const [component, resources, routes, bottomNavigation, styles] = await Promise.a
 test("first release has 32 source-backed cards with unique stable IDs", () => {
   assert.equal(mythCheckCards.length, 32);
   assert.equal(new Set(mythCheckCards.map((card) => card.id)).size, mythCheckCards.length);
-  assert.ok(mythCheckCards.every((card) => /^MYTH-(BASICS|FOOD|MONITORING|TREATMENT)-\d{2}$/.test(card.id)));
+  assert.ok(
+    mythCheckCards.every((card) => /^MYTH-(BASICS|FOOD|MONITORING|TREATMENT)-\d{2}$/.test(card.id)),
+  );
   assert.ok(mythCheckCards.every((card) => card.status === "source-backed"));
 });
 
@@ -33,7 +35,10 @@ test("every card has a valid verdict, explanation, takeaway, and registered sour
     assert.ok(card.explanation.trim().length > 30);
     assert.ok(card.takeaway.trim().length > 15);
     assert.ok(card.sourceIds.length > 0);
-    assert.ok(card.sourceIds.every((id) => sourceIds.has(id)), `${card.id} has an unknown source`);
+    assert.ok(
+      card.sourceIds.every((id) => sourceIds.has(id)),
+      `${card.id} has an unknown source`,
+    );
   }
 });
 
@@ -59,7 +64,10 @@ test("Quick Mix has eight nonduplicated cards and deterministic random support",
   const second = createMythCheckRound(mythCheckCards, "quick", () => 0.25);
   assert.equal(first.length, 8);
   assert.equal(new Set(first.map((card) => card.id)).size, 8);
-  assert.deepEqual(first.map((card) => card.id), second.map((card) => card.id));
+  assert.deepEqual(
+    first.map((card) => card.id),
+    second.map((card) => card.id),
+  );
 });
 
 test("answering reveals locked, neutral feedback and supports missed-card replay", () => {
@@ -85,8 +93,58 @@ test("focus, announcements, source disclosure, and responsive controls are prese
   assert.doesNotMatch(styles, /overflow-x:\s*auto/);
 });
 
+test("round selection offers an accessible choice wheel and direct choices", () => {
+  assert.match(component, /function spinWheel\(\)/);
+  assert.match(component, /wheel\.animate\(/);
+  assert.match(component, /try \{[\s\S]*wheel\.animate\([\s\S]*catch \{/);
+  assert.match(component, /typeof navigator\.vibrate === "function"/);
+  assert.match(component, /!reducedMotion/);
+  assert.match(component, /cubic-bezier\(0\.12, 0\.74, 0\.16, 1\)/);
+  assert.match(component, /prefers-reduced-motion: reduce/);
+  assert.match(component, /aria-live="polite"/);
+  assert.match(component, /Spin the wheel/);
+  assert.doesNotMatch(component, /wheel is spinning and slowing down/i);
+  assert.doesNotMatch(component, /pointer chooses the round/i);
+  assert.doesNotMatch(component, /—/);
+  assert.match(component, /Start this round/);
+  assert.match(component, /myth-check-wheel-frame-v1\.webp/);
+  assert.match(component, /className=\{styles\.wheelFrame\}/);
+  assert.match(component, /className=\{styles\.pointerRivet\}/);
+  assert.match(component, /wheel-pointer-gold/);
+  assert.match(component, /myth-check-wheel-face-v1\.webp/);
+  assert.match(component, /className=\{styles\.wheelFace\}/);
+  assert.match(component, /Choose your own round/);
+  assert.match(component, /onClick=\{\(\) => startMode\(mode\.id\)\}/);
+  assert.doesNotMatch(component, /setTimeout\(\(\) => startMode/);
+  assert.match(component, /data-wheel-label/);
+  assert.match(component, /rotate\(\$\{-targetRotation\}deg\)/);
+  assert.doesNotMatch(component, /transform=\{`rotate\(\$\{modeIndex \* 60\}/);
+  assert.match(styles, /will-change: transform/);
+  assert.match(component, /data-spinning=\{isSpinning \? "" : undefined\}/);
+  assert.match(styles, /\.wheel\[data-spinning\] \{[\s\S]*will-change: transform/);
+  assert.match(styles, /transform-box: fill-box/);
+  assert.match(styles, /font-family: var\(--font-sans\)/);
+  assert.match(styles, /clip-path: circle\(46\.8% at 50% 50%\)/);
+  assert.match(styles, /transform: scale\(1\.045\)/);
+  assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
+  assert.match(styles, /myth-check-background-v1\.jpg/);
+  assert.match(styles, /app-page-container\):has\(\.mythCheck\)::before/);
+  assert.match(styles, /pointer-events: none/);
+});
+
+test("wheel artwork stays optimized before Next image delivery", async () => {
+  const [face, frame] = await Promise.all([
+    stat("public/myth-check/myth-check-wheel-face-v1.webp"),
+    stat("public/myth-check/myth-check-wheel-frame-v1.webp"),
+  ]);
+  assert.ok(face.size + frame.size < 700_000);
+});
+
 test("answers remain session-only and are not sent to storage, AI, Supabase, or analytics", () => {
-  assert.doesNotMatch(component, /localStorage|sessionStorage|indexedDB|supabase|fetch\(|analytics|services\/ai|\/api\/ai|router\.push/i);
+  assert.doesNotMatch(
+    component,
+    /localStorage|sessionStorage|indexedDB|supabase|fetch\(|analytics|services\/ai|\/api\/ai|router\.push/i,
+  );
   assert.match(component, /useState<readonly MythCheckAnswer\[\]>\(\[\]\)/);
 });
 

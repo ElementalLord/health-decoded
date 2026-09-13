@@ -107,7 +107,7 @@ test("slow dependency fixtures remain pending without blocking unrelated work", 
   }
   assert.deepEqual(observedDelays, [10_000, 20_000, 30_000]);
   assert.match(entries.ai, /3_000/);
-  assert.match(entries.ai, /8_000/);
+  assert.match(entries.ai, /25_000/);
   assert.match(entries.explain, /25_000/);
 });
 

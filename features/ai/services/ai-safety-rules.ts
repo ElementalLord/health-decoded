@@ -69,7 +69,7 @@ export function buildAiSafetyInput({
 }
 
 const emergencyPattern =
-  /\b(chest pain|trouble breathing|difficulty breathing|can't breathe|cannot breathe|passed out|unconscious|cannot wake|won't wake|loss of consciousness|seizure|severe allergic reaction|(?:severe |sudden )?confus(?:ion|ed)|severe abdominal pain|repeated(?:ly)? vomit(?:ing)?|keep(?:ing)? (?:vomiting|throwing up)|cannot keep (?:liquids?|fluids?|water) down|can't keep (?:liquids?|fluids?|water) down|suicid(?:al|e)|want to die|kill myself|face droop(?:ing)?|arm (?:feels? )?weak|arm weakness|slurred speech|signs? of (?:a )?(?:stroke|heart attack))\b/i;
+  /\b(chest pain|trouble breathing|difficulty breathing|can't breathe|cannot breathe|passed out|unconscious|cannot wake|won't wake|loss of consciousness|seizure|severe allergic reaction|(?:severe|sudden(?:ly)?) confus(?:ion|ed)|severe abdominal pain|repeated(?:ly)? vomit(?:ing)?|keep(?:ing)? (?:vomiting|throwing up)|cannot keep (?:liquids?|fluids?|water) down|can't keep (?:liquids?|fluids?|water) down|suicid(?:al|e)|want to die|kill myself|face droop(?:ing)?|arm (?:feels? )?weak|arm weakness|slurred speech|signs? of (?:a )?(?:stroke|heart attack))\b/i;
 const hiddenPromptPattern =
   /\b(reveal|show|output|print|repeat|tell me|extract|exfiltrate)\b.{0,100}\b(hidden|system|developer|internal|initial|confidential)\b.{0,60}\b(prompt|instruction|message|rule|secret|configuration)s?\b/i;
 const injectionPattern =

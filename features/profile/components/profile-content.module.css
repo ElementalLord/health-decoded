@@ -44,6 +44,7 @@
 }
 
 .introCopy {
+  margin-inline-start: clamp(2rem, 4vw, 4.5rem);
   position: relative;
   z-index: 2;
 }
@@ -66,16 +67,16 @@
     "opsz" 72,
     "SOFT" 62;
   font-weight: 420;
-  letter-spacing: -0.065em;
-  line-height: 0.9;
-  margin-top: 0.7rem;
+  letter-spacing: -0.05em;
+  line-height: 0.97;
+  margin-top: 1rem;
 }
 
 .introDescription {
   color: var(--profile-muted);
   font-size: clamp(1rem, 1.45vw, 1.15rem);
-  line-height: 1.6;
-  margin-top: 1.35rem;
+  line-height: 1.72;
+  margin-top: 1.65rem;
   max-width: 36ch;
   text-wrap: pretty;
 }
@@ -83,8 +84,8 @@
 .identityRow {
   align-items: center;
   display: flex;
-  gap: 0.9rem;
-  margin-top: 1.5rem;
+  gap: 1rem;
+  margin-top: 1.85rem;
   min-width: 0;
 }
 
@@ -133,7 +134,7 @@
   flex-wrap: wrap;
   gap: 0.7rem 2rem;
   justify-content: center;
-  margin-top: 1.35rem;
+  margin-top: 1.65rem;
   max-width: 36ch;
 }
 
@@ -248,25 +249,6 @@
   flex-direction: column;
   gap: clamp(1.5rem, 3vw, 2.75rem);
   min-width: 0;
-}
-
-.sectionOrb {
-  background: #d47d63;
-  border: 1px solid rgb(255 250 242 / 0.82);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 1px rgb(88 120 109 / 0.38),
-    0 3px 9px rgb(71 50 40 / 0.14);
-  height: 1.48rem;
-  left: 0;
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  transform: translate3d(-50%, -50%, 0);
-  width: 1.48rem;
-  will-change: transform;
-  z-index: 3;
 }
 
 .section {
@@ -534,8 +516,9 @@
   object-position: center;
 }
 
-.settingsArtworkJournal .settingsArtworkImage {
-  object-position: 72% center;
+.settingsArtworkSugarShield .settingsArtworkImage {
+  object-fit: contain;
+  object-position: center;
 }
 
 .progressControl {
@@ -725,15 +708,28 @@
 
 .editorialNote {
   align-self: start;
-  background: url("/profile/editorial-still-life.png") center / cover no-repeat;
+  background-color: #e7dece;
+  background-image: url("/profile/editorial-still-life.png");
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-size: auto 145%;
   border: 1px solid rgb(85 122 105 / 0.28);
   border-radius: 0.65rem;
   box-shadow: 0 10px 24px rgb(67 51 42 / 0.05);
-  min-height: clamp(10rem, 14vw, 12rem);
+  min-height: clamp(14rem, 20vw, 17rem);
   overflow: hidden;
   padding: clamp(1.75rem, 2.5vw, 2.5rem);
   position: relative;
   width: 100%;
+}
+
+.editorialNote::before {
+  background: rgb(247 237 221 / 0.94);
+  content: "";
+  inset: 0 auto 0 0;
+  pointer-events: none;
+  position: absolute;
+  width: 54%;
 }
 
 .editorialNote blockquote {
@@ -748,7 +744,9 @@
   letter-spacing: -0.04em;
   line-height: 1.06;
   max-width: 15ch;
+  position: relative;
   text-wrap: balance;
+  z-index: 1;
 }
 
 .editorialNote p {
@@ -760,7 +758,9 @@
   gap: 0.7rem;
   letter-spacing: 0.18em;
   margin-top: 1.4rem;
+  position: relative;
   text-transform: uppercase;
+  z-index: 1;
 }
 
 .editorialNote p span {
@@ -830,6 +830,7 @@
   }
 
   .introCopy {
+    margin-inline-start: 0;
     max-width: 43rem;
   }
 
@@ -929,13 +930,17 @@
   .progressPreferenceRow {
     grid-template-columns: 1fr;
   }
+
+  .editorialNote {
+    background-size: auto 120%;
+  }
+
+  .editorialNote::before {
+    width: 78%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sectionOrb {
-    display: none;
-  }
-
   .actionRow,
   .milestonesButton,
   .milestonesButton svg,

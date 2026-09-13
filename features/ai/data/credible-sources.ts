@@ -42,7 +42,7 @@ const sources = {
     href: "https://www.cdc.gov/diabetes/about/",
     organization: "CDC",
     summary:
-      "Diabetes affects how the body turns food into energy; insulin helps glucose enter cells, and diabetes can involve too little insulin or reduced response to it.",
+      "Insulin is a hormone released by the pancreas. It acts like a key that helps glucose move from the bloodstream into the body's cells, where the glucose can be used for energy. Insulin also signals the liver to store extra glucose for later.",
     title: "Diabetes Basics",
   },
   careSchedule: {
@@ -74,7 +74,7 @@ const sources = {
     href: "https://www.niddk.nih.gov/-/media/Files/Diabetes/YourGuide2Diabetes_508.pdf",
     organization: "NIDDK",
     summary:
-      "Common diabetes terms include glucose or blood sugar, insulin, insulin resistance, A1C, hypoglycemia for low blood glucose, and hyperglycemia for high blood glucose.",
+      "Glucose, also called blood sugar, is the main type of sugar in the blood and a main source of energy for the body's cells. Glucose comes from food and is also made by the liver and muscles. The pancreas releases insulin, a hormone that helps glucose reach the body's cells.",
     title: "Your Guide to Diabetes",
   },
   exercise: {
@@ -115,6 +115,14 @@ const sources = {
     organization: "NIDDK",
     summary:
       "Diabetes medicines work in different ways; metformin generally reduces glucose made by the liver and helps the body use insulin better.",
+    title: "Insulin, Medicines, & Other Diabetes Treatments",
+  },
+  insulinInjection: {
+    id: "NIDDK-INSULIN-INJECTION-SITES",
+    href: "https://www.niddk.nih.gov/health-information/diabetes/overview/insulin-medicines-treatments",
+    organization: "NIDDK",
+    summary:
+      "Insulin shots go into the fatty tissue under the skin. Common injection areas include the belly, thigh, buttocks, and upper arm. Insulin tends to work fastest from the belly. Rotate the exact spot rather than repeatedly injecting the same place, because repeated injections can harden the tissue. Follow the instructions for the person's insulin device and training.",
     title: "Insulin, Medicines, & Other Diabetes Treatments",
   },
   medicineLabels: {
@@ -327,8 +335,15 @@ const sources = {
   },
 } as const satisfies Record<string, AiCredibleSourceContext>;
 
+/** Full reviewed evidence corpus for semantic fallback when live search is unavailable. */
+export const allCredibleSources: readonly AiCredibleSourceContext[] = Object.values(sources);
+
 function uniqueSources(selected: readonly AiCredibleSourceContext[]) {
-  return [...new Map(selected.map((source) => [source.href, source])).values()].slice(0, 3);
+  const sourceByHref = new Map<string, AiCredibleSourceContext>();
+  for (const source of selected) {
+    if (!sourceByHref.has(source.href)) sourceByHref.set(source.href, source);
+  }
+  return [...sourceByHref.values()].slice(0, 3);
 }
 
 /** Selects authoritative patient-education references relevant to a general question. */
@@ -401,10 +416,16 @@ export function credibleSourcesForQuestion(message: string): readonly AiCredible
   addWhen(tzdMedicationPattern.test(normalized), sources.pioglitazone);
   addWhen(metforminMedicationPattern.test(normalized), sources.metformin);
   const insulinBasics = addWhen(
-    /\b(?:how does insulin help|what does insulin do|role of (?:the )?insulin|insulin helps? (?:the )?(?:body|cells?))\b/.test(
+    /\b(?:what is insulin|define insulin|insulin definition|how does insulin help|what does insulin do|role of (?:the )?insulin|insulin helps? (?:the )?(?:body|cells?))\b/.test(
       normalized,
     ),
     sources.basics,
+  );
+  addWhen(
+    /\b(?:inject|injected|injecting|injection|shot)s?\b.{0,80}\binsulin\b|\binsulin\b.{0,80}\b(?:inject|injected|injecting|injection|shot|site|sites|rotate|rotation)s?\b/.test(
+      normalized,
+    ),
+    sources.insulinInjection,
   );
   addWhen(/\binsulin\b/.test(normalized) && !insulinBasics, sources.medicines);
   addWhen(

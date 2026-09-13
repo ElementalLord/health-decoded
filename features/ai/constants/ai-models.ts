@@ -1,5 +1,8 @@
 /** Stable, low-latency Gemini API model for the text-only AI tutor. */
-export const DEFAULT_AI_MODEL = "gemini-3.1-flash-lite";
+export const DEFAULT_AI_MODEL = "gemini-3.5-flash-lite";
+
+/** Stable backup used only when the primary model reports temporary capacity errors. */
+export const FALLBACK_AI_MODEL = "gemini-3.1-flash-lite";
 
 /** Deterministic default so the same question returns a stable grounded answer. */
 export const AI_DEFAULT_TEMPERATURE = 0;

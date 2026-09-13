@@ -264,7 +264,9 @@ test("glossary artwork keeps its native aspect ratio and cannot intercept the pa
   assert.match(page, /width=\{1672\}/);
   assert.match(page, /sizes="100vw"/);
   assert.match(page, /className=\{styles\.glossaryContent\}/);
-  assert.match(styles, /\.glossaryBackdrop\s*\{[\s\S]*height:\s*auto/);
+  assert.match(styles, /\.glossaryBackdrop\s*\{[\s\S]*height:\s*100%/);
+  assert.match(styles, /\.glossaryBackdrop\s*\{[\s\S]*object-fit:\s*cover/);
+  assert.match(styles, /\.glossaryBackdrop\s*\{[\s\S]*object-position:\s*center bottom/);
   assert.match(
     styles,
     /\.glossary\s*\{[\s\S]*margin-block-start:\s*calc\(0rem - var\(--glossary-shell-top\)\)/,
@@ -279,6 +281,7 @@ test("glossary artwork keeps its native aspect ratio and cannot intercept the pa
   );
   assert.match(styles, /pointer-events:\s*none/);
   assert.doesNotMatch(styles, /\.glossaryBackdrop\s*\{[^}]*object-fit:\s*fill/);
+  assert.doesNotMatch(styles, /\.glossaryBackdrop\s*\{[^}]*mask-image:/);
 });
 
 test("glossary artwork uses a Next.js-allowed image quality", () => {

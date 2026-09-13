@@ -16,10 +16,11 @@
   width: 100vw;
 }
 .glossaryBackdrop {
-  height: auto;
+  height: 100%;
   inset-inline-start: 50%;
-  mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
   max-width: none;
+  object-fit: cover;
+  object-position: center bottom;
   opacity: 0.52;
   pointer-events: none;
   position: absolute;
@@ -28,7 +29,6 @@
   user-select: none;
   width: 100%;
   z-index: 0;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
 }
 .glossaryContent {
   margin: 0 auto;

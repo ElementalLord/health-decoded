@@ -3,9 +3,50 @@ import test from "node:test";
 
 import {
   isAiAnswerRelevant,
+  isPermittedDynamicSource,
   parseAndValidateAiGatewayGroundedOutput,
   parseAndValidateAiSearchGroundedOutput,
 } from "../features/ai/services/ai-search-grounding.ts";
+
+test("dynamic discovery uses source restrictions instead of a fixed source allowlist", () => {
+  for (const href of [
+    "https://new-public-health-agency.example/clinical-guideline",
+    "https://previously-unseen-university.example/research/insulin",
+  ]) {
+    assert.equal(isPermittedDynamicSource(new URL(href)), true, href);
+  }
+
+  for (const href of [
+    "https://reddit.com/r/diabetes/comments/example",
+    "https://writer.medium.com/my-insulin-routine",
+    "https://healthtips.substack.com/p/injections",
+  ]) {
+    assert.equal(isPermittedDynamicSource(new URL(href)), false, href);
+  }
+});
+
+test("grounded output drops excluded user-generated citations", () => {
+  const text = "Insulin is injected into the fatty tissue beneath the skin.";
+  const result = parseAndValidateAiSearchGroundedOutput(
+    interaction(text, [
+      {
+        title: "Forum answer",
+        type: "url_citation",
+        url: "https://reddit.com/r/diabetes/comments/example",
+      },
+      {
+        title: "Clinical instructions",
+        type: "url_citation",
+        url: "https://new-medical-center.example/insulin/injection-sites",
+      },
+    ]),
+  );
+
+  assert.deepEqual(
+    result?.sources.map(({ organization }) => organization),
+    ["new-medical-center.example"],
+  );
+});
 
 function interaction(text, annotations) {
   return {
@@ -68,6 +109,31 @@ test("rejects a safe but nonsensical answer that does not address the current qu
     parseAndValidateAiSearchGroundedOutput(interaction(relevant, citation), relevanceContext)
       ?.answer,
     relevant,
+  );
+});
+
+test("definition questions reject answers that merely mention the requested term", () => {
+  assert.equal(
+    isAiAnswerRelevant(
+      "Diabetes management can include blood glucose, blood pressure, medicines, and preventive care.",
+      { question: "what is glucose" },
+    ),
+    false,
+  );
+  assert.equal(
+    isAiAnswerRelevant("Glucose is a type of sugar that the body's cells use for energy.", {
+      question: "what is glucose",
+    }),
+    true,
+  );
+});
+
+test("answer relevance understands a misspelled subject", () => {
+  assert.equal(
+    isAiAnswerRelevant("Glucose is a type of sugar that the body's cells use for energy.", {
+      question: "wat is glocose",
+    }),
+    true,
   );
 });
 
