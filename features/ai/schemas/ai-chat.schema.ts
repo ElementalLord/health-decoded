@@ -4,7 +4,8 @@ import {
   AI_MAX_CONVERSATION_MESSAGES,
   AI_MAX_MESSAGE_CHARACTERS,
   AI_MAX_OUTPUT_CHARACTERS,
-} from "@/features/ai/constants/ai-limits";
+  // @ts-expect-error -- Node's TypeScript test runner needs explicit extensions.
+} from "../constants/ai-limits.ts";
 
 const markupPattern = /<\/?[a-z][^>]*>/i;
 const unsafeControlPattern =

@@ -99,6 +99,24 @@ const sourceFixtures = [
     status: "available",
   },
   {
+    id: "TOOL-DECODE-LABEL",
+    type: "tool",
+    title: "Decode the Label",
+    description: "Practice reading a nutrition label.",
+    route: "/decode-the-label",
+    aliases: ["nutrition label"],
+    status: "available",
+  },
+  {
+    id: "TOOL-EXPLAIN-IT-BACK",
+    type: "tool",
+    title: "Explain It Back",
+    description: "Practice explaining a concept.",
+    route: "/explain-it-back",
+    aliases: ["teach it back"],
+    status: "available",
+  },
+  {
     id: "GLOSSARY-A1C",
     type: "glossary",
     title: "A1C",
@@ -163,6 +181,24 @@ test("exact glossary terms rank above related lessons", () => {
   assert.ok(results.some(({ type }) => type === "lesson"));
 });
 
+test("glossary and resource search results deep-link to their exact entries", async () => {
+  const [sources, glossaryPage, resourcesPage, routeValidator] = await Promise.all([
+    read("features/universal-search/content/search-sources.ts"),
+    read("features/glossary/components/medical-glossary-page.tsx"),
+    read("features/resources/components/resources.tsx"),
+    read("features/universal-search/lib/validate-search-documents.ts"),
+  ]);
+
+  assert.match(sources, /route: `\/glossary#\$\{entry\.slug\}`/);
+  assert.match(sources, /route: `\/resources#resource-\$\{resource\.id\}`/);
+  assert.match(glossaryPage, /id=\{entry\.slug\}/);
+  assert.match(glossaryPage, /scrollIntoView\(\{ block: "center" \}\)/);
+  assert.match(glossaryPage, /window\.addEventListener\("hashchange"/);
+  assert.match(resourcesPage, /id=\{`resource-\$\{resource\.id\}`\}/);
+  assert.match(routeValidator, /glossary\(\?:#\[a-z0-9-\]\+\)\?/);
+  assert.match(routeValidator, /resources\(\?:#resource-\[a-z0-9-\]\+\)\?/);
+});
+
 test("lesson title and vocabulary search navigate to the exact lesson", () => {
   assert.equal(
     searchHealthDecoded(documents, "Understanding Your Numbers")[0]?.route,
@@ -180,6 +216,8 @@ test("abbreviations and tool aliases find approved destinations", () => {
     ["streak", "TOOL-LEARNING-STREAK"],
     ["appointment", "TOOL-APPOINTMENT-PREP"],
     ["myths", "TOOL-MYTH-CHECK"],
+    ["nutrition label", "TOOL-DECODE-LABEL"],
+    ["teach it back", "TOOL-EXPLAIN-IT-BACK"],
   ]) {
     assert.equal(searchHealthDecoded(documents, query)[0]?.id, id);
   }
@@ -303,4 +341,31 @@ test("controlled sources cover every requested result type", async () => {
   assert.equal(lessons[0]?.type, "lesson");
   assert.match(source, /navigationSearchDocuments/);
   assert.match(source, /toolSearchDocuments/);
+});
+
+test("all current learning tools are represented by the controlled index", async () => {
+  const [source, validator, service] = await Promise.all([
+    read("features/universal-search/content/search-sources.ts"),
+    read("features/universal-search/lib/validate-search-documents.ts"),
+    read("features/universal-search/services/universal-search.server.ts"),
+  ]);
+
+  for (const destination of [
+    "/appointment-prep",
+    "/decode-the-label",
+    "/explain-it-back",
+    "/glossary",
+    "/milestones",
+    "/myth-check",
+  ]) {
+    assert.match(source, new RegExp(`route: ["']${destination}["']`));
+  }
+  assert.match(validator, /decode-the-label/);
+  assert.match(validator, /explain-it-back/);
+  assert.doesNotMatch(validator, /(?:^|\|)urgent-help(?:\||\$)/);
+  assert.match(
+    service,
+    /if \(!response \|\| response\.error \|\| !response\.data\) return staticDocuments/,
+  );
+  assert.match(service, /validateSearchDocuments\(documents\) \? documents : staticDocuments/);
 });

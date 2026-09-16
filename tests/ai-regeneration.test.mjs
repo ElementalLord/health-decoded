@@ -268,7 +268,7 @@ test("a malformed or unsafe regenerated response is rejected outright", () => {
   );
 });
 
-test("reviewed-corpus generation accepts direct sourced answers and rejects related filler", () => {
+test("reviewed-corpus generation validates citations and allows model synthesis", () => {
   const glucoseSource = allCredibleSources.find(({ id }) => id === "CDC-DIABETES-BASICS");
   assert.ok(glucoseSource);
   const schema = buildReviewedCorpusResponseJsonSchema(allCredibleSources);
@@ -281,19 +281,16 @@ test("reviewed-corpus generation accepts direct sourced answers and rejects rela
       sourceIds: [glucoseSource.id],
     },
     allCredibleSources,
-    { question: "what is glucose" },
   );
   assert.equal(direct?.sources[0]?.id, glucoseSource.id);
-  assert.equal(
+  assert.ok(
     parseAndValidateReviewedCorpusOutput(
       {
-        answer: "Diabetes management can include blood glucose, medicines, and preventive care.",
+        answer: "It supplies energy to the cells throughout your body.",
         sourceIds: [glucoseSource.id],
       },
       allCredibleSources,
-      { question: "what is glucose" },
     ),
-    null,
   );
 });
 
@@ -314,7 +311,7 @@ test("provider outages return reviewed evidence instead of leaving the learner w
   );
   assert.doesNotMatch(server, /retrievedSources\.length > 0/);
   assert.doesNotMatch(server, /yield \{ code: "AI_UNAVAILABLE", type: "error" \}/);
-  assert.match(server, /sources: allCredibleSources/);
+  assert.match(server, /sources: knowledgeSources/);
   assert.match(server, /parseAndValidateReviewedCorpusOutput/);
   assert.match(server, /yield\* reviewedFallbackEvents/);
 });
@@ -324,17 +321,11 @@ test("local Vercel CLI OIDC tokens are not mistaken for live gateway credentials
   assert.match(serverEnv, /process\.env\.AI_GATEWAY_API_KEY \?\? vercelOidcToken/);
 });
 
-test("app-suggested questions use their direct reviewed answer without waiting on the provider", () => {
-  const reviewedAnswerIndex = server.indexOf("if (reviewedSuggestedAnswerFor(input.message))");
-  const providerBudgetIndex = server.indexOf("const providerBudget = consumeAiProviderBudget()");
-  const providerIndex = server.indexOf("await aiProvider.generateGroundedResponse(");
-
-  assert.ok(reviewedAnswerIndex > 0);
-  assert.ok(reviewedAnswerIndex < providerBudgetIndex);
-  assert.ok(reviewedAnswerIndex < providerIndex);
-  assert.match(
-    server.slice(reviewedAnswerIndex, providerBudgetIndex),
-    /data: recordCompletedLearningExchange\([\s\S]*reviewedFallbackEvents\(/,
+test("educational questions go through knowledge generation instead of exact-question dispatch", () => {
+  assert.doesNotMatch(server, /if \(reviewedSuggestedAnswerFor\(input\.message\)\)/);
+  assert.ok(
+    server.indexOf("await aiProvider.generateStructuredResponse(") <
+      server.indexOf("await aiProvider.generateGroundedResponse("),
   );
 });
 
@@ -383,10 +374,14 @@ test("the regeneration path cannot skip safety, grounding, or provider validatio
     /parseAndValidateAiSearchGroundedOutput\(\s*interaction,\s*request\.relevanceContext/,
   );
   assert.match(provider, /parseAndValidateAiGatewayGroundedOutput/);
-  assert.match(server, /credibleSources: providerResult\.sources/);
+  assert.match(server, /credibleSources: uniqueCitations\(providerResult\.sources\)/);
 
   // The flag may only choose a temperature and a prompt variant, never a shortcut.
-  assert.deepEqual(server.match(/input\.regenerate/g), ["input.regenerate", "input.regenerate"]);
+  assert.deepEqual(server.match(/input\.regenerate/g), [
+    "input.regenerate",
+    "input.regenerate",
+    "input.regenerate",
+  ]);
 });
 
 test("the model performs a final question-and-evidence sense check before answering", () => {
@@ -421,7 +416,7 @@ test("accepted requests have a terminal path even when dependencies fail", () =>
     'yield { type: "done" };',
     server.indexOf("providerResult.text"),
   );
-  assert.ok(streakRecordIndex >= 0 && streakRecordIndex < doneIndex);
+  assert.ok(streakRecordIndex >= 0 && doneIndex < streakRecordIndex);
   assert.match(
     server,
     /async function recordLearningExchangeSafely\([\s\S]*try \{[\s\S]*await recordQualifyingLearningActivity\("ai_learning_exchange_completed"\);[\s\S]*catch \{[\s\S]*logAiOperation/,
@@ -441,7 +436,10 @@ test("the duplicate-request and rate-limit guards still apply to regeneration", 
   assert.doesNotMatch(rateLimit, /regenerat/i);
   assert.match(securityConfig, /duplicateRequestLimit: integerSetting\(3, 2, 20\)/);
   assert.match(securityConfig, /rapidRequestIntervalMs: integerSetting\(750, 100, 10_000\)/);
-  assert.match(rateLimit, /progressiveBlock\(existing, now, config\.abuseBlockMs, 3\)/);
+  assert.match(
+    rateLimit,
+    /if \(input\.sensitive\) progressiveBlock\(existing, now, config\.abuseBlockMs\)/,
+  );
 
   const rateLimitIndex = server.indexOf("consumeAiRequestSlot(");
   assert.ok(rateLimitIndex !== -1 && rateLimitIndex < server.indexOf("buildAiPrompt("));

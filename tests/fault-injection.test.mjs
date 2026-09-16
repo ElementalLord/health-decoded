@@ -201,7 +201,7 @@ test("missing, unsafe, and model-written AI citations cannot enter rendered prov
   assert.match(entries.aiSchema, /href: z\.string\(\)\.url\(\)\.startsWith\("https:\/\/"\)/);
   assert.match(entries.aiSearchGrounding, /annotation\.url/);
   assert.match(entries.aiSearchGrounding, /safePublicSourceUrl/);
-  assert.match(entries.aiServer, /credibleSources: providerResult\.sources/);
+  assert.match(entries.aiServer, /credibleSources: uniqueCitations\(providerResult\.sources\)/);
   assert.doesNotMatch(entries.aiServer, /lessonUsed|relatedContent/);
   assert.doesNotMatch(entries.aiParser, /relatedContent|credibleSources/);
 });
@@ -274,7 +274,10 @@ test("missing images and missing content records cannot crash parent collections
   assert.match(entries.decode, /remain available as text/);
   const complete = { core: "journey", optional: { title: "review" } };
   assert.deepEqual(partialResponse(complete, "optional"), { core: "journey" });
-  assert.match(entries.searchService, /if \(!response\) return null/);
+  assert.match(
+    entries.searchService,
+    /if \(!response \|\| response\.error \|\| !response\.data\) return staticDocuments/,
+  );
 });
 
 test("double AI and evaluator submission is guarded synchronously", () => {

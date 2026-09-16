@@ -1,4 +1,5 @@
 import "server-only";
+import { uniqueCitations } from "@/features/ai/data/unique-citations";
 
 import {
   AI_DEFAULT_TEMPERATURE,
@@ -10,10 +11,13 @@ import {
   type AiCredibleSourceContext,
 } from "@/features/ai/data/credible-sources";
 import { reviewedSuggestedAnswerFor } from "@/features/ai/data/reviewed-suggested-answers";
+import { diabetesSourceBank } from "@/features/ai/data/diabetes-knowledge";
 import { loadTrustedAiContext } from "@/features/ai/services/ai-context.server";
 import { sanitizeAiConversationHistory } from "@/features/ai/services/ai-conversation-safety";
+import { conversationReplyFor } from "@/features/ai/services/ai-conversation-replies";
 import { logAiOperation } from "@/features/ai/services/ai-logging.server";
 import {
+  AI_INSUFFICIENT_EVIDENCE_MESSAGE,
   buildReviewedCorpusPrompt,
   buildReviewedCorpusResponseJsonSchema,
   buildReviewedEvidenceFallback,
@@ -88,13 +92,24 @@ function reviewedFallbackEvents(
     : [];
   const fallbackSources = (preferredSources.length ? preferredSources : retrievedSources).slice(
     0,
-    2,
+    preferredSources.length ? 2 : 8,
   );
   return (async function* () {
-    const publicFallbackSources = metadata.credibleSources.filter((source) =>
-      fallbackSources.some((retrieved) => retrieved.href === source.href),
-    );
-    if (publicFallbackSources.length) {
+    const fallbackAnswer = buildReviewedEvidenceFallback({
+      previousAnswers,
+      question,
+      sources: fallbackSources,
+    });
+    // Topic cards share source URLs. Build citations from the bounded evidence
+    // itself, rather than re-expanding every metadata entry with a matching URL.
+    const publicFallbackSources = [
+      ...new Map(
+        fallbackSources.map(
+          ({ href, organization, title }) => [href, { href, organization, title }] as const,
+        ),
+      ).values(),
+    ].slice(0, 8);
+    if (publicFallbackSources.length && !fallbackAnswer.startsWith("I don’t know your name")) {
       yield {
         credibleSources: publicFallbackSources,
         suggestedQuestions: metadata.suggestedQuestions,
@@ -102,11 +117,7 @@ function reviewedFallbackEvents(
       };
     }
     yield {
-      text: buildReviewedEvidenceFallback({
-        previousAnswers,
-        question,
-        sources: fallbackSources,
-      }),
+      text: fallbackAnswer,
       type: "delta",
     };
     yield { type: "done" };
@@ -118,54 +129,7 @@ async function* providerFallbackEvents(
   metadata: AiContextMetadata,
   question: string,
   previousAnswers: readonly string[],
-  previousQuestion?: string,
-  generateFromReviewedCorpus = false,
-  signal?: AbortSignal,
 ): AsyncGenerator<AiChatStreamEvent> {
-  const structured = generateFromReviewedCorpus
-    ? await aiProvider.generateStructuredResponse(
-        {
-          prompt: buildReviewedCorpusPrompt({
-            previousAnswers,
-            previousQuestion,
-            question,
-            sources: allCredibleSources,
-          }),
-          responseJsonSchema: buildReviewedCorpusResponseJsonSchema(allCredibleSources),
-          systemInstruction: reviewedCorpusSystemInstruction,
-        },
-        signal,
-      )
-    : null;
-
-  if (structured?.ok) {
-    try {
-      const validated = parseAndValidateReviewedCorpusOutput(
-        JSON.parse(structured.text) as unknown,
-        allCredibleSources,
-        { ...(previousQuestion ? { previousQuestion } : {}), question },
-      );
-      if (validated) {
-        if (validated.sources.length) {
-          yield {
-            credibleSources: validated.sources.map(({ href, organization, title }) => ({
-              href,
-              organization,
-              title,
-            })),
-            suggestedQuestions: metadata.suggestedQuestions,
-            type: "context",
-          };
-        }
-        yield { text: validated.answer, type: "delta" };
-        yield { type: "done" };
-        return;
-      }
-    } catch {
-      // Fall through to the deterministic reviewed-evidence safety net.
-    }
-  }
-
   yield* reviewedFallbackEvents(retrievedSources, metadata, question, previousAnswers);
 }
 
@@ -174,10 +138,10 @@ async function* recordCompletedLearningExchange(
   loggingContext: Omit<Parameters<typeof logAiOperation>[0], "outcome">,
 ): AsyncGenerator<AiChatStreamEvent> {
   for await (const event of events) {
+    yield event;
     if (event.type === "done") {
       await recordLearningExchangeSafely(loggingContext);
     }
-    yield event;
   }
 }
 
@@ -247,6 +211,12 @@ export async function createAiChatStream(
 
   const safeMessages = sanitizeAiConversationHistory(input.messages ?? []);
 
+  const conversationReply = conversationReplyFor(input.message);
+  if (conversationReply) {
+    logAiOperation({ ...loggingContext, outcome: "success" });
+    return refusalStream(conversationReply);
+  }
+
   const context = await loadTrustedAiContext({
     message: input.message,
     ...(safeMessages.length ? { messages: safeMessages } : {}),
@@ -261,21 +231,6 @@ export async function createAiChatStream(
   const previousAnswers = safeMessages
     .filter(({ role }) => role === "assistant")
     .map(({ content }) => content);
-  if (reviewedSuggestedAnswerFor(input.message)) {
-    logAiOperation({ ...loggingContext, outcome: "success" });
-    return {
-      ok: true,
-      data: recordCompletedLearningExchange(
-        reviewedFallbackEvents(
-          retrievedSources,
-          context.data.metadata,
-          input.message,
-          previousAnswers,
-        ),
-        loggingContext,
-      ),
-    };
-  }
 
   let prompt: ReturnType<typeof buildAiPrompt>;
   try {
@@ -295,7 +250,6 @@ export async function createAiChatStream(
           context.data.metadata,
           input.message,
           previousAnswers,
-          priorUserMessages.at(-1),
         ),
         loggingContext,
       ),
@@ -326,19 +280,102 @@ export async function createAiChatStream(
   return {
     ok: true,
     data: (async function* () {
+      // Established knowledge comes first. Search is only an extension for a
+      // genuinely missing fact, never a prerequisite for ordinary education.
+      const knowledgeSources = diabetesSourceBank([...allCredibleSources, ...retrievedSources]);
+      let knowledgeResult: Awaited<ReturnType<typeof aiProvider.generateStructuredResponse>>;
+      try {
+        knowledgeResult = await aiProvider.generateStructuredResponse(
+          {
+            prompt: buildReviewedCorpusPrompt({
+              previousAnswers,
+              previousQuestion: priorUserMessages.at(-1),
+              question: input.message,
+              sources: knowledgeSources,
+            }),
+            responseJsonSchema: buildReviewedCorpusResponseJsonSchema(knowledgeSources),
+            systemInstruction: reviewedCorpusSystemInstruction,
+            temperature: input.regenerate ? AI_REGENERATION_TEMPERATURE : AI_DEFAULT_TEMPERATURE,
+          },
+          signal,
+        );
+      } catch {
+        knowledgeResult = { ok: false, category: "unexpected" };
+      }
+      let knowledgeAnswer: ReturnType<typeof parseAndValidateReviewedCorpusOutput> = null;
+      if (knowledgeResult.ok) {
+        try {
+          knowledgeAnswer = parseAndValidateReviewedCorpusOutput(
+            JSON.parse(knowledgeResult.text) as unknown,
+            knowledgeSources,
+          );
+        } catch {
+          // Malformed model output must never replace a source-backed answer.
+        }
+      }
+      if (knowledgeAnswer && knowledgeAnswer.answer !== AI_INSUFFICIENT_EVIDENCE_MESSAGE) {
+        recordAiProviderSuccess();
+        if (knowledgeAnswer.sources.length) {
+          yield {
+            credibleSources: uniqueCitations(
+              knowledgeAnswer.sources.map(({ href, organization, title }) => ({
+                href,
+                organization,
+                title,
+              })),
+            ),
+            suggestedQuestions: context.data.metadata.suggestedQuestions,
+            type: "context",
+          };
+        }
+        yield { text: knowledgeAnswer.answer, type: "delta" };
+        yield { type: "done" };
+        if (!signal?.aborted) await recordLearningExchangeSafely(loggingContext);
+        logAiOperation({ ...loggingContext, outcome: "success" });
+        return;
+      }
+      // A provider failure cannot be fixed by making a search request through
+      // that same provider. Use the bundled evidence immediately in that case.
+      if (
+        !knowledgeResult.ok ||
+        !knowledgeAnswer ||
+        signal?.aborted ||
+        !consumeAiProviderBudget().allowed
+      ) {
+        if (!knowledgeResult.ok) {
+          recordAiProviderFailure(
+            knowledgeResult.category === "refused" ? "unexpected" : knowledgeResult.category,
+          );
+        }
+        yield* recordCompletedLearningExchange(
+          reviewedFallbackEvents(
+            retrievedSources,
+            context.data.metadata,
+            input.message,
+            previousAnswers,
+          ),
+          loggingContext,
+        );
+        return;
+      }
       let outcome: "configuration" | "rate_limited" | "success" | "timeout" | "unexpected" =
         "success";
-      const providerResult = await aiProvider.generateGroundedResponse(
-        {
-          ...prompt,
-          relevanceContext: {
-            ...(priorUserMessages.length ? { previousQuestion: priorUserMessages.at(-1) } : {}),
-            question: input.message,
+      let providerResult: Awaited<ReturnType<typeof aiProvider.generateGroundedResponse>>;
+      try {
+        providerResult = await aiProvider.generateGroundedResponse(
+          {
+            ...prompt,
+            relevanceContext: {
+              ...(priorUserMessages.length ? { previousQuestion: priorUserMessages.at(-1) } : {}),
+              question: input.message,
+            },
+            temperature: input.regenerate ? AI_REGENERATION_TEMPERATURE : AI_DEFAULT_TEMPERATURE,
           },
-          temperature: input.regenerate ? AI_REGENERATION_TEMPERATURE : AI_DEFAULT_TEMPERATURE,
-        },
-        signal,
-      );
+          signal,
+        );
+      } catch {
+        providerResult = { ok: false, category: "unexpected" };
+      }
       if (!providerResult.ok) {
         outcome = providerResult.category === "refused" ? "unexpected" : providerResult.category;
         recordAiProviderFailure(outcome);
@@ -353,9 +390,6 @@ export async function createAiChatStream(
             context.data.metadata,
             input.message,
             previousAnswers,
-            priorUserMessages.at(-1),
-            true,
-            signal,
           ),
           loggingContext,
         )) {
@@ -364,16 +398,16 @@ export async function createAiChatStream(
         return;
       }
       yield {
-        credibleSources: providerResult.sources,
+        credibleSources: uniqueCitations(providerResult.sources),
         suggestedQuestions: context.data.metadata.suggestedQuestions,
         type: "context",
       };
       recordAiProviderSuccess();
       yield { text: providerResult.text, type: "delta" };
+      yield { type: "done" };
       if (!signal?.aborted && providerResult.text.trim().length > 0) {
         await recordLearningExchangeSafely(loggingContext);
       }
-      yield { type: "done" };
       logAiOperation({
         ...loggingContext,
         duration_bucket: durationBucket(Date.now() - startedAt),

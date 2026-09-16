@@ -20,9 +20,9 @@
   background-repeat: no-repeat;
   background-size: 100% auto;
   content: "";
-  filter: saturate(0.62) contrast(0.9) brightness(1.08);
+  filter: saturate(0.5) contrast(0.86) brightness(1.12);
   inset: 0;
-  opacity: 0.56;
+  opacity: 0.36;
   pointer-events: none;
   position: absolute;
   z-index: 0;
@@ -38,7 +38,7 @@
 
 @media (max-width: 70rem) {
   .journeyPage::before {
-    opacity: 0.44;
+    opacity: 0.3;
   }
 }
 
@@ -49,6 +49,6 @@
 
   .journeyPage::before {
     background-size: auto max(100%, 96rem);
-    opacity: 0.3;
+    opacity: 0.22;
   }
 }

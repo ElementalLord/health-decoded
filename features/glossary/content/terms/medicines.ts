@@ -180,5 +180,83 @@ export const medicineTerms = createEntries(
       "Medication adherence",
       "Taking or using medicine as agreed in a care plan. Barriers can include cost, side effects, access, and daily routines.",
     ],
+    [
+      "Short-acting insulin",
+      "Insulin designed to begin working more slowly and last longer than rapid-acting insulin.",
+      { aliases: ["Regular insulin"], sourceIds: ["SRC-ADA-INSULIN", "SRC-FDA-INSULIN"] },
+    ],
+    [
+      "Intermediate-acting insulin",
+      "Insulin designed to provide glucose-lowering action for longer than short-acting insulin but less time than most long-acting insulin.",
+      { aliases: ["NPH insulin"], sourceIds: ["SRC-ADA-INSULIN", "SRC-FDA-INSULIN"] },
+    ],
+    [
+      "Ultra-long-acting insulin",
+      "A category of basal insulin designed to work gradually for an extended duration.",
+      { sourceIds: ["SRC-ADA-INSULIN", "SRC-FDA-INSULIN"] },
+    ],
+    [
+      "Inhaled insulin",
+      "Rapid-acting insulin powder delivered into the lungs through a special inhaler.",
+      { sourceIds: ["SRC-ADA-INSULIN", "SRC-FDA-INSULIN"] },
+    ],
+    [
+      "Bolus dose",
+      "An additional insulin dose used for a meal or to address glucose above a target, according to an individual care plan.",
+      { aliases: ["Insulin bolus"], sourceIds: ["SRC-ADA-TERMS", "SRC-ADA-INSULIN"] },
+    ],
+    [
+      "Biguanide",
+      "A class of glucose-lowering medicines that includes metformin and primarily reduces glucose release by the liver.",
+      { sourceIds: ["SRC-FDA-MEDS", "SRC-FDA-MEDS-CURRENT"] },
+    ],
+    [
+      "Meglitinide",
+      "A class of glucose-lowering medicines that helps the pancreas release more insulin around mealtime.",
+      { aliases: ["Glinide"], sourceIds: ["SRC-FDA-MEDS", "SRC-FDA-MEDS-CURRENT"] },
+    ],
+    [
+      "Alpha-glucosidase inhibitor",
+      "A class of glucose-lowering medicines that slows the digestion of carbohydrates in the intestine.",
+      { sourceIds: ["SRC-FDA-MEDS", "SRC-FDA-MEDS-CURRENT"] },
+    ],
+    [
+      "Amylin analog",
+      "A medicine that acts like the hormone amylin to slow stomach emptying, reduce glucagon after meals, and help manage glucose.",
+      { aliases: ["Amylin analogue"], sourceIds: ["SRC-FDA-MEDS-CURRENT", "SRC-DAILYMED-SYMLIN"] },
+    ],
+    [
+      "Basal rate",
+      "The programmed background rate at which an insulin pump delivers small amounts of insulin.",
+      { sourceIds: ["SRC-ADA-TERMS", "SRC-ADA-INSULIN"] },
+    ],
+    [
+      "Insulin unit",
+      "The standard unit used to measure an insulin dose; insulin concentration describes how many units are in each milliliter.",
+      { sourceIds: ["SRC-ADA-TERMS", "SRC-FDA-INSULIN"] },
+    ],
+    [
+      "Oral diabetes medicine",
+      "A glucose-lowering medicine taken by mouth, most often as part of treatment for Type 2 diabetes.",
+      { aliases: ["Diabetes pill"], sourceIds: ["SRC-ADA-TERMS", "SRC-FDA-MEDS-CURRENT"] },
+    ],
+    [
+      "Insulin analog",
+      "A laboratory-made form of insulin designed to have a particular onset, peak, or duration of action.",
+      { aliases: ["Insulin analogue"], sourceIds: ["SRC-ADA-TERMS", "SRC-ADA-INSULIN"] },
+    ],
+    [
+      "Insulin syringe",
+      "A syringe marked in insulin units and used with a compatible needle to draw up and inject insulin.",
+      { sourceIds: ["SRC-ADA-TERMS", "SRC-FDA-INSULIN"] },
+    ],
+    [
+      "Jet injector",
+      "A needle-free device that uses high pressure to deliver insulin through the skin.",
+      {
+        aliases: ["Insulin jet injector"],
+        sourceIds: ["SRC-FDA-INSULIN", "SRC-MEDLINEPLUS-DIABETES-MEDS"],
+      },
+    ],
   ],
 );

@@ -10,8 +10,8 @@ const styles = readFileSync("features/resources/components/resources.module.css"
 
 test("the reading room background stays decorative and clear of the text column", () => {
   assert.ok(
-    statSync("public/resources/resources-reading-room-continuous-v29.webp").size < 1_000_000,
-    "The full-resolution background should use an efficient delivery format",
+    statSync("public/resources/resources-whimsical-shapes-v3-transparent.png").size < 5_000_000,
+    "The generated background should stay reasonably sized for delivery",
   );
 
   assert.match(page, /className=\{styles\.resourcesPage\}/);
@@ -22,21 +22,20 @@ test("the reading room background stays decorative and clear of the text column"
   );
   assert.match(
     styles,
-    /\.resourcesPage::before \{[\s\S]*resources-reading-room-continuous-v29\.webp[\s\S]*background-position: center top;[\s\S]*background-repeat: no-repeat;[\s\S]*background-size: max\(100%, 100rem\) auto;/,
+    /\.resourcesPage::before \{[\s\S]*resources-whimsical-shapes-v3-transparent\.png[\s\S]*background-position: center top;[\s\S]*background-repeat: repeat-y;[\s\S]*background-size: max\(100%, 96rem\) auto;/,
   );
-  assert.match(styles, /filter: saturate\(0\.74\) contrast\(0\.96\);/);
-  assert.match(styles, /opacity: 0\.56;/);
+  assert.doesNotMatch(styles, /resources-reading-room-continuous-v29/);
+  assert.match(styles, /opacity: 0\.68;/);
   assert.doesNotMatch(styles, /resources-reading-room-segment-/);
   assert.doesNotMatch(styles, /background-size: 100% 100%/);
   assert.doesNotMatch(styles, /resources-reading-room-background-v10\.png/);
   assert.doesNotMatch(styles, /resources-reading-room-middle-v11\.png/);
   assert.doesNotMatch(styles, /\.resourcesPage::after/);
-  assert.doesNotMatch(styles, /background-repeat: repeat-y/);
   assert.doesNotMatch(styles, /\.resourcesContent::before/);
   assert.doesNotMatch(styles, /linear-gradient/);
   assert.match(
     styles,
-    /@media \(max-width: 68rem\) \{[\s\S]*\.resourcesPage::before \{[\s\S]*background-size: auto 100%;/,
+    /@media \(max-width: 68rem\) \{[\s\S]*\.resourcesPage::before \{[\s\S]*background-size: 100% auto;/,
   );
 });
 

@@ -320,6 +320,7 @@ function ResourceArtwork({ resource }: { resource: Resource }) {
       <Image
         alt={visual.alt}
         fill
+        quality={90}
         sizes="(max-width: 42rem) 100vw, (max-width: 68rem) 50vw, 26vw"
         src={visual.image}
       />
@@ -727,7 +728,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               {filteredResources.length > 0 ? (
                 <div className={styles.resourceGrid}>
                   {filteredResources.map((resource) => (
-                    <article key={resource.id}>
+                    <article id={`resource-${resource.id}`} key={resource.id}>
                       <ResourceGridItem resource={resource} />
                     </article>
                   ))}

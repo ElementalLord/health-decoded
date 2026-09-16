@@ -17,6 +17,9 @@ import { getServerDatabaseClient } from "@/lib/database/server";
 
 export async function buildUniversalSearchIndex(): Promise<UniversalSearchDocument[] | null> {
   noStore();
+  const staticDocuments: UniversalSearchDocument[] = [...staticSearchDocuments];
+  if (!validateSearchDocuments(staticDocuments)) return null;
+
   const response = await (async () => {
     try {
       const database = await getServerDatabaseClient();
@@ -32,11 +35,12 @@ export async function buildUniversalSearchIndex(): Promise<UniversalSearchDocume
       return null;
     }
   })();
-  if (!response) return null;
-  if (response.error || !response.data) return null;
+  // A lesson lookup failure should not take down search for pages, tools, the
+  // glossary, stories, resources, or caregiver modules.
+  if (!response || response.error || !response.data) return staticDocuments;
   const lessons = adaptLessonSearchDocuments(response.data as SearchableLessonRow[]);
-  const documents = [...staticSearchDocuments, ...lessons];
-  return validateSearchDocuments(documents) ? documents : null;
+  const documents = [...staticDocuments, ...lessons];
+  return validateSearchDocuments(documents) ? documents : staticDocuments;
 }
 
 export async function searchUniversalIndex(query: string): Promise<RankedSearchResult[] | null> {

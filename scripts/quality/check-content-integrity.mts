@@ -144,7 +144,7 @@ function glossaryRecords(root: string): GlossaryRecord[] {
     const tree = ast(root, file);
     visit(tree, (node) => {
       if (!ts.isCallExpression(node) || node.expression.getText(tree) !== "createEntries") return;
-      const sourceIds = arrayStrings(node.arguments[1]);
+      const defaultSourceIds = arrayStrings(node.arguments[1]);
       const seeds = node.arguments[2];
       if (!seeds || !ts.isArrayLiteralExpression(seeds)) return;
       for (const seed of seeds.elements) {
@@ -165,7 +165,9 @@ function glossaryRecords(root: string): GlossaryRecord[] {
           slug,
           term,
           definition,
-          sourceIds,
+          sourceIds: options.has("sourceIds")
+            ? arrayStrings(options.get("sourceIds"))
+            : defaultSourceIds,
           aliases: arrayStrings(options.get("aliases")),
           ...(literalText(options.get("abbreviation"))
             ? { abbreviation: literalText(options.get("abbreviation"))! }

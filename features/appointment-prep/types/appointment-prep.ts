@@ -62,7 +62,6 @@ export type SupportPerson = {
 };
 
 export type WorkspaceSection =
-  | "overview"
   | "basics"
   | "priorities"
   | "clarify"

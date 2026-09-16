@@ -82,8 +82,8 @@ const contextualMedicationAdjustmentPattern = new RegExp(
   `\\b${DIABETES_MEDICATION_TERM_PATTERN}\\b.{0,400}\\b(?:(?:should|can)\\s+i\\s+(?:take|use|inject)\\s+(?:it|this|that)|(?:how often|when)\\s+should\\s+i\\s+(?:take|use|inject)\\s+(?:it|this|that))\\b`,
   "i",
 );
-const diagnosisPattern =
-  /\b(do i have|is this diabetes\b(?!\s+(?:medication|medicine))|diagnose me|what does my (?:a1c|lab|test result)|are my (?:a1c(?: test results?)?|labs?|test results?) (?:good|bad|normal)|interpret my (?:a1c|labs?|test results?))\b/i;
+export const diagnosisPattern =
+  /\b(do i have\b(?!\s+to\b)|is this diabetes\b(?!\s+(?:medication|medicine))|diagnose me|what does my (?:a1c|lab|test result)|are my (?:a1c(?: test results?)?|labs?|test results?) (?:good|bad|normal)|interpret my (?:a1c|labs?|test results?))\b/i;
 const personalInterpretationPattern =
   /\b(?:my\s+)?(?:fasting\s+)?(?:blood\s+sugar|glucose|a1c|result)\s+(?:is|was|reads?|came back|changed|went|result(?:ed)?\s+(?:at|as))\b.{0,80}\d+(?:\.\d+)?\s*(?:%|percent)?\b|\b(?:is|does)\s+my\s+(?:blood\s+sugar|glucose|a1c)\b.{0,60}\b(?:bad|dangerous|normal|safe|high|low|mean|improving)\b|\b\d+(?:\.\d+)?\s*(?:mg\/?dl|mmol\/?l|percent|%)\b.{0,60}\b(?:blood\s+sugar|glucose|a1c|for me|normal|safe|high|low|what should i)\b/i;
 const treatmentPlanPattern =

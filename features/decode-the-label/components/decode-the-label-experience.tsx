@@ -28,22 +28,6 @@ const decodeContinuation = getNextLearningAction({
   sourceId: "decode-the-label",
 });
 
-function FocusFirst() {
-  return (
-    <aside aria-labelledby="focus-first-heading" className={styles.focusFirst}>
-      <p className="editorial-eyebrow">What to focus on first</p>
-      <h2 id="focus-first-heading">Five useful places to look</h2>
-      <ol>
-        <li>Serving size</li>
-        <li>Total carbohydrate</li>
-        <li>Fiber</li>
-        <li>Added sugars</li>
-        <li>Protein</li>
-      </ol>
-    </aside>
-  );
-}
-
 function ConceptNote() {
   return (
     <aside aria-labelledby="concept-note-title" className={styles.conceptNote}>
@@ -113,7 +97,7 @@ export function DecodeTheLabelExperience() {
 
   if (phase === "intro")
     return (
-      <main className={styles.page}>
+      <main className={`${styles.page} ${styles.introPage}`}>
         <header className={styles.introHero}>
           <div className={styles.introCopy}>
             <p className="editorial-eyebrow">A practical food-label exercise</p>
@@ -156,18 +140,6 @@ export function DecodeTheLabelExperience() {
             )}
           </figure>
         </header>
-
-        <section className={styles.introLower}>
-          <FocusFirst />
-          <div className={styles.calmReminder}>
-            <p className="editorial-eyebrow">Keep in mind</p>
-            <p>This activity is for learning, not for judging yourself or your food choices.</p>
-            <p>
-              A better question than “Can I eat this?” is often “What does this label help me
-              understand about this food?”
-            </p>
-          </div>
-        </section>
       </main>
     );
 

@@ -78,7 +78,12 @@ export type AiProvider = {
 
 const globalSearchAvailability = globalThis as typeof globalThis & {
   healthDecodedAiSearchRetryAfter?: number;
+  healthDecodedAiGenerationRetryAfter?: Map<string, number>;
 };
+
+const generationRetryAfter =
+  globalSearchAvailability.healthDecodedAiGenerationRetryAfter ?? new Map<string, number>();
+globalSearchAvailability.healthDecodedAiGenerationRetryAfter = generationRetryAfter;
 
 function searchIsCoolingDown(now = Date.now()) {
   return (globalSearchAvailability.healthDecodedAiSearchRetryAfter ?? 0) > now;
@@ -283,7 +288,12 @@ export const aiProvider: AiProvider = {
     });
     const securityConfig = getAiSecurityConfig();
 
-    for (const model of [DEFAULT_AI_MODEL, FALLBACK_AI_MODEL]) {
+    const models = [DEFAULT_AI_MODEL, FALLBACK_AI_MODEL].filter(
+      (model) => (generationRetryAfter.get(model) ?? 0) <= Date.now(),
+    );
+    if (!models.length) return normalizeAiProviderFailure("rate_limited");
+
+    for (const model of models) {
       try {
         const response = await client.models.generateContent({
           model,
@@ -292,7 +302,8 @@ export const aiProvider: AiProvider = {
             ...(signal ? { abortSignal: signal } : {}),
             candidateCount: 1,
             httpOptions: {
-              retryOptions: { attempts: 2 },
+              // Switch models promptly instead of retrying an exhausted quota.
+              retryOptions: { attempts: 1 },
               timeout: securityConfig.providerTimeoutMs,
             },
             maxOutputTokens: securityConfig.maxOutputTokens,
@@ -303,11 +314,18 @@ export const aiProvider: AiProvider = {
           },
         });
 
+        generationRetryAfter.delete(model);
         return parseAiProviderText(response.text ?? "");
       } catch (error) {
+        if (providerStatus(error) === 429) {
+          generationRetryAfter.set(model, Date.now() + 60_000);
+        }
         if (
           model === DEFAULT_AI_MODEL &&
-          isTemporaryModelCapacityFailure(error) &&
+          // Generation quotas can differ by model. Try the backup once when
+          // the primary is exhausted; this also keeps the companion's
+          // reviewed-source fallback and Explain It Back available.
+          (isTemporaryModelCapacityFailure(error) || providerStatus(error) === 429) &&
           !signal?.aborted
         ) {
           continue;

@@ -22,7 +22,7 @@ function GlossaryEntry({ entry }: { entry: MedicalGlossaryEntry }) {
   const continuation = getNextLearningAction({ sourceType: "glossary", sourceId: entry.id });
 
   return (
-    <div className={styles.entry}>
+    <div className={styles.entry} data-glossary-entry id={entry.slug} tabIndex={-1}>
       <dt>
         {entry.term}
         {entry.abbreviation ? <span> ({entry.abbreviation})</span> : null}
@@ -51,9 +51,31 @@ export function MedicalGlossaryPage() {
   const [selectedLetter, setSelectedLetter] = useState("All");
   const headingRef = useRef<HTMLHeadingElement>(null);
   const resultsViewportRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    headingRef.current?.focus();
+    if (!window.location.hash) headingRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    function revealHashTarget() {
+      const slug = decodeURIComponent(window.location.hash.slice(1));
+      if (!slug) return;
+
+      const target = document.getElementById(slug);
+      if (!target?.hasAttribute("data-glossary-entry")) return;
+
+      target.scrollIntoView({ block: "center" });
+      target.focus({ preventScroll: true });
+    }
+
+    const frame = window.requestAnimationFrame(revealHashTarget);
+    window.addEventListener("hashchange", revealHashTarget);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", revealHashTarget);
+    };
+  }, []);
+
   useEffect(() => {
     if (resultsViewportRef.current) resultsViewportRef.current.scrollTop = 0;
   }, [query, selectedLetter]);
@@ -250,9 +272,6 @@ export function MedicalGlossaryPage() {
               to the AI guide.
             </p>
             <div>
-              <Button fullWidth={false} onClick={clearSearch} variant="secondary">
-                Clear search
-              </Button>
               <AiTutorTrigger>Ask Health Decoded AI</AiTutorTrigger>
             </div>
           </section>

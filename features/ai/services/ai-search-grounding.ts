@@ -4,6 +4,8 @@ import { z } from "zod";
 import { AI_MAX_OUTPUT_CHARACTERS } from "../constants/ai-limits.ts";
 // @ts-expect-error -- Node's built-in TypeScript test runner requires explicit extensions.
 import { normalizeAiQuery } from "../data/query-normalizer.ts";
+// @ts-expect-error -- Node's TypeScript test runner needs explicit extensions.
+import { definitionSubjectFor } from "../data/question-intent.ts";
 import type { AiCredibleSource } from "../types/ai.ts";
 // @ts-expect-error -- Node's built-in TypeScript test runner requires explicit extensions.
 import { assessAiOutputSafety } from "./ai-output-safety.ts";
@@ -122,7 +124,43 @@ const relevanceStopWords = new Set([
   "works",
   "take",
   "would",
+  "please",
+  "tell",
+  "understand",
+  "having",
+  "have",
+  "mean",
+  "means",
+  "simple",
+  "words",
+  "someone",
+  "really",
+  "always",
 ]);
+
+const topicAnchors = [
+  /\bmetformin\b/,
+  /\binsulin\b/,
+  /\ba1c\b/,
+  /\b(?:exercise|activity|walking|walk)\b/,
+  /\b(?:sleep|sleeping)\b/,
+  /\bstress\b/,
+  /\b(?:cgm|sensor)\b/,
+  /\b(?:fingerstick|finger|meter)\b/,
+  /\b(?:carbohydrates?|carbs?)\b/,
+  /\bfiber\b/,
+  /\b(?:kidney|kidneys)\b/,
+  /\b(?:eyes?|retinopathy)\b/,
+  /\b(?:nerves?|neuropathy)\b/,
+  /\b(?:feet|foot)\b/,
+  /\b(?:ketones?|ketoacidosis|dka)\b/,
+  /\bremission\b/,
+  /\b(?:morning|dawn|breakfast)\b/,
+  /\b(?:low|lows|hypoglycemia)\b/,
+  /\b(?:pregnancy|pregnant|gestational)\b/,
+  /\b(?:steroids?|prednisone)\b/,
+  /\b(?:glp|semaglutide|ozempic)\b/,
+];
 
 function relevanceTerm(value: string) {
   if (/^(?:glucose|sugar)$/.test(value)) return "glucose";
@@ -155,24 +193,62 @@ export function isAiAnswerRelevant(
   answer: string,
   { previousQuestion, question }: AiAnswerRelevanceContext,
 ) {
-  const definition = normalizeAiQuery(question).match(
-    /^(?:what (?:is|are)|define)\s+(?:a |an |the )?(.+?)[.!?]*$/,
+  const normalizedQuestion = normalizeAiQuery(question);
+  const openingText = normalizeAiQuery(
+    answer
+      .split(/(?<=[.!?])\s+/)
+      .slice(0, 3)
+      .join(" "),
   );
+  const activeTopics = topicAnchors.filter((topic) => topic.test(normalizedQuestion));
+  const asksComparison = /\b(difference|compare|comparison|versus|vs)\b/.test(normalizedQuestion);
+  if (
+    asksComparison &&
+    activeTopics.length > 1 &&
+    !activeTopics.every((topic) => topic.test(openingText))
+  ) {
+    return false;
+  }
+  const asksReason =
+    /\bwhy\b|\bhow (?:does|do|can|could)\b/.test(normalizedQuestion) &&
+    !/\b(how (?:often|much|many)|how can (?:i|you|someone))\b/.test(normalizedQuestion);
+  if (
+    asksReason &&
+    !/\b(?:because|by|causes?|caused|leads?|allows?|enables?|signals?|releases?|absorbs?|absorbed|slows?|reduces?|increases?|lowers?|raises?|responds?|resistance|sensitive|sensitivity|blocks?|prevents?|changes?|damages?|damaged|affects?|affecting|produces?|production|uses?|used|needs?|need|lack|insufficient)\b/.test(
+      openingText,
+    )
+  ) {
+    return false;
+  }
+  // A fact about another aspect of the same condition isn't an explanation.
+  // Reason questions must retain a recognizable requested topic as well.
+  if (asksReason && activeTopics.length && !activeTopics.some((topic) => topic.test(openingText)))
+    return false;
+  const subject = definitionSubjectFor(question);
+  const definition = subject ? [subject, subject] : null;
   if (
     definition &&
     !/^(?:some|common|difference|role|purpose|effect|ways?|examples?)\b/.test(definition[1] ?? "")
   ) {
     const subjectTerms = [...relevanceTerms(definition[1] ?? "")];
     const firstSentence = answer.split(/(?<=[.!?])\s+/)[0]?.toLocaleLowerCase() ?? "";
-    const firstWords = firstSentence.match(/[a-z0-9]+/g)?.slice(0, 8) ?? [];
+    const firstWords = firstSentence.match(/[a-z0-9]+/g) ?? [];
+    const predicateIndex = firstWords.findIndex((word) => /^(?:is|are|means|refers)$/.test(word));
+    const openingSubject = firstWords.slice(0, predicateIndex).map(relevanceTerm);
     if (
       subjectTerms.length > 0 &&
       subjectTerms.length <= 3 &&
-      (!subjectTerms.every((term) => firstWords.map(relevanceTerm).includes(term)) ||
-        !/\b(?:is|are|means|refers to)\b/.test(firstSentence))
+      (!subjectTerms.every((term) => openingSubject.includes(term)) ||
+        predicateIndex < 0 ||
+        /\b(?:is|are) (?:usually |often |commonly )?(?:diagnosed|tested|treated|managed|monitored|prescribed)\b/.test(
+          firstSentence,
+        ))
     ) {
       return false;
     }
+    // Once the requested concept is defined, stylistic words such as “simple”
+    // or personal framing such as “I have” need not be echoed in the answer.
+    if (subjectTerms.length > 0 && subjectTerms.length <= 3) return true;
   }
 
   let expected = relevanceTerms(question);

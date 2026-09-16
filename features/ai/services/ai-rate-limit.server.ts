@@ -123,10 +123,8 @@ export function consumeAiRequestSlot(
   }
 
   if (reason) {
-    // A fast double-submit or one quota mistake is rejected but does not lock a
-    // learner out for 30 seconds. Escalating blocks begin only after repeated
-    // violations; explicitly sensitive requests still block immediately below.
-    progressiveBlock(existing, now, config.abuseBlockMs, 3);
+    // Normal retries wait only for the relevant request window. They must
+    // never accumulate abuse penalties or extend the learner's lockout.
     userWindows.set(input.userId, existing);
     networkWindows.set(input.networkKey, activeNetworkRequests);
     cleanup(now);

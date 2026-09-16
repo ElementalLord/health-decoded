@@ -195,7 +195,7 @@ test("Day 14 is a foundation milestone rather than a false ninety-day finale", (
   assert.match(experience, /The next 76 days/);
   assert.doesNotMatch(experience, /graduation|trophy|confetti/i);
   assert.match(completeState, /Foundation phase · Days 1–14/);
-  assert.match(completeState, /The next 76 days/);
+  assert.doesNotMatch(completeState, /This milestone is not the end/);
   assert.doesNotMatch(completeState, /All ninety days|journey is complete/i);
   assert.match(completionArrival, /fourteen-day foundation is complete/);
 });

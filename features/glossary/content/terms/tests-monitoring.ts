@@ -193,5 +193,59 @@ export const testAndMonitoringTerms = createEntries(
       "Ketone testing",
       "Checking blood or urine for ketones during situations identified in a person’s diabetes sick-day or safety plan.",
     ],
+    [
+      "C-peptide test",
+      "A blood or urine test that measures C-peptide to help estimate how much insulin the pancreas is making.",
+      {
+        aliases: ["Insulin C-peptide test"],
+        sourceIds: ["SRC-MEDLINEPLUS-CPEPTIDE", "SRC-ADA-TERMS"],
+      },
+    ],
+    [
+      "Diabetes autoantibody test",
+      "A blood test that looks for immune-system proteins associated with Type 1 diabetes.",
+      {
+        aliases: ["Islet autoantibody test"],
+        sourceIds: ["SRC-NIDDK-TESTS", "SRC-MEDLINEPLUS-AUTOANTIBODY"],
+      },
+    ],
+    [
+      "Confirmatory diabetes test",
+      "A second laboratory test used to confirm a diabetes diagnosis when confirmation is needed.",
+      { aliases: ["Repeat diabetes test"], sourceIds: ["SRC-NIDDK-TESTS", "SRC-ADA-DIAGNOSIS"] },
+    ],
+    [
+      "Genetic testing for diabetes",
+      "Testing that looks for gene changes that can help diagnose a suspected form of monogenic diabetes.",
+      { sourceIds: ["SRC-NIDDK-MONOGENIC", "SRC-NIDDK-TESTS"] },
+    ],
+    [
+      "Glucose challenge test",
+      "A nonfasting blood test used to screen for gestational diabetes after a person drinks a glucose solution.",
+      {
+        aliases: ["Glucose screening test"],
+        sourceIds: ["SRC-NIDDK-TESTS", "SRC-MEDLINEPLUS-GLUCOSE"],
+      },
+    ],
+    [
+      "Milligrams per deciliter",
+      "A unit commonly used in the United States to report the concentration of glucose in blood.",
+      { abbreviation: "mg/dL", sourceIds: ["SRC-ADA-TERMS", "SRC-CDC-PLAIN"] },
+    ],
+    [
+      "Millimoles per liter",
+      "A unit commonly used in many countries to report the concentration of glucose in blood.",
+      { abbreviation: "mmol/L", sourceIds: ["SRC-ADA-TERMS", "SRC-MEDLINEPLUS-GLUCOSE"] },
+    ],
+    [
+      "Sensor glucose",
+      "A glucose estimate reported by a continuous glucose monitor using measurements from fluid between cells.",
+      { abbreviation: "SG", sourceIds: ["SRC-CDC-CGM", "SRC-FDA-ARTIFICIAL-PANCREAS"] },
+    ],
+    [
+      "Pre-meal blood glucose",
+      "A blood glucose reading taken before eating and interpreted using a person’s diabetes care plan.",
+      { aliases: ["Preprandial blood glucose"], sourceIds: ["SRC-ADA-TERMS", "SRC-CDC-PLAIN"] },
+    ],
   ],
 );

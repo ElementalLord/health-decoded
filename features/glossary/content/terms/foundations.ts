@@ -131,5 +131,55 @@ export const foundationTerms = createEntries(
         },
       },
     ],
+    [
+      "Autoimmune disease",
+      "A condition in which the immune system mistakenly attacks the body’s own healthy cells or tissues.",
+      { sourceIds: ["SRC-MEDLINEPLUS-AUTOIMMUNE", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Autoantibody",
+      "A protein made by the immune system that mistakenly targets the body’s own cells or tissues.",
+      { sourceIds: ["SRC-NIDDK-TESTS", "SRC-MEDLINEPLUS-AUTOANTIBODY"] },
+    ],
+    [
+      "Islet",
+      "A cluster of cells in the pancreas that includes beta cells, which make insulin.",
+      { aliases: ["Islet of Langerhans"], sourceIds: ["SRC-NIDDK-ISLETS", "SRC-ADA-INSULIN"] },
+    ],
+    [
+      "Monogenic diabetes",
+      "A group of uncommon forms of diabetes caused by a change in a single gene.",
+      { sourceIds: ["SRC-NIDDK-MONOGENIC", "SRC-NIDDK-TESTS"] },
+    ],
+    [
+      "Maturity-onset diabetes of the young",
+      "A group of monogenic diabetes conditions that typically begin before age 30, although they can occur later.",
+      { abbreviation: "MODY", sourceIds: ["SRC-NIDDK-MONOGENIC", "SRC-MEDLINEPLUS-MODY"] },
+    ],
+    [
+      "Alpha cell",
+      "A cell in a pancreatic islet that makes and releases glucagon when the body needs glucose raised.",
+      { sourceIds: ["SRC-NIDDK-ISLETS", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Latent autoimmune diabetes in adults",
+      "A slowly progressing form of autoimmune Type 1 diabetes that begins in adulthood.",
+      { abbreviation: "LADA", sourceIds: ["SRC-ADA-LADA", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Neonatal diabetes mellitus",
+      "A rare monogenic form of diabetes that begins during infancy, usually within the first 6 months after birth.",
+      { abbreviation: "NDM", sourceIds: ["SRC-NIDDK-MONOGENIC", "SRC-MEDLINEPLUS-NEONATAL"] },
+    ],
+    [
+      "Impaired fasting glucose",
+      "A term for prediabetes identified by a fasting plasma glucose result in the prediabetes range.",
+      { abbreviation: "IFG", sourceIds: ["SRC-NIDDK-TESTS", "SRC-ADA-DIAGNOSIS"] },
+    ],
+    [
+      "Impaired glucose tolerance",
+      "A term for prediabetes identified by an oral glucose tolerance test result in the prediabetes range.",
+      { abbreviation: "IGT", sourceIds: ["SRC-NIDDK-TESTS", "SRC-ADA-DIAGNOSIS"] },
+    ],
   ],
 );

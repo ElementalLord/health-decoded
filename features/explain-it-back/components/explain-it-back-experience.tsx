@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, ExternalLink, Lightbulb, MessageCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -14,6 +14,8 @@ import type { ExplainFeedback } from "@/features/explain-it-back/types/explain-i
 import { recordSpacedReviewExampleAction } from "@/features/spaced-review/actions/spaced-review.actions";
 
 import styles from "../styles/explain-it-back.module.css";
+import { ConceptImage } from "./concept-image";
+import { TeachBackIllustration } from "./teach-back-illustration";
 
 type Phase = "intro" | "browse" | "challenge";
 type EvaluationResponse =
@@ -237,25 +239,15 @@ export function ExplainItBackExperience({
               Choose a concept <ArrowRight aria-hidden="true" />
             </Button>
           </div>
-          <div aria-hidden="true" className={styles.ideaSequence}>
-            <MessageCircle />
-            <span />
-            <Lightbulb />
-            <span />
-            <Check />
-          </div>
+          <TeachBackIllustration />
         </section>
-        <aside className={styles.notes}>
-          <p>Spelling and grammar don&apos;t count.</p>
-          <p>Use your notes if you want. This isn&apos;t a memory test.</p>
-        </aside>
       </main>
     );
   }
 
   if (phase === "browse") {
     return (
-      <main className={styles.page}>
+      <main className={`${styles.page} ${styles.browserPage}`}>
         <button className={styles.back} onClick={() => setPhase("intro")} type="button">
           <ArrowLeft aria-hidden="true" /> Back
         </button>
@@ -268,14 +260,21 @@ export function ExplainItBackExperience({
         </header>
         <div className={styles.conceptGroups}>
           {groups.map((group) => (
-            <section aria-labelledby={`group-${group}`} className={styles.conceptGroup} key={group}>
-              <h2 id={`group-${group}`}>{group}</h2>
-              <div>
+            <section
+              aria-labelledby={`group-${group === "Foundations" ? "foundations" : "food-labels"}`}
+              className={styles.conceptGroup}
+              key={group}
+            >
+              <h2 id={`group-${group === "Foundations" ? "foundations" : "food-labels"}`}>
+                {group}
+              </h2>
+              <div className={styles.conceptGrid}>
                 {explainItBackChallenges
                   .filter((item) => item.group === group)
                   .map((item) => (
                     <button key={item.id} onClick={() => chooseChallenge(item.id)} type="button">
-                      <span>
+                      <ConceptImage id={item.id} />
+                      <span className={styles.conceptCopy}>
                         <strong>{item.title}</strong>
                         <small>{item.shortDescriptor}</small>
                       </span>
@@ -340,9 +339,11 @@ export function ExplainItBackExperience({
             <span>We check the idea, not your writing.</span>
             <span>{explanation.length}/1000</span>
           </div>
-          {!useful && explanation.length > 0 ? (
-            <p className={styles.inlineHint}>Add a little more so there is an idea to check.</p>
-          ) : null}
+          <p aria-live="polite" className={styles.inlineHint}>
+            {!useful && explanation.length > 0
+              ? "Add a little more so there is an idea to check."
+              : null}
+          </p>
           <Button
             disabled={!useful || submitting}
             fullWidth={false}

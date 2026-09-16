@@ -3,13 +3,12 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const [page, content, reducer, summary, route, urgentRoute, journey, styles] = await Promise.all([
+const [page, content, reducer, summary, route, journey, styles] = await Promise.all([
   read("features/appointment-prep/components/appointment-prep-page.tsx"),
   read("features/appointment-prep/content/appointment-prep-content.ts"),
   read("features/appointment-prep/state/appointment-prep-reducer.ts"),
   read("features/appointment-prep/lib/appointment-prep-summary.ts"),
   read("app/(app)/appointment-prep/page.tsx"),
-  read("app/(app)/urgent-help/page.tsx"),
   read("app/(app)/journey/page.tsx"),
   read("features/appointment-prep/styles/appointment-prep.module.css"),
 ]);
@@ -33,11 +32,28 @@ test("authenticated route inherits the protected app layout and keeps neutral me
   assert.match(journey, /Prepare for an appointment/);
 });
 
-test("urgent help stays in the authenticated appointment context", () => {
-  assert.match(page, /href="\/urgent-help"/);
+test("appointment preparation does not expose an urgent-help destination", () => {
+  assert.doesNotMatch(page, /href="\/urgent-help"/);
+  assert.doesNotMatch(page, /className=\{styles\.urgentLink\}/);
   assert.doesNotMatch(page, /href="\/caregiver\/urgent-help"/);
-  assert.match(urgentRoute, /returnHref="\/appointment-prep"/);
-  assert.match(urgentRoute, /returnLabel="Return to Appointment Preparation"/);
+});
+
+test("entry actions separate the journey return from the primary action", () => {
+  assert.match(page, /Back to your journey/);
+  assert.match(styles, /\.actions \{[^}]*flex-direction: column;[^}]*gap: 1\.75rem;/s);
+  assert.match(styles, /appointment-planner-background-v2\.png/);
+  assert.match(styles, /app-page-container/);
+  assert.match(styles, /max-width: none/);
+  assert.match(styles, /app-page-container\):has\(\.entry\) \{\s*padding-bottom: 0;/s);
+});
+
+test("workspace uses a clear ten-step flow without a redundant overview destination", () => {
+  assert.match(reducer, /currentSection: "basics"/);
+  assert.doesNotMatch(page, /Workspace overview|navigate\("overview"\)/);
+  assert.match(page, /Step \{currentSectionIndex \+ 1\} of \{sectionNavigation\.length\}/);
+  assert.match(page, /Previous:[\s\S]{0,80}\{previousSection\.short\}/);
+  assert.match(page, /Continue: \$\{nextSection\.short\}/);
+  assert.match(page, /Review summary/);
 });
 
 test("entry discloses exact privacy, sharing, clearing, copying, and medical boundaries", () => {
@@ -118,7 +134,11 @@ test("summary excludes empty sections and supports plain text copy, print, and r
   assert.match(summary, /filter\(\(item\) => clean\(item\.text\)\)/);
   assert.match(summary, /filter\(\(item\) => item\.selected\)/);
   assert.match(summary, /formatSummaryForClipboard/);
+  assert.match(summary, /formatSummaryForClipboardHtml/);
   assert.match(summary, /PRINT_DOCUMENT_TITLE = "appointment-preparation"/);
+  assert.match(page, /new ClipboardItem/);
+  assert.match(page, /"text\/html"/);
+  assert.match(page, /"text\/plain"/);
   assert.match(page, /navigator\.clipboard\.writeText/);
   assert.match(page, /window\.print\(\)/);
   assert.match(page, /dispatch\(\{ type: "clear" \}\)/);
@@ -131,6 +151,9 @@ test("accessibility, focus, live-region, print, responsive, and reduced-motion c
   assert.match(page, /aria-current=/);
   assert.match(page, /aria-label="Move up"/);
   assert.match(styles, /@media print/);
+  assert.match(styles, /@page/);
+  assert.match(styles, /\.printHeader/);
+  assert.match(styles, /print-color-adjust: exact/);
   assert.match(styles, /@media \(max-width: 24rem\)/);
   assert.match(styles, /overflow-x: auto/);
   assert.match(styles, /break-inside: avoid/);

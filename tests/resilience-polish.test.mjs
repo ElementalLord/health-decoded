@@ -213,7 +213,7 @@ test("AI sources come from structured search annotations instead of model prose"
 
 test("general education uses authoritative sources without an internal-content refusal", () => {
   assert.match(sources.aiContext, /credibleSourcesForConversation/);
-  assert.match(sources.aiServer, /credibleSources: providerResult\.sources/);
+  assert.match(sources.aiServer, /credibleSources: uniqueCitations\(providerResult\.sources\)/);
   assert.doesNotMatch(
     sources.aiServer,
     /I couldn’t find enough reviewed Health Decoded information/,

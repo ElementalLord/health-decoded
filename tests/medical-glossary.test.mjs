@@ -29,20 +29,37 @@ function extractSeeds(source, fileName) {
     ts.ScriptKind.TS,
   );
   const seeds = [];
+  const stringArray = (node) =>
+    node && ts.isArrayLiteralExpression(node)
+      ? node.elements.filter(ts.isStringLiteralLike).map((item) => item.text)
+      : [];
   function visit(node) {
     if (ts.isCallExpression(node) && node.expression.getText(file) === "createEntries") {
+      const defaultSourceIds = stringArray(node.arguments[1]);
       const list = node.arguments[2];
       if (list && ts.isArrayLiteralExpression(list)) {
         for (const item of list.elements) {
           if (!ts.isArrayLiteralExpression(item)) continue;
-          const [term, definition] = item.elements;
+          const [term, definition, options] = item.elements;
+          let sourceIds = defaultSourceIds;
+          if (options && ts.isObjectLiteralExpression(options)) {
+            const sourceProperty = options.properties
+              .filter(ts.isPropertyAssignment)
+              .find((property) => property.name.getText(file) === "sourceIds");
+            if (sourceProperty) sourceIds = stringArray(sourceProperty.initializer);
+          }
           if (
             term &&
             definition &&
             ts.isStringLiteralLike(term) &&
             ts.isStringLiteralLike(definition)
-          )
-            seeds.push({ term: term.text, definition: definition.text });
+          ) {
+            seeds.push({
+              term: term.text,
+              definition: definition.text,
+              sourceIds,
+            });
+          }
         }
       }
     }
@@ -119,8 +136,8 @@ const synthetic = [
 
 test("registry contains a substantial focused glossary with unique stable identities", () => {
   assert.ok(
-    seeds.length >= 120 && seeds.length <= 220,
-    `expected 120–220 useful terms, found ${seeds.length}`,
+    seeds.length === 270,
+    `expected exactly 270 diabetes-related terms, found ${seeds.length}`,
   );
   const terms = seeds.map(({ term }) => term.toLowerCase());
   const slugs = seeds.map(({ term }) => slugify(term));
@@ -130,7 +147,7 @@ test("registry contains a substantial focused glossary with unique stable identi
 });
 
 test("glossary content stays diabetes-focused and includes searchable care terms", () => {
-  assert.equal(seeds.length, 220);
+  assert.equal(seeds.length, 270);
   const terms = new Set(seeds.map(({ term }) => term));
   for (const term of [
     "Post-meal blood glucose",
@@ -147,6 +164,21 @@ test("glossary content stays diabetes-focused and includes searchable care terms
     "Fasting blood glucose",
     "Continuous glucose monitor sensor",
     "Sick-day management",
+    "C-peptide test",
+    "Diabetes autoantibody test",
+    "Alpha-glucosidase inhibitor",
+    "Moderate-intensity activity",
+    "Atherosclerosis",
+    "Latent autoimmune diabetes in adults",
+    "Neonatal diabetes mellitus",
+    "Sensor glucose",
+    "Insulin unit",
+    "Microvascular disease",
+    "Kussmaul breathing",
+    "Jet injector",
+    "Xerostomia",
+    "Yeast infection",
+    "Zinc transporter 8 autoantibody",
   ])
     assert.ok(terms.has(term), `missing diabetes-focused term: ${term}`);
 
@@ -173,6 +205,10 @@ test("glossary content stays diabetes-focused and includes searchable care terms
 
 test("every definition is present and public entries are source-backed", () => {
   assert.ok(seeds.every(({ definition }) => definition.trim().length > 15));
+  assert.ok(
+    seeds.every(({ sourceIds }) => sourceIds.length >= 2),
+    "every glossary definition must be cross-checked against at least two sources",
+  );
   assert.match(helper, /contentStatus: "source-backed"/);
   assert.doesNotMatch(registry, /drafted|archived/);
   for (const source of topicSources) assert.match(source, /SRC-/);
@@ -208,6 +244,12 @@ test("A-to-Z browsing filters predictably and unavailable letters are disabled",
   assert.match(page, /aria-pressed=\{selectedLetter === letter\}/);
 });
 
+test("rare initial letters are enabled only when a verified diabetes term exists", () => {
+  const initials = new Set(seeds.map(({ term }) => term.charAt(0).toUpperCase()));
+  for (const letter of ["J", "X", "Y", "Z"]) assert.ok(initials.has(letter));
+  assert.equal(initials.has("Q"), false);
+});
+
 test("visible entries remain simple and comparisons render only when present", () => {
   assert.match(page, /<dt>/);
   assert.match(page, /<dd>/);
@@ -220,6 +262,8 @@ test("visible entries remain simple and comparisons render only when present", (
 test("no-results state uses exact wording and a deliberate query-free AI action", () => {
   assert.match(page, /Can’t find the word you’re looking for\? Ask Health Decoded AI\./);
   assert.match(page, /<AiTutorTrigger>Ask Health Decoded AI<\/AiTutorTrigger>/);
+  assert.doesNotMatch(page, />\s*Clear search\s*</);
+  assert.match(styles, /\.noResults button\s*\{[^}]*font-weight:\s*400;/);
   assert.match(page, /Your search will not be sent\s+to the AI guide/);
   assert.doesNotMatch(page, /href=.*\/ai|searchParams|URLSearchParams/);
 });

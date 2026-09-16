@@ -30,8 +30,8 @@ test("journey artwork is full-bleed while page content remains centered and read
   assert.match(page, /styles\.journeyContent/);
   assert.match(styles, /\.journeyPage\s*\{[\s\S]*width:\s*100vw/);
   assert.match(styles, /\.journeyContent\s*\{[\s\S]*max-width:/);
-  assert.match(styles, /filter:\s*saturate\(0\.62\) contrast\(0\.9\) brightness\(1\.08\)/);
-  assert.match(styles, /opacity:\s*0\.56/);
+  assert.match(styles, /filter:\s*saturate\(0\.5\) contrast\(0\.86\) brightness\(1\.12\)/);
+  assert.match(styles, /opacity:\s*0\.36/);
   assert.match(styles, /@media \(max-width: 48rem\)[\s\S]*--journey-gutter:/);
   assert.doesNotMatch(styles, /\.journeyContent::before/);
 });

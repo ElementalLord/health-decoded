@@ -58,7 +58,6 @@ test("the activity stays educational and avoids food moralizing", () => {
     /context instead of judgment|does not divide foods|better starting point/iu,
   );
   assert.doesNotMatch(content, /forbidden food|cheat meal|guilt|clean eating/iu);
-  assert.match(experienceSource, /for learning, not for judging yourself or your food choices/);
   assert.doesNotMatch(experienceSource, /localStorage|sessionStorage|fetch\(|supabase|analytics/);
 });
 
@@ -68,9 +67,17 @@ test("the page is accessible, responsive, and uses a fictional code-rendered lab
   assert.match(experienceSource, /aria-pressed/);
   assert.match(experienceSource, /ProgressBar/);
   assert.match(labelSource, /Fictional label for educational practice/);
+  assert.match(stylesSource, /decode-label-background-v1\.png/);
+  assert.match(stylesSource, /decode-label-background-mobile-v1\.png/);
   assert.match(stylesSource, /@media \(max-width: 40rem\)/);
   assert.match(stylesSource, /prefers-reduced-motion: reduce/);
   await access(new URL("../public/decode-the-label/pantry-label-editorial.png", import.meta.url));
+  await access(
+    new URL("../public/decode-the-label/decode-label-background-v1.png", import.meta.url),
+  );
+  await access(
+    new URL("../public/decode-the-label/decode-label-background-mobile-v1.png", import.meta.url),
+  );
 });
 
 test("Resources places Decode the Label beside Myth Check", () => {

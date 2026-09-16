@@ -1,11 +1,71 @@
+:global(.app-page-container):has(.page) {
+  background-color: #f8f3e9;
+  isolation: isolate;
+  max-width: none;
+  position: relative;
+}
+
+:global(.app-page-container):has(.page)::before {
+  background-image: url("/decode-the-label/decode-label-background-v1.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 116% auto;
+  content: "";
+  filter: saturate(0.7) contrast(0.88);
+  height: 100lvh;
+  inset: 0 0 auto;
+  mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 9%,
+    transparent 22%,
+    transparent 78%,
+    #000 91%,
+    #000 100%
+  );
+  opacity: 0.2;
+  pointer-events: none;
+  position: fixed;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 9%,
+    transparent 22%,
+    transparent 78%,
+    #000 91%,
+    #000 100%
+  );
+  z-index: -1;
+}
+
 .page {
   --label-ink: #243e35;
   --label-body: #5e6d67;
   --label-rule: #d8cfc3;
   color: var(--label-ink);
+  isolation: isolate;
   margin: 0 auto;
   max-width: 72rem;
   padding: 1.5rem 0 5rem;
+  position: relative;
+}
+
+.page::before {
+  background: radial-gradient(
+    ellipse at center,
+    rgb(248 243 233 / 0.92) 0%,
+    rgb(248 243 233 / 0.76) 58%,
+    transparent 88%
+  );
+  content: "";
+  inset: -1.5rem -3rem;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.introPage {
+  padding-bottom: 0;
 }
 
 .introHero {
@@ -91,61 +151,6 @@
   color: var(--label-body);
   line-height: 1.7;
   max-width: 30ch;
-}
-
-.introLower {
-  display: grid;
-  gap: 3rem;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  padding: 3rem 0;
-}
-
-.focusFirst,
-.calmReminder {
-  border-block: 1px solid var(--label-rule);
-  padding: 1.5rem 0;
-}
-
-.focusFirst h2 {
-  font-family: var(--font-serif);
-  font-size: 1.65rem;
-  font-weight: 540;
-  margin-top: 0.45rem;
-}
-
-.focusFirst ol {
-  counter-reset: focus-item;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  list-style: none;
-  margin-top: 1.25rem;
-}
-
-.focusFirst li {
-  border-top: 1px solid var(--label-rule);
-  counter-increment: focus-item;
-  font-weight: 650;
-  padding: 0.85rem 0;
-}
-
-.focusFirst li::before {
-  color: var(--accent-warm);
-  content: "0" counter(focus-item) "  ";
-  font-family: var(--font-serif);
-  font-weight: 500;
-}
-
-.calmReminder {
-  align-content: center;
-  display: grid;
-}
-
-.calmReminder > p:not(.editorial-eyebrow) {
-  color: var(--label-body);
-  font-size: 1.05rem;
-  line-height: 1.7;
-  margin-top: 0.75rem;
-  max-width: 42rem;
 }
 
 .exerciseHeader {
@@ -530,20 +535,39 @@
 }
 
 @media (max-width: 40rem) {
+  :global(.app-page-container):has(.page)::before {
+    background-image: url("/decode-the-label/decode-label-background-mobile-v1.png");
+    background-size: 132% auto;
+    mask-image: linear-gradient(
+      to right,
+      #000 0%,
+      #000 5%,
+      transparent 20%,
+      transparent 80%,
+      #000 95%,
+      #000 100%
+    );
+    opacity: 0.16;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      #000 0%,
+      #000 5%,
+      transparent 20%,
+      transparent 80%,
+      #000 95%,
+      #000 100%
+    );
+  }
+
   .page {
     padding-top: 0.5rem;
   }
 
-  .introLower,
+  .page::before {
+    inset-inline: -1rem;
+  }
+
   .comparisonLabels {
-    grid-template-columns: 1fr;
-  }
-
-  .introLower {
-    gap: 1.5rem;
-  }
-
-  .focusFirst ol {
     grid-template-columns: 1fr;
   }
 

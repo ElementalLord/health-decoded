@@ -1,5 +1,7 @@
 // @ts-expect-error -- Node's built-in TypeScript test runner requires explicit extensions.
 import { normalizeAiQuery } from "./query-normalizer.ts";
+// @ts-expect-error -- Node's TypeScript test runner needs explicit extensions.
+import { diabetesAnswerFor } from "./diabetes-knowledge.ts";
 
 export type ReviewedSuggestedAnswer = {
   readonly answer: string;
@@ -170,5 +172,5 @@ const answerByQuestion = new Map(
 );
 
 export function reviewedSuggestedAnswerFor(question: string): ReviewedSuggestedAnswer | null {
-  return answerByQuestion.get(reviewedAnswerKey(question)) ?? null;
+  return answerByQuestion.get(reviewedAnswerKey(question)) ?? diabetesAnswerFor(question);
 }

@@ -23,7 +23,7 @@ export function createEntries(
       slug,
       term,
       definition,
-      sourceIds,
+      sourceIds: options?.sourceIds ?? sourceIds,
       contentStatus: "source-backed" as const,
       topic,
       ...(options?.abbreviation ? { abbreviation: options.abbreviation } : {}),

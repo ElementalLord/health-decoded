@@ -146,5 +146,75 @@ export const urgentAndLongTermTerms = createEntries(
       "Foot self-check",
       "Looking at the feet regularly for cuts, sores, redness, swelling, or other changes to share with a care team.",
     ],
+    [
+      "Atherosclerosis",
+      "A disease in which plaque builds up inside arteries, narrowing them and reducing blood flow.",
+      { sourceIds: ["SRC-NHLBI-ATHEROSCLEROSIS", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Coronary artery disease",
+      "A form of heart disease caused by plaque buildup in the arteries that supply the heart muscle.",
+      {
+        abbreviation: "CAD",
+        aliases: ["Coronary heart disease"],
+        sourceIds: ["SRC-NHLBI-ATHEROSCLEROSIS", "SRC-ADA-TERMS"],
+      },
+    ],
+    [
+      "Ketonuria",
+      "Ketones detected in urine, which can be a warning sign of diabetic ketoacidosis in someone with diabetes.",
+      { sourceIds: ["SRC-ADA-KETONES", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Ketosis",
+      "A buildup of ketones produced when the body uses fat for energy; in diabetes, high ketone levels can progress to diabetic ketoacidosis.",
+      { sourceIds: ["SRC-ADA-KETONES", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Microvascular disease",
+      "Damage to small blood vessels that can contribute to diabetes-related eye, kidney, and nerve complications.",
+      { sourceIds: ["SRC-NIDDK-CARDIOVASCULAR-RISK", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Macrovascular disease",
+      "Disease of large blood vessels that can contribute to heart attack, stroke, or peripheral artery disease in people with diabetes.",
+      { sourceIds: ["SRC-NIDDK-CARDIOVASCULAR-RISK", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Mononeuropathy",
+      "Damage to a single nerve; it is one of the less common patterns of diabetes-related neuropathy.",
+      { sourceIds: ["SRC-NIDDK-NEUROPATHY", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Diabetic amyotrophy",
+      "A rare type of diabetes-related nerve damage that can cause pain followed by weakness and muscle loss, usually in the hip, buttock, or thigh.",
+      {
+        aliases: ["Diabetic proximal neuropathy"],
+        sourceIds: ["SRC-NIDDK-PROXIMAL-NEUROPATHY", "SRC-NIDDK-NEUROPATHY"],
+      },
+    ],
+    [
+      "Kussmaul breathing",
+      "Deep, labored breathing that can occur as the body responds to severe acidosis during diabetic ketoacidosis.",
+      { aliases: ["Kussmaul respiration"], sourceIds: ["SRC-NCBI-DKA", "SRC-ADA-TERMS"] },
+    ],
+    [
+      "Xerostomia",
+      "Dry mouth caused by too little saliva; diabetes is one possible cause, and persistent dryness can raise the risk of tooth decay and oral infection.",
+      {
+        aliases: ["Dry mouth"],
+        sourceIds: ["SRC-NIDCR-DIABETES-ORAL-HEALTH", "SRC-NIDCR-DRY-MOUTH"],
+      },
+    ],
+    [
+      "Yeast infection",
+      "An infection caused by overgrowth of Candida fungus; diabetes, particularly when glucose is high, can increase the risk.",
+      { aliases: ["Candidiasis"], sourceIds: ["SRC-CDC-DIABETES-SKIN", "SRC-CDC-CANDIDIASIS"] },
+    ],
+    [
+      "Zinc transporter 8 autoantibody",
+      "A diabetes-related autoantibody measured in blood as part of testing for the autoimmune process associated with Type 1 diabetes.",
+      { abbreviation: "ZnT8A", sourceIds: ["SRC-NIDDK-T1D-AUTOANTIBODIES", "SRC-NIDDK-T1D-RISK"] },
+    ],
   ],
 );

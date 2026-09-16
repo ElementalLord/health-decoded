@@ -11,10 +11,11 @@ import {
 } from "../features/explain-it-back/services/explain-it-back-evaluator.ts";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const [route, component, evaluator, server, apiRoute, resources, styles, provider] =
+const [route, component, conceptImage, evaluator, server, apiRoute, resources, styles, provider] =
   await Promise.all([
     read("app/(app)/explain-it-back/page.tsx"),
     read("features/explain-it-back/components/explain-it-back-experience.tsx"),
+    read("features/explain-it-back/components/concept-image.tsx"),
     read("features/explain-it-back/services/explain-it-back-evaluator.ts"),
     read("features/explain-it-back/services/explain-it-back.server.ts"),
     read("app/api/explain-it-back/evaluate/route.ts"),
@@ -242,5 +243,31 @@ test("the route, Resources entry, and accessible responsive interaction are pres
   assert.match(component, /event\.metaKey \|\| event\.ctrlKey/);
   assert.match(styles, /@media \(max-width: 42rem\)/);
   assert.match(styles, /prefers-reduced-motion: reduce/);
+  assert.match(styles, /explain-it-back-background-v1\.webp/);
+  assert.match(styles, /background-size:\s*cover/);
+  assert.match(styles, /:has\(\.page\)::before\s*\{[^}]*height:\s*100lvh[^}]*position:\s*fixed/);
+  assert.match(styles, /\.inlineHint\s*\{[^}]*min-height:\s*1\.5em/);
+  assert.match(component, /<p aria-live="polite" className=\{styles\.inlineHint\}>/);
+  assert.match(styles, /:global\(\.app-page-container\):has\(\.page\)\s*\{[^}]*max-width:\s*none/);
+  assert.match(styles, /\.intro h1:focus,[\s\S]*\.challenge h1:focus\s*\{\s*outline:\s*none/);
   assert.doesNotMatch(styles, /overflow-x:\s*auto|gradient|border-radius:\s*999/i);
+});
+
+test("every concept picker tile has a dedicated static watercolor image", () => {
+  assert.match(component, /<ConceptImage id=\{item\.id\}/);
+  assert.match(component, /className=\{styles\.conceptCopy\}/);
+  assert.match(component, /styles\.browserPage/);
+  for (const challenge of explainItBackChallenges) {
+    assert.ok(conceptImage.includes(challenge.id), challenge.id);
+    assert.ok(conceptImage.includes(`${challenge.id}-v2.png`), `${challenge.id} image`);
+  }
+  assert.match(conceptImage, /import Image from "next\/image"/);
+  assert.doesNotMatch(conceptImage, /animate|useEffect|requestAnimationFrame|LessonMotionScene/i);
+  assert.match(styles, /\.conceptGrid[\s\S]*grid-template-columns:\s*repeat\(2/);
+  assert.match(styles, /\.conceptGroup button[\s\S]*grid-template-columns:/);
+  assert.match(styles, /@media \(min-width: 56\.01rem\)[\s\S]*\.browserPage \.browserHeader/);
+  assert.match(styles, /\.browserPage \.conceptGroup button[\s\S]*min-height:\s*5\.05rem/);
+  assert.match(styles, /\.browserHeader h1:focus[\s\S]*outline:\s*none/);
+  assert.match(styles, /\.conceptGroup h2::before[\s\S]*content:\s*"✦"/);
+  assert.doesNotMatch(styles, /transition:\s*all/);
 });

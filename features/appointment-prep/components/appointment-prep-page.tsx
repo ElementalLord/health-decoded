@@ -1,6 +1,15 @@
 "use client";
 
-import { ArrowDown, ArrowLeft, ArrowUp, Clipboard, Plus, Printer, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  Clipboard,
+  Plus,
+  Printer,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 
@@ -29,6 +38,7 @@ import { appointmentQuestionLibrary } from "@/features/appointment-prep/content/
 import {
   buildAppointmentPrepSummary,
   formatSummaryForClipboard,
+  formatSummaryForClipboardHtml,
   PRINT_DOCUMENT_TITLE,
 } from "@/features/appointment-prep/lib/appointment-prep-summary";
 import {
@@ -46,11 +56,6 @@ import type {
 import styles from "@/features/appointment-prep/styles/appointment-prep.module.css";
 
 const sectionIntro: Record<WorkspaceSection, { eyebrow: string; title: string; copy: string }> = {
-  overview: {
-    eyebrow: "Prepare for your appointment",
-    title: "Your preparation folder",
-    copy: "Move through the sections in any order. Every field is optional, and you can return to revise anything.",
-  },
   basics: {
     eyebrow: "Optional details",
     title: "Appointment basics",
@@ -216,6 +221,7 @@ export function AppointmentPrepPage() {
   const milestoneSignals = useRef(new Set<string>());
   const summary = useMemo(() => buildAppointmentPrepSummary(state), [state]);
   const summaryText = useMemo(() => formatSummaryForClipboard(summary), [summary]);
+  const summaryHtml = useMemo(() => formatSummaryForClipboardHtml(summary), [summary]);
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -289,7 +295,21 @@ export function AppointmentPrepPage() {
   async function copySummary() {
     setCopyFailed(false);
     try {
-      await navigator.clipboard.writeText(summaryText);
+      let copiedRichText = false;
+      if (navigator.clipboard.write && typeof ClipboardItem !== "undefined") {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              "text/html": new Blob([summaryHtml], { type: "text/html" }),
+              "text/plain": new Blob([summaryText], { type: "text/plain" }),
+            }),
+          ]);
+          copiedRichText = true;
+        } catch {
+          // Some browsers expose rich clipboard APIs but allow plain text only.
+        }
+      }
+      if (!copiedRichText) await navigator.clipboard.writeText(summaryText);
       void recognizeMilestone({
         event: "appointment_summary_exported",
         hasSummary: Boolean(summary.sections.length),
@@ -353,10 +373,7 @@ export function AppointmentPrepPage() {
             Start preparing
           </Button>
           <Link className={styles.returnLink} href="/journey">
-            <ArrowLeft aria-hidden="true" className="size-4" /> Return to your journey
-          </Link>
-          <Link className={styles.urgentLink} href="/urgent-help">
-            View urgent help
+            <ArrowLeft aria-hidden="true" className="size-4" /> Back to your journey
           </Link>
         </div>
         <p aria-live="polite" className="sr-only">
@@ -366,10 +383,17 @@ export function AppointmentPrepPage() {
     );
 
   const intro = sectionIntro[state.currentSection];
+  const currentSectionIndex = sectionNavigation.findIndex(
+    (section) => section.key === state.currentSection,
+  );
+  const previousSection = sectionNavigation[currentSectionIndex - 1];
+  const nextSection = sectionNavigation[currentSectionIndex + 1];
   return (
     <div className={styles.workspace} aria-labelledby="workspace-heading">
       <header className={styles.workspaceHeader}>
-        <p className="editorial-eyebrow">{intro.eyebrow}</p>
+        <p className="editorial-eyebrow">
+          Step {currentSectionIndex + 1} of {sectionNavigation.length} · {intro.eyebrow}
+        </p>
         <h1 id="workspace-heading" ref={headingRef} tabIndex={-1}>
           {intro.title}
         </h1>
@@ -397,57 +421,93 @@ export function AppointmentPrepPage() {
             ))}
           </ol>
         </nav>
-        <div className={styles.paper}>
-          {state.currentSection === "overview" ? <Overview onNavigate={navigate} /> : null}
-          {state.currentSection === "basics" ? <Basics state={state} replace={replace} /> : null}
-          {state.currentSection === "priorities" ? (
-            <Priorities addPriority={addPriority} replace={replace} state={state} />
-          ) : null}
-          {state.currentSection === "clarify" ? (
-            <Clarify addFocusRef={addFocusRef} promote={promote} replace={replace} state={state} />
-          ) : null}
-          {state.currentSection === "changes" ? (
-            <Changes addFocusRef={addFocusRef} promote={promote} replace={replace} state={state} />
-          ) : null}
-          {state.currentSection === "understand" ? (
-            <Understanding
-              addFocusRef={addFocusRef}
-              promote={promote}
-              replace={replace}
-              state={state}
-            />
-          ) : null}
-          {state.currentSection === "ask" ? (
-            <Questions
-              addFocusRef={addFocusRef}
-              promote={promote}
-              replace={replace}
-              state={state}
-            />
-          ) : null}
-          {state.currentSection === "bring" ? <Documents replace={replace} state={state} /> : null}
-          {state.currentSection === "access" ? <Access replace={replace} state={state} /> : null}
-          {state.currentSection === "support" ? <Support replace={replace} state={state} /> : null}
-          {state.currentSection === "review" ? (
-            <Summary
-              copyFailed={copyFailed}
-              onCopy={copySummary}
-              onEdit={navigate}
-              onPrint={printSummary}
-              summary={summary}
-              summaryText={summaryText}
-            />
-          ) : null}
+        <div className={styles.workspaceContent}>
+          <div className={styles.paper}>
+            {state.currentSection === "basics" ? <Basics state={state} replace={replace} /> : null}
+            {state.currentSection === "priorities" ? (
+              <Priorities addPriority={addPriority} replace={replace} state={state} />
+            ) : null}
+            {state.currentSection === "clarify" ? (
+              <Clarify
+                addFocusRef={addFocusRef}
+                promote={promote}
+                replace={replace}
+                state={state}
+              />
+            ) : null}
+            {state.currentSection === "changes" ? (
+              <Changes
+                addFocusRef={addFocusRef}
+                promote={promote}
+                replace={replace}
+                state={state}
+              />
+            ) : null}
+            {state.currentSection === "understand" ? (
+              <Understanding
+                addFocusRef={addFocusRef}
+                promote={promote}
+                replace={replace}
+                state={state}
+              />
+            ) : null}
+            {state.currentSection === "ask" ? (
+              <Questions
+                addFocusRef={addFocusRef}
+                promote={promote}
+                replace={replace}
+                state={state}
+              />
+            ) : null}
+            {state.currentSection === "bring" ? (
+              <Documents replace={replace} state={state} />
+            ) : null}
+            {state.currentSection === "access" ? <Access replace={replace} state={state} /> : null}
+            {state.currentSection === "support" ? (
+              <Support replace={replace} state={state} />
+            ) : null}
+            {state.currentSection === "review" ? (
+              <Summary
+                copyFailed={copyFailed}
+                onCopy={copySummary}
+                onEdit={navigate}
+                onPrint={printSummary}
+                summary={summary}
+                summaryText={summaryText}
+              />
+            ) : null}
+          </div>
+          <nav aria-label="Move between preparation steps" className={styles.stepActions}>
+            <div>
+              {previousSection ? (
+                <Button
+                  fullWidth={false}
+                  onClick={() => navigate(previousSection.key)}
+                  variant="secondary"
+                >
+                  <ArrowLeft aria-hidden="true" className="size-4" /> Previous:{" "}
+                  {previousSection.short}
+                </Button>
+              ) : null}
+            </div>
+            <div>
+              {nextSection ? (
+                <Button fullWidth={false} onClick={() => navigate(nextSection.key)}>
+                  {nextSection.key === "review"
+                    ? "Review summary"
+                    : `Continue: ${nextSection.short}`}
+                  <ArrowRight aria-hidden="true" className="size-4" />
+                </Button>
+              ) : null}
+            </div>
+          </nav>
         </div>
       </div>
       <footer className={styles.workspaceFooter}>
-        <button onClick={() => navigate("overview")} type="button">
-          Workspace overview
-        </button>
         <button onClick={() => setClearOpen(true)} type="button">
           Clear this workspace
         </button>
-        <Link href="/journey">Return to your journey</Link>
+        <Link href="/journey">Back to your journey</Link>
       </footer>
       <Modal
         description={appointmentPrepNotices.clear}
@@ -465,41 +525,6 @@ export function AppointmentPrepPage() {
         </div>
       </Modal>
     </div>
-  );
-}
-
-function Overview({ onNavigate }: { onNavigate: (section: WorkspaceSection) => void }) {
-  return (
-    <section aria-labelledby="overview-title">
-      <h2 className={styles.sectionTitle} id="overview-title">
-        A place for the details you choose
-      </h2>
-      <p className={styles.sectionLead}>
-        Begin with the basics or go directly to any area. Nothing is scored, saved to your account,
-        or sent to the AI guide.
-      </p>
-      <div className={styles.fiveAreas}>
-        {sectionNavigation.slice(2, 7).map((section, index) => (
-          <button key={section.id} onClick={() => onNavigate(section.key)} type="button">
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <strong>{section.short}</strong>
-            <small>{section.label}</small>
-          </button>
-        ))}
-      </div>
-      <div className={styles.overviewLinks}>
-        {sectionNavigation
-          .filter(
-            (section) =>
-              !["clarify", "changes", "understand", "ask", "bring"].includes(section.key),
-          )
-          .map((section) => (
-            <button key={section.id} onClick={() => onNavigate(section.key)} type="button">
-              {section.label}
-            </button>
-          ))}
-      </div>
-    </section>
   );
 }
 
@@ -797,8 +822,7 @@ function Changes({ state, replace, promote, addFocusRef }: RepeaterProps) {
     <section aria-labelledby="changes-title">
       <SectionAdd id="changes-title" label="Add a change" onAdd={add} title="Changes to mention" />
       <p className={styles.neutralReminder}>
-        Do not delay urgent or emergency help merely to finish this workspace.{" "}
-        <Link href="/urgent-help">View urgent help</Link>.
+        Do not delay urgent or emergency help merely to finish this workspace.
       </p>
       {state.changeItems.length ? (
         <ol className={styles.itemList}>
@@ -1300,6 +1324,11 @@ function Summary({
 }) {
   return (
     <section className={styles.summary} aria-labelledby="summary-title">
+      <header className={styles.printHeader}>
+        <p>Health Decoded · Appointment planner</p>
+        <h2>Appointment preparation</h2>
+        <span>Personal preparation sheet</span>
+      </header>
       <div className={styles.summaryActions}>
         <Button disabled={!summary.sections.length} fullWidth={false} onClick={onPrint}>
           <Printer aria-hidden="true" className="size-4" /> Print
@@ -1320,7 +1349,11 @@ function Summary({
       <h2 id="summary-title">Appointment preparation</h2>
       {summary.sections.length ? (
         summary.sections.map((section) => (
-          <section className={styles.summarySection} key={section.id}>
+          <section
+            className={styles.summarySection}
+            data-summary-section={section.id}
+            key={section.id}
+          >
             <div>
               <h3>{section.title}</h3>
               <button onClick={() => onEdit(section.id as WorkspaceSection)} type="button">
@@ -1342,7 +1375,7 @@ function Summary({
         <div aria-label="Blank writing area for notes" />
       </section>
       <div className={styles.printBoundaries}>
-        <p>{appointmentPrepNotices.privacy}</p>
+        <p>Private preparation sheet · Review before sharing.</p>
         <p>{appointmentPrepNotices.medical}</p>
       </div>
       {copyFailed ? (

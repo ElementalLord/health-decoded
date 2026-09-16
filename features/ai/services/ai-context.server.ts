@@ -9,6 +9,10 @@ import { selectSuggestedQuestions } from "@/features/ai/data/suggested-questions
 import type { TrustedAiPromptContext } from "@/features/ai/prompts/prompt-builder";
 import type { AiContextMetadata } from "@/features/ai/types/ai";
 import { dayTwoGlossary } from "@/features/glossary/data/day-two-glossary";
+import { medicalGlossary } from "@/features/glossary/content/medical-glossary";
+import { glossarySources } from "@/features/glossary/content/glossary-sources";
+import { glossaryKnowledgeFor } from "@/features/ai/services/ai-knowledge";
+import { diabetesKnowledgeFor } from "@/features/ai/data/diabetes-knowledge";
 
 type ContextResult =
   | {
@@ -52,7 +56,11 @@ export function loadTrustedAiContext({
   const priorUserMessages = (messages ?? [])
     .filter(({ role }) => role === "user")
     .map(({ content }) => content);
-  const credibleSources = credibleSourcesForConversation({ message, priorUserMessages });
+  const credibleSources = [
+    ...diabetesKnowledgeFor(message, priorUserMessages.at(-1)),
+    ...glossaryKnowledgeFor(message, medicalGlossary, glossarySources, priorUserMessages.at(-1)),
+    ...credibleSourcesForConversation({ message, priorUserMessages }),
+  ];
   const baseContext: TrustedAiPromptContext = {
     credibleSources,
     glossary: glossaryFor(message),

@@ -31,7 +31,7 @@ export const initialAppointmentPrepState: AppointmentPrepState = {
   ),
   accessNeeds: [],
   supportPerson: { choice: "", roles: [] },
-  currentSection: "overview",
+  currentSection: "basics",
   summaryViewed: false,
 };
 

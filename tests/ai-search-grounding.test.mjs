@@ -8,6 +8,57 @@ import {
   parseAndValidateAiSearchGroundedOutput,
 } from "../features/ai/services/ai-search-grounding.ts";
 
+test("answers address the requested meaning, reason, or comparison rather than a shared keyword", () => {
+  for (const [question, wrong, correct] of [
+    [
+      "what does it mean when i have diabetes",
+      "An A1C test is used to diagnose diabetes.",
+      "Diabetes means your body cannot keep blood glucose in a healthy range because it does not make enough insulin or use it effectively.",
+    ],
+    [
+      "What is type 2 diabetes?",
+      "Type 2 diabetes is diagnosed with glucose tests.",
+      "Type 2 diabetes means your body responds less effectively to insulin and may not make enough to meet its needs.",
+    ],
+    [
+      "Why does exercise help blood sugar?",
+      "Exercise is part of a diabetes care plan.",
+      "Working muscles use glucose during exercise, and activity can increase insulin sensitivity.",
+    ],
+    [
+      "How does metformin work?",
+      "Metformin is prescribed for type 2 diabetes.",
+      "Metformin reduces the glucose released by the liver and improves the body's response to insulin.",
+    ],
+    [
+      "Why can stress raise glucose?",
+      "Stress is common when managing diabetes.",
+      "Stress hormones can signal the liver to release glucose and reduce insulin sensitivity.",
+    ],
+    [
+      "Compare insulin and metformin",
+      "Insulin helps glucose enter cells.",
+      "Insulin supplies the hormone that helps glucose enter cells; metformin mainly reduces glucose production in the liver.",
+    ],
+    [
+      "What is the difference between A1C and a glucose meter?",
+      "A glucose meter measures glucose at one moment.",
+      "A1C reflects average glucose over roughly three months, while a glucose meter measures glucose at the time of the test.",
+    ],
+  ]) {
+    assert.equal(
+      isAiAnswerRelevant(wrong, { question }),
+      false,
+      `Wrong answer accepted: ${question}`,
+    );
+    assert.equal(
+      isAiAnswerRelevant(correct, { question }),
+      true,
+      `Useful paraphrase rejected: ${question}`,
+    );
+  }
+});
+
 test("dynamic discovery uses source restrictions instead of a fixed source allowlist", () => {
   for (const href of [
     "https://new-public-health-agency.example/clinical-guideline",

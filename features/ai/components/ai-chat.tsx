@@ -20,6 +20,7 @@ import {
 } from "@/features/ai/constants/ai-limits";
 import { aiChatStreamEventSchema } from "@/features/ai/schemas/ai-chat.schema";
 import type { AiCredibleSource } from "@/features/ai/types/ai";
+import { uniqueCitations } from "@/features/ai/data/unique-citations";
 import { cn } from "@/lib/utils";
 
 type MessageRole = "assistant" | "user";
@@ -241,7 +242,7 @@ export function AiChat({
         entry.id === assistantId
           ? {
               ...entry,
-              credibleSources: context.credibleSources,
+              credibleSources: uniqueCitations(context.credibleSources),
               suggestedQuestions: context.suggestedQuestions,
             }
           : entry,
@@ -365,6 +366,10 @@ export function AiChat({
           }
         });
 
+        if (receivedDone) {
+          void reader.cancel().catch(() => {});
+          break;
+        }
         if (streamFailed) {
           await reader.cancel();
           break;
@@ -570,7 +575,8 @@ export function AiChat({
         aria-label="AI tutor conversation"
         aria-busy={isStreaming}
         className={cn(
-          "order-2 min-h-0 flex-1 overflow-y-auto",
+          "order-2 min-h-0 overflow-y-auto",
+          isDrawer && messages.length === 0 ? "mt-auto shrink-0" : "flex-1",
           isDrawer ? "space-y-8 py-6 pr-1" : "space-y-7 py-6 sm:space-y-9",
         )}
         ref={conversationRef}
@@ -617,7 +623,7 @@ export function AiChat({
                               These links come from the search citations attached to this response.
                             </p>
                             <ul className="space-y-3">
-                              {entry.credibleSources.map((source, sourceIndex) => (
+                              {uniqueCitations(entry.credibleSources).map((source, sourceIndex) => (
                                 <li className="text-sm leading-5" key={source.href}>
                                   <span className="mr-1.5 font-semibold text-muted-foreground">
                                     {sourceIndex + 1}.
@@ -711,7 +717,7 @@ export function AiChat({
           <div className="pt-1">
             <section
               aria-labelledby={suggestedQuestionsTitleId}
-              className={cn("border-y border-border", isDrawer ? "py-6" : "py-6 sm:py-7")}
+              className={cn("border-y border-border", isDrawer ? "py-3" : "py-4 sm:py-5")}
             >
               <div
                 className={cn(
@@ -746,7 +752,7 @@ export function AiChat({
                 aria-live="polite"
                 className={cn(
                   "grid border-t border-border",
-                  isDrawer ? "mt-6" : "mt-5",
+                  isDrawer ? "mt-2" : "mt-3",
                   !isDrawer &&
                     "sm:grid-cols-3 sm:divide-x sm:divide-border sm:[&>li:first-child>button]:pl-0 sm:[&>li:last-child>button]:pr-0",
                 )}
@@ -761,10 +767,10 @@ export function AiChat({
                   >
                     <button
                       className={cn(
-                        "group flex h-full w-full items-center justify-between gap-4 py-4 text-left font-serif-display font-medium text-foreground transition-[color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:text-primary active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        "group flex h-full w-full items-center justify-between gap-3 text-left font-medium text-foreground transition-[color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:text-primary active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                         isDrawer
-                          ? "min-h-16 py-5 text-base leading-7"
-                          : "min-h-20 text-lg leading-6 sm:px-5",
+                          ? "min-h-11 py-2 font-sans text-sm leading-5"
+                          : "min-h-14 py-3 font-sans text-sm leading-5 sm:px-4",
                       )}
                       onClick={() => void ask(prompt)}
                       type="button"

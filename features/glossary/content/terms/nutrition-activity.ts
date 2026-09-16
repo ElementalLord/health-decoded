@@ -160,5 +160,25 @@ export const nutritionAndActivityTerms = createEntries(
       "Post-meal walk",
       "A walk after eating. Some people include this activity in a diabetes routine after discussing what is safe for them with their care team.",
     ],
+    [
+      "Balance activity",
+      "Movement that practices stability and helps reduce the chance of falling while standing or moving.",
+      { sourceIds: ["SRC-CDC-PLAIN", "SRC-CDC-ACTIVITY"] },
+    ],
+    [
+      "Flexibility activity",
+      "Movement that helps a joint move through its range of motion, such as stretching, yoga, or tai chi.",
+      { aliases: ["Flexibility exercise"], sourceIds: ["SRC-CDC-PLAIN", "SRC-CDC-ACTIVITY"] },
+    ],
+    [
+      "Moderate-intensity activity",
+      "Aerobic activity that raises heart rate and breathing while usually still allowing a person to talk but not sing.",
+      { sourceIds: ["SRC-CDC-ACTIVITY", "SRC-CDC-PLAIN"] },
+    ],
+    [
+      "Vigorous-intensity activity",
+      "Aerobic activity that causes hard, fast breathing and usually allows only a few words before pausing for breath.",
+      { sourceIds: ["SRC-CDC-ACTIVITY", "SRC-CDC-PLAIN"] },
+    ],
   ],
 );

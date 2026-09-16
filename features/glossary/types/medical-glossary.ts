@@ -31,6 +31,8 @@ export type GlossarySeed = readonly [
     readonly aliases?: readonly string[];
     readonly misspellings?: readonly string[];
     readonly confused?: CommonlyConfused;
+    /** Use entry-specific sources when a definition needs narrower provenance. */
+    readonly sourceIds?: readonly string[];
   },
 ];
 
