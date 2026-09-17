@@ -270,6 +270,7 @@ export function ProfileContent({
         <div aria-hidden="true" className={styles.heroIllustration}>
           <Image
             alt=""
+            aria-hidden="true"
             className={styles.heroImage}
             height={1024}
             priority
@@ -327,6 +328,7 @@ export function ProfileContent({
             <figure className={cn(styles.settingsArtworkTile, styles.settingsArtworkDna)}>
               <Image
                 alt=""
+                aria-hidden="true"
                 className={styles.settingsArtworkImage}
                 height={887}
                 sizes="(max-width: 960px) 65vw, 26vw"
@@ -337,6 +339,7 @@ export function ProfileContent({
             <figure className={cn(styles.settingsArtworkTile, styles.settingsArtworkSugarShield)}>
               <Image
                 alt=""
+                aria-hidden="true"
                 className={styles.settingsArtworkImage}
                 height={1254}
                 sizes="(max-width: 960px) 30vw, 13vw"

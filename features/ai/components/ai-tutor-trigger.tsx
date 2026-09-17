@@ -26,6 +26,7 @@ function FloatingAiTutorTrigger() {
         <span className="relative size-12 shrink-0 overflow-hidden rounded-full bg-[#eee2d3] ring-1 ring-[#d5c3b2]">
           <Image
             alt=""
+            aria-hidden="true"
             className="object-contain object-bottom transition-transform duration-[var(--duration-fast)] ease-[var(--ease-standard)] group-hover:scale-[1.04]"
             fill
             sizes="48px"
