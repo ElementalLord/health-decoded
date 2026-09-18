@@ -4,14 +4,23 @@ import {
   ArrowRight,
   BookOpen,
   Check,
+  ChartNoAxesColumnIncreasing,
   HeartHandshake,
-  MessageCircleQuestion,
   NotebookPen,
+  Search,
   ScanText,
+  Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useActionState, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 
 import { Button } from "@/components/ui/button";
 import { completeOnboardingAction } from "@/features/onboarding/actions/onboarding.actions";
@@ -24,29 +33,36 @@ import { cn } from "@/lib/utils";
 
 import styles from "./onboarding-flow.module.css";
 
-const stepNames = ["Welcome", "What you can do", "Starting point", "Your next step"] as const;
+const stepNames = ["Welcome", "Explore", "Choose a focus", "Ready"] as const;
 
 const capabilities = [
   {
-    description: "Short lessons explain the foundations step by step.",
+    description:
+      "Follow the 14-day Journey, revisit ideas at the right time, and see your progress grow.",
+    features: ["14 short lessons", "Spaced review", "Progress and milestones"],
     icon: BookOpen,
-    title: "Learn",
+    title: "Learn step by step",
   },
   {
     description:
-      "Use the glossary, Myth Check, Explain It Back, and practical activities when something is confusing.",
-    icon: ScanText,
-    title: "Understand",
+      "Try Myth Check, Explain It Back, Decode the Label, and stories that turn information into everyday choices.",
+    features: ["Myth Check", "Explain It Back", "Decode the Label", "Interactive stories"],
+    icon: Sparkles,
+    title: "Practice the ideas",
   },
   {
-    description: "Organize questions and information for a future appointment.",
-    icon: NotebookPen,
-    title: "Prepare",
+    description:
+      "Look up unfamiliar terms, browse carefully selected reading, or search across Health Decoded.",
+    features: ["Medical glossary", "Curated resources", "Search"],
+    icon: Search,
+    title: "Find clear information",
   },
   {
-    description: "Use the AI Tutor for source-backed explanations about what you're learning.",
-    icon: MessageCircleQuestion,
-    title: "Ask",
+    description:
+      "Prepare for appointments, ask the AI guide an educational question, or learn how to support someone with care.",
+    features: ["Appointment preparation", "AI guide", "Caregiver path"],
+    icon: HeartHandshake,
+    title: "Prepare and support",
   },
 ] as const;
 
@@ -84,7 +100,15 @@ const intentions: Array<{
 
 const results: Record<
   OnboardingIntent,
-  { action: string; copy: string; destination: string; eyebrow: string; heading: string }
+  {
+    action: string;
+    copy: string;
+    destination: string;
+    eyebrow: string;
+    heading: string;
+    highlights: readonly string[];
+    icon: typeof BookOpen;
+  }
 > = {
   "recently-diagnosed": {
     action: "Start the first lesson",
@@ -92,27 +116,39 @@ const results: Record<
     destination: "/lessons/1",
     eyebrow: "Foundation lessons",
     heading: "Start with the foundation.",
+    highlights: ["A short first lesson", "Plain language", "Your progress saves automatically"],
+    icon: BookOpen,
   },
   "learn-basics": {
-    action: "Start learning",
-    copy: "Start with the core lessons, then use tools like Myth Check and Explain It Back when you want to test your understanding.",
+    action: "Open my Journey",
+    copy: "Your Journey keeps the next useful lesson or review in one place, with practice tools nearby whenever you want to test an idea.",
     destination: "/journey",
     eyebrow: "Your learning path",
     heading: "Build the big picture first.",
+    highlights: ["A clear next step", "Practice between lessons", "Progress and milestones"],
+    icon: ChartNoAxesColumnIncreasing,
   },
   "support-someone": {
     action: "Explore support guidance",
-    copy: "Health Decoded can help you understand how to be useful without taking over someone else's diabetes care.",
+    copy: "The Caregiver path uses realistic situations to help you offer useful support without taking over someone else's diabetes care.",
     destination: "/caregiver",
     eyebrow: "Support guidance",
     heading: "Start with support that respects their choices.",
+    highlights: ["Five guided modules", "Everyday scenarios", "Boundaries and shared plans"],
+    icon: HeartHandshake,
   },
   "prepare-appointment": {
     action: "Prepare for an appointment",
-    copy: "Use Appointment Preparation to collect questions, changes, and things you want to bring up with a health professional.",
+    copy: "Use the private, session-only workspace to collect questions, changes, and topics you want to discuss with a health professional.",
     destination: "/appointment-prep",
     eyebrow: "Appointment preparation",
     heading: "Get your thoughts organized.",
+    highlights: [
+      "Build a question list",
+      "Organize conversation topics",
+      "Print or save a summary",
+    ],
+    icon: NotebookPen,
   },
 };
 
@@ -124,6 +160,7 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [intent, setIntent] = useState<OnboardingIntent | null>(null);
+  const [activeCapability, setActiveCapability] = useState(0);
   const [state, action, pending] = useActionState(
     completeOnboardingAction,
     initialOnboardingFormState,
@@ -139,9 +176,31 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
   }, [step]);
 
   const result = intent ? results[intent] : null;
+  const capability = capabilities[activeCapability] ?? capabilities[0];
 
   function moveTo(nextStep: number) {
     setStep(Math.max(0, Math.min(nextStep, stepNames.length - 1)));
+  }
+
+  function moveCapabilityFocus(event: KeyboardEvent<HTMLButtonElement>, currentIndex: number) {
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % capabilities.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (currentIndex - 1 + capabilities.length) % capabilities.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = capabilities.length - 1;
+    }
+
+    if (nextIndex === null) return;
+    event.preventDefault();
+    setActiveCapability(nextIndex);
+    event.currentTarget.parentElement
+      ?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+      .item(nextIndex)
+      .focus();
   }
 
   return (
@@ -151,23 +210,26 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
           <p className="editorial-eyebrow">Health Decoded</p>
           {mode === "preview" ? <span className={styles.previewBadge}>Preview</span> : null}
         </div>
-        <div
-          aria-label={`${stepNames[step]}, ${step + 1} of ${stepNames.length}`}
-          className={styles.progress}
-          role="status"
-        >
+        <nav aria-label="Onboarding progress" className={styles.progress}>
           <span className="sr-only">
             {stepNames[step]}, {step + 1} of {stepNames.length}
           </span>
           {stepNames.map((name, index) => (
-            <span
-              aria-hidden="true"
+            <button
+              aria-current={index === step ? "step" : undefined}
+              aria-label={`${name}, step ${index + 1} of ${stepNames.length}${index < step ? ". Go back to this step." : ""}`}
               className={cn(styles.marker, index === step && styles.currentMarker)}
               data-complete={index < step || undefined}
+              disabled={index >= step}
               key={name}
-            />
+              onClick={() => moveTo(index)}
+              type="button"
+            >
+              <span aria-hidden="true" className={styles.markerDot} />
+              <span className={styles.markerLabel}>{name}</span>
+            </button>
           ))}
-        </div>
+        </nav>
       </div>
 
       <form action={action} className={styles.form}>
@@ -186,8 +248,8 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
                   sense of it one step at a time.
                 </p>
                 <p className={styles.supporting}>
-                  Learn the basics, prepare for appointments, check confusing claims, and find clear
-                  answers when you need them.
+                  Follow a guided Journey, practice with interactive tools, explore real-life
+                  stories, prepare for appointments, and find trusted information when you need it.
                 </p>
               </div>
 
@@ -196,7 +258,7 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
                 {capabilities.map(({ icon: Icon, title }, index) => (
                   <div className={styles.ecosystemItem} data-position={index + 1} key={title}>
                     <Icon />
-                    <span>{title}</span>
+                    <span>{title.split(" ")[0]}</span>
                   </div>
                 ))}
               </div>
@@ -211,8 +273,14 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
                   Return to Journey
                 </Button>
               ) : (
-                <Button name="completionTarget" type="submit" value="journey" variant="text">
-                  Skip introduction
+                <Button
+                  disabled={pending}
+                  name="completionTarget"
+                  type="submit"
+                  value="journey"
+                  variant="text"
+                >
+                  {pending ? "Opening your Journey…" : "Skip to my Journey"}
                 </Button>
               )}
             </div>
@@ -224,22 +292,63 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
             <div className={styles.sectionHeading}>
               <p className={styles.kicker}>Here when you need it</p>
               <h1 className={styles.title} ref={headingRef} tabIndex={-1}>
-                You don&apos;t have to learn everything at once.
+                One app, a few useful ways in.
               </h1>
               <p className={styles.lead}>
-                Health Decoded gives you different ways to learn depending on what you need right
-                now.
+                Choose a section to see how the updated Health Decoded experience can help. You can
+                move between all of these anytime.
               </p>
             </div>
 
-            <div className={styles.capabilityList}>
-              {capabilities.map(({ description, icon: Icon, title }) => (
-                <div className={styles.capabilityRow} key={title}>
-                  <Icon aria-hidden="true" />
-                  <h2>{title}</h2>
-                  <p>{description}</p>
+            <div className={styles.explorer}>
+              <div
+                aria-label="Explore Health Decoded sections"
+                className={styles.capabilityTabs}
+                role="tablist"
+              >
+                {capabilities.map(({ icon: Icon, title }, index) => (
+                  <button
+                    aria-controls="capability-panel"
+                    aria-selected={activeCapability === index}
+                    className={styles.capabilityTab}
+                    data-selected={activeCapability === index || undefined}
+                    id={`capability-tab-${index}`}
+                    key={title}
+                    onClick={() => setActiveCapability(index)}
+                    onKeyDown={(event) => moveCapabilityFocus(event, index)}
+                    role="tab"
+                    tabIndex={activeCapability === index ? 0 : -1}
+                    type="button"
+                  >
+                    <Icon aria-hidden="true" />
+                    <span>{title}</span>
+                    <ArrowRight aria-hidden="true" className={styles.tabArrow} />
+                  </button>
+                ))}
+              </div>
+
+              <div
+                aria-labelledby={`capability-tab-${activeCapability}`}
+                className={styles.capabilityPanel}
+                id="capability-panel"
+                role="tabpanel"
+                tabIndex={0}
+              >
+                <div aria-hidden="true" className={styles.capabilityPanelIcon}>
+                  <capability.icon />
                 </div>
-              ))}
+                <p className={styles.panelEyebrow}>Inside this section</p>
+                <h2>{capability.title}</h2>
+                <p>{capability.description}</p>
+                <ul aria-label={`Features for ${capability.title}`} className={styles.featureList}>
+                  {capability.features.map((feature) => (
+                    <li key={feature}>
+                      <Check aria-hidden="true" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
             <div className={styles.actions}>
@@ -313,7 +422,7 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
           <Screen>
             <div className={styles.resultGrid}>
               <div className={styles.resultIcon} aria-hidden="true">
-                {intent === "support-someone" ? <HeartHandshake /> : <BookOpen />}
+                <result.icon />
               </div>
               <div className={styles.copyColumn}>
                 <p className={styles.kicker}>{result.eyebrow}</p>
@@ -322,20 +431,19 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
                 </h1>
                 <p className={styles.lead}>{result.copy}</p>
                 <p className={styles.recommendationNote}>
-                  Based on what you chose, this is a useful place to start. You can go anywhere in
-                  Health Decoded afterward.
+                  Based on what you chose, this is a useful place to start. Your Journey will remain
+                  your home base, and every section stays available.
                 </p>
+                <ul className={styles.resultHighlights}>
+                  {result.highlights.map((highlight) => (
+                    <li key={highlight}>
+                      <Check aria-hidden="true" />
+                      {highlight}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
-
-            {state.message ? (
-              <div className={styles.error} role="alert">
-                <p>{state.message}</p>
-                {state.status === "auth" ? (
-                  <Link href="/login?next=/onboarding">Sign in</Link>
-                ) : null}
-              </div>
-            ) : null}
 
             <div className={styles.actions}>
               {mode === "preview" ? (
@@ -373,6 +481,13 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
               </Button>
             </div>
           </Screen>
+        ) : null}
+
+        {state.message ? (
+          <div className={styles.error} role="alert">
+            <p>{state.message}</p>
+            {state.status === "auth" ? <Link href="/login?next=/onboarding">Sign in</Link> : null}
+          </div>
         ) : null}
       </form>
     </section>

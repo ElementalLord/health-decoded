@@ -26,13 +26,32 @@ test("account state gates first use globally and completed users bypass it", () 
 });
 
 test("the flow contains exactly four concise screens and one intention question", () => {
-  assert.match(
-    flow,
-    /const stepNames = \["Welcome", "What you can do", "Starting point", "Your next step"\]/,
-  );
+  assert.match(flow, /const stepNames = \["Welcome", "Explore", "Choose a focus", "Ready"\]/);
   assert.match(flow, /What would be most useful right now\?/);
   assert.equal((flow.match(/<fieldset/g) ?? []).length, 1);
   assert.doesNotMatch(flow, /A1C|glucose|medications|weight|diagnosis date|treatment/iu);
+});
+
+test("the tour reflects the current learning, practice, information, and support areas", () => {
+  for (const feature of [
+    "14 short lessons",
+    "Spaced review",
+    "Progress and milestones",
+    "Myth Check",
+    "Explain It Back",
+    "Decode the Label",
+    "Interactive stories",
+    "Medical glossary",
+    "Curated resources",
+    "Appointment preparation",
+    "AI guide",
+    "Caregiver path",
+  ]) {
+    assert.match(flow, new RegExp(feature));
+  }
+  assert.match(flow, /role="tablist"/);
+  assert.match(flow, /role="tabpanel"/);
+  assert.match(flow, /aria-current=\{index === step \? "step"/);
 });
 
 test("all controlled intentions map to the expected initial destinations", () => {
@@ -59,8 +78,8 @@ test("completion is atomic, idempotent, and cannot overwrite a completed prefere
 });
 
 test("skip completes with no intent and routes to Journey", () => {
-  assert.match(flow, /name="completionTarget" type="submit" value="journey"/);
-  assert.match(flow, /Skip introduction/);
+  assert.match(flow, /name="completionTarget"[\s\S]*?type="submit"[\s\S]*?value="journey"/);
+  assert.match(flow, /Skip to my Journey/);
   assert.match(actions, /: "\/journey\?welcome=1"/);
 });
 
@@ -84,5 +103,8 @@ test("selection, focus, motion, zoom, and narrow-screen accessibility are explic
 
 test("onboarding remains orientation, not learning progress", () => {
   const combined = `${flow}\n${actions}\n${service}`;
-  assert.doesNotMatch(combined, /streak|milestone|xp_awarded|complete_current_lesson/iu);
+  assert.doesNotMatch(
+    combined,
+    /recordQualifyingLearningActivity|xp_awarded|complete_current_lesson/iu,
+  );
 });
