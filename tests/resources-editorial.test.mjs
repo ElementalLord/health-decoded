@@ -223,10 +223,6 @@ test("trusted-source guidance stays explicit", () => {
   assert.match(component, /NIH health explainers with deeper detail/);
   assert.match(
     component,
-    /Every destination is an official \.gov page and was rechecked in July 2026/,
-  );
-  assert.match(
-    component,
     /These readings support, but do not replace, advice from your health care team/,
   );
 });

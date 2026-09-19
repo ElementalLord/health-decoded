@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Fraunces } from "next/font/google";
 
+import { AppReadinessGate } from "@/components/motion/app-readiness-gate";
+
 import "./globals.css";
 
 const inter = Inter({
@@ -34,7 +36,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html className={`${inter.variable} ${fraunces.variable}`} lang="en">
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <AppReadinessGate>{children}</AppReadinessGate>
+      </body>
     </html>
   );
 }

@@ -579,9 +579,6 @@ function SourceNote() {
           <p>NIH health explainers with deeper detail on tests, treatments, and the whole body.</p>
         </div>
       </div>
-      <p className={styles.sourceNoteFooter}>
-        Every destination is an official .gov page and was rechecked in July 2026.
-      </p>
     </aside>
   );
 }
