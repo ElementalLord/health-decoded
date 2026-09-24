@@ -13,8 +13,13 @@ export default function MythCheckError({ reset }: { error: Error; reset: () => v
         Try opening the activity again or return to Resources.
       </p>
       <div className="flex flex-wrap gap-3">
-        <Button fullWidth={false} onClick={reset}>Try again</Button>
-        <Link className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4" href="/resources">
+        <Button fullWidth={false} onClick={reset}>
+          Try again
+        </Button>
+        <Link
+          className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+          href="/resources"
+        >
           Return to Resources
         </Link>
       </div>

@@ -81,7 +81,9 @@ export function SharedPlanningWorkspace() {
       </div>
       <form onSubmit={submit}>
         <div className={styles.taskCard}>
-          <p className={styles.itemProgress}>Item {activeItemIndex + 1} of {interaction.items.length}</p>
+          <p className={styles.itemProgress}>
+            Item {activeItemIndex + 1} of {interaction.items.length}
+          </p>
           <label>
             <span>{activeItem.copy}</span>
             <select
@@ -94,13 +96,33 @@ export function SharedPlanningWorkspace() {
               }}
             >
               <option value="">Leave off the plan</option>
-              {interaction.zones.map((zone) => <option key={zone} value={zone}>Move to {zone}</option>)}
+              {interaction.zones.map((zone) => (
+                <option key={zone} value={zone}>
+                  Move to {zone}
+                </option>
+              ))}
             </select>
-            {assistedPlacements[activeItem.id] ? <span className={styles.answerAssist}>Answer filled in after three attempts.</span> : null}
+            {assistedPlacements[activeItem.id] ? (
+              <span className={styles.answerAssist}>Answer filled in after three attempts.</span>
+            ) : null}
           </label>
           <div className={styles.itemNavigation}>
-            <button type="button" disabled={activeItemIndex === 0} onClick={() => setActiveItemIndex((index) => Math.max(0, index - 1))}>Previous item</button>
-            <button type="button" disabled={activeItemIndex === interaction.items.length - 1} onClick={() => setActiveItemIndex((index) => Math.min(interaction.items.length - 1, index + 1))}>Next item</button>
+            <button
+              type="button"
+              disabled={activeItemIndex === 0}
+              onClick={() => setActiveItemIndex((index) => Math.max(0, index - 1))}
+            >
+              Previous item
+            </button>
+            <button
+              type="button"
+              disabled={activeItemIndex === interaction.items.length - 1}
+              onClick={() =>
+                setActiveItemIndex((index) => Math.min(interaction.items.length - 1, index + 1))
+              }
+            >
+              Next item
+            </button>
           </div>
         </div>
         <div className={styles.planBands}>

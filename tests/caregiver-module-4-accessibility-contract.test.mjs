@@ -21,6 +21,6 @@ test("Module 4 exposes staged landmarks, heading focus, native controls, and red
   assert.match(styles, /prefers-reduced-motion/);
   assert.match(styles, /@media \(max-width: 48rem\)/);
   assert.doesNotMatch(styles, /infinite/);
-  assert.match(styles, /\.stage:not\(\[hidden\]\) \{ animation: none; \}/);
+  assert.match(styles, /\.stage:not\(\[hidden\]\)\s*\{\s*animation: none;/);
   assert.doesNotMatch(styles, /border-radius:\s*999px/);
 });

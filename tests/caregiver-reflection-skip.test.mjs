@@ -22,8 +22,14 @@ for (const moduleNumber of [1, 2, 3, 4, 5]) {
 
 for (const moduleNumber of [1, 2]) {
   const [reflection, completion] = await Promise.all([
-    readFile(new URL(`module-${moduleNumber}/module-${moduleNumber}-reflection.tsx`, modules), "utf8"),
-    readFile(new URL(`module-${moduleNumber}/module-${moduleNumber}-completion.tsx`, modules), "utf8"),
+    readFile(
+      new URL(`module-${moduleNumber}/module-${moduleNumber}-reflection.tsx`, modules),
+      "utf8",
+    ),
+    readFile(
+      new URL(`module-${moduleNumber}/module-${moduleNumber}-completion.tsx`, modules),
+      "utf8",
+    ),
   ]);
 
   test(`Module ${moduleNumber} Skip for Now confirms the choice and advances focus`, () => {

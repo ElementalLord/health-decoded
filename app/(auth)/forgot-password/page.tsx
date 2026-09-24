@@ -21,8 +21,8 @@ export default async function ForgotPasswordPage({
       />
       {expired === "1" ? (
         <p aria-live="polite" className="motion-status text-sm text-destructive" role="status">
-          That reset link is no longer valid, so your password has not been changed. Enter your email
-          to get a new one.
+          That reset link is no longer valid, so your password has not been changed. Enter your
+          email to get a new one.
         </p>
       ) : null}
       <AuthForm action={forgotPasswordAction} mode="forgot-password" />

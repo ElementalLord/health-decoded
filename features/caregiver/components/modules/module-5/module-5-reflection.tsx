@@ -9,7 +9,8 @@ export function Module5Reflection() {
   const item = caregiverModule5.reflection;
   const [values, setValues] = useState(["", "", ""]);
   const [saved, setSaved] = useState(false);
-  const { reflectionSkipped, setReflection, skipReflection, clearReflection } = useCaregiverSession();
+  const { reflectionSkipped, setReflection, skipReflection, clearReflection } =
+    useCaregiverSession();
   const hasValue = values.some((value) => value.trim());
   return (
     <section
@@ -75,7 +76,11 @@ export function Module5Reflection() {
         </div>
       </form>
       <p aria-live="polite">
-        {saved ? "Reflection saved for this session." : reflectionSkipped ? "Reflection skipped for this session." : ""}
+        {saved
+          ? "Reflection saved for this session."
+          : reflectionSkipped
+            ? "Reflection skipped for this session."
+            : ""}
       </p>
     </section>
   );

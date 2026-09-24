@@ -237,8 +237,8 @@ export default function TermsPage() {
       </LegalSection>
       <LegalSection title="14. Changes to These Terms">
         <p>
-          We may update these Terms when Health Decoded&apos;s features, services, or legal requirements
-          change.
+          We may update these Terms when Health Decoded&apos;s features, services, or legal
+          requirements change.
         </p>
         <p>
           When material changes are made, we will update the “Last Updated” date and may provide

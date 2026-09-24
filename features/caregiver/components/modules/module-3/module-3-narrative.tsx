@@ -12,12 +12,25 @@ export function Module3Scenario() {
         <p className={styles.scenarioDeck}>A sincere effort misses the work Cam actually named.</p>
       </div>
       <figure className={styles.scenarioArt}>
-        <Image src="/caregiver/module-3/dinner-at-seven.png" alt="Nia holds a recipe near an open cabinet while Cam arrives home with keys and notices the changed snack shelf." width={1536} height={1024} sizes="(max-width: 56rem) 100vw, 76vw" />
+        <Image
+          src="/caregiver/module-3/dinner-at-seven.png"
+          alt="Nia holds a recipe near an open cabinet while Cam arrives home with keys and notices the changed snack shelf."
+          width={1536}
+          height={1024}
+          sizes="(max-width: 56rem) 100vw, 76vw"
+        />
         <figcaption>The cabinet changed. The pharmacy ride did not happen.</figcaption>
       </figure>
       <div className={styles.storyText}>
         {section.paragraphs.map((paragraph, index) => (
-          <p key={paragraph} data-speaker={index === 1 || index === 3 ? "nia" : index === 2 || index === 4 ? "cam" : undefined}>{paragraph}</p>
+          <p
+            key={paragraph}
+            data-speaker={
+              index === 1 || index === 3 ? "nia" : index === 2 || index === 4 ? "cam" : undefined
+            }
+          >
+            {paragraph}
+          </p>
         ))}
       </div>
     </section>
@@ -36,7 +49,11 @@ export function Module3MealsNarrative() {
         </p>
       ))}
       <ul className={styles.mealPossibilities} aria-label="What an easier dinner might involve">
-        {['Timing', 'Budget', 'Shared ingredients', 'Cleanup', 'Transportation', 'No change'].map((item) => <li key={item}>{item}</li>)}
+        {["Timing", "Budget", "Shared ingredients", "Cleanup", "Transportation", "No change"].map(
+          (item) => (
+            <li key={item}>{item}</li>
+          ),
+        )}
       </ul>
     </section>
   );
@@ -88,7 +105,14 @@ export function Module3NormalLifeNarrative() {
       className={styles.normalLife}
       aria-labelledby={`${section.id}-heading`}
     >
-      <Image className={styles.normalLifeArt} src="/caregiver/module-3/shared-evening-plan.png" alt="Two roommates sharing an ordinary evening of groceries, cooking, and conversation." width={1536} height={1024} sizes="(max-width: 56rem) 100vw, 48vw" />
+      <Image
+        className={styles.normalLifeArt}
+        src="/caregiver/module-3/shared-evening-plan.png"
+        alt="Two roommates sharing an ordinary evening of groceries, cooking, and conversation."
+        width={1536}
+        height={1024}
+        sizes="(max-width: 56rem) 100vw, 48vw"
+      />
       <div>
         <h2 id={`${section.id}-heading`}>{section.title}</h2>
         {section.paragraphs.map((paragraph) => (
@@ -131,19 +155,19 @@ export function Module3FurtherReading() {
       <details className={styles.readingDisclosure}>
         <summary>Read the deeper explanation</summary>
         <div className={styles.readingIntro}>
-        {reading.paragraphs.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
+          {reading.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
         </div>
         <div className={styles.readingSubsections}>
-        {reading.subsections.map((subsection) => (
-          <div key={subsection.title} className={styles.readingSubsection}>
-            <h3>{subsection.title}</h3>
-            {subsection.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-        ))}
+          {reading.subsections.map((subsection) => (
+            <div key={subsection.title} className={styles.readingSubsection}>
+              <h3>{subsection.title}</h3>
+              {subsection.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          ))}
         </div>
       </details>
     </section>

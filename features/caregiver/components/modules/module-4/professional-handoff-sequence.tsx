@@ -50,7 +50,12 @@ export function ProfessionalHandoffSequence() {
               data-excluded={excluded.includes(id)}
               data-needs-review={needsReview ? "true" : undefined}
             >
-              <span><small>{excluded.includes(id) ? "Excluded from opening" : `Line ${index + 1}`}</small>{entry.copy}</span>
+              <span>
+                <small>
+                  {excluded.includes(id) ? "Excluded from opening" : `Line ${index + 1}`}
+                </small>
+                {entry.copy}
+              </span>
               <div className={styles.handoffControls}>
                 <button
                   type="button"

@@ -41,8 +41,7 @@ export const devonNumberScreenStory: InteractiveStory = {
     "A cinematic editorial illustration of a thoughtful adult man sitting at a lived-in kitchen table at night, looking at an unbranded glucose meter with an unreadable display. A notebook, pen, water glass, and ordinary dinner remnants provide context. Warm cream and muted blue-green palette, restrained amber light, calm rather than alarming, no readable numbers, logos, labels, needles, or medical drama.",
   imageAlt:
     "An editorial illustration of a man sitting at a kitchen table at night while looking at a glucose meter with an unreadable display.",
-  introduction:
-    "One unexpected glucose result changes Devon's evening.",
+  introduction: "One unexpected glucose result changes Devon's evening.",
   whyItMatters:
     "This story explores how to respond to an unexpected reading without ignoring it, treating it as a personal failure, or making decisions before considering symptoms, context, and an established care plan.",
   scenes: [

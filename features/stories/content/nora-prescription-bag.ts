@@ -41,8 +41,7 @@ export const noraPrescriptionBagStory: InteractiveStory = {
     "A cinematic editorial scene in a quiet lived-in kitchen in early evening, with a thoughtful older woman seated at a table beside a closed unbranded pharmacy bag, reading glasses, and folded paper. Warm natural light, muted cream and green tones, no loose pills, labels, logos, or medical drama.",
   imageAlt:
     "An editorial illustration of a woman sitting at a kitchen table while a closed pharmacy bag rests nearby.",
-  introduction:
-    "Nora brings home a prescription—and the questions that come with it.",
+  introduction: "Nora brings home a prescription—and the questions that come with it.",
   whyItMatters:
     "This story explores why starting medication can feel like failure and how clear questions can replace shame with informed decision-making.",
   scenes: [

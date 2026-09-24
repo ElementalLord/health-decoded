@@ -15,7 +15,7 @@ It converts the approved Phase 1 architecture into stable system rules without r
 
 The caregiver experience is relationship support, not a diabetes course, professional training, certification, medical dashboard, monitoring service, or article collection. It should help a supporter become respectful, useful, prepared, and sustainable while keeping the person living with diabetes in control.
 
-The term *caregiver* may remain in internal labels. Learner-facing language should more often use *supporter*, *partner*, *family member*, *friend*, or *someone you care about*. A user need not adopt the caregiver identity.
+The term _caregiver_ may remain in internal labels. Learner-facing language should more often use _supporter_, _partner_, _family member_, _friend_, or _someone you care about_. A user need not adopt the caregiver identity.
 
 ### 1.1 Binding interpretation
 
@@ -182,19 +182,19 @@ All later content should evaluate support through nine questions: Was permission
 
 ### 7.1 Action categories
 
-| Category | Definition | Product treatment |
-| --- | --- | --- |
-| Invited support | The person directly requests a specific action | Confirm scope when needed and do only what was requested |
-| Offered support | The supporter proposes an action that can be freely declined | Make refusal easy and avoid repeated offers |
-| Negotiated support | Both people agree on a recurring or situational arrangement | Clarify conditions, limits, review, and withdrawal |
-| Assumed support | The supporter acts without current permission because help seems expected | Prompt a pause and permission check |
-| Repeated reminders | An offer continues after no, silence, or no agreement | Explain how repetition can become pressure |
-| Pressure | Consequences, guilt, persistence, or emotional leverage make refusal difficult | Identify impact and support repair |
-| Monitoring | The supporter routinely checks behavior or information | Require a specific, revisable agreement and data minimization |
-| Surveillance | Secret, continuous, coercive, or unauthorized access or observation | Prohibit and redirect toward conversation or professional support |
-| Coercion | Threats, punishment, manipulation, or forced disclosure remove meaningful choice | Do not normalize as care; prioritize safety and appropriate human support |
-| Emergency action | Immediate action when someone may be in danger | Direct to regional emergency help and the person's plan without legal conclusions |
-| Healthy boundary | The supporter names what they can and cannot sustainably do | Keep the boundary about the supporter's action, not control of the other person |
+| Category           | Definition                                                                       | Product treatment                                                                 |
+| ------------------ | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Invited support    | The person directly requests a specific action                                   | Confirm scope when needed and do only what was requested                          |
+| Offered support    | The supporter proposes an action that can be freely declined                     | Make refusal easy and avoid repeated offers                                       |
+| Negotiated support | Both people agree on a recurring or situational arrangement                      | Clarify conditions, limits, review, and withdrawal                                |
+| Assumed support    | The supporter acts without current permission because help seems expected        | Prompt a pause and permission check                                               |
+| Repeated reminders | An offer continues after no, silence, or no agreement                            | Explain how repetition can become pressure                                        |
+| Pressure           | Consequences, guilt, persistence, or emotional leverage make refusal difficult   | Identify impact and support repair                                                |
+| Monitoring         | The supporter routinely checks behavior or information                           | Require a specific, revisable agreement and data minimization                     |
+| Surveillance       | Secret, continuous, coercive, or unauthorized access or observation              | Prohibit and redirect toward conversation or professional support                 |
+| Coercion           | Threats, punishment, manipulation, or forced disclosure remove meaningful choice | Do not normalize as care; prioritize safety and appropriate human support         |
+| Emergency action   | Immediate action when someone may be in danger                                   | Direct to regional emergency help and the person's plan without legal conclusions |
+| Healthy boundary   | The supporter names what they can and cannot sustainably do                      | Keep the boundary about the supporter's action, not control of the other person   |
 
 - `SUPPORT-01` Support must be permission-based, specific, proportional, and revisable.
 - `SUPPORT-02` Repetition can change an offer into pressure even when each sentence sounds polite.
@@ -216,7 +216,7 @@ It is not generic, constantly poetic, sentimental, patronizing, accusatory, lega
 - `CONTENT-05` Use plain language and concrete situations.
 - `CONTENT-06` Use contractions in dialogue when natural.
 - `CONTENT-07` Do not use em dashes.
-- `CONTENT-08` Do not diagnose feelings. Use *may be feeling*, *could be experiencing*, *one possible explanation*, *worth asking about*, *may have been received as*, or *may be adding pressure*.
+- `CONTENT-08` Do not diagnose feelings. Use _may be feeling_, _could be experiencing_, _one possible explanation_, _worth asking about_, _may have been received as_, or _may be adding pressure_.
 - `CONTENT-09` Do not present a single emotional interpretation as fact.
 - `CONTENT-10` Avoid generic motivational language and praise.
 - `CONTENT-11` Do not make reassurance larger than the situation supports.
@@ -312,24 +312,24 @@ An interaction is acceptable only when removing it would reduce learning; it ask
 
 Every interaction must include:
 
-| Field | Requirement |
-| --- | --- |
-| Interaction ID | Stable ID such as `CG-M2-I01` or `CG-T3-I02` |
-| Title | Short learner-facing name |
-| Purpose | One observable learning function |
-| Learner task | What the learner does |
-| Exact prompt | Final learner-facing prompt |
-| Controls or choices | Exact labels, order, defaults, and constraints |
-| Response logic | State changes and conditional behavior |
-| Feedback | Exact response for every meaningful choice |
-| Learning point | One concise idea not already stated verbatim |
-| Status | Required or optional |
-| Progression | What, if anything, blocks progression |
-| Keyboard alternative | Complete operation without pointer or drag |
-| Screen-reader behavior | Names, roles, states, order, and announcements |
-| Mobile behavior | Reflow, target sizing, scrolling, and virtual-keyboard behavior |
-| Reduced motion | Equivalent state change without motion |
-| Data storage | What is collected, saved, shared, logged, and cleared |
+| Field                  | Requirement                                                     |
+| ---------------------- | --------------------------------------------------------------- |
+| Interaction ID         | Stable ID such as `CG-M2-I01` or `CG-T3-I02`                    |
+| Title                  | Short learner-facing name                                       |
+| Purpose                | One observable learning function                                |
+| Learner task           | What the learner does                                           |
+| Exact prompt           | Final learner-facing prompt                                     |
+| Controls or choices    | Exact labels, order, defaults, and constraints                  |
+| Response logic         | State changes and conditional behavior                          |
+| Feedback               | Exact response for every meaningful choice                      |
+| Learning point         | One concise idea not already stated verbatim                    |
+| Status                 | Required or optional                                            |
+| Progression            | What, if anything, blocks progression                           |
+| Keyboard alternative   | Complete operation without pointer or drag                      |
+| Screen-reader behavior | Names, roles, states, order, and announcements                  |
+| Mobile behavior        | Reflow, target sizing, scrolling, and virtual-keyboard behavior |
+| Reduced motion         | Equivalent state change without motion                          |
+| Data storage           | What is collected, saved, shared, logged, and cleared           |
 
 - `INTERACTION-01` Narrative and interaction must perform different educational jobs.
 - `INTERACTION-02` No required interaction may depend on drag, hover, gesture, precision, sound, animation, or time.
@@ -342,18 +342,18 @@ Every interaction must include:
 
 ### 10.4 Interaction inventory template
 
-| Area | Emotional arc | Dominant cognitive action | Dominant mechanic | Supporting mechanics | Visual concept | Rhythm | IDs used | Repetition reason | Accessibility verified |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Landing page | Unassigned | Unassigned | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
-| Module 1 | Unassigned | Interpret | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
-| Module 2 | Unassigned | Distinguish and choose | Unassigned | Unassigned | Unassigned | Unassigned | None | First prototype | No |
-| Module 3 | Unassigned | Match and plan | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
-| Module 4 | Unassigned | Prioritize and escalate | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
-| Module 5 | Unassigned | Map and rehearse | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
-| Tool 1 | Unassigned | Rewrite and prepare | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
-| Tool 2 | Unassigned | Organize | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
-| Tool 3 | Unassigned | Notice and prioritize | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
-| Tool 4 | Unassigned | Negotiate and document | Unassigned | Unassigned | Unassigned | Unassigned | None | N/A | No |
+| Area         | Emotional arc | Dominant cognitive action | Dominant mechanic | Supporting mechanics | Visual concept | Rhythm     | IDs used | Repetition reason | Accessibility verified |
+| ------------ | ------------- | ------------------------- | ----------------- | -------------------- | -------------- | ---------- | -------- | ----------------- | ---------------------- |
+| Landing page | Unassigned    | Unassigned                | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
+| Module 1     | Unassigned    | Interpret                 | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
+| Module 2     | Unassigned    | Distinguish and choose    | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | First prototype   | No                     |
+| Module 3     | Unassigned    | Match and plan            | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
+| Module 4     | Unassigned    | Prioritize and escalate   | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
+| Module 5     | Unassigned    | Map and rehearse          | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
+| Tool 1       | Unassigned    | Rewrite and prepare       | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
+| Tool 2       | Unassigned    | Organize                  | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
+| Tool 3       | Unassigned    | Notice and prioritize     | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
+| Tool 4       | Unassigned    | Negotiate and document    | Unassigned        | Unassigned           | Unassigned     | Unassigned | None     | N/A               | No                     |
 
 ## 11. Feedback system
 
@@ -368,23 +368,23 @@ Feedback explains likely impact, respects understandable intentions, adds new un
 - `FEEDBACK-07` Never imply that one answer proves someone is a good or bad caregiver.
 - `FEEDBACK-08` When a choice oversteps, include a repair or permission-based alternative when appropriate.
 
-| Unacceptable feedback | Revised natural feedback | Principle |
-| --- | --- | --- |
-| “Correct! Communication is key.” | “This asks about one specific kind of help and leaves room for no. That makes the offer easier to understand and decline.” | Explain impact |
-| “Wrong. Never do that.” | “The reminder may come from concern, but repeating it after they declined turns an offer into pressure. Ask whether a reminder agreement would help.” | Intention does not erase impact |
-| “Great job showing empathy.” | “This acknowledges what you noticed without deciding what they feel. The next question lets them choose whether to talk.” | Avoid praise and mind reading |
-| “That is controlling behavior.” | “Opening their health app without permission removes privacy and choice. Concern does not create access.” | Name the action, not the person |
-| “Perfect!” | “This keeps the person in the lead while offering one concrete action.” | Specific consequence |
-| “Not quite. Try again.” | “This offers help, but it assumes the appointment is shared. Ask whether they want you involved before deciding your role.” | Add the missing distinction |
-| “A good caregiver respects boundaries.” | “Respect the boundary even if you disagree. You can name what you can sustain without taking over their decision.” | No moral identity labels |
-| “Do not panic.” | “Stop here. Use the person's emergency plan and contact emergency help for your region if someone may be in immediate danger.” | Direct emergency action |
-| “Their blood sugar is dangerously low.” | “The app cannot interpret an individual's reading. Follow the person's clinician-created plan or contact professional help.” | Do not interpret readings |
-| “Healthy choices are always best.” | “Food support works better when it is agreed and practical. Labels such as good or bad can turn a shared meal into monitoring.” | Avoid food policing |
-| “You should have known better.” | “The impact still matters even if you meant to help. A direct apology and a clearer agreement can support repair.” | Shame-free repair |
-| “They are just overwhelmed.” | “Overwhelm is one possibility, but this moment does not confirm it. Ask what they want before deciding what the silence means.” | Preserve uncertainty |
-| “Correct. Call the doctor.” | “The agreed plan is unclear, so professional guidance is the next layer. Contact the appropriate member of the care team instead of improvising treatment.” | Explain escalation |
-| “Incorrect. Give them space.” | “Space may help, but disappearing without checking can feel abrupt. Ask whether they want quiet, company, or practical help.” | Recognize multiple needs |
-| “Amazing work. You completed it!” | “Module completed. You can revisit this idea or choose what would be useful next.” | Separate completion from praise |
+| Unacceptable feedback                   | Revised natural feedback                                                                                                                                    | Principle                       |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| “Correct! Communication is key.”        | “This asks about one specific kind of help and leaves room for no. That makes the offer easier to understand and decline.”                                  | Explain impact                  |
+| “Wrong. Never do that.”                 | “The reminder may come from concern, but repeating it after they declined turns an offer into pressure. Ask whether a reminder agreement would help.”       | Intention does not erase impact |
+| “Great job showing empathy.”            | “This acknowledges what you noticed without deciding what they feel. The next question lets them choose whether to talk.”                                   | Avoid praise and mind reading   |
+| “That is controlling behavior.”         | “Opening their health app without permission removes privacy and choice. Concern does not create access.”                                                   | Name the action, not the person |
+| “Perfect!”                              | “This keeps the person in the lead while offering one concrete action.”                                                                                     | Specific consequence            |
+| “Not quite. Try again.”                 | “This offers help, but it assumes the appointment is shared. Ask whether they want you involved before deciding your role.”                                 | Add the missing distinction     |
+| “A good caregiver respects boundaries.” | “Respect the boundary even if you disagree. You can name what you can sustain without taking over their decision.”                                          | No moral identity labels        |
+| “Do not panic.”                         | “Stop here. Use the person's emergency plan and contact emergency help for your region if someone may be in immediate danger.”                              | Direct emergency action         |
+| “Their blood sugar is dangerously low.” | “The app cannot interpret an individual's reading. Follow the person's clinician-created plan or contact professional help.”                                | Do not interpret readings       |
+| “Healthy choices are always best.”      | “Food support works better when it is agreed and practical. Labels such as good or bad can turn a shared meal into monitoring.”                             | Avoid food policing             |
+| “You should have known better.”         | “The impact still matters even if you meant to help. A direct apology and a clearer agreement can support repair.”                                          | Shame-free repair               |
+| “They are just overwhelmed.”            | “Overwhelm is one possibility, but this moment does not confirm it. Ask what they want before deciding what the silence means.”                             | Preserve uncertainty            |
+| “Correct. Call the doctor.”             | “The agreed plan is unclear, so professional guidance is the next layer. Contact the appropriate member of the care team instead of improvising treatment.” | Explain escalation              |
+| “Incorrect. Give them space.”           | “Space may help, but disappearing without checking can feel abrupt. Ask whether they want quiet, company, or practical help.”                               | Recognize multiple needs        |
+| “Amazing work. You completed it!”       | “Module completed. You can revisit this idea or choose what would be useful next.”                                                                          | Separate completion from praise |
 
 ## 12. Knowledge-check system
 
@@ -419,13 +419,13 @@ Reflections are optional, private, short, specific, nonclinical, skippable, and 
 
 ### 13.1 Persistence by context
 
-| Context | Default persistence | User control | Prohibited behavior |
-| --- | --- | --- | --- |
-| Module reflection | Session-only | Edit, delete, skip, clear | Account save, automatic sharing, analytics use |
-| What Should I Say? | Session-only | Edit and copy before leaving | Automatic draft saving or AI Tutor transfer |
-| Caregiver Self-Check | Session-only | Review and clear | Clinical labeling, scoring, sharing, account persistence |
-| Know the Plan | Deliberate local-device save may be offered | Save, update, print, export, reset | Automatic account sync or imported patient data |
-| Shared Support Plan | Deliberate local-device save may be offered | Save, update, print, export, reset | Cross-account sync or permanent-consent framing |
+| Context              | Default persistence                         | User control                       | Prohibited behavior                                      |
+| -------------------- | ------------------------------------------- | ---------------------------------- | -------------------------------------------------------- |
+| Module reflection    | Session-only                                | Edit, delete, skip, clear          | Account save, automatic sharing, analytics use           |
+| What Should I Say?   | Session-only                                | Edit and copy before leaving       | Automatic draft saving or AI Tutor transfer              |
+| Caregiver Self-Check | Session-only                                | Review and clear                   | Clinical labeling, scoring, sharing, account persistence |
+| Know the Plan        | Deliberate local-device save may be offered | Save, update, print, export, reset | Automatic account sync or imported patient data          |
+| Shared Support Plan  | Deliberate local-device save may be offered | Save, update, print, export, reset | Cross-account sync or permanent-consent framing          |
 
 ## 14. Medical-safety system
 
@@ -587,7 +587,7 @@ The Self-Check may help a person notice:
 
 It must not diagnose burnout, anxiety, depression, abuse, or any mental-health condition. It must not assign a clinical risk score, claim to measure mental health, store responses as medical data, contact another person, or share results.
 
-- `CONTENT-16` Use descriptive result language such as *worth noticing*, *may be adding pressure*, *may be difficult to sustain*, *could be useful to discuss*, or *one area to reconsider*.
+- `CONTENT-16` Use descriptive result language such as _worth noticing_, _may be adding pressure_, _may be difficult to sustain_, _could be useful to discuss_, or _one area to reconsider_.
 - `CONTENT-17` Do not rank the learner against other supporters.
 - `CONTENT-18` Do not turn a descriptive pattern into a clinical label.
 - `CONTENT-19` No single response triggers a diagnosis or automated outreach.
@@ -612,16 +612,16 @@ The supplied UI establishes an editorial language: warm ivory, dark serif displa
 
 ### 19.1 Color and material roles
 
-| Role | Direction | Use |
-| --- | --- | --- |
-| Canvas | Warm cream or ivory | Primary page field |
-| Primary ink | Deep forest green or warm charcoal | Headings and body copy |
-| Relational accent | Restrained terracotta | Human emphasis, active path, relational consequence |
-| Support accent | Soft sage | Planning, calm confirmation, agreed support |
-| Information tint | Muted blue-green | Neutral privacy and educational notes |
-| Safety accent | Deep brick red | Urgent safety only, always paired with text |
-| Raised surface | Slightly lighter warm neutral | Focused tools and contained interactions |
-| Focus indicator | High-contrast outline | Keyboard focus, distinct from selection and error |
+| Role              | Direction                          | Use                                                 |
+| ----------------- | ---------------------------------- | --------------------------------------------------- |
+| Canvas            | Warm cream or ivory                | Primary page field                                  |
+| Primary ink       | Deep forest green or warm charcoal | Headings and body copy                              |
+| Relational accent | Restrained terracotta              | Human emphasis, active path, relational consequence |
+| Support accent    | Soft sage                          | Planning, calm confirmation, agreed support         |
+| Information tint  | Muted blue-green                   | Neutral privacy and educational notes               |
+| Safety accent     | Deep brick red                     | Urgent safety only, always paired with text         |
+| Raised surface    | Slightly lighter warm neutral      | Focused tools and contained interactions            |
+| Focus indicator   | High-contrast outline              | Keyboard focus, distinct from selection and error   |
 
 Exact tokens must be reconciled with the repository during implementation. All combinations must meet WCAG 2.2 AA contrast. Color may never be the only state indicator.
 
@@ -739,9 +739,9 @@ Before writing medical, emergency, safety, or health-related claims, later Work 
 
 Every later content section must include:
 
-| Claim ID | Educational claim | Source | Publication or review date | Use location | Uncertainty or limitation | Required review | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Unassigned | Unassigned | Unassigned | Unassigned | Unassigned | Unassigned | Unassigned | not-reviewed |
+| Claim ID   | Educational claim | Source     | Publication or review date | Use location | Uncertainty or limitation | Required review | Status       |
+| ---------- | ----------------- | ---------- | -------------------------- | ------------ | ------------------------- | --------------- | ------------ |
+| Unassigned | Unassigned        | Unassigned | Unassigned                 | Unassigned   | Unassigned                | Unassigned      | not-reviewed |
 
 Allowed content statuses:
 
@@ -753,14 +753,14 @@ Use `reviewed` only when verified reviewer identity, relevant qualification, rev
 
 ### 23.2 Required review types
 
-| Review | Required for |
-| --- | --- |
-| Editorial | All finalized learner-facing content |
-| Clinical | Medical, glucose, medication, symptom, movement, nutrition, device, plan, urgent, and emergency content |
-| Privacy | Data collection, persistence, exports, AI handoffs, shared-device behavior, and plan authority |
-| Accessibility | Every page, interaction, form, tool, safety interruption, print view, and export |
-| Cultural | Scenarios, family roles, food contexts, authority assumptions, translations, and support resources |
-| Emotional safety | Conflict, guilt, resentment, coercion, crisis, overstepping, repair, and caregiver strain |
+| Review           | Required for                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------- |
+| Editorial        | All finalized learner-facing content                                                                    |
+| Clinical         | Medical, glucose, medication, symptom, movement, nutrition, device, plan, urgent, and emergency content |
+| Privacy          | Data collection, persistence, exports, AI handoffs, shared-device behavior, and plan authority          |
+| Accessibility    | Every page, interaction, form, tool, safety interruption, print view, and export                        |
+| Cultural         | Scenarios, family roles, food contexts, authority assumptions, translations, and support resources      |
+| Emotional safety | Conflict, guilt, resentment, coercion, crisis, overstepping, repair, and caregiver strain               |
 
 - `REVIEW-01` Module 4 and Know the Plan require qualified clinical review before external user testing focused on medical or emergency content.
 - `REVIEW-02` Module 4 and Know the Plan require qualified clinical review before public release.
@@ -858,31 +858,31 @@ No repository convention, visual preference, analytics request, or schedule pres
 
 ## 27. Rule-ID index
 
-| Category | Range | Governs |
-| --- | --- | --- |
-| SCOPE | `SCOPE-01` to `SCOPE-10` | Audience, prototype limits, product identity |
-| AUTONOMY | `AUTONOMY-01` to `AUTONOMY-10` | Decision ownership, privacy, remote support, repair |
-| CONSENT | `CONSENT-01` to `CONSENT-15` | Permission, information sharing, plan authority |
-| SUPPORT | `SUPPORT-01` to `SUPPORT-08` | Support versus control |
-| PRIVACY | `PRIVACY-01` to `PRIVACY-15` | Data minimization, sharing, device risk |
-| MEDICAL | `MEDICAL-01` to `MEDICAL-15` | Medical boundaries and three-layer safety |
-| EMERGENCY | `EMERGENCY-01` to `EMERGENCY-10` | Urgent interruption and access |
-| REGION | `REGION-01` to `REGION-08` | Localization and safe fallback |
-| CONTENT | `CONTENT-01` to `CONTENT-20` | Architecture, voice, language, Self-Check |
-| SCENARIO | `SCENARIO-01` to `SCENARIO-15` | Illustrative scenarios and dialogue |
-| INTERACTION | `INTERACTION-01` to `INTERACTION-08` | Learning value and behavior |
-| FEEDBACK | `FEEDBACK-01` to `FEEDBACK-08` | Response quality and tone |
-| QUIZ | `QUIZ-01` to `QUIZ-12` | Knowledge checks |
-| REFLECTION | `REFLECTION-01` to `REFLECTION-07` | Optional private reflection |
-| PROGRESS | `PROGRESS-01` to `PROGRESS-08` | Completion and revisit |
-| VISUAL | `VISUAL-01` to `VISUAL-11` | Visual composition and identity |
-| MOTION | `MOTION-01` to `MOTION-08` | Purposeful and reduced motion |
-| RESPONSIVE | `RESPONSIVE-01` to `RESPONSIVE-10` | Breakpoints, reflow, zoom, print |
-| ACCESSIBILITY | `ACCESSIBILITY-01` to `ACCESSIBILITY-20` | WCAG 2.2 AA behavior |
-| STORAGE | `STORAGE-01` to `STORAGE-06` | Persistence by tool |
-| PRINT | `PRINT-01` to `PRINT-10` | Print and export |
-| REVIEW | `REVIEW-01` to `REVIEW-08` | Research and multidisciplinary review |
-| CODEX | `CODEX-01` to `CODEX-06` | Implementation handoff |
+| Category      | Range                                    | Governs                                             |
+| ------------- | ---------------------------------------- | --------------------------------------------------- |
+| SCOPE         | `SCOPE-01` to `SCOPE-10`                 | Audience, prototype limits, product identity        |
+| AUTONOMY      | `AUTONOMY-01` to `AUTONOMY-10`           | Decision ownership, privacy, remote support, repair |
+| CONSENT       | `CONSENT-01` to `CONSENT-15`             | Permission, information sharing, plan authority     |
+| SUPPORT       | `SUPPORT-01` to `SUPPORT-08`             | Support versus control                              |
+| PRIVACY       | `PRIVACY-01` to `PRIVACY-15`             | Data minimization, sharing, device risk             |
+| MEDICAL       | `MEDICAL-01` to `MEDICAL-15`             | Medical boundaries and three-layer safety           |
+| EMERGENCY     | `EMERGENCY-01` to `EMERGENCY-10`         | Urgent interruption and access                      |
+| REGION        | `REGION-01` to `REGION-08`               | Localization and safe fallback                      |
+| CONTENT       | `CONTENT-01` to `CONTENT-20`             | Architecture, voice, language, Self-Check           |
+| SCENARIO      | `SCENARIO-01` to `SCENARIO-15`           | Illustrative scenarios and dialogue                 |
+| INTERACTION   | `INTERACTION-01` to `INTERACTION-08`     | Learning value and behavior                         |
+| FEEDBACK      | `FEEDBACK-01` to `FEEDBACK-08`           | Response quality and tone                           |
+| QUIZ          | `QUIZ-01` to `QUIZ-12`                   | Knowledge checks                                    |
+| REFLECTION    | `REFLECTION-01` to `REFLECTION-07`       | Optional private reflection                         |
+| PROGRESS      | `PROGRESS-01` to `PROGRESS-08`           | Completion and revisit                              |
+| VISUAL        | `VISUAL-01` to `VISUAL-11`               | Visual composition and identity                     |
+| MOTION        | `MOTION-01` to `MOTION-08`               | Purposeful and reduced motion                       |
+| RESPONSIVE    | `RESPONSIVE-01` to `RESPONSIVE-10`       | Breakpoints, reflow, zoom, print                    |
+| ACCESSIBILITY | `ACCESSIBILITY-01` to `ACCESSIBILITY-20` | WCAG 2.2 AA behavior                                |
+| STORAGE       | `STORAGE-01` to `STORAGE-06`             | Persistence by tool                                 |
+| PRINT         | `PRINT-01` to `PRINT-10`                 | Print and export                                    |
+| REVIEW        | `REVIEW-01` to `REVIEW-08`               | Research and multidisciplinary review               |
+| CODEX         | `CODEX-01` to `CODEX-06`                 | Implementation handoff                              |
 
 Future documents must cite these IDs instead of repeating full global rules. A local restatement may clarify application but must not weaken or alter the referenced rule.
 

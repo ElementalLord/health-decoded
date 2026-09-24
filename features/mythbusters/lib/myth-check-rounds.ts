@@ -29,7 +29,8 @@ export function createMythCheckRound(
 ) {
   const published = publishedMythCheckCards(cards);
   if (mode === "all") return [...published];
-  const eligible = mode === "quick" ? published : published.filter((card) => card.category === mode);
+  const eligible =
+    mode === "quick" ? published : published.filter((card) => card.category === mode);
   return mode === "quick" ? shuffle(eligible, random).slice(0, 8) : [...eligible];
 }
 
@@ -41,8 +42,20 @@ export const mythCheckModeDetails: ReadonlyArray<{
 }> = [
   { id: "quick", title: "Quick Mix", description: "8 claims selected from every topic." },
   { id: "basics", title: "Diabetes Basics", description: "Causes, risk, symptoms, and remission." },
-  { id: "food", title: "Food and Carbohydrates", description: "Carbs, fruit, labels, and eating patterns." },
-  { id: "monitoring", title: "Tests and Monitoring", description: "A1C, glucose readings, and diagnosis." },
-  { id: "treatment", title: "Treatment and Safety", description: "Medicines, care, complications, and scams." },
+  {
+    id: "food",
+    title: "Food and Carbohydrates",
+    description: "Carbs, fruit, labels, and eating patterns.",
+  },
+  {
+    id: "monitoring",
+    title: "Tests and Monitoring",
+    description: "A1C, glucose readings, and diagnosis.",
+  },
+  {
+    id: "treatment",
+    title: "Treatment and Safety",
+    description: "Medicines, care, complications, and scams.",
+  },
   { id: "all", title: "Review All", description: "All 32 first-release claims in stable order." },
 ];

@@ -38,11 +38,15 @@ export function scheduleReviewResult(input: {
   let intervalDays: number;
   let successfulReviewCount = input.state.successfulReviewCount;
   if (input.exampleViewed) intervalDays = spacedReviewConfig.exampleViewedIntervalDays;
-  else if (input.verdict === "almost_there") intervalDays = spacedReviewConfig.almostThereIntervalDays;
+  else if (input.verdict === "almost_there")
+    intervalDays = spacedReviewConfig.almostThereIntervalDays;
   else if (input.verdict === "try_again") intervalDays = spacedReviewConfig.tryAgainIntervalDays;
   else if (input.hadRetry) intervalDays = spacedReviewConfig.retrySuccessIntervalDays;
   else {
-    intervalDays = spacedReviewConfig.successIntervalsDays[Math.min(successfulReviewCount, spacedReviewConfig.successIntervalsDays.length - 1)]!;
+    intervalDays =
+      spacedReviewConfig.successIntervalsDays[
+        Math.min(successfulReviewCount, spacedReviewConfig.successIntervalsDays.length - 1)
+      ]!;
     successfulReviewCount += 1;
   }
   return {
@@ -56,12 +60,17 @@ export function scheduleReviewResult(input: {
 
 function performanceWeight(candidate: ReviewCandidate) {
   if (candidate.lastVerdict === "try_again") return spacedReviewConfig.scoring.tryAgainPerformance;
-  if (candidate.lastVerdict === "almost_there") return spacedReviewConfig.scoring.almostTherePerformance;
+  if (candidate.lastVerdict === "almost_there")
+    return spacedReviewConfig.scoring.almostTherePerformance;
   if (candidate.lastVerdict === null) return spacedReviewConfig.scoring.neverReviewedPerformance;
   return 0;
 }
 
-export function candidateScore(candidate: ReviewCandidate, now: Date, lastSelectedId?: string | null) {
+export function candidateScore(
+  candidate: ReviewCandidate,
+  now: Date,
+  lastSelectedId?: string | null,
+) {
   const overdueDays = (now.getTime() - Date.parse(candidate.nextDueAt)) / DAY_MS;
   const repeatPenalty =
     candidate.challengeId === lastSelectedId && candidate.lastVerdict !== "try_again"
@@ -76,10 +85,18 @@ export function candidateScore(candidate: ReviewCandidate, now: Date, lastSelect
   );
 }
 
-function compareCandidates(left: ReviewCandidate, right: ReviewCandidate, now: Date, lastSelectedId?: string | null) {
-  const scoreDifference = candidateScore(right, now, lastSelectedId) - candidateScore(left, now, lastSelectedId);
+function compareCandidates(
+  left: ReviewCandidate,
+  right: ReviewCandidate,
+  now: Date,
+  lastSelectedId?: string | null,
+) {
+  const scoreDifference =
+    candidateScore(right, now, lastSelectedId) - candidateScore(left, now, lastSelectedId);
   if (scoreDifference !== 0) return scoreDifference;
-  const lastReviewDifference = Date.parse(left.lastReviewedAt ?? left.learnedAt) - Date.parse(right.lastReviewedAt ?? right.learnedAt);
+  const lastReviewDifference =
+    Date.parse(left.lastReviewedAt ?? left.learnedAt) -
+    Date.parse(right.lastReviewedAt ?? right.learnedAt);
   if (lastReviewDifference !== 0) return lastReviewDifference;
   if (left.group !== right.group) return left.group === "Foundations" ? -1 : 1;
   return left.challengeId.localeCompare(right.challengeId);
@@ -92,8 +109,16 @@ export function selectReviewCandidate(input: {
   lastSelectedId?: string | null;
 }): ReviewSelection {
   if (!input.candidates.length) return { candidate: null, due: false };
-  const due = input.candidates.filter((candidate) => Date.parse(candidate.nextDueAt) <= input.now.getTime());
-  if (due.length) return { candidate: [...due].sort((a, b) => compareCandidates(a, b, input.now, input.lastSelectedId))[0]!, due: true };
+  const due = input.candidates.filter(
+    (candidate) => Date.parse(candidate.nextDueAt) <= input.now.getTime(),
+  );
+  if (due.length)
+    return {
+      candidate: [...due].sort((a, b) =>
+        compareCandidates(a, b, input.now, input.lastSelectedId),
+      )[0]!,
+      due: true,
+    };
   if (!input.manual) return { candidate: null, due: false };
   const candidate = [...input.candidates].sort((left, right) => {
     const dueDifference = Date.parse(left.nextDueAt) - Date.parse(right.nextDueAt);
@@ -112,14 +137,27 @@ export function shouldOfferAutomaticReview(input: {
 }) {
   if (!input.selection.candidate || !input.selection.due) return false;
   if (input.dismissedUntil && Date.parse(input.dismissedUntil) > input.now.getTime()) return false;
-  if (input.lastPromptedAt && input.now.getTime() - Date.parse(input.lastPromptedAt) < spacedReviewConfig.minAutoPromptGapHours * HOUR_MS) return false;
+  if (
+    input.lastPromptedAt &&
+    input.now.getTime() - Date.parse(input.lastPromptedAt) <
+      spacedReviewConfig.minAutoPromptGapHours * HOUR_MS
+  )
+    return false;
   const sevenDaysAgo = input.now.getTime() - 7 * DAY_MS;
-  return input.promptHistory.filter((timestamp) => Date.parse(timestamp) >= sevenDaysAgo).length < spacedReviewConfig.maxAutoPromptsPer7Days;
+  return (
+    input.promptHistory.filter((timestamp) => Date.parse(timestamp) >= sevenDaysAgo).length <
+    spacedReviewConfig.maxAutoPromptsPer7Days
+  );
 }
 
 export function reviewPromptCopy(candidate: ReviewCandidate, now: Date) {
-  const ageDays = Math.max(0, Math.floor((now.getTime() - Date.parse(candidate.learnedAt)) / DAY_MS));
-  if (ageDays <= 6) return `You learned about ${candidate.title} a few days ago. Can you still explain it in your own words?`;
-  if (ageDays <= 20) return `It’s been a little while since you worked with ${candidate.title}. Can you explain it in your own words?`;
+  const ageDays = Math.max(
+    0,
+    Math.floor((now.getTime() - Date.parse(candidate.learnedAt)) / DAY_MS),
+  );
+  if (ageDays <= 6)
+    return `You learned about ${candidate.title} a few days ago. Can you still explain it in your own words?`;
+  if (ageDays <= 20)
+    return `It’s been a little while since you worked with ${candidate.title}. Can you explain it in your own words?`;
   return `Let’s bring ${candidate.title} back for a quick review. Can you explain it in your own words?`;
 }

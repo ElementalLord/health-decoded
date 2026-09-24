@@ -62,18 +62,18 @@ deleted after trusted state verification.
 
 ## Security matrix
 
-| Resource | Read path | Write path | Final boundary | A→A | A→B / anon | Verification |
-|---|---|---|---|---|---|---|
-| Profile/settings | Server query/actions | explicit field updates/onboarding RPC | RLS + `auth.uid()` + column grant | allow | deny | live SQL + PostgREST pass |
-| Journey/progress | Server query | owner-derived SECURITY DEFINER RPCs | RLS; no direct progress writes | allow | deny | live SQL + PostgREST pass |
-| Reflections | server action | explicit insert/update/delete | transitive owner RLS | allow | deny | live metadata/RLS gate pass |
-| Spaced Review | server query | controlled RPCs | RLS + `auth.uid()` + due-state transition | allow | deny | live SQL + PostgREST pass |
-| Milestones/streak | server query/actions | own-row insert or RPC | RLS + `auth.uid()` | allow | deny | live SQL pass |
-| AI legacy tables | no active product path | no browser writes | RLS + revoked writes | deny/unused | deny | live metadata gate pass |
-| Published content | authenticated server query | no browser writes | published-only RLS | allow published | anon deny | live metadata gate pass |
-| Answer keys | evaluator RPC only | seed/admin only | all user grants revoked | evaluator only | deny | live grant gate pass |
-| AI/evaluator APIs | authenticated no-store POST | ephemeral provider request | `auth.getUser`, origin, JSON, bounded schema, limiter | allow | deny | deterministic tests |
-| Search API | authenticated no-store POST | none | auth, same-origin, JSON, 1 KiB bound | allow | deny | deterministic tests |
+| Resource          | Read path                   | Write path                            | Final boundary                                        | A→A             | A→B / anon | Verification                |
+| ----------------- | --------------------------- | ------------------------------------- | ----------------------------------------------------- | --------------- | ---------- | --------------------------- |
+| Profile/settings  | Server query/actions        | explicit field updates/onboarding RPC | RLS + `auth.uid()` + column grant                     | allow           | deny       | live SQL + PostgREST pass   |
+| Journey/progress  | Server query                | owner-derived SECURITY DEFINER RPCs   | RLS; no direct progress writes                        | allow           | deny       | live SQL + PostgREST pass   |
+| Reflections       | server action               | explicit insert/update/delete         | transitive owner RLS                                  | allow           | deny       | live metadata/RLS gate pass |
+| Spaced Review     | server query                | controlled RPCs                       | RLS + `auth.uid()` + due-state transition             | allow           | deny       | live SQL + PostgREST pass   |
+| Milestones/streak | server query/actions        | own-row insert or RPC                 | RLS + `auth.uid()`                                    | allow           | deny       | live SQL pass               |
+| AI legacy tables  | no active product path      | no browser writes                     | RLS + revoked writes                                  | deny/unused     | deny       | live metadata gate pass     |
+| Published content | authenticated server query  | no browser writes                     | published-only RLS                                    | allow published | anon deny  | live metadata gate pass     |
+| Answer keys       | evaluator RPC only          | seed/admin only                       | all user grants revoked                               | evaluator only  | deny       | live grant gate pass        |
+| AI/evaluator APIs | authenticated no-store POST | ephemeral provider request            | `auth.getUser`, origin, JSON, bounded schema, limiter | allow           | deny       | deterministic tests         |
+| Search API        | authenticated no-store POST | none                                  | auth, same-origin, JSON, 1 KiB bound                  | allow           | deny       | deterministic tests         |
 
 ## Findings and fixes
 

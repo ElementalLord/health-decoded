@@ -32,5 +32,5 @@ test("Module 3 fills an answer after three responses needing review", () => {
 test("Module 3 uses restrained motion and removes it when requested", () => {
   assert.doesNotMatch(styles, /infinite/);
   assert.match(styles, /prefers-reduced-motion: reduce/);
-  assert.match(styles, /\.stage:not\(\[hidden\]\) \{ animation: none; \}/);
+  assert.match(styles, /\.stage:not\(\[hidden\]\)\s*\{\s*animation: none;/);
 });

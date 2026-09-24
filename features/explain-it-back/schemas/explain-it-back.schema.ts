@@ -36,7 +36,11 @@ export const explainItBackRequestSchema = z
   .strict()
   .superRefine((value, context) => {
     if (value.mode === "spaced-review" && !value.resultToken) {
-      context.addIssue({ code: "custom", path: ["resultToken"], message: "A review result token is required." });
+      context.addIssue({
+        code: "custom",
+        path: ["resultToken"],
+        message: "A review result token is required.",
+      });
     }
   });
 

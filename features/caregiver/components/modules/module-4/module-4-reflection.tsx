@@ -8,7 +8,8 @@ import styles from "../../../styles/caregiver-module-4.module.css";
 export function Module4Reflection() {
   const item = caregiverModule4.reflection;
   const [saved, setSaved] = useState(false);
-  const { reflection, reflectionSkipped, setReflection, skipReflection, clearReflection } = useCaregiverSession();
+  const { reflection, reflectionSkipped, setReflection, skipReflection, clearReflection } =
+    useCaregiverSession();
   return (
     <section
       className={styles.reflection}
@@ -41,7 +42,14 @@ export function Module4Reflection() {
             Save reflection for this session
           </button>
           {!reflectionSkipped ? (
-            <button className={styles.skipAction} type="button" onClick={() => { skipReflection(); setSaved(false); }}>
+            <button
+              className={styles.skipAction}
+              type="button"
+              onClick={() => {
+                skipReflection();
+                setSaved(false);
+              }}
+            >
               {item.skip}
             </button>
           ) : null}
@@ -60,7 +68,13 @@ export function Module4Reflection() {
           </button>
         </div>
       </form>
-      <p className={styles.srOnly} aria-live="polite">{saved ? "Reflection saved for this session." : reflectionSkipped ? "Reflection skipped for this session." : ""}</p>
+      <p className={styles.srOnly} aria-live="polite">
+        {saved
+          ? "Reflection saved for this session."
+          : reflectionSkipped
+            ? "Reflection skipped for this session."
+            : ""}
+      </p>
     </section>
   );
 }
