@@ -142,6 +142,7 @@
     @apply min-h-dvh bg-background font-sans text-foreground antialiased;
     line-height: 1.5;
     overflow-x: clip;
+    overscroll-behavior: none;
   }
 
   img,
@@ -162,6 +163,9 @@
   }
 
   html {
+    background-color: var(--background);
+    min-height: 100%;
+    overscroll-behavior: none;
     scroll-behavior: smooth;
   }
 
@@ -171,6 +175,10 @@
 }
 
 @layer utilities {
+  .app-page-container {
+    --shell-top-inset: clamp(1.5rem, 4vw, 3rem);
+  }
+
   .app-readiness-gate {
     min-height: 100dvh;
   }
@@ -184,23 +192,8 @@
     pointer-events: none;
   }
 
-  .app-readiness-gate[data-ready="false"]
-    [data-ready-content]
-    :is(
-      .motion-page,
-      .animate-page-in,
-      .motion-cascade > *,
-      .motion-empty > div > *,
-      .stagger-children > *
-    ) {
-    animation-delay: 0ms !important;
-    animation-duration: 1ms !important;
-  }
-
   .app-readiness-gate[data-ready="true"] [data-ready-content] {
-    /* Keep this wrapper transform-free so viewport-fixed UI (including the
-       companion trigger) remains anchored to the viewport while scrolling. */
-    animation: fade-in var(--duration-page) var(--ease-standard) both;
+    opacity: 1;
   }
 
   .app-readiness-status {
@@ -212,6 +205,20 @@
     padding: clamp(7rem, 18vh, 11rem) clamp(1.25rem, 5vw, 3rem) 3rem;
     position: fixed;
     z-index: 9999;
+  }
+
+  .app-readiness-route-snapshot {
+    background: var(--background);
+    inset: 0;
+    overflow: auto;
+    position: fixed;
+    z-index: 9998;
+  }
+
+  .app-readiness-route-snapshot:not([hidden]) + .app-readiness-status {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
   }
 
   .app-readiness-gate[data-ready="true"] .app-readiness-status {
@@ -262,7 +269,9 @@
   }
 
   .shell-mobile-offset {
-    padding-bottom: calc(9rem + env(safe-area-inset-bottom));
+    --shell-bottom-inset: calc(9rem + env(safe-area-inset-bottom));
+
+    padding-bottom: var(--shell-bottom-inset);
   }
 
   .ai-companion-trigger {
@@ -271,7 +280,7 @@
 
   @media (min-width: 80rem) {
     .shell-mobile-offset {
-      padding-bottom: 2rem;
+      --shell-bottom-inset: 2rem;
     }
 
     .ai-companion-trigger {
@@ -349,7 +358,8 @@
   }
 
   .motion-page {
-    animation: page-settle var(--duration-page) var(--ease-standard) both;
+    opacity: 1;
+    transform: none;
   }
 
   .motion-cascade > * {
@@ -509,10 +519,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .app-readiness-gate[data-ready="true"] [data-ready-content] {
-    animation: fade-in var(--duration-fast) ease-out both;
-  }
-
   .app-readiness-lines span {
     animation: none;
   }
@@ -557,16 +563,16 @@
 @supports (animation-timeline: view()) {
   .motion-reveal,
   .motion-reveal-list > * {
-    animation: scroll-reveal 1ms linear both;
-    animation-range: entry 5% entry 30%;
-    animation-timeline: view();
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 
   .home-scroll-fade,
   .home-scroll-fade-list > * {
-    animation: home-scroll-fade-in 1ms linear both;
-    animation-range: entry 0% cover 42%;
-    animation-timeline: view();
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -756,7 +762,7 @@
   }
 
   .shell-mobile-offset {
-    padding-bottom: calc(7.75rem + env(safe-area-inset-bottom));
+    --shell-bottom-inset: calc(7.75rem + env(safe-area-inset-bottom));
   }
 
   .app-header-inner {

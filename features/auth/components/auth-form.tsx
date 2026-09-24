@@ -53,7 +53,7 @@ export function AuthForm({
   const hasError = state.status === "error";
 
   return (
-    <form action={formAction} className="space-y-5" noValidate>
+    <form action={formAction} className="space-y-6" noValidate>
       {next ? <input name="next" type="hidden" value={next} /> : null}
       {needsEmail ? (
         <label className="grid gap-2 text-sm font-medium" htmlFor={`${mode}-email`}>
@@ -83,6 +83,7 @@ export function AuthForm({
             aria-invalid={hasError || undefined}
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             id={`${mode}-password`}
+            minLength={mode === "signup" || mode === "reset-password" ? 8 : undefined}
             name="password"
             required
             type="password"
@@ -92,7 +93,7 @@ export function AuthForm({
               className="text-xs font-normal leading-5 text-muted-foreground"
               id={passwordHelpId}
             >
-              Use at least 12 characters.
+              Use at least 8 characters.
             </span>
           ) : null}
         </label>
@@ -105,6 +106,7 @@ export function AuthForm({
             aria-invalid={hasError || undefined}
             autoComplete="new-password"
             id={`${mode}-confirmation`}
+            minLength={8}
             name="passwordConfirmation"
             required
             type="password"
@@ -155,15 +157,23 @@ export function AuthForm({
         {pending ? pendingLabel : submitLabel}
       </Button>
       {mode === "login" ? (
-        <p className="text-sm text-muted-foreground">
-          <Link className="text-primary underline" href="/forgot-password">
-            Forgot password?
-          </Link>{" "}
-          ·{" "}
-          <Link className="text-primary underline" href="/signup">
-            Create an account
-          </Link>
-        </p>
+        <div className="space-y-5 border-t border-border pt-6 text-sm text-muted-foreground">
+          <p>
+            <Link
+              className="font-medium text-primary underline underline-offset-4"
+              href="/forgot-password"
+            >
+              Forgot password?
+            </Link>
+          </p>
+          <p>
+            Don&apos;t have an account yet?{" "}
+            <Link className="font-medium text-primary underline underline-offset-4" href="/signup">
+              Register here
+            </Link>
+            .
+          </p>
+        </div>
       ) : null}
       {mode === "signup" ? (
         <p className="text-sm text-muted-foreground">
@@ -174,11 +184,10 @@ export function AuthForm({
         </p>
       ) : null}
       {mode !== "signup" ? (
-        <p className="text-sm text-muted-foreground">
+        <p className="flex flex-wrap gap-x-6 gap-y-3 border-t border-border/70 pt-5 text-sm text-muted-foreground">
           <Link className="text-primary underline" href="/privacy">
             Privacy Policy
-          </Link>{" "}
-          ·{" "}
+          </Link>
           <Link className="text-primary underline" href="/terms">
             Terms of Use
           </Link>

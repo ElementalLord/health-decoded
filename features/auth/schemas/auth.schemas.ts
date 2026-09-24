@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const email = z.string().trim().email("Enter a valid email address.").max(254);
 const existingPassword = z.string().min(1, "Enter your password.").max(128);
-const newPassword = z.string().min(12, "Use at least 12 characters.").max(128);
+const newPassword = z.string().min(8, "Use at least 8 characters.").max(128);
 
 export const loginSchema = z.object({ email, password: existingPassword });
 export const forgotPasswordSchema = z.object({ email });

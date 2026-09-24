@@ -74,13 +74,13 @@ export default async function ProtectedLayout({ children }: { children: ReactNod
   const routes = isOnboarding ? undefined : protectedApplicationRoutes;
   return settings.ok ? (
     <AppShell preferences={settings.data} routes={routes}>
+      {!isOnboarding ? <MilestoneNotificationHost userId={user.data.id} /> : null}
       {children}
-      {!isOnboarding ? <MilestoneNotificationHost /> : null}
     </AppShell>
   ) : (
     <AppShell routes={routes}>
+      {!isOnboarding ? <MilestoneNotificationHost userId={user.data.id} /> : null}
       {children}
-      {!isOnboarding ? <MilestoneNotificationHost /> : null}
     </AppShell>
   );
 }

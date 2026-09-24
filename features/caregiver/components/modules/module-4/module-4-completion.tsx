@@ -35,7 +35,9 @@ export function Module4Completion({ onReview }: { onReview: () => void }) {
       </dl>
       {done ? <p>{item.keyIdea}</p> : null}
       <div className={styles.completionActions}>
-        <button type="button" onClick={onReview}>{item.review}</button>
+        <button type="button" onClick={onReview}>
+          {item.review}
+        </button>
         <Link href="/caregiver/modules/the-caregiver-matters-too">{item.continue}</Link>
         <Link href="/caregiver">{item.return}</Link>
       </div>

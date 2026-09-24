@@ -1,16 +1,24 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { CURRENT_PATH_HEADER } from "@/lib/auth/redirects";
+import { PASSWORD_RECOVERY_SESSION_COOKIE } from "@/lib/auth/password-recovery";
+import { CURRENT_PATH_HEADER, RESET_PASSWORD_PATH } from "@/lib/auth/redirects";
+import { isSupabaseAuthSessionCookieName } from "@/lib/auth/supabase-session";
 import { getPublicEnv } from "@/lib/env/public";
 import { getCachedSigningKeys } from "@/services/supabase/signing-keys";
 import type { Database } from "@/types/database";
 
 const protectedRoutePrefixes = [
   "/account",
+  "/appointment-prep",
   "/caregiver",
+  "/decode-the-label",
+  "/explain-it-back",
+  "/glossary",
   "/journey",
   "/lessons",
+  "/milestones",
+  "/myth-check",
   "/onboarding",
   "/profile",
   "/progress",
@@ -22,6 +30,7 @@ const protectedRoutePrefixes = [
 
 const publicRoutePaths = new Set(["/caregiver/urgent-help", "/caregiver/urgent-help/"]);
 const sessionAwareAuthRoutePaths = new Set([
+  "/forgot-password",
   "/login",
   "/reset-password",
   "/signup",
@@ -79,6 +88,39 @@ export async function refreshSession(request: NextRequest) {
       },
     },
   );
+
+  if (
+    request.cookies.has(PASSWORD_RECOVERY_SESSION_COOKIE) &&
+    request.nextUrl.pathname !== RESET_PASSWORD_PATH
+  ) {
+    // A recovery link creates a real Supabase session solely to authorize the password update.
+    // Leaving the reset route must never promote that temporary session into a normal login.
+    await supabase.auth.signOut({ scope: "local" });
+
+    for (const cookie of request.cookies.getAll()) {
+      if (isSupabaseAuthSessionCookieName(cookie.name)) {
+        response.cookies.delete(cookie.name);
+      }
+    }
+    response.cookies.delete(PASSWORD_RECOVERY_SESSION_COOKIE);
+
+    // A stale recovery cookie must not swallow the Server Action that requests a replacement
+    // email. The response still clears the temporary session while the POST continues normally.
+    if (request.nextUrl.pathname === "/forgot-password" && request.method === "POST") {
+      return response;
+    }
+
+    const destination = request.nextUrl.clone();
+    if (protectedRoute) {
+      destination.pathname = "/login";
+      destination.search = "";
+      destination.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
+    }
+
+    const redirectResponse = copyResponseCookies(response, NextResponse.redirect(destination));
+    return redirectResponse;
+  }
+
   // `getClaims()` reads the session (refreshing it when needed, which writes the
   // rotated cookies through `setAll` above) and then verifies the access token's
   // signature locally against the project's public JWKS. Passing the cached key

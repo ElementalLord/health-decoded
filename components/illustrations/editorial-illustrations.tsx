@@ -174,6 +174,7 @@ function SteadyingHandIllustration({
       aria-label={title}
       className={cn("h-auto w-full", className)}
       role="img"
+      shapeRendering="geometricPrecision"
       viewBox="0 0 520 420"
       {...props}
     >
@@ -196,14 +197,14 @@ function SteadyingHandIllustration({
       <g className={styles.risingPerson}>
         <circle cx="342" cy="128" fill="#c7b098" r="44" />
         <path
-          d="M301 119c4-37 28-56 58-49 17 4 30 18 35 39-16-8-29-11-44-10-17 1-31 7-49 20Z"
+          d="M299 122c4-39 29-59 61-51 18 4 31 19 36 40-17-9-30-12-45-11-18 1-33 8-52 22Z"
           fill="#9d8874"
         />
-        <path d="M303 116c3 30 25 47 63 49" fill="none" stroke="#9d8874" strokeWidth="14" />
         <path d="M293 187c0-19 15-34 34-34h39c19 0 34 15 34 34l10 169H282l11-169Z" fill="#6f947a" />
       </g>
-      <g className={styles.helpingHands}>
+      <g>
         <path
+          className={styles.supportingArm}
           d="M211 219c37 64 57 82 91 101"
           fill="none"
           stroke="#b96c55"
@@ -211,13 +212,14 @@ function SteadyingHandIllustration({
           strokeWidth="25"
         />
         <path
+          className={styles.liftingArm}
           d="M309 223c-23 50-41 76-70 97"
           fill="none"
           stroke="#6f947a"
           strokeLinecap="round"
           strokeWidth="25"
         />
-        <circle cx="270" cy="314" fill="#d1b59a" r="18" />
+        <circle className={styles.claspedHands} cx="270" cy="314" fill="#d1b59a" r="18" />
       </g>
     </svg>
   );

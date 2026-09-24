@@ -323,14 +323,14 @@ export function AppointmentPrepPage() {
   function printSummary() {
     const priorTitle = document.title;
     document.title = PRINT_DOCUMENT_TITLE;
+    void recognizeMilestone({
+      event: "appointment_summary_exported",
+      hasSummary: Boolean(summary.sections.length),
+    });
     window.addEventListener(
       "afterprint",
       () => {
         document.title = priorTitle;
-        void recognizeMilestone({
-          event: "appointment_summary_exported",
-          hasSummary: Boolean(summary.sections.length),
-        });
       },
       { once: true },
     );

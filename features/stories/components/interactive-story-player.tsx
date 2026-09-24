@@ -4,6 +4,8 @@ import { ArrowLeft, ArrowRight, Check, ChevronLeft, RotateCcw } from "lucide-rea
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
+import { isStoryMilestoneId } from "@/features/achievements/content/milestone-activity-ids";
 import { StoryInteraction } from "@/features/stories/components/story-interactions";
 import { StoryOpening } from "@/features/stories/components/story-opening";
 import {
@@ -248,6 +250,12 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
     if (!hydrated) return;
     if (!safeSetLocalStorage(storageKey, JSON.stringify(progress))) setStorageAvailable(false);
   }, [hydrated, progress, storageKey]);
+
+  useEffect(() => {
+    if (hydrated && progress.storyCompleted && isStoryMilestoneId(story.slug)) {
+      void recognizeMilestone({ event: "interactive_story_completed", storyId: story.slug });
+    }
+  }, [hydrated, progress.storyCompleted, story.slug]);
 
   useEffect(
     () => () => {

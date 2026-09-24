@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/modal";
 import { ContextualNextStep } from "@/features/cohesion/components/contextual-next-step";
 import { AiTutorTrigger } from "@/features/ai/components/ai-tutor-trigger";
 import { getNextLearningAction } from "@/features/cohesion/lib/get-next-learning-action";
@@ -40,7 +41,9 @@ function GlossaryEntry({ entry }: { entry: MedicalGlossaryEntry }) {
             <p>{entry.commonlyConfusedWith.explanation}</p>
           </aside>
         ) : null}
-        {continuation ? <ContextualNextStep action={continuation} /> : null}
+        {continuation ? (
+          <ContextualNextStep action={continuation} className={styles.nextStep} />
+        ) : null}
       </dd>
     </div>
   );
@@ -49,6 +52,7 @@ function GlossaryEntry({ entry }: { entry: MedicalGlossaryEntry }) {
 export function MedicalGlossaryPage() {
   const [query, setQuery] = useState("");
   const [selectedLetter, setSelectedLetter] = useState("All");
+  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const resultsViewportRef = useRef<HTMLDivElement>(null);
 
@@ -119,10 +123,6 @@ export function MedicalGlossaryPage() {
             Medical Glossary
           </h1>
           <p className={styles.supporting}>Understand common words used in diabetes care.</p>
-          <p className={styles.boundary}>
-            This glossary explains general medical language. It does not interpret personal
-            symptoms, test results, medicines, or treatment decisions.
-          </p>
         </header>
 
         <section aria-labelledby="glossary-search-heading" className={styles.searchArea}>
@@ -276,7 +276,31 @@ export function MedicalGlossaryPage() {
             </div>
           </section>
         )}
+
+        <footer className={styles.glossaryFooter}>
+          <Button
+            className={styles.disclaimerButton}
+            fullWidth={false}
+            onClick={() => setDisclaimerOpen(true)}
+            variant="text"
+          >
+            About this glossary
+          </Button>
+        </footer>
       </div>
+
+      <Modal
+        description="This glossary explains general medical language. It does not interpret personal symptoms, test results, medicines, or treatment decisions."
+        onOpenChange={setDisclaimerOpen}
+        open={disclaimerOpen}
+        title="About this glossary"
+      >
+        <div className={styles.disclaimerActions}>
+          <Button fullWidth={false} onClick={() => setDisclaimerOpen(false)}>
+            Close
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

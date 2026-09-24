@@ -234,7 +234,7 @@ export function DiabetesMythCheck() {
   function replay() {
     const ids = new Set(misunderstood.map((answer) => answer.cardId));
     setIsReplay(true);
-    begin(round.filter((entry) => ids.has(entry.id)));
+    begin(misunderstood.length ? round.filter((entry) => ids.has(entry.id)) : round);
   }
 
   function reviewSources(cardId: string) {
@@ -410,11 +410,10 @@ export function DiabetesMythCheck() {
           ) : null}
 
           <div className={styles.summaryActions}>
-            {misunderstood.length ? (
-              <Button fullWidth={false} onClick={replay}>
-                <RotateCcw aria-hidden="true" /> Replay these claims
-              </Button>
-            ) : null}
+            <Button fullWidth={false} onClick={replay}>
+              <RotateCcw aria-hidden="true" />
+              {misunderstood.length ? "Replay these claims" : "Replay this round"}
+            </Button>
             <Button fullWidth={false} onClick={() => setPhase("start")} variant="secondary">
               Start another round
             </Button>

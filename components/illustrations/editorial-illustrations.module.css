@@ -3,7 +3,9 @@
 .embraceArm,
 .steadyPerson,
 .risingPerson,
-.helpingHands,
+.supportingArm,
+.liftingArm,
+.claspedHands,
 .completionScene,
 .sunScene,
 .cupScene,
@@ -14,53 +16,66 @@
 
 .companionLeft {
   transform-origin: bottom center;
-  animation: lean-in-left 7s ease-in-out 2;
+  animation: lean-in-left 8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
 }
 
 .companionRight {
   transform-origin: bottom center;
-  animation: lean-in-right 7s ease-in-out 2;
+  animation: lean-in-right 8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
 }
 
 .embraceArm {
   transform-origin: 274px 207px;
-  animation: close-embrace 7s ease-in-out 2;
+  animation: close-embrace 8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
 }
 
 .steadyPerson {
   transform-origin: bottom center;
-  animation: steady-support 8s ease-in-out 2;
+  animation: steady-support 7.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
 }
 
 .risingPerson {
   transform-origin: bottom center;
-  animation: rise-with-help 8s ease-in-out 2;
+  animation: rise-with-help 7.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
 }
 
-.helpingHands {
+.liftingArm {
+  transform-box: view-box;
+  transform-origin: 239px 320px;
+  animation: lifting-arm 7.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
+}
+
+.claspedHands {
   transform-origin: center;
-  animation: hands-connect 8s ease-in-out 2;
+  animation: clasp-settle 7.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
 }
 
 .completionScene {
   transform-origin: center bottom;
-  animation: completion-settle 6s ease-in-out 2;
+  animation: completion-settle 6s ease-in-out infinite;
 }
 
 .sunScene {
   transform-origin: center bottom;
-  animation: sun-breathe 7s ease-in-out 2;
+  animation: sun-breathe 7s ease-in-out infinite;
 }
 
 .cupScene {
   transform-origin: center bottom;
-  animation: cup-settle 6s ease-in-out 2;
+  animation: cup-settle 6s ease-in-out infinite;
 }
 
 .steamOne,
 .steamTwo {
   transform-origin: center bottom;
-  animation: steam-rise 3.8s ease-in-out 3;
+  animation: steam-rise 3.8s ease-in-out infinite;
 }
 
 .steamTwo {
@@ -69,77 +84,94 @@
 
 @keyframes lean-in-left {
   0%,
-  18%,
   100% {
     transform: rotate(0deg) translateX(0);
   }
-  34%,
-  78% {
-    transform: rotate(1.6deg) translateX(4px);
+  28%,
+  70% {
+    transform: rotate(1.25deg) translateX(3px);
   }
 }
 
 @keyframes lean-in-right {
   0%,
-  18%,
   100% {
     transform: rotate(0deg) translateX(0);
   }
-  34%,
-  78% {
-    transform: rotate(-2deg) translateX(-5px);
+  28%,
+  70% {
+    transform: rotate(-1.5deg) translateX(-4px);
   }
 }
 
 @keyframes close-embrace {
   0%,
-  18%,
   100% {
-    transform: rotate(-7deg) translate(-8px, 2px);
+    transform: rotate(-5deg) translate(-6px, 2px);
   }
-  36%,
-  78% {
+  30%,
+  70% {
     transform: rotate(0deg) translate(0, 0);
   }
 }
 
 @keyframes steady-support {
   0%,
+  14%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0) rotate(0deg);
   }
-  20%,
-  44% {
-    transform: translateY(5px) rotate(1deg);
+  40%,
+  60% {
+    transform: translateY(-3px) rotate(-1.25deg);
   }
-  68% {
-    transform: translateY(0);
+  82% {
+    transform: translateY(-1px) rotate(-0.35deg);
   }
 }
 
 @keyframes rise-with-help {
   0%,
-  18% {
-    transform: translateY(18px) rotate(3deg);
-  }
-  60%,
-  88%,
+  14%,
   100% {
-    transform: translateY(0) rotate(0deg);
+    transform: translateY(26px) rotate(2deg);
+  }
+  40%,
+  60% {
+    transform: translateY(-5px) rotate(0deg);
+  }
+  82% {
+    transform: translateY(18px) rotate(1.4deg);
   }
 }
 
-@keyframes hands-connect {
+@keyframes lifting-arm {
   0%,
-  15% {
-    opacity: 0.65;
+  14%,
+  100% {
+    transform: scaleY(0.73);
+  }
+  40%,
+  60% {
+    transform: scaleY(1.05);
+  }
+  82% {
+    transform: scaleY(0.81);
+  }
+}
+
+@keyframes clasp-settle {
+  0%,
+  14%,
+  100% {
     transform: scale(0.94);
   }
-  32%,
-  88%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
+  40%,
+  60% {
+    transform: scale(1.06);
+  }
+  82% {
+    transform: scale(0.97);
   }
 }
 
@@ -191,7 +223,9 @@
   .embraceArm,
   .steadyPerson,
   .risingPerson,
-  .helpingHands,
+  .supportingArm,
+  .liftingArm,
+  .claspedHands,
   .completionScene,
   .sunScene,
   .cupScene,
@@ -206,7 +240,9 @@
 :global([data-reduced-motion="true"]) .embraceArm,
 :global([data-reduced-motion="true"]) .steadyPerson,
 :global([data-reduced-motion="true"]) .risingPerson,
-:global([data-reduced-motion="true"]) .helpingHands,
+:global([data-reduced-motion="true"]) .supportingArm,
+:global([data-reduced-motion="true"]) .liftingArm,
+:global([data-reduced-motion="true"]) .claspedHands,
 :global([data-reduced-motion="true"]) .completionScene,
 :global([data-reduced-motion="true"]) .sunScene,
 :global([data-reduced-motion="true"]) .cupScene,

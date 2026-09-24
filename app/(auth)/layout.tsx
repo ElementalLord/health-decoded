@@ -20,7 +20,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             <CompanionIllustration className="mx-auto max-h-[min(38dvh,24rem)] max-w-md" />
             <p className="editorial-eyebrow mt-4 text-center">The guardian&apos;s embrace</p>
             <h2 className="mt-8 text-center font-serif-display text-4xl font-normal leading-tight text-balance xl:text-5xl">
-              The first 90 days, decoded.
+              Clear answers. Gentle guidance. Your pace.
             </h2>
             <p className="mx-auto mt-5 max-w-md text-center text-pretty leading-8 text-muted-foreground">
               A private learning companion for life after a Type 2 diabetes diagnosis. One calm

@@ -1,8 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
-import { recognizeMilestoneEvent } from "@/features/achievements/services/milestones.server";
+import {
+  acknowledgeMilestoneAnnouncements,
+  getPendingMilestoneAnnouncements,
+  recognizeMilestoneEvent,
+} from "@/features/achievements/services/milestones.server";
+import {
+  isExplainItBackMilestoneId,
+  isResourceMilestoneId,
+  isStoryMilestoneId,
+} from "@/features/achievements/content/milestone-activity-ids";
 import type { MilestoneEvent } from "@/features/achievements/types/milestone";
 import { settleOptional } from "@/lib/reliability/dependency-boundary";
 
@@ -16,7 +23,17 @@ function parseEvent(input: unknown): MilestoneEvent | null {
   switch (value.event) {
     case "myth_round_completed":
     case "myth_replay_completed":
+    case "spaced_review_completed":
+    case "decode_label_completed":
       return { event: value.event };
+    case "explain_it_back_completed":
+      return isExplainItBackMilestoneId(value.challengeId)
+        ? { event: value.event, challengeId: value.challengeId }
+        : null;
+    case "interactive_story_completed":
+      return isStoryMilestoneId(value.storyId)
+        ? { event: value.event, storyId: value.storyId }
+        : null;
     case "myth_sources_reviewed":
       return isCount(value.distinctClaimCount)
         ? { event: value.event, distinctClaimCount: Number(value.distinctClaimCount) }
@@ -42,11 +59,32 @@ function parseEvent(input: unknown): MilestoneEvent | null {
         ? { event: value.event, hasSummary: value.hasSummary }
         : null;
     case "caregiver_module_completed":
-      return value.moduleId === "CG-M1" || value.moduleId === "CG-M2"
+      return value.moduleId === "CG-M1" ||
+        value.moduleId === "CG-M2" ||
+        value.moduleId === "CG-M3" ||
+        value.moduleId === "CG-M4" ||
+        value.moduleId === "CG-M5"
         ? { event: value.event, moduleId: value.moduleId }
         : null;
+    case "caregiver_module_progressed":
+      return (value.moduleId === "CG-M1" ||
+        value.moduleId === "CG-M2" ||
+        value.moduleId === "CG-M3" ||
+        value.moduleId === "CG-M4" ||
+        value.moduleId === "CG-M5") &&
+        typeof value.centralIdeaReached === "boolean" &&
+        typeof value.coreApplicationCompleted === "boolean" &&
+        typeof value.takeawayViewed === "boolean"
+        ? {
+            event: value.event,
+            moduleId: value.moduleId,
+            centralIdeaReached: value.centralIdeaReached,
+            coreApplicationCompleted: value.coreApplicationCompleted,
+            takeawayViewed: value.takeawayViewed,
+          }
+        : null;
     case "verified_support_resource_opened":
-      return value.resourceId === "diabetes-education-and-support"
+      return isResourceMilestoneId(value.resourceId)
         ? { event: value.event, resourceId: value.resourceId }
         : null;
     default:
@@ -56,13 +94,34 @@ function parseEvent(input: unknown): MilestoneEvent | null {
 
 export async function recognizeMilestoneAction(input: unknown) {
   const event = parseEvent(input);
-  if (!event) return { ok: false as const, milestoneIds: [] as string[] };
+  if (!event)
+    return { ok: false as const, retryable: false as const, milestoneIds: [] as string[] };
   const recognized = await settleOptional(
     () => recognizeMilestoneEvent(event, { recordStreak: true }),
     null,
   );
-  if (!recognized?.ok) return { ok: false as const, milestoneIds: [] as string[] };
-  revalidatePath("/milestones");
-  revalidatePath("/journey");
+  if (!recognized?.ok)
+    return { ok: false as const, retryable: true as const, milestoneIds: [] as string[] };
   return { ok: true as const, milestoneIds: [...recognized.data] };
+}
+
+export async function getPendingMilestoneAnnouncementsAction() {
+  const pending = await settleOptional(() => getPendingMilestoneAnnouncements(), null);
+  if (!pending?.ok) return { ok: false as const, milestoneIds: [] as string[] };
+  return { ok: true as const, milestoneIds: [...pending.data] };
+}
+
+export async function acknowledgeMilestoneAnnouncementsAction(input: unknown) {
+  if (!Array.isArray(input)) return { ok: false as const };
+  const milestoneIds = input.filter(
+    (value): value is string => typeof value === "string" && value.length <= 80,
+  );
+  if (milestoneIds.length !== input.length || milestoneIds.length > 50) {
+    return { ok: false as const };
+  }
+  const acknowledged = await settleOptional(
+    () => acknowledgeMilestoneAnnouncements(milestoneIds),
+    null,
+  );
+  return { ok: Boolean(acknowledged?.ok) } as const;
 }

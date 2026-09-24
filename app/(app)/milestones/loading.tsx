@@ -1,4 +1,21 @@
-import { PageLoadingState } from "@/components/shared/page-loading-state";
 export default function MilestonesLoading() {
-  return <PageLoadingState label="Opening milestones"><div className="h-20 animate-pulse rounded bg-muted" /><div className="h-72 animate-pulse rounded bg-muted" /></PageLoadingState>;
+  return (
+    <section
+      aria-label="Opening milestones"
+      className="mx-auto w-full max-w-6xl px-5 py-8"
+      data-route-loading
+      role="status"
+    >
+      <div className="h-24 max-w-3xl animate-pulse rounded-xl bg-muted" />
+      <div className="mt-12 grid grid-cols-3 gap-8 sm:grid-cols-4 lg:grid-cols-6">
+        {Array.from({ length: 18 }, (_, index) => (
+          <div
+            aria-hidden="true"
+            className="mx-auto aspect-square w-full max-w-28 animate-pulse rounded-full bg-muted"
+            key={index}
+          />
+        ))}
+      </div>
+    </section>
+  );
 }

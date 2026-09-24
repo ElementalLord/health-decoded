@@ -6,6 +6,8 @@ import {
   ArrowRight,
   ArrowUpRight,
   Check,
+  ChevronDown,
+  ChevronUp,
   CircleHelp,
   MessageSquareText,
   Search,
@@ -14,7 +16,14 @@ import {
   Tags,
   X,
 } from "lucide-react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import {
   createContext,
   useContext,
@@ -25,7 +34,10 @@ import {
   type ReactNode,
 } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
+import { isResourceMilestoneId } from "@/features/achievements/content/milestone-activity-ids";
 import type { Resource } from "@/features/stories/schemas/resource.schema";
 import { formatDateSafely } from "@/lib/dates/format-date";
 
@@ -61,6 +73,7 @@ type ResourceVisual = {
 };
 
 const VIEWED_STORAGE_KEY = "health-decoded:resources:viewed";
+const COLLAPSED_RESOURCE_COUNT = 6;
 
 const ReadingProgressContext = createContext<ReadingProgressValue | null>(null);
 
@@ -286,10 +299,10 @@ function ResourceLink({
       href={resource.url}
       onClick={() => {
         markViewed(resource.id);
-        if (resource.id === "diabetes-education-and-support") {
+        if (isResourceMilestoneId(resource.id)) {
           void recognizeMilestone({
             event: "verified_support_resource_opened",
-            resourceId: "diabetes-education-and-support",
+            resourceId: resource.id,
           });
         }
       }}
@@ -437,14 +450,11 @@ function ReadingProgressPanel({ total }: { total: number }) {
   const percent = total === 0 ? 0 : Math.round((viewedCount / total) * 100);
 
   return (
-    <section aria-labelledby="reading-record-title" className={styles.readingRecord}>
+    <div className={styles.readingRecord}>
       <div className={styles.readingRecordHeading}>
-        <div>
-          <p>Your reading record</p>
-          <h2 id="reading-record-title">
-            {viewedCount} of {total} articles viewed
-          </h2>
-        </div>
+        <h2>
+          {viewedCount} of {total} articles viewed
+        </h2>
         {viewedCount > 0 ? (
           <button onClick={clearViewed} type="button">
             Clear viewed history
@@ -466,7 +476,7 @@ function ReadingProgressPanel({ total }: { total: number }) {
           ? "Articles receive a “Viewed” check when you open them. Your record stays in this browser."
           : "Viewed marks will last only until this page closes because browser storage is unavailable."}
       </p>
-    </section>
+    </div>
   );
 }
 
@@ -474,42 +484,58 @@ function FloatingTools() {
   const reduceMotion = useReducedMotion();
   const boundaryRef = useRef<HTMLDivElement>(null);
   const toolsRef = useRef<HTMLElement>(null);
-  const [scrollRange, setScrollRange] = useState(0);
-  const { scrollYProgress } = useScroll({
-    offset: ["start 14%", "end 86%"],
-    target: boundaryRef,
-  });
-  const scrollTravel = useTransform(scrollYProgress, [0, 1], [0, scrollRange]);
-  const smoothScrollTravel = useSpring(scrollTravel, {
+  const metricsRef = useRef({ maxTravel: 0, startScroll: 0 });
+  const targetTravel = useMotionValue(0);
+  const { scrollY } = useScroll();
+  const smoothTravel = useSpring(targetTravel, {
     damping: 18,
     mass: 0.95,
     stiffness: 48,
   });
-  const smoothTransform = useTransform(
-    smoothScrollTravel,
-    (value) => `translate3d(0, ${value}px, 0)`,
-  );
+  const smoothTransform = useTransform(smoothTravel, (value) => `translate3d(0, ${value}px, 0)`);
 
   useEffect(() => {
     const boundary = boundaryRef.current;
     const tools = toolsRef.current;
     if (!boundary || !tools) return;
 
-    const updateScrollRange = () => {
-      setScrollRange(Math.max(0, boundary.clientHeight - tools.offsetHeight));
-    };
-    const resizeObserver = new ResizeObserver(updateScrollRange);
+    const updateMetrics = () => {
+      const currentScroll = scrollY.get();
+      const boundaryTop = boundary.getBoundingClientRect().top + currentScroll;
+      const viewportAnchor = Math.max(0, (window.innerHeight - tools.offsetHeight) / 2);
+      const maxTravel = Math.max(0, boundary.clientHeight - tools.offsetHeight);
 
-    updateScrollRange();
+      metricsRef.current = {
+        maxTravel,
+        startScroll: boundaryTop - viewportAnchor,
+      };
+
+      // A taller expanded section must not pull the tool rail forward. A
+      // shorter section may only bring it back inside the new boundary.
+      if (targetTravel.get() > maxTravel) targetTravel.set(maxTravel);
+    };
+
+    const updateTravel = (currentScroll: number) => {
+      const { maxTravel, startScroll } = metricsRef.current;
+      const nextTravel = Math.min(maxTravel, Math.max(0, currentScroll - startScroll));
+      targetTravel.set(nextTravel);
+    };
+
+    updateMetrics();
+    updateTravel(scrollY.get());
+
+    const resizeObserver = new ResizeObserver(updateMetrics);
     resizeObserver.observe(boundary);
     resizeObserver.observe(tools);
-    window.addEventListener("resize", updateScrollRange);
+    const stopFollowingScroll = scrollY.on("change", updateTravel);
+    window.addEventListener("resize", updateMetrics);
 
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener("resize", updateScrollRange);
+      stopFollowingScroll();
+      window.removeEventListener("resize", updateMetrics);
     };
-  }, []);
+  }, [scrollY, targetTravel]);
 
   return (
     <div className={styles.toolRailBoundary} ref={boundaryRef}>
@@ -561,14 +587,7 @@ function FloatingTools() {
 
 function SourceNote() {
   return (
-    <aside className={styles.sourceNote}>
-      <div className={styles.sourceNoteHeading}>
-        <Stethoscope aria-hidden="true" size={24} strokeWidth={1.45} />
-        <div>
-          <p>Editor&apos;s source note</p>
-          <h2>Why these sources?</h2>
-        </div>
-      </div>
+    <div className={styles.sourceNote}>
       <div className={styles.sourceExplanation}>
         <div>
           <span>CDC</span>
@@ -579,7 +598,7 @@ function SourceNote() {
           <p>NIH health explainers with deeper detail on tests, treatments, and the whole body.</p>
         </div>
       </div>
-    </aside>
+    </div>
   );
 }
 
@@ -588,6 +607,10 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
   const [persistenceAvailable, setPersistenceAvailable] = useState(true);
   const [query, setQuery] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<TopicId>("all");
+  const [resourcesExpanded, setResourcesExpanded] = useState(false);
+  const [informationDialog, setInformationDialog] = useState<
+    "progress" | "sources" | "disclaimer" | null
+  >(null);
   const validIds = useMemo(() => new Set(resources.map(({ id }) => id)), [resources]);
 
   useEffect(() => {
@@ -655,9 +678,38 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
   const resetFilters = () => {
     setQuery("");
     setSelectedTopic("all");
+    setResourcesExpanded(false);
   };
 
   const activeTopicLabel = topics.find(({ id }) => id === selectedTopic)?.label;
+  const isDefaultView = query.trim() === "" && selectedTopic === "all";
+  const resourcesCollapsed =
+    isDefaultView && !resourcesExpanded && filteredResources.length > COLLAPSED_RESOURCE_COUNT;
+  const visibleResources = resourcesCollapsed
+    ? filteredResources.slice(0, COLLAPSED_RESOURCE_COUNT)
+    : filteredResources;
+
+  const updateSearch = (nextQuery: string) => {
+    setQuery(nextQuery);
+    setResourcesExpanded(false);
+  };
+
+  const updateTopic = (nextTopic: TopicId) => {
+    setSelectedTopic(nextTopic);
+    setResourcesExpanded(false);
+  };
+
+  const toggleResources = () => {
+    if (!resourcesExpanded) {
+      setResourcesExpanded(true);
+      return;
+    }
+
+    setResourcesExpanded(false);
+    requestAnimationFrame(() => {
+      document.getElementById("browse-resources-heading")?.scrollIntoView({ block: "start" });
+    });
+  };
 
   return (
     <ReadingProgressContext.Provider
@@ -681,14 +733,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           </div>
         </header>
 
-        <section
-          aria-label="Reading progress and source information"
-          className={styles.informationSection}
-        >
-          <ReadingProgressPanel total={resources.length} />
-          <SourceNote />
-        </section>
-
         <section aria-labelledby="browse-resources-heading" className={styles.browseSection}>
           <FloatingTools />
           <div className={styles.browseHeading}>
@@ -702,8 +746,8 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           <div className={styles.browseLayout}>
             <ResourceFilters
               onReset={resetFilters}
-              onSearchChange={setQuery}
-              onTopicChange={setSelectedTopic}
+              onSearchChange={updateSearch}
+              onTopicChange={updateTopic}
               query={query}
               selectedTopic={selectedTopic}
             />
@@ -711,8 +755,9 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             <div className={styles.resultsPanel}>
               <div className={styles.resultsHeading}>
                 <p aria-live="polite" role="status">
-                  {filteredResources.length}{" "}
-                  {filteredResources.length === 1 ? "resource" : "resources"}
+                  {resourcesCollapsed
+                    ? `${visibleResources.length} of ${filteredResources.length} resources shown`
+                    : `${filteredResources.length} ${filteredResources.length === 1 ? "resource" : "resources"}`}
                   {activeTopicLabel ? ` · ${activeTopicLabel}` : " · All topics"}
                 </p>
                 {query ? (
@@ -723,13 +768,39 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               </div>
 
               {filteredResources.length > 0 ? (
-                <div className={styles.resourceGrid}>
-                  {filteredResources.map((resource) => (
-                    <article id={`resource-${resource.id}`} key={resource.id}>
-                      <ResourceGridItem resource={resource} />
-                    </article>
-                  ))}
-                </div>
+                <>
+                  <div className={styles.resourceGrid} id="resource-grid">
+                    {visibleResources.map((resource) => (
+                      <article id={`resource-${resource.id}`} key={resource.id}>
+                        <ResourceGridItem resource={resource} />
+                      </article>
+                    ))}
+                  </div>
+                  {isDefaultView && filteredResources.length > COLLAPSED_RESOURCE_COUNT ? (
+                    <div className={styles.resourceExpansion}>
+                      <Button
+                        aria-controls="resource-grid"
+                        aria-expanded={resourcesExpanded}
+                        className={styles.expandResources}
+                        fullWidth={false}
+                        onClick={toggleResources}
+                        variant="text"
+                      >
+                        {resourcesExpanded ? (
+                          <>
+                            Show fewer guides
+                            <ChevronUp aria-hidden="true" size={16} />
+                          </>
+                        ) : (
+                          <>
+                            Show all {filteredResources.length} guides
+                            <ChevronDown aria-hidden="true" size={16} />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  ) : null}
+                </>
               ) : (
                 <div className={styles.emptyResults}>
                   <Search aria-hidden="true" size={24} strokeWidth={1.45} />
@@ -744,13 +815,76 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           </div>
         </section>
 
-        <footer className={styles.disclaimer}>
-          <ShieldCheck aria-hidden="true" size={20} strokeWidth={1.55} />
-          <p>
-            These readings support, but do not replace, advice from your health care team. Every
-            link opens on an official CDC or NIH website.
-          </p>
+        <footer aria-label="Reading room information" className={styles.informationActions}>
+          <div className={styles.informationActionGroup}>
+            <Button
+              className={styles.informationButton}
+              fullWidth={false}
+              onClick={() => setInformationDialog("progress")}
+              variant="text"
+            >
+              <Check aria-hidden="true" size={15} />
+              Reading record
+            </Button>
+            <Button
+              className={styles.informationButton}
+              fullWidth={false}
+              onClick={() => setInformationDialog("sources")}
+              variant="text"
+            >
+              <Stethoscope aria-hidden="true" size={15} />
+              Why these sources?
+            </Button>
+            <Button
+              className={styles.informationButton}
+              fullWidth={false}
+              onClick={() => setInformationDialog("disclaimer")}
+              variant="text"
+            >
+              <ShieldCheck aria-hidden="true" size={15} />
+              About these readings
+            </Button>
+          </div>
         </footer>
+
+        <Modal
+          onOpenChange={(open) => !open && setInformationDialog(null)}
+          open={informationDialog === "progress"}
+          title="Your reading record"
+        >
+          <ReadingProgressPanel total={resources.length} />
+          <div className={styles.modalActions}>
+            <Button fullWidth={false} onClick={() => setInformationDialog(null)}>
+              Close
+            </Button>
+          </div>
+        </Modal>
+
+        <Modal
+          onOpenChange={(open) => !open && setInformationDialog(null)}
+          open={informationDialog === "sources"}
+          title="Why these sources?"
+        >
+          <SourceNote />
+          <div className={styles.modalActions}>
+            <Button fullWidth={false} onClick={() => setInformationDialog(null)}>
+              Close
+            </Button>
+          </div>
+        </Modal>
+
+        <Modal
+          description="These readings support, but do not replace, advice from your health care team. Every link opens on an official CDC or NIH website."
+          onOpenChange={(open) => !open && setInformationDialog(null)}
+          open={informationDialog === "disclaimer"}
+          title="About these readings"
+        >
+          <div className={styles.modalActions}>
+            <Button fullWidth={false} onClick={() => setInformationDialog(null)}>
+              Close
+            </Button>
+          </div>
+        </Modal>
       </div>
     </ReadingProgressContext.Provider>
   );

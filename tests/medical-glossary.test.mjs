@@ -259,6 +259,19 @@ test("visible entries remain simple and comparisons render only when present", (
   assert.doesNotMatch(page, /pronunciation|quiz|score|badge|progress|personal notes/i);
 });
 
+test("the disclaimer is tucked behind a low-emphasis footer action", () => {
+  assert.doesNotMatch(page, /className=\{styles\.boundary\}/);
+  assert.match(page, /<footer className=\{styles\.glossaryFooter\}>/);
+  assert.match(page, />\s*About this glossary\s*</);
+  assert.match(page, /open=\{disclaimerOpen\}/);
+  assert.match(page, /title="About this glossary"/);
+  assert.match(page, /It does not interpret personal symptoms/);
+  assert.doesNotMatch(styles, /\.entry\s*\{[^}]*border-bottom:/);
+  assert.doesNotMatch(styles, /\.groups\s*\{[^}]*border-(?:top|bottom):/);
+  assert.match(styles, /\.entry \.nextStep\s*\{[^}]*border-top:\s*0;/);
+  assert.match(styles, /\.glossaryFooter\s*\{[^}]*padding-top:\s*0\.75rem;/);
+});
+
 test("no-results state uses exact wording and a deliberate query-free AI action", () => {
   assert.match(page, /Can’t find the word you’re looking for\? Ask Health Decoded AI\./);
   assert.match(page, /<AiTutorTrigger>Ask Health Decoded AI<\/AiTutorTrigger>/);

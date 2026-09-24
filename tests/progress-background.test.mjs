@@ -30,6 +30,15 @@ test("progress artwork fills the viewport without distortion or blocked interact
   assert.doesNotMatch(styles, /background-size:\s*100% 100%/);
 });
 
+test("progress header offers a direct, accessible route to milestones", () => {
+  assert.match(page, /href="\/milestones"/);
+  assert.match(page, /View milestones/);
+  assert.match(page, /aria-label="View all milestones"/);
+  assert.match(page, /buttonVariants\(\{ fullWidth: false, variant: "secondary" \}\)/);
+  assert.match(styles, /\.progressHeader/);
+  assert.match(styles, /\.milestonesLink/);
+});
+
 test("learning phase toggles replace the full-row focus overlay with a compact indicator", () => {
   assert.match(
     journeyStyles,

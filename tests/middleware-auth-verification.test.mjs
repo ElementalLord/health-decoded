@@ -131,6 +131,37 @@ test("public pages bypass session middleware so static output stays CDN-cacheabl
   assert.match(middleware, /if \(!protectedRoute && !sessionAwareAuthRoutePaths\.has/);
 });
 
+test("every authenticated application area participates in session refresh", async () => {
+  const [entrypoint, middleware] = await Promise.all([
+    readFile(new URL("../middleware.ts", import.meta.url), "utf8"),
+    readFile(new URL("../services/supabase/middleware.ts", import.meta.url), "utf8"),
+  ]);
+  const routes = [
+    "account",
+    "appointment-prep",
+    "caregiver",
+    "decode-the-label",
+    "explain-it-back",
+    "glossary",
+    "journey",
+    "lessons",
+    "milestones",
+    "myth-check",
+    "onboarding",
+    "profile",
+    "progress",
+    "resources",
+    "search",
+    "settings",
+    "stories",
+  ];
+
+  for (const route of routes) {
+    assert.match(entrypoint, new RegExp(`"/${route}/:path\\*"`), `${route} must reach middleware`);
+    assert.match(middleware, new RegExp(`"/${route}"`), `${route} must refresh its session`);
+  }
+});
+
 test("public images inside protected page namespaces bypass authentication", async () => {
   const middleware = await readFile(
     new URL("../services/supabase/middleware.ts", import.meta.url),

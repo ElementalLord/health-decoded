@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     default: "Health Decoded",
     template: "%s · Health Decoded",
   },
-  description: "Educational support for the first 90 days after a Type 2 diabetes diagnosis.",
+  description: "Calm, compassionate education for life after a Type 2 diabetes diagnosis.",
 };
 
 export const viewport: Viewport = {

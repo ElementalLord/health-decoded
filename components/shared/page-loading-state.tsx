@@ -12,6 +12,7 @@ function PageLoadingState({ children, className, label, ...props }: PageLoadingS
     <section
       aria-busy="true"
       className={cn("animate-page-in space-y-6", className)}
+      data-route-loading
       role="status"
       {...props}
     >

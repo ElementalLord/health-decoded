@@ -16,8 +16,8 @@
   background-repeat: no-repeat;
   background-size: 100% auto;
   content: "";
-  inset-block-end: calc(var(--stories-shell-bleed) * -1);
-  inset-block-start: calc(var(--stories-shell-bleed) * -1);
+  inset-block-end: calc(0rem - var(--shell-bottom-inset, var(--stories-shell-bleed)));
+  inset-block-start: calc(0rem - var(--shell-top-inset, var(--stories-shell-bleed)));
   inset-inline-start: 50%;
   pointer-events: none;
   position: absolute;

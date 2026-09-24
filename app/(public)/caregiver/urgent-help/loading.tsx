@@ -5,5 +5,10 @@ import { resolveCaregiverRegionalPresentation } from "@/features/caregiver/regio
 export default function UrgentHelpLoading() {
   const region = resolveCaregiverRegionalPresentation(unavailableCaregiverRegionFixture);
 
-  return <CaregiverUrgentHelpPage region={region} />;
+  return (
+    <>
+      <span data-route-loading hidden />
+      <CaregiverUrgentHelpPage region={region} />
+    </>
+  );
 }

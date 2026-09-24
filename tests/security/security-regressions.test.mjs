@@ -175,6 +175,8 @@ test("all private tables are declared with RLS in migrations", async () => {
     "ai_conversations",
     "ai_messages",
     "user_milestones",
+    "user_caregiver_module_progress",
+    "user_milestone_activity_progress",
     "user_learning_streaks",
     "user_learning_activity_days",
     "user_next_step_preferences",
@@ -223,6 +225,10 @@ test("authenticated-only RPCs revoke PUBLIC and anon execution", async () => {
   for (const rpc of [
     "complete_onboarding",
     "complete_current_lesson",
+    "record_caregiver_milestone_progress",
+    "record_milestone_activity",
+    "reconcile_current_user_activity_milestones",
+    "reconcile_current_user_lesson_milestones",
     "record_spaced_review_result",
   ])
     assert.match(

@@ -1,11 +1,12 @@
 type SessionCookie = Readonly<{ name: string }>;
 
-type SessionCheckError =
-  | Readonly<{ status?: number | null | undefined }>
-  | null
-  | undefined;
+type SessionCheckError = Readonly<{ status?: number | null | undefined }> | null | undefined;
 
 const supabaseAuthSessionCookie = /^sb-[a-z0-9]+-auth-token(?:\.\d+)?$/i;
+
+export function isSupabaseAuthSessionCookieName(name: string) {
+  return supabaseAuthSessionCookie.test(name);
+}
 
 /**
  * Supabase SSR stores an access/refresh session in one or more cookies named
@@ -13,7 +14,7 @@ const supabaseAuthSessionCookie = /^sb-[a-z0-9]+-auth-token(?:\.\d+)?$/i;
  * session cookie and must not authorize a protected server request.
  */
 export function hasSupabaseAuthSessionCookie(cookies: readonly SessionCookie[]) {
-  return cookies.some((cookie) => supabaseAuthSessionCookie.test(cookie.name));
+  return cookies.some((cookie) => isSupabaseAuthSessionCookieName(cookie.name));
 }
 
 /**
@@ -22,9 +23,6 @@ export function hasSupabaseAuthSessionCookie(cookies: readonly SessionCookie[]) 
  * responses are treated as signed-out; transport and unexpected responses
  * remain availability failures.
  */
-export function isUnauthenticatedSessionCheck(
-  hasSessionCookie: boolean,
-  error: SessionCheckError,
-) {
+export function isUnauthenticatedSessionCheck(hasSessionCookie: boolean, error: SessionCheckError) {
   return !hasSessionCookie || !error || error.status === 401 || error.status === 403;
 }

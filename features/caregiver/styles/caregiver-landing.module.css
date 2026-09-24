@@ -18,8 +18,12 @@
 
 .routeFrame {
   min-width: 0;
-  margin: -2rem -1.25rem;
+  margin-block: calc(0rem - var(--shell-top-inset, 2rem))
+    calc(0rem - var(--shell-bottom-inset, 2rem));
+  margin-inline: -1.25rem;
   overflow: visible;
+  padding-block-end: max(0rem, calc(var(--shell-bottom-inset, 2rem) - 2rem));
+  padding-block-start: max(0rem, calc(var(--shell-top-inset, 2rem) - 2rem));
   color: var(--caregiver-body);
   background: var(--caregiver-canvas);
   font-family: var(--caregiver-sans);

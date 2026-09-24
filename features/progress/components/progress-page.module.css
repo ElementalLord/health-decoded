@@ -1,14 +1,16 @@
 .progressPage {
   --progress-gutter: clamp(1.25rem, 4vw, 3.5rem);
   --progress-section-top: clamp(1.5rem, 4vw, 2.5rem);
-  --progress-shell-top: clamp(1.5rem, 4vw, 3rem);
+  --progress-shell-top: var(--shell-top-inset, clamp(1.5rem, 4vw, 3rem));
 
   isolation: isolate;
+  margin-block-end: calc(0rem - var(--shell-bottom-inset, 0rem));
   margin-block-start: calc(0rem - var(--progress-shell-top));
   margin-inline: calc(50% - 50vw);
   min-height: 100%;
   overflow: clip;
-  padding-block: calc(var(--progress-shell-top) + var(--progress-section-top)) 4rem;
+  padding-block: calc(var(--progress-shell-top) + var(--progress-section-top))
+    calc(4rem + var(--shell-bottom-inset, 0rem));
   position: relative;
   width: 100vw;
 }
@@ -65,7 +67,41 @@
   z-index: -1;
 }
 
+.progressHeader {
+  align-items: end;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.progressHeader > header {
+  flex: 1;
+}
+
+.milestonesLink {
+  flex: none;
+  margin-bottom: 0.15rem;
+}
+
+.milestonesLink svg {
+  height: 1rem;
+  transition: transform var(--duration-fast) var(--ease-standard);
+  width: 1rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .milestonesLink:hover svg {
+    transform: translateX(0.2rem);
+  }
+}
+
 @media (max-width: 40rem) {
+  .progressHeader {
+    align-items: start;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
   .progressPage::before {
     --progress-art-height: 29.3rem;
 

@@ -462,18 +462,72 @@ export type Database = {
           },
         ];
       };
+      user_caregiver_module_progress: {
+        Row: {
+          central_idea_reached: boolean;
+          completed_at: string | null;
+          core_application_completed: boolean;
+          module_id: string;
+          takeaway_viewed: boolean;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          central_idea_reached?: boolean;
+          completed_at?: string | null;
+          core_application_completed?: boolean;
+          module_id: string;
+          takeaway_viewed?: boolean;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          central_idea_reached?: boolean;
+          completed_at?: string | null;
+          core_application_completed?: boolean;
+          module_id?: string;
+          takeaway_viewed?: boolean;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      user_milestone_activity_progress: {
+        Row: {
+          activity_type: string;
+          completed_at: string;
+          item_id: string;
+          user_id: string;
+        };
+        Insert: {
+          activity_type: string;
+          completed_at?: string;
+          item_id: string;
+          user_id: string;
+        };
+        Update: {
+          activity_type?: string;
+          completed_at?: string;
+          item_id?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       user_milestones: {
         Row: {
+          announced_at: string | null;
           milestone_id: string;
           unlocked_at: string;
           user_id: string;
         };
         Insert: {
+          announced_at?: string | null;
           milestone_id: string;
           unlocked_at?: string;
           user_id: string;
         };
         Update: {
+          announced_at?: string | null;
           milestone_id?: string;
           unlocked_at?: string;
           user_id?: string;
@@ -931,6 +985,31 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      acknowledge_milestone_announcements: {
+        Args: { p_milestone_ids: string[] };
+        Returns: undefined;
+      };
+      reconcile_current_user_lesson_milestones: {
+        Args: never;
+        Returns: string[];
+      };
+      reconcile_current_user_activity_milestones: {
+        Args: never;
+        Returns: string[];
+      };
+      record_caregiver_milestone_progress: {
+        Args: {
+          p_central_idea_reached: boolean;
+          p_core_application_completed: boolean;
+          p_module_id: string;
+          p_takeaway_viewed: boolean;
+        };
+        Returns: {
+          milestone_id: string | null;
+          newly_unlocked: boolean;
+          progress_count: number;
+        }[];
+      };
       acknowledge_learning_streak_notice: {
         Args: never;
         Returns: undefined;
@@ -1001,6 +1080,13 @@ export type Database = {
       record_explain_it_back_learning: {
         Args: { p_challenge_id: string };
         Returns: boolean;
+      };
+      record_milestone_activity: {
+        Args: { p_activity_type: string; p_item_id: string };
+        Returns: {
+          newly_unlocked_ids: string[];
+          progress_count: number;
+        }[];
       };
       record_learning_activity: {
         Args: { p_event_type: string };

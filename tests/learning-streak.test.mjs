@@ -39,8 +39,9 @@ test("a direct event and its newly unlocked milestone count once", async () => {
   );
   assert.match(
     service,
-    /if \(options\.recordStreak && streakEvent\) await recordQualifyingLearningActivity\(streakEvent\)/,
+    /options\.recordStreak && streakEvent[\s\S]{0,120}recordQualifyingLearningActivity\(streakEvent\)/,
   );
+  assert.match(service, /const streakPromise =/);
   assert.doesNotMatch(service, /newlyUnlocked\.some[\s\S]*recordQualifyingLearningActivity/);
 });
 

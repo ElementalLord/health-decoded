@@ -34,67 +34,70 @@ function AppHeader({
   const showProfileAvatar = routes.some((route) => route.href === "/profile");
 
   return (
-    <header
-      className={cn(
-        "safe-area-top sticky top-0 z-40 border-b border-border backdrop-blur-md",
-        styles.appHeader,
-      )}
-    >
-      <div className="app-header-inner mx-auto flex min-h-[4.5rem] w-full max-w-[1440px] items-center justify-between gap-3 px-[clamp(1rem,4vw,3.5rem)]">
-        <Link
-          className="app-brand inline-flex min-h-11 min-w-0 items-center gap-2 rounded-[8px] text-base font-semibold tracking-tight transition-colors hover:text-accent-warm focus-visible:ring-2 focus-visible:ring-ring"
-          href={brandDestination}
-        >
-          <span className="truncate font-serif-display text-[length:var(--text-card-title)] font-semibold">
-            Health Decoded
-          </span>
-          <span className="hidden text-[0.65rem] font-bold uppercase tracking-[0.25em] text-muted-foreground sm:inline">
-            EDU
-          </span>
-        </Link>
-
-        <div className="flex min-w-0 shrink-0 items-center gap-3 xl:gap-6">
-          <div className="flex items-center gap-2">
-            <SearchCommand />
-          </div>
-          <DesktopLayout>
-            <nav aria-label="Primary navigation">
-              <ul className="flex items-center gap-[clamp(1rem,1.65vw,1.5rem)]">
-                {routes.map((route) => {
-                  const active = isActiveRoute(pathname, route);
-
-                  return (
-                    <li key={route.href}>
-                      <Link
-                        aria-current={active ? "page" : undefined}
-                        className={cn(
-                          "relative inline-flex min-h-11 items-center px-0 text-sm font-medium transition-[color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-left after:bg-accent-warm after:transition-transform focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]",
-                          active
-                            ? "text-foreground after:scale-x-100"
-                            : "text-muted-foreground after:scale-x-0 hover:text-foreground hover:after:scale-x-100",
-                        )}
-                        href={route.href}
-                      >
-                        {route.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </nav>
-          </DesktopLayout>
-          {showProfileAvatar ? (
-            <span
-              aria-label={`${preferences?.displayName || "Your"} profile photo`}
-              className={styles.profileAvatar}
-              role="img"
-            >
-              {getInitials(preferences?.displayName)}
+    <>
+      <header
+        className={cn(
+          "safe-area-top fixed inset-x-0 top-0 z-40 border-b border-border backdrop-blur-md",
+          styles.appHeader,
+        )}
+      >
+        <div className="app-header-inner mx-auto flex min-h-[4.5rem] w-full max-w-[1440px] items-center justify-between gap-3 px-[clamp(1rem,4vw,3.5rem)]">
+          <Link
+            className="app-brand inline-flex min-h-11 min-w-0 items-center gap-2 rounded-[8px] text-base font-semibold tracking-tight transition-colors hover:text-accent-warm focus-visible:ring-2 focus-visible:ring-ring"
+            href={brandDestination}
+          >
+            <span className="truncate font-serif-display text-[length:var(--text-card-title)] font-semibold">
+              Health Decoded
             </span>
-          ) : null}
+            <span className="hidden text-[0.65rem] font-bold uppercase tracking-[0.25em] text-muted-foreground sm:inline">
+              EDU
+            </span>
+          </Link>
+
+          <div className="flex min-w-0 shrink-0 items-center gap-3 xl:gap-6">
+            <div className="flex items-center gap-2">
+              <SearchCommand />
+            </div>
+            <DesktopLayout>
+              <nav aria-label="Primary navigation">
+                <ul className="flex items-center gap-[clamp(1rem,1.65vw,1.5rem)]">
+                  {routes.map((route) => {
+                    const active = isActiveRoute(pathname, route);
+
+                    return (
+                      <li key={route.href}>
+                        <Link
+                          aria-current={active ? "page" : undefined}
+                          className={cn(
+                            "relative inline-flex min-h-11 items-center px-0 text-sm font-medium transition-[color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] after:absolute after:inset-x-0 after:bottom-1 after:h-0.5 after:origin-left after:bg-accent-warm after:transition-transform focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]",
+                            active
+                              ? "text-foreground after:scale-x-100"
+                              : "text-muted-foreground after:scale-x-0 hover:text-foreground hover:after:scale-x-100",
+                          )}
+                          href={route.href}
+                        >
+                          {route.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+            </DesktopLayout>
+            {showProfileAvatar ? (
+              <span
+                aria-label={`${preferences?.displayName || "Your"} profile photo`}
+                className={styles.profileAvatar}
+                role="img"
+              >
+                {getInitials(preferences?.displayName)}
+              </span>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <div aria-hidden="true" className={styles.appHeaderSpacer} />
+    </>
   );
 }
 

@@ -29,15 +29,19 @@ const reflection = await readFile(
   "utf8",
 );
 
-test("Module 2 has no persistence, server submission, analytics, logs, AI, or URL state", () => {
+test("Module 2 persists only milestone gates and keeps private content out of storage", () => {
   assert.doesNotMatch(
     combined,
     /localStorage\.|sessionStorage\.|indexedDB\.|@supabase|createClient|\bfetch\(|server action|features\/ai|console\.|useSearchParams|URLSearchParams|router\.replace/,
   );
   assert.match(provider, /useState<CaregiverSessionState>/);
-  assert.match(provider, /accountPersistence: false/);
+  assert.match(provider, /accountPersistence: "milestone-gates-only"/);
   assert.match(provider, /browserPersistence: false/);
-  assert.match(provider, /serverSubmission: false/);
+  assert.match(provider, /serverSubmission: "milestone-gates-only"/);
+  assert.match(provider, /event: "caregiver_module_progressed"/);
+  assert.match(provider, /centralIdeaReached: progress\.centralIdeaReached/);
+  assert.match(provider, /coreApplicationCompleted: progress\.coreApplicationCompleted/);
+  assert.match(provider, /takeawayViewed: progress\.takeawayViewed/);
   assert.match(provider, /aiTutorHandoff: false/);
   assert.match(provider, /urlState: false/);
 });

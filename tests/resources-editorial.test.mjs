@@ -18,7 +18,7 @@ test("the reading room background stays decorative and clear of the text column"
   assert.match(page, /className=\{styles\.resourcesContent\}/);
   assert.match(
     styles,
-    /\.resourcesPage \{[\s\S]*padding-block: calc\(var\(--resources-shell-top\) \+ 1rem\) 1\.5rem;/,
+    /\.resourcesPage \{[\s\S]*padding-block: calc\(var\(--resources-shell-top\) \+ 1rem\)\s+calc\(0\.75rem \+ var\(--shell-bottom-inset, 0rem\)\);/,
   );
   assert.match(
     styles,
@@ -76,7 +76,7 @@ test("the page is a searchable, filterable editorial resource library", () => {
   assert.match(component, /Browse all resources/);
   assert.match(component, /Search resources/);
   assert.match(component, /Resource topics/);
-  assert.match(component, /filteredResources\.map/);
+  assert.match(component, /visibleResources\.map/);
   assert.doesNotMatch(component, /This week(?:&apos;|')s recommended reading/i);
   assert.doesNotMatch(component, /Two places worth starting/i);
 });
@@ -132,16 +132,23 @@ test("article views persist locally and expose a clear completion record", () =>
   assert.match(component, /transform: `scaleX\(\$\{percent \/ 100\}\)`/);
 });
 
-test("the practice rail keeps its velocity-based delayed glide", () => {
-  assert.match(component, /useScroll\(\{/);
-  assert.match(component, /target: boundaryRef/);
-  assert.match(component, /offset: \["start 14%", "end 86%"\]/);
-  assert.match(component, /useSpring\(scrollTravel/);
+test("the practice rail keeps velocity while tracking real scroll pixels", () => {
+  assert.match(component, /const targetTravel = useMotionValue\(0\)/);
+  assert.match(component, /const \{ scrollY \} = useScroll\(\)/);
+  assert.match(component, /useSpring\(targetTravel/);
   assert.match(component, /damping: 18/);
   assert.match(component, /mass: 0\.95/);
   assert.match(component, /stiffness: 48/);
-  assert.match(component, /boundary\.clientHeight - tools\.offsetHeight/);
-  assert.match(component, /ResizeObserver/);
+  assert.match(component, /currentScroll - startScroll/);
+  assert.match(component, /Math\.min\(maxTravel, Math\.max\(0,/);
+  assert.match(component, /scrollY\.on\("change", updateTravel\)/);
+  assert.match(component, /ResizeObserver\(updateMetrics\)/);
+  assert.match(
+    component,
+    /const viewportAnchor = Math\.max\(0, \(window\.innerHeight - tools\.offsetHeight\) \/ 2\)/,
+  );
+  assert.doesNotMatch(component, /scrollYProgress|\[0, 1\], \[0, scrollRange\]/);
+  assert.match(component, /targetTravel\.get\(\) > maxTravel/);
   assert.match(component, /reduceMotion \? "none" : smoothTransform/);
   assert.match(styles, /\.floatingTools \{[\s\S]*display: grid/);
   assert.match(styles, /@media \(max-width: 87\.99rem\)/);
@@ -164,6 +171,19 @@ test("the practice rail is centered in the right margin and section-bound", () =
   assert.doesNotMatch(styles, /position: fixed/);
 });
 
+test("the resource library is compact until the learner expands it", () => {
+  assert.match(component, /const COLLAPSED_RESOURCE_COUNT = 6/);
+  assert.match(component, /useState\(false\)/);
+  assert.match(component, /filteredResources\.slice\(0, COLLAPSED_RESOURCE_COUNT\)/);
+  assert.match(component, /aria-controls="resource-grid"/);
+  assert.match(component, /aria-expanded=\{resourcesExpanded\}/);
+  assert.match(component, /Show all \{filteredResources\.length\} guides/);
+  assert.match(component, /Show fewer guides/);
+  assert.match(component, /setResourcesExpanded\(false\)/);
+  assert.match(styles, /\.resourceExpansion\s*\{[^}]*justify-content:\s*flex-start;/);
+  assert.match(styles, /\.expandResources\s*\{[^}]*text-transform:\s*uppercase;/);
+});
+
 test("practice tools are descriptive and link to all three activities", () => {
   assert.match(component, /Turn reading into practice/);
   assert.match(component, /Use a quick activity when a source leaves you with a question/);
@@ -176,16 +196,25 @@ test("practice tools are descriptive and link to all three activities", () => {
   }
 });
 
-test("reading progress and source rationale appear directly below the masthead", () => {
+test("reading progress, source rationale, and the disclaimer stay behind footer buttons", () => {
   const mastheadIndex = component.indexOf("className={styles.masthead}");
-  const informationIndex = component.indexOf("className={styles.informationSection}");
   const browseIndex = component.indexOf("className={styles.browseSection}");
+  const informationIndex = component.indexOf("className={styles.informationActions}");
 
   assert.ok(mastheadIndex >= 0);
-  assert.ok(informationIndex > mastheadIndex);
-  assert.ok(browseIndex > informationIndex);
-  assert.match(component, /Reading progress and source information/);
+  assert.ok(browseIndex > mastheadIndex);
+  assert.ok(informationIndex > browseIndex);
+  assert.doesNotMatch(component, /className=\{styles\.informationSection\}/);
+  assert.doesNotMatch(component, /className=\{styles\.disclaimer\}/);
+  assert.match(component, />\s*Reading record\s*</);
   assert.match(component, /Why these sources\?/);
+  assert.match(component, />\s*About these readings\s*</);
+  assert.match(component, /open=\{informationDialog === "progress"\}/);
+  assert.match(component, /open=\{informationDialog === "sources"\}/);
+  assert.match(component, /open=\{informationDialog === "disclaimer"\}/);
+  assert.match(styles, /\.browseSection\s*\{[^}]*padding:[^;]*0 1rem;/);
+  assert.match(styles, /\.informationActions\s*\{[^}]*padding:\s*0\.25rem 0;/);
+  assert.match(styles, /\.informationActionGroup\s*\{[^}]*grid-column:\s*2;/);
 });
 
 test("the resource hierarchy remains editorial rather than card-heavy", () => {

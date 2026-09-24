@@ -12,7 +12,9 @@ declare
     'activities', 'activity_answer_keys', 'medications', 'patient_stories',
     'caregiver_content', 'user_journeys', 'lesson_progress', 'activity_progress',
     'reflection_entries', 'ai_conversations', 'ai_messages',
-    'user_milestones', 'user_learning_streaks', 'user_learning_activity_days',
+    'user_milestones', 'user_caregiver_module_progress',
+    'user_milestone_activity_progress',
+    'user_learning_streaks', 'user_learning_activity_days',
     'user_next_step_preferences', 'user_spaced_review_state'
   ];
 begin
@@ -164,6 +166,74 @@ begin
     'execute'
   ) then
     raise exception 'Lesson completion privileges are not restricted correctly';
+  end if;
+
+  if has_function_privilege(
+    'anon',
+    'public.reconcile_current_user_lesson_milestones()',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.reconcile_current_user_lesson_milestones()',
+    'execute'
+  ) or has_function_privilege(
+    'authenticated',
+    'public.reconcile_lesson_milestones_for_user(uuid)',
+    'execute'
+  ) then
+    raise exception 'Milestone reconciliation privileges are not restricted correctly';
+  end if;
+
+  if has_function_privilege(
+    'anon',
+    'public.record_caregiver_milestone_progress(text,boolean,boolean,boolean)',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.record_caregiver_milestone_progress(text,boolean,boolean,boolean)',
+    'execute'
+  ) or has_table_privilege(
+    'authenticated',
+    'public.user_caregiver_module_progress',
+    'insert'
+  ) or has_table_privilege(
+    'authenticated',
+    'public.user_caregiver_module_progress',
+    'update'
+  ) then
+    raise exception 'Caregiver milestone progress privileges are not restricted correctly';
+  end if;
+
+  if has_function_privilege(
+    'anon',
+    'public.record_milestone_activity(text,text)',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.record_milestone_activity(text,text)',
+    'execute'
+  ) or has_function_privilege(
+    'authenticated',
+    'public.record_milestone_activity_for_user(uuid,text,text)',
+    'execute'
+  ) or has_table_privilege(
+    'authenticated',
+    'public.user_milestone_activity_progress',
+    'insert'
+  ) then
+    raise exception 'Milestone activity progress privileges are not restricted correctly';
+  end if;
+
+  if has_function_privilege(
+    'anon',
+    'public.reconcile_current_user_activity_milestones()',
+    'execute'
+  ) or not has_function_privilege(
+    'authenticated',
+    'public.reconcile_current_user_activity_milestones()',
+    'execute'
+  ) then
+    raise exception 'Activity milestone reconciliation privileges are not restricted correctly';
   end if;
 
   if exists (

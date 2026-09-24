@@ -1,14 +1,16 @@
 .resourcesPage {
   --resources-gutter: clamp(1.25rem, 4vw, 3.5rem);
-  --resources-shell-top: clamp(1.5rem, 4vw, 3rem);
+  --resources-shell-top: var(--shell-top-inset, clamp(1.5rem, 4vw, 3rem));
 
   background-color: color-mix(in srgb, #f8f3e9 46%, var(--background));
   isolation: isolate;
+  margin-block-end: calc(0rem - var(--shell-bottom-inset, 0rem));
   margin-block-start: calc(0rem - var(--resources-shell-top));
   margin-inline: calc(50% - 50vw);
   min-height: 100%;
   overflow: clip;
-  padding-block: calc(var(--resources-shell-top) + 1rem) 1.5rem;
+  padding-block: calc(var(--resources-shell-top) + 1rem)
+    calc(0.75rem + var(--shell-bottom-inset, 0rem));
   position: relative;
   width: 100vw;
 }
@@ -102,9 +104,7 @@
   text-transform: uppercase;
 }
 
-.browseSection,
-.informationSection,
-.disclaimer {
+.browseSection {
   border-top: 1px solid var(--editorial-rule);
 }
 
@@ -117,8 +117,6 @@
 }
 
 .browseHeading > div > p,
-.readingRecordHeading p,
-.sourceNoteHeading p,
 .filterLabel,
 .searchGroup label {
   color: var(--editorial-soft);
@@ -129,8 +127,7 @@
 }
 
 .browseHeading h2,
-.readingRecordHeading h2,
-.sourceNoteHeading h2 {
+.readingRecordHeading h2 {
   color: var(--editorial-ink);
   font-family: var(--font-serif);
   font-variation-settings:
@@ -375,7 +372,7 @@
 }
 
 .browseSection {
-  padding: clamp(2.75rem, 6vw, 5rem) 0 clamp(5rem, 9vw, 7.5rem);
+  padding: clamp(2.75rem, 6vw, 5rem) 0 1rem;
   position: relative;
 }
 
@@ -573,6 +570,22 @@
   padding-bottom: 1rem;
 }
 
+.resourceExpansion {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 1.25rem;
+}
+
+.expandResources {
+  color: var(--editorial-ink);
+  font-size: 0.72rem;
+  font-weight: 780;
+  letter-spacing: 0.055em;
+  min-width: 0;
+  text-transform: uppercase;
+  text-underline-offset: 0.3rem;
+}
+
 .resourceCopy {
   display: flex;
   flex-direction: column;
@@ -730,13 +743,6 @@
   margin-top: 0.16rem;
 }
 
-.informationSection {
-  display: grid;
-  gap: clamp(2rem, 5vw, 4rem);
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
-}
-
 .readingRecordHeading {
   align-items: end;
   display: flex;
@@ -744,8 +750,7 @@
   justify-content: space-between;
 }
 
-.readingRecordHeading h2,
-.sourceNoteHeading h2 {
+.readingRecordHeading h2 {
   font-size: clamp(1.3rem, 2vw, 1.65rem);
   line-height: 1.08;
   margin-top: 0.28rem;
@@ -796,18 +801,6 @@
   margin-top: 0.8rem;
 }
 
-.sourceNoteHeading {
-  align-items: start;
-  display: flex;
-  gap: 0.85rem;
-}
-
-.sourceNoteHeading > svg {
-  color: var(--editorial-soft);
-  flex: 0 0 auto;
-  margin-top: 0.15rem;
-}
-
 .sourceExplanation {
   display: grid;
   gap: 1.5rem;
@@ -816,8 +809,7 @@
 }
 
 .sourceExplanation > div {
-  border-top: 1px solid var(--editorial-rule);
-  padding-top: 0.75rem;
+  padding-top: 0.25rem;
 }
 
 .sourceExplanation span {
@@ -833,18 +825,35 @@
   margin-top: 0.32rem;
 }
 
-.disclaimer {
-  align-items: start;
-  color: var(--editorial-soft);
-  display: flex;
-  font-size: 0.72rem;
-  gap: 0.68rem;
-  line-height: 1.55;
-  padding: 1.4rem 0 0.25rem;
+.informationActions {
+  align-items: center;
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(11.5rem, 0.22fr) minmax(0, 1fr);
+  padding: 0.25rem 0;
 }
 
-.disclaimer svg {
-  flex: 0 0 auto;
+.informationActionGroup {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  grid-column: 2;
+  justify-content: flex-start;
+}
+
+.informationButton {
+  color: var(--editorial-soft);
+  font-size: 0.72rem;
+  font-weight: 560;
+  min-height: 2.75rem;
+  text-decoration-color: color-mix(in srgb, var(--editorial-soft) 35%, transparent);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
 }
 
 .resourceLink:active,
@@ -853,6 +862,7 @@
 .searchField button:active,
 .resetFilters:active,
 .readingRecordHeading button:active,
+.informationButton:active,
 .emptyResults button:active {
   transform: scale(0.975);
 }
@@ -863,6 +873,7 @@
 .searchField button:focus-visible,
 .resetFilters:focus-visible,
 .readingRecordHeading button:focus-visible,
+.informationButton:focus-visible,
 .emptyResults button:focus-visible {
   border-radius: 0.2rem;
   outline: 2px solid var(--ring);
@@ -1071,6 +1082,14 @@
     grid-template-columns: 1fr;
   }
 
+  .informationActions {
+    grid-template-columns: 1fr;
+  }
+
+  .informationActionGroup {
+    grid-column: 1;
+  }
+
   .filterSticky {
     position: static;
   }
@@ -1107,10 +1126,6 @@
 
   .resourceGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .informationSection {
-    grid-template-columns: 1fr;
   }
 
   .floatingTools {

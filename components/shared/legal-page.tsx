@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { LegalBackButton } from "@/components/shared/legal-back-button";
 import { PageHeader } from "@/components/shared/page-header";
 
 type LegalPageProps = {
@@ -17,6 +18,9 @@ export function LegalPage({ children, lastUpdated, title }: LegalPageProps) {
       </p>
       <div className="mt-12 space-y-10 text-[length:var(--text-body)] leading-8 text-[#493a32]">
         {children}
+      </div>
+      <div className="mt-14 border-t border-[#e5ddd2] pt-8 sm:mt-16">
+        <LegalBackButton />
       </div>
     </article>
   );

@@ -1,9 +1,10 @@
 "use server";
 
 import type { AuthError } from "@supabase/supabase-js";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { PASSWORD_RECOVERY_SESSION_COOKIE } from "@/lib/auth/password-recovery";
 import { getSafeRedirectPath, DEFAULT_AUTHENTICATED_DESTINATION } from "@/lib/auth/redirects";
 import { getServerDatabaseClient } from "@/lib/database/server";
 import { createServerLogger } from "@/lib/logging/server";
@@ -14,6 +15,7 @@ import {
   resetPasswordSchema,
   signupSchema,
 } from "@/features/auth/schemas/auth.schemas";
+import { passwordResetRequestErrorMessage } from "@/features/auth/lib/password-reset-result";
 import { isObscuredExistingAccount, signupErrorMessage } from "@/features/auth/lib/signup-result";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
 import type { AuthFormState } from "@/features/auth/types/auth-form";
@@ -139,7 +141,11 @@ export async function forgotPasswordAction(
   const { error } = await database.auth.resetPasswordForEmail(parsed.data.email, {
     redirectTo: await callbackUrl("/auth/callback?next=/reset-password"),
   });
-  if (error) logAuthError("auth.password_reset_request_failed", error);
+  if (error) {
+    logAuthError("auth.password_reset_request_failed", error);
+    const message = passwordResetRequestErrorMessage(error);
+    if (message) return failure(message);
+  }
 
   return {
     status: "success",
@@ -177,6 +183,13 @@ export async function resetPasswordAction(
   const parsed = resetPasswordSchema.safeParse(values(formData));
   if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? "Check your information.");
 
+  const cookieStore = await cookies();
+  if (!cookieStore.has(PASSWORD_RECOVERY_SESSION_COOKIE)) {
+    return failure(
+      "Your reset link is no longer valid, so your password has not been changed. Request a new link to try again.",
+    );
+  }
+
   // The reset link mints the session that authorises this change. Without it there is nothing to
   // update, and Supabase would only answer with a generic error.
   const user = await getAuthenticatedUser();
@@ -200,6 +213,7 @@ export async function resetPasswordAction(
 
   const signOutResult = await database.auth.signOut({ scope: "local" });
   if (signOutResult.error) logAuthError("auth.password_reset_signout_failed", signOutResult.error);
+  cookieStore.delete(PASSWORD_RECOVERY_SESSION_COOKIE);
   redirect("/login?passwordReset=1");
 }
 

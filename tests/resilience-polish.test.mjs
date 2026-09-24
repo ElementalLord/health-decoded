@@ -164,8 +164,11 @@ test("first streak day and zero streak render as intentional beginnings", () => 
 });
 
 test("Milestones load failure is not converted to zero earned", () => {
-  assert.match(sources.milestonesRoute, /if \(!earned\.ok\) return <MilestonesUnavailableState/);
-  assert.doesNotMatch(sources.milestonesRoute, /earned\.ok \? earned\.data : \[\]/);
+  assert.match(
+    sources.milestonesRoute,
+    /if \(!collection\.ok\) return <MilestonesUnavailableState/,
+  );
+  assert.doesNotMatch(sources.milestonesRoute, /collection\.ok \? collection\.data : \[\]/);
 });
 
 test("zero milestones explains the legitimate first-use state", () => {

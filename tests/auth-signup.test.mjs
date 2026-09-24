@@ -6,6 +6,7 @@ import {
   isObscuredExistingAccount,
   signupErrorMessage,
 } from "../features/auth/lib/signup-result.ts";
+import { signupSchema } from "../features/auth/schemas/auth.schemas.ts";
 
 test("a Supabase obscured duplicate is not treated as a new account", () => {
   assert.equal(isObscuredExistingAccount({ identities: [] }), true);
@@ -26,4 +27,28 @@ test("email delivery failures give useful, safe guidance", () => {
   assert.match(signupErrorMessage({ code: "over_email_send_rate_limit", status: 429 }), /wait/i);
   assert.match(signupErrorMessage({ status: 503 }), /temporarily unavailable/i);
   assert.doesNotMatch(signupErrorMessage({ code: "unexpected_failure" }), /unexpected_failure/);
+});
+
+test("new accounts require a minimum of eight password characters", () => {
+  const account = {
+    email: "learner@example.com",
+    legalAcceptance: "on",
+  };
+
+  assert.equal(
+    signupSchema.safeParse({
+      ...account,
+      password: "12345678",
+      passwordConfirmation: "12345678",
+    }).success,
+    true,
+  );
+  assert.equal(
+    signupSchema.safeParse({
+      ...account,
+      password: "1234567",
+      passwordConfirmation: "1234567",
+    }).success,
+    false,
+  );
 });

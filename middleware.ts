@@ -12,9 +12,15 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/account/:path*",
+    "/appointment-prep/:path*",
     "/caregiver/:path*",
+    "/decode-the-label/:path*",
+    "/explain-it-back/:path*",
+    "/glossary/:path*",
     "/journey/:path*",
     "/lessons/:path*",
+    "/milestones/:path*",
+    "/myth-check/:path*",
     "/onboarding/:path*",
     "/profile/:path*",
     "/progress/:path*",
@@ -22,6 +28,7 @@ export const config = {
     "/search/:path*",
     "/settings/:path*",
     "/stories/:path*",
+    "/forgot-password",
     "/login",
     "/reset-password",
     "/signup",

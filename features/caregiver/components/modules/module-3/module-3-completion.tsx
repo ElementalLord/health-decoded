@@ -38,7 +38,9 @@ export function Module3Completion({ onReview }: { onReview: () => void }) {
       </dl>
       {completed && progress.keyIdeaUnderstood !== null ? <p>{completion.keyIdea}</p> : null}
       <div className={styles.completionActions}>
-        <button type="button" onClick={onReview}>{completion.review}</button>
+        <button type="button" onClick={onReview}>
+          {completion.review}
+        </button>
         <Link href={caregiverModuleRegistry["when-something-feels-wrong"].route}>
           {completion.continue}
         </Link>

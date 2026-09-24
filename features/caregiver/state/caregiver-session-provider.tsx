@@ -1,6 +1,16 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+
+import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 
 import {
   applyCaregiverInteractionSubmission,
@@ -10,27 +20,30 @@ import type { CaregiverModuleProgress } from "../types/caregiver-progress";
 import type { CaregiverSessionState } from "../types/caregiver-session";
 import type { CaregiverModuleId, CaregiverModuleReflectionId } from "../content/caregiver-ids";
 
-function createInitialProgress(moduleId: CaregiverModuleId): CaregiverModuleProgress {
+type PersistedMilestoneGates = Pick<
+  CaregiverModuleProgress,
+  "centralIdeaReached" | "coreApplicationCompleted" | "takeawayViewed"
+>;
+
+function createInitialProgress(
+  moduleId: CaregiverModuleId,
+  gates?: PersistedMilestoneGates,
+): CaregiverModuleProgress {
+  const gateCount = gates
+    ? Number(gates.centralIdeaReached) +
+      Number(gates.coreApplicationCompleted) +
+      Number(gates.takeawayViewed)
+    : 0;
   return {
     moduleId,
-    state: "notStarted",
-    centralIdeaReached: false,
-    coreApplicationCompleted: false,
-    takeawayViewed: false,
+    state: gateCount === 3 ? "completed" : gateCount > 0 ? "inProgress" : "notStarted",
+    centralIdeaReached: gates?.centralIdeaReached ?? false,
+    coreApplicationCompleted: gates?.coreApplicationCompleted ?? false,
+    takeawayViewed: gates?.takeawayViewed ?? false,
     keyIdeaUnderstood: null,
     lastSectionId: null,
   };
 }
-
-const initialModule2Progress: CaregiverModuleProgress = Object.freeze({
-  ...createInitialProgress("CG-M2"),
-  state: "notStarted",
-});
-
-const initialSessionState: CaregiverSessionState = Object.freeze({
-  moduleProgress: { "CG-M2": initialModule2Progress },
-  reflections: {},
-});
 
 interface CaregiverSessionContextValue {
   readonly progress: CaregiverModuleProgress;
@@ -74,6 +87,7 @@ export interface CaregiverSessionProviderProps {
   readonly centralSectionId?: string;
   readonly takeawaySectionId?: string;
   readonly reflectionId?: CaregiverModuleReflectionId;
+  readonly initialMilestoneProgress?: PersistedMilestoneGates;
 }
 
 export function CaregiverSessionProvider({
@@ -82,16 +96,41 @@ export function CaregiverSessionProvider({
   centralSectionId = "CG-M2-S03",
   takeawaySectionId = "CG-M2-S08",
   reflectionId = "CG-M2-R01",
+  initialMilestoneProgress,
 }: CaregiverSessionProviderProps) {
-  const initialProgress = useMemo(() => createInitialProgress(moduleId), [moduleId]);
-  const [session, setSession] = useState<CaregiverSessionState>(() =>
-    moduleId === "CG-M2"
-      ? initialSessionState
-      : { moduleProgress: { [moduleId]: createInitialProgress(moduleId) }, reflections: {} },
+  const initialProgress = useMemo(
+    () => createInitialProgress(moduleId, initialMilestoneProgress),
+    [initialMilestoneProgress, moduleId],
   );
+  const [session, setSession] = useState<CaregiverSessionState>(() => ({
+    moduleProgress: { [moduleId]: createInitialProgress(moduleId, initialMilestoneProgress) },
+    reflections: {},
+  }));
   const [reflectionSkipped, setReflectionSkipped] = useState(false);
   const progress = session.moduleProgress[moduleId] ?? initialProgress;
   const reflection = session.reflections[reflectionId]?.value ?? "";
+
+  useEffect(() => {
+    if (
+      !progress.centralIdeaReached &&
+      !progress.coreApplicationCompleted &&
+      !progress.takeawayViewed
+    ) {
+      return;
+    }
+    void recognizeMilestone({
+      event: "caregiver_module_progressed",
+      moduleId,
+      centralIdeaReached: progress.centralIdeaReached,
+      coreApplicationCompleted: progress.coreApplicationCompleted,
+      takeawayViewed: progress.takeawayViewed,
+    });
+  }, [
+    moduleId,
+    progress.centralIdeaReached,
+    progress.coreApplicationCompleted,
+    progress.takeawayViewed,
+  ]);
 
   const markCentralIdeaReached = useCallback(() => {
     setSession((current) =>
@@ -229,13 +268,22 @@ export function useCaregiverSession() {
 }
 
 export const caregiverPrototypeSessionBoundary = Object.freeze({
-  accountPersistence: false,
+  accountPersistence: "milestone-gates-only",
   browserPersistence: false,
   localStorage: false,
   indexedDb: false,
-  serverSubmission: false,
+  serverSubmission: "milestone-gates-only",
   analytics: false,
   logs: false,
   aiTutorHandoff: false,
   urlState: false,
+} as const);
+
+export const caregiverMilestoneProgressBoundary = Object.freeze({
+  accountPersistence: true,
+  persistedFields: ["centralIdeaReached", "coreApplicationCompleted", "takeawayViewed"],
+  reflections: false,
+  answers: false,
+  drafts: false,
+  healthContent: false,
 } as const);

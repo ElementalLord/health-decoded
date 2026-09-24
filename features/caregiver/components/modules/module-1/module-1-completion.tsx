@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { buttonVariants } from "@/components/ui/button";
-import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 import { cn } from "@/lib/utils";
 import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { caregiverModule1 } from "../../../content/caregiver-module-1";
@@ -13,14 +11,7 @@ import styles from "../../../styles/caregiver-module-1.module.css";
 export function Module1Completion({ onReview }: { readonly onReview: () => void }) {
   const { progress } = useCaregiverSession();
   const completed = isCaregiverModuleComplete(progress);
-  const signaled = useRef(false);
   const completion = caregiverModule1.completion;
-  useEffect(() => {
-    if (completed && !signaled.current) {
-      signaled.current = true;
-      void recognizeMilestone({ event: "caregiver_module_completed", moduleId: "CG-M1" });
-    }
-  }, [completed]);
   return (
     <section
       className={styles.completion}

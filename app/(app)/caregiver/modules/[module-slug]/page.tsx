@@ -9,6 +9,7 @@ import { Module5Experience } from "@/features/caregiver/components/modules/modul
 import { getImplementedCaregiverModule } from "@/features/caregiver/content/caregiver-module-registry";
 import { CaregiverSessionProvider } from "@/features/caregiver/state/caregiver-session-provider";
 import { getCurrentProfile } from "@/features/profile/services/profile.server";
+import { getCaregiverMilestoneGates } from "@/features/achievements/services/caregiver-milestone-progress.server";
 
 const experienceByModule = {
   "CG-M1": Module1Experience,
@@ -48,6 +49,7 @@ export default async function CaregiverModulePage({
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
   const Experience = experienceByModule[moduleEntry.id];
+  const milestoneGates = await getCaregiverMilestoneGates(moduleEntry.id);
   const sessionConfiguration =
     moduleEntry.id === "CG-M1"
       ? {
@@ -80,7 +82,11 @@ export default async function CaregiverModulePage({
               };
 
   return (
-    <CaregiverSessionProvider moduleId={moduleEntry.id} {...sessionConfiguration}>
+    <CaregiverSessionProvider
+      moduleId={moduleEntry.id}
+      {...(milestoneGates.ok ? { initialMilestoneProgress: milestoneGates.data } : {})}
+      {...sessionConfiguration}
+    >
       <Experience />
     </CaregiverSessionProvider>
   );

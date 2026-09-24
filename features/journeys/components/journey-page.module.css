@@ -1,15 +1,16 @@
 .journeyPage {
   --journey-gutter: clamp(1.25rem, 4vw, 3.5rem);
-  --journey-shell-space: clamp(1.5rem, 4vw, 3rem);
+  --journey-shell-space: var(--shell-top-inset, clamp(1.5rem, 4vw, 3rem));
 
   background-color: #fbf8f2;
   isolation: isolate;
-  margin-block: calc(0rem - var(--journey-shell-space));
+  margin-block-start: calc(0rem - var(--journey-shell-space));
+  margin-block-end: calc(0rem - var(--shell-bottom-inset, 0rem));
   margin-inline: calc(50% - 50vw);
   min-height: 100%;
   overflow: clip;
-  padding-block: calc(var(--journey-shell-space) + 0.75rem)
-    calc(var(--journey-shell-space) + 0.75rem);
+  padding-block-start: calc(var(--journey-shell-space) + 0.75rem);
+  padding-block-end: calc(var(--journey-shell-space) + 0.75rem + var(--shell-bottom-inset, 0rem));
   position: relative;
   width: 100vw;
 }

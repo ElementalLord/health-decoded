@@ -1,15 +1,22 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/shared/page-header";
 import { AuthForm } from "@/features/auth/components/auth-form";
 import { resetPasswordAction } from "@/features/auth/actions/auth.actions";
 import { getAuthenticatedUser } from "@/features/auth/services/auth.server";
+import { PASSWORD_RECOVERY_SESSION_COOKIE } from "@/lib/auth/password-recovery";
 
 export const metadata = { title: "Set a new password" };
 
 export default async function ResetPasswordPage() {
   // Reaching this page without the session minted by the reset link means the link never completed.
   // Send people back to request another one instead of showing a form that cannot succeed.
+  const cookieStore = await cookies();
+  if (!cookieStore.has(PASSWORD_RECOVERY_SESSION_COOKIE)) {
+    redirect("/forgot-password?expired=1");
+  }
+
   const user = await getAuthenticatedUser();
   if (!user.ok) redirect("/forgot-password?expired=1");
 

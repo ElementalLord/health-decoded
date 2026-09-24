@@ -59,3 +59,22 @@ test("Phase 1 implements no browser persistence while preserving the future tool
   assert.equal(caregiverPhaseOnePersistenceCapabilities.analyticsSensitiveContent, false);
   assert.equal(caregiverPhaseOnePersistenceCapabilities.aiTutorSensitiveContent, false);
 });
+
+test("milestone tracking persists only approved completion gates", async () => {
+  const migration = await import("node:fs/promises").then(({ readFile }) =>
+    readFile(
+      new URL(
+        "../supabase/migrations/20260920000003_track_caregiver_milestone_progress.sql",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.match(migration, /central_idea_reached/);
+  assert.match(migration, /core_application_completed/);
+  assert.match(migration, /takeaway_viewed/);
+  assert.doesNotMatch(
+    migration,
+    /reflection_text|dialogue_draft|self_check_answers|glucose|medication|clinician/i,
+  );
+});

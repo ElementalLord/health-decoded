@@ -142,7 +142,10 @@ test("mobile navigation stays single-row while every route remains reachable", (
   assert.match(bottomNavigation, />More<\/span>/);
   assert.match(bottomNavigation, /secondary\.map/);
   assert.match(globals, /\.ai-companion-trigger\s*\{\s*bottom:/);
-  assert.match(globals, /\.shell-mobile-offset\s*\{\s*padding-bottom: calc\(9rem/);
+  assert.match(
+    globals,
+    /\.shell-mobile-offset\s*\{\s*--shell-bottom-inset: calc\(9rem[\s\S]*padding-bottom: var\(--shell-bottom-inset\)/,
+  );
   assert.doesNotMatch(globals, /\.mobile-bottom-navigation\s*\{\s*display: none/);
 });
 

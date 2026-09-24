@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
+import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 import { ContextualNextStep } from "@/features/cohesion/components/contextual-next-step";
 import { getNextLearningAction } from "@/features/cohesion/lib/get-next-learning-action";
 import {
@@ -88,6 +89,7 @@ export function DecodeTheLabelExperience() {
 
   function next() {
     if (index === decodeLabelQuestions.length - 1) {
+      void recognizeMilestone({ event: "decode_label_completed" });
       setPhase("recap");
       return;
     }

@@ -12,10 +12,21 @@ export function RecentMilestones({ earned }: { earned: readonly EarnedMilestone[
         <h2 id="journey-milestones">
           {earned.length ? "A meaningful step, recognized." : "Meaningful steps will appear here."}
         </h2>
-        <p>{earned.length ? earned[0]!.definition.description : "Complete learning and preparation activities when they are useful to you."}</p>
+        <p>
+          {earned.length
+            ? earned[0]!.definition.description
+            : "Complete learning and preparation activities when they are useful to you."}
+        </p>
       </div>
       {earned.length ? (
-        <ul>{earned.slice(0, 3).map((entry) => <li key={entry.definition.id}><CheckCircle2 aria-hidden="true" />{entry.definition.name}</li>)}</ul>
+        <ul>
+          {earned.slice(0, 3).map((entry) => (
+            <li key={entry.definition.id}>
+              <CheckCircle2 aria-hidden="true" />
+              {entry.definition.name}
+            </li>
+          ))}
+        </ul>
       ) : null}
       <Link href="/milestones">View all milestones</Link>
     </section>

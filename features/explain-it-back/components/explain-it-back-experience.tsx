@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { recognizeMilestone } from "@/features/achievements/lib/recognize-milestone.client";
 import {
   explainItBackChallenges,
   getExplainItBackChallenge,
@@ -162,6 +163,14 @@ export function ExplainItBackExperience({
       } else {
         setSafetyMessage(null);
         setFeedback(body.feedback);
+        if (mode === "spaced-review") {
+          void recognizeMilestone({ event: "spaced_review_completed" });
+        } else if (body.feedback.verdict === "got_it") {
+          void recognizeMilestone({
+            event: "explain_it_back_completed",
+            challengeId: challenge.id,
+          });
+        }
         resultToken.current = null;
       }
     } catch {
