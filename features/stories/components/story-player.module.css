@@ -823,18 +823,17 @@
   width: 1.75rem;
 }
 
-.foodMark[data-food="rice"],
+.foodMark[data-food="grain"],
 .foodMark[data-food="water"] {
   background: #f4ead7;
 }
 
-.foodMark[data-food="lentils"],
-.foodMark[data-food="dal"] {
+.foodMark[data-food="beans"] {
   background: #c98658;
   border-radius: 50%;
 }
 
-.foodMark[data-food="yogurt"] {
+.foodMark[data-food="dairy"] {
   background: linear-gradient(to bottom, #fffaf0 65%, #dce8df 65%);
 }
 
@@ -844,7 +843,7 @@
   border-radius: 50%;
 }
 
-.foodMark[data-food="flatbread"] {
+.foodMark[data-food="bread"] {
   background: #d7aa69;
   border-radius: 50%;
   height: 1.45rem;
@@ -856,7 +855,6 @@
   transform: rotate(-12deg);
 }
 
-.foodMark[data-food="chicken"],
 .foodMark[data-food="protein"] {
   background: #bd765f;
   border-radius: 55% 35% 50% 40%;
@@ -1183,16 +1181,16 @@
   background: #c27b63;
 }
 
-.plateFood[data-food="dal"] {
+.plateFood[data-food="beans"] {
   background: #d68c55;
 }
 
-.plateFood[data-food="rice"],
-.plateFood[data-food="yogurt"] {
+.plateFood[data-food="grain"],
+.plateFood[data-food="dairy"] {
   background: #efe5d1;
 }
 
-.plateFood[data-food="flatbread"] {
+.plateFood[data-food="bread"] {
   background: #d6aa70;
 }
 

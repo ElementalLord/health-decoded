@@ -31,7 +31,7 @@ test("the development guard flags passive reveals, missing learning metadata, an
   broken.scenes = [structuredClone(broken.scenes[0])];
   broken.scenes[0].interaction.purpose = "";
   broken.scenes[0].interaction.learningPoint = "";
-  broken.scenes[0].interaction.prompt = broken.scenes[0].paragraphs[3];
+  broken.scenes[0].interaction.prompt = broken.scenes[0].paragraphs[0];
   broken.scenes[0].interaction.options = [
     { id: "open", label: "Open the story" },
     { id: "show", label: "Show the answer" },

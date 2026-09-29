@@ -124,6 +124,7 @@ export type InteractiveStory = {
   learningObjective: string;
   relatedLessonId: string;
   estimatedMinutes: number;
+  readerPartCount?: number;
   medicalRiskLevel: "low" | "moderate" | "high";
   contentWarning?: string;
   reviewStatus: StoryReviewStatus;

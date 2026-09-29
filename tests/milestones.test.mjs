@@ -370,6 +370,9 @@ test("milestone delivery survives navigation and transient action failures", () 
   assert.match(notice, /window\.addEventListener\("online"/);
   assert.match(notice, /usePathname/);
   assert.match(notice, /SYNC_INTERVAL_MS/);
+  assert.match(client, /return false/);
+  assert.match(notice, /serverActionsAvailableRef/);
+  assert.match(notice, /if \(!actionsAvailable\)/);
 });
 
 test("Milestones is not added to permanent navigation", () => {

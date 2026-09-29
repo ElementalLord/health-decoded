@@ -2,85 +2,70 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const componentNames = [
-  "intention-impact-map.tsx",
-  "support-boundary-continuum.tsx",
-  "permission-language-builder.tsx",
-  "refusal-branching-conversation.tsx",
-  "repair-sequence.tsx",
-  "module-2-knowledge-check.tsx",
-  "module-2-reflection.tsx",
-];
-const sources = Object.fromEntries(
-  await Promise.all(
-    componentNames.map(async (name) => [
-      name,
-      await readFile(
-        new URL(`../features/caregiver/components/modules/module-2/${name}`, import.meta.url),
-        "utf8",
-      ),
-    ]),
+const root = new URL("../", import.meta.url);
+const [experience, styles] = await Promise.all([
+  readFile(
+    new URL("features/caregiver/components/modules/module-2/module-2-experience.tsx", root),
+    "utf8",
   ),
-);
-const combined = Object.values(sources).join("\n");
-const feedback = await readFile(
-  new URL("../features/caregiver/components/foundation/caregiver-feedback.tsx", import.meta.url),
-  "utf8",
-);
-const focusTarget = await readFile(
-  new URL(
-    "../features/caregiver/components/foundation/caregiver-focus-target.tsx",
-    import.meta.url,
-  ),
-  "utf8",
-);
-const styles = await readFile(
-  new URL("../features/caregiver/styles/caregiver-module-2.module.css", import.meta.url),
-  "utf8",
-);
+  readFile(new URL("features/caregiver/styles/caregiver-module-1-story.module.css", root), "utf8"),
+]);
 
-test("controls have semantic labels, grouping, and keyboard-compatible alternatives", () => {
-  assert.match(combined, /<fieldset/);
-  assert.match(combined, /<legend/);
-  assert.match(combined, /<label/);
-  assert.doesNotMatch(combined, /<select/);
-  assert.match(combined, /type="radio"/);
-  assert.match(combined, /type="checkbox"/);
-  assert.match(sources["repair-sequence.tsx"], /<button[\s\S]*Move up/);
-  assert.match(sources["repair-sequence.tsx"], /<button[\s\S]*Move down/);
-  assert.doesNotMatch(combined, /onMouseEnter|onMouseOver|draggable=/);
-});
-
-test("feedback is announced and focus is deliberately managed after updates", () => {
-  assert.match(feedback, /aria-live=\{isAssertive \? "assertive" : "polite"\}/);
-  assert.match(feedback, /aria-atomic="true"/);
-  assert.match(feedback, /CaregiverFocusTarget/);
-  assert.match(focusTarget, /localRef\.current\?\.focus\(\)/);
-  assert.match(combined, /requestAnimationFrame|focusWhen/);
-  assert.match(sources["module-2-reflection.tsx"], /aria-live="polite"/);
-});
-
-test("Module 2 fills an answer after three responses needing review", () => {
-  const knowledgeCheck = sources["module-2-knowledge-check.tsx"];
-  assert.match(knowledgeCheck, /attempt >= 3/);
-  assert.match(knowledgeCheck, /nextAnswers\[question\.id\] = question\.preferredIndex/);
-  assert.match(knowledgeCheck, /filled in after three attempts/);
-});
-
-test("Module 2 styles cover focus, long text, 320px, reduced motion, and overflow safety", () => {
+test("Module 2 uses the accessible story-reader contract", () => {
+  assert.match(experience, /<main/);
+  assert.match(experience, /role="progressbar"/);
+  assert.match(experience, /aria-valuenow=\{current \+ 1\}/);
+  assert.match(experience, /headingRef\.current\?\.focus/);
+  assert.match(experience, /aria-label="Module navigation"/);
+  assert.match(experience, /role="tablist"/);
+  assert.match(experience, /role="radiogroup"/);
+  assert.match(experience, /role="checkbox"/);
+  assert.match(experience, /role="status"/);
   assert.match(styles, /:focus-visible/);
-  assert.match(styles, /overflow-wrap: anywhere/);
-  assert.match(styles, /@media \(max-width: 20rem\)/);
-  assert.match(styles, /@media \(max-width: 48rem\)/);
-  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(styles, /min-width: 0/);
-  assert.doesNotMatch(styles, /:hover[\s\S]{0,120}(content:|display:|visibility:)/);
+  assert.match(styles, /@media \(max-width: 38rem\)/);
+  assert.match(styles, /prefers-reduced-motion: reduce/);
 });
 
-test("the prototype exposes no score, badge, certification, or ambient looping motion", () => {
-  assert.doesNotMatch(combined, /score|badge|certificat/i);
-  assert.doesNotMatch(styles, /infinite/);
-  assert.match(styles, /@keyframes stage-arrive/);
-  assert.match(styles, /prefers-reduced-motion: reduce[\s\S]*animation:\s*none/);
-  assert.match(styles, /data-reduced-motion="true"/);
+test("dense practices are presented one item at a time", () => {
+  assert.match(experience, /Situation \{index \+ 1\} of \{interaction\.behaviors\.length\}/);
+  assert.match(experience, /Question \{index \+ 1\} of \{questions\.length\}/);
+  assert.match(experience, /Part \{index \+ 1\} of \{interaction\.groups\.length\}/);
+  assert.match(experience, /disabled=\{nextDisabled\}/);
+  assert.doesNotMatch(experience, /<select|onMouseEnter|onMouseOver|draggable=/);
+});
+
+test("review activities expose one predictable review and next control", () => {
+  assert.match(experience, /function StepNavigator/);
+  assert.match(experience, /aria-current=\{current === index \? "step"/);
+  assert.match(experience, /onSelect=\{setActionIndex\}/);
+  assert.match(experience, /styles\.activityAction/);
+  assert.match(experience, /"Next action"/);
+  assert.match(experience, /"Next situation"/);
+  assert.match(experience, /"Next question"/);
+  assert.match(experience, /Object\.values\(nextReviewed\)\.filter\(Boolean\)\.length/);
+  assert.doesNotMatch(experience, /disabled=\{!currentReviewed/);
+  assert.doesNotMatch(experience, /disabled=\{!reviewed\[behavior\.id\]/);
+});
+
+test("the four boundary checks stay aligned as a four-item set", () => {
+  assert.match(experience, /styles\.fourSignalButtons/);
+  assert.match(styles, /\.fourSignalButtons\s*\{[^}]*repeat\(4,/s);
+  assert.match(styles, /\.activityAction\s*\{[^}]*margin-top: 1\.5rem/s);
+});
+
+test("Module 2 uses the warm interaction palette instead of green active states", () => {
+  assert.match(experience, /styles\.moduleTwo/);
+  assert.match(styles, /\.moduleTwo \.modeButtons button\[aria-selected="true"\]/);
+  assert.match(styles, /\.moduleTwo \.primaryAction/);
+  assert.match(styles, /background: #9c5d47/);
+});
+
+test("Module 2 motion is restrained, touch-safe, and removable", () => {
+  assert.doesNotMatch(styles, /infinite|gradient\(|transition:\s*all/);
+  assert.doesNotMatch(experience, /window\.setTimeout|setTransitioning|sceneLeaving/);
+  assert.match(experience, /scrollIntoView\(\{ behavior: "auto"/);
+  assert.match(styles, /min-height: 44px/);
+  assert.match(styles, /transform: scale\(0\.97\)/);
+  assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
+  assert.match(styles, /transition-duration: 0\.01ms/);
 });

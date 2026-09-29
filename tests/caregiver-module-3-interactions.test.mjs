@@ -3,72 +3,64 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { caregiverModule3 } from "../features/caregiver/content/caregiver-module-3.ts";
 
-const directory = new URL("../features/caregiver/components/modules/module-3/", import.meta.url);
-const read = (name) => readFile(new URL(name, directory), "utf8");
+const source = await readFile(
+  new URL(
+    "../features/caregiver/components/modules/module-3/module-3-experience.tsx",
+    import.meta.url,
+  ),
+  "utf8",
+);
 
-test("I01 preserves four planning zones, six tasks, unused food-control choices, and revision", async () => {
+test("Module 3 is a sixteen-screen story flow with no outer navigation trap", () => {
+  assert.match(source, /const SCENE_COUNT = 16/);
+  assert.match(source, /const scenes: readonly Scene\[\]/);
+  assert.match(source, /function goTo\(next: number\)/);
+  assert.doesNotMatch(source, /nextDisabled/);
+  assert.match(source, /Continue, then return if needed/);
+  assert.match(source, /Review request matching/);
+});
+
+test("I01 keeps all planning details and adds an explicit leave-off choice", () => {
   const interaction = caregiverModule3.interactions.planning;
   assert.equal(interaction.zones.length, 4);
   assert.equal(interaction.items.length, 6);
   assert.deepEqual(interaction.items.find(({ id }) => id === "portion").preferredZones, []);
   assert.deepEqual(interaction.items.find(({ id }) => id === "separate").preferredZones, []);
-  const source = await read("shared-planning-workspace.tsx");
-  assert.match(source, /<select/);
-  assert.match(source, /Leave off the plan/);
-  assert.match(source, /const value = event\.currentTarget\.value/);
+  assert.match(source, /function PlanningPractice/);
+  assert.match(source, /"Leave off the plan"/);
   assert.match(source, /data-optional-practice="true"/);
-  assert.match(source, /data-feedback-status/);
-  assert.match(interaction.feedbackGap, /does not provide feedback/);
+  assert.match(source, /label="Planning detail"/);
 });
 
-test("I02 is the required four-request matcher with one-at-a-time controlled dropdowns", async () => {
+test("I02 is the required four-request core practice with clickable steps", () => {
   const interaction = caregiverModule3.interactions.matching;
   assert.equal(interaction.pairs.length, 4);
   assert.ok(interaction.pairs.every(({ request, offer }) => request && offer));
-  const source = await read("request-matching.tsx");
+  assert.match(source, /function RequestMatching/);
   assert.match(source, /data-core-application="true"/);
-  assert.match(source, /required/);
-  assert.match(source, /pairIndex/);
-  assert.match(source, /disabled=\{!matches\[pair\.id\]\}/);
-  assert.match(source, /const value = event\.currentTarget\.value/);
+  assert.match(source, /data-required="true"/);
+  assert.match(source, /label="Request"/);
   assert.match(source, /markInteractionSubmitted\(interaction\.id\)/);
 });
 
-test("I03 provides drag-and-drop with a dropdown fallback, while I04 uses native radio controls", async () => {
+test("I03 and I04 use one compact card at a time instead of crowded boards", () => {
   assert.equal(caregiverModule3.interactions.menu.offers.length, 6);
-  assert.ok(
-    caregiverModule3.interactions.menu.offers.every(
-      ({ preference, preferredCategory }) => preference && preferredCategory,
-    ),
-  );
   assert.equal(caregiverModule3.interactions.routines.pairs.length, 3);
-  assert.ok(
-    caregiverModule3.interactions.routines.pairs.every(
-      ({ a, b, preferredOption }) => a && b && preferredOption,
-    ),
-  );
-  const [menu, routines] = await Promise.all([
-    read("support-menu.tsx"),
-    read("routine-comparison.tsx"),
-  ]);
-  assert.match(menu, /draggable/);
-  assert.match(menu, /onDragStart/);
-  assert.match(menu, /onDrop/);
-  assert.match(menu, /<select/);
-  assert.match(menu, /markInteractionSubmitted\(interaction\.id\)/);
-  assert.match(routines, /type="radio"/);
-  assert.match(routines, /const value = event\.currentTarget\.value/);
-  assert.doesNotMatch(routines, /setAnswers\([\s\S]{0,160}event\.currentTarget\.value/);
-  assert.match(routines, /disabled=\{!complete\}/);
-  assert.match(routines, /markInteractionSubmitted\(interaction\.id\)/);
+  assert.match(source, /function SupportMenu/);
+  assert.match(source, /function RoutineComparison/);
+  assert.match(source, /label="Offer"/);
+  assert.match(source, /label="Routine"/);
+  assert.match(source, /className=\{styles\.readinessPair\}/);
+  assert.doesNotMatch(source, /draggable|onDragStart|onDrop=/);
 });
 
-test("I01 and I02 fill dropdown answers after three responses needing review", async () => {
-  const [planning, matching] = await Promise.all([
-    read("shared-planning-workspace.tsx"),
-    read("request-matching.tsx"),
-  ]);
-  assert.match(planning, /nextPlacements\[item\.id\] = \(item\.preferredZones\[0\] \?\? ""\)/);
-  assert.match(matching, /\[pair\.id\]: pair\.id/);
-  assert.match(planning + matching, /attempt >= 3/);
+test("review feedback never replaces the learner's selected answer", () => {
+  assert.match(source, /Suggested placement:/);
+  assert.match(source, /Suggested offer:/);
+  assert.match(source, /Suggested category:/);
+  assert.match(source, /Suggested detail:/);
+  assert.match(source, /Suggested answer:/);
+  assert.ok((source.match(/Your choice has been kept/g) ?? []).length >= 5);
+  assert.doesNotMatch(source, /\[pair\.id\]: pair\.id/);
+  assert.doesNotMatch(source, /\[question\.id\]: question\.preferredIndex/);
 });

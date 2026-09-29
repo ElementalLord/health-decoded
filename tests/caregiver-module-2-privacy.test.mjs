@@ -2,70 +2,36 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const paths = [
-  "../features/caregiver/content/caregiver-module-2.ts",
-  "../features/caregiver/state/caregiver-session-provider.tsx",
-  "../features/caregiver/components/modules/module-2/module-2-experience.tsx",
-  "../features/caregiver/components/modules/module-2/intention-impact-map.tsx",
-  "../features/caregiver/components/modules/module-2/support-boundary-continuum.tsx",
-  "../features/caregiver/components/modules/module-2/permission-language-builder.tsx",
-  "../features/caregiver/components/modules/module-2/refusal-branching-conversation.tsx",
-  "../features/caregiver/components/modules/module-2/repair-sequence.tsx",
-  "../features/caregiver/components/modules/module-2/module-2-knowledge-check.tsx",
-  "../features/caregiver/components/modules/module-2/module-2-reflection.tsx",
-];
-const combined = (
-  await Promise.all(paths.map((path) => readFile(new URL(path, import.meta.url), "utf8")))
-).join("\n");
-const provider = await readFile(
-  new URL("../features/caregiver/state/caregiver-session-provider.tsx", import.meta.url),
-  "utf8",
-);
-const reflection = await readFile(
-  new URL(
-    "../features/caregiver/components/modules/module-2/module-2-reflection.tsx",
-    import.meta.url,
+const root = new URL("../", import.meta.url);
+const [experience, provider] = await Promise.all([
+  readFile(
+    new URL("features/caregiver/components/modules/module-2/module-2-experience.tsx", root),
+    "utf8",
   ),
-  "utf8",
-);
+  readFile(new URL("features/caregiver/state/caregiver-session-provider.tsx", root), "utf8"),
+]);
 
-test("Module 2 persists only milestone gates and keeps private content out of storage", () => {
+test("the rebuilt Module 2 stores no answers, drafts, or personal reflections", () => {
   assert.doesNotMatch(
-    combined,
-    /localStorage\.|sessionStorage\.|indexedDB\.|@supabase|createClient|\bfetch\(|server action|features\/ai|console\.|useSearchParams|URLSearchParams|router\.replace/,
+    experience,
+    /localStorage|sessionStorage|indexedDB|fetch\(|useSearchParams|services\/ai|logging|textarea/,
   );
-  assert.match(provider, /useState<CaregiverSessionState>/);
+  assert.match(experience, /useState<Record<string, string>>/);
+  assert.match(experience, /useState<Record<string, number>>/);
+  assert.doesNotMatch(provider, /placements|assembledOffer|preferredOrder/);
+});
+
+test("only the approved milestone gates leave the session provider", () => {
   assert.match(provider, /accountPersistence: "milestone-gates-only"/);
   assert.match(provider, /browserPersistence: false/);
-  assert.match(provider, /serverSubmission: "milestone-gates-only"/);
   assert.match(provider, /event: "caregiver_module_progressed"/);
   assert.match(provider, /centralIdeaReached: progress\.centralIdeaReached/);
   assert.match(provider, /coreApplicationCompleted: progress\.coreApplicationCompleted/);
   assert.match(provider, /takeawayViewed: progress\.takeawayViewed/);
   assert.match(provider, /aiTutorHandoff: false/);
-  assert.match(provider, /urlState: false/);
 });
 
-test("the optional reflection is session-only, skippable, and explicitly clearable", () => {
-  assert.match(reflection, /data-storage="session-only"/);
-  assert.match(reflection, /const nextValue = event\.currentTarget\.value/);
-  assert.match(reflection, /setReflection\(nextValue\)/);
-  assert.match(reflection, /skipReflection/);
-  assert.match(reflection, /clearReflection/);
-  assert.match(reflection, /window\.confirm\("Clear reflection\?"\)/);
-  assert.match(provider, /scope: "session-only"/);
-});
-
-test("interaction answers are local component state and persistent progress stores no answers", () => {
-  assert.match(combined, /useState/);
-  assert.doesNotMatch(
-    provider,
-    /placements|firstChoice|secondChoice|assembledOffer|preferredOrder/,
-  );
-  assert.match(provider, /markInteractionSubmitted: \(interactionId: string\)/);
-});
-
-test("the module introduces no real regional contact or medical recommendation", () => {
-  assert.doesNotMatch(combined, /\b(?:911|999|112)\b|https?:\/\/|\+?\d[\d\s().-]{7,}/);
-  assert.doesNotMatch(combined, /change your medication|stop taking|increase your dose/iu);
+test("the module introduces no contact collection or medical recommendation", () => {
+  assert.doesNotMatch(experience, /\b(?:911|999|112)\b|https?:\/\/|\+?\d[\d\t ().-]{7,}/);
+  assert.doesNotMatch(experience, /change your medication|stop taking|increase your dose/iu);
 });

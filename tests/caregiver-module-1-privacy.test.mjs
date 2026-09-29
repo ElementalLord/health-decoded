@@ -2,24 +2,20 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const files = [
-  "caregiver-module-1.ts",
-  "../components/modules/module-1/observation-interpretation-workbench.tsx",
-  "../components/modules/module-1/module-1-reflection.tsx",
-];
-const source = (
-  await Promise.all(
-    files.map((file) =>
-      readFile(new URL(`../features/caregiver/content/${file}`, import.meta.url), "utf8"),
-    ),
-  )
-).join("\n");
+const source = await readFile(
+  new URL(
+    "../features/caregiver/components/modules/module-1/module-1-experience.tsx",
+    import.meta.url,
+  ),
+  "utf8",
+);
 
-test("Module 1 sends no state to persistence, AI, analytics, logging, or URLs", () => {
+test("the rebuilt Module 1 stores no answers or personal reflections", () => {
   assert.doesNotMatch(
     source,
-    /from ["'][^"']*(supabase|services\/ai|logging)|localStorage|sessionStorage|indexedDB|fetch\(|useSearchParams/,
+    /localStorage|sessionStorage|indexedDB|fetch\(|useSearchParams|services\/ai|logging/,
   );
-  assert.match(source, /data-storage="session-only"/);
-  assert.match(source, /excluded from analytics and AI Tutor transfer/);
+  assert.doesNotMatch(source, /textarea|text entry|reflection/i);
+  assert.match(source, /useState<Record<string, ObservationGroup>>/);
+  assert.match(source, /useState<Record<string, number>>/);
 });

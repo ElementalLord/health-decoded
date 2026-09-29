@@ -3,10 +3,15 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { caregiverModule1 } from "../features/caregiver/content/caregiver-module-1.ts";
 
-const directory = new URL("../features/caregiver/components/modules/module-1/", import.meta.url);
-const read = (name) => readFile(new URL(name, directory), "utf8");
+const source = await readFile(
+  new URL(
+    "../features/caregiver/components/modules/module-1/module-1-experience.tsx",
+    import.meta.url,
+  ),
+  "utf8",
+);
 
-test("I01 separates three observations from three interpretations with visible native choices", async () => {
+test("the core fact-or-guess practice keeps all six source statements", () => {
   const interaction = caregiverModule1.interactions.observation;
   assert.equal(
     interaction.statements.filter(({ preferredGroup }) => preferredGroup === "Observed").length,
@@ -18,47 +23,34 @@ test("I01 separates three observations from three interpretations with visible n
     ).length,
     3,
   );
-  const source = await read("observation-interpretation-workbench.tsx");
-  assert.match(source, /statementIndex/);
-  assert.match(source, /type="radio"/);
-  assert.doesNotMatch(source, /<select/);
-  assert.match(source, /<textarea/);
-  assert.match(source, /markInteractionSubmitted\(interaction\.id\)/);
-  assert.match(source, /excluded from analytics and AI Tutor transfer/);
-  assert.match(source, /const value = event\.currentTarget\.value/);
+  assert.match(source, /function FactOrGuess/);
+  assert.match(source, /statements\[index\]/);
+  assert.match(source, /role="radiogroup"/);
+  assert.match(
+    source,
+    /markInteractionSubmitted\(caregiverModule1\.interactions\.observation\.id\)/,
+  );
+  assert.match(source, /current === 3 && !coreComplete/);
 });
 
-test("I02 and I03 preserve all moments and the full two-part response builder", async () => {
+test("timing, reply building, and checking remain interactive", () => {
   assert.deepEqual(
     caregiverModule1.interactions.timing.moments.map(({ preferred }) => preferred),
     ["B", "B", "A"],
   );
-  assert.deepEqual(caregiverModule1.interactions.response.preferred, {
-    opening: "listen",
-    followup: "choice",
-  });
-  const [timing, builder] = await Promise.all([
-    read("timing-sequence.tsx"),
-    read("listen-help-space-builder.tsx"),
-  ]);
-  assert.match(timing, /type="radio"/);
-  assert.match(timing, /aria-live="polite"/);
-  assert.match(timing, /data-optional-practice="true"/);
-  assert.match(timing, /momentIndex/);
-  assert.match(timing, /interaction\.moments\.length/);
-  assert.match(timing, /This creates new pressure/);
-  assert.match(builder, /interaction\.openings\.map/);
-  assert.match(builder, /interaction\.followups\.map/);
-  assert.match(builder, /assembledResponse/);
-  assert.match(builder, /interaction\.feedback\.advice/);
-  assert.match(builder, /interaction\.feedback\.why/);
-  assert.match(builder, /aria-live="polite"/);
+  assert.match(source, /function TimingDecision/);
+  assert.match(source, /moments\.map/);
+  assert.match(source, /function ReplyBuilder/);
+  assert.match(source, /interaction\.openings\.map/);
+  assert.match(source, /interaction\.followups\.map/);
+  assert.match(source, /function QuickCheck/);
+  assert.match(source, /setKeyIdeaUnderstood/);
 });
 
-test("I01 gives immediate explanatory feedback without punitive scoring", async () => {
-  const source = await read("observation-interpretation-workbench.tsx");
-  assert.match(source, /isAccurate/);
-  assert.match(source, /Keep it as a possibility/);
-  assert.match(source, /Notice first\. Interpret carefully/);
+test("interactive feedback is explanatory and non-punitive", () => {
+  assert.match(source, /This can be verified from the exchange/);
+  assert.match(source, /This assigns a reason the exchange does not confirm/);
+  assert.match(source, /This leaves room/);
+  assert.match(source, /This adds pressure/);
   assert.doesNotMatch(source, /score|points|grade/i);
 });

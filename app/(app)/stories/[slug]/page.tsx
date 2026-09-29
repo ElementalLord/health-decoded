@@ -1,5 +1,8 @@
 import { notFound, redirect } from "next/navigation";
-import { InteractiveStoryPlayer } from "@/features/stories/components/interactive-story-player";
+import { AshaStoryExperience } from "@/features/stories/components/asha-story-experience";
+import { DevonStoryExperience } from "@/features/stories/components/devon-story-experience";
+import { MarcusStoryExperience } from "@/features/stories/components/marcus-story-experience";
+import { NoraStoryExperience } from "@/features/stories/components/nora-story-experience";
 import { StoryDetail } from "@/features/stories/components/stories";
 import { ashaRiceOnTheTableStory } from "@/features/stories/content/asha-rice-on-the-table";
 import { devonNumberScreenStory } from "@/features/stories/content/devon-number-screen";
@@ -18,16 +21,16 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
   if (!profile.ok) redirect("/journey");
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
   if (slug === marcusParkingLotStory.slug) {
-    return <InteractiveStoryPlayer story={marcusParkingLotStory} />;
+    return <MarcusStoryExperience />;
   }
   if (slug === ashaRiceOnTheTableStory.slug) {
-    return <InteractiveStoryPlayer story={ashaRiceOnTheTableStory} />;
+    return <AshaStoryExperience />;
   }
   if (slug === noraPrescriptionBagStory.slug) {
-    return <InteractiveStoryPlayer story={noraPrescriptionBagStory} />;
+    return <NoraStoryExperience />;
   }
   if (slug === devonNumberScreenStory.slug) {
-    return <InteractiveStoryPlayer story={devonNumberScreenStory} />;
+    return <DevonStoryExperience />;
   }
   const story = await getStory(slug);
   if (!story.ok && story.error.code === "not_found") notFound();

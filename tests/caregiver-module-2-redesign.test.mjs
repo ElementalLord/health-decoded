@@ -2,99 +2,78 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const componentDirectory = new URL(
-  "../features/caregiver/components/modules/module-2/",
-  import.meta.url,
-);
-const experience = await readFile(new URL("module-2-experience.tsx", componentDirectory), "utf8");
-const narrative = await readFile(new URL("module-2-narrative.tsx", componentDirectory), "utf8");
-const orientation = await readFile(new URL("module-2-orientation.tsx", componentDirectory), "utf8");
-const styles = await readFile(
-  new URL("../features/caregiver/styles/caregiver-module-2.module.css", import.meta.url),
-  "utf8",
-);
+const root = new URL("../", import.meta.url);
+const [experience, styles] = await Promise.all([
+  readFile(
+    new URL("features/caregiver/components/modules/module-2/module-2-experience.tsx", root),
+    "utf8",
+  ),
+  readFile(new URL("features/caregiver/styles/caregiver-module-1-story.module.css", root), "utf8"),
+]);
 
-test("the redesign presents twelve focused parts while keeping prior work mounted", () => {
-  assert.equal(experience.match(/data-stage=/g)?.length, 12);
-  assert.match(experience, /hidden=\{stageIndex !== 0\}/);
-  assert.match(experience, /Previous responses have been kept/);
-  assert.match(experience, /window\.scrollTo\(\{ top: 0, behavior: "auto" \}\)/);
-  assert.match(experience, /getElementById\(stage\.headingId\)\?\.focus/);
-});
-
-test("all source sections, five practices, check, reflection, takeaway, and completion remain in the journey", () => {
-  for (const component of [
-    "Module2Scenario",
-    "Module2IntentionImpactNarrative",
-    "IntentionImpactMap",
-    "Module2DistinctionNarrative",
-    "SupportBoundaryContinuum",
-    "Module2PermissionNarrative",
-    "PermissionLanguageBuilder",
-    "Module2AppointmentsNarrative",
-    "RefusalBranchingConversation",
-    "Module2RepairNarrative",
-    "RepairSequence",
-    "Module2BoundariesNarrative",
-    "Module2FurtherReading",
-    "Module2Scripts",
-    "Module2KnowledgeCheck",
-    "Module2Reflection",
-    "Module2Takeaway",
-    "Module2Completion",
+test("the rebuild uses sixteen short story-like scenes", () => {
+  assert.match(experience, /const SCENE_COUNT = 16/);
+  for (const id of [
+    "kitchen",
+    "phone",
+    "intention-impact",
+    "signals",
+    "continuum",
+    "permission-questions",
+    "permission-builder",
+    "appointment-role",
+    "sharing",
+    "refusal",
+    "repair",
+    "supporter-boundary",
+    "reliable-support",
+    "quick-check",
+    "phrases",
+    "takeaway",
   ]) {
-    assert.match(
-      experience,
-      new RegExp(`<${component}`),
-      `${component} must remain in the journey`,
-    );
+    assert.match(experience, new RegExp(`id: "${id}"`));
   }
 });
 
-test("the full story, definitions, frameworks, deeper reading, and nine scripts are source-driven", () => {
-  assert.match(narrative, /section\.paragraphs\.slice\(8, 10\)/);
-  assert.match(narrative, /section\.definitions\.map/);
-  assert.match(narrative, /section\.questions\.map/);
-  assert.match(narrative, /section\.examples\.map/);
-  assert.match(narrative, /section\.steps\.map/);
-  assert.match(narrative, /reading\.subsections\.map/);
-  assert.match(narrative, /scripts\.slice\(0, 4\)/);
-  assert.match(narrative, /scripts\.slice\(4\)/);
-  assert.match(narrative, /See all nine phrases/);
+test("every major idea is taught through a compact interaction or diagram", () => {
+  for (const component of [
+    "ScenarioSequence",
+    "IntentionImpactMap",
+    "BoundarySignals",
+    "SupportContinuum",
+    "PermissionQuestions",
+    "PermissionBuilder",
+    "AppointmentRoles",
+    "SharingScope",
+    "RefusalPath",
+    "RepairBuilder",
+    "BoundaryCompare",
+    "ReliableSupportDiagram",
+    "QuickCheck",
+    "PhraseBrowser",
+    "TakeawayDiagram",
+  ]) {
+    assert.match(experience, new RegExp(`function ${component}`));
+  }
 });
 
-test("Module 2 shares the Module 1 shell language but keeps a boundary-specific visual identity", () => {
-  assert.match(experience, /ProgressBar/);
-  assert.match(experience, /<Button/);
-  assert.match(orientation, /shared-space-kitchen\.png/);
-  assert.match(narrative, /phone-boundary-kitchen\.png/);
-  assert.match(orientation, /width=\{1536\}[\s\S]*height=\{1024\}/);
-  assert.match(narrative, /width=\{1536\}[\s\S]*height=\{1024\}/);
-  assert.match(styles, /aspect-ratio: 3 \/ 2/);
-  assert.match(styles, /\.roleThreshold/);
-  assert.match(styles, /\.boundaryLesson/);
-  assert.match(styles, /--m2-space-section/);
-  assert.doesNotMatch(styles, /border-inline-start/);
-  assert.doesNotMatch(styles, /gradient|infinite/);
+test("all source depth remains available without passive reading blocks", () => {
+  assert.match(experience, /sections\.scenario\.paragraphs\.slice/);
+  assert.match(experience, /interactions\.intentionImpact/);
+  assert.match(experience, /interactions\.continuum/);
+  assert.match(experience, /interactions\.permissionBuilder/);
+  assert.match(experience, /interactions\.refusal/);
+  assert.match(experience, /interactions\.repair/);
+  assert.match(experience, /caregiverModule2\.questions/);
+  assert.match(experience, /caregiverModule2\.scripts/);
+  assert.doesNotMatch(experience, /passiveReading|Module2Reflection|quietDetails/);
 });
 
-test("reading stages use a quiet sequential hierarchy instead of comparison scaffolding", () => {
-  const structurePass = styles.slice(styles.lastIndexOf("/* Minimal structure pass"));
-  const expressivePass = styles.slice(styles.lastIndexOf("/* Expressive correction"));
-
-  assert.match(narrative, /className=\{styles\.boundaryLesson\}/);
-  assert.doesNotMatch(narrative, /boundaryComparison|storyNumber|data-boundary-crossed/);
-  assert.doesNotMatch(styles, /\.boundaryComparison|\.continuumTrack|\.connectedTakeaway/);
-  assert.match(styles, /\.module \[tabindex="-1"\]:focus[\s\S]{0,80}outline: none/);
-  assert.match(styles, /\.permissionSpectrum[\s\S]{0,160}grid-template-columns: minmax/);
-  assert.match(styles, /\.choiceGrid,[\s\S]{0,180}grid-template-columns: minmax/);
-  assert.match(structurePass, /--m2-structure:/);
-  assert.match(structurePass, /\.threePartModel,[\s\S]*border: 1px solid var\(--m2-structure\)/);
-  assert.match(structurePass, /--m2-space-section: clamp\(3\.25rem, 6vw, 5\.25rem\)/);
-  assert.doesNotMatch(structurePass, /border-inline-start/);
-  assert.match(expressivePass, /\.threePartModel\s*\{[\s\S]*repeat\(3, minmax\(0, 1fr\)\)/);
-  assert.match(expressivePass, /\.permissionQuestions\s*\{[\s\S]*repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(expressivePass, /\.boundaryExample:last-child/);
-  assert.match(expressivePass, /\.quietDetails\s*\{[\s\S]*border: 0/);
-  assert.match(expressivePass, /\[tabindex="-1"\]:focus[\s\S]*box-shadow: none/);
+test("Module 2 directly adopts the Module 1 and Stories reader grammar", () => {
+  assert.match(experience, /caregiver-module-1-story\.module\.css/);
+  assert.match(styles, /max-width: 52rem/);
+  assert.match(styles, /font-family: var\(--font-serif\)/);
+  assert.match(styles, /grid-auto-flow: column/);
+  assert.doesNotMatch(experience, /next\/image|<Image|\.png|\.jpg|\.webp/);
+  assert.doesNotMatch(experience, /—/);
 });

@@ -65,8 +65,8 @@
     "opsz" 72,
     "SOFT" 62;
   font-weight: 420;
-  letter-spacing: -0.065em;
-  line-height: 0.88;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
   margin-top: 0.7rem;
 }
 
@@ -252,8 +252,8 @@
     "opsz" 64,
     "SOFT" 60;
   font-weight: 430;
-  letter-spacing: -0.058em;
-  line-height: 0.96;
+  letter-spacing: -0.045em;
+  line-height: 1;
   margin-top: 0.55rem;
   max-width: 12ch;
   text-wrap: balance;
@@ -314,6 +314,12 @@
 
 .storyAction:active {
   transform: scale(0.97);
+}
+
+.storyAction:focus-visible {
+  border-radius: 0.25rem;
+  outline: 3px solid color-mix(in srgb, var(--story-accent) 72%, transparent);
+  outline-offset: 0.3rem;
 }
 
 .featured .storyAction {

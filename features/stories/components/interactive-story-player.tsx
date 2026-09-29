@@ -423,7 +423,7 @@ export function InteractiveStoryPlayer({ story }: { story: InteractiveStory }) {
       {!hydrated ? (
         <div aria-live="polite" className={styles.storyLoading} role="status">
           <span />
-          Preparing your story…
+          Preparing your story
         </div>
       ) : progress.stage === "intro" ? (
         <StoryOpening onBegin={beginStory} story={story} />

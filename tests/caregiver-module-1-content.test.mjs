@@ -33,3 +33,11 @@ test("Module 1 keeps approved non-diagnostic copy and exact learner content", ()
   assert.match(caregiverModule1.reflection.privacy, /stays in this session/);
   assert.equal(caregiverModule1.runtimeGeneration, false);
 });
+
+test("Module 1 copy stays direct and avoids dash-heavy phrasing", () => {
+  const copy = JSON.stringify(caregiverModule1);
+  assert.doesNotMatch(copy, /—/);
+  assert.equal(caregiverModule1.metadata.estimatedTime, "10 to 12 minutes");
+  assert.match(caregiverModule1.sections.opening.centralIdea, /without deciding why/);
+  assert.match(caregiverModule1.completion.understood, /You applied the key idea/);
+});

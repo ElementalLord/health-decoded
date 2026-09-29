@@ -9,7 +9,7 @@ export type MilestoneSyncDetail = { readonly milestoneIds: readonly string[] };
 const PENDING_EVENTS_KEY_PREFIX = "health-decoded:pending-milestone-events";
 let pendingEventsKey = `${PENDING_EVENTS_KEY_PREFIX}:unscoped`;
 let memoryQueue: MilestoneEvent[] = [];
-let activeFlush: Promise<void> | null = null;
+let activeFlush: Promise<boolean> | null = null;
 let ignoreStoredQueue = false;
 
 function eventKey(event: MilestoneEvent) {
@@ -68,7 +68,7 @@ export function flushPendingMilestoneEvents() {
   activeFlush = (async () => {
     while (true) {
       const [event] = readQueue();
-      if (!event) return;
+      if (!event) return true;
       try {
         const result = await recognizeMilestoneAction(event);
         const key = eventKey(event);
@@ -77,13 +77,16 @@ export function flushPendingMilestoneEvents() {
             writeQueue(readQueue().filter((queued) => eventKey(queued) !== key));
             continue;
           }
-          return;
+          return true;
         }
         const remaining = readQueue().filter((queued) => eventKey(queued) !== key);
         writeQueue(remaining);
         requestMilestoneSync(result.milestoneIds);
       } catch {
-        return;
+        // A tab can retain an action ID from an older build after a deployment.
+        // Keep the event queued, but let the host suspend background Server Action
+        // calls until the page is reloaded onto the current build.
+        return false;
       }
     }
   })().finally(() => {

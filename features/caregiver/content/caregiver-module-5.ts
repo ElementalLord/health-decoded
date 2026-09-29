@@ -319,7 +319,7 @@ export const caregiverModule5 = Object.freeze({
       ],
       preferredIndex: 0,
       explanation:
-        "A boundary names what the supporter will or will not do. This condition uses support as leverage over someone else's decision.",
+        "A boundary names what the supporter will or will not do. This condition uses support to pressure someone else's decision.",
       relatedSection: "CG-M5-S05",
       reviewLabel: "Review boundary versus punishment",
     },

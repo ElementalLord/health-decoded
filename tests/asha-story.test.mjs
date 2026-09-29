@@ -14,9 +14,14 @@ import {
 const landing = readFileSync("features/stories/components/story-landing.tsx", "utf8");
 const landingStyles = readFileSync("features/stories/components/story-landing.module.css", "utf8");
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
+const ashaPlayer = readFileSync("features/stories/components/asha-story-experience.tsx", "utf8");
 const opening = readFileSync("features/stories/components/story-opening.tsx", "utf8");
 const interactions = readFileSync("features/stories/components/story-interactions.tsx", "utf8");
 const playerStyles = readFileSync("features/stories/components/story-player.module.css", "utf8");
+const ashaStyles = readFileSync(
+  "features/stories/components/asha-story-experience.module.css",
+  "utf8",
+);
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 const storyTypes = readFileSync("features/stories/types/interactive-story.ts", "utf8");
 
@@ -38,16 +43,17 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
   assert.ok(landing.indexOf("styles.previewIntroduction") < landing.indexOf("styles.metadata"));
   assert.equal(
     ashaRiceOnTheTableStory.introduction,
-    "At Sunday dinner, Asha finds a way to care for her health without leaving the table behind.",
+    "After her diagnosis, Asha worries that familiar family meals no longer fit her care plan.",
   );
-  assert.equal(ashaRiceOnTheTableStory.estimatedTimeLabel, "6 to 8 minutes");
+  assert.equal(ashaRiceOnTheTableStory.estimatedTimeLabel, "About 7 minutes");
+  assert.equal(ashaRiceOnTheTableStory.readerPartCount, 8);
   assert.equal(ashaRiceOnTheTableStory.relatedLessonLabel, "Lesson 4");
 });
 
 test("Asha’s one cover remains on the dedicated opening while the landing uses generated art", () => {
   assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-rice-on-the-table-cover.webp");
   assert.match(ashaRiceOnTheTableStory.imageAlt, /editorial illustration/i);
-  assert.match(ashaRiceOnTheTableStory.imageAlt, /South Asian woman/i);
+  assert.match(ashaRiceOnTheTableStory.imageAlt, /woman sitting with her family/i);
   assert.doesNotMatch(ashaRiceOnTheTableStory.imageAlt, /Photo of Asha|real patient|wrong food/i);
   assert.ok(statSync("public/stories/asha-rice-on-the-table-cover.webp").size > 80_000);
   assert.doesNotMatch(landing, /story\.imagePath/);
@@ -60,21 +66,30 @@ test("Asha’s one cover remains on the dedicated opening while the landing uses
 
 test("the dedicated route selects Asha’s story and does not complete Lesson 4", () => {
   assert.match(storyRoute, /ashaRiceOnTheTableStory\.slug/);
-  assert.match(storyRoute, /<InteractiveStoryPlayer story=\{ashaRiceOnTheTableStory\} \/>/);
+  assert.match(storyRoute, /<AshaStoryExperience \/>/);
   assert.equal(ashaRiceOnTheTableStory.relatedLessonHref, "/lessons/4");
-  assert.doesNotMatch(player, /completeLessonAction|saveLessonPositionAction/);
+  assert.doesNotMatch(ashaPlayer, /completeLessonAction|saveLessonPositionAction/);
+});
+
+test("Asha's dedicated reader adds two concrete click-through moments", () => {
+  assert.match(ashaPlayer, /const SCENE_COUNT = 8/);
+  assert.match(ashaPlayer, /function CartReview/);
+  assert.match(ashaPlayer, /function AppointmentQuestions/);
+  assert.match(ashaPlayer, /Review what Asha put back/);
+  assert.match(ashaPlayer, /Questions for Thursday/);
+  assert.match(ashaStyles, /grid-template-columns: repeat\(8, 1fr\)/);
 });
 
 test("the story contains exactly six progressive scenes in the required order", () => {
   assert.deepEqual(
     ashaRiceOnTheTableStory.scenes.map(({ title }) => title),
     [
-      "Everything Looked Different",
-      "The Separate Plate",
-      "“Are You Not Eating With Us?”",
-      "Learning What the Meal Was Doing",
-      "The Choice at Sunday Dinner",
-      "The Same Table",
+      "At the grocery store",
+      "A separate plate",
+      "Her daughter noticed",
+      "Looking at the whole meal",
+      "The next Sunday",
+      "Dinner continued",
     ],
   );
   assert.equal(ashaRiceOnTheTableStory.scenes.length, 6);
@@ -147,12 +162,12 @@ function familyDialogueChoiceCount() {
 
 test("the meal builder has tap controls, broad portions, contextual feedback, and no scoring", () => {
   for (const food of [
-    "Rice",
-    "Dal",
+    "Grain or starchy food",
+    "Beans or legumes",
     "Vegetables",
-    "Chicken",
-    "Flatbread",
-    "Plain yogurt",
+    "Protein food",
+    "Bread or another side",
+    "Dairy or alternative",
     "Water",
     "Dessert",
   ]) {
@@ -168,7 +183,7 @@ test("the meal builder has tap controls, broad portions, contextual feedback, an
     /familiar, filling, and feasible/i,
   );
   const builder = interactions.slice(
-    interactions.indexOf("function CulturalMealBuilder"),
+    interactions.indexOf("function FamiliarMealBuilder"),
     interactions.indexOf("function FoodChoicePath"),
   );
   assert.doesNotMatch(builder, /quizScore|correctChoiceId|calorie|grams|predict blood glucose/i);
@@ -220,7 +235,7 @@ test("all six Asha interactions add original tools instead of replaying the scen
     "Asha’s grocery shelf",
     "Asha’s separate plate",
     "Removing food without Asha’s input may increase isolation",
-    "Asha chose rice, dal, vegetables, and chicken",
+    "Asha chose a grain, beans, vegetables, and protein",
     "Include vegetables and protein in shared meals",
     "Avoid commenting on every portion",
   ]) {
@@ -305,12 +320,12 @@ test("editorial governance labels Asha honestly without review or warning claims
   assert.equal(ashaRiceOnTheTableStory.id, "asha-rice-on-the-table");
   assert.equal(ashaRiceOnTheTableStory.reviewStatus, "not-reviewed");
   assert.equal(ashaRiceOnTheTableStory.medicalRiskLevel, "low");
-  assert.equal(ashaRiceOnTheTableStory.version, "1.0");
+  assert.equal(ashaRiceOnTheTableStory.version, "2.1");
   assert.equal("contentWarning" in ashaRiceOnTheTableStory, false);
   assert.match(ashaRiceOnTheTableStory.disclosure, /placeholder name/);
   assert.match(ashaRiceOnTheTableStory.disclosure, /does not describe one specific individual/);
   assert.match(ashaRiceOnTheTableStory.sourceThemeNote, /No single person’s wording/);
-  assert.match(player, /story\.disclosure/);
+  assert.match(ashaPlayer, /placeholder name/);
   assert.doesNotMatch(
     player,
     /Dietitian approved|Clinician approved|ADA approved|Not reviewed badge/i,
@@ -318,13 +333,10 @@ test("editorial governance labels Asha honestly without review or warning claims
 });
 
 test("completion remains intentional, calm, and related to—but separate from—Lesson 4", () => {
-  assert.match(player, /Story complete/i);
-  assert.match(player, /Knowledge check/);
-  assert.match(player, /relatedLessonTitle/);
-  assert.match(player, /Return to Stories/);
-  assert.match(player, /Review This Story/);
-  assert.match(player, /Go to Related Lesson/);
-  assert.doesNotMatch(player, /confetti|troph|plate score|food badge/i);
+  assert.match(ashaPlayer, />\s*Finished\s*</);
+  assert.match(ashaPlayer, /Back to stories/);
+  assert.match(ashaPlayer, /Read again/);
+  assert.doesNotMatch(ashaPlayer, /Knowledge check|quiz|confetti|troph|plate score|food badge/i);
 });
 
 test("responsive, accessible, and reduced-motion rules cover the story-specific UI", () => {
@@ -347,14 +359,17 @@ test("responsive, accessible, and reduced-motion rules cover the story-specific 
   assert.match(player, /tabIndex=\{-1\}/);
   assert.match(storyTypes, /\| "grocery-fear"/);
   assert.match(storyTypes, /\| "shared-table"/);
+  assert.match(ashaStyles, /max-width: 52rem/);
+  assert.match(ashaStyles, /@media \(max-width: 42rem\)/);
+  assert.match(ashaStyles, /@media \(max-width: 38rem\)/);
+  assert.match(ashaStyles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(ashaPlayer, /role="progressbar"/);
+  assert.match(ashaPlayer, /aria-live="polite"/);
 });
 
 test("Asha is emotionally distinct and the meal is not framed as a prescription", () => {
-  assert.match(ashaRiceOnTheTableStory.learningObjective, /culturally meaningful foods/);
-  assert.match(
-    ashaRiceOnTheTableStory.takeaway,
-    /does not require treating familiar foods as enemies/,
-  );
+  assert.match(ashaRiceOnTheTableStory.learningObjective, /familiar foods/);
+  assert.match(ashaRiceOnTheTableStory.takeaway, /Familiar foods can stay part of a meal/);
   assert.doesNotMatch(
     JSON.stringify(ashaRiceOnTheTableStory),
     /diabetic diet|guilt-free|cheat meal|bad food|clean eating|perfect plate/i,
@@ -363,4 +378,15 @@ test("Asha is emotionally distinct and the meal is not framed as a prescription"
     JSON.stringify(ashaRiceOnTheTableStory),
     /real patient|verified patient|testimonial|Health Decoded user/i,
   );
+});
+
+test("Asha's live story stays culturally general and presents dialogue as speech bubbles", () => {
+  const liveCopy = `${JSON.stringify(ashaRiceOnTheTableStory)} ${ashaPlayer}`;
+  assert.doesNotMatch(liveCopy, /South Asian|\bdal\b|\bflatbread\b/i);
+  assert.match(ashaPlayer, />Grain</);
+  assert.match(ashaPlayer, />Beans</);
+  assert.match(ashaPlayer, /styles\.speechDaughter/);
+  assert.match(ashaPlayer, /styles\.speechAsha/);
+  assert.match(ashaStyles, /\.speechDaughter p,[\s\S]*border-radius:/);
+  assert.match(ashaStyles, /\.speechAsha p::after/);
 });

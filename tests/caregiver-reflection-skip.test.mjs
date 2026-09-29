@@ -4,46 +4,44 @@ import test from "node:test";
 
 const modules = new URL("../features/caregiver/components/modules/", import.meta.url);
 
-for (const moduleNumber of [1, 2, 3, 4, 5]) {
-  const reflection = await readFile(
-    new URL(`module-${moduleNumber}/module-${moduleNumber}-reflection.tsx`, modules),
-    "utf8",
-  );
+const module3Experience = await readFile(
+  new URL("module-3/module-3-experience.tsx", modules),
+  "utf8",
+);
 
-  test(`Module ${moduleNumber} removes the unboxed Skip for Now action after selection`, () => {
-    assert.match(reflection, /reflectionSkipped/);
-    assert.match(reflection, /!reflectionSkipped \? \(/);
-    assert.match(reflection, /className=\{styles\.skipAction\}/);
-    assert.match(reflection, /skipReflection/);
-    assert.doesNotMatch(reflection, /aria-pressed=\{reflectionSkipped\}/);
-    assert.match(reflection, /Reflection skipped for this session/);
-  });
-}
+const module4Experience = await readFile(
+  new URL("module-4/module-4-experience.tsx", modules),
+  "utf8",
+);
 
-for (const moduleNumber of [1, 2]) {
-  const [reflection, completion] = await Promise.all([
-    readFile(
-      new URL(`module-${moduleNumber}/module-${moduleNumber}-reflection.tsx`, modules),
-      "utf8",
-    ),
-    readFile(
-      new URL(`module-${moduleNumber}/module-${moduleNumber}-completion.tsx`, modules),
-      "utf8",
-    ),
-  ]);
+const module5Experience = await readFile(
+  new URL("module-5/module-5-experience.tsx", modules),
+  "utf8",
+);
 
-  test(`Module ${moduleNumber} Skip for Now confirms the choice and advances focus`, () => {
-    assert.match(reflection, /function skipForNow\(\)/);
-    assert.match(reflection, /skipReflection\(\)/);
-    assert.match(
-      reflection,
-      new RegExp(`getElementById\\("module-${moduleNumber}-completion-heading"\\)\\?\\.focus`),
-    );
-    assert.match(reflection, /variant="text"/);
-    assert.match(reflection, /You can return and write later/);
-    assert.match(
-      completion,
-      new RegExp(`id="module-${moduleNumber}-completion-heading" tabIndex=\\{-1\\}`),
-    );
-  });
-}
+test("Module 3 removes Skip for Now after selection in its story reflection", () => {
+  assert.match(module3Experience, /reflectionSkipped/);
+  assert.match(module3Experience, /!reflectionSkipped \? \(/);
+  assert.match(module3Experience, /skipReflection/);
+  assert.doesNotMatch(module3Experience, /aria-pressed=\{reflectionSkipped\}/);
+  assert.match(module3Experience, /Reflection skipped for this session/);
+  assert.match(module3Experience, /You can return and write later/);
+});
+
+test("Module 4 removes Skip for Now after selection in its story reflection", () => {
+  assert.match(module4Experience, /reflectionSkipped/);
+  assert.match(module4Experience, /!reflectionSkipped \? /);
+  assert.match(module4Experience, /skipReflection/);
+  assert.doesNotMatch(module4Experience, /aria-pressed=\{reflectionSkipped\}/);
+  assert.match(module4Experience, /Reflection skipped for this session/);
+  assert.match(module4Experience, /You can return and write later/);
+});
+
+test("Module 5 removes Skip for Now after selection in its story reflection", () => {
+  assert.match(module5Experience, /reflectionSkipped/);
+  assert.match(module5Experience, /!reflectionSkipped \? /);
+  assert.match(module5Experience, /skipReflection/);
+  assert.doesNotMatch(module5Experience, /aria-pressed=\{reflectionSkipped\}/);
+  assert.match(module5Experience, /Reflection skipped for this session/);
+  assert.match(module5Experience, /You can return and write later/);
+});

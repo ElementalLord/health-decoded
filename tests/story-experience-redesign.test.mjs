@@ -15,6 +15,9 @@ const opening = readFileSync("features/stories/components/story-opening.tsx", "u
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
 const landingStyles = readFileSync("features/stories/components/story-landing.module.css", "utf8");
 const playerStyles = readFileSync("features/stories/components/story-player.module.css", "utf8");
+const dedicatedReaders = ["marcus", "asha", "nora", "devon"].map((name) =>
+  readFileSync(`features/stories/components/${name}-story-experience.tsx`, "utf8"),
+);
 
 const stories = [
   marcusParkingLotStory,
@@ -129,6 +132,10 @@ test("story metadata controls distinct themes, arcs, and scene rhythm", () => {
   assert.match(player, /data-tone=\{scene\.tone\}/);
   assert.match(playerStyles, /\[data-layout="narrative-right"\]/);
   assert.match(playerStyles, /\[data-layout="closing-wide"\]/);
+});
+
+test("story copy uses natural punctuation instead of em dashes", () => {
+  assert.doesNotMatch(`${JSON.stringify(stories)}\n${dedicatedReaders.join("\n")}`, /—|&mdash;/);
 });
 
 test("visible all-sided bordered containers remain intentionally limited", () => {

@@ -14,9 +14,17 @@ import {
 const landing = readFileSync("features/stories/components/story-landing.tsx", "utf8");
 const landingStyles = readFileSync("features/stories/components/story-landing.module.css", "utf8");
 const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
+const marcusPlayer = readFileSync(
+  "features/stories/components/marcus-story-experience.tsx",
+  "utf8",
+);
 const opening = readFileSync("features/stories/components/story-opening.tsx", "utf8");
 const interactions = readFileSync("features/stories/components/story-interactions.tsx", "utf8");
 const playerStyles = readFileSync("features/stories/components/story-player.module.css", "utf8");
+const marcusStyles = readFileSync(
+  "features/stories/components/marcus-story-experience.module.css",
+  "utf8",
+);
 const landingRoute = readFileSync("app/(app)/stories/page.tsx", "utf8");
 const storyRoute = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
 
@@ -44,8 +52,8 @@ test("Marcus remains available while the featured story is selected dynamically"
   assert.match(landing, /marcusParkingLotStory/);
   assert.match(landing, /href=\{storyHref\}/);
   assert.ok(landing.indexOf("styles.illustration") < landing.indexOf("styles.previewBody"));
-  assert.equal(marcusParkingLotStory.title, "Forty Minutes in the Parking Lot");
-  assert.equal(marcusParkingLotStory.topic, "Just diagnosed");
+  assert.equal(marcusParkingLotStory.title, "After the Appointment");
+  assert.equal(marcusParkingLotStory.topic, "A new diagnosis");
 });
 
 test("Marcus’s generated cover remains optimized for the dedicated opening", () => {
@@ -76,21 +84,35 @@ test("a new story can begin directly from the landing without repeating its cove
 
 test("the dedicated route selects the interactive story without changing Lesson 1", () => {
   assert.match(storyRoute, /marcusParkingLotStory\.slug/);
-  assert.match(storyRoute, /<InteractiveStoryPlayer story=\{marcusParkingLotStory\} \/>/);
-  assert.match(player, /story\.relatedLessonHref \?\? "\/lessons\/1"/);
-  assert.doesNotMatch(player, /completeLessonAction|saveLessonPositionAction/);
+  assert.match(storyRoute, /<MarcusStoryExperience \/>/);
+  assert.match(marcusPlayer, /const STORY_SLUG = "marcus-parking-lot"/);
+  assert.doesNotMatch(marcusPlayer, /completeLessonAction|saveLessonPositionAction/);
+});
+
+test("Marcus's dedicated reader expands the evening into eight purposeful parts", () => {
+  assert.match(marcusPlayer, /const SCENE_COUNT = 8/);
+  assert.match(marcusPlayer, /function VisitSummaryDetails/);
+  assert.match(marcusPlayer, /function NextMorning/);
+  assert.match(marcusPlayer, /Read the useful parts/);
+  assert.match(marcusPlayer, /Follow Marcus's morning/);
+  assert.match(marcusStyles, /grid-template-columns: repeat\(8, 1fr\)/);
+});
+
+test("Marcus's response options render punctuation instead of HTML entity text", () => {
+  assert.match(marcusPlayer, /It's probably nothing\. Don't worry\./);
+  assert.doesNotMatch(marcusPlayer, /label: "[^"]*&apos;/);
 });
 
 test("the story data contains exactly six governed progressive scenes", () => {
   assert.deepEqual(
     marcusParkingLotStory.scenes.map(({ title }) => title),
     [
-      "The Word He Heard",
-      "Forty Minutes",
-      "The Promise He Thought He Broke",
-      "Then Come Home",
-      "Too Much Information",
-      "Three Questions",
+      "The appointment",
+      "In the car",
+      "His first thought",
+      "The call",
+      "Too many tabs",
+      "For tomorrow",
     ],
   );
   assert.equal(marcusParkingLotStory.scenes.length, 6);
@@ -277,21 +299,19 @@ test("the disclosure and editorial-governance metadata make the scenario honest"
   assert.match(marcusParkingLotStory.disclosure, /does not describe one specific individual/);
   assert.equal(marcusParkingLotStory.reviewStatus, "not-reviewed");
   assert.equal(marcusParkingLotStory.medicalRiskLevel, "low");
-  assert.equal(marcusParkingLotStory.version, "1.0");
+  assert.equal(marcusParkingLotStory.version, "2.1");
+  assert.equal(marcusParkingLotStory.readerPartCount, 8);
   assert.equal("contentWarning" in marcusParkingLotStory, false);
-  assert.match(player, /story\.disclosure/);
+  assert.match(marcusPlayer, /placeholder name/);
   assert.equal(marcusParkingLotStory.showDetailCover, undefined);
   assert.doesNotMatch(player, /Medically reviewed|Not medically reviewed/);
 });
 
 test("the completion screen preserves context without rewards or medical claims", () => {
-  assert.match(player, /Story complete/i);
-  assert.match(player, /Knowledge check/);
-  assert.match(player, /Lesson 1, The First Five Minutes/);
-  assert.match(player, /Return to Stories/);
-  assert.match(player, /Review This Story/);
-  assert.match(player, /Go to Related Lesson/);
-  assert.doesNotMatch(player, /confetti|troph|points|medically prepared/i);
+  assert.match(marcusPlayer, />\s*Finished\s*</);
+  assert.match(marcusPlayer, /Back to stories/);
+  assert.match(marcusPlayer, /Read again/);
+  assert.doesNotMatch(marcusPlayer, /Knowledge check|quiz|confetti|troph|points/i);
 });
 
 test("responsive and reduced-motion styles protect reading and interaction", () => {
@@ -310,4 +330,8 @@ test("responsive and reduced-motion styles protect reading and interaction", () 
   assert.match(playerStyles, /scene-leave-forward 160ms/);
   assert.match(playerStyles, /scene-enter-forward 230ms cubic-bezier\(0\.22, 1, 0\.36, 1\)/);
   assert.doesNotMatch(playerStyles, /rotateY|perspective\(|scale\(/);
+  assert.match(marcusStyles, /max-width: 52rem/);
+  assert.match(marcusStyles, /@media \(max-width: 38rem\)/);
+  assert.match(marcusStyles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(marcusPlayer, /role="progressbar"/);
 });

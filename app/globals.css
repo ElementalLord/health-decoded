@@ -175,6 +175,10 @@
 }
 
 @layer utilities {
+  body.story-reader-active .ai-companion-trigger {
+    display: none;
+  }
+
   .app-page-container {
     --shell-top-inset: clamp(1.5rem, 4vw, 3rem);
   }
@@ -289,6 +293,10 @@
   }
 
   @media (max-width: 79.99rem) {
+    body:has([data-caregiver-module]) .ai-companion-trigger {
+      display: none;
+    }
+
     .ai-companion-trigger > button {
       min-height: 3.25rem;
       padding: 0.25rem;

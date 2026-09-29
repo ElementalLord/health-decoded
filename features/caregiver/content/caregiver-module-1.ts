@@ -14,7 +14,7 @@ export const caregiverModule1 = Object.freeze({
     audienceProblem:
       "A supporter sees silence, anger, withdrawal, denial, or frustration and feels pressure to decide what it means or fix it.",
     emotionalObjective: "Move from confusion to curiosity to patient attention.",
-    estimatedTime: "8 to 10 minutes",
+    estimatedTime: "10 to 12 minutes",
     medicalRiskLevel:
       "Low to moderate. Emotional content must not become diagnosis; medical symptoms are outside this module.",
     reviewStatus:
@@ -25,7 +25,7 @@ export const caregiverModule1 = Object.freeze({
     paragraphs: [
       "When a person gives less information than you hoped for, it can be tempting to search for a hidden meaning. A caring response can be simpler: acknowledge what was said, leave room for what was not said, and avoid making the person prove that they are okay.",
       "A pause is not a failure of the relationship. It can be a way of protecting energy, privacy, or an ordinary part of the day. Respecting a pause makes a later conversation easier because the person does not have to defend why they needed one.",
-      "You can remain available without becoming watchful. One brief, agreed check-in is different from repeated attempts to get an answer. The difference is whether the person still has a real choice about when, how, and whether to respond.",
+      "You can stay available without repeatedly checking. One agreed check-in is different from several attempts to get an answer. The difference is whether the person still has a real choice about when, how, and whether to respond.",
     ],
     subsections: [
       {
@@ -52,7 +52,7 @@ export const caregiverModule1 = Object.freeze({
       opening:
         "A short answer can sound like anger. Silence can look like denial. A changed subject can feel like rejection. What you observe is real, but the meaning may still be unclear.",
       centralIdea:
-        "Notice what happened. Stay uncertain about what it means. Ask whether the person wants to talk, wants another kind of help, or wants to leave it for now.",
+        "Notice what happened without deciding why. Then ask whether the person wants to talk, wants practical help, or wants to leave the topic alone for now.",
     },
     scenario: {
       id: "CG-M1-S02",
@@ -113,7 +113,7 @@ export const caregiverModule1 = Object.freeze({
       listeningResponse: "“That sounds like a lot to take in. Do you want to keep talking?”",
       fixingResponse: "“Here is what you need to do.”",
       closing:
-        "The second line may be well intended, but it changes the speaker, subject, and goal. Advice belongs only when it is wanted and within your role.",
+        "The second line may be well intended, but it replaces listening with direction. Give advice only when it is wanted and within your role.",
     },
     returning: {
       id: "CG-M1-S06",
@@ -129,7 +129,7 @@ export const caregiverModule1 = Object.freeze({
       title: "Common misunderstanding correction",
       misunderstanding: "“If I do not keep asking, they will think I do not care.”",
       correction:
-        "Care can be visible without repeated questioning. A specific offer, a normal conversation, or respecting a pause may communicate steadiness more clearly than another request for an update.",
+        "Care can be clear without repeated questions. A specific offer, an ordinary conversation, or respecting a pause may be more helpful than asking for another update.",
     },
   },
   interactions: {
@@ -169,8 +169,7 @@ export const caregiverModule1 = Object.freeze({
         blank:
           "The categories are checked. Add another possible explanation if you want more practice. This field is optional.",
       },
-      learningPoint:
-        "Uncertainty is not inattention. It is the space that keeps observation from becoming a label.",
+      learningPoint: "Leaving the reason open helps you ask instead of assigning a label.",
     },
     timing: {
       id: "CG-M1-I02",
@@ -273,7 +272,7 @@ export const caregiverModule1 = Object.freeze({
       submit: "Hear the response",
       feedback: {
         preferred:
-          "This stays with what the friend said and offers two directions without sneaking advice back in.",
+          "This acknowledges what the friend said and offers two options without adding advice.",
         advice:
           "The friend already declined advice. A solution offered immediately changes the kind of conversation.",
         minimize: "This closes the experience before the friend has decided whether to say more.",
@@ -290,11 +289,11 @@ export const caregiverModule1 = Object.freeze({
     },
     {
       label: "Offer three modes",
-      copy: "“Would listening, one practical task, or some space be more useful?”",
+      copy: "“Would you like me to listen, help with one thing, or leave it alone for now?”",
     },
     {
       label: "Acknowledge uncertainty",
-      copy: "“I noticed the conversation stopped. I do not know what that means for you.”",
+      copy: "“I noticed we stopped talking about it. I do not want to assume why.”",
     },
     { label: "Accept a pause", copy: "“Okay. I will not keep asking tonight.”" },
     {
@@ -381,7 +380,7 @@ export const caregiverModule1 = Object.freeze({
     completed: "Module completed",
     practiced:
       "You separated observation from interpretation, checked timing, and matched a response to the kind of support requested.",
-    understood: "Key idea appears understood: stay uncertain, then ask.",
+    understood: "You applied the key idea: keep the reason open, then ask.",
     revisit:
       "One idea may be worth revisiting: a previous agreement or caring intention does not remove the need to notice current readiness.",
     review: "Review the key idea",

@@ -34,6 +34,7 @@ export function MilestoneNotificationHost({ userId }: { userId: string }) {
   const seenIdsRef = useRef(new Set<string>());
   const pendingAcknowledgementsRef = useRef(new Set<string>());
   const syncingRef = useRef<Promise<void> | null>(null);
+  const serverActionsAvailableRef = useRef(true);
   const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const enqueueMilestones = useCallback((ids: readonly string[]) => {
@@ -48,27 +49,43 @@ export function MilestoneNotificationHost({ userId }: { userId: string }) {
   }, []);
 
   const acknowledgePending = useCallback(async () => {
+    if (!serverActionsAvailableRef.current) return;
     const ids = [...pendingAcknowledgementsRef.current];
     if (!ids.length) return;
-    const result = await acknowledgeMilestoneAnnouncementsAction(ids);
-    if (result.ok) ids.forEach((id) => pendingAcknowledgementsRef.current.delete(id));
+    try {
+      const result = await acknowledgeMilestoneAnnouncementsAction(ids);
+      if (result.ok) ids.forEach((id) => pendingAcknowledgementsRef.current.delete(id));
+    } catch {
+      serverActionsAvailableRef.current = false;
+    }
   }, []);
 
   const sync = useCallback(() => {
+    if (!serverActionsAvailableRef.current) return Promise.resolve();
     if (syncingRef.current) return syncingRef.current;
     syncingRef.current = (async () => {
-      const pendingPromise = getPendingMilestoneAnnouncementsAction();
-      void acknowledgePending();
-      const result = await pendingPromise;
-      if (result.ok) enqueueMilestones(result.milestoneIds);
+      try {
+        const pendingPromise = getPendingMilestoneAnnouncementsAction();
+        void acknowledgePending();
+        const result = await pendingPromise;
+        if (result.ok) enqueueMilestones(result.milestoneIds);
+      } catch {
+        serverActionsAvailableRef.current = false;
+      }
     })().finally(() => {
       syncingRef.current = null;
     });
     return syncingRef.current;
   }, [acknowledgePending, enqueueMilestones]);
 
-  const synchronize = useCallback(() => {
-    void flushPendingMilestoneEvents().finally(sync);
+  const synchronize = useCallback(async () => {
+    if (!serverActionsAvailableRef.current) return;
+    const actionsAvailable = await flushPendingMilestoneEvents();
+    if (!actionsAvailable) {
+      serverActionsAvailableRef.current = false;
+      return;
+    }
+    await sync();
   }, [sync]);
 
   useEffect(() => {
@@ -80,12 +97,12 @@ export function MilestoneNotificationHost({ userId }: { userId: string }) {
     function handleVisibility() {
       if (document.visibilityState === "visible") synchronize();
     }
-    synchronize();
+    void synchronize();
     window.addEventListener(MILESTONE_SYNC_REQUESTED_EVENT, handleSyncRequest);
     window.addEventListener("online", synchronize);
     window.addEventListener("focus", synchronize);
     document.addEventListener("visibilitychange", handleVisibility);
-    const interval = window.setInterval(synchronize, SYNC_INTERVAL_MS);
+    const interval = window.setInterval(() => void synchronize(), SYNC_INTERVAL_MS);
     return () => {
       window.removeEventListener(MILESTONE_SYNC_REQUESTED_EVENT, handleSyncRequest);
       window.removeEventListener("online", synchronize);

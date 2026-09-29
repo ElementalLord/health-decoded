@@ -3,37 +3,45 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { caregiverModule5 } from "../features/caregiver/content/caregiver-module-5.ts";
 
-const directory = new URL("../features/caregiver/components/modules/module-5/", import.meta.url);
-const read = (name) => readFile(new URL(name, directory), "utf8");
-test("Module 5 keeps all five mechanics and accessible dropdowns", async () => {
+const experience = await readFile(
+  new URL(
+    "../features/caregiver/components/modules/module-5/module-5-experience.tsx",
+    import.meta.url,
+  ),
+  "utf8",
+);
+
+test("Module 5 keeps all five learning mechanics in one story experience", () => {
   assert.equal(caregiverModule5.interactions.responsibility.items.length, 8);
   assert.equal(caregiverModule5.interactions.sustainability.choices.length, 6);
   assert.equal(caregiverModule5.interactions.boundaries.statements.length, 3);
   assert.equal(caregiverModule5.interactions.network.tasks.length, 3);
-  const map = await read("responsibility-map.tsx");
-  assert.match(map, /<select/);
-  assert.match(map, /attempt >= 3/);
-  assert.match(map, /event\.currentTarget\.value/);
-});
-test("network uses task-level selects and load review creates no score", async () => {
-  const network = await read("support-network-map.tsx");
-  const load = await read("nonclinical-load-review.tsx");
-  assert.match(network, /<select/);
-  assert.doesNotMatch(load, /data-score|hiddenScore|scoreValue/);
-  assert.doesNotMatch(load, /reduce\(|severity|risk band/i);
+  assert.equal(caregiverModule5.interactions.load.patterns.length, 6);
+  for (const id of ["responsibility", "sustainability", "boundaries", "network", "load"])
+    assert.match(experience, new RegExp(`interactions\\.${id}`));
 });
 
-test("answer activities provide the requested third-attempt assistance", async () => {
-  const files = await Promise.all([
-    read("responsibility-map.tsx"),
-    read("sustainability-comparison.tsx"),
-    read("boundary-rehearsal.tsx"),
-    read("support-network-map.tsx"),
-    read("nonclinical-load-review.tsx"),
-    read("module-5-knowledge-check.tsx"),
-  ]);
-  for (const source of files) {
-    assert.match(source, /attempt[^\n]*>= 3|nextAttempt >= 3/);
-    assert.match(source, /filled in after three attempts/i);
-  }
+test("Module 5 breaks dense work into clickable one-item sequences", () => {
+  assert.match(experience, /const SCENE_COUNT = 18/);
+  assert.match(experience, /function StepNavigator/);
+  assert.match(experience, /Item \{index \+ 1\}/);
+  assert.match(experience, /Difference \{index \+ 1\}/);
+  assert.match(experience, /Revision \{index \+ 1\}/);
+  assert.match(experience, /Task \{index \+ 1\}/);
+  assert.match(experience, /Pattern \$\{index \+ 1\}/);
+});
+
+test("review keeps the learner's answer and offers assistance after three attempts", () => {
+  assert.match(experience, /attempts\[item\.id\][\s\S]*>= 3/);
+  assert.match(experience, /attempts\[choice\.id\][\s\S]*>= 3/);
+  assert.match(experience, /attempts\[statement\.id\][\s\S]*>= 3/);
+  assert.match(experience, /Your choice has been kept/);
+  assert.match(experience, /Your choices have been kept/);
+  assert.doesNotMatch(experience, /setAnswers\([^\n]*preferred/);
+});
+
+test("outer scene navigation never depends on an activity answer", () => {
+  assert.match(experience, /onClick=\{\(\) => goTo\(current \+ 1\)\}/);
+  assert.match(experience, /Continue, then return if needed/);
+  assert.doesNotMatch(experience, /className=\{styles\.next\}[^>]*disabled=/);
 });

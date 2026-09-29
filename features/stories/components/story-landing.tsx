@@ -97,7 +97,7 @@ function StoryStatus({ progress, story }: { progress: PreviewState; story: Inter
   if (progress.status === "in-progress") {
     return (
       <span>
-        Scene {progress.scene} of {story.scenes.length}
+        Part {progress.scene} of {story.readerPartCount ?? story.scenes.length}
       </span>
     );
   }
@@ -114,13 +114,11 @@ function StoryPreview({
   story: InteractiveStory;
   variant: "featured" | "row" | "row-reverse";
 }) {
-  const timeLabel = (story.estimatedTimeLabel ?? "5 to 7 minutes")
-    .replace(" to ", "–")
-    .replace(" minutes", " min");
+  const timeLabel = (story.estimatedTimeLabel ?? "5 to 7 minutes").replace(" minutes", " min");
   const lessonLabel = story.relatedLessonLabel ?? "Lesson 1";
   const action = actionByStatus[progress.status];
   const storyHref =
-    progress.status === "not-started" ? `/stories/${story.slug}?begin=1` : `/stories/${story.slug}`;
+    progress.status === "in-progress" ? `/stories/${story.slug}` : `/stories/${story.slug}?begin=1`;
   const illustration = illustrationByStorySlug[story.slug];
 
   return (

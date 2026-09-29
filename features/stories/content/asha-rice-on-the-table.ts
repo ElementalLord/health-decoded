@@ -3,14 +3,14 @@ import type { InteractiveStory } from "@/features/stories/types/interactive-stor
 export const ashaRiceOnTheTableStory: InteractiveStory = {
   id: "asha-rice-on-the-table",
   slug: "asha-rice-on-the-table",
-  title: "The Rice Was Still on the Table",
+  title: "Sunday Dinner",
   characterName: "Asha",
   disclosure:
-    "About this story: Asha is a placeholder name. This is an original illustrative scenario inspired by emotions and questions commonly reported by people living with Type 2 diabetes. It does not describe one specific individual or provide a personalized eating plan.",
+    "Asha is a placeholder name. This is an original illustrative scenario based on common questions people report about food after a Type 2 diabetes diagnosis. It does not describe one specific individual or provide a personalized eating plan.",
   topic: "Food and family",
   themes: [
     "fear of food",
-    "cultural meals",
+    "familiar meals",
     "family connection",
     "restrictive thinking",
     "carbohydrates",
@@ -20,29 +20,30 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
     "returning to shared meals",
   ],
   learningObjective:
-    "A Type 2 diabetes diagnosis does not require abandoning familiar or culturally meaningful foods. Carbohydrate-containing foods affect blood glucose, but portion size, fiber, protein, vegetables, preparation, and the overall eating pattern all matter. Sustainable food choices should support health without isolating the learner from family, culture, or enjoyment.",
+    "Show how familiar foods can be considered in the context of portions, preparation, the rest of the meal, personal needs, and family routines.",
   relatedLessonId: "lesson-4",
-  estimatedMinutes: 8,
+  estimatedMinutes: 7,
+  readerPartCount: 8,
   medicalRiskLevel: "low",
   reviewStatus: "not-reviewed",
-  version: "1.0",
+  version: "2.1",
   sourceThemeNote:
-    "Original composite narrative informed by recurring themes commonly reported in diabetes education, including fear of carbohydrates, loss of cultural foods, family pressure, and the need for sustainable meal changes. No single person’s wording, identity, or chronology is reproduced.",
+    "Original composite narrative informed by recurring themes commonly reported in diabetes education, including fear of carbohydrates, loss of familiar foods, family pressure, and the need for sustainable meal changes. No single person’s wording, identity, or chronology is reproduced.",
   visualTheme: "family-warmth",
-  emotionalArc: "distance to shared agency",
+  emotionalArc: "food worry to a shared meal",
   dominantInteractionType: "apply",
   primaryAccent: "table terracotta",
-  closingTone: "warmly connected",
+  closingTone: "ordinary and connected",
   imagePath: "/stories/asha-rice-on-the-table-cover.webp",
   imagePrompt:
-    "Create a cinematic editorial illustration of a warm South Asian family dinner at home in the early evening. A middle-aged South Asian woman sits at a dining table with several family members, but the composition focuses on the table and the emotional distance she feels rather than on clearly identifiable faces. In front of her is a very small, separate plate, while familiar shared dishes remain in the center of the table, including rice, lentils, vegetables, flatbread, and a protein dish. Her family is engaged in the meal, while she looks quietly uncertain about what she is allowed to eat. Show natural body language, warm household lighting, and a realistic family setting. Use restrained warm cream, deep green, muted terracotta, soft gold, and natural wood colors. No text, medical devices, logos, exaggerated emotion, stereotypical decoration, or moral contrast between foods. Polished cinematic editorial illustration, not stock photography or a cartoon.",
+    "Create a cinematic editorial illustration of a warm multigenerational family dinner at home in the early evening. A middle-aged woman sits at a dining table with several family members, but the composition focuses on the table and the emotional distance she feels rather than on clearly identifiable faces. In front of her is a very small, separate plate, while a range of familiar shared dishes remain in the center of the table, including a grain dish, beans, vegetables, bread, and a protein dish. Her family is engaged in the meal, while she looks quietly uncertain about what she is allowed to eat. Show natural body language, warm household lighting, and a realistic family setting without tying the meal to one culture. Use restrained warm cream, deep green, muted terracotta, soft gold, and natural wood colors. No text, medical devices, logos, exaggerated emotion, stereotypical decoration, or moral contrast between foods. Polished cinematic editorial illustration, not stock photography or a cartoon.",
   imageAlt:
-    "An editorial illustration of a South Asian woman sitting with her family at a dinner table, looking uncertain as familiar shared dishes remain in the center of the table.",
+    "An editorial illustration of a woman sitting with her family at a dinner table, looking uncertain as familiar shared dishes remain in the center of the table.",
   introduction:
-    "At Sunday dinner, Asha finds a way to care for her health without leaving the table behind.",
+    "After her diagnosis, Asha worries that familiar family meals no longer fit her care plan.",
   whyItMatters:
     "This story explores food fear, family meals, and how familiar carbohydrate-containing foods can remain part of a thoughtful eating pattern.",
-  estimatedTimeLabel: "6 to 8 minutes",
+  estimatedTimeLabel: "About 7 minutes",
   relatedLessonLabel: "Lesson 4",
   relatedLessonTitle: "Lesson 4, Food Is Not the Enemy",
   relatedLessonHref: "/lessons/4",
@@ -54,21 +55,12 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
     {
       id: "everything-looked-different",
       number: 1,
-      title: "Everything Looked Different",
+      title: "At the grocery store",
       layout: "narrative-left",
       tone: "tension",
       paragraphs: [
-        "The first grocery trip after her diagnosis took Asha almost two hours.",
-        "She picked up a bag of rice, read the nutrition label, and placed it back on the shelf.",
-        "She did the same with bread.",
-        "Then yogurt.",
-        "Then fruit.",
-        "Then lentils.",
-        "Nearly everything seemed to contain carbohydrates, sugar, or a number she did not understand.",
-        "Before her diagnosis, grocery shopping had been routine. She bought ingredients for meals her family had eaten for years.",
-        "Now every aisle felt like a test she had not studied for.",
-        "By the time Asha reached the checkout area, her cart contained spinach, eggs, chicken, and water.",
-        "She looked into it and wondered whether this was what eating with diabetes would be like forever.",
+        "Asha picked up a familiar pantry staple, read the nutrition label, and put it back. She did the same with bread, yogurt, fruit, and beans.",
+        "Nearly every familiar food seemed to contain a number she didn’t understand. After an hour, her cart held leafy greens, eggs, a protein option, and water.",
       ],
       interactionType: "grocery-fear",
       interaction: {
@@ -95,23 +87,12 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
     {
       id: "the-separate-plate",
       number: 2,
-      title: "The Separate Plate",
+      title: "A separate plate",
       layout: "narrative-right",
       tone: "tension",
       paragraphs: [
-        "That Sunday, Asha’s family gathered for dinner.",
-        "The table held many of the foods they usually shared: rice, dal, vegetables, flatbread, yogurt, and chicken.",
-        "Asha had prepared a separate plate for herself.",
-        "Grilled chicken.",
-        "A pile of spinach.",
-        "No rice.",
-        "No dal.",
-        "No flatbread.",
-        "She sat down with everyone else, but the meal no longer felt shared.",
-        "Her husband reached for the rice.",
-        "Her mother spooned dal onto a child’s plate.",
-        "Everyone talked about the week.",
-        "Asha looked down at her food and tried to convince herself that being disciplined was supposed to feel this lonely.",
+        "The table held a grain dish, beans, vegetables, bread, yogurt, and a protein dish. Asha had made herself a different dinner: plain protein and leafy greens.",
+        "Everyone talked about the week and passed dishes across the table. Asha was sitting with them, but the meal no longer felt shared.",
       ],
       interactionType: "separate-plate",
       interaction: {
@@ -120,7 +101,7 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         engagement: "optional-exploration",
         prompt: "What needs to be shared for a meal to still feel shared?",
         instructions:
-          "Compare identical plates with a shared ritual that leaves room for personal choices.",
+          "Compare identical plates with a shared meal where each person can make their own choices.",
         options: [
           { id: "connected", label: "Shared meal, individual choices" },
           { id: "identical", label: "Everyone needs the same plate" },
@@ -135,24 +116,12 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
     {
       id: "are-you-not-eating-with-us",
       number: 3,
-      title: "“Are You Not Eating With Us?”",
+      title: "Her daughter noticed",
       layout: "perspective-split",
       tone: "tension",
       paragraphs: [
-        "Asha’s daughter looked across the table.",
-        "“Are you not eating with us?” she asked.",
-        "“I am eating,” Asha replied.",
-        "Her daughter looked at the separate plate.",
-        "“But not our food.”",
-        "The table became quiet for a moment.",
-        "Asha’s husband tried to help.",
-        "“Maybe we should stop making rice,” he said. “Then you won’t have to worry about it.”",
-        "Asha knew he meant well.",
-        "But the idea of removing a food her family had eaten for generations did not make her feel supported.",
-        "It made her feel as though the diagnosis had entered the kitchen and rearranged everyone’s life.",
-        "She did not want her family to monitor her plate.",
-        "She also did not want to pretend that food choices no longer mattered.",
-        "She did not yet know how to ask for something between those two extremes.",
+        "Asha’s daughter looked at the separate plate. Her husband offered to stop serving one of their familiar dishes so Asha wouldn’t have to worry about it.",
+        "He meant to help. Asha didn’t want the family to change every meal for her, and she didn’t want anyone monitoring her plate. She wasn’t sure how to say that yet.",
       ],
       interactionType: "family-dialogue",
       interaction: {
@@ -189,29 +158,12 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
     {
       id: "learning-what-the-meal-was-doing",
       number: 4,
-      title: "Learning What the Meal Was Doing",
+      title: "Looking at the whole meal",
       layout: "stacked",
       tone: "clarity",
       paragraphs: [
-        "At her next appointment, Asha described the grocery trip and the separate plate.",
-        "The dietitian listened and then said:",
-        "“You started removing food before anyone helped you understand what the food was doing.”",
-        "They looked at one of Asha’s usual dinners.",
-        "The rice and flatbread contained carbohydrates.",
-        "The dal also contained carbohydrates, along with fiber and protein.",
-        "The vegetables added volume, fiber, and variety.",
-        "The chicken provided protein.",
-        "The yogurt could play a different role depending on the type and portion.",
-        "The dietitian did not hand Asha a list of foods she could never eat again.",
-        "Instead, they discussed the meal as a whole.",
-        "How much of each food was present?",
-        "Which foods were eaten together?",
-        "What left Asha feeling satisfied?",
-        "What would she be willing to continue months from now?",
-        "For the first time since her diagnosis, the question changed from:",
-        "“What must I remove?”",
-        "to:",
-        "“How can I build this meal thoughtfully?”",
+        "Asha described the grocery trip and the separate plate. The dietitian asked what her family usually ate, then looked at the whole dinner with her.",
+        "The grain dish wasn’t the only part of the meal. There were beans, vegetables, protein, side dishes, the amount of each food, and what Asha could realistically keep doing.",
       ],
       interactionType: "meal-builder",
       interaction: {
@@ -222,35 +174,31 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         instructions:
           "Build and adjust a familiar meal. This is a sustainability exercise, not a personalized prescription.",
         options: [
-          { id: "rice", label: "Rice" },
-          { id: "dal", label: "Dal" },
+          { id: "grain", label: "Grain or starchy food" },
+          { id: "beans", label: "Beans or legumes" },
           { id: "vegetables", label: "Vegetables" },
-          { id: "protein", label: "Chicken" },
-          { id: "flatbread", label: "Flatbread" },
-          { id: "yogurt", label: "Plain yogurt" },
+          { id: "protein", label: "Protein food" },
+          { id: "bread", label: "Bread or another side" },
+          { id: "dairy", label: "Dairy or alternative" },
           { id: "water", label: "Water" },
           { id: "dessert", label: "Dessert" },
         ],
         feedbackMode: "single-explanation",
         requiredForProgress: false,
         learningPoint:
-          "A sustainable meal considers nourishment alongside familiarity, satisfaction, culture, access, and what someone can realistically continue.",
+          "A sustainable meal considers nourishment alongside familiarity, satisfaction, access, personal preferences, and what someone can realistically continue.",
       },
       continueLabel: "Return to Sunday dinner",
     },
     {
       id: "the-choice-at-sunday-dinner",
       number: 5,
-      title: "The Choice at Sunday Dinner",
+      title: "The next Sunday",
       layout: "decision-focus",
       tone: "pause",
       paragraphs: [
-        "The following Sunday, the same dishes returned to the table.",
-        "Asha still felt nervous.",
-        "Understanding the meal did not instantly remove every fear she had attached to it.",
-        "The serving spoon rested beside the rice.",
-        "Her family waited without saying anything.",
-        "Asha realized there were several ways she could respond.",
+        "The same dishes came back to the table. Asha still felt nervous. One appointment hadn’t removed every worry she had attached to the meal.",
+        "This time, nobody made her a separate plate. The serving spoons stayed with the shared dishes, and her family let her choose.",
       ],
       interactionType: "meaningful-food-choice",
       interaction: {
@@ -263,8 +211,7 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
           {
             id: "serve-self",
             label: "Keep the dishes family-style and let Asha serve her own plate",
-            feedback:
-              "Asha keeps agency over her plate while the meal remains a shared family experience.",
+            feedback: "Asha chooses what goes on her plate while still eating with her family.",
           },
           {
             id: "one-experiment",
@@ -295,27 +242,12 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
     {
       id: "the-same-table",
       number: 6,
-      title: "The Same Table",
+      title: "Dinner continued",
       layout: "closing-wide",
       tone: "clarity",
       paragraphs: [
-        "Asha’s daughter watched her serve the rice.",
-        "“I thought you could not eat that anymore,” she said.",
-        "Asha took a moment before answering.",
-        "“I can still eat the foods we make,” she said. “I am learning how they fit together.”",
-        "Her husband asked whether he should remind her about portions.",
-        "Asha shook her head.",
-        "“What would help is making sure there are vegetables and protein on the table too. You do not need to watch what I eat.”",
-        "The conversation moved on.",
-        "Someone asked about school.",
-        "Someone else complained that the chicken was too spicy.",
-        "Asha noticed that she had stopped studying everyone else’s plate.",
-        "She was eating dinner with her family again.",
-        "The rice was still on the table.",
-        "It had not become harmless, dangerous, allowed, or forbidden.",
-        "It was food.",
-        "Asha now had more information about how she wanted it to fit into her life.",
-        "That understanding felt far more sustainable than fear.",
+        "Asha served herself from the shared dishes. When her daughter asked about one of her choices, Asha said, “I’m learning how it fits with the rest of my meal.”",
+        "Her husband asked if he should remind her about portions. “No,” Asha said. “Just ask before giving advice.” Then the conversation moved on.",
       ],
       interactionType: "shared-table",
       interaction: {
@@ -341,39 +273,38 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       continueLabel: "Pause and Think",
     },
   ],
-  predictionPrompt: "What changed most for Asha?",
+  predictionPrompt: "What information helped Asha make a decision?",
   predictionChoices: [
-    { id: "one-food", label: "She discovered one food that would solve diabetes" },
-    { id: "stopped-carbs", label: "She stopped eating carbohydrates" },
+    { id: "one-food", label: "She found one food that works for everyone" },
+    { id: "stopped-carbs", label: "She removed every carbohydrate-containing food" },
     {
       id: "whole-meal",
       label:
-        "She learned to think about the whole meal instead of treating familiar foods as forbidden",
+        "She considered the amount, the rest of the meal, and what she could realistically continue",
     },
-    { id: "family-chose", label: "Her family began choosing all of her food for her" },
+    { id: "family-chose", label: "Her family chose her portions for her" },
   ],
   quiz: [
     {
       id: "asha-sustainable-approach",
-      prompt: "What made Asha’s new approach more sustainable than her first separate plate?",
+      prompt: "What was different about Asha’s second Sunday dinner?",
       choices: [
         { id: "a", label: "She removed every carbohydrate-containing food" },
         {
           id: "b",
-          label:
-            "She kept familiar foods while considering portions and how the meal worked together",
+          label: "She kept familiar foods and considered the whole meal",
         },
         { id: "c", label: "Her family began deciding what she could eat" },
         { id: "d", label: "She found one meal that would work for everyone with diabetes" },
       ],
       correctChoiceId: "b",
       explanation:
-        "Asha’s approach became more sustainable when she could remain part of the shared meal while making informed decisions about portions, pairings, and the overall pattern. There is no single meal that works for every person.",
+        "Asha stayed part of the shared meal and made her own choices with more context. There is no single meal that works for every person.",
       relatedSceneId: "learning-what-the-meal-was-doing",
     },
     {
       id: "asha-carbohydrate-accuracy",
-      prompt: "Which statement about carbohydrate-containing foods is most accurate?",
+      prompt: "What context did the dietitian add?",
       choices: [
         {
           id: "a",
@@ -383,26 +314,24 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         {
           id: "c",
           label:
-            "They can affect blood glucose, but portion, pairing, preparation, and the overall eating pattern also matter",
+            "Amount, preparation, other foods, personal response, and the care plan all matter",
         },
         { id: "d", label: "Only sweet foods contain carbohydrates" },
       ],
       correctChoiceId: "c",
       explanation:
-        "Carbohydrate-containing foods can influence blood glucose, but their effect is not understood by labeling every food as allowed or forbidden. The amount, other foods in the meal, personal response, and care plan all matter.",
+        "Carbohydrate-containing foods can influence blood glucose. The amount, other foods in the meal, personal response, and care plan add context.",
       relatedSceneId: "learning-what-the-meal-was-doing",
     },
     {
       id: "asha-family-support",
-      prompt:
-        "A family member says, “You have diabetes, so we should stop making rice.” Which response is most supportive?",
+      prompt: "Which family response leaves the food decision with Asha?",
       choices: [
         { id: "a", label: "“Yes. Removing it for everyone is the only safe option.”" },
         { id: "b", label: "“Food does not matter, so nothing needs to change.”" },
         {
           id: "c",
-          label:
-            "“Let’s ask what kind of support would help and find a way to keep shared meals balanced and familiar.”",
+          label: "“Let’s ask what kind of support would help at family meals.”",
         },
         {
           id: "d",
@@ -411,27 +340,26 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       ],
       correctChoiceId: "c",
       explanation:
-        "Helpful support respects the person’s independence while making balanced choices easier. It does not require banning a cultural food or monitoring every bite.",
+        "Helpful support respects the person’s independence. It does not require removing a familiar food or monitoring every bite.",
       relatedSceneId: "the-same-table",
     },
   ],
   keyIdeaUnderstoodMessage:
-    "You identified the central idea: familiar foods can remain part of a thoughtful pattern when the whole meal, personal needs, and sustainable support are considered.",
-  lessonEyebrow: "What Asha’s experience can teach us",
-  lessonHeading: "Understanding changed the question Asha was asking.",
+    "Asha considered the whole meal, her own needs, and the support she wanted from her family.",
+  lessonEyebrow: "What changed",
+  lessonHeading: "Asha looked at the whole meal.",
   interpretation: [
-    "Asha’s first response came from fear. She believed protecting her health required removing every familiar food before she understood how those foods affected the larger meal.",
-    "What changed was not that rice suddenly stopped affecting blood glucose. What changed was the question she asked.",
-    "Instead of asking, “Am I allowed to eat this?” she began asking, “How does this fit into the meal and into a pattern I can actually continue?”",
-    "That shift allowed her to make informed choices without leaving her family, culture, or enjoyment behind.",
+    "Asha removed familiar foods before she had enough context to understand how they fit into the meal.",
+    "The dietitian helped her look at portions, preparation, the other foods present, and what she could realistically continue.",
+    "Her family could support her by asking what was helpful instead of monitoring her plate.",
   ],
   takeaway:
-    "Caring for your blood glucose does not require treating familiar foods as enemies. Sustainable choices consider the whole meal, your personal needs, and the life you want those choices to fit within.",
+    "Familiar foods can stay part of a meal. Personal needs, portions, preparation, and the rest of the meal provide context.",
   privateReflectionPrompt:
     "Is there a familiar food or family meal you are afraid diabetes might take away from you?",
   privateReflectionSupportPrompt:
     "What would you want to understand about how that food could fit into your life?",
-  completionHeading: "The rice was still on the table.",
+  completionHeading: "Finished",
   completionMessage:
-    "You followed Asha from food fear and a separate plate back to a shared family meal. Her experience showed that familiar foods can be approached with understanding, flexibility, and support rather than automatic restriction.",
+    "Asha left the separate plate behind and asked her family to support her without managing her food choices.",
 };

@@ -50,7 +50,7 @@ export const caregiverLandingRoutes = Object.freeze([
       "Slow down the urge to explain a reaction and practice asking what support, if any, is wanted.",
     action: "Open lesson",
     purpose: "Meet reactions with curiosity, not assumptions.",
-    time: "8–10 min",
+    time: "8 to 10 min",
     feedback:
       "Start with noticing what happened without deciding what it means. This route practices curiosity, timing, and listening.",
   },
@@ -62,7 +62,7 @@ export const caregiverLandingRoutes = Object.freeze([
     description: "Separate support from pressure, monitoring, and assumed access.",
     action: "Open lesson",
     purpose: "Offer help with permission, not pressure.",
-    time: "14–18 min",
+    time: "14 to 18 min",
     feedback:
       "Start with the line between offered help and assumed involvement. This route focuses on permission, privacy, and repair.",
   },
@@ -75,7 +75,7 @@ export const caregiverLandingRoutes = Object.freeze([
       "Turn broad offers into specific help with meals, errands, movement, appointments, and routines.",
     action: "Open lesson",
     purpose: "Make everyday support specific and welcome.",
-    time: "10–13 min",
+    time: "10 to 13 min",
     feedback:
       "Start with ordinary tasks. This route turns ‘Tell me if you need anything’ into support that is specific and easier to accept or decline.",
   },
@@ -88,7 +88,7 @@ export const caregiverLandingRoutes = Object.freeze([
       "Clarify your role when a situation is concerning but you do not know what it means.",
     action: "Open lesson",
     purpose: "Follow the plan and know when to get professional help.",
-    time: "10–12 min",
+    time: "10 to 12 min",
     feedback:
       "Start with role clarity. This lesson helps you separate observation from interpretation and choose an appropriate source of support.",
   },
@@ -101,7 +101,7 @@ export const caregiverLandingRoutes = Object.freeze([
       "Notice what is becoming hard to sustain and make room for limits and backup support.",
     action: "Open lesson",
     purpose: "Set limits and build support you can sustain.",
-    time: "10–13 min",
+    time: "10 to 13 min",
     feedback:
       "Start with what is becoming hard to sustain. This route separates caring from being responsible for another adult's decisions.",
   },

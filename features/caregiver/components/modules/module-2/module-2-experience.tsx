@@ -1,201 +1,1290 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-
-import { Button } from "@/components/ui/button";
-import { ProgressBar } from "@/components/ui/progress-bar";
-import { ModuleVisibilityMarker } from "../foundation/module-visibility-marker";
-import { caregiverModule2 } from "../../../content/caregiver-module-2";
-import { useCaregiverSession } from "../../../state/caregiver-session-provider";
-import { IntentionImpactMap } from "./intention-impact-map";
-import { Module2Completion } from "./module-2-completion";
-import { Module2KnowledgeCheck } from "./module-2-knowledge-check";
 import {
-  Module2AppointmentsNarrative,
-  Module2BoundariesNarrative,
-  Module2DistinctionNarrative,
-  Module2FurtherReading,
-  Module2IntentionImpactNarrative,
-  Module2PermissionNarrative,
-  Module2RepairNarrative,
-  Module2Scenario,
-  Module2Scripts,
-} from "./module-2-narrative";
-import { Module2Orientation } from "./module-2-orientation";
-import { Module2Reflection } from "./module-2-reflection";
-import { Module2Takeaway } from "./module-2-takeaway";
-import { PermissionLanguageBuilder } from "./permission-language-builder";
-import { RefusalBranchingConversation } from "./refusal-branching-conversation";
-import { RepairSequence } from "./repair-sequence";
-import { SupportBoundaryContinuum } from "./support-boundary-continuum";
-import styles from "../../../styles/caregiver-module-2.module.css";
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  Clock3,
+  LockKeyhole,
+  RotateCcw,
+  Volume2,
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
-const stages = [
-  { id: "opening", group: "Understand", label: "Opening", headingId: "caregiver-module-2-heading" },
-  { id: "scenario", group: "Understand", label: "Leah and Andre", headingId: "CG-M2-S02-heading" },
-  {
-    id: "impact",
-    group: "Understand",
-    label: "Intention and impact",
-    headingId: "CG-M2-S03-heading",
-  },
-  {
-    id: "continuum",
-    group: "Notice",
-    label: "Support and control",
-    headingId: "CG-M2-S04-heading",
-  },
-  { id: "permission", group: "Ask", label: "Specific permission", headingId: "CG-M2-S05-heading" },
-  {
-    id: "appointments",
-    group: "Ask",
-    label: "Appointments and privacy",
-    headingId: "CG-M2-S06-heading",
-  },
-  { id: "refusal", group: "Respond", label: "Hearing no", headingId: "CG-M2-I04-heading" },
-  { id: "repair", group: "Respond", label: "Repair", headingId: "CG-M2-S07-heading" },
-  { id: "boundaries", group: "Balance", label: "Your limits", headingId: "CG-M2-S08-heading" },
-  {
-    id: "depth",
-    group: "Balance",
-    label: "Reliable support",
-    headingId: "module-2-further-reading-heading",
-  },
-  { id: "check", group: "Review", label: "Knowledge check", headingId: "module-2-check-heading" },
-  { id: "takeaway", group: "Review", label: "Takeaway", headingId: "module-2-takeaway-heading" },
+import { caregiverModule2 } from "../../../content/caregiver-module-2";
+import { caregiverModuleRegistry } from "../../../content/caregiver-module-registry";
+import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
+import { useCaregiverSession } from "../../../state/caregiver-session-provider";
+import styles from "../../../styles/caregiver-module-1-story.module.css";
+
+const SCENE_COUNT = 16;
+
+function shouldReduceMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function StepNavigator({
+  completed,
+  completionLabel = "reviewed",
+  count,
+  current,
+  label,
+  onSelect,
+}: {
+  readonly completed: (index: number) => boolean;
+  readonly completionLabel?: string;
+  readonly count: number;
+  readonly current: number;
+  readonly label: string;
+  readonly onSelect: (index: number) => void;
+}) {
+  return (
+    <div aria-label={`${label} navigation`} className={styles.stepNavigator} role="navigation">
+      {Array.from({ length: count }, (_, index) => (
+        <button
+          aria-current={current === index ? "step" : undefined}
+          aria-label={`${label} ${index + 1}${completed(index) ? `, ${completionLabel}` : ""}`}
+          data-complete={completed(index) ? "true" : undefined}
+          key={index}
+          onClick={() => onSelect(index)}
+          type="button"
+        >
+          <span aria-hidden="true">{index + 1}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ModuleProgressHeader({ current }: { readonly current: number }) {
+  return (
+    <header className={styles.readerHeader}>
+      <div className={styles.readerIdentity}>
+        <span>Caregiver module 2</span>
+        <span aria-label={`Part ${current + 1} of ${SCENE_COUNT}`}>
+          {current + 1} / {SCENE_COUNT}
+        </span>
+      </div>
+      <div
+        aria-label={`Part ${current + 1} of ${SCENE_COUNT}`}
+        aria-valuemax={SCENE_COUNT}
+        aria-valuemin={1}
+        aria-valuenow={current + 1}
+        aria-valuetext={`Part ${current + 1} of ${SCENE_COUNT}`}
+        className={styles.progress}
+        role="progressbar"
+      >
+        {Array.from({ length: SCENE_COUNT }, (_, index) => (
+          <span
+            aria-hidden="true"
+            className={index <= current ? styles.progressActive : undefined}
+            key={index}
+          />
+        ))}
+      </div>
+    </header>
+  );
+}
+
+function ScenarioSequence({ end, start }: { readonly end: number; readonly start: number }) {
+  const lines = caregiverModule2.sections.scenario.paragraphs.slice(start, end);
+  const [index, setIndex] = useState(0);
+
+  return (
+    <section className={styles.phraseBrowser} aria-label="The phone on the counter">
+      <div className={styles.phraseCard}>
+        <span>
+          Moment {index + 1} of {lines.length}
+        </span>
+        <h3>{index === 0 ? caregiverModule2.sections.scenario.title : "What happens next"}</h3>
+        <p>{lines[index]}</p>
+      </div>
+      <div className={styles.phraseControls}>
+        <button disabled={index === 0} onClick={() => setIndex((value) => value - 1)} type="button">
+          Previous
+        </button>
+        <span aria-live="polite">
+          {index + 1} of {lines.length}
+        </span>
+        <button
+          disabled={index === lines.length - 1}
+          onClick={() => setIndex((value) => value + 1)}
+          type="button"
+        >
+          Next
+        </button>
+      </div>
+    </section>
+  );
+}
+
+type ImpactAction = (typeof caregiverModule2.interactions.intentionImpact.actions)[number];
+
+function IntentionImpactMap() {
+  const interaction = caregiverModule2.interactions.intentionImpact;
+  const { markInteractionSubmitted } = useCaregiverSession();
+  const [actionIndex, setActionIndex] = useState(0);
+  const [intentions, setIntentions] = useState<Record<string, string>>({});
+  const [impacts, setImpacts] = useState<Record<string, string>>({});
+  const [unknowns, setUnknowns] = useState<Record<string, boolean>>({});
+  const [reviewed, setReviewed] = useState<Record<string, boolean>>({});
+  const action: ImpactAction = interaction.actions[actionIndex]!;
+  const intention = intentions[action.id] ?? "";
+  const impact = impacts[action.id] ?? "";
+  const keepsOpen = Boolean(unknowns[action.id]);
+  const currentReviewed = Boolean(reviewed[action.id]);
+
+  function review() {
+    if (!intention || !impact || !keepsOpen) return;
+    const nextReviewed = { ...reviewed, [action.id]: true };
+    setReviewed(nextReviewed);
+    if (Object.values(nextReviewed).filter(Boolean).length === interaction.actions.length) {
+      markInteractionSubmitted(interaction.id);
+    }
+  }
+
+  const feedback = !keepsOpen
+    ? interaction.feedback.unknown
+    : impact === "support"
+      ? interaction.feedback.support
+      : impact === action.preferredImpact
+        ? interaction.feedback.preferred
+        : interaction.feedback.fallback;
+
+  return (
+    <section className={styles.sorter} data-interaction-id={interaction.id}>
+      <div className={styles.sorterTop}>
+        <span>
+          Action {actionIndex + 1} of {interaction.actions.length}
+        </span>
+        <StepNavigator
+          completed={(index) => Boolean(reviewed[interaction.actions[index]!.id])}
+          count={interaction.actions.length}
+          current={actionIndex}
+          label="Action"
+          onSelect={setActionIndex}
+        />
+      </div>
+      <h3>{action.label}</h3>
+      <div className={styles.replyControls}>
+        <fieldset>
+          <legend>Likely intention</legend>
+          {interaction.intentions.map((option) => (
+            <button
+              aria-pressed={intention === option}
+              key={option}
+              onClick={() => {
+                setIntentions((current) => ({ ...current, [action.id]: option }));
+                setReviewed((current) => ({ ...current, [action.id]: false }));
+              }}
+              type="button"
+            >
+              {option}
+            </button>
+          ))}
+        </fieldset>
+        <fieldset>
+          <legend>Possible impact</legend>
+          {interaction.impacts.map((option) => (
+            <button
+              aria-pressed={impact === option}
+              key={option}
+              onClick={() => {
+                setImpacts((current) => ({ ...current, [action.id]: option }));
+                setReviewed((current) => ({ ...current, [action.id]: false }));
+              }}
+              type="button"
+            >
+              {option}
+            </button>
+          ))}
+        </fieldset>
+      </div>
+      <div className={styles.compactChoices} role="group" aria-label="Keep perspective open">
+        <button
+          aria-checked={keepsOpen}
+          onClick={() => {
+            setUnknowns((current) => ({ ...current, [action.id]: !keepsOpen }));
+            setReviewed((current) => ({ ...current, [action.id]: false }));
+          }}
+          role="checkbox"
+          type="button"
+        >
+          Andre’s exact experience remains unknown
+        </button>
+      </div>
+      {currentReviewed ? (
+        <div className={styles.sortFeedback} role="status">
+          <strong>{interaction.learningPoint}</strong>
+          <p>{feedback}</p>
+        </div>
+      ) : null}
+      <button
+        className={`${styles.primaryAction} ${styles.activityAction}`}
+        disabled={
+          currentReviewed
+            ? actionIndex === interaction.actions.length - 1
+            : !intention || !impact || !keepsOpen
+        }
+        onClick={() => {
+          if (currentReviewed) {
+            setActionIndex(actionIndex + 1);
+            return;
+          }
+          review();
+        }}
+        type="button"
+      >
+        {currentReviewed
+          ? actionIndex === interaction.actions.length - 1
+            ? "Action reviewed"
+            : "Next action"
+          : "Review this action"}
+      </button>
+      <div className={styles.miniNavigation}>
+        <button
+          disabled={actionIndex === 0}
+          onClick={() => setActionIndex(actionIndex - 1)}
+          type="button"
+        >
+          Previous
+        </button>
+        <span>
+          {actionIndex + 1} of {interaction.actions.length}
+        </span>
+      </div>
+    </section>
+  );
+}
+
+const boundarySignals = [
+  { label: "Permission", copy: "Was this action invited or clearly offered?" },
+  { label: "Privacy", copy: "Does it involve information that is not yours to open or share?" },
+  { label: "Repetition", copy: "Did one offer become repeated asking?" },
+  { label: "Easy no", copy: "Can the person decline without guilt or a consequence?" },
 ] as const;
 
-const sectionStageIndex: Readonly<Record<string, number>> = {
-  "CG-M2-S03": 2,
-  "CG-M2-S04": 3,
-  "CG-M2-S05": 4,
-};
+function BoundarySignals() {
+  const [selected, setSelected] = useState(0);
+  const signal = boundarySignals[selected]!;
+  return (
+    <section className={styles.modePicker} aria-label="Four signals of support">
+      <div className={`${styles.modeButtons} ${styles.fourSignalButtons}`} role="tablist">
+        {boundarySignals.map((item, index) => (
+          <button
+            aria-selected={selected === index}
+            key={item.label}
+            onClick={() => setSelected(index)}
+            role="tab"
+            type="button"
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+      <div className={styles.modePanel} role="tabpanel">
+        <h3>{signal.label}</h3>
+        <p>{signal.copy}</p>
+      </div>
+    </section>
+  );
+}
+
+function SupportContinuum() {
+  const interaction = caregiverModule2.interactions.continuum;
+  const { markInteractionSubmitted } = useCaregiverSession();
+  const [index, setIndex] = useState(0);
+  const [placements, setPlacements] = useState<Record<string, string>>({});
+  const [attempts, setAttempts] = useState<Record<string, number>>({});
+  const [reviewed, setReviewed] = useState<Record<string, boolean>>({});
+  const [feedback, setFeedback] = useState("");
+  const behavior = interaction.behaviors[index]!;
+  const placement = placements[behavior.id] ?? "";
+
+  function review() {
+    if (!placement) return;
+    const correct = placement === behavior.preferredCategory;
+    const attempt = (attempts[behavior.id] ?? 0) + 1;
+    const assisted = !correct && attempt >= 3;
+    setAttempts((current) => ({ ...current, [behavior.id]: attempt }));
+    setReviewed((current) => ({ ...current, [behavior.id]: true }));
+    setFeedback(
+      `${correct ? "This matches the details." : assisted ? `Suggested classification: ${behavior.preferredCategory}.` : "Compare your choice with the details."} ${behavior.feedback}${assisted ? " Your choice has been kept." : ""}`,
+    );
+    if (index === interaction.behaviors.length - 1) markInteractionSubmitted(interaction.id);
+  }
+
+  return (
+    <section className={styles.quickCheck} data-interaction-id={interaction.id}>
+      <div className={styles.checkCount}>
+        <span>
+          Situation {index + 1} of {interaction.behaviors.length}
+        </span>
+        <StepNavigator
+          completed={(itemIndex) => Boolean(reviewed[interaction.behaviors[itemIndex]!.id])}
+          count={interaction.behaviors.length}
+          current={index}
+          label="Situation"
+          onSelect={(itemIndex) => {
+            setIndex(itemIndex);
+            setFeedback("");
+          }}
+        />
+      </div>
+      <h3>{behavior.copy}</h3>
+      <div className={styles.checkChoices} role="radiogroup" aria-label="Choose a category">
+        {interaction.categories.map((category) => (
+          <button
+            aria-checked={placement === category}
+            key={category}
+            onClick={() => {
+              setPlacements((current) => ({ ...current, [behavior.id]: category }));
+              setReviewed((current) => ({ ...current, [behavior.id]: false }));
+              setFeedback("");
+            }}
+            role="radio"
+            type="button"
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+      {feedback ? (
+        <p className={styles.inlineFeedback} role="status">
+          {feedback}
+        </p>
+      ) : null}
+      <button
+        className={`${styles.primaryAction} ${styles.activityAction}`}
+        disabled={reviewed[behavior.id] ? index === interaction.behaviors.length - 1 : !placement}
+        onClick={() => {
+          if (reviewed[behavior.id]) {
+            setIndex(index + 1);
+            setFeedback("");
+            return;
+          }
+          review();
+        }}
+        type="button"
+      >
+        {reviewed[behavior.id]
+          ? index === interaction.behaviors.length - 1
+            ? "Situation reviewed"
+            : "Next situation"
+          : "Review this situation"}
+      </button>
+      <div className={styles.miniNavigation}>
+        <button disabled={index === 0} onClick={() => setIndex(index - 1)} type="button">
+          Previous
+        </button>
+        <span>
+          {index + 1} of {interaction.behaviors.length}
+        </span>
+      </div>
+    </section>
+  );
+}
+
+function PermissionQuestions() {
+  const questions = caregiverModule2.sections.permission.questions;
+  const [index, setIndex] = useState(0);
+  return (
+    <section className={styles.returnPath} aria-label="Five permission questions">
+      <div className={styles.returnSteps} role="tablist" aria-label="Permission questions">
+        {questions.map((_, questionIndex) => (
+          <button
+            aria-selected={index === questionIndex}
+            key={questionIndex}
+            onClick={() => setIndex(questionIndex)}
+            role="tab"
+            type="button"
+          >
+            <span>{questionIndex + 1}</span> Question {questionIndex + 1}
+          </button>
+        ))}
+      </div>
+      <div className={styles.returnPanel} role="tabpanel">
+        <span>Ask before acting</span>
+        <h3>{questions[index]}</h3>
+        <p>
+          {index === 4 ? "A usable agreement makes refusal ordinary." : "Keep the answer specific."}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+type PermissionPartId =
+  (typeof caregiverModule2.interactions.permissionBuilder.groups)[number]["id"];
+
+function PermissionBuilder({ onComplete }: { readonly onComplete: () => void }) {
+  const interaction = caregiverModule2.interactions.permissionBuilder;
+  const { markInteractionSubmitted } = useCaregiverSession();
+  const [index, setIndex] = useState(0);
+  const [parts, setParts] = useState<Partial<Record<PermissionPartId, string>>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const group = interaction.groups[index]!;
+  const chosen = parts[group.id];
+  const complete = interaction.groups.every((item) => parts[item.id]);
+  const preferred = interaction.groups.every((item) => parts[item.id] === item.options[0]);
+  const assembledOffer = `${parts.opening ?? "[Opening]"} ${parts.action ?? "[action]"}? ${parts.decline ?? "[Decline clause]"}. ${parts.followup ?? "[Role follow-up]"}.`;
+
+  function reviewOffer() {
+    if (!complete) return;
+    setSubmitted(true);
+    markInteractionSubmitted(interaction.id);
+    onComplete();
+  }
+
+  function readOffer() {
+    if (!complete || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(assembledOffer));
+  }
+
+  const mismatch = interaction.groups.find((item) => parts[item.id] !== item.options[0]);
+  const feedback = preferred
+    ? interaction.feedback.preferred
+    : mismatch
+      ? interaction.feedback[mismatch.id]
+      : "";
+
+  return (
+    <section
+      className={styles.sorter}
+      data-core-application="true"
+      data-interaction-id={interaction.id}
+      data-submitted={submitted ? "true" : "false"}
+    >
+      <div className={styles.sorterTop}>
+        <span>
+          Part {index + 1} of {interaction.groups.length}
+        </span>
+        <StepNavigator
+          completed={(partIndex) => Boolean(parts[interaction.groups[partIndex]!.id])}
+          completionLabel="selected"
+          count={interaction.groups.length}
+          current={index}
+          label="Offer part"
+          onSelect={setIndex}
+        />
+      </div>
+      <h3>{group.label}</h3>
+      <div className={styles.sortChoices} role="radiogroup" aria-label={group.label}>
+        {group.options.map((option) => (
+          <button
+            aria-checked={chosen === option}
+            className={chosen === option ? styles.choiceSelected : undefined}
+            key={option}
+            onClick={() => {
+              setParts((current) => ({ ...current, [group.id]: option }));
+              setSubmitted(false);
+            }}
+            role="radio"
+            type="button"
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      <div className={styles.builtReply} aria-live="polite">
+        <span>Your offer</span>
+        <h3>{assembledOffer}</h3>
+      </div>
+      <div className={`${styles.miniNavigation} ${styles.builderNavigation}`}>
+        <button disabled={index === 0} onClick={() => setIndex(index - 1)} type="button">
+          Previous
+        </button>
+        {index < interaction.groups.length - 1 ? (
+          <button disabled={!chosen} onClick={() => setIndex(index + 1)} type="button">
+            Next part
+          </button>
+        ) : (
+          <button disabled={!complete} onClick={reviewOffer} type="button">
+            Review offer
+          </button>
+        )}
+      </div>
+      {complete ? (
+        <button className={styles.secondaryAction} onClick={readOffer} type="button">
+          <Volume2 aria-hidden="true" size={16} /> Read offer
+        </button>
+      ) : null}
+      {submitted ? (
+        <div className={styles.sortFeedback} role="status">
+          <strong>{interaction.learningPoint}</strong>
+          <p>{feedback}</p>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+const appointmentRoles = [
+  { label: "Listen", copy: "Stay quiet unless Andre asks for something else." },
+  { label: "Take notes", copy: "Write down only what Andre wants recorded." },
+  { label: "Ask one question", copy: "Use a question Andre chose before the visit." },
+  { label: "Wait outside", copy: "A ride does not automatically include the appointment." },
+] as const;
+
+function AppointmentRoles() {
+  const [selected, setSelected] = useState(0);
+  const role = appointmentRoles[selected]!;
+  return (
+    <section className={styles.reasonMap} aria-label="Possible appointment roles">
+      <div className={styles.reasonCloud} role="tablist">
+        {appointmentRoles.map((item, index) => (
+          <button
+            aria-selected={selected === index}
+            key={item.label}
+            onClick={() => setSelected(index)}
+            role="tab"
+            type="button"
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+      <div className={styles.reasonPanel} role="tabpanel">
+        <span>One possible role</span>
+        <h3>{role.label}</h3>
+        <p>{role.copy}</p>
+      </div>
+    </section>
+  );
+}
+
+const sharingQuestions = [
+  { label: "What", copy: "What information can be shared?" },
+  { label: "Who", copy: "Who can receive it?" },
+  { label: "Why", copy: "What is the specific purpose?" },
+] as const;
+
+function SharingScope() {
+  const [index, setIndex] = useState(0);
+  return (
+    <section className={styles.thoughtPath} aria-label="Three questions before sharing">
+      <div className={styles.pathButtons} role="tablist">
+        {sharingQuestions.map((item, itemIndex) => (
+          <button
+            aria-selected={index === itemIndex}
+            key={item.label}
+            onClick={() => setIndex(itemIndex)}
+            role="tab"
+            type="button"
+          >
+            <span>{itemIndex + 1}</span> {item.label}
+          </button>
+        ))}
+      </div>
+      <div className={styles.thoughtPanel} role="tabpanel">
+        <span>Before sharing</span>
+        <h3>{sharingQuestions[index]!.copy}</h3>
+        <p>Access to information is a separate agreement.</p>
+      </div>
+    </section>
+  );
+}
+
+function RefusalPath() {
+  const interaction = caregiverModule2.interactions.refusal;
+  const { markInteractionSubmitted } = useCaregiverSession();
+  const [first, setFirst] = useState("");
+  const [firstReviewed, setFirstReviewed] = useState(false);
+  const [second, setSecond] = useState("");
+  const [closed, setClosed] = useState(false);
+  const firstChoice = interaction.firstChoices.find((choice) => choice.id === first);
+  const secondOpen = firstReviewed && first === "accept";
+
+  function close() {
+    if (!second) return;
+    setClosed(true);
+    markInteractionSubmitted(interaction.id);
+  }
+
+  return (
+    <section className={styles.quickCheck} data-interaction-id={interaction.id}>
+      <div className={styles.checkCount}>
+        <span>{secondOpen ? "Two weeks later" : "Right after no"}</span>
+      </div>
+      {!secondOpen ? (
+        <>
+          <h3>{interaction.prompt}</h3>
+          <div
+            className={styles.checkChoices}
+            role="radiogroup"
+            aria-label="Choose Leah's response"
+          >
+            {interaction.firstChoices.map((choice) => (
+              <button
+                aria-checked={first === choice.id}
+                key={choice.id}
+                onClick={() => {
+                  setFirst(choice.id);
+                  setFirstReviewed(false);
+                  setClosed(false);
+                }}
+                role="radio"
+                type="button"
+              >
+                {choice.label}
+              </button>
+            ))}
+          </div>
+          <button
+            className={`${styles.primaryAction} ${styles.activityAction}`}
+            disabled={!first}
+            onClick={() => setFirstReviewed(true)}
+            type="button"
+          >
+            Review response
+          </button>
+          {firstReviewed && firstChoice ? (
+            <p className={styles.inlineFeedback} role="status">
+              {firstChoice.feedback}
+            </p>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <h3>{interaction.secondPrompt}</h3>
+          <div
+            className={styles.checkChoices}
+            role="radiogroup"
+            aria-label="Choose a later question"
+          >
+            {interaction.secondChoices.map((choice) => (
+              <button
+                aria-checked={second === choice}
+                key={choice}
+                onClick={() => {
+                  setSecond(choice);
+                  setClosed(false);
+                }}
+                role="radio"
+                type="button"
+              >
+                {choice}
+              </button>
+            ))}
+          </div>
+          <button
+            className={`${styles.primaryAction} ${styles.activityAction}`}
+            disabled={!second}
+            onClick={close}
+            type="button"
+          >
+            Continue
+          </button>
+          {closed ? (
+            <div className={styles.sortFeedback} role="status">
+              <strong>{interaction.learningPoint}</strong>
+              <p>{interaction.consequence}</p>
+              {second !== interaction.secondChoices[0] ? (
+                <p>{interaction.secondChoiceFallback}</p>
+              ) : null}
+            </div>
+          ) : null}
+        </>
+      )}
+    </section>
+  );
+}
+
+type RepairLineId = (typeof caregiverModule2.interactions.repair.lines)[number]["id"];
+
+function RepairBuilder() {
+  const interaction = caregiverModule2.interactions.repair;
+  const { markInteractionSubmitted } = useCaregiverSession();
+  const [sequence, setSequence] = useState<readonly RepairLineId[]>([]);
+  const [feedback, setFeedback] = useState("");
+  const complete = sequence.length === interaction.preferredOrder.length;
+  const expected = interaction.preferredOrder[sequence.length];
+
+  function choose(id: RepairLineId) {
+    if (complete || sequence.includes(id)) return;
+    if (id === "defense") {
+      setFeedback(interaction.feedback.defense);
+      return;
+    }
+    if (id !== expected) {
+      setFeedback(interaction.feedback.fallback);
+      return;
+    }
+    const next = [...sequence, id];
+    setSequence(next);
+    setFeedback("");
+    if (next.length === interaction.preferredOrder.length) {
+      markInteractionSubmitted(interaction.id);
+      setFeedback(interaction.feedback.preferred);
+    }
+  }
+
+  return (
+    <section className={styles.sorter} data-interaction-id={interaction.id}>
+      <div className={styles.sorterTop}>
+        <span>
+          Step {Math.min(sequence.length + 1, interaction.preferredOrder.length)} of{" "}
+          {interaction.preferredOrder.length}
+        </span>
+        <div aria-label={`${sequence.length} repair steps assembled`}>
+          {interaction.preferredOrder.map((id) => (
+            <i data-complete={sequence.includes(id) ? "true" : undefined} key={id} />
+          ))}
+        </div>
+      </div>
+      <h3>
+        {complete
+          ? "Repair assembled"
+          : caregiverModule2.sections.repair.steps[sequence.length]?.label}
+      </h3>
+      <div className={styles.sortChoices} role="group" aria-label="Repair lines">
+        {interaction.lines
+          .filter((line) => !sequence.includes(line.id))
+          .map((line) => (
+            <button key={line.id} onClick={() => choose(line.id)} type="button">
+              {line.copy}
+            </button>
+          ))}
+      </div>
+      {feedback ? (
+        <p className={styles.inlineFeedback} role="status">
+          {feedback}
+        </p>
+      ) : null}
+      {sequence.length ? (
+        <div className={styles.builtReply}>
+          <span>Your repair</span>
+          <h3>
+            {sequence
+              .map((id) => interaction.lines.find((line) => line.id === id)?.copy)
+              .join(". ")}
+            .
+          </h3>
+        </div>
+      ) : null}
+      <button
+        className={styles.secondaryAction}
+        disabled={!sequence.length}
+        onClick={() => {
+          setSequence([]);
+          setFeedback("");
+        }}
+        type="button"
+      >
+        <RotateCcw aria-hidden="true" size={16} /> Start over
+      </button>
+    </section>
+  );
+}
+
+function BoundaryCompare() {
+  const section = caregiverModule2.sections.boundaries;
+  const [selected, setSelected] = useState<"usable" | "punitive">("usable");
+  return (
+    <section className={styles.knownUnknown} aria-label="Compare two supporter boundaries">
+      <div className={styles.switchTabs} role="tablist">
+        <button
+          aria-selected={selected === "usable"}
+          onClick={() => setSelected("usable")}
+          role="tab"
+          type="button"
+        >
+          Names capacity
+        </button>
+        <button
+          aria-selected={selected === "punitive"}
+          onClick={() => setSelected("punitive")}
+          role="tab"
+          type="button"
+        >
+          Uses help to pressure
+        </button>
+      </div>
+      <div className={styles.knownPanel} role="tabpanel">
+        <h3>{selected === "usable" ? "A usable boundary" : "A punitive boundary"}</h3>
+        <p>{selected === "usable" ? section.usableBoundary : section.punitiveBoundary}</p>
+        <p>{section.explanation}</p>
+      </div>
+    </section>
+  );
+}
+
+const agreementParts = [
+  { label: "Specific", copy: "Name one action instead of a broad role." },
+  { label: "Declinable", copy: "No should not trigger guilt, argument, or repeated asking." },
+  { label: "Revisable", copy: "A past yes can be changed or withdrawn." },
+] as const;
+
+function ReliableSupportDiagram() {
+  const [selected, setSelected] = useState(0);
+  return (
+    <section className={styles.timing} aria-label="Three parts of a reliable agreement">
+      <div className={styles.timelineTabs} role="tablist">
+        {agreementParts.map((item, index) => (
+          <button
+            aria-selected={selected === index}
+            key={item.label}
+            onClick={() => setSelected(index)}
+            role="tab"
+            type="button"
+          >
+            <span>{index + 1}</span> {item.label}
+          </button>
+        ))}
+      </div>
+      <div className={styles.timingPanel} role="tabpanel">
+        <h3>{agreementParts[selected]!.label}</h3>
+        <p>{agreementParts[selected]!.copy}</p>
+      </div>
+    </section>
+  );
+}
+
+function QuickCheck() {
+  const questions = caregiverModule2.questions;
+  const { setKeyIdeaUnderstood } = useCaregiverSession();
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [attempts, setAttempts] = useState<Record<string, number>>({});
+  const [reviewed, setReviewed] = useState<Record<string, boolean>>({});
+  const question = questions[index]!;
+  const answer = answers[question.id];
+
+  function review() {
+    if (answer === undefined) return;
+    const attempt = (attempts[question.id] ?? 0) + 1;
+    const nextReviewed = { ...reviewed, [question.id]: true };
+    setAttempts((current) => ({ ...current, [question.id]: attempt }));
+    setReviewed(nextReviewed);
+    if (Object.values(nextReviewed).filter(Boolean).length === questions.length) {
+      setKeyIdeaUnderstood(questions.every((item) => answers[item.id] === item.preferredIndex));
+    }
+  }
+
+  const currentAnswer = answers[question.id];
+  const currentReviewed = Boolean(reviewed[question.id]);
+  const assisted = (attempts[question.id] ?? 0) >= 3 && currentAnswer !== question.preferredIndex;
+
+  return (
+    <section className={styles.quickCheck} aria-labelledby="module-2-check-heading">
+      <div className={styles.checkCount}>
+        <span>
+          Question {index + 1} of {questions.length}
+        </span>
+        <StepNavigator
+          completed={(questionIndex) => Boolean(reviewed[questions[questionIndex]!.id])}
+          count={questions.length}
+          current={index}
+          label="Question"
+          onSelect={setIndex}
+        />
+      </div>
+      <h3 id="module-2-check-heading">{question.question}</h3>
+      <div className={styles.checkChoices} role="radiogroup" aria-label="Choose an answer">
+        {question.choices.map((choice, choiceIndex) => (
+          <button
+            aria-checked={currentAnswer === choiceIndex}
+            key={choice}
+            onClick={() => {
+              setAnswers((current) => ({ ...current, [question.id]: choiceIndex }));
+              setReviewed((current) => ({ ...current, [question.id]: false }));
+            }}
+            role="radio"
+            type="button"
+          >
+            {choice}
+          </button>
+        ))}
+      </div>
+      {currentReviewed ? (
+        <p className={styles.inlineFeedback} role="status">
+          <strong>
+            {currentAnswer === question.preferredIndex
+              ? "Ready to continue. "
+              : "Review this idea. "}
+          </strong>
+          {question.explanation}
+          {assisted
+            ? ` Suggested answer: ${question.choices[question.preferredIndex]}. Your choice has been kept.`
+            : ""}
+        </p>
+      ) : null}
+      <button
+        className={`${styles.primaryAction} ${styles.activityAction}`}
+        disabled={currentReviewed ? index === questions.length - 1 : currentAnswer === undefined}
+        onClick={() => {
+          if (currentReviewed) {
+            setIndex(index + 1);
+            return;
+          }
+          review();
+        }}
+        type="button"
+      >
+        {currentReviewed
+          ? index === questions.length - 1
+            ? "Answer reviewed"
+            : "Next question"
+          : "Review answer"}
+      </button>
+      <div className={styles.miniNavigation}>
+        <button disabled={index === 0} onClick={() => setIndex(index - 1)} type="button">
+          Previous
+        </button>
+        <span>
+          {index + 1} of {questions.length}
+        </span>
+      </div>
+    </section>
+  );
+}
+
+function PhraseBrowser() {
+  const scripts = caregiverModule2.scripts;
+  const [index, setIndex] = useState(0);
+  const phrase = scripts[index]!;
+  return (
+    <section className={styles.phraseBrowser} aria-label="Useful phrases">
+      <div className={styles.phraseCard}>
+        <span>{phrase.label}</span>
+        <h3>{phrase.copy}</h3>
+      </div>
+      <div className={styles.phraseControls}>
+        <button disabled={index === 0} onClick={() => setIndex(index - 1)} type="button">
+          Previous
+        </button>
+        <span aria-live="polite">
+          {index + 1} of {scripts.length}
+        </span>
+        <button
+          disabled={index === scripts.length - 1}
+          onClick={() => setIndex(index + 1)}
+          type="button"
+        >
+          Next
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function TakeawayDiagram() {
+  const steps = [
+    { label: "Offer", copy: "Name one action." },
+    { label: "Leave room", copy: "Make no easy." },
+    { label: "Check again", copy: "Let the agreement change." },
+  ] as const;
+  return (
+    <ol className={styles.takeawayDiagram} aria-label="Three steps to remember">
+      {steps.map((step, index) => (
+        <li key={step.label}>
+          <span>{index + 1}</span>
+          <div>
+            <strong>{step.label}</strong>
+            <small>{step.copy}</small>
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+interface Scene {
+  readonly id: string;
+  readonly title: string;
+  readonly moment: string;
+  readonly body: ReactNode;
+  readonly visual: ReactNode;
+  readonly continueLabel: string;
+}
 
 export function Module2Experience() {
-  const { markCentralIdeaReached } = useCaregiverSession();
-  const [stageIndex, setStageIndex] = useState(0);
-  const [furthestStage, setFurthestStage] = useState(0);
-  const stage = stages[stageIndex]!;
+  const { progress, markCentralIdeaReached, markTakeawayViewed } = useCaregiverSession();
+  const [current, setCurrent] = useState(0);
+  const [complete, setComplete] = useState(false);
+  const [coreComplete, setCoreComplete] = useState(progress.coreApplicationCompleted);
+  const articleRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const completed = isCaregiverModuleComplete(progress);
 
   useEffect(() => {
-    if (stageIndex === 0) return;
-    window.scrollTo({ top: 0, behavior: "auto" });
-    document.getElementById(stage.headingId)?.focus({ preventScroll: true });
-  }, [stage.headingId, stageIndex]);
+    if (current === 2) markCentralIdeaReached();
+    if (current === SCENE_COUNT - 1) markTakeawayViewed();
+  }, [current, markCentralIdeaReached, markTakeawayViewed]);
 
-  function goToStage(nextIndex: number) {
-    const boundedIndex = Math.min(stages.length - 1, Math.max(0, nextIndex));
-    setStageIndex(boundedIndex);
-    setFurthestStage((current) => Math.max(current, boundedIndex));
+  const scenes: readonly Scene[] = [
+    {
+      id: "kitchen",
+      moment: "Saturday morning",
+      title: "Help starts to feel like checking.",
+      body: <p>Leah is worried. Andre wants the questions to stop.</p>,
+      visual: <ScenarioSequence end={5} start={0} />,
+      continueLabel: "See what Leah does next",
+    },
+    {
+      id: "phone",
+      moment: "Later that day",
+      title: "Concern does not create access.",
+      body: <p>A known passcode is not permission to open health information.</p>,
+      visual: <ScenarioSequence end={10} start={5} />,
+      continueLabel: "Separate intention from impact",
+    },
+    {
+      id: "intention-impact",
+      moment: "Both can be real",
+      title: "Good intention does not settle impact.",
+      body: <p>Map what Leah may mean and what the action may create.</p>,
+      visual: <IntentionImpactMap />,
+      continueLabel: "Find the boundary signals",
+    },
+    {
+      id: "signals",
+      moment: "Four useful checks",
+      title: "The details decide whether help fits.",
+      body: <p>The topic alone does not make an action supportive.</p>,
+      visual: <BoundarySignals />,
+      continueLabel: "Practice the distinction",
+    },
+    {
+      id: "continuum",
+      moment: "Six short situations",
+      title: "Support can shift into control.",
+      body: <p>Classify each action using permission, privacy, repetition, and choice.</p>,
+      visual: <SupportContinuum />,
+      continueLabel: "Build a clear agreement",
+    },
+    {
+      id: "permission-questions",
+      moment: "Before saying yes",
+      title: "Permission should answer five questions.",
+      body: <p>Tap through the details that keep an offer clear.</p>,
+      visual: <PermissionQuestions />,
+      continueLabel: "Practice a specific offer",
+    },
+    {
+      id: "permission-builder",
+      moment: "A ride to an appointment",
+      title: "Make the offer easy to decline.",
+      body: <p>Choose one opening, action, decline clause, and follow-up.</p>,
+      visual: <PermissionBuilder onComplete={() => setCoreComplete(true)} />,
+      continueLabel: coreComplete ? "Clarify the appointment role" : "Review your offer",
+    },
+    {
+      id: "appointment-role",
+      moment: "If the answer is yes",
+      title: "Attendance and role are separate choices.",
+      body: <p>An invitation does not decide what happens in the room.</p>,
+      visual: <AppointmentRoles />,
+      continueLabel: "Protect private information",
+    },
+    {
+      id: "sharing",
+      moment: "Before telling someone else",
+      title: "Sharing needs its own agreement.",
+      body: <p>Ask what, who, and why before disclosing information.</p>,
+      visual: <SharingScope />,
+      continueLabel: "Practice hearing no",
+    },
+    {
+      id: "refusal",
+      moment: "Andre declines reminders",
+      title: "No should not start a negotiation.",
+      body: <p>Accept the answer before considering any later conversation.</p>,
+      visual: <RefusalPath />,
+      continueLabel: "Repair an overstep",
+    },
+    {
+      id: "repair",
+      moment: "After opening the app",
+      title: "Repair names the action first.",
+      body: <p>Build the apology in a usable order and leave out the defense.</p>,
+      visual: <RepairBuilder />,
+      continueLabel: "Set a supporter boundary",
+    },
+    {
+      id: "supporter-boundary",
+      moment: "Support has limits too",
+      title: "Capacity is not punishment.",
+      body: <p>A boundary states what you can do without controlling the other person.</p>,
+      visual: <BoundaryCompare />,
+      continueLabel: "Make support reliable",
+    },
+    {
+      id: "reliable-support",
+      moment: "A clear agreement",
+      title: "Reliable help leaves room.",
+      body: <p>Dependability and autonomy can exist together.</p>,
+      visual: <ReliableSupportDiagram />,
+      continueLabel: "Check your understanding",
+    },
+    {
+      id: "quick-check",
+      moment: "Three short situations",
+      title: "Keep each yes inside its scope.",
+      body: <p>Choose the response that preserves permission and privacy.</p>,
+      visual: <QuickCheck />,
+      continueLabel: "Browse useful phrases",
+    },
+    {
+      id: "phrases",
+      moment: "Language to borrow",
+      title: "Use the sentence that fits.",
+      body: <p>You do not need to memorize the wording.</p>,
+      visual: <PhraseBrowser />,
+      continueLabel: "See the takeaway",
+    },
+    {
+      id: "takeaway",
+      moment: "Keep help inside the agreement",
+      title: "Offer. Leave room. Check again.",
+      body: <p>Caring intention does not create access or authority.</p>,
+      visual: <TakeawayDiagram />,
+      continueLabel: "Finish module",
+    },
+  ];
+
+  const scene = scenes[current]!;
+  const nextDisabled = current === 6 && !coreComplete;
+
+  function goTo(next: number) {
+    if (next < 0 || next >= SCENE_COUNT) return;
+    setCurrent(next);
+    window.requestAnimationFrame(() => {
+      articleRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+      headingRef.current?.focus({ preventScroll: true });
+    });
+  }
+
+  function finish() {
+    markTakeawayViewed();
+    setComplete(true);
+    window.requestAnimationFrame(() => {
+      articleRef.current?.scrollIntoView({
+        behavior: shouldReduceMotion() ? "auto" : "smooth",
+        block: "start",
+      });
+      headingRef.current?.focus({ preventScroll: true });
+    });
+  }
+
+  function restart() {
+    setCurrent(0);
+    setComplete(false);
+    window.requestAnimationFrame(() => {
+      articleRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+      headingRef.current?.focus({ preventScroll: true });
+    });
+  }
+
+  function reviewPractice() {
+    setCurrent(6);
+    setComplete(false);
+    window.requestAnimationFrame(() => {
+      articleRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+      headingRef.current?.focus({ preventScroll: true });
+    });
   }
 
   return (
     <main
-      className={styles.module}
+      className={`${styles.page} ${styles.moduleTwo}`}
       data-caregiver-module={caregiverModule2.id}
-      data-rendering-mode="deterministic"
     >
-      <header className={styles.lessonHeader}>
-        <Link className={styles.returnLink} href="/caregiver">
-          <span aria-hidden="true">←</span> Support Someone You Care About
-        </Link>
-        <div className={styles.progressCopy}>
-          <p>
-            <span>Module 2 of 5</span>
-            <span>
-              Part {stageIndex + 1} of {stages.length}
-            </span>
-          </p>
-          <ProgressBar
-            className={styles.progressBar!}
-            label={`Module 2 progress: part ${stageIndex + 1} of ${stages.length}`}
-            value={((stageIndex + 1) / stages.length) * 100}
-          />
-          <p className={styles.stageName} aria-live="polite">
-            <span>{stage.group}</span> · {stage.label}
-          </p>
-        </div>
-      </header>
-
-      <div className={styles.stageViewport}>
-        <div className={styles.stage} data-stage="opening" hidden={stageIndex !== 0}>
-          <Module2Orientation onBegin={() => goToStage(1)} />
-        </div>
-        <div className={styles.stage} data-stage="scenario" hidden={stageIndex !== 1}>
-          <Module2Scenario />
-        </div>
-        <div className={styles.stage} data-stage="impact" hidden={stageIndex !== 2}>
-          <ModuleVisibilityMarker onViewed={markCentralIdeaReached}>
-            <Module2IntentionImpactNarrative />
-          </ModuleVisibilityMarker>
-          <IntentionImpactMap />
-        </div>
-        <div className={styles.stage} data-stage="continuum" hidden={stageIndex !== 3}>
-          <Module2DistinctionNarrative />
-          <SupportBoundaryContinuum />
-        </div>
-        <div className={styles.stage} data-stage="permission" hidden={stageIndex !== 4}>
-          <Module2PermissionNarrative />
-          <PermissionLanguageBuilder />
-        </div>
-        <div className={styles.stage} data-stage="appointments" hidden={stageIndex !== 5}>
-          <Module2AppointmentsNarrative />
-        </div>
-        <div className={styles.stage} data-stage="refusal" hidden={stageIndex !== 6}>
-          <RefusalBranchingConversation />
-        </div>
-        <div className={styles.stage} data-stage="repair" hidden={stageIndex !== 7}>
-          <Module2RepairNarrative />
-          <RepairSequence />
-        </div>
-        <div className={styles.stage} data-stage="boundaries" hidden={stageIndex !== 8}>
-          <Module2BoundariesNarrative />
-        </div>
-        <div className={styles.stage} data-stage="depth" hidden={stageIndex !== 9}>
-          <Module2FurtherReading />
-          <Module2Scripts />
-        </div>
-        <div className={styles.stage} data-stage="check" hidden={stageIndex !== 10}>
-          <Module2KnowledgeCheck
-            onReviewSection={(sectionId) => goToStage(sectionStageIndex[sectionId] ?? 2)}
-          />
-        </div>
-        <div className={styles.stage} data-stage="takeaway" hidden={stageIndex !== 11}>
-          <Module2Takeaway />
-          <Module2Reflection />
-          <Module2Completion onReview={() => goToStage(4)} />
-        </div>
-      </div>
-
-      {stageIndex > 0 ? (
-        <nav className={styles.stageNavigation} aria-label="Lesson parts">
-          <Button
-            className={styles.backButton}
-            fullWidth={false}
-            onClick={() => goToStage(stageIndex - 1)}
-            type="button"
-            variant="secondary"
-          >
-            Back
-          </Button>
-          {stageIndex < stages.length - 1 ? (
-            <Button
-              className={styles.continueButton}
-              fullWidth={false}
-              onClick={() => goToStage(stageIndex + 1)}
-              type="button"
-            >
-              Continue <span aria-hidden="true">→</span>
-            </Button>
+      <Link className={styles.backLink} href="/caregiver">
+        <ArrowLeft aria-hidden="true" size={17} /> Caregiver modules
+      </Link>
+      {complete ? (
+        <article className={styles.completion} ref={articleRef}>
+          <p>Caregiver module 2</p>
+          <h1 ref={headingRef} tabIndex={-1}>
+            Finished
+          </h1>
+          <p>A specific offer protects both the help and the relationship.</p>
+          <div className={styles.completionTakeaway}>
+            <span>In short</span>
+            <strong>Offer one action, make no easy, and let the agreement change.</strong>
+          </div>
+          {!completed ? (
+            <div className={styles.incompleteNote} role="status">
+              <strong>One practice is still open.</strong>
+              <p>Review the four-part permission offer to finish the module.</p>
+              <button onClick={reviewPractice} type="button">
+                Review the offer
+              </button>
+            </div>
           ) : null}
-        </nav>
-      ) : null}
-
-      <p className={styles.srOnly} aria-live="polite">
-        {`Part ${stageIndex + 1} of ${stages.length}: ${stage.group}, ${stage.label}.`}
-        {furthestStage > stageIndex ? " Previous responses have been kept." : ""}
-      </p>
+          <div className={styles.completionActions}>
+            <Link
+              className={styles.primaryAction}
+              href={caregiverModuleRegistry["everyday-support-that-actually-helps"].route}
+            >
+              Continue to module 3
+            </Link>
+            <button className={styles.secondaryAction} onClick={restart} type="button">
+              <RotateCcw aria-hidden="true" size={16} /> Review again
+            </button>
+            <Link className={styles.secondaryAction} href="/caregiver">
+              Back to caregiver modules
+            </Link>
+          </div>
+          <p className={styles.disclosure}>
+            Leah and Andre are illustrative characters. This module supports communication and
+            boundary skills; it does not replace medical, legal, or emergency guidance.
+          </p>
+        </article>
+      ) : (
+        <article className={styles.reader} ref={articleRef}>
+          <ModuleProgressHeader current={current} />
+          <div className={styles.scene} key={scene.id}>
+            <header className={styles.sceneHeading}>
+              <p>
+                <Clock3 aria-hidden="true" size={15} /> {scene.moment}
+              </p>
+              <h1 ref={headingRef} tabIndex={-1}>
+                {scene.title}
+              </h1>
+            </header>
+            <div className={styles.storyCopy}>{scene.body}</div>
+            <div className={styles.sceneVisual}>{scene.visual}</div>
+          </div>
+          {nextDisabled ? (
+            <p className={styles.gateNote} id="module-2-next-requirement" role="status">
+              Build and review all four parts of the offer to continue.
+            </p>
+          ) : null}
+          <nav aria-label="Module navigation" className={styles.navigation}>
+            {current > 0 ? (
+              <button className={styles.previous} onClick={() => goTo(current - 1)} type="button">
+                <ChevronLeft aria-hidden="true" size={18} /> Back
+              </button>
+            ) : (
+              <span />
+            )}
+            {current === SCENE_COUNT - 1 ? (
+              <button className={styles.next} onClick={finish} type="button">
+                {scene.continueLabel} <ArrowRight aria-hidden="true" size={18} />
+              </button>
+            ) : (
+              <button
+                aria-describedby={nextDisabled ? "module-2-next-requirement" : undefined}
+                className={styles.next}
+                disabled={nextDisabled}
+                onClick={() => goTo(current + 1)}
+                type="button"
+              >
+                {scene.continueLabel}{" "}
+                {nextDisabled ? (
+                  <LockKeyhole aria-hidden="true" size={17} />
+                ) : (
+                  <ArrowRight aria-hidden="true" size={18} />
+                )}
+              </button>
+            )}
+          </nav>
+        </article>
+      )}
     </main>
   );
 }

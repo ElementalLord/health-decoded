@@ -3,24 +3,34 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const directory = new URL("../features/caregiver/", import.meta.url);
-const [experience, orientation, sources, styles] = await Promise.all(
-  [
-    "components/modules/module-4/module-4-experience.tsx",
-    "components/modules/module-4/module-4-orientation.tsx",
-    "components/modules/module-4/guidance-source-matching.tsx",
-    "styles/caregiver-module-4.module.css",
-  ].map((name) => readFile(new URL(name, directory), "utf8")),
-);
-test("Module 4 exposes staged landmarks, heading focus, native controls, and reduced motion", () => {
+const [experience, styles] = await Promise.all([
+  readFile(new URL("components/modules/module-4/module-4-experience.tsx", directory), "utf8"),
+  readFile(new URL("styles/caregiver-module-1-story.module.css", directory), "utf8"),
+]);
+
+test("Module 4 uses the accessible story-reader contract", () => {
   assert.match(experience, /<main/);
-  assert.match(orientation, /tabIndex=\{-1\}/);
-  assert.match(sources, /type="radio"/);
-  assert.match(sources, /<fieldset/);
-  assert.doesNotMatch(experience, /UrgentSafetyInterruption/);
+  assert.match(experience, /<h1[\s\S]*tabIndex=\{-1\}/);
+  assert.match(experience, /role="progressbar"/);
+  assert.match(experience, /function StepNavigator/);
+  assert.match(experience, /aria-current=\{current === index \? "step"/);
+  assert.match(experience, /role="radiogroup"/);
+  assert.match(experience, /role="status"/);
+  assert.doesNotMatch(experience, /<select|draggable|onDrop=/);
   assert.match(styles, /focus-visible/);
-  assert.match(styles, /prefers-reduced-motion/);
-  assert.match(styles, /@media \(max-width: 48rem\)/);
+  assert.match(styles, /min-height: 44px/);
+});
+
+test("Module 4 preserves choices instead of silently filling answers", () => {
+  assert.match(experience, /Your choice has been kept/);
+  assert.doesNotMatch(experience, /setAnswers\([\s\S]{0,120}preferredIndex/);
+  assert.doesNotMatch(experience, /filled in after three attempts/i);
+});
+
+test("Module 4 uses restrained motion and a scoped warm palette", () => {
   assert.doesNotMatch(styles, /infinite/);
-  assert.match(styles, /\.stage:not\(\[hidden\]\)\s*\{\s*animation: none;/);
-  assert.doesNotMatch(styles, /border-radius:\s*999px/);
+  assert.match(styles, /prefers-reduced-motion: reduce/);
+  assert.match(styles, /\.moduleFour \.next/);
+  assert.match(styles, /\.moduleFour \.stepNavigator button\[aria-current="step"\]/);
+  assert.match(styles, /#955842/);
 });

@@ -146,7 +146,7 @@ const groceryItems = [
     label: "The rest of the meal",
     reaction: "The other foods, preparation, timing, and satisfaction that a package cannot show.",
     perspective:
-      "A label describes a product. It cannot describe the full meal, culture, preferences, or personal response.",
+      "A label describes a product. It cannot describe the full meal, preferences, routine, or personal response.",
   },
 ] as const;
 
@@ -180,12 +180,12 @@ const familyDialogueChoices = [
 ] as const;
 
 const mealComponents = [
-  { id: "rice", label: "Rice" },
-  { id: "dal", label: "Dal" },
+  { id: "grain", label: "Grain or starchy food" },
+  { id: "beans", label: "Beans or legumes" },
   { id: "vegetables", label: "Vegetables" },
-  { id: "protein", label: "Chicken" },
-  { id: "flatbread", label: "Flatbread" },
-  { id: "yogurt", label: "Plain yogurt" },
+  { id: "protein", label: "Protein food" },
+  { id: "bread", label: "Bread or another side" },
+  { id: "dairy", label: "Dairy or alternative" },
   { id: "water", label: "Water" },
   { id: "dessert", label: "Dessert" },
 ] as const;
@@ -846,14 +846,14 @@ function mealFeedback(selected: string[], portions: Record<string, string>): str
     selected.length > 0 && selected.every((food) => food === "protein" || food === "vegetables");
 
   if (
-    selected.includes("rice") &&
-    selected.includes("flatbread") &&
-    portions.rice === "large" &&
-    portions.flatbread === "large"
+    selected.includes("grain") &&
+    selected.includes("bread") &&
+    portions.grain === "large" &&
+    portions.bread === "large"
   ) {
     return "This meal contains several substantial carbohydrate sources. Asha might consider the amounts, what leaves her satisfied, and guidance from her healthcare team. The foods themselves do not need to be treated as forbidden.";
   }
-  if (["rice", "dal", "vegetables", "protein"].every((food) => selected.includes(food))) {
+  if (["grain", "beans", "vegetables", "protein"].every((food) => selected.includes(food))) {
     return "Familiar: yes. Filling: this includes several meal roles. Feasible: the ingredients already belong to Asha’s family routine.";
   }
   if (hasOnlyProteinAndVegetables) {
@@ -868,7 +868,7 @@ function mealFeedback(selected: string[], portions: Record<string, string>): str
   return "This is one possible meal. Consider what feels familiar, what leaves Asha satisfied, and how the foods work together rather than looking for a perfect plate.";
 }
 
-function CulturalMealBuilder({
+function FamiliarMealBuilder({
   interactionStates,
   onStateChange,
   scene,
@@ -880,7 +880,7 @@ function CulturalMealBuilder({
   const selected = Array.isArray(interactionStates[scene.id])
     ? (interactionStates[scene.id] as string[])
     : [];
-  const adjustable = ["rice", "flatbread", "vegetables", "protein"];
+  const adjustable = ["grain", "bread", "vegetables", "protein"];
   const portions = Object.fromEntries(
     adjustable.map((food) => {
       const value = interactionStates[`${scene.id}:portion:${food}`];
@@ -1059,7 +1059,7 @@ function SharedMealSupportSelector({
         <span data-person="family" />
         <div>
           <span data-dish="vegetables" />
-          <span data-dish="rice" />
+          <span data-dish="grain" />
           <span data-dish="protein" />
         </div>
         <span data-person="asha" />
@@ -2490,7 +2490,7 @@ export function StoryInteraction({
       />
     ),
     "meal-builder": () => (
-      <CulturalMealBuilder
+      <FamiliarMealBuilder
         interactionStates={interactionStates}
         onStateChange={onStateChange}
         scene={scene}

@@ -4,65 +4,68 @@ import test from "node:test";
 
 import { devonNumberScreenStory } from "../features/stories/content/devon-number-screen.ts";
 import {
-  calculateStoryQuizScore,
   createInitialStoryProgress,
   DEVON_STORY_STORAGE_KEY,
+  getStoryPreviewStatus,
   getStoryStorageKey,
-  resolveStoryEntryProgress,
+  parseStoryProgress,
 } from "../features/stories/lib/story-progress.ts";
 import { validateStoryInteractions } from "../features/stories/lib/validate-story-interactions.ts";
 
 const landing = readFileSync("features/stories/components/story-landing.tsx", "utf8");
-const opening = readFileSync("features/stories/components/story-opening.tsx", "utf8");
-const interactions = readFileSync("features/stories/components/story-interactions.tsx", "utf8");
-const player = readFileSync("features/stories/components/interactive-story-player.tsx", "utf8");
+const devonPlayer = readFileSync("features/stories/components/devon-story-experience.tsx", "utf8");
+const devonStyles = readFileSync(
+  "features/stories/components/devon-story-experience.module.css",
+  "utf8",
+);
 const route = readFileSync("app/(app)/stories/[slug]/page.tsx", "utf8");
-const styles = readFileSync("features/stories/components/story-player.module.css", "utf8");
 
 test("Story 4 remains available with state-aware progress", () => {
   assert.match(landing, /devonNumberScreenStory/);
   assert.match(landing, /remainingStories\.map/);
   assert.match(landing, /loadPreviewState\(devonNumberScreenStory\.slug\)/);
-  assert.match(landing, /Start/);
-  assert.match(landing, /Continue/);
-  assert.match(landing, /Read again/);
+  for (const action of ["Start", "Continue", "Read again"]) {
+    assert.match(landing, new RegExp(action));
+  }
 });
 
-test("Story 4 Begin enters Scene 1 instead of leaving Devon on the repeated cover", () => {
-  const entered = resolveStoryEntryProgress(createInitialStoryProgress(), { begin: true });
-  assert.equal(entered.stage, "story");
-  assert.equal(entered.currentScene, 0);
-  assert.match(landing, /\?begin=1/);
-  assert.match(player, /resolveStoryEntryProgress/);
-});
-
-test("Devon keeps one optimized opening cover and separate generated landing art", () => {
+test("Devon's existing artwork remains optimized and honestly described", () => {
   assert.equal(devonNumberScreenStory.imagePath, "/stories/devon-number-screen-cover.webp");
   assert.match(devonNumberScreenStory.imageAlt, /editorial illustration/i);
   const asset = statSync("public/stories/devon-number-screen-cover.webp");
   assert.ok(asset.size > 40_000);
   assert.ok(asset.size < 500_000);
-  assert.doesNotMatch(landing, /story\.imagePath/);
   assert.match(landing, /devon-number-screen-illustration\.png/);
-  assert.match(opening, /src=\{story\.imagePath\}/);
+  assert.doesNotMatch(devonNumberScreenStory.imageAlt, /real patient|testimonial/i);
 });
 
-test("the dedicated route opens Devon directly in the shared story player", () => {
+test("the dedicated route opens Devon's redesigned reader", () => {
   assert.equal(devonNumberScreenStory.slug, "devon-number-screen");
   assert.match(route, /devonNumberScreenStory\.slug/);
-  assert.match(route, /<InteractiveStoryPlayer story=\{devonNumberScreenStory\} \/>/);
+  assert.match(route, /<DevonStoryExperience \/>/);
+  assert.match(devonPlayer, /const STORY_SLUG = "devon-number-screen"/);
+  assert.doesNotMatch(devonPlayer, /InteractiveStoryPlayer|completeLessonAction|lessonProgress/);
 });
 
-test("the story contains exactly six scenes and six new mechanics in the required order", () => {
+test("Devon's dedicated reader adds a care-plan decision and two-moment comparison", () => {
+  assert.match(devonPlayer, /const SCENE_COUNT = 8/);
+  assert.match(devonPlayer, /function NextStepDecision/);
+  assert.match(devonPlayer, /function TwoMoments/);
+  assert.match(devonPlayer, /What is the useful next move/);
+  assert.match(devonPlayer, /Compare two moments/);
+  assert.match(devonStyles, /grid-template-columns: repeat\(8, 1fr\)/);
+});
+
+test("the story contains six short, concrete moments in order", () => {
   assert.deepEqual(
     devonNumberScreenStory.scenes.map((scene) => scene.title),
     [
-      "The Number",
-      "What the Number Became",
-      "Before He Trusted It",
-      "What Mattered Now",
-      "The Note Beside the Meter",
-      "One Point on a Longer Line",
+      "After dinner",
+      "On the sofa",
+      "Checking the steps",
+      "What matters now",
+      "A useful note",
+      "The follow-up",
     ],
   );
   assert.deepEqual(
@@ -76,35 +79,58 @@ test("the story contains exactly six scenes and six new mechanics in the require
       "pattern-comparison",
     ],
   );
-  assert.equal(
-    new Set(devonNumberScreenStory.scenes.map((scene) => scene.interactionType)).size,
-    6,
+  assert.ok(devonNumberScreenStory.scenes.every((scene) => scene.paragraphs.length === 2));
+  assert.ok(
+    devonNumberScreenStory.scenes.every((scene) => scene.interaction.requiredForProgress === false),
   );
-  assert.ok(devonNumberScreenStory.scenes.every((scene) => scene.interaction.requiredForProgress));
-  assert.match(player, /const currentScene = story\.scenes\[progress\.currentScene\]/);
-  assert.doesNotMatch(player, /story\.scenes\.map\(\(scene\) => <StorySceneView/);
-});
-
-test("each interaction adds a distinct learning task and passes the overlap guard", () => {
   assert.deepEqual(validateStoryInteractions(devonNumberScreenStory), []);
-  assert.match(interactions, /function ReadingBoundary/);
-  assert.match(interactions, /function ThoughtChain/);
-  assert.match(interactions, /function MeasurementContext/);
-  assert.match(interactions, /function UrgencyContext/);
-  assert.match(interactions, /function CommunicationBuilder/);
-  assert.match(interactions, /function PatternComparison/);
-  assert.match(interactions, /onStateChange\(`\$\{scene\.id\}:complete`, "complete"\)/);
-  assert.equal(
-    new Set(devonNumberScreenStory.scenes.map((scene) => scene.interaction.purpose)).size,
-    6,
+});
+
+test("each moment uses a distinct interaction tied to the event", () => {
+  for (const interaction of [
+    "function MeterReading",
+    "function ThoughtPath",
+    "function MeasurementCheck",
+    "function SafetyContext",
+    "function MessageNote",
+    "function PatternView",
+  ]) {
+    assert.match(devonPlayer, new RegExp(interaction));
+  }
+  assert.match(devonPlayer, /The reading/);
+  assert.match(devonPlayer, /Follow Devon's thought path/);
+  assert.match(devonPlayer, /Check the technique, not for reassurance/);
+  assert.match(devonPlayer, /Symptoms/);
+  assert.match(devonPlayer, /Add context, not an apology/);
+  assert.match(devonPlayer, /Results with context/);
+});
+
+test("the first two moments separate observation from judgment and prediction", () => {
+  assert.match(devonPlayer, /One result at one moment/);
+  assert.match(devonPlayer, /I messed up/);
+  assert.match(devonPlayer, /This is the last point supported directly by the meter/);
+  assert.match(devonPlayer, /one reading doesn't establish it/);
+  assert.doesNotMatch(
+    devonPlayer,
+    /The number had become something larger|His first thought was not a question/,
   );
 });
 
-test("medical safety stays contextual and never invents a threshold or treatment change", () => {
-  const text = JSON.stringify(devonNumberScreenStory);
+test("measurement context rejects reassurance chasing", () => {
+  assert.match(devonPlayer, /Wash and dry his hands/);
+  assert.match(devonPlayer, /Follow the meter instructions/);
+  assert.match(devonPlayer, /Keep testing until a preferred number appears/);
+  assert.match(devonPlayer, /That chases reassurance/);
+  assert.match(devonPlayer, /follow device instructions and Devon's care plan/);
+  assert.doesNotMatch(devonPlayer, /normal result|back in range|safe now/i);
+});
+
+test("medical safety stays contextual and avoids universal thresholds", () => {
+  const text = `${JSON.stringify(devonNumberScreenStory)} ${devonPlayer}`;
   assert.match(text, /personal plan|established care plan/i);
   assert.match(text, /urgent help/i);
   assert.match(text, /qualified healthcare professional/i);
+  assert.match(text, /trouble breathing, confusion, fainting, or persistent vomiting/i);
   assert.doesNotMatch(text, /\b(?:180|200|250|300|400)\b/);
   assert.doesNotMatch(text, /take extra insulin|double (?:the )?dose|skip (?:the )?dose/i);
   assert.doesNotMatch(
@@ -113,151 +139,74 @@ test("medical safety stays contextual and never invents a threshold or treatment
   );
   assert.equal(devonNumberScreenStory.medicalRiskLevel, "moderate");
   assert.equal(devonNumberScreenStory.reviewStatus, "not-reviewed");
+  assert.equal(devonNumberScreenStory.version, "2.1");
+  assert.equal(devonNumberScreenStory.readerPartCount, 8);
 });
 
-test("the first two scenes separate measurement from judgment and stop evidence at observation", () => {
-  const [boundary, chain] = devonNumberScreenStory.scenes;
-  assert.equal(boundary.interactionType, "reading-boundary");
-  assert.deepEqual(
-    boundary.interaction.options.slice(3).map((option) => option.id),
-    ["failed", "permanent-change", "exact-cause"],
-  );
-  assert.equal(chain.interactionType, "thought-chain");
-  assert.deepEqual(
-    chain.interaction.options.map((option) => option.id),
-    ["observation", "interpretation", "prediction", "verdict"],
-  );
-  assert.match(interactions, /boundary === "observation"/);
+test("the note builder requests context without collecting personal data", () => {
+  for (const detail of [
+    "The result and time",
+    "When it was checked in relation to eating",
+    "How he felt and any symptoms",
+    "Relevant changes in sleep, stress, illness, or routine",
+    "The meter and care-plan instructions he followed",
+  ]) {
+    assert.match(devonPlayer, new RegExp(detail));
+  }
+  assert.doesNotMatch(devonPlayer, /type="(?:text|number)"/);
+  assert.match(devonPlayer, /aria-pressed/);
+  assert.match(devonPlayer, /without Devon guessing at a cause/);
 });
 
-test("measurement context rejects reassurance chasing and never promises a normal repeat", () => {
-  const scene = devonNumberScreenStory.scenes[2];
-  assert.equal(scene.interactionType, "measurement-context");
-  assert.match(
-    JSON.stringify(scene.interaction.options),
-    /Repeat until he gets a preferred number/,
+test("the reader removes the old classroom sequence", () => {
+  assert.doesNotMatch(
+    devonPlayer,
+    /predictionPrompt|predictionChoices|quiz|Submit Answer|privateReflection|lessonHeading|Pause and Think/,
   );
-  assert.match(JSON.stringify(scene.paragraphsAfterInteraction), /still above his personal range/i);
-  assert.doesNotMatch(JSON.stringify(scene), /normal result|back in range|safe now/i);
-  assert.match(interactions, /measurementUseful/);
+  assert.doesNotMatch(devonPlayer, /requiredForProgress|interactionComplete|disabled=/);
+  assert.match(devonPlayer, /Finish story/);
+  assert.match(devonPlayer, />\s*Finished\s*</);
 });
 
-test("urgency uses symptoms, the personal plan, and pattern without a universal value", () => {
-  const scene = devonNumberScreenStory.scenes[3];
-  assert.deepEqual(
-    scene.interaction.options.map((option) => option.id),
-    ["symptoms", "personal-plan", "pattern"],
+test("progress remains story-specific and completion persists", () => {
+  assert.equal(DEVON_STORY_STORAGE_KEY, getStoryStorageKey(devonNumberScreenStory.slug));
+  assert.match(devonPlayer, /getStoryStorageKey\(STORY_SLUG\)/);
+  assert.match(devonPlayer, /parseStoryProgress/);
+  assert.match(devonPlayer, /versionCompleted: storyCompleted \? "2\.1" : null/);
+  assert.match(devonPlayer, /interactive_story_completed/);
+  assert.equal(
+    getStoryPreviewStatus(
+      parseStoryProgress(JSON.stringify({ ...createInitialStoryProgress(), storyCompleted: true })),
+    ),
+    "completed",
   );
-  assert.match(interactions, /Trouble breathing, confusion, fainting, persistent vomiting/);
-  assert.match(interactions, /do not delay for an app or retesting/);
-  assert.doesNotMatch(JSON.stringify(scene), /\b(?:180|200|250|300|400)\b/);
 });
 
-test("the message builder requests generic context rather than personal health data or apology", () => {
-  const scene = devonNumberScreenStory.scenes[4];
-  assert.equal(scene.interactionType, "communication-builder");
-  assert.match(JSON.stringify(scene.interaction.options), /An apology for having the result/);
-  assert.match(interactions, /Message draft/);
-  const builder = interactions.slice(
-    interactions.indexOf("function CommunicationBuilder"),
-    interactions.indexOf("function PatternComparison"),
-  );
-  assert.doesNotMatch(builder, /type="(?:text|number)"/);
-  assert.match(interactions, /const communicationUseful/);
-});
-
-test("the final comparison selects contextual pattern without prescribing more checks", () => {
-  const scene = devonNumberScreenStory.scenes[5];
-  assert.equal(scene.interactionType, "pattern-comparison");
-  assert.deepEqual(
-    scene.interaction.options.map((option) => option.id),
-    ["isolated", "contextual"],
-  );
-  assert.match(
-    scene.interaction.learningPoint,
-    /care plan, not this story, determines when monitoring/i,
-  );
-  assert.doesNotMatch(JSON.stringify(scene), /test more|check more|increase.*testing|every hour/i);
-});
-
-test("Story 4 connects to the real Lesson 8 without changing lesson progress", () => {
+test("Story 4 remains linked to Lesson 8 without changing lesson progress", () => {
   assert.equal(devonNumberScreenStory.relatedLessonId, "20000000-0000-0000-0000-000000000008");
   assert.equal(devonNumberScreenStory.relatedLessonTitle, "Lesson 8, Making Sense of Your Glucose");
   assert.equal(devonNumberScreenStory.relatedLessonHref, "/lessons/8");
-  assert.doesNotMatch(route, /completeLesson|lessonProgress/);
+  assert.doesNotMatch(devonPlayer, /completeLessonAction|saveLessonPositionAction/);
 });
 
-test("prediction is unscored and all three knowledge answers are C", () => {
-  assert.equal(devonNumberScreenStory.predictionChoices?.[2]?.id, "c");
-  assert.deepEqual(
-    devonNumberScreenStory.quiz.map((question) => question.correctChoiceId),
-    ["c", "c", "c"],
-  );
-  assert.equal(
-    calculateStoryQuizScore(devonNumberScreenStory.quiz, {
-      "devon-reading-meaning": "c",
-      "devon-unexpected-result": "c",
-      "devon-useful-message": "c",
-    }),
-    3,
-  );
-  assert.match(player, /prediction: choice\.id/);
-  assert.doesNotMatch(
-    player.slice(
-      player.indexOf('progress.stage === "prediction"'),
-      player.indexOf('progress.stage === "quiz"'),
-    ),
-    /calculateStoryQuizScore/,
-  );
-  assert.ok(
-    player.indexOf('progress.stage === "prediction"') < player.indexOf('progress.stage === "quiz"'),
-  );
+test("the Devon reader is accessible, responsive, and motion-reduced", () => {
+  assert.match(devonStyles, /max-width: 52rem/);
+  assert.match(devonStyles, /@media \(max-width: 42rem\)/);
+  assert.match(devonStyles, /@media \(max-width: 38rem\)/);
+  assert.match(devonStyles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(devonStyles, /@media \(hover: hover\) and \(pointer: fine\)/);
+  assert.doesNotMatch(devonStyles, /transition:\s*all/);
+  assert.match(devonPlayer, /role="progressbar"/);
+  assert.match(devonPlayer, /role="tablist"/);
+  assert.match(devonPlayer, /role="radiogroup"/);
+  assert.match(devonPlayer, /aria-live="polite"/);
+  assert.match(devonPlayer, /headingRef\.current\?\.focus/);
+  assert.match(devonPlayer, /story-reader-active/);
 });
 
-test("progress remains story-specific and all responsive layouts are styled", () => {
-  assert.equal(DEVON_STORY_STORAGE_KEY, getStoryStorageKey(devonNumberScreenStory.slug));
-  assert.match(styles, /\[data-layout="thought-chain"\]/);
-  assert.match(styles, /\[data-layout="process-path"\]/);
-  assert.match(styles, /\[data-layout="communication-builder"\]/);
-  assert.match(styles, /@media \(max-width: 38rem\)/);
-  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(player, /storyCompleted: true/);
-  assert.match(player, /keyIdeaUnderstood: score >= 2/);
-  assert.match(player, /safeSetLocalStorage\(storageKey/);
-  assert.match(player, /disabled=\{!interactionComplete\}/);
-  assert.match(interactions, /aria-live="polite"/);
-  assert.match(interactions, /type="button"/);
-  assert.match(interactions, /type="radio"/);
-});
-
-test("optional context and private reflection do not block completion or claim clinical storage", () => {
-  const patternSource = interactions.slice(
-    interactions.indexOf("function PatternComparison"),
-    interactions.indexOf("export function StoryInteraction"),
-  );
-  assert.match(patternSource, /optional-context/);
-  assert.match(patternSource, /submitEvaluatedInteraction/);
-  assert.match(patternSource, /correct: true/);
-  assert.ok(devonNumberScreenStory.privateReflectionPrompt);
-  assert.match(player, /save && trimmed \? trimmed : current\.privateReflection/);
-  assert.match(player, /finishReflection\(false\)/);
-});
-
-test("every evaluated Story 4 interaction unlocks with teaching feedback after two misses", () => {
-  assert.match(interactions, /const MAX_UNSUCCESSFUL_ATTEMPTS = 2/);
-  assert.match(interactions, /nextAttempts >= MAX_UNSUCCESSFUL_ATTEMPTS/);
-  assert.match(interactions, /The intended side is labeled above, and you can continue/);
-  assert.match(interactions, /The corrected chain is labeled above/);
-  assert.match(interactions, /The useful process steps are identified below/);
-  assert.match(interactions, /The intended response for each missed situation is shown above/);
-  assert.match(interactions, /The concrete details are identified below/);
-  assert.match(interactions, /View B is the more useful comparison, and you can continue/);
-});
-
-test("Story 4 correction labels sit inside their cards and away from the process line", () => {
-  assert.match(interactions, /className=\{styles\.boundaryStatementLabel\}/);
-  assert.match(interactions, /className=\{styles\.chainStepLabel\}/);
-  assert.match(styles, /\.boundaryStatementLabel[\s\S]*grid-column: 1 \/ -1/);
-  assert.match(styles, /\.chainStepLabel[\s\S]*position: absolute[\s\S]*top: 0/);
-  assert.match(styles, /\.chainStep::after[\s\S]*top: 2rem/);
+test("Devon's disclosure remains clear about the scenario and its limits", () => {
+  assert.match(devonNumberScreenStory.disclosure, /Devon is a placeholder name/);
+  assert.match(devonNumberScreenStory.disclosure, /does not describe one specific individual/);
+  assert.match(devonNumberScreenStory.disclosure, /does not.*personal instructions/i);
+  assert.doesNotMatch(devonPlayer, /Medically reviewed|real patient|testimonial/i);
 });

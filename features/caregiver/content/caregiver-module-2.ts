@@ -165,7 +165,7 @@ export const caregiverModule2 = Object.freeze({
         "“I can drive on Tuesdays, but I cannot leave work without notice. We need another option for last-minute rides.”",
       punitiveBoundary: "“If you will not follow my advice, do not ask me for anything.”",
       explanation:
-        "The first line names the supporter's capacity. The second uses help as leverage over another adult's decisions.",
+        "The first line names the supporter's capacity. The second uses help to pressure another adult's decisions.",
       misunderstanding: "“If I ask permission every time, I will sound distant.”",
       correction:
         "Recurring support can be agreed without repeating a formal question each time. The agreement still needs a clear scope and an easy way to change it.",
