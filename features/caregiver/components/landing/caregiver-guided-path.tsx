@@ -38,6 +38,7 @@ const HOVER_RATE = 0;
 function prefersLessMotion(element: HTMLElement) {
   return (
     window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    !window.matchMedia("(hover: hover) and (pointer: fine)").matches ||
     element.closest('[data-reduced-motion="true"]') !== null
   );
 }

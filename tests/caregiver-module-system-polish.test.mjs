@@ -61,6 +61,15 @@ test("required practices explain a locked continuation instead of looking broken
   assert.match(experiences[1], /Build and review all four parts of the offer to continue/);
 });
 
+test("required review controls explain the choice and commit steps", () => {
+  assert.match(experiences[1], /Required to continue/);
+  assert.match(experiences[1], /Choose an intention, an impact/);
+  assert.match(experiences[1], /Review to continue/);
+  assert.match(experiences[2], /Choose one response above, then review it/);
+  assert.match(experiences[2], /Review to continue/);
+  assert.match(styles, /\.requiredAction\s*\{[\s\S]*border-left: 3px solid #a7634c/);
+});
+
 test("review and restart transitions restore both context and keyboard focus", () => {
   for (const source of experiences) {
     assert.match(
@@ -105,6 +114,13 @@ test("the shared reader contains narrow-screen overflow safeguards", () => {
     globalStyles,
     /@media \(max-width: 79\.99rem\)[\s\S]*body:has\(\[data-caregiver-module\]\) \.ai-companion-trigger[\s\S]*display: none/,
   );
+});
+
+test("shared comparison and choice layouts keep text and controls aligned", () => {
+  assert.match(styles, /\.replyControls\s*\{[\s\S]*align-items: start/);
+  assert.match(styles, /\.replyControls fieldset\s*\{[\s\S]*align-content: start/);
+  assert.match(styles, /\.knownPanel\s*\{[\s\S]*display: grid[\s\S]*gap: 0\.65rem/);
+  assert.match(styles, /\.knownPanel > \*\s*\{[\s\S]*max-width: 42rem/);
 });
 
 test("hover and press feedback never disguises disabled or selected controls", () => {

@@ -140,16 +140,20 @@ export const caregiverModule5 = Object.freeze({
         "Two planned rides, one weekly mail task, calls before nine, approved backup for another task, review in two weeks.",
       choices: [
         { id: "tasks", copy: "fewer tasks", preferred: true },
+        { id: "frequency", copy: "more frequent check-ins", preferred: false },
         { id: "limits", copy: "clearer time limits", preferred: true },
-        { id: "backup", copy: "backup", preferred: true },
         { id: "permission", copy: "permission", preferred: false },
-        { id: "control", copy: "medical control", preferred: false },
+        { id: "backup", copy: "backup", preferred: true },
+        { id: "single", copy: "one person still holds every task", preferred: false },
         { id: "review", copy: "planned review", preferred: true },
+        { id: "control", copy: "medical control", preferred: false },
       ],
       feedback: {
         preferred:
           "Plan B does not prove that the arrangement will work. It makes responsibilities visible, limits dependence on one person, and creates a point to revise.",
         control: "Sustainability does not require the supporter to control medical decisions.",
+        notPresent:
+          "This is not a feature that reduces dependence in Plan B. Compare the task limits, backup, and planned review instead.",
       },
       learningPoint:
         "A sustainable plan has limits and backup, not simply a more efficient primary supporter.",
@@ -246,10 +250,12 @@ export const caregiverModule5 = Object.freeze({
         "In Elena's week, what appears difficult to sustain? Select the patterns, then choose one arrangement to discuss.",
       patterns: [
         { id: "sleep", copy: "interrupted sleep", preferred: true },
+        { id: "one-cancel", copy: "one canceled social plan", preferred: false },
         { id: "work", copy: "missed work", preferred: true },
-        { id: "backup", copy: "no backup", preferred: true },
-        { id: "resentment", copy: "resentment", preferred: true },
         { id: "decisions", copy: "all health decisions", preferred: false },
+        { id: "backup", copy: "no backup", preferred: true },
+        { id: "one-request", copy: "one unexpected request", preferred: false },
+        { id: "resentment", copy: "resentment", preferred: true },
         { id: "ride", copy: "one planned ride", preferred: false },
       ],
       discussions: [
@@ -262,6 +268,8 @@ export const caregiverModule5 = Object.freeze({
       feedback: {
         preferred:
           "These are descriptive patterns, not a diagnosis. Choosing one arrangement creates a practical conversation.",
+        insufficient:
+          "One isolated change does not establish an unsustainable pattern by itself. Look for repeated effects on sleep, work, backup, or the relationship.",
         burnout: "This module does not diagnose burnout.",
         medical:
           "Those decisions belong to Tomas and qualified care, not to Elena's workload plan.",

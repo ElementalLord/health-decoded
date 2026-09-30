@@ -11,6 +11,7 @@ let pendingEventsKey = `${PENDING_EVENTS_KEY_PREFIX}:unscoped`;
 let memoryQueue: MilestoneEvent[] = [];
 let activeFlush: Promise<boolean> | null = null;
 let ignoreStoredQueue = false;
+let serverActionsAvailable = true;
 
 function eventKey(event: MilestoneEvent) {
   return JSON.stringify(event);
@@ -47,6 +48,7 @@ export function configureMilestoneQueue(userId: string) {
   pendingEventsKey = nextKey;
   memoryQueue = [];
   ignoreStoredQueue = false;
+  serverActionsAvailable = true;
 }
 
 function enqueue(event: MilestoneEvent) {
@@ -64,6 +66,7 @@ export function requestMilestoneSync(milestoneIds: readonly string[] = []) {
 }
 
 export function flushPendingMilestoneEvents() {
+  if (!serverActionsAvailable) return Promise.resolve(false);
   if (activeFlush) return activeFlush;
   activeFlush = (async () => {
     while (true) {
@@ -86,6 +89,7 @@ export function flushPendingMilestoneEvents() {
         // A tab can retain an action ID from an older build after a deployment.
         // Keep the event queued, but let the host suspend background Server Action
         // calls until the page is reloaded onto the current build.
+        serverActionsAvailable = false;
         return false;
       }
     }

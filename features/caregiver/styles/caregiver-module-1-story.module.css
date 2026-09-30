@@ -322,10 +322,16 @@
   border-top: 1px solid #d8d0c4;
 }
 
+.knownUnknown {
+  display: grid;
+  min-width: 0;
+}
+
 .switchTabs {
+  align-items: end;
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 0.5rem clamp(1.25rem, 3vw, 2rem);
 }
 
 .switchTabs button,
@@ -339,6 +345,7 @@
   font-weight: 700;
   min-height: 48px;
   padding: 0.35rem 0;
+  text-align: left;
   transition:
     border-color 160ms ease,
     color 160ms ease,
@@ -353,8 +360,23 @@
 }
 
 .knownPanel {
-  min-height: 16rem;
-  padding: 2rem 0;
+  align-content: start;
+  display: grid;
+  gap: 0.65rem;
+  min-height: 12rem;
+  min-width: 0;
+  padding: 1.75rem 0 2rem;
+}
+
+.knownPanel > * {
+  margin: 0;
+  max-width: 42rem;
+  min-width: 0;
+}
+
+.knownPanel > p {
+  color: #5d5650;
+  line-height: 1.6;
 }
 
 .knownPanel h3,
@@ -594,13 +616,40 @@
   color: #553a30;
 }
 
+.sortChoices button[data-result="correct"],
+.compactChoices button[data-result="correct"],
+.checkChoices button[data-result="correct"],
+.steadyChoices button[data-result="correct"],
+.replyControls button[data-result="correct"] {
+  background: #edf5ed;
+  border-color: #7f9f84;
+  color: #294b34;
+}
+
 .sortFeedback,
 .inlineFeedback {
   border-left: 3px solid #a7634c;
   color: #5d5650;
+  display: grid;
+  gap: 0.3rem;
   line-height: 1.55;
   margin-top: 1.2rem;
   padding-left: 0.9rem;
+}
+
+.sortFeedback[data-result="correct"],
+.inlineFeedback[data-result="correct"] {
+  background: #f4f8f3;
+  border-left-color: #76927b;
+  border-radius: 0 0.35rem 0.35rem 0;
+  color: #405747;
+  padding-block: 0.75rem;
+  padding-right: 0.9rem;
+}
+
+.sortFeedback[data-result="correct"] strong,
+.inlineFeedback[data-result="correct"] strong {
+  color: #294b34;
 }
 
 .sortFeedback strong,
@@ -796,6 +845,7 @@
 }
 
 .replyControls {
+  align-items: start;
   display: grid;
   gap: 1.25rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -803,6 +853,8 @@
 }
 
 .replyControls fieldset {
+  align-content: start;
+  align-self: start;
   border: 0;
   display: grid;
   gap: 0.55rem;
@@ -982,6 +1034,48 @@
 
 .activityAction {
   margin-top: 1.5rem;
+}
+
+.requiredAction {
+  align-items: center;
+  background: #f8eee8;
+  border-left: 3px solid #a7634c;
+  display: flex;
+  gap: 1rem 1.5rem;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding: 1rem 1.1rem;
+}
+
+.requiredAction p {
+  display: grid;
+  gap: 0.2rem;
+  line-height: 1.45;
+  margin: 0;
+  max-width: 32rem;
+}
+
+.requiredAction strong {
+  color: #8e513d;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.requiredAction span {
+  color: #5d514a;
+  font-size: 0.86rem;
+}
+
+.requiredAction .activityAction {
+  flex: 0 0 auto;
+  margin-top: 0;
+  min-width: 12rem;
+}
+
+.requiredAction[data-ready="true"] {
+  background: #f6e7df;
 }
 
 .next:disabled,
@@ -1329,6 +1423,20 @@
   .completionActions {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .knownPanel {
+    min-height: 0;
+    padding-block: 1.5rem 1.75rem;
+  }
+
+  .requiredAction {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .requiredAction .activityAction {
+    width: 100%;
   }
 }
 
@@ -1771,4 +1879,18 @@
   .moduleTwo .builderNavigation button:last-child:hover:not(:disabled) {
     background: #824934;
   }
+}
+
+:is(.moduleTwo, .moduleThree, .moduleFour, .moduleFive)
+  :is(.sortChoices, .compactChoices, .checkChoices, .steadyChoices, .replyControls)
+  button[data-result="correct"] {
+  background: #edf5ed;
+  border-color: #7f9f84;
+  color: #294b34;
+}
+
+:is(.moduleTwo, .moduleThree, .moduleFour, .moduleFive)
+  :is(.sortFeedback, .inlineFeedback)[data-result="correct"]
+  strong {
+  color: #294b34;
 }

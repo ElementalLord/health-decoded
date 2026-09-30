@@ -24,10 +24,20 @@ export function applyCaregiverInteractionSubmission(
   interactionId: string,
 ): CaregiverModuleProgress {
   const isCoreApplication = caregiverCoreApplicationByModule[progress.moduleId] === interactionId;
+  const nextState = progress.state === "notStarted" ? ("inProgress" as const) : progress.state;
+  const coreApplicationCompleted = progress.coreApplicationCompleted || isCoreApplication;
+
+  if (
+    nextState === progress.state &&
+    coreApplicationCompleted === progress.coreApplicationCompleted
+  ) {
+    return progress;
+  }
+
   const nextProgress = {
     ...progress,
-    state: progress.state === "notStarted" ? ("inProgress" as const) : progress.state,
-    coreApplicationCompleted: progress.coreApplicationCompleted || isCoreApplication,
+    state: nextState,
+    coreApplicationCompleted,
   };
 
   return {

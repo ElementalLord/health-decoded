@@ -69,6 +69,7 @@ function updateProgress(
 ): CaregiverSessionState {
   const current = session.moduleProgress[moduleId] ?? initialProgress;
   const next = update(current);
+  if (next === current) return session;
   return {
     ...session,
     moduleProgress: {
@@ -134,21 +135,29 @@ export function CaregiverSessionProvider({
 
   const markCentralIdeaReached = useCallback(() => {
     setSession((current) =>
-      updateProgress(current, moduleId, initialProgress, (item) => ({
-        ...item,
-        centralIdeaReached: true,
-        lastSectionId: centralSectionId,
-      })),
+      updateProgress(current, moduleId, initialProgress, (item) =>
+        item.centralIdeaReached && item.lastSectionId === centralSectionId
+          ? item
+          : {
+              ...item,
+              centralIdeaReached: true,
+              lastSectionId: centralSectionId,
+            },
+      ),
     );
   }, [centralSectionId, initialProgress, moduleId]);
 
   const markTakeawayViewed = useCallback(() => {
     setSession((current) =>
-      updateProgress(current, moduleId, initialProgress, (item) => ({
-        ...item,
-        takeawayViewed: true,
-        lastSectionId: takeawaySectionId,
-      })),
+      updateProgress(current, moduleId, initialProgress, (item) =>
+        item.takeawayViewed && item.lastSectionId === takeawaySectionId
+          ? item
+          : {
+              ...item,
+              takeawayViewed: true,
+              lastSectionId: takeawaySectionId,
+            },
+      ),
     );
   }, [initialProgress, moduleId, takeawaySectionId]);
 
@@ -166,10 +175,14 @@ export function CaregiverSessionProvider({
   const setKeyIdeaUnderstood = useCallback(
     (understood: boolean) => {
       setSession((current) =>
-        updateProgress(current, moduleId, initialProgress, (item) => ({
-          ...item,
-          keyIdeaUnderstood: understood,
-        })),
+        updateProgress(current, moduleId, initialProgress, (item) =>
+          item.keyIdeaUnderstood === understood
+            ? item
+            : {
+                ...item,
+                keyIdeaUnderstood: understood,
+              },
+        ),
       );
     },
     [initialProgress, moduleId],
@@ -179,10 +192,14 @@ export function CaregiverSessionProvider({
     (sectionId: string) => {
       if (!new RegExp(`^${moduleId}-S\\d{2}$`).test(sectionId)) return;
       setSession((current) =>
-        updateProgress(current, moduleId, initialProgress, (item) => ({
-          ...item,
-          lastSectionId: sectionId,
-        })),
+        updateProgress(current, moduleId, initialProgress, (item) =>
+          item.lastSectionId === sectionId
+            ? item
+            : {
+                ...item,
+                lastSectionId: sectionId,
+              },
+        ),
       );
     },
     [initialProgress, moduleId],

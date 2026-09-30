@@ -44,12 +44,14 @@ export default async function CaregiverModulePage({
   const moduleEntry = getImplementedCaregiverModule(moduleSlug);
   if (!moduleEntry) notFound();
 
-  const profile = await getCurrentProfile();
+  const [profile, milestoneGates] = await Promise.all([
+    getCurrentProfile(),
+    getCaregiverMilestoneGates(moduleEntry.id),
+  ]);
   if (!profile.ok) redirect("/journey");
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
   const Experience = experienceByModule[moduleEntry.id];
-  const milestoneGates = await getCaregiverMilestoneGates(moduleEntry.id);
   const sessionConfiguration =
     moduleEntry.id === "CG-M1"
       ? {

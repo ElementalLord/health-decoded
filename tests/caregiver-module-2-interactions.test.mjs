@@ -18,8 +18,8 @@ test("I01 keeps intention, impact, and the unknown perspective distinct", () => 
   assert.equal(interaction.intentions.length, 3);
   assert.equal(interaction.impacts.length, 4);
   assert.match(source, /function IntentionImpactMap/);
-  assert.match(source, /interaction\.intentions\.map/);
-  assert.match(source, /interaction\.impacts\.map/);
+  assert.match(source, /orderedIntentions\.map/);
+  assert.match(source, /orderedImpacts\.map/);
   assert.match(source, /Andre’s exact experience remains unknown/);
   assert.match(source, /interaction\.feedback\.fallback/);
 });
@@ -65,7 +65,7 @@ test("I04 accepts no before opening a separate later conversation", () => {
   assert.equal(caregiverModule2.interactions.refusal.firstChoices[0].id, "accept");
   assert.match(source, /function RefusalPath/);
   assert.match(source, /firstReviewed && first === "accept"/);
-  assert.match(source, /interaction\.secondChoices\.map/);
+  assert.match(source, /orderedSecondChoices\.map/);
   assert.match(source, /interaction\.secondChoiceFallback/);
 });
 

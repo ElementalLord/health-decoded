@@ -13,10 +13,10 @@ const experience = await readFile(
 
 test("Module 5 keeps all five learning mechanics in one story experience", () => {
   assert.equal(caregiverModule5.interactions.responsibility.items.length, 8);
-  assert.equal(caregiverModule5.interactions.sustainability.choices.length, 6);
+  assert.equal(caregiverModule5.interactions.sustainability.choices.length, 8);
   assert.equal(caregiverModule5.interactions.boundaries.statements.length, 3);
   assert.equal(caregiverModule5.interactions.network.tasks.length, 3);
-  assert.equal(caregiverModule5.interactions.load.patterns.length, 6);
+  assert.equal(caregiverModule5.interactions.load.patterns.length, 8);
   for (const id of ["responsibility", "sustainability", "boundaries", "network", "load"])
     assert.match(experience, new RegExp(`interactions\\.${id}`));
 });

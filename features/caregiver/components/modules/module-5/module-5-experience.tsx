@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { caregiverModule5 } from "../../../content/caregiver-module-5";
+import { orderCaregiverChoices } from "../../../lib/caregiver-choice-order";
 import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-1-story.module.css";
@@ -150,6 +151,12 @@ function ResponsibilityMap({ onComplete }: { readonly onComplete: () => void }) 
   const currentReviewed = Boolean(reviewed[item.id]);
   const correct = answer === item.preferred;
   const assisted = (attempts[item.id] ?? 0) >= 3 && !correct;
+  const orderedZones = orderCaregiverChoices(
+    interaction.zones,
+    "module-5-responsibility",
+    index,
+    item.preferred,
+  );
 
   function review() {
     if (answer === undefined) return;
@@ -192,9 +199,16 @@ function ResponsibilityMap({ onComplete }: { readonly onComplete: () => void }) 
       </div>
       <h3>{item.copy}</h3>
       <div className={styles.sortChoices} role="radiogroup" aria-label="Responsibility owner">
-        {interaction.zones.map((zone, zoneIndex) => (
+        {orderedZones.map(({ originalIndex: zoneIndex, value: zone }) => (
           <button
             aria-checked={answer === zoneIndex}
+            data-result={
+              currentReviewed && answer === zoneIndex
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={zone}
             onClick={() => {
               setAnswers((current) => ({ ...current, [item.id]: zoneIndex }));
@@ -208,10 +222,12 @@ function ResponsibilityMap({ onComplete }: { readonly onComplete: () => void }) 
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This keeps ownership clear. " : "Check who owns this choice. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {feedback}
           {assisted
             ? ` Suggested owner: ${interaction.zones[item.preferred]}. Your choice has been kept.`
@@ -320,6 +336,15 @@ function SustainabilityPractice() {
   const currentReviewed = Boolean(reviewed[choice.id]);
   const correct = answer === choice.preferred;
   const assisted = (attempts[choice.id] ?? 0) >= 3 && !correct;
+  const orderedAnswers = orderCaregiverChoices(
+    [
+      { label: "Reduces dependence on one person", value: true },
+      { label: "Does not reduce that dependence", value: false },
+    ] as const,
+    "module-5-sustainability",
+    index,
+    choice.preferred ? 0 : 1,
+  );
 
   function review() {
     if (answer === undefined) return;
@@ -354,35 +379,40 @@ function SustainabilityPractice() {
         role="radiogroup"
         aria-label="Effect on sustainability"
       >
-        <button
-          aria-checked={answer === true}
-          onClick={() => {
-            setAnswers((current) => ({ ...current, [choice.id]: true }));
-            setReviewed((current) => ({ ...current, [choice.id]: false }));
-          }}
-          role="radio"
-          type="button"
-        >
-          Reduces dependence on one person
-        </button>
-        <button
-          aria-checked={answer === false}
-          onClick={() => {
-            setAnswers((current) => ({ ...current, [choice.id]: false }));
-            setReviewed((current) => ({ ...current, [choice.id]: false }));
-          }}
-          role="radio"
-          type="button"
-        >
-          Does not reduce that dependence
-        </button>
+        {orderedAnswers.map(({ value: option }) => (
+          <button
+            aria-checked={answer === option.value}
+            data-result={
+              currentReviewed && answer === option.value
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
+            key={option.label}
+            onClick={() => {
+              setAnswers((current) => ({ ...current, [choice.id]: option.value }));
+              setReviewed((current) => ({ ...current, [choice.id]: false }));
+            }}
+            role="radio"
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This comparison fits. " : "Look at who still carries the load. "}
-          </strong>
-          {choice.id === "control" ? interaction.feedback.control : interaction.feedback.preferred}
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
+          {choice.preferred
+            ? interaction.feedback.preferred
+            : choice.id === "control"
+              ? interaction.feedback.control
+              : interaction.feedback.notPresent}
           {assisted
             ? ` Suggested choice: ${choice.preferred ? "Reduces dependence on one person" : "Does not reduce that dependence"}. Your choice has been kept.`
             : ""}
@@ -455,6 +485,12 @@ function BoundaryPractice() {
   const currentReviewed = Boolean(reviewed[statement.id]);
   const correct = answer === statement.preferred;
   const assisted = (attempts[statement.id] ?? 0) >= 3 && !correct;
+  const orderedChoices = orderCaregiverChoices(
+    statement.choices,
+    "module-5-boundaries",
+    index,
+    statement.preferred,
+  );
 
   function review() {
     if (answer === undefined) return;
@@ -489,9 +525,16 @@ function BoundaryPractice() {
         role="radiogroup"
         aria-label="Boundary revision choices"
       >
-        {statement.choices.map((choice, choiceIndex) => (
+        {orderedChoices.map(({ originalIndex: choiceIndex, value: choice }) => (
           <button
             aria-checked={answer === choiceIndex}
+            data-result={
+              currentReviewed && answer === choiceIndex
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={choice}
             onClick={() => {
               setAnswers((current) => ({ ...current, [statement.id]: choiceIndex }));
@@ -505,10 +548,12 @@ function BoundaryPractice() {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This names a usable limit. " : "This still leaves the limit unclear. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {correct
             ? interaction.feedback.preferred
             : statement.nonPreferredFeedback === "guilt"
@@ -617,6 +662,18 @@ function NetworkPractice() {
     (task.preferredBackups as readonly number[]).includes(backup ?? -1) &&
     info === task.preferredInfo;
   const assisted = (attempts[task.id] ?? 0) >= 3 && !correct;
+  const orderedBackups = orderCaregiverChoices(
+    interaction.backups,
+    "module-5-network-backups",
+    index,
+    task.preferredBackups[0],
+  );
+  const orderedInformation = orderCaregiverChoices(
+    interaction.information,
+    "module-5-network-information",
+    index,
+    task.preferredInfo,
+  );
 
   function review() {
     if (backup === undefined || info === undefined) return;
@@ -658,7 +715,7 @@ function NetworkPractice() {
         aria-label={phase === 0 ? "Choose a backup" : "Share only what is needed"}
       >
         {phase === 0
-          ? interaction.backups.map((choice, choiceIndex) => (
+          ? orderedBackups.map(({ originalIndex: choiceIndex, value: choice }) => (
               <button
                 aria-checked={backup === choiceIndex}
                 key={choice}
@@ -672,9 +729,16 @@ function NetworkPractice() {
                 {choice}
               </button>
             ))
-          : interaction.information.map((choice, choiceIndex) => (
+          : orderedInformation.map(({ originalIndex: choiceIndex, value: choice }) => (
               <button
                 aria-checked={info === choiceIndex}
+                data-result={
+                  currentReviewed && info === choiceIndex
+                    ? correct
+                      ? "correct"
+                      : "incorrect"
+                    : undefined
+                }
                 key={choice}
                 onClick={() => {
                   setInformation((current) => ({ ...current, [task.id]: choiceIndex }));
@@ -688,12 +752,12 @@ function NetworkPractice() {
             ))}
       </div>
       {phase === 1 && currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct
-              ? "This backup stays task-specific. "
-              : "Review the role and the information it needs. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {info === 2 || info === 3 ? interaction.feedback.private : interaction.feedback.preferred}
           {assisted
             ? ` Suggested match: ${interaction.backups[task.preferredBackups[0]!]} with ${interaction.information[task.preferredInfo]}. Your choices have been kept.`
@@ -771,6 +835,23 @@ function LoadPractice() {
     : interaction.discussions.some((item) => item.id === discussion && item.preferred);
   const attemptKey = pattern?.id ?? "discussion";
   const assisted = (attempts[attemptKey] ?? 0) >= 3 && !correct;
+  const orderedPatternAnswers = pattern
+    ? orderCaregiverChoices(
+        [
+          { label: "Appears difficult to sustain", value: true },
+          { label: "Not enough by itself", value: false },
+        ] as const,
+        "module-5-load-patterns",
+        index,
+        pattern.preferred ? 0 : 1,
+      )
+    : [];
+  const orderedDiscussions = orderCaregiverChoices(
+    interaction.discussions,
+    "module-5-load-discussions",
+    index,
+    interaction.discussions.findIndex((item) => item.preferred),
+  );
 
   function review() {
     if (onDiscussion) {
@@ -791,7 +872,9 @@ function LoadPractice() {
       : discussion === "medical"
         ? interaction.feedback.medical
         : interaction.feedback.preferred
-    : interaction.feedback.preferred;
+    : pattern?.preferred
+      ? interaction.feedback.preferred
+      : interaction.feedback.insufficient;
 
   return (
     <section
@@ -823,53 +906,57 @@ function LoadPractice() {
         role="radiogroup"
         aria-label={onDiscussion ? "Arrangement to discuss" : "Pattern classification"}
       >
-        {onDiscussion ? (
-          interaction.discussions.map((choice) => (
-            <button
-              aria-checked={discussion === choice.id}
-              key={choice.id}
-              onClick={() => {
-                setDiscussion(choice.id);
-                setDiscussionReviewed(false);
-              }}
-              role="radio"
-              type="button"
-            >
-              {choice.copy}
-            </button>
-          ))
-        ) : (
-          <>
-            <button
-              aria-checked={answer === true}
-              onClick={() => {
-                setAnswers((current) => ({ ...current, [pattern!.id]: true }));
-                setReviewed((current) => ({ ...current, [pattern!.id]: false }));
-              }}
-              role="radio"
-              type="button"
-            >
-              Appears difficult to sustain
-            </button>
-            <button
-              aria-checked={answer === false}
-              onClick={() => {
-                setAnswers((current) => ({ ...current, [pattern!.id]: false }));
-                setReviewed((current) => ({ ...current, [pattern!.id]: false }));
-              }}
-              role="radio"
-              type="button"
-            >
-              Not enough by itself
-            </button>
-          </>
-        )}
+        {onDiscussion
+          ? orderedDiscussions.map(({ value: choice }) => (
+              <button
+                aria-checked={discussion === choice.id}
+                data-result={
+                  currentReviewed && discussion === choice.id
+                    ? correct
+                      ? "correct"
+                      : "incorrect"
+                    : undefined
+                }
+                key={choice.id}
+                onClick={() => {
+                  setDiscussion(choice.id);
+                  setDiscussionReviewed(false);
+                }}
+                role="radio"
+                type="button"
+              >
+                {choice.copy}
+              </button>
+            ))
+          : orderedPatternAnswers.map(({ value: option }) => (
+              <button
+                aria-checked={answer === option.value}
+                data-result={
+                  currentReviewed && answer === option.value
+                    ? correct
+                      ? "correct"
+                      : "incorrect"
+                    : undefined
+                }
+                key={option.label}
+                onClick={() => {
+                  setAnswers((current) => ({ ...current, [pattern!.id]: option.value }));
+                  setReviewed((current) => ({ ...current, [pattern!.id]: false }));
+                }}
+                role="radio"
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This stays descriptive. " : "Focus on the arrangement, not a diagnosis. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {feedback}
           {assisted
             ? ` Suggested choice: ${onDiscussion ? "overnight availability or ride schedule" : pattern!.preferred ? "Appears difficult to sustain" : "Not enough by itself"}. Your choice has been kept.`
@@ -988,6 +1075,12 @@ function QuickCheck() {
   const currentReviewed = Boolean(reviewed[question.id]);
   const correct = answer === question.preferredIndex;
   const assisted = (attempts[question.id] ?? 0) >= 3 && !correct;
+  const orderedChoices = orderCaregiverChoices(
+    question.choices,
+    "module-5-quick-check",
+    index,
+    question.preferredIndex,
+  );
 
   function review() {
     if (answer === undefined) return;
@@ -1014,9 +1107,16 @@ function QuickCheck() {
       </div>
       <h3>{question.question}</h3>
       <div className={styles.checkChoices} role="radiogroup" aria-label="Answer choices">
-        {question.choices.map((choice, choiceIndex) => (
+        {orderedChoices.map(({ originalIndex: choiceIndex, value: choice }) => (
           <button
             aria-checked={answer === choiceIndex}
+            data-result={
+              currentReviewed && answer === choiceIndex
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={choice}
             onClick={() => {
               setAnswers((current) => ({ ...current, [question.id]: choiceIndex }));
@@ -1030,10 +1130,12 @@ function QuickCheck() {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This keeps support sustainable. " : "Review scope, backup, and control. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {question.explanation}
           {assisted
             ? ` Suggested answer: ${question.choices[question.preferredIndex]}. Your choice has been kept.`

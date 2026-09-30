@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { caregiverModule3 } from "../../../content/caregiver-module-3";
 import { caregiverModuleRegistry } from "../../../content/caregiver-module-registry";
+import { orderCaregiverChoices } from "../../../lib/caregiver-choice-order";
 import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-1-story.module.css";
@@ -174,6 +175,12 @@ function PlanningPractice() {
       : (item.preferredZones as readonly string[]).includes(choice)
     : false;
   const assisted = (attempts[item.id] ?? 0) >= 3 && !isPreferred;
+  const orderedChoices = orderCaregiverChoices(
+    planChoices,
+    "module-3-planning",
+    index,
+    planChoices.indexOf(preferredPlanChoice(item)),
+  );
 
   function review() {
     if (!choice) return;
@@ -212,10 +219,13 @@ function PlanningPractice() {
       </div>
       <h3>{item.copy}</h3>
       <div className={styles.sortChoices} role="radiogroup" aria-label="Place this detail">
-        {planChoices.map((option) => (
+        {orderedChoices.map(({ value: option }) => (
           <button
             aria-checked={choice === option}
             className={choice === option ? styles.choiceSelected : undefined}
+            data-result={
+              isReviewed && choice === option ? (isPreferred ? "correct" : "incorrect") : undefined
+            }
             key={option}
             onClick={() => {
               setChoices((current) => ({ ...current, [item.id]: option }));
@@ -229,10 +239,12 @@ function PlanningPractice() {
         ))}
       </div>
       {isReviewed ? (
-        <p className={styles.sortFeedback} role="status">
-          <strong>
-            {isPreferred ? "This keeps the plan useful. " : "Look at the named burden. "}
-          </strong>
+        <p
+          className={styles.sortFeedback}
+          data-result={isPreferred ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{isPreferred ? "Correct." : "Incorrect."}</strong>
           {feedbackFor(item)}
           {assisted
             ? ` Suggested placement: ${preferredPlanChoice(item)}. Your choice has been kept.`
@@ -351,6 +363,12 @@ function RequestMatching({ onComplete }: { readonly onComplete: () => void }) {
   const currentReviewed = Boolean(reviewed[pair.id]);
   const correct = answer === pair.id;
   const assisted = (attempts[pair.id] ?? 0) >= 3 && !correct;
+  const orderedOffers = orderCaregiverChoices(
+    interaction.pairs,
+    "module-3-request-matching",
+    index,
+    interaction.pairs.findIndex((option) => option.id === pair.id),
+  );
 
   function review() {
     if (!answer) return;
@@ -384,9 +402,16 @@ function RequestMatching({ onComplete }: { readonly onComplete: () => void }) {
       </div>
       <h3>{pair.request}</h3>
       <div className={styles.compactChoices} role="radiogroup" aria-label="Offers">
-        {interaction.pairs.map((option) => (
+        {orderedOffers.map(({ value: option }) => (
           <button
             aria-checked={answer === option.id}
+            data-result={
+              currentReviewed && answer === option.id
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={option.id}
             onClick={() => {
               setAnswers((current) => ({ ...current, [pair.id]: option.id }));
@@ -400,10 +425,12 @@ function RequestMatching({ onComplete }: { readonly onComplete: () => void }) {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "The offer stays inside the request. " : "This adds a different role. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {correct ? interaction.feedback.preferred : interaction.feedback.adjacent}
           {assisted ? ` Suggested offer: ${pair.offer}. Your choice has been kept.` : ""}
         </p>
@@ -476,6 +503,13 @@ function SupportMenu() {
   const answer = answers[offer.id];
   const currentReviewed = Boolean(reviewed[offer.id]);
   const correct = answer === offer.preferredCategory;
+  const reviewHintId = `offer-review-${offer.id}`;
+  const orderedCategories = orderCaregiverChoices(
+    interaction.categories,
+    "module-3-support-menu",
+    index,
+    interaction.categories.indexOf(offer.preferredCategory),
+  );
 
   function review() {
     if (!answer) return;
@@ -502,9 +536,16 @@ function SupportMenu() {
       <h3>{offer.label}</h3>
       <p className={styles.friendMessage}>{offer.preference}</p>
       <div className={styles.compactChoices} role="radiogroup" aria-label="Current preference">
-        {interaction.categories.map((category) => (
+        {orderedCategories.map(({ value: category }) => (
           <button
             aria-checked={answer === category}
+            data-result={
+              currentReviewed && answer === category
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={category}
             onClick={() => {
               setAnswers((current) => ({ ...current, [offer.id]: category }));
@@ -518,28 +559,50 @@ function SupportMenu() {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This follows the stated preference. " : "Use the answer given. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {correct ? interaction.feedback.preferred : interaction.feedback.mismatch}
           {!correct
             ? ` Suggested category: ${offer.preferredCategory}. Your choice has been kept.`
             : ""}
         </p>
       ) : null}
-      <button
-        className={`${styles.primaryAction} ${styles.activityAction}`}
-        disabled={currentReviewed ? index === interaction.offers.length - 1 : !answer}
-        onClick={() => (currentReviewed ? setIndex(index + 1) : review())}
-        type="button"
+      <div
+        className={styles.requiredAction}
+        data-ready={answer || currentReviewed ? "true" : "false"}
       >
-        {currentReviewed
-          ? index === interaction.offers.length - 1
-            ? "Menu reviewed"
-            : "Next offer"
-          : "Review this offer"}
-      </button>
+        <p id={reviewHintId}>
+          <strong>Required to continue</strong>
+          <span>
+            {currentReviewed
+              ? index === interaction.offers.length - 1
+                ? "All six offers have been reviewed."
+                : "This offer is reviewed. Continue to the next one."
+              : answer
+                ? "Review this choice to finish the offer."
+                : "Choose one response above, then review it."}
+          </span>
+        </p>
+        <button
+          aria-describedby={reviewHintId}
+          className={`${styles.primaryAction} ${styles.activityAction}`}
+          disabled={currentReviewed ? index === interaction.offers.length - 1 : !answer}
+          onClick={() => (currentReviewed ? setIndex(index + 1) : review())}
+          type="button"
+        >
+          {currentReviewed
+            ? index === interaction.offers.length - 1
+              ? "Menu reviewed"
+              : "Next offer"
+            : answer
+              ? "Review to continue"
+              : "Choose an option above"}
+        </button>
+      </div>
       <div className={styles.miniNavigation}>
         <button disabled={index === 0} onClick={() => setIndex(index - 1)} type="button">
           Previous
@@ -564,6 +627,12 @@ function RoutineComparison() {
   const answer = answers[pair.id];
   const currentReviewed = Boolean(reviewed[pair.id]);
   const correct = answer === pair.preferredOption;
+  const orderedOptions = orderCaregiverChoices(
+    interaction.options,
+    "module-3-routine-comparison",
+    index,
+    interaction.options.indexOf(pair.preferredOption),
+  );
 
   function review() {
     if (!answer) return;
@@ -603,9 +672,12 @@ function RoutineComparison() {
         role="radiogroup"
         aria-label="What changes the routine"
       >
-        {interaction.options.map((option) => (
+        {orderedOptions.map(({ value: option }) => (
           <button
             aria-checked={answer === option}
+            data-result={
+              currentReviewed && answer === option ? (correct ? "correct" : "incorrect") : undefined
+            }
             key={option}
             onClick={() => {
               setAnswers((current) => ({ ...current, [pair.id]: option }));
@@ -619,10 +691,12 @@ function RoutineComparison() {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "You found the deciding detail. " : "Look first at access and agreement. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {correct ? interaction.feedback.preferred : interaction.feedback.incorrect}
           {!correct ? ` Suggested detail: ${pair.preferredOption}. Your choice has been kept.` : ""}
         </p>
@@ -770,6 +844,12 @@ function QuickCheck() {
   const currentReviewed = Boolean(reviewed[question.id]);
   const correct = answer === question.preferredIndex;
   const assisted = (attempts[question.id] ?? 0) >= 3 && !correct;
+  const orderedChoices = orderCaregiverChoices(
+    question.choices,
+    "module-3-quick-check",
+    index,
+    question.preferredIndex,
+  );
 
   function review() {
     if (answer === undefined) return;
@@ -797,9 +877,16 @@ function QuickCheck() {
       </div>
       <h3>{question.question}</h3>
       <div className={styles.checkChoices} role="radiogroup" aria-label="Answer choices">
-        {question.choices.map((choice, choiceIndex) => (
+        {orderedChoices.map(({ originalIndex: choiceIndex, value: choice }) => (
           <button
             aria-checked={answer === choiceIndex}
+            data-result={
+              currentReviewed && answer === choiceIndex
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={choice}
             onClick={() => {
               setAnswers((current) => ({ ...current, [question.id]: choiceIndex }));
@@ -813,12 +900,12 @@ function QuickCheck() {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct
-              ? "That keeps the offer inside the request. "
-              : "Review the scope of the agreement. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {question.explanation}
           {assisted
             ? ` Suggested answer: ${question.choices[question.preferredIndex]}. Your choice has been kept.`

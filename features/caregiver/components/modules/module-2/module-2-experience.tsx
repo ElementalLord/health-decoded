@@ -14,6 +14,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { caregiverModule2 } from "../../../content/caregiver-module-2";
 import { caregiverModuleRegistry } from "../../../content/caregiver-module-registry";
+import { orderCaregiverChoices } from "../../../lib/caregiver-choice-order";
 import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-1-story.module.css";
@@ -134,6 +135,20 @@ function IntentionImpactMap() {
   const impact = impacts[action.id] ?? "";
   const keepsOpen = Boolean(unknowns[action.id]);
   const currentReviewed = Boolean(reviewed[action.id]);
+  const reviewReady = Boolean(intention && impact && keepsOpen);
+  const correct = impact === action.preferredImpact && keepsOpen;
+  const reviewHintId = `impact-review-${action.id}`;
+  const orderedIntentions = orderCaregiverChoices(
+    interaction.intentions,
+    "module-2-intentions",
+    actionIndex,
+  );
+  const orderedImpacts = orderCaregiverChoices(
+    interaction.impacts,
+    "module-2-impacts",
+    actionIndex,
+    interaction.impacts.indexOf(action.preferredImpact),
+  );
 
   function review() {
     if (!intention || !impact || !keepsOpen) return;
@@ -170,7 +185,7 @@ function IntentionImpactMap() {
       <div className={styles.replyControls}>
         <fieldset>
           <legend>Likely intention</legend>
-          {interaction.intentions.map((option) => (
+          {orderedIntentions.map(({ value: option }) => (
             <button
               aria-pressed={intention === option}
               key={option}
@@ -186,9 +201,16 @@ function IntentionImpactMap() {
         </fieldset>
         <fieldset>
           <legend>Possible impact</legend>
-          {interaction.impacts.map((option) => (
+          {orderedImpacts.map(({ value: option }) => (
             <button
               aria-pressed={impact === option}
+              data-result={
+                currentReviewed && impact === option
+                  ? option === action.preferredImpact
+                    ? "correct"
+                    : "incorrect"
+                  : undefined
+              }
               key={option}
               onClick={() => {
                 setImpacts((current) => ({ ...current, [action.id]: option }));
@@ -204,6 +226,7 @@ function IntentionImpactMap() {
       <div className={styles.compactChoices} role="group" aria-label="Keep perspective open">
         <button
           aria-checked={keepsOpen}
+          data-result={currentReviewed && keepsOpen ? "correct" : undefined}
           onClick={() => {
             setUnknowns((current) => ({ ...current, [action.id]: !keepsOpen }));
             setReviewed((current) => ({ ...current, [action.id]: false }));
@@ -215,33 +238,53 @@ function IntentionImpactMap() {
         </button>
       </div>
       {currentReviewed ? (
-        <div className={styles.sortFeedback} role="status">
-          <strong>{interaction.learningPoint}</strong>
+        <div
+          className={styles.sortFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           <p>{feedback}</p>
         </div>
       ) : null}
-      <button
-        className={`${styles.primaryAction} ${styles.activityAction}`}
-        disabled={
-          currentReviewed
-            ? actionIndex === interaction.actions.length - 1
-            : !intention || !impact || !keepsOpen
-        }
-        onClick={() => {
-          if (currentReviewed) {
-            setActionIndex(actionIndex + 1);
-            return;
-          }
-          review();
-        }}
-        type="button"
+      <div
+        className={styles.requiredAction}
+        data-ready={reviewReady || currentReviewed ? "true" : "false"}
       >
-        {currentReviewed
-          ? actionIndex === interaction.actions.length - 1
-            ? "Action reviewed"
-            : "Next action"
-          : "Review this action"}
-      </button>
+        <p id={reviewHintId}>
+          <strong>Required to continue</strong>
+          <span>
+            {currentReviewed
+              ? actionIndex === interaction.actions.length - 1
+                ? "All three actions have been reviewed."
+                : "This action is reviewed. Continue to the next one."
+              : reviewReady
+                ? "Review your choices to finish this action."
+                : "Choose an intention, an impact, and confirm that Andre’s experience remains unknown."}
+          </span>
+        </p>
+        <button
+          aria-describedby={reviewHintId}
+          className={`${styles.primaryAction} ${styles.activityAction}`}
+          disabled={currentReviewed ? actionIndex === interaction.actions.length - 1 : !reviewReady}
+          onClick={() => {
+            if (currentReviewed) {
+              setActionIndex(actionIndex + 1);
+              return;
+            }
+            review();
+          }}
+          type="button"
+        >
+          {currentReviewed
+            ? actionIndex === interaction.actions.length - 1
+              ? "Action reviewed"
+              : "Next action"
+            : reviewReady
+              ? "Review to continue"
+              : "Choose the three items above"}
+        </button>
+      </div>
       <div className={styles.miniNavigation}>
         <button
           disabled={actionIndex === 0}
@@ -301,16 +344,22 @@ function SupportContinuum() {
   const [feedback, setFeedback] = useState("");
   const behavior = interaction.behaviors[index]!;
   const placement = placements[behavior.id] ?? "";
+  const correct = placement === behavior.preferredCategory;
+  const orderedCategories = orderCaregiverChoices(
+    interaction.categories,
+    "module-2-continuum",
+    index,
+    interaction.categories.indexOf(behavior.preferredCategory),
+  );
 
   function review() {
     if (!placement) return;
-    const correct = placement === behavior.preferredCategory;
     const attempt = (attempts[behavior.id] ?? 0) + 1;
     const assisted = !correct && attempt >= 3;
     setAttempts((current) => ({ ...current, [behavior.id]: attempt }));
     setReviewed((current) => ({ ...current, [behavior.id]: true }));
     setFeedback(
-      `${correct ? "This matches the details." : assisted ? `Suggested classification: ${behavior.preferredCategory}.` : "Compare your choice with the details."} ${behavior.feedback}${assisted ? " Your choice has been kept." : ""}`,
+      `${behavior.feedback}${assisted ? ` Suggested classification: ${behavior.preferredCategory}. Your choice has been kept.` : ""}`,
     );
     if (index === interaction.behaviors.length - 1) markInteractionSubmitted(interaction.id);
   }
@@ -334,9 +383,16 @@ function SupportContinuum() {
       </div>
       <h3>{behavior.copy}</h3>
       <div className={styles.checkChoices} role="radiogroup" aria-label="Choose a category">
-        {interaction.categories.map((category) => (
+        {orderedCategories.map(({ value: category }) => (
           <button
             aria-checked={placement === category}
+            data-result={
+              reviewed[behavior.id] && placement === category
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={category}
             onClick={() => {
               setPlacements((current) => ({ ...current, [behavior.id]: category }));
@@ -351,7 +407,12 @@ function SupportContinuum() {
         ))}
       </div>
       {feedback ? (
-        <p className={styles.inlineFeedback} role="status">
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {feedback}
         </p>
       ) : null}
@@ -424,11 +485,28 @@ function PermissionBuilder({ onComplete }: { readonly onComplete: () => void }) 
   const [index, setIndex] = useState(0);
   const [parts, setParts] = useState<Partial<Record<PermissionPartId, string>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [speechAvailable, setSpeechAvailable] = useState(false);
   const group = interaction.groups[index]!;
   const chosen = parts[group.id];
   const complete = interaction.groups.every((item) => parts[item.id]);
   const preferred = interaction.groups.every((item) => parts[item.id] === item.options[0]);
   const assembledOffer = `${parts.opening ?? "[Opening]"} ${parts.action ?? "[action]"}? ${parts.decline ?? "[Decline clause]"}. ${parts.followup ?? "[Role follow-up]"}.`;
+
+  useEffect(() => {
+    const available = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+    setSpeechAvailable(available);
+
+    return () => {
+      if (available) window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (speechAvailable) window.speechSynthesis.cancel();
+    },
+    [assembledOffer, speechAvailable],
+  );
 
   function reviewOffer() {
     if (!complete) return;
@@ -438,7 +516,7 @@ function PermissionBuilder({ onComplete }: { readonly onComplete: () => void }) 
   }
 
   function readOffer() {
-    if (!complete || !("speechSynthesis" in window)) return;
+    if (!complete || !speechAvailable) return;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(assembledOffer));
   }
@@ -449,6 +527,12 @@ function PermissionBuilder({ onComplete }: { readonly onComplete: () => void }) 
     : mismatch
       ? interaction.feedback[mismatch.id]
       : "";
+  const orderedOptions = orderCaregiverChoices(
+    group.options,
+    "module-2-permission-builder",
+    index,
+    0,
+  );
 
   return (
     <section
@@ -472,10 +556,17 @@ function PermissionBuilder({ onComplete }: { readonly onComplete: () => void }) 
       </div>
       <h3>{group.label}</h3>
       <div className={styles.sortChoices} role="radiogroup" aria-label={group.label}>
-        {group.options.map((option) => (
+        {orderedOptions.map(({ value: option }) => (
           <button
             aria-checked={chosen === option}
             className={chosen === option ? styles.choiceSelected : undefined}
+            data-result={
+              submitted && chosen === option
+                ? option === group.options[0]
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={option}
             onClick={() => {
               setParts((current) => ({ ...current, [group.id]: option }));
@@ -506,14 +597,18 @@ function PermissionBuilder({ onComplete }: { readonly onComplete: () => void }) 
           </button>
         )}
       </div>
-      {complete ? (
+      {complete && speechAvailable ? (
         <button className={styles.secondaryAction} onClick={readOffer} type="button">
           <Volume2 aria-hidden="true" size={16} /> Read offer
         </button>
       ) : null}
       {submitted ? (
-        <div className={styles.sortFeedback} role="status">
-          <strong>{interaction.learningPoint}</strong>
+        <div
+          className={styles.sortFeedback}
+          data-result={preferred ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{preferred ? "Correct." : "Incorrect."}</strong>
           <p>{feedback}</p>
         </div>
       ) : null}
@@ -596,6 +691,20 @@ function RefusalPath() {
   const [closed, setClosed] = useState(false);
   const firstChoice = interaction.firstChoices.find((choice) => choice.id === first);
   const secondOpen = firstReviewed && first === "accept";
+  const firstCorrect = first === "accept";
+  const secondCorrect = second === interaction.secondChoices[0];
+  const orderedFirstChoices = orderCaregiverChoices(
+    interaction.firstChoices,
+    "module-2-refusal-first",
+    0,
+    interaction.firstChoices.findIndex((choice) => choice.id === "accept"),
+  );
+  const orderedSecondChoices = orderCaregiverChoices(
+    interaction.secondChoices,
+    "module-2-refusal-second",
+    1,
+    0,
+  );
 
   function close() {
     if (!second) return;
@@ -616,9 +725,16 @@ function RefusalPath() {
             role="radiogroup"
             aria-label="Choose Leah's response"
           >
-            {interaction.firstChoices.map((choice) => (
+            {orderedFirstChoices.map(({ value: choice }) => (
               <button
                 aria-checked={first === choice.id}
+                data-result={
+                  firstReviewed && first === choice.id
+                    ? firstCorrect
+                      ? "correct"
+                      : "incorrect"
+                    : undefined
+                }
                 key={choice.id}
                 onClick={() => {
                   setFirst(choice.id);
@@ -641,7 +757,12 @@ function RefusalPath() {
             Review response
           </button>
           {firstReviewed && firstChoice ? (
-            <p className={styles.inlineFeedback} role="status">
+            <p
+              className={styles.inlineFeedback}
+              data-result={firstCorrect ? "correct" : "incorrect"}
+              role="status"
+            >
+              <strong>{firstCorrect ? "Correct." : "Incorrect."}</strong>
               {firstChoice.feedback}
             </p>
           ) : null}
@@ -654,9 +775,16 @@ function RefusalPath() {
             role="radiogroup"
             aria-label="Choose a later question"
           >
-            {interaction.secondChoices.map((choice) => (
+            {orderedSecondChoices.map(({ value: choice }) => (
               <button
                 aria-checked={second === choice}
+                data-result={
+                  closed && second === choice
+                    ? secondCorrect
+                      ? "correct"
+                      : "incorrect"
+                    : undefined
+                }
                 key={choice}
                 onClick={() => {
                   setSecond(choice);
@@ -678,8 +806,12 @@ function RefusalPath() {
             Continue
           </button>
           {closed ? (
-            <div className={styles.sortFeedback} role="status">
-              <strong>{interaction.learningPoint}</strong>
+            <div
+              className={styles.sortFeedback}
+              data-result={secondCorrect ? "correct" : "incorrect"}
+              role="status"
+            >
+              <strong>{secondCorrect ? "Correct." : "Incorrect."}</strong>
               <p>{interaction.consequence}</p>
               {second !== interaction.secondChoices[0] ? (
                 <p>{interaction.secondChoiceFallback}</p>
@@ -699,22 +831,33 @@ function RepairBuilder() {
   const { markInteractionSubmitted } = useCaregiverSession();
   const [sequence, setSequence] = useState<readonly RepairLineId[]>([]);
   const [feedback, setFeedback] = useState("");
+  const [feedbackCorrect, setFeedbackCorrect] = useState(false);
   const complete = sequence.length === interaction.preferredOrder.length;
   const expected = interaction.preferredOrder[sequence.length];
+  const remainingLines = interaction.lines.filter((line) => !sequence.includes(line.id));
+  const orderedLines = orderCaregiverChoices(
+    remainingLines,
+    "module-2-repair-builder",
+    sequence.length,
+    expected ? remainingLines.findIndex((line) => line.id === expected) : undefined,
+  );
 
   function choose(id: RepairLineId) {
     if (complete || sequence.includes(id)) return;
     if (id === "defense") {
       setFeedback(interaction.feedback.defense);
+      setFeedbackCorrect(false);
       return;
     }
     if (id !== expected) {
       setFeedback(interaction.feedback.fallback);
+      setFeedbackCorrect(false);
       return;
     }
     const next = [...sequence, id];
     setSequence(next);
-    setFeedback("");
+    setFeedback("That is the correct next line.");
+    setFeedbackCorrect(true);
     if (next.length === interaction.preferredOrder.length) {
       markInteractionSubmitted(interaction.id);
       setFeedback(interaction.feedback.preferred);
@@ -740,16 +883,19 @@ function RepairBuilder() {
           : caregiverModule2.sections.repair.steps[sequence.length]?.label}
       </h3>
       <div className={styles.sortChoices} role="group" aria-label="Repair lines">
-        {interaction.lines
-          .filter((line) => !sequence.includes(line.id))
-          .map((line) => (
-            <button key={line.id} onClick={() => choose(line.id)} type="button">
-              {line.copy}
-            </button>
-          ))}
+        {orderedLines.map(({ value: line }) => (
+          <button key={line.id} onClick={() => choose(line.id)} type="button">
+            {line.copy}
+          </button>
+        ))}
       </div>
       {feedback ? (
-        <p className={styles.inlineFeedback} role="status">
+        <p
+          className={styles.inlineFeedback}
+          data-result={feedbackCorrect ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{feedbackCorrect ? "Correct." : "Incorrect."}</strong>
           {feedback}
         </p>
       ) : null}
@@ -770,6 +916,7 @@ function RepairBuilder() {
         onClick={() => {
           setSequence([]);
           setFeedback("");
+          setFeedbackCorrect(false);
         }}
         type="button"
       >
@@ -865,7 +1012,14 @@ function QuickCheck() {
 
   const currentAnswer = answers[question.id];
   const currentReviewed = Boolean(reviewed[question.id]);
+  const correct = currentAnswer === question.preferredIndex;
   const assisted = (attempts[question.id] ?? 0) >= 3 && currentAnswer !== question.preferredIndex;
+  const orderedChoices = orderCaregiverChoices(
+    question.choices,
+    "module-2-quick-check",
+    index,
+    question.preferredIndex,
+  );
 
   return (
     <section className={styles.quickCheck} aria-labelledby="module-2-check-heading">
@@ -883,9 +1037,16 @@ function QuickCheck() {
       </div>
       <h3 id="module-2-check-heading">{question.question}</h3>
       <div className={styles.checkChoices} role="radiogroup" aria-label="Choose an answer">
-        {question.choices.map((choice, choiceIndex) => (
+        {orderedChoices.map(({ originalIndex: choiceIndex, value: choice }) => (
           <button
             aria-checked={currentAnswer === choiceIndex}
+            data-result={
+              currentReviewed && currentAnswer === choiceIndex
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={choice}
             onClick={() => {
               setAnswers((current) => ({ ...current, [question.id]: choiceIndex }));
@@ -899,12 +1060,12 @@ function QuickCheck() {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {currentAnswer === question.preferredIndex
-              ? "Ready to continue. "
-              : "Review this idea. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {question.explanation}
           {assisted
             ? ` Suggested answer: ${question.choices[question.preferredIndex]}. Your choice has been kept.`

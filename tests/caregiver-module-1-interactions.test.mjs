@@ -41,8 +41,8 @@ test("timing, reply building, and checking remain interactive", () => {
   assert.match(source, /function TimingDecision/);
   assert.match(source, /moments\.map/);
   assert.match(source, /function ReplyBuilder/);
-  assert.match(source, /interaction\.openings\.map/);
-  assert.match(source, /interaction\.followups\.map/);
+  assert.match(source, /orderedOpenings\.map/);
+  assert.match(source, /orderedFollowups\.map/);
   assert.match(source, /function QuickCheck/);
   assert.match(source, /setKeyIdeaUnderstood/);
 });
@@ -50,7 +50,8 @@ test("timing, reply building, and checking remain interactive", () => {
 test("interactive feedback is explanatory and non-punitive", () => {
   assert.match(source, /This can be verified from the exchange/);
   assert.match(source, /This assigns a reason the exchange does not confirm/);
-  assert.match(source, /This leaves room/);
-  assert.match(source, /This adds pressure/);
+  assert.match(source, /"Correct\."/);
+  assert.match(source, /"Incorrect\."/);
+  assert.match(source, /data-result=/);
   assert.doesNotMatch(source, /score|points|grade/i);
 });

@@ -14,6 +14,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { caregiverModule1 } from "../../../content/caregiver-module-1";
 import { caregiverModuleRegistry } from "../../../content/caregiver-module-registry";
+import { orderCaregiverChoices } from "../../../lib/caregiver-choice-order";
 import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-1-story.module.css";
@@ -204,10 +205,16 @@ function FactOrGuess({ onComplete }: { readonly onComplete: () => void }) {
       </div>
       <h3 id="sorter-heading">{statement.copy}</h3>
       <div className={styles.sortChoices} role="radiogroup" aria-label="Classify this statement">
-        {caregiverModule1.interactions.observation.groups.map((group) => (
+        {orderCaregiverChoices(
+          caregiverModule1.interactions.observation.groups,
+          "module-1-observation",
+          index,
+          caregiverModule1.interactions.observation.groups.indexOf(statement.preferredGroup),
+        ).map(({ value: group }) => (
           <button
             aria-checked={answer === group}
             className={answer === group ? styles.choiceSelected : undefined}
+            data-result={answer === group ? (accurate ? "correct" : "incorrect") : undefined}
             key={group}
             onClick={() => choose(group)}
             role="radio"
@@ -219,8 +226,12 @@ function FactOrGuess({ onComplete }: { readonly onComplete: () => void }) {
         ))}
       </div>
       {answer ? (
-        <p aria-live="polite" className={styles.sortFeedback}>
-          <strong>{accurate ? "Yes." : "Look again."}</strong>{" "}
+        <p
+          aria-live="polite"
+          className={styles.sortFeedback}
+          data-result={accurate ? "correct" : "incorrect"}
+        >
+          <strong>{accurate ? "Correct." : "Incorrect."}</strong>
           {statement.preferredGroup === "Observed"
             ? "This can be verified from the exchange."
             : "This assigns a reason the exchange does not confirm."}
@@ -285,6 +296,16 @@ function TimingDecision() {
   const [answer, setAnswer] = useState<string | null>(null);
   const moment = moments[momentIndex]!;
   const choice = moment.choices.find((item) => item.id === answer);
+  const orderedChoices = orderCaregiverChoices<{
+    readonly copy: string;
+    readonly feedback: string;
+    readonly id: string;
+  }>(
+    moment.choices,
+    "module-1-timing",
+    momentIndex,
+    moment.choices.findIndex((item) => item.id === moment.preferred),
+  );
 
   function changeMoment(next: number) {
     setMomentIndex(next);
@@ -310,9 +331,16 @@ function TimingDecision() {
       <div className={styles.timingPanel} role="tabpanel">
         <h3 id="timing-heading">What should Jules do?</h3>
         <div className={styles.compactChoices} role="radiogroup" aria-label={moment.label}>
-          {moment.choices.map((item) => (
+          {orderedChoices.map(({ value: item }) => (
             <button
               aria-checked={answer === item.id}
+              data-result={
+                answer === item.id
+                  ? answer === moment.preferred
+                    ? "correct"
+                    : "incorrect"
+                  : undefined
+              }
               key={item.id}
               onClick={() => setAnswer(item.id)}
               role="radio"
@@ -323,10 +351,12 @@ function TimingDecision() {
           ))}
         </div>
         {choice ? (
-          <p aria-live="polite" className={styles.inlineFeedback}>
-            <strong>
-              {answer === moment.preferred ? "This leaves room." : "This adds pressure."}
-            </strong>{" "}
+          <p
+            aria-live="polite"
+            className={styles.inlineFeedback}
+            data-result={answer === moment.preferred ? "correct" : "incorrect"}
+          >
+            <strong>{answer === moment.preferred ? "Correct." : "Incorrect."}</strong>
             {choice.feedback}
           </p>
         ) : null}
@@ -429,6 +459,18 @@ function ReplyBuilder() {
   const followupCopy = interaction.followups.find((item) => item.id === followup)?.copy;
   const preferred =
     opening === interaction.preferred.opening && followup === interaction.preferred.followup;
+  const orderedOpenings = orderCaregiverChoices(
+    interaction.openings,
+    "module-1-reply-opening",
+    0,
+    interaction.openings.findIndex((item) => item.id === interaction.preferred.opening),
+  );
+  const orderedFollowups = orderCaregiverChoices(
+    interaction.followups,
+    "module-1-reply-followup",
+    1,
+    interaction.followups.findIndex((item) => item.id === interaction.preferred.followup),
+  );
 
   return (
     <section className={styles.replyBuilder} aria-labelledby="reply-heading">
@@ -438,9 +480,16 @@ function ReplyBuilder() {
       <div className={styles.replyControls}>
         <fieldset>
           <legend>Start with</legend>
-          {interaction.openings.map((item) => (
+          {orderedOpenings.map(({ value: item }) => (
             <button
               aria-pressed={opening === item.id}
+              data-result={
+                opening && followup && opening === item.id
+                  ? item.id === interaction.preferred.opening
+                    ? "correct"
+                    : "incorrect"
+                  : undefined
+              }
               key={item.id}
               onClick={() => setOpening(item.id)}
               type="button"
@@ -451,9 +500,16 @@ function ReplyBuilder() {
         </fieldset>
         <fieldset>
           <legend>Then</legend>
-          {interaction.followups.map((item) => (
+          {orderedFollowups.map(({ value: item }) => (
             <button
               aria-pressed={followup === item.id}
+              data-result={
+                opening && followup && followup === item.id
+                  ? item.id === interaction.preferred.followup
+                    ? "correct"
+                    : "incorrect"
+                  : undefined
+              }
               key={item.id}
               onClick={() => setFollowup(item.id)}
               type="button"
@@ -471,10 +527,9 @@ function ReplyBuilder() {
             : "Choose one opening and one follow-up."}
         </h3>
         {openingCopy && followupCopy ? (
-          <p>
-            {preferred
-              ? "This listens and leaves a choice."
-              : "This changes what the person asked for."}
+          <p className={styles.inlineFeedback} data-result={preferred ? "correct" : "incorrect"}>
+            <strong>{preferred ? "Correct." : "Incorrect."}</strong>
+            {preferred ? "This listens and leaves a choice." : "This changes the request."}
           </p>
         ) : null}
       </div>
@@ -538,13 +593,23 @@ const steadyChoices = {
 function SteadySupportChoice() {
   const [choice, setChoice] = useState<keyof typeof steadyChoices | null>(null);
   const detail = choice ? steadyChoices[choice] : null;
+  const steadyChoiceKeys = Object.keys(steadyChoices) as Array<keyof typeof steadyChoices>;
+  const orderedChoices = orderCaregiverChoices(
+    steadyChoiceKeys,
+    "module-1-steady-support",
+    0,
+    steadyChoiceKeys.findIndex((key) => steadyChoices[key].preferred),
+  );
 
   return (
     <section className={styles.steadySupport} aria-labelledby="steady-heading">
       <div className={styles.steadyChoices} role="radiogroup" aria-label="Choose the next action">
-        {(Object.keys(steadyChoices) as Array<keyof typeof steadyChoices>).map((key) => (
+        {orderedChoices.map(({ value: key }) => (
           <button
             aria-checked={choice === key}
+            data-result={
+              choice === key ? (steadyChoices[key].preferred ? "correct" : "incorrect") : undefined
+            }
             key={key}
             onClick={() => setChoice(key)}
             role="radio"
@@ -563,7 +628,17 @@ function SteadySupportChoice() {
               : "Concern becomes pressure"
             : "Choose an action"}
         </h3>
-        {detail ? <p>{detail.result}</p> : <p>Compare what each action asks from Mira.</p>}
+        {detail ? (
+          <p
+            className={styles.inlineFeedback}
+            data-result={detail.preferred ? "correct" : "incorrect"}
+          >
+            <strong>{detail.preferred ? "Correct." : "Incorrect."}</strong>
+            {detail.result}
+          </p>
+        ) : (
+          <p>Compare what each action asks from Mira.</p>
+        )}
       </div>
     </section>
   );
@@ -576,6 +651,13 @@ function QuickCheck() {
   const { setKeyIdeaUnderstood } = useCaregiverSession();
   const question = questions[index]!;
   const answer = answers[question.id];
+  const correct = answer === question.preferredIndex;
+  const orderedChoices = orderCaregiverChoices(
+    question.choices,
+    "module-1-quick-check",
+    index,
+    question.preferredIndex,
+  );
 
   function choose(choiceIndex: number) {
     const next = { ...answers, [question.id]: choiceIndex };
@@ -599,9 +681,10 @@ function QuickCheck() {
       </div>
       <h3 id="check-heading">{question.question}</h3>
       <div className={styles.checkChoices} role="radiogroup" aria-label="Choose an answer">
-        {question.choices.map((choice, choiceIndex) => (
+        {orderedChoices.map(({ originalIndex: choiceIndex, value: choice }) => (
           <button
             aria-checked={answer === choiceIndex}
+            data-result={answer === choiceIndex ? (correct ? "correct" : "incorrect") : undefined}
             key={choice}
             onClick={() => choose(choiceIndex)}
             role="radio"
@@ -612,10 +695,12 @@ function QuickCheck() {
         ))}
       </div>
       {answer !== undefined ? (
-        <p aria-live="polite" className={styles.inlineFeedback}>
-          <strong>
-            {answer === question.preferredIndex ? "Yes." : "Try the option with fewer assumptions."}
-          </strong>{" "}
+        <p
+          aria-live="polite"
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {question.explanation}
         </p>
       ) : null}

@@ -371,6 +371,8 @@ test("milestone delivery survives navigation and transient action failures", () 
   assert.match(notice, /usePathname/);
   assert.match(notice, /SYNC_INTERVAL_MS/);
   assert.match(client, /return false/);
+  assert.match(client, /if \(!serverActionsAvailable\) return Promise\.resolve\(false\)/);
+  assert.match(client, /serverActionsAvailable = false/);
   assert.match(notice, /serverActionsAvailableRef/);
   assert.match(notice, /if \(!actionsAvailable\)/);
 });

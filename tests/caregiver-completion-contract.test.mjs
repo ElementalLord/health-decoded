@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  applyCaregiverInteractionSubmission,
   applyUrgentInterruption,
   deriveCaregiverModuleState,
   deriveCaregiverSectionState,
@@ -52,6 +53,19 @@ test("revisit preserves completion and urgent interruption changes no progress",
 
   assert.equal(deriveCaregiverModuleState(revisit), "revisit");
   assert.equal(applyUrgentInterruption(revisit), revisit);
+});
+
+test("repeated interaction submissions preserve the existing progress object", () => {
+  const progress = {
+    moduleId: "CG-M4",
+    state: "inProgress",
+    ...completeInputs,
+    keyIdeaUnderstood: null,
+    lastSectionId: "CG-M4-S08",
+  };
+
+  assert.equal(applyCaregiverInteractionSubmission(progress, "CG-M4-I02"), progress);
+  assert.equal(applyCaregiverInteractionSubmission(progress, "CG-M4-I05"), progress);
 });
 
 test("section completion requires all modules and one saved category, never tools", () => {

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { caregiverModule4 } from "../../../content/caregiver-module-4";
 import { caregiverModuleRegistry } from "../../../content/caregiver-module-registry";
+import { orderCaregiverChoices } from "../../../lib/caregiver-choice-order";
 import { isCaregiverModuleComplete } from "../../../lib/caregiver-completion";
 import { useCaregiverSession } from "../../../state/caregiver-session-provider";
 import styles from "../../../styles/caregiver-module-1-story.module.css";
@@ -168,6 +169,15 @@ function ContextOrganizer() {
   const currentReviewed = Boolean(reviewed[choice.id]);
   const correct = answer === choice.preferred;
   const assisted = (attempts[choice.id] ?? 0) >= 3 && !correct;
+  const orderedAnswers = orderCaregiverChoices(
+    [
+      { label: "Include", value: true },
+      { label: "Leave out", value: false },
+    ] as const,
+    "module-4-context",
+    index,
+    choice.preferred ? 0 : 1,
+  );
   const summary = interaction.choices
     .filter((item) => item.preferred && reviewed[item.id] && answers[item.id])
     .map((item) => item.copy);
@@ -182,7 +192,7 @@ function ContextOrganizer() {
   }
 
   const feedback =
-    choice.id === "diagnosis"
+    choice.id === "diagnosis" || choice.id === "sat-cause"
       ? interaction.feedback.diagnosis
       : choice.id === "judgment"
         ? interaction.feedback.judgment
@@ -213,34 +223,35 @@ function ContextOrganizer() {
         role="radiogroup"
         aria-label="Use in the factual summary"
       >
-        <button
-          aria-checked={answer === true}
-          onClick={() => {
-            setAnswers((current) => ({ ...current, [choice.id]: true }));
-            setReviewed((current) => ({ ...current, [choice.id]: false }));
-          }}
-          role="radio"
-          type="button"
-        >
-          Include
-        </button>
-        <button
-          aria-checked={answer === false}
-          onClick={() => {
-            setAnswers((current) => ({ ...current, [choice.id]: false }));
-            setReviewed((current) => ({ ...current, [choice.id]: false }));
-          }}
-          role="radio"
-          type="button"
-        >
-          Leave out
-        </button>
+        {orderedAnswers.map(({ value: option }) => (
+          <button
+            aria-checked={answer === option.value}
+            data-result={
+              currentReviewed && answer === option.value
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
+            key={option.label}
+            onClick={() => {
+              setAnswers((current) => ({ ...current, [choice.id]: option.value }));
+              setReviewed((current) => ({ ...current, [choice.id]: false }));
+            }}
+            role="radio"
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This keeps the summary factual. " : "This changes fact into conclusion. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {feedback}
           {assisted
             ? ` Suggested choice: ${choice.preferred ? "Include" : "Leave out"}. Your choice has been kept.`
@@ -367,6 +378,12 @@ function SourceMatching({ onComplete }: { readonly onComplete: () => void }) {
   const currentReviewed = Boolean(reviewed[need.id]);
   const correct = answer === need.preferred;
   const assisted = (attempts[need.id] ?? 0) >= 3 && !correct;
+  const orderedLayers = orderCaregiverChoices(
+    interaction.layers,
+    "module-4-source-matching",
+    index,
+    need.preferred,
+  );
 
   function review() {
     if (answer === undefined) return;
@@ -400,9 +417,16 @@ function SourceMatching({ onComplete }: { readonly onComplete: () => void }) {
       </div>
       <h3>{need.copy}</h3>
       <div className={styles.compactChoices} role="radiogroup" aria-label="Guidance source">
-        {interaction.layers.map((layer, layerIndex) => (
+        {orderedLayers.map(({ originalIndex: layerIndex, value: layer }) => (
           <button
             aria-checked={answer === layerIndex}
+            data-result={
+              currentReviewed && answer === layerIndex
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={layer}
             onClick={() => {
               setAnswers((current) => ({ ...current, [need.id]: layerIndex }));
@@ -417,10 +441,12 @@ function SourceMatching({ onComplete }: { readonly onComplete: () => void }) {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This source fits the need. " : "Use the source with the right authority. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {interaction.feedback[need.kind]}
           {assisted
             ? ` Suggested source: ${interaction.layers[need.preferred]}. Your choice has been kept.`
@@ -566,6 +592,15 @@ function HandoffPractice() {
   const currentReviewed = Boolean(reviewed[item.id]);
   const correct = answer === item.include;
   const assisted = (attempts[item.id] ?? 0) >= 3 && !correct;
+  const orderedAnswers = orderCaregiverChoices(
+    [
+      { label: "Include in opening", value: true },
+      { label: "Leave out", value: false },
+    ] as const,
+    "module-4-handoff",
+    index,
+    item.include ? 0 : 1,
+  );
   const opening = interaction.items
     .filter((entry) => entry.include && reviewed[entry.id] && answers[entry.id])
     .map((entry) => entry.copy);
@@ -580,11 +615,13 @@ function HandoffPractice() {
   }
 
   const feedback =
-    item.id === "cause"
-      ? interaction.feedback.cause
-      : item.id === "search"
-        ? interaction.feedback.search
-        : interaction.feedback.preferred;
+    item.id === "history"
+      ? interaction.feedback.history
+      : item.id === "cause"
+        ? interaction.feedback.cause
+        : item.id === "search"
+          ? interaction.feedback.search
+          : interaction.feedback.preferred;
   return (
     <section
       className={styles.sorter}
@@ -606,34 +643,35 @@ function HandoffPractice() {
       </div>
       <h3>{item.copy}</h3>
       <div className={styles.compactChoices} role="radiogroup" aria-label="Use in the opening">
-        <button
-          aria-checked={answer === true}
-          onClick={() => {
-            setAnswers((current) => ({ ...current, [item.id]: true }));
-            setReviewed((current) => ({ ...current, [item.id]: false }));
-          }}
-          role="radio"
-          type="button"
-        >
-          Include in opening
-        </button>
-        <button
-          aria-checked={answer === false}
-          onClick={() => {
-            setAnswers((current) => ({ ...current, [item.id]: false }));
-            setReviewed((current) => ({ ...current, [item.id]: false }));
-          }}
-          role="radio"
-          type="button"
-        >
-          Leave out
-        </button>
+        {orderedAnswers.map(({ value: option }) => (
+          <button
+            aria-checked={answer === option.value}
+            data-result={
+              currentReviewed && answer === option.value
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
+            key={option.label}
+            onClick={() => {
+              setAnswers((current) => ({ ...current, [item.id]: option.value }));
+              setReviewed((current) => ({ ...current, [item.id]: false }));
+            }}
+            role="radio"
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct ? "This keeps the opening useful. " : "Keep the first handoff factual. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {feedback}
           {assisted
             ? ` Suggested choice: ${item.include ? "Include in opening" : "Leave out"}. Your choice has been kept.`
@@ -723,6 +761,15 @@ function ImprovisationPractice() {
   const currentReviewed = Boolean(reviewed[action.id]);
   const correct = answer === action.unsafe;
   const assisted = (attempts[action.id] ?? 0) >= 3 && !correct;
+  const orderedAnswers = orderCaregiverChoices(
+    [
+      { label: "Do not invent this", value: true },
+      { label: "Appropriate next layer", value: false },
+    ] as const,
+    "module-4-improvisation",
+    index,
+    action.unsafe ? 0 : 1,
+  );
 
   function review() {
     if (answer === undefined) return;
@@ -754,36 +801,35 @@ function ImprovisationPractice() {
       </div>
       <h3>{action.copy}</h3>
       <div className={styles.compactChoices} role="radiogroup" aria-label="Classify the action">
-        <button
-          aria-checked={answer === true}
-          onClick={() => {
-            setAnswers((current) => ({ ...current, [action.id]: true }));
-            setReviewed((current) => ({ ...current, [action.id]: false }));
-          }}
-          role="radio"
-          type="button"
-        >
-          Do not invent this
-        </button>
-        <button
-          aria-checked={answer === false}
-          onClick={() => {
-            setAnswers((current) => ({ ...current, [action.id]: false }));
-            setReviewed((current) => ({ ...current, [action.id]: false }));
-          }}
-          role="radio"
-          type="button"
-        >
-          Appropriate next layer
-        </button>
+        {orderedAnswers.map(({ value: option }) => (
+          <button
+            aria-checked={answer === option.value}
+            data-result={
+              currentReviewed && answer === option.value
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
+            key={option.label}
+            onClick={() => {
+              setAnswers((current) => ({ ...current, [action.id]: option.value }));
+              setReviewed((current) => ({ ...current, [action.id]: false }));
+            }}
+            role="radio"
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct
-              ? "You kept authority in the right place. "
-              : "Check who has authority for this action. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {action.feedback}
           {assisted
             ? ` Suggested choice: ${action.unsafe ? "Do not invent this" : "Appropriate next layer"}. Your choice has been kept.`
@@ -892,6 +938,12 @@ function QuickCheck() {
   const currentReviewed = Boolean(reviewed[question.id]);
   const correct = answer === question.preferredIndex;
   const assisted = (attempts[question.id] ?? 0) >= 3 && !correct;
+  const orderedChoices = orderCaregiverChoices(
+    question.choices,
+    "module-4-quick-check",
+    index,
+    question.preferredIndex,
+  );
 
   function review() {
     if (answer === undefined) return;
@@ -919,9 +971,16 @@ function QuickCheck() {
       </div>
       <h3>{question.question}</h3>
       <div className={styles.checkChoices} role="radiogroup" aria-label="Answer choices">
-        {question.choices.map((choice, choiceIndex) => (
+        {orderedChoices.map(({ originalIndex: choiceIndex, value: choice }) => (
           <button
             aria-checked={answer === choiceIndex}
+            data-result={
+              currentReviewed && answer === choiceIndex
+                ? correct
+                  ? "correct"
+                  : "incorrect"
+                : undefined
+            }
             key={choice}
             onClick={() => {
               setAnswers((current) => ({ ...current, [question.id]: choiceIndex }));
@@ -935,12 +994,12 @@ function QuickCheck() {
         ))}
       </div>
       {currentReviewed ? (
-        <p className={styles.inlineFeedback} role="status">
-          <strong>
-            {correct
-              ? "This uses the right safety layer. "
-              : "Review which source has authority here. "}
-          </strong>
+        <p
+          className={styles.inlineFeedback}
+          data-result={correct ? "correct" : "incorrect"}
+          role="status"
+        >
+          <strong>{correct ? "Correct." : "Incorrect."}</strong>
           {question.explanation}
           {assisted
             ? ` Suggested answer: ${question.choices[question.preferredIndex]}. Your choice has been kept.`
