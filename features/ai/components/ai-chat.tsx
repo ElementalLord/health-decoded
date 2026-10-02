@@ -13,6 +13,7 @@ import {
   AI_SUGGESTED_QUESTION_BANK,
   selectSuggestedQuestions,
 } from "@/features/ai/data/suggested-questions";
+import { diabetesKnowledgeFor } from "@/features/ai/data/diabetes-knowledge";
 import {
   AI_MAX_CONVERSATION_MESSAGES,
   AI_MAX_MESSAGE_CHARACTERS,
@@ -134,9 +135,11 @@ function readStreamEvents(chunk: string, onEvent: (event: unknown) => void) {
 }
 
 export function AiChat({
+  demo = false,
   suggestionShuffleKey = 0,
   variant = "page",
 }: {
+  demo?: boolean;
   suggestionShuffleKey?: number;
   variant?: "drawer" | "page";
 }) {
@@ -271,6 +274,33 @@ export function AiChat({
 
   async function ask(question: string, regenerate = false) {
     if (isStreaming || requestInFlightRef.current || !question.trim()) return;
+
+    if (demo) {
+      const knowledge = diabetesKnowledgeFor(question, lastQuestion ?? undefined);
+      const primary = knowledge[0];
+      const userMessage = createMessage("user", question);
+      const assistantMessage: ChatMessage = {
+        ...createMessage("assistant"),
+        content:
+          primary?.summary ??
+          "I can explain general Type 2 diabetes topics such as insulin, A1C, food, movement, medicines, monitoring, and appointment preparation. Try asking about one of those topics.",
+        credibleSources: knowledge.slice(0, 3).map(({ href, organization, title }) => ({
+          href,
+          organization,
+          title,
+        })),
+        suggestedQuestions: ["What does A1C measure?", "What is insulin resistance?"],
+      };
+      setLastQuestion(question);
+      setMessages((current) =>
+        regenerate
+          ? [...historyBeforeRegeneration(current, question), userMessage, assistantMessage]
+          : [...current, userMessage, assistantMessage],
+      );
+      setMessage("");
+      setError(null);
+      return;
+    }
 
     const controller = new AbortController();
     requestInFlightRef.current = true;

@@ -1,0 +1,1369 @@
+.demoLanding,
+.explorePage,
+.presenterPage {
+  min-height: 100dvh;
+  background: #f8f4ed;
+  color: #382c26;
+}
+
+.demoHeader {
+  align-items: center;
+  border-bottom: 1px solid #ddd2c5;
+  display: flex;
+  justify-content: space-between;
+  min-height: 4.75rem;
+  padding: 0.75rem clamp(1.25rem, 4vw, 3.5rem);
+}
+
+.demoHeader > a {
+  align-items: center;
+  color: inherit;
+  display: inline-flex;
+  font-size: 1.25rem;
+  font-weight: 650;
+  gap: 0.65rem;
+  text-decoration: none;
+}
+
+.demoHeader > a svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.demoHeader > p,
+.demoHeader > div {
+  align-items: center;
+  color: #786b62;
+  display: flex;
+  font-size: 0.68rem;
+  font-weight: 750;
+  gap: 0.45rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.demoHeader > div svg {
+  height: 0.9rem;
+  width: 0.9rem;
+}
+
+.demoLandingHero {
+  align-items: center;
+  display: grid;
+  gap: clamp(3rem, 7vw, 7rem);
+  grid-template-columns: 1.05fr 0.95fr;
+  margin: 0 auto;
+  max-width: 90rem;
+  min-height: calc(100dvh - 12rem);
+  padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 4vw, 3.5rem);
+}
+
+.demoLandingHero h1 {
+  font-size: clamp(3.25rem, 7vw, 6.5rem);
+  font-weight: 450;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  margin-top: 1rem;
+  max-width: 10ch;
+  text-wrap: balance;
+}
+
+.demoLandingHero > div > p:last-of-type {
+  color: #786b62;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  margin-top: 1.5rem;
+  max-width: 40rem;
+}
+
+.demoLandingHero figure {
+  margin: 0 auto;
+  max-width: 36rem;
+}
+
+.demoLandingHero figcaption {
+  color: #786b62;
+  font-size: 0.67rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  margin-top: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.demoLandingActions,
+.finalActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.appButton,
+.appSecondaryButton,
+.appTextButton {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  gap: 0.5rem;
+  justify-content: center;
+  min-height: 2.85rem;
+  text-decoration: none;
+  transition:
+    background-color 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    border-color 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    color 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.appButton {
+  background: #3d2f29;
+  border: 1px solid #3d2f29;
+  border-radius: 9px;
+  box-shadow: 0 3px 0 #211814;
+  color: #fffaf3;
+  padding: 0.72rem 1rem;
+}
+
+.appSecondaryButton {
+  background: #fffaf3;
+  border: 1px solid #dcd2c5;
+  border-radius: 9px;
+  color: #382c26;
+  padding: 0.72rem 1rem;
+}
+
+.appTextButton {
+  background: transparent;
+  border: 0;
+  color: #3d2f29;
+  padding: 0.65rem 0;
+  text-decoration: underline;
+  text-decoration-color: rgb(185 108 85 / 0.45);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+
+.appButton svg,
+.appSecondaryButton svg,
+.appTextButton svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.appButton:active,
+.appSecondaryButton:active,
+.appTextButton:active {
+  transform: scale(0.98);
+}
+
+.demoLandingFooter {
+  align-items: center;
+  border-top: 1px solid #ddd2c5;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 83rem;
+  padding: 1.5rem;
+}
+
+.demoLandingFooter > p {
+  color: #786b62;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  max-width: 40rem;
+}
+
+.qrCard,
+.qrCompact {
+  align-items: center;
+  display: flex;
+  gap: 0.85rem;
+}
+
+.qrCard {
+  border: 1px solid #ddd2c5;
+  padding: 1rem;
+}
+
+.qrFrame {
+  background: #fffaf3;
+  border: 1px solid #ddd2c5;
+  display: grid;
+  place-items: center;
+}
+
+.qrCard > div:last-child,
+.qrCompact > div:last-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.qrCard strong,
+.qrCompact strong {
+  font-size: 0.78rem;
+}
+
+.qrCard span,
+.qrCompact span {
+  color: #786b62;
+  font-size: 0.68rem;
+}
+
+/* The public explore page is a shell around real product components. */
+.explorePage {
+  min-width: 0;
+}
+
+.explorePage .productTabs {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.productDemo {
+  min-width: 0;
+}
+
+.productTabs {
+  align-items: stretch;
+  background: #f8f4ed;
+  border-bottom: 1px solid #ddd2c5;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding: 0 clamp(1rem, 4vw, 3.5rem);
+  scrollbar-width: thin;
+}
+
+.productTabs button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: #786b62;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 650;
+  gap: 0.45rem;
+  min-height: 3.65rem;
+  padding: 0 1rem;
+  transition:
+    background-color 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    color 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.productTabs button[aria-current="page"] {
+  background: rgb(255 250 243 / 0.72);
+  border-bottom-color: #b96c55;
+  color: #382c26;
+}
+
+.productTabs button:active {
+  transform: scale(0.97);
+}
+
+.productTabs svg {
+  height: 0.95rem;
+  width: 0.95rem;
+}
+
+.demoNotice {
+  background: #e5ece4;
+  border-bottom: 1px solid #c6d5c8;
+  color: #425b49;
+  font-size: 0.75rem;
+  padding: 0.65rem clamp(1rem, 4vw, 3.5rem);
+}
+
+.productPanel {
+  background: #f8f4ed;
+  margin: 0 auto;
+  max-width: 90rem;
+  min-height: calc(100dvh - 8.5rem);
+  overflow: hidden;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 3.5rem) 5rem;
+}
+
+.productDemo[data-compact] {
+  border: 1px solid #ddd2c5;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.productDemo[data-compact] .productTabs {
+  padding: 0 0.5rem;
+}
+
+.productDemo[data-compact] .productTabs button {
+  font-size: 0.72rem;
+  min-height: 3rem;
+  padding: 0 0.75rem;
+}
+
+.compactToolbar {
+  align-items: center;
+  background: #eee7dc;
+  border-bottom: 1px solid #ddd2c5;
+  color: #786b62;
+  display: flex;
+  font-size: 0.68rem;
+  font-weight: 650;
+  justify-content: space-between;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.9rem;
+}
+
+.compactToolbar a {
+  color: #382c26;
+  text-decoration-color: rgb(185 108 85 / 0.5);
+  text-underline-offset: 3px;
+}
+
+.productDemo[data-compact] .productPanel {
+  height: clamp(24rem, 56vh, 34rem);
+  max-width: none;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 1rem clamp(1rem, 2.5vw, 2rem) 2.5rem;
+  scrollbar-gutter: stable;
+}
+
+.productDemo[data-compact] .productPanel h1 {
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  line-height: 1;
+}
+
+.productDemo[data-compact] .productPanel[data-feature="myth"] > main {
+  padding-top: 1.25rem;
+}
+
+.productDemo[data-compact] :global(.app-page-container).productPanel::before,
+:global(.app-page-container).actualMythCheck::before {
+  background-position: center top;
+  background-size: cover;
+  width: 100%;
+}
+
+.reusedJourney {
+  margin: 0 auto;
+  max-width: 68rem;
+}
+
+.reusedJourneyNext {
+  align-items: center;
+  border-bottom: 1px solid #dcd2c5;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1.35fr 0.65fr;
+  padding: 2rem 0;
+}
+
+.reusedJourneyNext h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  margin-top: 0.5rem;
+}
+
+.reusedJourneyNext p:last-child {
+  color: #786b62;
+  margin-top: 0.5rem;
+}
+
+.reusedJourneyNext svg {
+  margin-left: auto;
+  max-height: 13rem;
+}
+
+.productDemo[data-compact] .reusedJourney > header {
+  padding-bottom: 1rem;
+}
+
+.productDemo[data-compact] .reusedJourney > header > * + * {
+  margin-top: 0.65rem;
+}
+
+.productDemo[data-compact] .reusedJourney > header h1 {
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  line-height: 1;
+}
+
+.productDemo[data-compact] .reusedJourney > header > p:last-child {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.productDemo[data-compact] .reusedJourneyNext {
+  padding: 1.25rem 0;
+}
+
+.productDemo[data-compact] .reusedJourneyNext h2 {
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+}
+
+.productDemo[data-compact] .reusedJourneyNext svg {
+  max-height: 9rem;
+}
+
+.productDemo[data-compact] .reusedJourney > section:last-child {
+  padding-block: 1.5rem;
+}
+
+.productDemo[data-compact] .reusedAi > header {
+  display: none;
+}
+
+.reusedAi,
+.reusedProgress {
+  margin: 0 auto;
+  max-width: 68rem;
+}
+
+.reusedAi > header,
+.reusedProgress > header {
+  border-bottom: 1px solid #dcd2c5;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+}
+
+.reusedAi > header h1,
+.reusedProgress > header h1 {
+  font-size: clamp(2.5rem, 6vw, 4.75rem);
+  font-weight: 450;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-top: 0.5rem;
+}
+
+.reusedAi > header > p:last-child,
+.reusedProgress > header > p:last-child {
+  color: #786b62;
+  margin-top: 0.75rem;
+}
+
+.demoLoading {
+  color: #786b62;
+  padding: 3rem;
+  text-align: center;
+}
+
+/* Presenter shell */
+.presenterPage {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.presenterHeader {
+  align-items: center;
+  background: rgb(248 244 237 / 0.98);
+  border-bottom: 1px solid #ddd2c5;
+  display: flex;
+  justify-content: space-between;
+  min-height: 4.25rem;
+  padding: 0.55rem clamp(1rem, 3vw, 2.5rem);
+  position: relative;
+  z-index: 10;
+}
+
+.presenterHeader > a {
+  color: inherit;
+  display: grid;
+  text-decoration: none;
+}
+
+.presenterHeader > a span {
+  font-size: 1.15rem;
+  font-weight: 650;
+}
+
+.presenterHeader > a small {
+  color: #786b62;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.presenterHeader > div {
+  align-items: center;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.presenterHeader > div > button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid #dcd2c5;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 0.4rem;
+  height: 2.5rem;
+  justify-content: center;
+  min-width: 3.5rem;
+}
+
+.presenterHeader svg {
+  height: 0.9rem;
+  width: 0.9rem;
+}
+
+.presenterHeader kbd,
+.presenterMenu kbd {
+  background: #eee7dc;
+  border: 1px solid #dcd2c5;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.25rem;
+}
+
+.sceneCount {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer {
+  align-items: center;
+  border: 1px solid #dcd2c5;
+  border-radius: 999px;
+  color: #786b62;
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  gap: 0.35rem;
+  padding: 0.4rem 0.65rem;
+}
+
+.timer[data-level="notice"] {
+  background: #f2ebd9;
+  color: #735b2b;
+}
+
+.timer[data-level="warn"] {
+  background: #f2e4d7;
+  color: #89543d;
+}
+
+.timer[data-level="late"] {
+  background: #eedbd7;
+  color: #8a4038;
+  font-size: 0.8rem;
+}
+
+.presenterViewport {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.pitchScene {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vh, 1.75rem);
+  margin: 0 auto;
+  max-width: 90rem;
+  min-height: 100%;
+  padding: clamp(1.75rem, 4vh, 3.25rem) clamp(1.25rem, 4vw, 3.5rem) 2.5rem;
+}
+
+.pitchHeading {
+  border-bottom: 1px solid #dcd2c5;
+  padding-bottom: 1.25rem;
+}
+
+.pitchHeading h1 {
+  font-size: clamp(2.6rem, 5vw, 5rem);
+  font-weight: 450;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+  margin-top: 0.55rem;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+
+.productScene,
+.condensedScene {
+  gap: clamp(0.8rem, 1.8vh, 1.2rem);
+  padding-top: clamp(1.25rem, 2.5vh, 2rem);
+}
+
+.productScene .pitchHeading,
+.condensedScene .pitchHeading {
+  padding-bottom: 0.8rem;
+}
+
+.productScene .pitchHeading h1,
+.condensedScene .pitchHeading h1 {
+  font-size: clamp(2.4rem, 4vw, 4rem);
+}
+
+.productScene .sceneIntro {
+  line-height: 1.5;
+  margin-top: 0;
+}
+
+.openingScene {
+  align-items: center;
+  display: grid;
+  gap: clamp(3rem, 7vw, 7rem);
+  grid-template-columns: 1.05fr 0.95fr;
+}
+
+.openingCopy > h1 {
+  font-size: clamp(3.75rem, 7.5vw, 7rem);
+  font-weight: 450;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  margin-top: 0.65rem;
+}
+
+.openingTagline {
+  color: #786b62;
+  font-size: 1.05rem;
+  margin-top: 0.75rem;
+}
+
+.openingThought {
+  border-block: 1px solid #dcd2c5;
+  margin-top: 2rem;
+  padding: 1.25rem 0;
+}
+
+.openingThought p {
+  font-size: clamp(1.65rem, 3vw, 2.75rem);
+  line-height: 1.1;
+}
+
+.openingThought p:last-child {
+  color: #b96c55;
+}
+
+.openingSupport,
+.sceneIntro {
+  color: #786b62;
+  line-height: 1.65;
+  margin-top: 1.25rem;
+  max-width: 42rem;
+}
+
+.openingCopy .appButton {
+  margin-top: 1.5rem;
+}
+
+.openingArtwork {
+  margin: 0 auto;
+  max-width: 35rem;
+}
+
+.openingArtwork figcaption {
+  color: #786b62;
+  font-size: 0.65rem;
+  font-weight: 750;
+  letter-spacing: 0.15em;
+  margin-top: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.problemScene {
+  align-items: start;
+  display: grid;
+  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+.problemAnimation {
+  min-width: 0;
+}
+
+.problemList {
+  border-top: 1px solid #dcd2c5;
+}
+
+.problemList > div {
+  display: grid;
+  gap: 0.4rem 0.9rem;
+  grid-template-columns: 2rem 1fr;
+  padding: 1rem 0;
+  border-bottom: 1px solid #dcd2c5;
+}
+
+.problemList span {
+  color: #b96c55;
+  font-family: var(--font-serif);
+}
+
+.problemList h2 {
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+  font-weight: 550;
+  line-height: 1.1;
+}
+
+.problemList p {
+  color: #786b62;
+  font-size: 0.8rem;
+  grid-column: 2;
+  line-height: 1.55;
+}
+
+.sceneFoot {
+  align-items: end;
+  border-top: 1px solid #dcd2c5;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.sceneFoot > p {
+  color: #786b62;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  max-width: 52rem;
+}
+
+.sceneFoot > p strong,
+.sceneFoot > p span {
+  display: block;
+}
+
+.productContextBar {
+  align-items: center;
+  border-bottom: 1px solid #dcd2c5;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+}
+
+.productContextBar p {
+  color: #786b62;
+  font-size: 0.76rem;
+}
+
+.mythScene {
+  gap: 0.75rem;
+  padding-top: 1rem;
+}
+
+.actualMythCheck {
+  margin: 0 auto;
+  max-width: 74rem;
+  overflow: hidden;
+  width: 100%;
+}
+
+.marketLead {
+  border-block: 1px solid #dcd2c5;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.marketLead p {
+  color: #786b62;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  padding: 1rem;
+}
+
+.marketLead p + p {
+  border-left: 1px solid #dcd2c5;
+}
+
+.marketLead strong {
+  color: #382c26;
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+}
+
+.marketTable {
+  border-top: 1px solid #dcd2c5;
+}
+
+.marketTable > div {
+  align-items: center;
+  border-bottom: 1px solid #dcd2c5;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 0.8fr 1.5fr 0.7fr;
+  min-height: 3.25rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.marketTable > div:first-child {
+  color: #786b62;
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.marketTable > div:not(:first-child) span {
+  color: #786b62;
+  font-size: 0.78rem;
+}
+
+.marketTable > div[data-highlight] {
+  background: #e5ece4;
+}
+
+.marketQuote {
+  color: #b96c55;
+  font-size: clamp(1.65rem, 3vw, 2.75rem);
+  line-height: 1.15;
+  margin: auto 0 0 auto;
+  max-width: 31ch;
+  text-align: right;
+}
+
+.missionColumns {
+  border-block: 1px solid #dcd2c5;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.missionColumns section {
+  padding: 1.25rem;
+}
+
+.missionColumns section > span {
+  color: #b96c55;
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+}
+
+.missionColumns section + section {
+  border-left: 1px solid #dcd2c5;
+}
+
+.missionColumns h2 {
+  font-size: clamp(1.35rem, 2.3vw, 2.1rem);
+  font-weight: 520;
+  line-height: 1.2;
+  margin-top: 0.65rem;
+}
+
+.missionColumns section > p {
+  color: #786b62;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin-top: 0.55rem;
+}
+
+.decisionList {
+  border-bottom: 1px solid #dcd2c5;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-bottom: 1rem;
+}
+
+.decisionList > p {
+  grid-column: 1 / -1;
+  margin-bottom: 0.4rem;
+}
+
+.decisionList > div {
+  align-items: start;
+  border-top: 1px solid #dcd2c5;
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: auto minmax(11rem, 0.7fr) 1fr;
+  padding: 0.7rem 0;
+}
+
+.decisionList > div:nth-of-type(odd) {
+  padding-right: 1.5rem;
+}
+
+.decisionList > div:nth-of-type(even) {
+  border-left: 1px solid #dcd2c5;
+  padding-left: 1.5rem;
+}
+
+.decisionList svg {
+  color: #6f947a;
+  height: 1rem;
+  margin-top: 0.1rem;
+  width: 1rem;
+}
+
+.decisionList strong {
+  font-size: 0.78rem;
+}
+
+.decisionList span {
+  color: #786b62;
+  font-size: 0.72rem;
+}
+
+.founderLine {
+  align-items: end;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: auto 1fr auto;
+  margin-top: auto;
+}
+
+.founderLine > div {
+  display: grid;
+}
+
+.founderLine > div strong {
+  font-size: 1.4rem;
+}
+
+.founderLine > div span,
+.founderLine > p {
+  color: #786b62;
+  font-size: 0.68rem;
+}
+
+.founderLine > p {
+  text-align: center;
+}
+
+.fitRows {
+  border-top: 1px solid #dcd2c5;
+}
+
+.fitRows > div {
+  align-items: center;
+  border-bottom: 1px solid #dcd2c5;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 3.25rem;
+  padding: 0.7rem 0;
+}
+
+.fitRows span {
+  color: #786b62;
+}
+
+.fitRows svg {
+  color: #b96c55;
+  height: 1rem;
+  width: 1rem;
+}
+
+.fitRows strong {
+  font-family: var(--font-serif);
+}
+
+.reflection {
+  border-block: 1px solid #dcd2c5;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  padding: 1.25rem 0;
+}
+
+.reflection h2 {
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  font-weight: 520;
+  line-height: 1.2;
+  margin-top: 0.5rem;
+}
+
+.reflection section > p:last-child {
+  color: #786b62;
+  margin-top: 0.4rem;
+}
+
+.reflection ol {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.reflection li {
+  border-bottom: 1px solid #dcd2c5;
+  color: #786b62;
+  padding-bottom: 0.5rem;
+}
+
+.reflection li strong {
+  color: #382c26;
+  display: inline-block;
+  min-width: 5rem;
+}
+
+.finalScene {
+  align-items: center;
+  display: grid;
+  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: minmax(15rem, 0.65fr) minmax(0, 1.15fr);
+  max-width: 76rem;
+}
+
+.finalScene > svg {
+  max-height: 29rem;
+}
+
+.finalScene h1 {
+  font-size: clamp(2.75rem, 4.5vw, 4.5rem);
+  font-weight: 450;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-top: 0.75rem;
+  max-width: 14ch;
+}
+
+.finalScene > div > p:not(.editorial-eyebrow) {
+  color: #786b62;
+  font-size: 1.05rem;
+  margin-top: 1rem;
+}
+
+.finalScene > div > strong {
+  color: #b96c55;
+  display: block;
+  font-size: 2.25rem;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+.finalScene .qrCompact {
+  border-top: 1px solid #dcd2c5;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+}
+
+.presenterFooter {
+  align-items: center;
+  background: rgb(248 244 237 / 0.98);
+  border-top: 1px solid #ddd2c5;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 3.5rem;
+  padding: 0.4rem clamp(1rem, 3vw, 2.5rem);
+}
+
+.presenterFooter button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: #382c26;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 700;
+  gap: 0.4rem;
+  min-height: 2.4rem;
+}
+
+.presenterFooter button:last-child {
+  justify-self: end;
+}
+
+.presenterFooter button:disabled {
+  opacity: 0.25;
+}
+
+.presenterFooter button svg {
+  height: 0.9rem;
+  width: 0.9rem;
+}
+
+.presenterFooter > span {
+  color: #786b62;
+  font-size: 0.6rem;
+  font-weight: 750;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.presenterMenuBackdrop {
+  background: rgb(56 44 38 / 0.35);
+  display: flex;
+  inset: 0;
+  justify-content: flex-end;
+  position: fixed;
+  z-index: 100;
+}
+
+.presenterMenu {
+  background: #fffaf3;
+  box-shadow: -22px 0 60px rgb(56 44 38 / 0.16);
+  height: 100%;
+  max-width: 24rem;
+  overflow: auto;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.presenterMenu > header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.presenterMenu > header button {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.presenterMenu > header svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.presenterMenu ol {
+  border-top: 1px solid #dcd2c5;
+  list-style: none;
+  margin: 1.25rem 0;
+}
+
+.presenterMenu ol button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #dcd2c5;
+  color: #382c26;
+  cursor: pointer;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: auto 1fr auto;
+  min-height: 3.5rem;
+  padding: 0.65rem 0.5rem;
+  text-align: left;
+  width: 100%;
+}
+
+.presenterMenu ol button[aria-current="step"] {
+  background: #e5ece4;
+}
+
+.presenterMenu ol button span {
+  color: #b96c55;
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+}
+
+.presenterMenu ol button strong {
+  font-size: 1rem;
+}
+
+.presenterMenu ol button svg {
+  height: 0.85rem;
+  width: 0.85rem;
+}
+
+.menuUtility {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: #382c26;
+  cursor: pointer;
+  display: grid;
+  font-size: 0.75rem;
+  font-weight: 700;
+  gap: 0.55rem;
+  grid-template-columns: auto 1fr auto;
+  min-height: 2.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.menuUtility svg {
+  height: 0.9rem;
+  width: 0.9rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .appButton:hover {
+    background: #4b3931;
+    transform: translateY(-1px);
+  }
+
+  .appSecondaryButton:hover {
+    border-color: #a99b8d;
+  }
+
+  .productTabs button:hover {
+    color: #382c26;
+  }
+}
+
+@media (max-width: 64rem) {
+  .demoLandingHero,
+  .openingScene,
+  .problemScene,
+  .finalScene {
+    grid-template-columns: 1fr;
+  }
+
+  .demoLandingHero figure,
+  .openingArtwork {
+    max-width: 28rem;
+  }
+
+  .marketLead,
+  .missionColumns {
+    grid-template-columns: 1fr;
+  }
+
+  .marketLead p + p,
+  .missionColumns section + section {
+    border-left: 0;
+    border-top: 1px solid #dcd2c5;
+  }
+
+  .founderLine {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  .founderLine > p {
+    text-align: left;
+  }
+}
+
+@media (max-width: 42rem) {
+  .demoHeader {
+    min-height: 4rem;
+    padding: 0.65rem 1rem;
+  }
+
+  .demoHeader > div span {
+    display: none;
+  }
+
+  .demoLandingHero {
+    gap: 2rem;
+    min-height: auto;
+    padding: 3rem 1rem;
+  }
+
+  .demoLandingHero h1 {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+  }
+
+  .demoLandingActions,
+  .finalActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .demoLandingFooter {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .demoLandingFooter .qrCompact {
+    width: 100%;
+  }
+
+  .productTabs {
+    padding: 0 0.35rem;
+  }
+
+  .productTabs button {
+    min-height: 3.4rem;
+    padding: 0 0.7rem;
+  }
+
+  .productPanel {
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  .reusedJourneyNext {
+    grid-template-columns: 1fr;
+  }
+
+  .reusedJourneyNext svg {
+    margin: 0 auto;
+  }
+
+  .presenterHeader {
+    min-height: 3.8rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .presenterHeader > div {
+    gap: 0.45rem;
+  }
+
+  .pitchScene {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .pitchHeading h1 {
+    font-size: clamp(2.6rem, 12vw, 4.2rem);
+  }
+
+  .openingCopy > h1 {
+    font-size: clamp(3.5rem, 16vw, 5rem);
+  }
+
+  .sceneFoot,
+  .productContextBar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .marketTable > div {
+    grid-template-columns: 0.8fr 1.2fr;
+  }
+
+  .marketTable > div > span:last-child {
+    display: none;
+  }
+
+  .decisionList,
+  .reflection {
+    grid-template-columns: 1fr;
+  }
+
+  .decisionList > div:nth-of-type(odd),
+  .decisionList > div:nth-of-type(even) {
+    border-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .fitRows > div {
+    gap: 0.5rem;
+    grid-template-columns: 1fr auto 1fr;
+    font-size: 0.78rem;
+  }
+
+  .finalScene .qrCompact {
+    justify-self: center;
+  }
+
+  .presenterFooter {
+    padding: 0.35rem 0.75rem calc(0.35rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .appButton,
+  .appSecondaryButton,
+  .appTextButton {
+    transition-duration: 0ms;
+  }
+}
