@@ -18,7 +18,12 @@ import {
 } from "../lib/caregiver-completion";
 import type { CaregiverModuleProgress } from "../types/caregiver-progress";
 import type { CaregiverSessionState } from "../types/caregiver-session";
-import type { CaregiverModuleId, CaregiverModuleReflectionId } from "../content/caregiver-ids";
+import {
+  caregiverSessionConfiguration,
+  type CaregiverModuleId,
+  type CaregiverModuleReflectionId,
+  type CaregiverModuleSectionId,
+} from "../content/caregiver-ids";
 
 type PersistedMilestoneGates = Pick<
   CaregiverModuleProgress,
@@ -85,8 +90,8 @@ function updateProgress(
 export interface CaregiverSessionProviderProps {
   readonly children: ReactNode;
   readonly moduleId?: CaregiverModuleId;
-  readonly centralSectionId?: string;
-  readonly takeawaySectionId?: string;
+  readonly centralSectionId?: CaregiverModuleSectionId;
+  readonly takeawaySectionId?: CaregiverModuleSectionId;
   readonly reflectionId?: CaregiverModuleReflectionId;
   readonly initialMilestoneProgress?: PersistedMilestoneGates;
 }
@@ -94,11 +99,15 @@ export interface CaregiverSessionProviderProps {
 export function CaregiverSessionProvider({
   children,
   moduleId = "CG-M2",
-  centralSectionId = "CG-M2-S03",
-  takeawaySectionId = "CG-M2-S08",
-  reflectionId = "CG-M2-R01",
+  centralSectionId: centralSectionIdOverride,
+  takeawaySectionId: takeawaySectionIdOverride,
+  reflectionId: reflectionIdOverride,
   initialMilestoneProgress,
 }: CaregiverSessionProviderProps) {
+  const moduleConfiguration = caregiverSessionConfiguration[moduleId];
+  const centralSectionId = centralSectionIdOverride ?? moduleConfiguration.centralSectionId;
+  const takeawaySectionId = takeawaySectionIdOverride ?? moduleConfiguration.takeawaySectionId;
+  const reflectionId = reflectionIdOverride ?? moduleConfiguration.reflectionId;
   const initialProgress = useMemo(
     () => createInitialProgress(moduleId, initialMilestoneProgress),
     [initialMilestoneProgress, moduleId],
@@ -208,17 +217,21 @@ export function CaregiverSessionProvider({
   const setReflection = useCallback(
     (value: string) => {
       setReflectionSkipped(false);
-      setSession((current) => ({
-        ...current,
-        reflections: {
-          ...current.reflections,
-          [reflectionId]: {
-            scope: "session-only",
-            value,
-            cleared: false,
+      setSession((current) => {
+        const existing = current.reflections[reflectionId];
+        if (existing?.value === value && !existing.cleared) return current;
+        return {
+          ...current,
+          reflections: {
+            ...current.reflections,
+            [reflectionId]: {
+              scope: "session-only",
+              value,
+              cleared: false,
+            },
           },
-        },
-      }));
+        };
+      });
     },
     [reflectionId],
   );

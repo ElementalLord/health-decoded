@@ -574,7 +574,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
             </div>
             <LessonStoryImage
               alt="Two older adults laugh while tending vegetables together in a community garden"
-              caption="Diabetes changes how the body handles glucose; it does not erase strength, pleasure, usefulness, or a life shared with other people."
+              caption="Diabetes changes how the body handles glucose. It does not define a person’s abilities or daily life."
               emphasis="Your body is still capable."
               src="/lessons/day-02/capable-life.jpg"
             />
@@ -1241,7 +1241,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
         const clarityChoices = Object.keys(clarityReviews) as ClarityChoice[];
         return (
           <div className="space-y-8">
-            <DayTwoHeading>Trace the body story in one pass.</DayTwoHeading>
+            <DayTwoHeading>Review the body process in one pass.</DayTwoHeading>
             <p className="font-semibold leading-7">
               A friend asks, “If you still make insulin, why is your blood glucose high?” Which
               answer would you give?
@@ -1392,7 +1392,7 @@ export function DayTwoExperience({ lesson: experience }: { lesson: LessonPlayerV
             {reflection ? (
               <div className="animate-fade-in space-y-6">
                 <div>
-                  <p className="editorial-eyebrow">Body-story recap</p>
+                  <p className="editorial-eyebrow">Process recap</p>
                   <h2 className="mt-3 font-serif-display text-4xl font-normal">
                     The mechanism in five links
                   </h2>

@@ -146,7 +146,43 @@ export type CaregiverToolId = (typeof caregiverToolIds)[number];
 export type CaregiverCoreApplicationId = (typeof caregiverCoreApplicationIds)[number];
 export type CaregiverModuleInteractionId = (typeof caregiverModuleInteractionIds)[number];
 export type CaregiverModuleReflectionId = (typeof caregiverModuleReflectionIds)[number];
+export type CaregiverModuleSectionId = (typeof caregiverModuleSectionIds)[number];
 export type CaregiverStableId = string & { readonly __caregiverStableId: unique symbol };
+
+export const caregiverSessionConfiguration = Object.freeze({
+  "CG-M1": {
+    centralSectionId: "CG-M1-S03",
+    takeawaySectionId: "CG-M1-S07",
+    reflectionId: "CG-M1-R01",
+  },
+  "CG-M2": {
+    centralSectionId: "CG-M2-S03",
+    takeawaySectionId: "CG-M2-S08",
+    reflectionId: "CG-M2-R01",
+  },
+  "CG-M3": {
+    centralSectionId: "CG-M3-S04",
+    takeawaySectionId: "CG-M3-S07",
+    reflectionId: "CG-M3-R01",
+  },
+  "CG-M4": {
+    centralSectionId: "CG-M4-S04",
+    takeawaySectionId: "CG-M4-S08",
+    reflectionId: "CG-M4-R01",
+  },
+  "CG-M5": {
+    centralSectionId: "CG-M5-S03",
+    takeawaySectionId: "CG-M5-S07",
+    reflectionId: "CG-M5-R01",
+  },
+} satisfies Record<
+  CaregiverModuleId,
+  {
+    readonly centralSectionId: CaregiverModuleSectionId;
+    readonly takeawaySectionId: CaregiverModuleSectionId;
+    readonly reflectionId: CaregiverModuleReflectionId;
+  }
+>);
 
 export function isCaregiverStableId(value: string): value is CaregiverStableId {
   return caregiverStableIdSet.has(value);

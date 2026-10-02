@@ -52,42 +52,10 @@ export default async function CaregiverModulePage({
   if (!profile.data.onboarding_completed_at) redirect("/onboarding");
 
   const Experience = experienceByModule[moduleEntry.id];
-  const sessionConfiguration =
-    moduleEntry.id === "CG-M1"
-      ? {
-          centralSectionId: "CG-M1-S03",
-          takeawaySectionId: "CG-M1-S07",
-          reflectionId: "CG-M1-R01" as const,
-        }
-      : moduleEntry.id === "CG-M3"
-        ? {
-            centralSectionId: "CG-M3-S04",
-            takeawaySectionId: "CG-M3-S07",
-            reflectionId: "CG-M3-R01" as const,
-          }
-        : moduleEntry.id === "CG-M4"
-          ? {
-              centralSectionId: "CG-M4-S04",
-              takeawaySectionId: "CG-M4-S08",
-              reflectionId: "CG-M4-R01" as const,
-            }
-          : moduleEntry.id === "CG-M5"
-            ? {
-                centralSectionId: "CG-M5-S03",
-                takeawaySectionId: "CG-M5-S07",
-                reflectionId: "CG-M5-R01" as const,
-              }
-            : {
-                centralSectionId: "CG-M2-S03",
-                takeawaySectionId: "CG-M2-S08",
-                reflectionId: "CG-M2-R01" as const,
-              };
-
   return (
     <CaregiverSessionProvider
       moduleId={moduleEntry.id}
       {...(milestoneGates.ok ? { initialMilestoneProgress: milestoneGates.data } : {})}
-      {...sessionConfiguration}
     >
       <Experience />
     </CaregiverSessionProvider>

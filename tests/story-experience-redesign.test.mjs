@@ -74,7 +74,7 @@ test("generated raster artwork replaces code-drawn landing illustrations", async
   for (const asset of [
     "stories-hero-illustration.webp",
     "marcus-parking-lot-illustration.png",
-    "asha-rice-table-illustration.webp",
+    "asha-sunday-dinner-illustration.webp",
     "nora-prescription-bag-illustration.webp",
     "devon-number-screen-illustration.png",
   ]) {
@@ -97,7 +97,7 @@ test("every dedicated story begins with the same complete cover sequence", () =>
   for (const phrase of [
     "Back to Stories",
     "Illustrative story",
-    "placeholder name",
+    "Character",
     "Related lesson",
     "Start",
     "Continue",

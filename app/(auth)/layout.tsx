@@ -18,19 +18,17 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
           <div className="mx-auto max-w-xl">
             <CompanionIllustration className="mx-auto max-h-[min(38dvh,24rem)] max-w-md" />
-            <p className="editorial-eyebrow mt-4 text-center">The guardian&apos;s embrace</p>
+            <p className="editorial-eyebrow mt-4 text-center">Health Decoded</p>
             <h2 className="mt-8 text-center font-serif-display text-4xl font-normal leading-tight text-balance xl:text-5xl">
-              Clear answers. Gentle guidance. Your pace.
+              Clear Type 2 diabetes education.
             </h2>
             <p className="mx-auto mt-5 max-w-md text-center text-pretty leading-8 text-muted-foreground">
-              A private learning companion for life after a Type 2 diabetes diagnosis. One calm
-              lesson at a time, at your own pace.
+              Short lessons, practical activities and reliable references for life after a Type 2
+              diabetes diagnosis.
             </p>
           </div>
 
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
-            Educational support, not medical advice.
-          </p>
+          <span aria-hidden="true" />
         </div>
       </aside>
 

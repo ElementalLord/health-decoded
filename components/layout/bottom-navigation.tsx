@@ -17,11 +17,16 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
-import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
+import {
+  applicationRoutes,
+  groupApplicationRoutes,
+  isApplicationRouteActive,
+  type ApplicationRoute,
+} from "@/lib/routes";
 
 import styles from "./bottom-navigation.module.css";
 
@@ -37,27 +42,6 @@ const icons = {
   stories: BookHeart,
 } as const;
 
-function isActiveRoute(pathname: string, route: ApplicationRoute) {
-  return route.href === "/" ? pathname === route.href : pathname.startsWith(route.href);
-}
-
-function navigationGroups(routes: readonly ApplicationRoute[]) {
-  if (routes.length <= 5) return { primary: [...routes], secondary: [] };
-
-  // Keep the high-frequency journey, progress, stories, and resources areas
-  // one tap away. Every other destination remains visible in the More sheet.
-  const preferredIndexes = [0, 2, 3, 4];
-  const primary = preferredIndexes
-    .map((index) => routes[index])
-    .filter((route): route is ApplicationRoute => Boolean(route));
-  const primaryHrefs = new Set(primary.map((route) => route.href));
-
-  return {
-    primary,
-    secondary: routes.filter((route) => !primaryHrefs.has(route.href)),
-  };
-}
-
 function BottomNavigation({
   preferences,
   routes = applicationRoutes,
@@ -68,8 +52,8 @@ function BottomNavigation({
   const [moreOpen, setMoreOpen] = useState(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const pathname = usePathname();
-  const { primary, secondary } = navigationGroups(routes);
-  const moreIsActive = secondary.some((route) => isActiveRoute(pathname, route));
+  const { primary, secondary } = useMemo(() => groupApplicationRoutes(routes), [routes]);
+  const moreIsActive = secondary.some((route) => isApplicationRouteActive(pathname, route));
 
   useEffect(() => setMoreOpen(false), [pathname]);
 
@@ -92,7 +76,7 @@ function BottomNavigation({
           <ul className={styles.tabList}>
             {primary.map((route) => {
               const Icon = icons[route.icon];
-              const active = isActiveRoute(pathname, route);
+              const active = isApplicationRouteActive(pathname, route);
 
               return (
                 <li key={route.href}>
@@ -155,7 +139,7 @@ function BottomNavigation({
                 <ul className={styles.moreList}>
                   {secondary.map((route) => {
                     const Icon = icons[route.icon];
-                    const active = isActiveRoute(pathname, route);
+                    const active = isApplicationRouteActive(pathname, route);
 
                     return (
                       <li key={route.href}>
@@ -185,4 +169,4 @@ function BottomNavigation({
   );
 }
 
-export { BottomNavigation, navigationGroups };
+export { BottomNavigation };

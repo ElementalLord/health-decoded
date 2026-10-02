@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
+import { caregiverSessionConfiguration } from "../features/caregiver/content/caregiver-ids.ts";
+
 const registry = await readFile(
   new URL("../features/caregiver/content/caregiver-module-registry.ts", import.meta.url),
   "utf8",
@@ -16,7 +18,7 @@ test("Module 3 remains on the authenticated dynamic route alongside Modules 4 an
   assert.match(route, /Module3Experience/);
   assert.match(route, /if \(!moduleEntry\) notFound\(\)/);
   assert.match(route, /getCurrentProfile/);
-  assert.match(route, /CG-M3-R01/);
+  assert.equal(caregiverSessionConfiguration["CG-M3"].reflectionId, "CG-M3-R01");
   assert.match(registry, /caregiverModule4/);
   assert.match(registry, /caregiverModule5/);
 });

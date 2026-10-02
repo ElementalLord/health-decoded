@@ -295,14 +295,14 @@ test("story progress persists and exposes compact action states", () => {
 });
 
 test("the disclosure and editorial-governance metadata make the scenario honest", () => {
-  assert.match(marcusParkingLotStory.disclosure, /placeholder name/);
-  assert.match(marcusParkingLotStory.disclosure, /does not describe one specific individual/);
+  assert.match(marcusParkingLotStory.disclosure, /fictional character/);
+  assert.match(marcusParkingLotStory.disclosure, /general diabetes education/);
   assert.equal(marcusParkingLotStory.reviewStatus, "not-reviewed");
   assert.equal(marcusParkingLotStory.medicalRiskLevel, "low");
   assert.equal(marcusParkingLotStory.version, "2.1");
   assert.equal(marcusParkingLotStory.readerPartCount, 8);
   assert.equal("contentWarning" in marcusParkingLotStory, false);
-  assert.match(marcusPlayer, /placeholder name/);
+  assert.match(marcusPlayer, /fictional character/);
   assert.equal(marcusParkingLotStory.showDetailCover, undefined);
   assert.doesNotMatch(player, /Medically reviewed|Not medically reviewed/);
 });

@@ -46,7 +46,6 @@
 }
 
 .eyebrow,
-.noticeHeading,
 .feedbackHeading,
 .regionLabel {
   margin: 0 0 0.5rem;
@@ -101,7 +100,6 @@
 }
 
 .feedback,
-.privacyNotice,
 .safetyInterruption {
   max-width: 72ch;
   padding: clamp(1rem, 2.5vw, 1.75rem);
@@ -130,8 +128,7 @@
   background: #f7e7e2;
 }
 
-.feedbackHeading,
-.noticeHeading {
+.feedbackHeading {
   color: var(--caregiver-ink);
 }
 
@@ -145,19 +142,13 @@
 }
 
 .feedbackBody > :first-child,
-.privacyNotice > :first-child,
 .safetyInterruption > :first-child {
   margin-block-start: 0;
 }
 
 .feedbackBody > :last-child,
-.privacyNotice > :last-child,
 .safetyInterruption > :last-child {
   margin-block-end: 0;
-}
-
-.privacyNotice {
-  background: var(--caregiver-information);
 }
 
 .safetyInterruption h2 {
@@ -207,7 +198,6 @@
   }
 
   .feedback,
-  .privacyNotice,
   .safetyInterruption {
     padding: 1rem;
   }

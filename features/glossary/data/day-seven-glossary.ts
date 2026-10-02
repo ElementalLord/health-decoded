@@ -19,7 +19,7 @@ export const daySevenGlossary: readonly GlossaryEntry[] = [
     definition: "Taking a medicine as agreed with the healthcare team.",
     id: "glossary-adherence-day-seven",
     simpleExplanation:
-      "Real-life routines, cost, side effects, access, memory, and preferences can all affect adherence. Difficulties deserve problem-solving, not blame.",
+      "Routines, cost, side effects, access, memory and preferences can all affect adherence. Ask what is getting in the way before choosing a solution.",
     term: "Adherence",
   },
   {

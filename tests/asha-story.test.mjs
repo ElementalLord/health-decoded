@@ -51,13 +51,13 @@ test("Asha’s preview preserves the requested editorial order and copy", () => 
 });
 
 test("Asha’s one cover remains on the dedicated opening while the landing uses generated art", () => {
-  assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-rice-on-the-table-cover.webp");
+  assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-sunday-dinner-cover.webp");
   assert.match(ashaRiceOnTheTableStory.imageAlt, /editorial illustration/i);
-  assert.match(ashaRiceOnTheTableStory.imageAlt, /woman sitting with her family/i);
+  assert.match(ashaRiceOnTheTableStory.imageAlt, /woman with a small separate plate/i);
   assert.doesNotMatch(ashaRiceOnTheTableStory.imageAlt, /Photo of Asha|real patient|wrong food/i);
-  assert.ok(statSync("public/stories/asha-rice-on-the-table-cover.webp").size > 80_000);
+  assert.ok(statSync("public/stories/asha-sunday-dinner-cover.webp").size > 80_000);
   assert.doesNotMatch(landing, /story\.imagePath/);
-  assert.match(landing, /asha-rice-table-illustration\.webp/);
+  assert.match(landing, /asha-sunday-dinner-illustration\.webp/);
   assert.match(opening, /src=\{story\.imagePath\}/);
   assert.match(opening, /height=\{900\}/);
   assert.match(opening, /width=\{1600\}/);
@@ -162,14 +162,14 @@ function familyDialogueChoiceCount() {
 
 test("the meal builder has tap controls, broad portions, contextual feedback, and no scoring", () => {
   for (const food of [
-    "Grain or starchy food",
-    "Beans or legumes",
-    "Vegetables",
-    "Protein food",
-    "Bread or another side",
-    "Dairy or alternative",
+    "Mashed potatoes",
+    "Green beans",
+    "Roast chicken",
+    "Roasted corn",
+    "Dinner roll",
+    "Side salad",
     "Water",
-    "Dessert",
+    "Apple crisp",
   ]) {
     assert.match(interactions, new RegExp(`label: "${food}"`));
   }
@@ -322,10 +322,10 @@ test("editorial governance labels Asha honestly without review or warning claims
   assert.equal(ashaRiceOnTheTableStory.medicalRiskLevel, "low");
   assert.equal(ashaRiceOnTheTableStory.version, "2.1");
   assert.equal("contentWarning" in ashaRiceOnTheTableStory, false);
-  assert.match(ashaRiceOnTheTableStory.disclosure, /placeholder name/);
-  assert.match(ashaRiceOnTheTableStory.disclosure, /does not describe one specific individual/);
+  assert.match(ashaRiceOnTheTableStory.disclosure, /fictional character/);
+  assert.match(ashaRiceOnTheTableStory.disclosure, /general food education/);
   assert.match(ashaRiceOnTheTableStory.sourceThemeNote, /No single person’s wording/);
-  assert.match(ashaPlayer, /placeholder name/);
+  assert.match(ashaPlayer, /fictional character/);
   assert.doesNotMatch(
     player,
     /Dietitian approved|Clinician approved|ADA approved|Not reviewed badge/i,
@@ -380,11 +380,24 @@ test("Asha is emotionally distinct and the meal is not framed as a prescription"
   );
 });
 
-test("Asha's live story stays culturally general and presents dialogue as speech bubbles", () => {
+test("Asha's live story uses a specific American Sunday dinner and presents dialogue as speech bubbles", () => {
   const liveCopy = `${JSON.stringify(ashaRiceOnTheTableStory)} ${ashaPlayer}`;
-  assert.doesNotMatch(liveCopy, /South Asian|\bdal\b|\bflatbread\b/i);
-  assert.match(ashaPlayer, />Grain</);
-  assert.match(ashaPlayer, />Beans</);
+  assert.doesNotMatch(
+    liveCopy,
+    /South Asian|\b(?:dal|dhal|roti|naan|flatbread|paneer|biryani|masala|tikka|curry|basmati|chutney|raita|paratha|pakora|dosa|idli|lassi|tandoor|kheer|poha|upma|chana|rajma|aloo|saag|samosa)\b/i,
+  );
+  for (const food of [
+    "roast chicken",
+    "mashed potatoes",
+    "green beans",
+    "roasted corn",
+    "dinner rolls",
+  ]) {
+    assert.match(liveCopy, new RegExp(food, "i"));
+  }
+  assert.doesNotMatch(storyTypes, /\b(?:dal|flatbread)\b/i);
+  assert.match(ashaPlayer, />Roast chicken</);
+  assert.match(ashaPlayer, />Mashed potatoes</);
   assert.match(ashaPlayer, /styles\.speechDaughter/);
   assert.match(ashaPlayer, /styles\.speechAsha/);
   assert.match(ashaStyles, /\.speechDaughter p,[\s\S]*border-radius:/);

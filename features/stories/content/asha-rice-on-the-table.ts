@@ -5,8 +5,7 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
   slug: "asha-rice-on-the-table",
   title: "Sunday Dinner",
   characterName: "Asha",
-  disclosure:
-    "Asha is a placeholder name. This is an original illustrative scenario based on common questions people report about food after a Type 2 diabetes diagnosis. It does not describe one specific individual or provide a personalized eating plan.",
+  disclosure: "Asha is a fictional character. The story gives general food education.",
   topic: "Food and family",
   themes: [
     "fear of food",
@@ -34,11 +33,11 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
   dominantInteractionType: "apply",
   primaryAccent: "table terracotta",
   closingTone: "ordinary and connected",
-  imagePath: "/stories/asha-rice-on-the-table-cover.webp",
+  imagePath: "/stories/asha-sunday-dinner-cover.webp",
   imagePrompt:
-    "Create a cinematic editorial illustration of a warm multigenerational family dinner at home in the early evening. A middle-aged woman sits at a dining table with several family members, but the composition focuses on the table and the emotional distance she feels rather than on clearly identifiable faces. In front of her is a very small, separate plate, while a range of familiar shared dishes remain in the center of the table, including a grain dish, beans, vegetables, bread, and a protein dish. Her family is engaged in the meal, while she looks quietly uncertain about what she is allowed to eat. Show natural body language, warm household lighting, and a realistic family setting without tying the meal to one culture. Use restrained warm cream, deep green, muted terracotta, soft gold, and natural wood colors. No text, medical devices, logos, exaggerated emotion, stereotypical decoration, or moral contrast between foods. Polished cinematic editorial illustration, not stock photography or a cartoon.",
+    "Create a cinematic editorial illustration of a warm multigenerational American Sunday dinner at home in the early evening. A middle-aged woman sits at a dining table with several family members, but the composition focuses on the table and the emotional distance she feels rather than on clearly identifiable faces. In front of her is a very small, separate plate of plain grilled chicken and salad. The shared table holds carved roast chicken, mashed potatoes, green beans, roasted corn, and dinner rolls. Her family is engaged in the meal, while she looks quietly uncertain about what she is allowed to eat. Show natural body language, warm household lighting, and a realistic family setting. Use restrained warm cream, deep green, muted terracotta, soft gold, and natural wood colors. No text, medical devices, logos, exaggerated emotion, stereotypical decoration, or moral contrast between foods. Polished cinematic editorial illustration, not stock photography or a cartoon.",
   imageAlt:
-    "An editorial illustration of a woman sitting with her family at a dinner table, looking uncertain as familiar shared dishes remain in the center of the table.",
+    "An editorial illustration of a woman with a small separate plate while her family shares roast chicken, mashed potatoes, green beans, corn, and dinner rolls.",
   introduction:
     "After her diagnosis, Asha worries that familiar family meals no longer fit her care plan.",
   whyItMatters:
@@ -59,8 +58,8 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       layout: "narrative-left",
       tone: "tension",
       paragraphs: [
-        "Asha picked up a familiar pantry staple, read the nutrition label, and put it back. She did the same with bread, yogurt, fruit, and beans.",
-        "Nearly every familiar food seemed to contain a number she didn’t understand. After an hour, her cart held leafy greens, eggs, a protein option, and water.",
+        "Asha picked up a box of elbow macaroni, read the nutrition label, and put it back. She did the same with whole-wheat sandwich bread, vanilla yogurt, apples, and black beans.",
+        "Nearly every familiar food seemed to contain a number she didn’t understand. After an hour, her cart held leafy greens, eggs, plain chicken breasts, and water.",
       ],
       interactionType: "grocery-fear",
       interaction: {
@@ -91,7 +90,7 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       layout: "narrative-right",
       tone: "tension",
       paragraphs: [
-        "The table held a grain dish, beans, vegetables, bread, yogurt, and a protein dish. Asha had made herself a different dinner: plain protein and leafy greens.",
+        "The table held roast chicken, mashed potatoes, green beans, roasted corn, and dinner rolls. Asha had made herself a different dinner: plain grilled chicken and a small green salad.",
         "Everyone talked about the week and passed dishes across the table. Asha was sitting with them, but the meal no longer felt shared.",
       ],
       interactionType: "separate-plate",
@@ -120,7 +119,7 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       layout: "perspective-split",
       tone: "tension",
       paragraphs: [
-        "Asha’s daughter looked at the separate plate. Her husband offered to stop serving one of their familiar dishes so Asha wouldn’t have to worry about it.",
+        "Asha’s daughter looked at the separate plate. Her husband offered to stop serving mashed potatoes so Asha wouldn’t have to worry about them.",
         "He meant to help. Asha didn’t want the family to change every meal for her, and she didn’t want anyone monitoring her plate. She wasn’t sure how to say that yet.",
       ],
       interactionType: "family-dialogue",
@@ -163,7 +162,7 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       tone: "clarity",
       paragraphs: [
         "Asha described the grocery trip and the separate plate. The dietitian asked what her family usually ate, then looked at the whole dinner with her.",
-        "The grain dish wasn’t the only part of the meal. There were beans, vegetables, protein, side dishes, the amount of each food, and what Asha could realistically keep doing.",
+        "The mashed potatoes weren’t the only part of the meal. There were roast chicken, green beans, corn, dinner rolls, the amount of each food, and what Asha could realistically keep doing.",
       ],
       interactionType: "meal-builder",
       interaction: {
@@ -174,14 +173,14 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
         instructions:
           "Build and adjust a familiar meal. This is a sustainability exercise, not a personalized prescription.",
         options: [
-          { id: "grain", label: "Grain or starchy food" },
-          { id: "beans", label: "Beans or legumes" },
-          { id: "vegetables", label: "Vegetables" },
-          { id: "protein", label: "Protein food" },
-          { id: "bread", label: "Bread or another side" },
-          { id: "dairy", label: "Dairy or alternative" },
+          { id: "mashed-potatoes", label: "Mashed potatoes" },
+          { id: "green-beans", label: "Green beans" },
+          { id: "roast-chicken", label: "Roast chicken" },
+          { id: "corn", label: "Roasted corn" },
+          { id: "dinner-roll", label: "Dinner roll" },
+          { id: "side-salad", label: "Side salad" },
           { id: "water", label: "Water" },
-          { id: "dessert", label: "Dessert" },
+          { id: "apple-crisp", label: "Apple crisp" },
         ],
         feedbackMode: "single-explanation",
         requiredForProgress: false,
@@ -197,7 +196,7 @@ export const ashaRiceOnTheTableStory: InteractiveStory = {
       layout: "decision-focus",
       tone: "pause",
       paragraphs: [
-        "The same dishes came back to the table. Asha still felt nervous. One appointment hadn’t removed every worry she had attached to the meal.",
+        "The roast chicken, mashed potatoes, green beans, corn, and dinner rolls came back to the table. Asha still felt nervous. One appointment hadn’t removed every worry she had attached to the meal.",
         "This time, nobody made her a separate plate. The serving spoons stayed with the shared dishes, and her family let her choose.",
       ],
       interactionType: "meaningful-food-choice",

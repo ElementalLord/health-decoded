@@ -42,7 +42,7 @@ export default async function LoginPage({
               Your email is verified
             </h2>
             <p className="mt-1 text-sm leading-6 text-muted-foreground">
-              Sign in below to start your learning journey.
+              Sign in below to start your first lesson.
             </p>
           </div>
         </section>

@@ -7,14 +7,14 @@ import { GlucoseInsulinAnimation } from "@/features/marketing/components/glucose
 const phases = [
   ["01", "Understanding", "Get familiar with the basics, one idea at a time.", "Days 1–30"],
   ["02", "Adjusting", "Try small changes that work with your routines.", "Days 31–60"],
-  ["03", "Living", "Build confidence and find a rhythm that works for you.", "Days 61–90"],
+  ["03", "Living", "Use what you have learned in day-to-day care.", "Days 61–90"],
 ] as const;
 
 const appFeatures = [
   {
     number: "01",
-    title: "Learn at your pace",
-    body: "Follow the 14-day learning journey, revisit ideas with spaced review, and watch your progress and milestones grow.",
+    title: "Learn the essentials",
+    body: "Follow 14 short lessons, revisit important ideas with spaced review, and track what you complete.",
     details: ["Short lessons", "Spaced review", "Progress", "Milestones"],
   },
   {
@@ -32,7 +32,7 @@ const appFeatures = [
   {
     number: "04",
     title: "Prepare and support",
-    body: "Get ready for appointments, ask the AI guide a question, or learn how to support someone with confidence.",
+    body: "Prepare for appointments, ask the AI guide a question, or learn practical ways to support someone.",
     details: ["Appointment preparation", "AI guide", "Caregiver path"],
   },
 ] as const;
@@ -43,24 +43,24 @@ export default function HomePage() {
       <section id="home">
         <div className="mx-auto grid min-h-[calc(86svh-4.5rem)] max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] py-[clamp(2.75rem,6vh,4.5rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="motion-cascade">
-            <p className="editorial-eyebrow">A companion for the first 90 days</p>
+            <p className="editorial-eyebrow">Type 2 diabetes education</p>
             <h1 className="mt-5 max-w-3xl font-serif-display text-[clamp(3rem,9.5vw,6.75rem)] font-normal leading-[1.02] tracking-[-0.045em] text-balance sm:mt-6 sm:leading-none sm:tracking-[-0.05em]">
-              You&apos;re not
+              Understand
               <br />
-              fighting
+              Type 2
               <br />
-              <em className="font-normal">sugar</em> alone.
+              <em className="font-normal">diabetes.</em>
             </h1>
             <p className="mt-6 max-w-[38rem] text-base leading-8 text-[#827168] sm:mt-7 sm:text-xl sm:leading-8">
               Learn how Type 2 works, practice everyday skills, and find useful answers when you
-              need them. Start anywhere and move at your own pace.
+              need them. Start with the topic that matters to you.
             </p>
           </div>
 
           <figure className="mx-auto w-full max-w-[36rem] animate-fade-in [animation-delay:160ms] lg:translate-y-8">
             <CompanionIllustration />
             <figcaption className="mt-4 text-center text-xs font-bold uppercase tracking-[0.22em] text-[#8d7b70]">
-              Here when you need it
+              Built for everyday questions
             </figcaption>
           </figure>
         </div>
@@ -78,19 +78,14 @@ export default function HomePage() {
           90
         </p>
         <p className="mt-7 font-serif-display text-2xl text-[#8b786d] sm:text-3xl">
-          days, gently decoded.
+          days of practical learning.
         </p>
       </section>
 
       <section className="home-scroll-fade bg-[#f1ece4]/55 px-5 py-16 text-center sm:py-20">
-        <blockquote className="mx-auto max-w-4xl font-serif-display text-3xl italic leading-tight text-[#493a32] sm:text-5xl">
-          “A diagnosis isn&apos;t the end of your story.
-          <br />
-          It&apos;s the beginning of a gentler one.”
-        </blockquote>
-        <p className="mt-6 text-xs font-bold uppercase tracking-[0.24em] text-[#8d7b70]">
-          The Health Decoded team
-        </p>
+        <h2 className="mx-auto max-w-4xl font-serif-display text-3xl font-normal leading-tight text-[#493a32] sm:text-5xl">
+          Clear explanations for the questions that come after a diagnosis.
+        </h2>
       </section>
 
       <section id="journey">
@@ -107,7 +102,7 @@ export default function HomePage() {
           <aside className="bg-[#f1ece4] px-8 py-10 sm:px-14 sm:py-12">
             <p className="font-serif-display text-8xl font-light leading-none text-[#c97860]">08</p>
             <p className="mt-5 text-xl font-semibold">minutes to read</p>
-            <p className="mt-2 text-lg text-[#827168]">Short enough for a quiet coffee break.</p>
+            <p className="mt-2 text-lg text-[#827168]">Most lessons take about eight minutes.</p>
           </aside>
         </div>
       </section>
@@ -121,15 +116,15 @@ export default function HomePage() {
         <div className="home-scroll-fade mx-auto max-w-[1120px] px-5 py-16 md:px-10 md:py-20">
           <div>
             <h2 className="font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
-              Answers when you&apos;re curious.
+              Ask a direct question.
             </h2>
             <p className="mt-5 max-w-4xl text-lg leading-8 text-[#827168]">
-              Ask the AI guide about the ideas you&apos;re learning and get a clear explanation in
-              everyday language, whenever a question comes to mind.
+              Ask the AI guide about a lesson or a Type 2 diabetes topic. Answers use everyday
+              language and include sources when needed.
             </p>
             <div className="mt-7 flex flex-wrap items-end gap-4">
               <span className="font-serif-display text-6xl text-[#6f947a] sm:text-8xl">24/7</span>
-              <span className="pb-2 text-[#827168]">ready whenever you have a question</span>
+              <span className="pb-2 text-[#827168]">available at any time</span>
             </div>
           </div>
         </div>
@@ -141,10 +136,10 @@ export default function HomePage() {
             <SteadyingHandIllustration />
             <figcaption className="mt-3 text-center">
               <span className="block text-xs font-bold uppercase tracking-[0.24em] text-[#8d7b70]">
-                Learning together
+                Everyday situations
               </span>
               <span className="mt-2 block font-serif-display text-xl text-[#6f6058] sm:text-2xl">
-                A steady hand to help you rise.
+                Practice decisions before they happen.
               </span>
             </figcaption>
           </figure>
@@ -162,9 +157,9 @@ export default function HomePage() {
 
       <section className="bg-[#f1ece4]/55">
         <div className="home-scroll-fade mx-auto max-w-[1120px] px-5 py-16 md:px-10 md:py-20">
-          <p className="editorial-eyebrow">Your journey ahead</p>
+          <p className="editorial-eyebrow">The 90-day plan</p>
           <h2 className="mt-4 font-serif-display text-4xl font-normal sm:text-5xl">
-            Ninety days, three gentle phases.
+            Three phases, each with a different focus.
           </h2>
           <ol className="home-scroll-fade-list mt-8">
             {phases.map(([number, title, body, days]) => (
@@ -189,11 +184,11 @@ export default function HomePage() {
           <div className="mt-16 sm:mt-20">
             <p className="editorial-eyebrow">Everything in one place</p>
             <h2 className="mt-4 max-w-4xl font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
-              More support for the moments between lessons.
+              Tools to use between lessons.
             </h2>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-[#827168]">
-              Health Decoded brings together practical ways to learn, practice, find answers,
-              prepare, and support someone you care about.
+              Health Decoded includes lessons, practice activities, reference material, appointment
+              preparation and caregiver guidance.
             </p>
 
             <div className="home-scroll-fade-list mt-10 grid gap-x-14 gap-y-12 md:grid-cols-2 md:gap-y-14">
@@ -233,8 +228,10 @@ export default function HomePage() {
       </section>
 
       <section className="home-scroll-fade px-5 py-20 text-center sm:py-24">
-        <h2 className="font-serif-display text-5xl font-normal sm:text-7xl">Ready when you are.</h2>
-        <p className="mt-4 text-lg text-[#827168]">Explore at your own pace.</p>
+        <h2 className="font-serif-display text-5xl font-normal sm:text-7xl">
+          Choose where to start.
+        </h2>
+        <p className="mt-4 text-lg text-[#827168]">Your progress is saved as you work.</p>
       </section>
     </>
   );

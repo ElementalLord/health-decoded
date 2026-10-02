@@ -248,8 +248,7 @@ export function ProfileContent({
             {firstName}.
           </h1>
           <p className={styles.introDescription}>
-            Your account, preferences, and learning progress live here. Keep building a healthier,
-            more informed you.
+            Manage your account and learning preferences, or open your milestone record.
           </p>
 
           <div className={styles.identityRow}>
@@ -440,7 +439,7 @@ export function ProfileContent({
               <label className={styles.preferenceRow}>
                 <span className={styles.preferenceCopy}>
                   <strong>Lesson reminders</strong>
-                  <small>Get gentle reminders to keep learning.</small>
+                  <small>Choose whether to receive learning reminders.</small>
                 </span>
                 <span className={styles.switchControl}>
                   <input
@@ -468,7 +467,7 @@ export function ProfileContent({
                   label="Learning pace"
                   name="learningPace"
                   options={[
-                    { label: "Gentle", value: "gentle" },
+                    { label: "Occasional", value: "gentle" },
                     { label: "Normal", value: "normal" },
                     { label: "Focused", value: "focused" },
                   ]}

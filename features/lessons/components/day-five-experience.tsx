@@ -62,7 +62,7 @@ type OpeningFeeling = (typeof openingFeelings)[number][0];
 
 const openingResponses: Record<OpeningFeeling, string> = {
   pressure:
-    "Today is not a performance test. It is a calm look at what working muscles do and one way movement might fit your real life.",
+    "Today explains what working muscles do and how movement might fit into an ordinary day.",
   gym: "A gym is only one setting. Walking, chores, dancing, gardening, and adapted movement can all ask muscles to work.",
   tired:
     "We will not build an idealized routine. We will look for one small opening that respects your energy, ability, and schedule.",
@@ -159,7 +159,7 @@ type BodyBenefitId = (typeof bodyBenefits)[number]["id"];
 
 const myths = [
   "Movement only counts when it happens at a gym.",
-  "Several small bouts of activity can still be meaningful.",
+  "Several short periods of activity can still add up.",
   "Exercise only matters if the number on the scale changes.",
 ] as const;
 
@@ -185,7 +185,7 @@ const barrierOptions: Record<BarrierId, readonly string[]> = {
     "Break activity into smaller bouts.",
   ],
   energy: [
-    "Choose a gentler version.",
+    "Choose a lower-intensity version.",
     "Use an energy window that tends to work better.",
     "Let a smaller effort still count.",
   ],
@@ -975,7 +975,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
               Movement is doing more than burning calories.
             </DayFiveHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Open four parts of the body-wide story. None depends on becoming an athlete.
+              Open four effects of movement. These benefits do not require athletic training.
             </p>
             <div
               className={cn(
@@ -1181,7 +1181,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
                   "border-l-2 border-success bg-info px-6 py-5 font-serif-display text-2xl italic text-success",
                 )}
               >
-                Movement can be flexible and still be meaningful.
+                Movement can be flexible and still be useful.
               </div>
             ) : null}
           </div>
@@ -1447,7 +1447,7 @@ export function DayFiveExperience({ lesson: experience }: { lesson: LessonPlayer
               </fieldset>
               <fieldset className="border-t border-border pt-7">
                 <legend className="font-serif-display text-2xl">
-                  3. What is a gentle starting amount?
+                  3. What is a comfortable starting amount?
                 </legend>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   {planDurations.map((option) => (

@@ -79,7 +79,7 @@ const nextSteps = [
 
 const everydayTools = [
   {
-    body: "Build around a familiar meal instead of replacing your life with a rulebook. Add balance where it helps, keep culture and enjoyment in the room, and let one plate remain one plate.",
+    body: "Start with a familiar meal and use the plate framework where it helps. Keep cultural foods and personal preferences in the plan.",
     id: "food",
     invitation: "What could join a meal you already love?",
     label: "At the table",
@@ -88,16 +88,16 @@ const everydayTools = [
   {
     body: "Let movement meet the body and day you actually have. A friend, a favorite song, a garden, or a chair can turn a health task into a human moment.",
     id: "movement",
-    invitation: "Where could movement feel more like living?",
+    invitation: "Where could movement fit into your day?",
     label: "In motion",
-    title: "Movement can carry company and joy.",
+    title: "Movement can be social or practical.",
   },
   {
-    body: "Knowing a medicine’s name, purpose, timing, and safety notes makes it a tool you can understand, not a symbol of failure or a mystery you must quietly manage.",
+    body: "Know each medicine’s name, purpose, timing and safety notes. Write down anything that is unclear for your prescriber or pharmacist.",
     id: "medicine",
-    invitation: "Which medicine question would bring relief?",
+    invitation: "Which medicine question needs an answer?",
     label: "With medicine",
-    title: "Understanding can make medicine feel lighter.",
+    title: "Medicine instructions should be clear.",
   },
   {
     body: "Use a reading to answer a real question. Timing, context, and patterns make the number useful; judgment only makes it louder.",
@@ -189,7 +189,7 @@ const protectionAreas = [
     id: "kidneys",
     label: "Kidneys",
     prompt: "Ask: which kidney checks are due for me?",
-    title: "Quiet organs still deserve regular attention.",
+    title: "Kidney checks can find changes early.",
   },
   {
     body: "Heart and blood-vessel care includes the whole pattern: blood pressure, cholesterol, smoking, movement, medicines, symptoms, and your individual risks.",
@@ -510,8 +510,8 @@ function OrdinaryLifeMotion({ onReady }: { onReady?: () => void }) {
 function ReturnAfterRainMotion() {
   return (
     <MotionFigure
-      cue="Confidence in real life"
-      description="confidence is not controlling the weather. It is knowing that a changed moment does not have to become an abandoned plan."
+      cue="Adjusting a plan"
+      description="A changed moment may require a smaller action, a delay or a different plan."
       label="A continuously moving park scene where a rain cloud passes, two friends pause together, and then resume their walk"
       title="A pause can belong inside the plan."
     >
@@ -2057,11 +2057,11 @@ function FourteenDayTrace({ onReady }: { onReady?: () => void }) {
   return (
     <div className={styles.journeyTrace}>
       <div className={styles.journeyTraceHead}>
-        <p className="editorial-eyebrow">Fourteen days, one quiet climb</p>
-        <p>Tap a marked day to remember what became a little clearer.</p>
+        <p className="editorial-eyebrow">Fourteen-day review</p>
+        <p>Tap a marked day to review one idea from the course.</p>
       </div>
       <svg
-        aria-label="A gently rising line across fourteen days. Tap a marked day to recall what became clearer. This is a felt sense of understanding, not a measurement."
+        aria-label="A rising line across fourteen days. Tap a marked day to review one idea. This chart does not measure health progress."
         className={styles.journeyTraceSvg}
         role="group"
         viewBox="0 0 720 200"
@@ -2125,7 +2125,7 @@ const biteStations = [
     label: "In the stomach",
   },
   {
-    caption: "Glucose enters the bloodstream, so blood glucose gently rises after eating.",
+    caption: "Glucose enters the bloodstream, so blood glucose rises after eating.",
     label: "Into the blood",
   },
   {
@@ -2146,7 +2146,7 @@ function FollowOneBite({ onReady }: { onReady?: () => void }) {
     <div className={styles.bite}>
       <div className={styles.journeyTraceHead}>
         <p className="editorial-eyebrow">Follow one bite</p>
-        <p>Walk a single piece of food through the body, one step at a time.</p>
+        <p>Follow a carbohydrate food through four stages in the body.</p>
       </div>
       <svg
         aria-label={`Step ${step + 1} of ${total}, ${active.label}. ${active.caption}`}
@@ -2255,8 +2255,8 @@ function PracticeLoop() {
       <div className={styles.loopControls}>
         <p aria-live="polite" className={styles.journeyCaption}>
           {running
-            ? "It keeps turning. Each pass is a little more yours. There is no lap that fails."
-            : "The loop does not end at day fourteen. It just keeps gently turning."}
+            ? "The practice cycle repeats as you try, review and adjust."
+            : "Learning continues after day fourteen through review and practice."}
         </p>
         <button
           className={styles.loopButton}
@@ -2564,14 +2564,14 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
               You know more than you did fourteen days ago.
             </LessonHeading>
             <p className={styles.lede}>
-              Today is not an exam and it is not a finale. It is a quiet place to notice what has
-              become clearer, and what you can now carry into real life.
+              Review the main ideas from the first fourteen lessons and choose what to practice
+              next.
             </p>
 
             <LessonStoryImage
-              alt="Two sisters sit at a warm dining table, quietly looking back through a learning notebook and weekly calendar"
-              caption="Recognition does not have to look dramatic. It may be a question that now has words, a number that feels less frightening, or one decision that no longer feels impossible."
-              emphasis="Some kinds of confidence arrive quietly."
+              alt="Two sisters sit at a dining table and review a learning notebook and weekly calendar"
+              caption="Reviewing the notes can show which questions now have answers and which topics need another look."
+              emphasis="Use this lesson to review and choose a next step."
               height={941}
               priority
               src="/lessons/day-14/quiet-recognition.jpg"
@@ -2579,8 +2579,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             />
 
             <blockquote className={styles.pullQuote}>
-              A foundation is not proof that you will never feel uncertain. It is something steady
-              to stand on when uncertainty returns.
+              You can return to any lesson when a question comes up again.
             </blockquote>
 
             <FourteenDayTrace onReady={markTraceReady} />
@@ -2611,7 +2610,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className={styles.chapter}>
             <LessonHeading label="Where you began">
-              The first day asked you to understand, not to become perfect.
+              Review the starting point and what changed.
             </LessonHeading>
             <ThenNowStory onReady={markStoryReady} />
             <p className={styles.handwrittenLine}>
@@ -2625,19 +2624,18 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className={styles.chapter}>
             <LessonHeading label="Knowledge that travels">
-              The lessons were never meant to stay in separate boxes.
+              Connect the lessons to everyday decisions.
             </LessonHeading>
             <OrdinaryLifeMotion onReady={markOrdinaryMomentReady} />
             <div className={styles.editorialColumns}>
               <p>
                 <span>Y</span>ou learned what insulin resistance means so the diagnosis could become
-                understandable instead of mysterious. You learned to see food, movement, medication,
-                and monitoring as tools, not tests of character.
+                understandable. You learned how food, movement, medication and monitoring affect
+                daily care.
               </p>
               <p>
-                Then the circle widened: safety, prevention, problem solving, support, and the
-                people around you. The point was never to memorize fourteen lessons. It was to make
-                the next real moment easier to meet.
+                Later lessons covered safety, prevention, problem solving and support. You can use
+                those topics when the related situation comes up.
               </p>
             </div>
           </div>
@@ -2656,7 +2654,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             <BodySystemLab />
             <FollowOneBite onReady={markBiteReady} />
             <blockquote className={styles.pullQuote}>
-              Your body is not an enemy to defeat. It is a living system you can learn to support.
+              Understanding the body process can make care instructions easier to follow.
             </blockquote>
           </div>
         );
@@ -2665,7 +2663,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className={styles.chapter}>
             <LessonHeading label="Numbers without judgment">
-              A reading is a clue. Context helps it speak.
+              Add context to a glucose reading.
             </LessonHeading>
             <p className={styles.lede}>
               Pick a moment. Watch how the meaning changes when the time window and a useful
@@ -2673,8 +2671,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </p>
             <NumberContextExplorer onReady={markNumberReady} />
             <p className={styles.closingSentence}>
-              The skill is not forcing every number to behave. The skill is knowing how to respond
-              without turning information into shame.
+              Use timing, symptoms and recent changes to decide which question the reading raises.
             </p>
           </div>
         );
@@ -2697,11 +2694,10 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className={styles.chapter}>
             <LessonHeading label="Protection without fear">
-              Prevention is care showing up before a problem becomes loud.
+              Screening can find changes before symptoms appear.
             </LessonHeading>
             <p className={styles.lede}>
-              Explore an area of the body. The point is not to predict a complication; it is to see
-              how early attention can make care calmer and more useful.
+              Explore an area of the body and review which checks can find changes early.
             </p>
             <ProtectionExplorer onReady={markProtectionReady} />
             <blockquote className={styles.pullQuote}>
@@ -2714,7 +2710,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className={styles.chapter}>
             <LessonHeading label="Problem solving for real life">
-              Confidence is knowing how to return, not knowing every answer.
+              Practice returning after a plan changes.
             </LessonHeading>
             <ReturnAfterRainMotion />
             <ReturnScenarioExplorer onReady={markReturnReady} />
@@ -2733,8 +2729,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
             </p>
             <SupportPractice onReady={markSupportReady} />
             <blockquote className={styles.pullQuote}>
-              Needing support does not make the foundation weaker. It gives the foundation more
-              places to stand.
+              Ask for a specific kind of help and say how much information you want to share.
             </blockquote>
           </div>
         );
@@ -2770,7 +2765,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
 
             <section className={styles.nextStepSection}>
               <div>
-                <p className="editorial-eyebrow">One gentle next step</p>
+                <p className="editorial-eyebrow">Choose a next step</p>
                 <h2>Choose one thing to carry into the next month.</h2>
                 <p>Choosing is optional. This is not a five-part plan.</p>
               </div>
@@ -2934,7 +2929,7 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
           </p>
           {stageLocked && stageGateMessage ? (
             <p className="mb-4 rounded-[8px] border border-[#d9a88f] bg-[#f6e9e1] px-3 py-2 text-sm font-medium text-[#a2593f]">
-              One small step first: {stageGateMessage}
+              Complete this activity first: {stageGateMessage}
             </p>
           ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
@@ -2977,14 +2972,14 @@ export function DayFourteenExperience({ lesson: experience }: { lesson: LessonPl
       </Modal>
 
       <Modal
-        description="Eleven short chapters through recognition, practical knowledge, confidence, and the next phase."
+        description="Eleven short chapters reviewing practical knowledge and choosing what to practice next."
         onOpenChange={setMapOpen}
         open={mapOpen}
         title="Day 14 lesson map"
       >
         <ol className={styles.lessonMap}>
           {[
-            "Quiet recognition",
+            "Course review",
             "Where you began",
             "Knowledge that travels",
             "Your body makes more sense",

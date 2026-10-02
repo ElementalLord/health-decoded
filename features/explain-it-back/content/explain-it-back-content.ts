@@ -547,7 +547,7 @@ export const explainItBackChallenges = [
           "other carbohydrates exist beyond added sugars",
         ],
         missingFeedback:
-          "Add why Total Carbohydrate is different: it represents more than just added sugar.",
+          "Add why Total Carbohydrate is different: it includes added sugar and other carbohydrates.",
       },
     ],
     optionalConcepts: [
@@ -573,7 +573,7 @@ export const explainItBackChallenges = [
     ],
     passingExample:
       "Added sugar is only one kind of carbohydrate information. Total carbs also reflects other carbs, so zero added sugar doesn't necessarily mean zero carbs.",
-    almostExample: "Total carbs tells you more than just added sugar.",
+    almostExample: "Total carbs includes added sugar and other carbohydrates.",
     failingExample: "If added sugar is zero, total carbohydrate has to be zero too.",
     sources: [
       {

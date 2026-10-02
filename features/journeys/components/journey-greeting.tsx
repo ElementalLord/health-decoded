@@ -16,16 +16,16 @@ export function JourneyGreeting({
   totalLessons,
 }: JourneyGreetingProps) {
   const name = displayName?.trim() || "there";
-  const title = firstVisit ? `You’re in the right place, ${name}` : `Welcome back, ${name}`;
+  const title = firstVisit ? `Welcome, ${name}` : `Welcome back, ${name}`;
   const message = firstVisit
-    ? "Nothing here needs to happen all at once. Your first calm lesson is ready whenever you are."
+    ? "Your first lesson is ready. Most lessons take about eight minutes, and your place is saved automatically."
     : journeyComplete
-      ? `You completed all ${totalLessons} lessons in the Foundation Phase. What you learned is ready to become steadier through the next chapter of practice.`
+      ? `You completed all ${totalLessons} lessons in the Foundation phase. You can now revisit any lesson or use the practice tools.`
       : currentLessonStatus === "in_progress"
-        ? "Your place is saved. Continue from exactly where you stopped, whenever it feels right."
+        ? "Your place is saved. Continue from where you stopped."
         : completedLessons > 0
-          ? `You’ve completed ${completedLessons} ${completedLessons === 1 ? "lesson" : "lessons"}. Today is one more small step, not a test.`
-          : "One calm lesson is ready when you are. There is no deadline and no perfect pace.";
+          ? `You’ve completed ${completedLessons} ${completedLessons === 1 ? "lesson" : "lessons"}. Your next lesson is ready.`
+          : "Your first lesson is ready. There is no deadline.";
 
   return (
     <header className="motion-cascade space-y-4 border-b border-border pb-8">

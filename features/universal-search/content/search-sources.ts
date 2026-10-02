@@ -156,7 +156,7 @@ export const toolSearchDocuments = [
     id: "TOOL-MILESTONES",
     type: "tool",
     title: "Milestones",
-    description: "View meaningful learning and preparation steps you have completed.",
+    description: "View the lessons and preparation steps you have completed.",
     route: "/milestones",
     aliases: ["milestone", "achievement", "badge"],
     keywords: ["completed", "recognized"],

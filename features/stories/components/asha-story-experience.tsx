@@ -76,7 +76,7 @@ function GroceryLabel() {
     <section className={styles.labelMoment} aria-labelledby="label-title">
       <div className={styles.packageLabel}>
         <div className={styles.labelTop}>
-          <span>Pantry staple</span>
+          <span>Elbow macaroni</span>
           <span>Nutrition facts</span>
         </div>
         <div className={styles.labelRows} role="tablist" aria-label="Inspect the package label">
@@ -87,7 +87,7 @@ function GroceryLabel() {
             type="button"
           >
             <span>Serving size</span>
-            <strong>1/4 cup dry</strong>
+            <strong>2 oz (56 g) dry</strong>
           </button>
           <button
             aria-selected={selected === "carbohydrate"}
@@ -96,7 +96,7 @@ function GroceryLabel() {
             type="button"
           >
             <span>Total carbohydrate</span>
-            <strong>36 g</strong>
+            <strong>42 g</strong>
           </button>
           <button
             aria-selected={selected === "fiber"}
@@ -105,7 +105,7 @@ function GroceryLabel() {
             type="button"
           >
             <span>Fiber · Protein</span>
-            <strong>1 g · 3 g</strong>
+            <strong>3 g · 7 g</strong>
           </button>
         </div>
       </div>
@@ -120,19 +120,19 @@ function GroceryLabel() {
 
 const cartDetails = {
   bread: {
-    title: "Bread",
+    title: "Whole-wheat sandwich bread",
     copy: "Asha saw carbohydrate on the label and treated the number like a stop sign. The label did not tell her what amount she usually eats or what else is in the meal.",
   },
   yogurt: {
-    title: "Yogurt",
+    title: "Vanilla yogurt",
     copy: "Different products can have different ingredients and nutrition. A category name alone does not answer which option fits Asha's preferences and care plan.",
   },
   fruit: {
-    title: "Fruit",
+    title: "Apples",
     copy: "The presence of carbohydrate does not make a food automatically off-limits. Asha needs context, not a single-number rule.",
   },
   beans: {
-    title: "Beans",
+    title: "Black beans",
     copy: "Beans can contribute carbohydrate, fiber, and protein. Looking at one line can hide the rest of what a food offers.",
   },
 } as const;
@@ -192,8 +192,8 @@ function DinnerTableComparison() {
         {view === "plate" ? (
           <>
             <div className={styles.plate} aria-hidden="true">
-              <span className={styles.plateProtein}>Protein</span>
-              <span className={styles.plateGreens}>Greens</span>
+              <span className={styles.plateProtein}>Grilled chicken</span>
+              <span className={styles.plateGreens}>Green salad</span>
             </div>
             <div>
               <h3 id="table-view-heading">A separate meal</h3>
@@ -203,10 +203,10 @@ function DinnerTableComparison() {
         ) : (
           <>
             <div className={styles.servingDishes} aria-hidden="true">
-              <span>Grain</span>
-              <span>Beans</span>
-              <span>Vegetables</span>
-              <span>Protein</span>
+              <span>Roast chicken</span>
+              <span>Mashed potatoes</span>
+              <span>Green beans</span>
+              <span>Dinner rolls</span>
             </div>
             <div>
               <h3 id="table-view-heading">A familiar routine</h3>
@@ -311,33 +311,46 @@ function AppointmentQuestions() {
 }
 
 function WholeMealView() {
-  const [selected, setSelected] = useState<"grain" | "beans" | "vegetables" | "protein">("grain");
-  const notes = {
-    grain: "Contains carbohydrate. The amount and the foods eaten with it add context.",
-    beans: "Can contribute carbohydrate, fiber, and protein.",
-    vegetables: "Add fiber, variety, and volume to the meal.",
-    protein: "Adds protein to this version of the family meal.",
+  const mealDetails = {
+    "mashed-potatoes": {
+      label: "Mashed potatoes",
+      note: "Contain carbohydrate. The amount and the foods eaten with them add context.",
+    },
+    "green-beans": {
+      label: "Green beans",
+      note: "Add fiber, color, and variety to the meal.",
+    },
+    corn: {
+      label: "Roasted corn",
+      note: "Contributes carbohydrate, fiber, and a familiar side dish.",
+    },
+    "roast-chicken": {
+      label: "Roast chicken",
+      note: "Adds protein to this version of the family meal.",
+    },
   } as const;
+  const [selected, setSelected] = useState<keyof typeof mealDetails>("mashed-potatoes");
+  const detail = mealDetails[selected];
 
   return (
     <section className={styles.mealView} aria-labelledby="meal-heading">
       <div className={styles.mealDiagram} role="tablist" aria-label="Inspect the whole meal">
-        {Object.keys(notes).map((food) => (
+        {(Object.keys(mealDetails) as Array<keyof typeof mealDetails>).map((food) => (
           <button
             aria-selected={selected === food}
             key={food}
-            onClick={() => setSelected(food as keyof typeof notes)}
+            onClick={() => setSelected(food)}
             role="tab"
             type="button"
           >
-            {food[0]!.toUpperCase() + food.slice(1)}
+            {mealDetails[food].label}
           </button>
         ))}
       </div>
       <div aria-live="polite" className={styles.mealNote} role="tabpanel">
         <span>The whole meal</span>
-        <h3 id="meal-heading">{selected[0]!.toUpperCase() + selected.slice(1)}</h3>
-        <p>{notes[selected]}</p>
+        <h3 id="meal-heading">{detail.label}</h3>
+        <p>{detail.note}</p>
         <small>This is context for the story, not a portion guide or personalized meal plan.</small>
       </div>
     </section>
@@ -378,7 +391,7 @@ function SundayDecision() {
           <p>
             {choice === "serve"
               ? "The meal stays shared, and Asha can make her own choice without turning one dinner into a permanent rule."
-              : "Support works better when it makes room for Asha’s choices instead of monitoring or removing them."}
+              : "Useful support asks Asha what she wants and respects her choices."}
           </p>
         </div>
       ) : null}
@@ -420,12 +433,12 @@ const scenes = [
     body: (
       <>
         <p>
-          Asha picked up a familiar pantry staple, read the nutrition label, and put it back. She
-          did the same with bread, yogurt, fruit, and beans.
+          Asha picked up a box of elbow macaroni, read the nutrition label, and put it back. She did
+          the same with whole-wheat sandwich bread, vanilla yogurt, apples, and black beans.
         </p>
         <p>
           Nearly every familiar food seemed to contain a number she didn&apos;t understand. After an
-          hour, her cart held leafy greens, eggs, a protein option, and water.
+          hour, her cart held leafy greens, eggs, plain chicken breasts, and water.
         </p>
       </>
     ),
@@ -455,8 +468,9 @@ const scenes = [
     body: (
       <>
         <p>
-          The table held a grain dish, beans, vegetables, bread, yogurt, and a protein dish. Asha
-          had made herself a different dinner: plain protein and leafy greens.
+          The table held roast chicken, mashed potatoes, green beans, roasted corn, and dinner
+          rolls. Asha had made herself a different dinner: plain grilled chicken and a small green
+          salad.
         </p>
         <p>
           Everyone talked about the week and passed dishes across the table. Asha was sitting with
@@ -475,7 +489,8 @@ const scenes = [
       <>
         <p>
           Asha&apos;s daughter looked at the separate plate. Her husband offered to stop serving one
-          of their familiar dishes so Asha wouldn&apos;t have to worry about it.
+          of their familiar dishes, the mashed potatoes, so Asha wouldn&apos;t have to worry about
+          them.
         </p>
         <p>
           He meant to help. Asha didn&apos;t want the family to change every meal for her, and she
@@ -513,9 +528,9 @@ const scenes = [
           family usually ate, then looked at the whole dinner with her.
         </p>
         <p>
-          The grain dish wasn&apos;t the only part of the meal. There were beans, vegetables,
-          protein, side dishes, the amount of each food, and what Asha could realistically keep
-          doing.
+          The mashed potatoes weren&apos;t the only part of the meal. There were roast chicken,
+          green beans, corn, dinner rolls, the amount of each food, and what Asha could
+          realistically keep doing.
         </p>
       </>
     ),
@@ -529,8 +544,9 @@ const scenes = [
     body: (
       <>
         <p>
-          The same dishes came back to the table. Asha still felt nervous. One appointment
-          hadn&apos;t removed every worry she had attached to the meal.
+          The roast chicken, mashed potatoes, green beans, corn, and dinner rolls came back to the
+          table. Asha still felt nervous. One appointment hadn&apos;t removed every worry she had
+          attached to the meal.
         </p>
         <p>
           This time, nobody made her a separate plate. The serving spoons stayed with the shared
@@ -689,10 +705,7 @@ export function AshaStoryExperience() {
               <RotateCcw aria-hidden="true" size={16} /> Read again
             </button>
           </div>
-          <p className={styles.disclosure}>
-            Asha is a placeholder name. This is an illustrative scenario, not one person&apos;s
-            medical history or a personalized eating plan.
-          </p>
+          <p className={styles.disclosure}>Asha is a fictional character.</p>
         </article>
       ) : (
         <article className={styles.reader} ref={articleRef}>

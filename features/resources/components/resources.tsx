@@ -40,6 +40,11 @@ import { recognizeMilestone } from "@/features/achievements/lib/recognize-milest
 import { isResourceMilestoneId } from "@/features/achievements/content/milestone-activity-ids";
 import type { Resource } from "@/features/stories/schemas/resource.schema";
 import { formatDateSafely } from "@/lib/dates/format-date";
+import {
+  readLocalStorage,
+  safeRemoveLocalStorage,
+  safeSetLocalStorage,
+} from "@/lib/storage/safe-local-storage";
 
 import styles from "./resources.module.css";
 
@@ -138,8 +143,8 @@ const resourceVisuals: Record<ResourceId, ResourceVisual> = {
     tone: "blue",
   },
   "diabetes-meal-planning": {
-    alt: "An overhead watercolor of hands assembling a colorful balanced plate",
-    image: "/resources/family-meal-watercolor.jpg",
+    alt: "An overhead watercolor of grilled chicken, sweet potatoes, green vegetables, and salad",
+    image: "/resources/american-balanced-plate-watercolor.jpg",
     tone: "gold",
   },
   "cultural-foods": {
@@ -183,7 +188,7 @@ const resourceVisuals: Record<ResourceId, ResourceVisual> = {
     tone: "blue",
   },
   "foot-care": {
-    alt: "An overhead watercolor of a calm foot check on patterned green tiles",
+    alt: "An overhead watercolor of a foot check on patterned green tiles",
     image: "/resources/foot-check-watercolor.jpg",
     tone: "gold",
   },
@@ -221,12 +226,7 @@ function useReadingProgress() {
 }
 
 function saveViewed(ids: Set<ResourceId>) {
-  try {
-    window.localStorage.setItem(VIEWED_STORAGE_KEY, JSON.stringify([...ids]));
-    return true;
-  } catch {
-    return false;
-  }
+  return safeSetLocalStorage(VIEWED_STORAGE_KEY, JSON.stringify([...ids]));
 }
 
 function shortSource(organization: string) {
@@ -608,17 +608,23 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
   const [query, setQuery] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<TopicId>("all");
   const [resourcesExpanded, setResourcesExpanded] = useState(false);
-  const [informationDialog, setInformationDialog] = useState<
-    "progress" | "sources" | "disclaimer" | null
-  >(null);
+  const [informationDialog, setInformationDialog] = useState<"progress" | "sources" | null>(null);
   const validIds = useMemo(() => new Set(resources.map(({ id }) => id)), [resources]);
 
   useEffect(() => {
+    const stored = readLocalStorage(VIEWED_STORAGE_KEY);
+    if (!stored.ok) {
+      setPersistenceAvailable(false);
+      return;
+    }
+    if (!stored.value) return;
+
     try {
-      const stored = window.localStorage.getItem(VIEWED_STORAGE_KEY);
-      if (!stored) return;
-      const parsed: unknown = JSON.parse(stored);
-      if (!Array.isArray(parsed)) return;
+      const parsed: unknown = JSON.parse(stored.value);
+      if (!Array.isArray(parsed)) {
+        safeRemoveLocalStorage(VIEWED_STORAGE_KEY);
+        return;
+      }
       setViewedIds(
         new Set(
           parsed.filter(
@@ -627,12 +633,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
         ),
       );
     } catch {
-      setPersistenceAvailable(false);
-      try {
-        window.localStorage.removeItem(VIEWED_STORAGE_KEY);
-      } catch {
-        // Keep the safe empty state if storage is unavailable.
-      }
+      if (!safeRemoveLocalStorage(VIEWED_STORAGE_KEY)) setPersistenceAvailable(false);
     }
   }, [validIds]);
 
@@ -645,16 +646,12 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
   };
 
   const clearViewed = () => {
-    try {
-      window.localStorage.removeItem(VIEWED_STORAGE_KEY);
-    } catch {
-      setPersistenceAvailable(false);
-    }
+    if (!safeRemoveLocalStorage(VIEWED_STORAGE_KEY)) setPersistenceAvailable(false);
     setViewedIds(new Set());
   };
 
   const filteredResources = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase();
+    const normalizedQuery = query.trim().toLowerCase();
     const activeTopic = topics.find(({ id }) => id === selectedTopic);
     const topicIds = activeTopic ? new Set(activeTopic.resourceIds) : null;
 
@@ -670,7 +667,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
         resource.reading_level,
       ]
         .join(" ")
-        .toLocaleLowerCase()
+        .toLowerCase()
         .includes(normalizedQuery);
     });
   }, [query, resources, selectedTopic]);
@@ -722,11 +719,10 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
             <span>The July edit</span>
           </div>
           <div className={styles.mastheadCopy}>
-            <h1>Good information should feel like someone chose it for you.</h1>
+            <h1>Reviewed guidance from the CDC and NIH.</h1>
             <div>
               <p>
-                Eighteen clear, useful reads for the questions that stay with you between
-                appointments, selected from official CDC and NIH guidance.
+                Eighteen guides covering diagnosis, daily care, treatment, prevention and support.
               </p>
               <span>18 guides · 2 trusted sources · reviewed July 2026</span>
             </div>
@@ -740,7 +736,7 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               <p>Curated library</p>
               <h2 id="browse-resources-heading">Browse all resources</h2>
             </div>
-            <p>Follow the question you have today, or search across every reviewed guide.</p>
+            <p>Choose a topic or search across every reviewed guide.</p>
           </div>
 
           <div className={styles.browseLayout}>
@@ -835,15 +831,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
               <Stethoscope aria-hidden="true" size={15} />
               Why these sources?
             </Button>
-            <Button
-              className={styles.informationButton}
-              fullWidth={false}
-              onClick={() => setInformationDialog("disclaimer")}
-              variant="text"
-            >
-              <ShieldCheck aria-hidden="true" size={15} />
-              About these readings
-            </Button>
           </div>
         </footer>
 
@@ -866,19 +853,6 @@ export function ResourcesList({ resources }: { resources: Resource[] }) {
           title="Why these sources?"
         >
           <SourceNote />
-          <div className={styles.modalActions}>
-            <Button fullWidth={false} onClick={() => setInformationDialog(null)}>
-              Close
-            </Button>
-          </div>
-        </Modal>
-
-        <Modal
-          description="These readings support, but do not replace, advice from your health care team. Every link opens on an official CDC or NIH website."
-          onOpenChange={(open) => !open && setInformationDialog(null)}
-          open={informationDialog === "disclaimer"}
-          title="About these readings"
-        >
           <div className={styles.modalActions}>
             <Button fullWidth={false} onClick={() => setInformationDialog(null)}>
               Close

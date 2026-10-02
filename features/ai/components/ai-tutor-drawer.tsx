@@ -181,7 +181,7 @@ function AiTutorDrawer({ preferences }: { preferences?: ProfileSettings | undefi
                     ref={titleRef}
                     tabIndex={-1}
                   >
-                    Your Companion
+                    Ask Health Decoded
                   </Dialog.Title>
                   <Dialog.Description className="mt-2 text-[length:var(--text-supporting)] leading-7 text-muted-foreground">
                     Ask about what you&apos;re learning.
@@ -200,7 +200,7 @@ function AiTutorDrawer({ preferences }: { preferences?: ProfileSettings | undefi
                 <Suspense
                   fallback={
                     <p aria-live="polite" className="py-8 text-sm text-muted-foreground">
-                      Preparing your companion…
+                      Opening the guide…
                     </p>
                   }
                 >

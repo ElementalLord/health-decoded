@@ -1008,10 +1008,7 @@ export function Module1Experience() {
               Back to caregiver modules
             </Link>
           </div>
-          <p className={styles.disclosure}>
-            Mira and Jules are illustrative characters. This module supports communication skills;
-            it does not explain another person’s feelings or replace medical guidance.
-          </p>
+          <p className={styles.disclosure}>Mira and Jules are fictional characters.</p>
         </article>
       ) : (
         <article className={styles.reader} ref={articleRef}>

@@ -18,8 +18,8 @@ const unlockMigration = readFileSync(
 test("Day 11 uses one custom nine-chapter experience", () => {
   assert.match(player, /if \(lesson\.dayNumber === 11\) return <DayElevenExperience/);
   assert.match(experience, /const stageCount = 9/);
-  assert.match(experience, /Your future deserves a plan, not a fear story/);
-  assert.match(experience, /Protection grows wherever care keeps showing up/);
+  assert.match(experience, /Screening and routine care can reduce risk/);
+  assert.match(experience, /You completed the prevention lesson/);
 });
 
 test("Day 11 includes at least three distinct endlessly looping visual explanations", () => {
@@ -38,7 +38,7 @@ test("Day 11 includes at least three distinct endlessly looping visual explanati
 test("Day 11 keeps its completion headline centered with the card beneath it", () => {
   assert.match(
     experience,
-    /<LessonHeading centered>Protection grows wherever care keeps showing up\.<\/LessonHeading>/,
+    /<LessonHeading centered>You completed the prevention lesson\.<\/LessonHeading>/,
   );
 });
 

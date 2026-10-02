@@ -42,7 +42,7 @@ import {
 
 const stageCount = 11;
 const dayThirteenStageGates: LessonStageGateMap = {
-  0: "Choose how you want this lesson to meet you before you move on.",
+  0: "Choose the option that best matches your situation before you move on.",
   1: "Share at least one bag onto the bench above before you move on.",
   2: "Choose a response to the stigma example before you move on.",
   3: "Choose the permission-first support response before you move on.",
@@ -103,7 +103,7 @@ type StigmaMomentId = (typeof stigmaMoments)[number]["id"];
 
 const supportModes = [
   {
-    action: "Stay beside me for ten quiet minutes.",
+    action: "Sit with me and listen for ten minutes.",
     id: "listen",
     label: "Listen",
     note: "Presence before advice",
@@ -121,7 +121,7 @@ const supportModes = [
     note: "Specific and chosen",
   },
   {
-    action: "Give me some quiet, then check in later.",
+    action: "Give me some space, then check in later.",
     id: "space",
     label: "Give me space",
     note: "A no can still be connection",
@@ -1379,7 +1379,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
           <div className="space-y-10">
             <div className="grid gap-8 lg:grid-cols-[1fr_18rem] lg:items-end">
               <LessonHeading label="Day 13 · Support, stigma, and the people around you">
-                The right support makes more room for you.
+                Ask for support while keeping your choices and privacy.
               </LessonHeading>
               <div className={styles.dayNote}>
                 <p className="editorial-number text-accent-warm">13</p>
@@ -1390,14 +1390,14 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               </div>
             </div>
             <LessonStoryImage
-              alt="A woman speaks openly at her kitchen table while a close friend listens beside her with a gentle hand on her forearm"
-              caption="Sometimes the most useful first response is presence: no lecture, no fixing, and no demand to make the moment easier for anyone else."
-              emphasis="Listening can make the load feel lighter."
+              alt="A woman speaks at her kitchen table while a close friend listens beside her with a hand on her forearm"
+              caption="Listening without interrupting or offering immediate advice can be a useful form of support."
+              emphasis="Start by asking what kind of help is wanted."
               priority
               src="/lessons/day-13/listening-without-fixing.jpg"
             />
             <div>
-              <p className={styles.promptTitle}>How do you want this lesson to meet you?</p>
+              <p className={styles.promptTitle}>Which option best matches your situation?</p>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {openingFeelings.map(([id, label]) => (
                   <AnswerChoice
@@ -1417,7 +1417,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
               <Sparkles aria-hidden="true" />
               <p>
                 {openingFeeling
-                  ? "You do not need a perfect support system to begin. One safer conversation can change how heavy care feels."
+                  ? "The rest of the lesson covers specific requests, permission, privacy and boundaries."
                   : "Choose the closest answer to continue. Nothing you choose here is saved as health information."}
               </p>
             </div>
@@ -1426,18 +1426,15 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
       case 1:
         return (
           <div className="space-y-9">
-            <LessonHeading label="A diagnosis is one chapter">
-              Diabetes can belong inside your life without becoming the name of it.
+            <LessonHeading label="Keep the whole person visible">
+              A diagnosis is one part of a person’s life and identity.
             </LessonHeading>
             <SharedLoadAnimation onReady={markSharedLoadReady} />
             <div className={styles.editorialPrompt}>
               <div>
                 <p className="editorial-eyebrow">Keep the whole person visible</p>
                 <h2>I am still…</h2>
-                <p>
-                  Choose one truth you want the people around you to remember. This is reflection,
-                  not a test.
-                </p>
+                <p>Choose one part of your identity you want other people to remember.</p>
               </div>
               <div className={styles.identityList}>
                 {identityIdeas.map((idea) => (
@@ -1453,7 +1450,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             </div>
             {identityIdea ? (
               <blockquote className={styles.identityStatement}>
-                “I am still {identityIdea}. Diabetes is part of my story, not the whole book.”
+                “I am still {identityIdea}. Diabetes is one part of my life.”
               </blockquote>
             ) : null}
           </div>
@@ -1462,7 +1459,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className="space-y-9">
             <LessonHeading label="Stigma writes social rules">
-              Bring the hidden assumption into the light.
+              Identify the assumption behind the comment.
             </LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Stigma can sound like blame, a joke, forced disclosure, or constant monitoring. The
@@ -1574,9 +1571,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
       case 4:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Make the help specific">
-              A clear request gives care somewhere useful to land.
-            </LessonHeading>
+            <LessonHeading label="Make the help specific">Make the request specific.</LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               “Help me with diabetes” is enormous. One person and one action are easier to
               understand, easier to answer, and easier to adjust later.
@@ -1627,10 +1622,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                     "Could you listen for ten minutes? I do not need an answer, just company."}
                   ”
                 </blockquote>
-                <p>
-                  A request is an invitation, not a contract. Both people can answer honestly and
-                  find another shape if needed.
-                </p>
+                <p>The other person can agree, decline or suggest a different way to help.</p>
               </div>
             </div>
           </div>
@@ -1638,8 +1630,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
       case 5:
         return (
           <div className="space-y-9">
-            <LessonHeading label="A boundary is not a punishment">
-              Warm and firm can live in the same sentence.
+            <LessonHeading label="State a clear boundary">
+              Keep it brief and specific.
             </LessonHeading>
             <div className={styles.scenarioPicker}>
               {boundaryScenarios.map((scenario) => (
@@ -1749,8 +1741,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             </LessonHeading>
             <LessonStoryImage
               alt="Adults across generations relax together in a garden courtyard, with two women hugging, friends sharing tea, and another pair beginning a walk"
-              caption="Peer support can bring practical ideas, relief, laughter, and the recognition that many difficult moments are shared."
-              emphasis="Community can turn isolation into belonging."
+              caption="Peer support can provide practical ideas and contact with people who have handled similar situations."
+              emphasis="Different people can provide different kinds of support."
               src="/lessons/day-13/community-belonging.jpg"
             />
             <SupportTableAnimation activeSeat={supportSeat} />
@@ -1839,12 +1831,12 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className="space-y-9">
             <LessonHeading label="Emotional health is health">
-              You do not have to perform “fine” to deserve company.
+              Say when you need company or practical help.
             </LessonHeading>
             <div className={styles.emotionalCheckIn}>
               <div>
                 <MessageCircleHeart aria-hidden="true" />
-                <p className="editorial-eyebrow">A gentle check-in</p>
+                <p className="editorial-eyebrow">Check in</p>
                 <h2>What could make today feel a little less lonely or overloaded?</h2>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -1921,10 +1913,10 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         return (
           <div className="space-y-12 text-center">
             <p className="editorial-eyebrow">Day 13 complete</p>
-            <LessonHeading centered>Care can be shared without giving yourself away.</LessonHeading>
+            <LessonHeading centered>You completed the support and boundaries lesson.</LessonHeading>
             <div className={styles.completionMark}>
               <UsersRound aria-hidden="true" />
-              <p>You are still the author of your care.</p>
+              <p>You decide what help to request and what information to share.</p>
               <span>Ask · Listen · Offer · Check</span>
             </div>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
@@ -1933,7 +1925,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
                 {[
                   "Diabetes is a condition you manage, not a definition of your character or the whole of your identity.",
                   "Helpful support asks permission, respects choice, and reduces burden. Concern does not excuse control.",
-                  "A clear request, chosen privacy, and a calm boundary can protect both health and relationships.",
+                  "A clear request, chosen privacy and a direct boundary can protect health and relationships.",
                 ].map((item, index) => (
                   <li key={item}>
                     <span>0{index + 1}</span>
@@ -2026,7 +2018,7 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
         <footer className="border-t border-border pt-5">
           {stageLocked && stageGateMessage ? (
             <p className="mb-4 rounded-[8px] border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
-              One small step first: {stageGateMessage}
+              Complete this activity first: {stageGateMessage}
             </p>
           ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
@@ -2042,8 +2034,8 @@ export function DayThirteenExperience({ lesson: experience }: { lesson: LessonPl
             </Button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Each practice chapter asks for one meaningful action before continuing. Private writing
-            and reflection remain optional.
+            Complete the required activity to continue. Private writing and reflection remain
+            optional.
           </p>
         </footer>
       ) : null}

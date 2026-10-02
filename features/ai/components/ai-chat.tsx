@@ -498,7 +498,7 @@ export function AiChat({
     replacedAnswerRef.current = null;
     setIsStreaming(false);
     dropPendingAssistant(assistantId, replacedAnswer);
-    setNotice("Stopped. You can rephrase the question or continue whenever you’re ready.");
+    setNotice("Stopped. You can rephrase the question or ask another one.");
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
@@ -523,14 +523,12 @@ export function AiChat({
         </p>
         <details className={cn("text-muted-foreground", !isDrawer && "mt-2")}>
           <summary className="w-fit cursor-pointer font-medium text-foreground underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            {isDrawer ? "Educational guidance only · Safety & limits" : "Safety details"}
+            {isDrawer ? "Scope and safety" : "Scope and safety"}
           </summary>
           <p className="mt-2 max-w-2xl">
-            This tutor can explain learning topics, but cannot diagnose, interpret personal results,
-            or recommend treatment or medication changes. For factual answers, it searches for
-            credible sources such as NIH, CDC, FDA, WHO, official drug labels, professional
-            standards, and peer-reviewed research, then shows the exact links it used. Urgent
-            symptoms need local emergency care.
+            This guide explains general diabetes topics. It cannot diagnose a condition, interpret
+            personal results or recommend treatment changes. Answers may include links to the
+            sources used. Possible emergencies need local emergency care.
           </p>
         </details>
       </aside>

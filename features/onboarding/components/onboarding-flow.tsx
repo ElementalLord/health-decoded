@@ -37,8 +37,7 @@ const stepNames = ["Welcome", "Explore", "Choose a focus", "Ready"] as const;
 
 const capabilities = [
   {
-    description:
-      "Follow the 14-day Journey, revisit ideas at the right time, and see your progress grow.",
+    description: "Follow 14 short lessons, review key ideas later, and track what you complete.",
     features: ["14 short lessons", "Spaced review", "Progress and milestones"],
     icon: BookOpen,
     title: "Learn step by step",
@@ -59,7 +58,7 @@ const capabilities = [
   },
   {
     description:
-      "Prepare for appointments, ask the AI guide an educational question, or learn how to support someone with care.",
+      "Prepare for appointments, ask the AI guide a question, or learn practical ways to support someone.",
     features: ["Appointment preparation", "AI guide", "Caregiver path"],
     icon: HeartHandshake,
     title: "Prepare and support",
@@ -121,7 +120,7 @@ const results: Record<
   },
   "learn-basics": {
     action: "Open my Journey",
-    copy: "Your Journey keeps the next useful lesson or review in one place, with practice tools nearby whenever you want to test an idea.",
+    copy: "Your Journey keeps your next lesson or review in one place and links to practice tools for each topic.",
     destination: "/journey",
     eyebrow: "Your learning path",
     heading: "Build the big picture first.",
@@ -244,12 +243,12 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
                   Welcome to Health Decoded
                 </h1>
                 <p className={styles.lead}>
-                  Diabetes can come with a lot of new information. Health Decoded helps you make
-                  sense of it one step at a time.
+                  A Type 2 diabetes diagnosis comes with a lot of new information. Health Decoded
+                  organizes the basics into short lessons and practical tools.
                 </p>
                 <p className={styles.supporting}>
-                  Follow a guided Journey, practice with interactive tools, explore real-life
-                  stories, prepare for appointments, and find trusted information when you need it.
+                  Follow the Journey, practice with interactive tools, read realistic stories,
+                  prepare for appointments and find reviewed information.
                 </p>
               </div>
 
@@ -290,13 +289,13 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
         {step === 1 ? (
           <Screen>
             <div className={styles.sectionHeading}>
-              <p className={styles.kicker}>Here when you need it</p>
+              <p className={styles.kicker}>Explore the app</p>
               <h1 className={styles.title} ref={headingRef} tabIndex={-1}>
-                One app, a few useful ways in.
+                Start with the section you need.
               </h1>
               <p className={styles.lead}>
-                Choose a section to see how the updated Health Decoded experience can help. You can
-                move between all of these anytime.
+                Choose a section to see what it contains. Every section remains available from the
+                main navigation.
               </p>
             </div>
 
@@ -431,8 +430,8 @@ export function OnboardingFlow({ mode }: { mode: OnboardingMode }) {
                 </h1>
                 <p className={styles.lead}>{result.copy}</p>
                 <p className={styles.recommendationNote}>
-                  Based on what you chose, this is a useful place to start. Your Journey will remain
-                  your home base, and every section stays available.
+                  This starting point matches your selection. Your Journey remains the home page,
+                  and every section stays available.
                 </p>
                 <ul className={styles.resultHighlights}>
                   {result.highlights.map((highlight) => (

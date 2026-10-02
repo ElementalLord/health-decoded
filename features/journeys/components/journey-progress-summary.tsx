@@ -70,7 +70,7 @@ export function JourneyProgressSummary({
           className="inline-flex min-h-11 shrink-0 items-center gap-1.5 text-sm font-semibold text-primary underline decoration-accent-warm/40 decoration-2 underline-offset-4 hover:decoration-accent-warm focus-visible:ring-2 focus-visible:ring-ring"
           href="/progress"
         >
-          See the full journey
+          View all progress
           <ArrowRight aria-hidden="true" className="size-4" />
         </Link>
       </div>

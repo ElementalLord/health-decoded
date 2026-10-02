@@ -285,8 +285,9 @@ test("cached signing keys are reused across requests and cold-start stampedes", 
 
 test("signing key discovery failure degrades to remote verification", async () => {
   const realFetch = globalThis.fetch;
-  globalThis.fetch = async () => {
-    throw new TypeError("fetch failed");
+  globalThis.fetch = async (_input, init) => {
+    assert.ok(init?.signal instanceof AbortSignal, "JWKS discovery must have a timeout signal");
+    throw new DOMException("request aborted", "AbortError");
   };
 
   try {
@@ -298,6 +299,42 @@ test("signing key discovery failure degrades to remote verification", async () =
   } finally {
     globalThis.fetch = realFetch;
   }
+});
+
+test("signing key caches stay isolated by Supabase project", async () => {
+  const realFetch = globalThis.fetch;
+  const projectB = "https://another-testref.supabase.co";
+  const requested = [];
+  globalThis.fetch = async (input) => {
+    const url = typeof input === "string" ? input : input.url;
+    requested.push(url);
+    const kid = url.startsWith(projectB) ? "project-b-key" : "project-a-key";
+    return new Response(JSON.stringify({ keys: [{ ...jwks.keys[0], kid }] }), { status: 200 });
+  };
+
+  try {
+    const scoped = await import(`../services/supabase/signing-keys.ts?case=project-scope`);
+    const projectAKeys = await scoped.getCachedSigningKeys(URL_BASE, PUBLISHABLE_KEY);
+    const projectBKeys = await scoped.getCachedSigningKeys(projectB, PUBLISHABLE_KEY);
+    const repeatedProjectAKeys = await scoped.getCachedSigningKeys(URL_BASE, PUBLISHABLE_KEY);
+
+    assert.equal(projectAKeys?.keys[0]?.kid, "project-a-key");
+    assert.equal(projectBKeys?.keys[0]?.kid, "project-b-key");
+    assert.equal(repeatedProjectAKeys?.keys[0]?.kid, "project-a-key");
+    assert.equal(requested.length, 2);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("middleware defers dependency outages to the protected layout", async () => {
+  const middleware = await readFile(
+    new URL("../services/supabase/middleware.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(middleware, /try \{[\s\S]*supabase\.auth\.getClaims/);
+  assert.match(middleware, /catch \{[\s\S]*return response;/);
 });
 
 test("a non-ok discovery response is treated as unavailable", async () => {

@@ -39,7 +39,7 @@ test("each lesson has a distinct instructional owner", () => {
     ["day-eight-experience.tsx", /Question before device/],
     ["day-nine-experience.tsx", /Highs, lows, and knowing when to act/i],
     ["day-ten-experience.tsx", /Close the loop/],
-    ["day-eleven-experience.tsx", /quiet changes/i],
+    ["day-eleven-experience.tsx", /screen before symptoms/i],
     ["day-twelve-experience.tsx", /Pause · Understand · Choose · Adjust/],
     ["day-thirteen-experience.tsx", /Stigma writes social rules/],
     ["day-fourteen-experience.tsx", /You know more than you did fourteen days ago/],
@@ -116,7 +116,7 @@ test("database summaries preserve the revised instructional ownership", () => {
 test("lesson recaps have topic-specific labels", () => {
   const labels = [
     "First-day essentials",
-    "Body-story recap",
+    "Process recap",
     "Your lab-reading key",
     "Four permissions",
     "Movement mechanisms",

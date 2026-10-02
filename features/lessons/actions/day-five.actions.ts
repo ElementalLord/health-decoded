@@ -112,7 +112,7 @@ const sensitivityFeedback: Record<
   },
   exercise_cures: {
     accurate: false,
-    body: "Physical activity is a powerful management tool, but it is not a guaranteed cure and it does not replace an individualized care plan.",
+    body: "Physical activity can support diabetes management. It does not cure diabetes or replace an individualized care plan.",
     heading: "Helpful does not mean magical.",
     details: [
       "Responses differ from person to person.",
@@ -156,7 +156,7 @@ const afterMealFeedback: Record<
 
 const mythAnswers = ["myth", "more_accurate", "myth"] as const;
 const mythBodies = [
-  "Physical activity includes much more than gym workouts. Walking, household tasks, gardening, dancing, and adapted seated movement can all be meaningful.",
+  "Physical activity includes more than gym workouts. Walking, household tasks, gardening, dancing and adapted seated movement all count.",
   "Smaller bouts can count. The useful question is what can be repeated safely, not whether it looks like a formal workout.",
   "Movement supports glucose use, heart health, strength, sleep, mood, and function even when the scale does not change.",
 ] as const;
@@ -183,7 +183,7 @@ export async function evaluateDayFiveAction(input: unknown): Promise<DayFiveEval
       data: {
         accurate,
         body: mythBodies[data.statement]!,
-        heading: accurate ? "That makes room for real life." : "That rule is too narrow.",
+        heading: accurate ? "That is a workable adjustment." : "That rule is too narrow.",
         details: [
           "The body responds to movement, not to whether it happened in a gym.",
           "An approachable activity is more useful when it can be repeated.",

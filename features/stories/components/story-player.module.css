@@ -823,39 +823,39 @@
   width: 1.75rem;
 }
 
-.foodMark[data-food="grain"],
+.foodMark[data-food="mashed-potatoes"],
 .foodMark[data-food="water"] {
   background: #f4ead7;
 }
 
-.foodMark[data-food="beans"] {
+.foodMark[data-food="corn"] {
+  background: #e3b84e;
+  border-radius: 50%;
+}
+
+.foodMark[data-food="side-salad"] {
+  background: #8ba27c;
+  border-radius: 50%;
+}
+
+.foodMark[data-food="apple-crisp"] {
   background: #c98658;
   border-radius: 50%;
 }
 
-.foodMark[data-food="dairy"] {
-  background: linear-gradient(to bottom, #fffaf0 65%, #dce8df 65%);
-}
-
-.foodMark[data-food="fruit"],
-.foodMark[data-food="dessert"] {
-  background: #d98263;
-  border-radius: 50%;
-}
-
-.foodMark[data-food="bread"] {
+.foodMark[data-food="dinner-roll"] {
   background: #d7aa69;
   border-radius: 50%;
   height: 1.45rem;
 }
 
-.foodMark[data-food="vegetables"] {
+.foodMark[data-food="green-beans"] {
   background: #759a79;
   border-radius: 50% 50% 45% 10%;
   transform: rotate(-12deg);
 }
 
-.foodMark[data-food="protein"] {
+.foodMark[data-food="roast-chicken"] {
   background: #bd765f;
   border-radius: 55% 35% 50% 40%;
 }
@@ -1173,28 +1173,28 @@
   text-align: center;
 }
 
-.plateFood[data-food="vegetables"] {
+.plateFood[data-food="green-beans"],
+.plateFood[data-food="side-salad"] {
   background: #88a482;
 }
 
-.plateFood[data-food="protein"] {
+.plateFood[data-food="roast-chicken"] {
   background: #c27b63;
 }
 
-.plateFood[data-food="beans"] {
-  background: #d68c55;
-}
-
-.plateFood[data-food="grain"],
-.plateFood[data-food="dairy"] {
+.plateFood[data-food="mashed-potatoes"] {
   background: #efe5d1;
 }
 
-.plateFood[data-food="bread"] {
+.plateFood[data-food="dinner-roll"] {
   background: #d6aa70;
 }
 
-.plateFood[data-food="dessert"] {
+.plateFood[data-food="corn"] {
+  background: #e3bd62;
+}
+
+.plateFood[data-food="apple-crisp"] {
   background: #d99677;
 }
 
@@ -1383,12 +1383,16 @@
   width: 2.4rem;
 }
 
-.sharedTableIllustration > div span[data-dish="vegetables"] {
+.sharedTableIllustration > div span[data-dish="green-beans"] {
   background: #7f9b76;
 }
 
-.sharedTableIllustration > div span[data-dish="protein"] {
+.sharedTableIllustration > div span[data-dish="roast-chicken"] {
   background: #bd7661;
+}
+
+.sharedTableIllustration > div span[data-dish="mashed-potatoes"] {
+  background: #efe5d1;
 }
 
 .supportAgreement label > span {

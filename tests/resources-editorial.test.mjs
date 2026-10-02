@@ -6,6 +6,7 @@ import { type2DiabetesResources } from "../content/resources/type-2-diabetes-res
 
 const component = readFileSync("features/resources/components/resources.tsx", "utf8");
 const page = readFileSync("app/(app)/resources/page.tsx", "utf8");
+const storage = readFileSync("lib/storage/safe-local-storage.ts", "utf8");
 const styles = readFileSync("features/resources/components/resources.module.css", "utf8");
 
 test("the reading room background stays decorative and clear of the text column", () => {
@@ -93,7 +94,7 @@ test("editorial imagery is purposeful and production sized", () => {
     "type-2-diabetes-basics-watercolor.jpg",
     "a1c-explained-watercolor.jpg",
     "monitoring-blood-sugar-watercolor.jpg",
-    "family-meal-watercolor.jpg",
+    "american-balanced-plate-watercolor.jpg",
     "cultural-foods-watercolor.jpg",
     "everyday-movement-watercolor.jpg",
     "diabetes-treatments-watercolor.jpg",
@@ -123,8 +124,12 @@ test("editorial imagery is purposeful and production sized", () => {
 
 test("article views persist locally and expose a clear completion record", () => {
   assert.match(component, /health-decoded:resources:viewed/);
-  assert.match(component, /window\.localStorage\.getItem/);
-  assert.match(component, /window\.localStorage\.setItem/);
+  assert.match(component, /readLocalStorage\(VIEWED_STORAGE_KEY\)/);
+  assert.match(component, /safeSetLocalStorage\(VIEWED_STORAGE_KEY/);
+  assert.match(component, /safeRemoveLocalStorage\(VIEWED_STORAGE_KEY\)/);
+  assert.match(storage, /window\.localStorage\.getItem/);
+  assert.match(storage, /window\.localStorage\.setItem/);
+  assert.match(storage, /window\.localStorage\.removeItem/);
   assert.match(component, /role="progressbar"/);
   assert.match(component, /articles viewed/);
   assert.match(component, /Viewed/);
@@ -196,7 +201,7 @@ test("practice tools are descriptive and link to all three activities", () => {
   }
 });
 
-test("reading progress, source rationale, and the disclaimer stay behind footer buttons", () => {
+test("reading progress and source rationale stay behind footer buttons", () => {
   const mastheadIndex = component.indexOf("className={styles.masthead}");
   const browseIndex = component.indexOf("className={styles.browseSection}");
   const informationIndex = component.indexOf("className={styles.informationActions}");
@@ -208,10 +213,9 @@ test("reading progress, source rationale, and the disclaimer stay behind footer 
   assert.doesNotMatch(component, /className=\{styles\.disclaimer\}/);
   assert.match(component, />\s*Reading record\s*</);
   assert.match(component, /Why these sources\?/);
-  assert.match(component, />\s*About these readings\s*</);
   assert.match(component, /open=\{informationDialog === "progress"\}/);
   assert.match(component, /open=\{informationDialog === "sources"\}/);
-  assert.match(component, /open=\{informationDialog === "disclaimer"\}/);
+  assert.doesNotMatch(component, /informationDialog === "disclaimer"/);
   assert.match(styles, /\.browseSection\s*\{[^}]*padding:[^;]*0 1rem;/);
   assert.match(styles, /\.informationActions\s*\{[^}]*padding:\s*0\.25rem 0;/);
   assert.match(styles, /\.informationActionGroup\s*\{[^}]*grid-column:\s*2;/);
@@ -250,15 +254,12 @@ test("the reading room is responsive, accessible, and motion-aware", () => {
 test("trusted-source guidance stays explicit", () => {
   assert.match(component, /Practical public-health guidance/);
   assert.match(component, /NIH health explainers with deeper detail/);
-  assert.match(
-    component,
-    /These readings support, but do not replace, advice from your health care team/,
-  );
+  assert.match(component, /Reviewed guidance from the CDC and NIH/);
 });
 
 test("external reading links disclose their behavior", () => {
   assert.match(component, /rel="noopener noreferrer"/);
   assert.match(component, /target="_blank"/);
   assert.match(component, /opens in a new tab/);
-  assert.match(component, /Every\s+link\s+opens on an official CDC or NIH website/);
+  assert.match(component, /from \$\{shortSource\(resource\.organization\)\}/);
 });

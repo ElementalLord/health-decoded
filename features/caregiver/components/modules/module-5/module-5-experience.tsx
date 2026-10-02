@@ -1314,7 +1314,7 @@ export function Module5Experience() {
       id: "invisible-load",
       moment: "What was never agreed",
       title: "Care can expand without a conversation.",
-      body: <p>Tomas accepted some help. Elena quietly added the rest.</p>,
+      body: <p>Tomas accepted some help. Elena added more without asking.</p>,
       visual: <ScenarioSequence end={6} start={3} />,
       continueLabel: "Separate the responsibilities",
     },
@@ -1518,7 +1518,7 @@ export function Module5Experience() {
             {completed ? "Finished" : "One step remains"}
           </h1>
           <p>
-            Sustainable support makes room for care, limits, shared responsibility, and ordinary
+            Sustainable support includes care, limits, shared responsibility, and ordinary
             connection.
           </p>
           <div className={styles.completionTakeaway}>

@@ -62,8 +62,7 @@ const firstThoughts = [
   {
     id: "unsure",
     label: "I don’t really know how I feel.",
-    response:
-      "Not knowing is a real response too. You do not have to name a feeling before you can take in one small idea.",
+    response: "You can continue without choosing a specific feeling.",
   },
   {
     id: "confused",
@@ -108,8 +107,7 @@ const worries = [
   {
     id: "meaning",
     label: "I don’t know what diabetes even is.",
-    response:
-      "That is a useful place to begin. You only need one simple idea today, and we’ll uncover it slowly.",
+    response: "That is a useful place to begin. This lesson starts with one basic idea.",
   },
   {
     id: "other",
@@ -282,7 +280,7 @@ function ExperienceHeading({ children, eyebrow }: { children: React.ReactNode; e
 function ArrivalIllustration() {
   return (
     <figure className="mx-auto w-full max-w-lg">
-      <CompanionIllustration title="A companion standing close in a reassuring embrace" />
+      <CompanionIllustration title="Two people standing together" />
       <figcaption className="text-center text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
         You do not have to take this in alone
       </figcaption>
@@ -477,7 +475,7 @@ export function FirstFiveMinutesExperience({
 
   function chooseBagItem(item: (typeof firstDayBagItems)[number]) {
     if (!item.belongsToday) {
-      setBagMessage("That can wait. Today does not need to carry the weight of your whole future.");
+      setBagMessage("That can wait. This lesson focuses on what you need first.");
       return;
     }
 
@@ -603,14 +601,14 @@ export function FirstFiveMinutesExperience({
                   <p>You were just told you have Type 2 diabetes.</p>
                   <p>That&apos;s a lot to hear.</p>
                   <p>You don&apos;t have to understand everything today.</p>
-                  <p>We&apos;ll take this one step at a time.</p>
+                  <p>We&apos;ll start with the basics.</p>
                 </div>
               </div>
             </div>
             <LessonStoryImage
               alt="A woman writes one question in a notebook at the kitchen table while her partner sits nearby with tea"
-              caption="You do not need to solve the whole diagnosis today. One question, one breath, and one next step are enough for a beginning."
-              emphasis="A gentle start still counts."
+              caption="Start with what the diagnosis means, which symptoms need urgent help, and one question for your next visit."
+              emphasis="This first lesson covers the immediate basics."
               priority
               src="/lessons/day-01/gentle-beginning.jpg"
             />
@@ -1182,7 +1180,7 @@ export function FirstFiveMinutesExperience({
               <Leaf className="mx-auto size-8 text-primary" strokeWidth={1.4} />
               <ExperienceHeading>Choose one small next step.</ExperienceHeading>
               <p className="text-lg text-muted-foreground">
-                Not a whole plan. Just one thing that may make tomorrow clearer.
+                Choose one action that could make tomorrow easier.
               </p>
             </div>
             <div className="mx-auto grid max-w-2xl gap-3">
@@ -1277,7 +1275,7 @@ export function FirstFiveMinutesExperience({
               <section className="space-y-6 border-y border-warning/35 bg-warning/8 px-5 py-8 sm:px-7">
                 <div className="space-y-2">
                   <p className="editorial-eyebrow text-warning-foreground">
-                    Let&apos;s practice · One step before continuing
+                    Practice · Complete this step to continue
                   </p>
                   <h2
                     className="font-serif-display text-4xl font-normal leading-tight"

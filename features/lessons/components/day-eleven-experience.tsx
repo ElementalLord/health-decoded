@@ -60,7 +60,7 @@ const bodySystems = [
       "The kidneys filter the blood. Early kidney changes often do not cause pain or obvious symptoms, which is why blood and urine tests can be useful before anything feels wrong.",
     id: "kidneys",
     label: "Kidneys",
-    note: "Listen for quiet changes",
+    note: "Look for early changes",
     screening: "Ask about the blood and urine tests your clinician recommends.",
     Icon: Droplets,
   },
@@ -115,7 +115,7 @@ const timelineChecks = [
 type TimelineCheckId = (typeof timelineChecks)[number]["id"];
 
 const timelinePurposes = [
-  { id: "kidney", label: "Can reveal quiet filtering changes before you feel unwell" },
+  { id: "kidney", label: "Can reveal filtering changes before you feel unwell" },
   { id: "foot", label: "Checks skin, feeling, and blood flow before a small issue grows" },
   { id: "eye", label: "Looks for retinal changes even when vision still feels clear" },
 ] as const;
@@ -133,8 +133,8 @@ const careChecklist = [
 type CareCheckId = (typeof careChecklist)[number][0];
 
 const reflections = [
-  "Eye screening surprised me because clear vision does not tell the whole story.",
-  "Kidney tests surprised me because early changes can be quiet.",
+  "Eye screening can find changes before vision is affected.",
+  "Kidney tests can find changes before symptoms appear.",
   "Foot checks surprised me because a small issue can be easier to address early.",
   "The ABCs surprised me because glucose is only one part of protection.",
 ] as const;
@@ -142,7 +142,7 @@ const reflections = [
 const glossary = [
   {
     definition:
-      "A health problem that can develop over time. With diabetes, complications are risks, not guarantees, and prevention and early detection can make a meaningful difference.",
+      "A health problem that can develop over time. With diabetes, complications are possible risks. Prevention and early detection can reduce harm.",
     term: "Complication",
   },
   {
@@ -250,8 +250,7 @@ function FutureGardenAnimation() {
       >
         <title id="future-garden-title">A garden growing under a canopy of preventive care</title>
         <desc id="future-garden-desc">
-          Gentle roots, leaves, and protective rings move continuously to show that care builds over
-          time.
+          Roots, leaves, and protective rings move continuously to show that care builds over time.
         </desc>
         <defs>
           <linearGradient id="day-eleven-sky" x1="0" x2="1" y1="0" y2="1">
@@ -348,8 +347,8 @@ function FutureGardenAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Your future is not already written.</strong> Preventive care works like tending a
-        living garden: small actions, repeated over time, protect what is growing.
+        <strong>Risk can change over time.</strong> Regular care and screening can prevent, delay or
+        reduce some complications.
       </figcaption>
     </figure>
   );
@@ -461,10 +460,10 @@ function QuietSignalScannerAnimation() {
         role="img"
         viewBox="0 0 820 430"
       >
-        <title id="quiet-signal-title">A scanner finding small changes in quiet patterns</title>
+        <title id="quiet-signal-title">A scanner finding small early changes</title>
         <desc id="quiet-signal-desc">
-          A transparent scanning window moves continuously across three calm lines and softly
-          highlights small changes before they become obvious.
+          A transparent scanning window moves continuously across three lines and highlights small
+          changes before they become obvious.
         </desc>
         <defs>
           <linearGradient id="scanner-surface" x1="0" x2="1" y1="0" y2="1">
@@ -583,8 +582,8 @@ function QuietSignalScannerAnimation() {
         </g>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Screening is a quiet pattern scan, not a warning siren.</strong> It creates a chance
-        to notice small changes while there is more time and more room to respond.
+        <strong>Screening can find changes before symptoms appear.</strong> Earlier findings can
+        leave more time to respond.
       </figcaption>
     </figure>
   );
@@ -670,9 +669,8 @@ function AbcOrbitAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>The ABCs are a protection map, not a report card.</strong> They help you and your
-        clinician look at glucose, blood pressure, and cholesterol together, with personal goals
-        shaped for you.
+        <strong>The ABCs cover A1C, blood pressure and cholesterol.</strong> Your clinician can set
+        personal targets for each measure.
       </figcaption>
     </figure>
   );
@@ -798,9 +796,9 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
   function continueLabel() {
     return (
       [
-        "Begin with possibility, not fear",
+        "Review how risk can change",
         "Explore the connected body",
-        "Learn why quiet changes matter",
+        "Learn why screening matters",
         "Meet the diabetes ABCs",
         "Match checks to their purpose",
         "Build a care checklist",
@@ -844,15 +842,14 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-10">
             <div className="grid gap-8 lg:grid-cols-[1fr_18rem] lg:items-end">
-              <LessonHeading label="Day 11 · Preventing complications without fear">
-                Your future deserves a plan, not a fear story.
+              <LessonHeading label="Day 11 · Preventing complications">
+                Screening and routine care can reduce risk.
               </LessonHeading>
               <div className={styles.dayNote}>
                 <p className="editorial-number text-accent-warm">11</p>
                 <p>
-                  How do you protect your future without living in fear of it? Today is not a tour
-                  of everything that could go wrong. It is a map of the many places where care can
-                  go right.
+                  This lesson explains common screening checks, why they may be useful before
+                  symptoms appear, and which questions to bring to a visit.
                 </p>
               </div>
             </div>
@@ -877,9 +874,8 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
               <div className={styles.reassurance}>
                 <Sparkles aria-hidden="true" />
                 <p>
-                  Whatever you brought into this lesson is welcome. Complications are risks, not
-                  guarantees. Today you will collect practical ways to protect your eyes, kidneys,
-                  feet, heart, and peace of mind.
+                  Complications are risks rather than guaranteed outcomes. Routine care can help
+                  protect the eyes, kidneys, feet, heart and blood vessels.
                 </p>
               </div>
             ) : null}
@@ -888,16 +884,16 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
       case 1:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Possibility is not prophecy">
-              A risk is something to work with, not a future already decided.
+            <LessonHeading label="Risk can change">
+              A diagnosis does not predict one fixed outcome.
             </LessonHeading>
             <div className={styles.riskEditorial}>
               <div>
-                <p className="editorial-eyebrow text-accent-warm">The fear story</p>
+                <p className="editorial-eyebrow text-accent-warm">Common concern</p>
                 <p>“I have diabetes, so complications are inevitable.”</p>
               </div>
               <div>
-                <p className="editorial-eyebrow text-success">The useful truth</p>
+                <p className="editorial-eyebrow text-success">What the evidence supports</p>
                 <p>
                   Longer-term patterns shape risk, and steady care can prevent, delay, or reduce
                   harm. There are many points where you and your care team can act.
@@ -949,8 +945,8 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
             </LessonHeading>
             <ConnectedBodyAnimation />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Open each point on the map. You will see what may change quietly and the preventive
-              question that turns knowledge into care.
+              Open each point on the map. You will see what may change before symptoms appear and
+              the question that turns knowledge into care.
             </p>
             <div className={styles.systemGrid}>
               {bodySystems.map(({ Icon, detail, id, label, note, screening }) => {
@@ -996,7 +992,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
       case 3:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Quiet does not mean invisible">
+            <LessonHeading label="Screen before symptoms">
               Screening works best before symptoms need to get your attention.
             </LessonHeading>
             <LessonStoryImage
@@ -1099,7 +1095,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-9">
             <LessonHeading label="Build the early-warning timeline">
-              Connect each check to the quiet change it is designed to notice.
+              Connect each check to the change it is designed to notice.
             </LessonHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Choose a preventive check on the left, then choose its purpose on the right. This is
@@ -1159,7 +1155,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
               </div>
             </div>
             <p aria-live="polite" className={styles.timelineMessage} role="status">
-              {timelineMessage ?? "Three quiet changes. Three chances to notice early."}
+              {timelineMessage ?? "Match each check with the change it can find early."}
             </p>
           </div>
         );
@@ -1170,7 +1166,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
               A preventive visit is easier when your questions arrive with you.
             </LessonHeading>
             <LessonStoryImage
-              alt="A clinician gently checks a woman's foot during a routine visit while her partner sits close and holds her hand"
+              alt="A clinician checks a woman's foot during a routine visit while her partner sits nearby"
               caption="Foot, eye, kidney, blood-pressure, and lab checks create chances to notice change early and respond before it becomes harder."
               emphasis="Regular checks are acts of protection."
               src="/lessons/day-11/preventive-visit.jpg"
@@ -1230,8 +1226,8 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
       case 7:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Turn information into confidence">
-              If you can explain the why, you can ask for the care.
+            <LessonHeading label="Explain the reason for screening">
+              Practice answering a common question about eye exams.
             </LessonHeading>
             <div>
               <p className="mb-4 font-serif-display text-2xl">
@@ -1288,7 +1284,7 @@ export function DayElevenExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-12 text-center">
             <p className="editorial-eyebrow">Day 11 complete</p>
-            <LessonHeading centered>Protection grows wherever care keeps showing up.</LessonHeading>
+            <LessonHeading centered>You completed the prevention lesson.</LessonHeading>
             <div className={styles.completionShield}>
               <ShieldCheck aria-hidden="true" />
               <p>Risk is not destiny.</p>

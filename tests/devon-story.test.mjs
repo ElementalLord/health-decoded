@@ -205,8 +205,7 @@ test("the Devon reader is accessible, responsive, and motion-reduced", () => {
 });
 
 test("Devon's disclosure remains clear about the scenario and its limits", () => {
-  assert.match(devonNumberScreenStory.disclosure, /Devon is a placeholder name/);
-  assert.match(devonNumberScreenStory.disclosure, /does not describe one specific individual/);
-  assert.match(devonNumberScreenStory.disclosure, /does not.*personal instructions/i);
+  assert.match(devonNumberScreenStory.disclosure, /Devon is a fictional character/);
+  assert.match(devonNumberScreenStory.disclosure, /Follow your own care plan/);
   assert.doesNotMatch(devonPlayer, /Medically reviewed|real patient|testimonial/i);
 });

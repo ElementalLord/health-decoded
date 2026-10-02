@@ -34,7 +34,7 @@ globalRateLimit.healthDecodedAiUserRateLimit = userWindows;
 globalRateLimit.healthDecodedAiNetworkRateLimit = networkWindows;
 
 export function fingerprintAiRequest(message: string) {
-  return createHash("sha256").update(message.trim().toLocaleLowerCase()).digest("hex");
+  return createHash("sha256").update(message.trim().toLowerCase()).digest("hex");
 }
 
 function activeSince(records: readonly RequestRecord[], start: number) {

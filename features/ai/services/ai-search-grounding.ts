@@ -231,7 +231,7 @@ export function isAiAnswerRelevant(
     !/^(?:some|common|difference|role|purpose|effect|ways?|examples?)\b/.test(definition[1] ?? "")
   ) {
     const subjectTerms = [...relevanceTerms(definition[1] ?? "")];
-    const firstSentence = answer.split(/(?<=[.!?])\s+/)[0]?.toLocaleLowerCase() ?? "";
+    const firstSentence = answer.split(/(?<=[.!?])\s+/)[0]?.toLowerCase() ?? "";
     const firstWords = firstSentence.match(/[a-z0-9]+/g) ?? [];
     const predicateIndex = firstWords.findIndex((word) => /^(?:is|are|means|refers)$/.test(word));
     const openingSubject = firstWords.slice(0, predicateIndex).map(relevanceTerm);
@@ -272,7 +272,7 @@ function safePublicSourceUrl(value: string): URL | null {
 
   try {
     const url = new URL(value);
-    const hostname = url.hostname.toLocaleLowerCase();
+    const hostname = url.hostname.toLowerCase();
     if (
       url.protocol !== "https:" ||
       url.username ||
@@ -298,7 +298,7 @@ function safePublicSourceUrl(value: string): URL | null {
  * remain eligible without being pre-registered in the application.
  */
 export function isPermittedDynamicSource(url: URL) {
-  const hostname = url.hostname.toLocaleLowerCase().replace(/^www\./, "");
+  const hostname = url.hostname.toLowerCase().replace(/^www\./, "");
   return !excludedSourceHosts.some(
     (excluded) => hostname === excluded || hostname.endsWith(`.${excluded}`),
   );

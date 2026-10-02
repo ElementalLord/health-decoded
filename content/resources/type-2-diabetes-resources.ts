@@ -1,11 +1,11 @@
 export const type2DiabetesResources = [
   {
     id: "type-2-diabetes-basics",
-    title: "Type 2 diabetes: the short, honest version",
+    title: "Type 2 diabetes basics",
     organization: "Centers for Disease Control and Prevention",
     category: "Start here",
     description:
-      "A new diagnosis can make everything sound urgent. This is the clear, steady version of what Type 2 diabetes is and what changes from here.",
+      "A clear overview of what Type 2 diabetes is, how it affects blood glucose, and how it is managed.",
     editorial_label: "Recommended",
     format: "Explainer",
     reading_level: "Beginner",
@@ -20,7 +20,7 @@ export const type2DiabetesResources = [
     organization: "National Institute of Diabetes and Digestive and Kidney Diseases",
     category: "Start here",
     description:
-      "One number can hold months of glucose history. Here is what A1C sees, what it misses, and why the right goal is personal.",
+      "This guide explains what an A1C result measures, what can affect it, and why targets vary by person.",
     editorial_label: "Editor's pick",
     format: "Explainer",
     reading_level: "Beginner",
@@ -35,7 +35,7 @@ export const type2DiabetesResources = [
     organization: "Centers for Disease Control and Prevention",
     category: "Start here",
     description:
-      "A reading without context is only a snapshot. Food, sleep, stress, movement, and timing help turn it into a better question.",
+      "Food, sleep, stress, activity and timing can help explain an individual glucose reading.",
     editorial_label: "Quick guide",
     format: "Guide",
     reading_level: "Everyday",
@@ -46,11 +46,11 @@ export const type2DiabetesResources = [
   },
   {
     id: "diabetes-meal-planning",
-    title: "A plate that still feels like yours",
+    title: "Plan a balanced plate",
     organization: "Centers for Disease Control and Prevention",
     category: "Everyday habits",
     description:
-      "Dinner does not need a complete rewrite. A simple plate framework can make room for satisfaction, carbohydrates, and the foods you already know.",
+      "Use a simple plate framework to plan portions while keeping familiar foods in the meal.",
     editorial_label: "Editor's pick",
     format: "Guide",
     reading_level: "Beginner",
@@ -61,11 +61,11 @@ export const type2DiabetesResources = [
   },
   {
     id: "cultural-foods",
-    title: "Keep your culture on the table",
+    title: "Include familiar and cultural foods",
     organization: "Centers for Disease Control and Prevention",
     category: "Everyday habits",
     description:
-      "Rice, tortillas, noodles, bread, celebration dishes: culture belongs in the plan. Balance can be added without erasing the table.",
+      "Rice, tortillas, noodles, bread and celebration dishes can fit into a balanced eating plan.",
     editorial_label: "Recommended",
     format: "Guide",
     reading_level: "Everyday",
@@ -80,7 +80,7 @@ export const type2DiabetesResources = [
     organization: "Centers for Disease Control and Prevention",
     category: "Everyday habits",
     description:
-      "No gym membership required. A short walk, chair movement, or a few active minutes can matter in more ways than one.",
+      "A short walk, chair movement, or another brief activity can support glucose management and general health.",
     editorial_label: "Editor's pick",
     format: "Guide",
     reading_level: "Beginner",
@@ -91,11 +91,11 @@ export const type2DiabetesResources = [
   },
   {
     id: "diabetes-treatments",
-    title: "How treatment choices really get made",
+    title: "How diabetes treatments are chosen",
     organization: "National Institute of Diabetes and Digestive and Kidney Diseases",
     category: "Treatment & safety",
     description:
-      "Why does one person start metformin while another uses insulin or a newer medicine? Treatment makes more sense when you see the choices behind it.",
+      "See why one person may use metformin while another uses insulin or a different medicine.",
     editorial_label: "Evidence-based",
     format: "Explainer",
     reading_level: "Deeper read",
@@ -125,7 +125,7 @@ export const type2DiabetesResources = [
     organization: "Centers for Disease Control and Prevention",
     category: "Treatment & safety",
     description:
-      "Illness can rewrite the usual diabetes rules, even when you are eating less. A written sick-day plan makes the next step easier to find.",
+      "Illness can change glucose and medication needs, even when you eat less. A written sick-day plan explains what to do.",
     editorial_label: "Care essential",
     format: "Checklist",
     reading_level: "Everyday",
@@ -140,7 +140,7 @@ export const type2DiabetesResources = [
     organization: "National Institute of Diabetes and Digestive and Kidney Diseases",
     category: "Whole-body health",
     description:
-      "Diabetes and heart health share more of the same story than most people realize. Blood pressure, cholesterol, smoking, and glucose all have a role.",
+      "Blood pressure, cholesterol, smoking and glucose can all affect cardiovascular risk.",
     editorial_label: "Recommended",
     format: "Guide",
     reading_level: "Deeper read",
@@ -151,11 +151,11 @@ export const type2DiabetesResources = [
   },
   {
     id: "kidney-health",
-    title: "The quiet work of protecting your kidneys",
+    title: "Protecting your kidneys",
     organization: "National Institute of Diabetes and Digestive and Kidney Diseases",
     category: "Whole-body health",
     description:
-      "Kidney changes often stay quiet at first. Two simple kinds of tests can help bring them into view early.",
+      "Early kidney changes may cause no symptoms. Blood and urine tests can find them sooner.",
     editorial_label: "Evidence-based",
     format: "Guide",
     reading_level: "Deeper read",
@@ -185,7 +185,7 @@ export const type2DiabetesResources = [
     organization: "National Institute of Diabetes and Digestive and Kidney Diseases",
     category: "Whole-body health",
     description:
-      "The smallest sore can deserve early attention when feeling or circulation has changed. This two-minute habit helps you notice sooner.",
+      "Reduced feeling or circulation can make a small sore more serious. A daily check helps find problems early.",
     editorial_label: "Quick guide",
     format: "Checklist",
     reading_level: "Beginner",
@@ -226,11 +226,11 @@ export const type2DiabetesResources = [
   },
   {
     id: "diabetes-education-and-support",
-    title: "The coach who makes care practical",
+    title: "Diabetes education and support",
     organization: "Centers for Disease Control and Prevention",
     category: "Support & access",
     description:
-      "One of the most useful people on a diabetes care team may be the person who helps turn advice into an ordinary Tuesday.",
+      "Diabetes education specialists help people apply care instructions to meals, medicines and daily routines.",
     editorial_label: "Recommended",
     format: "Guide",
     reading_level: "Beginner",

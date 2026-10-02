@@ -175,8 +175,8 @@ test("the Nora reader is accessible, responsive, and motion-reduced", () => {
 });
 
 test("Nora's disclosure remains honest about the illustrative scenario", () => {
-  assert.match(noraPrescriptionBagStory.disclosure, /Nora is a placeholder name/);
-  assert.match(noraPrescriptionBagStory.disclosure, /does not describe one specific individual/);
+  assert.match(noraPrescriptionBagStory.disclosure, /Nora is a fictional character/);
+  assert.match(noraPrescriptionBagStory.disclosure, /prescriber or pharmacist/);
   assert.equal(noraPrescriptionBagStory.reviewStatus, "not-reviewed");
   assert.doesNotMatch(noraPlayer, /Medically reviewed|real patient|testimonial/i);
 });

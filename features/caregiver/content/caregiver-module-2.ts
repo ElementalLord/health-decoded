@@ -23,7 +23,7 @@ export const caregiverModule2 = Object.freeze({
       "Prototype-quality content requiring editorial, clinical-boundary, privacy, accessibility, cultural, and emotional-safety review.",
   },
   passiveReading: {
-    title: "Reliable support leaves room",
+    title: "Reliable support respects limits",
     paragraphs: [
       "Being dependable does not mean being constantly involved. A supporter can show up, follow through on an agreed task, and still leave the other person in charge of their information, routines, and decisions.",
       "Permission works best when it is specific. A yes to one ride, reminder, or conversation does not become permission for every future situation. Naming the boundary clearly protects both people from having to guess what the agreement includes.",
@@ -38,9 +38,9 @@ export const caregiverModule2 = Object.freeze({
         ],
       },
       {
-        title: "Control can sound helpful",
+        title: "Helpful language can still be controlling",
         paragraphs: [
-          "Control is not always loud. It can sound like a reminder that was never requested, a household rule that only one person must follow, or a question asked again after it has already been answered. Intent matters, but it does not erase the effect of being monitored.",
+          "Unrequested reminders, one-sided household rules, and repeated questions can make a person feel monitored. Good intent does not remove that effect.",
           "Support becomes more trustworthy when declining it is easy. Offers with a clear limit, such as one ride, one errand, or one check-in at an agreed time, let the person decide without having to argue their way out of a larger plan.",
         ],
       },

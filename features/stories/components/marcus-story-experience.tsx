@@ -634,10 +634,7 @@ export function MarcusStoryExperience() {
               <RotateCcw aria-hidden="true" size={16} /> Read again
             </button>
           </div>
-          <p className={styles.disclosure}>
-            Marcus is a placeholder name. This is an illustrative scenario, not one person&apos;s
-            medical history or personal medical advice.
-          </p>
+          <p className={styles.disclosure}>Marcus is a fictional character.</p>
         </article>
       ) : (
         <article className={styles.reader} ref={articleRef}>

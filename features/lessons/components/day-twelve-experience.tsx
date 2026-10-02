@@ -55,14 +55,14 @@ const dayTwelveStageGates: LessonStageGateMap = {
 
 const openingFeelings = [
   ["tired", "I am tired of plans falling apart"],
-  ["careful", "I want a calmer way to handle surprises"],
+  ["careful", "I want a practical way to handle surprises"],
   ["curious", "I am curious what a backup plan could look like"],
   ["ready", "I am ready to practice with real-life situations"],
 ] as const;
 
 const solverSteps = [
   {
-    body: "Take one breath and interrupt the all-or-nothing story. The whole day does not need to be solved in the first second.",
+    body: "Pause before reacting. You only need to address the part of the plan that changed.",
     id: "pause",
     number: "01",
     title: "Pause",
@@ -1282,8 +1282,8 @@ function BreatheThrough() {
       <div className={styles.rerouteHead}>
         <p className="editorial-eyebrow">Before you solve anything, one breath</p>
         <p>
-          The all-or-nothing story loosens with a single slow breath. Start one and follow the ring
-          as it grows and settles.
+          A short pause can make it easier to identify what changed. Follow the ring through one
+          slow breath.
         </p>
       </div>
       <div className={styles.breatheStage}>
@@ -1329,7 +1329,7 @@ function BreatheThrough() {
         <p aria-live="polite" className={styles.rerouteCaption}>
           {breathing
             ? "In as the ring grows, out as it settles. The day is still here when you return."
-            : "One breath interrupts the story that the whole day is already ruined."}
+            : "Use one slow breath before choosing the next action."}
         </p>
         <button
           className={styles.breatheButton}
@@ -1351,7 +1351,7 @@ function SteadyStory() {
   return (
     <div className={styles.steady}>
       <div className={styles.rerouteHead}>
-        <p className="editorial-eyebrow">The first move is the story you tell</p>
+        <p className="editorial-eyebrow">Describe what changed accurately</p>
         <p>
           Slide from “the whole day is ruined” toward “one part changed,” and watch most of the day
           steady itself.
@@ -1713,7 +1713,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
           <div className="space-y-10">
             <div className="grid gap-8 lg:grid-cols-[1fr_18rem] lg:items-end">
               <LessonHeading label="Day 12 · Problem solving for real life">
-                A changed plan can still carry you forward.
+                Adjust the plan when real life changes.
               </LessonHeading>
               <div className={styles.dayNote}>
                 <p className="editorial-number text-accent-warm">12</p>
@@ -1753,8 +1753,8 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
               <Sparkles aria-hidden="true" />
               <p>
                 {openingFeeling
-                  ? "Real life is allowed in this room. One changed meal, missed routine, or difficult day does not decide your health."
-                  : "Choose the closest answer to continue. This lesson is practice, not another plan you have to perform perfectly."}
+                  ? "One changed meal, missed routine or difficult day does not determine your overall health."
+                  : "Choose the closest answer to continue. Nothing you enter in this activity is saved."}
               </p>
             </div>
           </div>
@@ -1763,11 +1763,11 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-9">
             <LessonHeading label="A reusable way through">
-              Four small moves can make a changed moment feel workable.
+              Use four steps to respond when a plan changes.
             </LessonHeading>
             <ChangedDayAnimation activeStep={activeSolverStep} />
             <div>
-              <p className={styles.promptTitle}>Move through the moment at your own pace.</p>
+              <p className={styles.promptTitle}>Open each step in the sequence.</p>
               <div className={styles.solverTabs}>
                 {solverSteps.map((item) => (
                   <button
@@ -1803,7 +1803,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         return (
           <div className="space-y-9">
             <LessonHeading label="Practice: lunch moved">
-              The best available choice is not a consolation prize.
+              Use the best option available now.
             </LessonHeading>
             <div className={styles.scenarioStory}>
               <div>
@@ -1851,9 +1851,8 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             </div>
             {evaluations.lateLunch ? <Feedback feedback={evaluations.lateLunch} /> : null}
             <p className={styles.careNote}>
-              If delayed meals affect your medicines or cause symptoms, follow your personal plan
-              and contact your care team when needed. This practice does not replace those
-              instructions.
+              If delayed meals affect your medicines or cause symptoms, use your personal
+              instructions and contact your care team when needed.
             </p>
           </div>
         );
@@ -1884,8 +1883,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 <p className="editorial-eyebrow text-accent-warm">What remains true</p>
                 <h2>{activeSituation.truth}</h2>
                 <p>
-                  Choose one tool below. You are not building a perfect rescue plan, just making the
-                  next moment more usable.
+                  Choose one tool for the changed situation. Focus on the next available action.
                 </p>
               </article>
             </div>
@@ -2134,7 +2132,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             </div>
             <p aria-live="polite" className={styles.quietNote}>
               {planChoicesMade.size === 2
-                ? "Both sides are chosen. Your backup plan is ready to carry forward."
+                ? "Both parts are chosen. Your backup plan is complete."
                 : `${planChoicesMade.size} of 2 sides chosen. Pick one changed moment and one useful response.`}
             </p>
             <div className={styles.planTicket}>
@@ -2261,7 +2259,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
                   Tomorrow turns toward the people around you: asking for help that actually helps,
-                  protecting privacy, and setting a calm boundary.
+                  protecting privacy, and setting a direct boundary.
                 </p>
               </div>
               <div>
@@ -2340,7 +2338,7 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
         <footer className="border-t border-border pt-5">
           {stageLocked && stageGateMessage ? (
             <p className="mb-4 rounded-[8px] border border-[#9db3a8] bg-[#eef2ec] px-3 py-2 text-sm font-medium text-[#3f6053]">
-              One small step first: {stageGateMessage}
+              Complete this activity first: {stageGateMessage}
             </p>
           ) : null}
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
@@ -2356,8 +2354,8 @@ export function DayTwelveExperience({ lesson: experience }: { lesson: LessonPlay
             </Button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Each practice chapter asks for one meaningful interaction before continuing. Personal
-            reflections and writing remain optional.
+            Complete the required activity to continue. Personal reflections and writing remain
+            optional.
           </p>
         </footer>
       ) : null}

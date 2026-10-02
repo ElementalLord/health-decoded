@@ -202,8 +202,8 @@ function sorterConfirmation(side: "high" | "low") {
 
 function sorterCorrection(side: "high" | "low") {
   return side === "high"
-    ? "Gently: this one more often travels with high blood sugar."
-    : "Gently: this one more often travels with low blood sugar.";
+    ? "This symptom occurs more often with high blood sugar."
+    : "This symptom occurs more often with low blood sugar.";
 }
 
 function Feedback({ feedback }: { feedback: DayNineEvaluationFeedback }) {
@@ -235,8 +235,8 @@ function SteadyBalanceAnimation() {
       >
         <title id="steady-balance-title">The body keeps glucose inside a comfortable band</title>
         <desc id="steady-balance-desc">
-          A gentle gauge needle sways inside a marked band while a glucose wave drifts steadily
-          between two soft boundary lines.
+          A gauge needle moves inside a marked band while a glucose wave drifts steadily between two
+          soft boundary lines.
         </desc>
         <rect className={styles.canvasWarm} height="430" rx="54" width="820" />
         <text className={styles.sceneHeading} textAnchor="middle" x="410" y="48">
@@ -429,7 +429,7 @@ function SlowTideAnimation() {
       <figcaption className={styles.figureCaption}>
         <strong>A rising tide, not a sudden wave.</strong> When glucose stays higher than the body
         can comfortably use, the body pulls extra water to flush some out, which is why thirst and
-        restroom trips are often the first gentle signals.
+        restroom trips are often early signals.
       </figcaption>
     </figure>
   );
@@ -586,15 +586,15 @@ function ActionPathAnimation() {
         viewBox="0 0 880 470"
       >
         <title id="action-path-title">
-          A calm response path with a fast lane for urgent signals
+          A standard response path with a fast lane for urgent signals
         </title>
         <desc id="action-path-desc">
-          A token travels a calm three-step rail from pausing to following a care plan to contacting
-          the care team, while a second token takes a faster urgent-care lane below.
+          A token travels a three-step rail from pausing to following a care plan to contacting the
+          care team, while a second token takes a faster urgent-care lane below.
         </desc>
         <rect className={styles.canvasPaper} height="470" rx="54" width="880" />
         <text className={styles.sceneHeading} textAnchor="middle" x="440" y="48">
-          A CALM PATH BEATS A PANICKED GUESS
+          USE THE PLAN BEFORE GUESSING
         </text>
         <path className={styles.pathRail} d="M80 240H800" />
         {stations.map(({ detail, label, x }, index) => (
@@ -656,13 +656,13 @@ function ActionPathAnimation() {
           </g>
         </g>
         <text className={styles.motionCaption} textAnchor="middle" x="440" y="446">
-          MOST MOMENTS USE THE CALM PATH · A FEW USE THE FAST LANE
+          MOST MOMENTS USE THE STANDARD PATH · A FEW NEED URGENT HELP
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Here is the use:</strong> most highs and lows travel the calm path, pause, follow
-        the plan your care team gave you, and reach out early if things stay off. Urgent signals are
-        uncommon, and they skip straight to prompt medical care.
+        <strong>Use the response path:</strong> for most highs and lows, pause, follow the plan your
+        care team gave you, and reach out early if things stay off. Urgent signals are uncommon, and
+        they skip straight to prompt medical care.
       </figcaption>
     </figure>
   );
@@ -681,8 +681,8 @@ function SteadyHandAnimation() {
           A smoke detector gets attention while a person breathes
         </title>
         <desc id="steady-hand-desc">
-          Steam rises from a pan under a chirping smoke detector while a calm figure takes a slow
-          breath beside a three-step reminder card.
+          Steam rises from a pan under a chirping smoke detector while a person takes a slow breath
+          beside a three-step reminder card.
         </desc>
         <rect className={styles.canvasWarm} height="440" rx="54" width="820" />
         <text className={styles.sceneHeading} textAnchor="middle" x="410" y="48">
@@ -909,7 +909,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
         "Practice responding to a low",
         "Know when high needs more",
         "Build your simple plan",
-        "Practice staying calm",
+        "Practice using the response plan",
         "Review the action cues",
       ][stage] ?? "Continue"
     );
@@ -950,7 +950,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
           <div className="space-y-10">
             <div className="grid gap-8 lg:grid-cols-[1fr_17rem] lg:items-end">
               <LessonHeading label="Day 09 · Highs, lows, and knowing when to act">
-                Preparedness is quieter than panic, and far more useful.
+                Learn the signs of highs and lows and what to do next.
               </LessonHeading>
               <div className="border-l-2 border-accent-warm pl-6">
                 <p className="editorial-number text-accent-warm">09</p>
@@ -962,8 +962,8 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             <LessonStoryImage
               alt="Two friends smile while packing a small safety pouch with a meter, water, phone, juice, and snacks"
-              caption="A few familiar supplies and one trusted person can turn uncertainty into a clear next step. Preparation is there to quiet fear."
-              emphasis="Being ready can feel peaceful."
+              caption="A meter, written care plan, fast-acting carbohydrate and contact information can make the next step easier to find."
+              emphasis="Keep the supplies from your care plan together."
               priority
               src="/lessons/day-09/ready-kit.jpg"
             />
@@ -981,8 +981,8 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             </div>
             {openingFeeling ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 text-lg leading-8">
-                Whatever you chose is a reasonable place to start. Knowledge replaces fear, by the
-                end of today you will know what to watch for and when to ask for help.
+                This lesson covers common signs, the role of a personal care plan and symptoms that
+                need prompt medical care.
               </p>
             ) : null}
           </div>
@@ -1146,7 +1146,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
       case 4:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Practice a calm response">
+            <LessonHeading label="Practice a response">
               You feel shaky and sweaty between meals. What comes first?
             </LessonHeading>
             <div className="grid gap-3 md:grid-cols-3">
@@ -1173,7 +1173,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
             {evaluations.lowResponse?.accurate ? (
               <div className="animate-slide-up border-y border-border py-8">
                 <p className="font-serif-display text-3xl">
-                  Afterwards, become a gentle detective.
+                  Afterward, review what may have contributed.
                 </p>
                 <p className="mt-3 max-w-3xl leading-8 text-muted-foreground">
                   Many care plans include a fast-acting carbohydrate for mild lows, the exact steps
@@ -1314,8 +1314,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
               </div>
               {supportPerson ? (
                 <p className="mt-4 animate-slide-up border-l-2 border-success bg-info p-4 leading-7">
-                  A lovely choice. Sharing what you learned today (even five minutes of it) turns a
-                  private worry into a shared plan.
+                  Share the main signs and the relevant care-plan steps with this person.
                 </p>
               ) : null}
             </div>
@@ -1324,7 +1323,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
       case 7:
         return (
           <div className="space-y-9">
-            <LessonHeading label="Stay calm first">
+            <LessonHeading label="Use the plan first">
               The alarm gets your attention. It does not decide what happens next.
             </LessonHeading>
             <SteadyHandAnimation />
@@ -1376,7 +1375,7 @@ export function DayNineExperience({ lesson: experience }: { lesson: LessonPlayer
           <div className="space-y-12 text-center">
             <p className="editorial-eyebrow">Day 9 complete</p>
             <LessonHeading>
-              Knowing what to do is more powerful than being afraid of what might happen.
+              You can now identify common signs and choose the appropriate response.
             </LessonHeading>
             <div className="mx-auto max-w-3xl border-y border-border py-9 text-left">
               <p className="editorial-eyebrow text-success">Action cues</p>

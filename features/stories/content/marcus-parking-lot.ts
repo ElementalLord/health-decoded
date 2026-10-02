@@ -5,8 +5,7 @@ export const marcusParkingLotStory = {
   slug: "marcus-parking-lot",
   title: "After the Appointment",
   characterName: "Marcus",
-  disclosure:
-    "Marcus is a placeholder name. This is an original illustrative scenario based on common questions people report after a Type 2 diabetes diagnosis. It does not describe one specific individual or provide personal medical advice.",
+  disclosure: "Marcus is a fictional character. The story provides general diabetes education.",
   topic: "A new diagnosis",
   themes: [
     "Diagnosis",

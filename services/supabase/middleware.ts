@@ -131,10 +131,15 @@ export async function refreshSession(request: NextRequest) {
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   );
-  const { data } = await supabase.auth.getClaims(
-    undefined,
-    signingKeys ? { jwks: signingKeys } : {},
-  );
+  let data: Awaited<ReturnType<typeof supabase.auth.getClaims>>["data"];
+  try {
+    ({ data } = await supabase.auth.getClaims(undefined, signingKeys ? { jwks: signingKeys } : {}));
+  } catch {
+    // A dependency outage is not evidence that the session expired. Let the
+    // protected server layout perform its independent check and render the
+    // existing recoverable unavailable state if authentication is still down.
+    return response;
+  }
 
   if (!data?.claims.sub && protectedRoute) {
     const loginUrl = request.nextUrl.clone();

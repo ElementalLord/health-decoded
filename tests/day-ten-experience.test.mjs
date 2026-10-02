@@ -40,8 +40,8 @@ test("Day 10 includes distinct comforting looping visual explanations", () => {
 });
 
 test("Day 10 visual metaphors keep their sequence and labels legible", () => {
-  assert.match(experience, /A DAY WITH GENTLE ANCHORS/);
-  assert.match(experience, /FEWER DECISIONS · MORE CALM/);
+  assert.match(experience, /A DAY WITH ROUTINE CUES/);
+  assert.match(experience, /FEWER REPEATED DECISIONS/);
   assert.match(experience, /THE LOOP THAT MAKES HABITS AUTOMATIC/);
   assert.match(experience, /GIVE THE ROUTINE A CLEAR ENDING/);
   assert.match(experience, /PROGRESS GROWS OVER WEEKS, NOT DAYS/);

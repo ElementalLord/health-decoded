@@ -50,7 +50,7 @@ test("Day 14 uses three human SVG scenes with native continuous motion", () => {
   assert.ok((experience.match(/<animateTransform/g) ?? []).length >= 10);
   assert.match(experience, /<animateMotion/);
   assert.match(experience, /Breakfast, friendship, and a care conversation/);
-  assert.match(experience, /a changed moment does not have to become an abandoned plan/);
+  assert.match(experience, /A changed moment may require a smaller action/);
   assert.match(experience, /The purpose of the plan is a fuller ordinary life/);
   assert.doesNotMatch(experience, /type="range"|slider|lighthouse|lantern|random graph/i);
 });
@@ -125,7 +125,7 @@ test("Day 14 converts every formerly static recap into an optional exploration",
 test("Day 14 grounds recognition and optimism in two unique human scenes", () => {
   assert.match(experience, /quiet-recognition\.jpg/);
   assert.match(experience, /life-keeps-growing\.jpg/);
-  assert.match(experience, /Two sisters sit at a warm dining table/);
+  assert.match(experience, /Two sisters sit at a dining table/);
   assert.match(experience, /grandfather and his teenage granddaughter/);
 
   for (const filename of ["quiet-recognition.jpg", "life-keeps-growing.jpg"]) {

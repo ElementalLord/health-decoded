@@ -55,7 +55,7 @@ const dailyDecisions = [
     label: "“Now where did I put that?”",
   },
   {
-    body: "Each open question is a tiny tax. A routine quietly closes the loop for you.",
+    body: "Repeated decisions use attention. A routine settles the question in advance.",
     id: "worth",
     label: "“Is this really worth deciding again?”",
   },
@@ -77,7 +77,7 @@ const habitAnchors = [
 const habitAdditions = [
   "I’ll take my medication, as prescribed",
   "I’ll stretch for two slow minutes",
-  "I’ll jot down tomorrow’s one small step",
+  "I’ll write down tomorrow’s first task",
   "I’ll lay out what I need for the morning",
 ] as const;
 
@@ -85,7 +85,7 @@ const environmentSupports = [
   ["fruit", "A fruit bowl on the counter, treats in a cupboard"],
   ["shoes", "Walking shoes near the door"],
   ["water", "A water bottle filled and within reach"],
-  ["mirror", "A gentle note on the bathroom mirror"],
+  ["mirror", "A note on the bathroom mirror"],
   ["organizer", "A weekly pill organizer, if recommended"],
 ] as const;
 type EnvironmentSupportId = (typeof environmentSupports)[number][0];
@@ -105,7 +105,7 @@ const visibleReminders = [
 ] as const;
 
 const reflections = [
-  "Small habits, repeated kindly, quietly become who I am.",
+  "Repeated habits can reduce daily decision-making.",
   "A routine is a decision I only have to make once.",
   "I can name an anchor, an action, and a finish cue.",
   "My routine should fit my life, not someone else’s.",
@@ -216,14 +216,14 @@ function DayRhythmAnimation() {
         role="img"
         viewBox="0 0 820 452"
       >
-        <title id="day-rhythm-title">A gentle sun crosses a day held by three anchors</title>
+        <title id="day-rhythm-title">A sun crosses a day marked by three routine cues</title>
         <desc id="day-rhythm-desc">
           A soft sun drifts along a day arc while three routine anchors, morning, midday, and
           evening, glow in turn beneath it.
         </desc>
         <rect className={styles.canvasWarm} height="452" rx="54" width="820" />
         <text className={styles.sceneHeading} textAnchor="middle" x="410" y="46">
-          A DAY WITH GENTLE ANCHORS
+          A DAY WITH ROUTINE CUES
         </text>
         <g transform="translate(58 82)">
           <rect className={styles.scenePanel} height="286" rx="28" width="704" />
@@ -302,9 +302,8 @@ function DayRhythmAnimation() {
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>You don’t have to hold it all in your head.</strong> A few gentle anchors, morning,
-        midday, evening, quietly carry the remembering for you, the way brushing your teeth needs no
-        debate.
+        <strong>Routines reduce what you need to remember.</strong> Morning, midday and evening cues
+        can prompt an action without another decision.
       </figcaption>
     </figure>
   );
@@ -326,7 +325,7 @@ function DecisionLanternAnimation() {
         </desc>
         <rect className={styles.canvasPaper} height="470" rx="54" width="880" />
         <text className={styles.sceneHeading} textAnchor="middle" x="440" y="48">
-          FEWER DECISIONS · MORE CALM
+          FEWER REPEATED DECISIONS
         </text>
         <g transform="translate(60 96)">
           <rect className={styles.scenePanel} height="300" rx="28" width="360" />
@@ -461,7 +460,7 @@ function HabitLoopAnimation() {
         <title id="habit-loop-title">A habit loop cycles from anchor to new habit to repeat</title>
         <desc id="habit-loop-desc">
           A token travels an endless circle connecting an existing anchor, the new habit attached to
-          it, and the gentle repetition that makes it automatic.
+          it, and the repetition that makes it automatic.
         </desc>
         <rect className={styles.canvasSage} height="470" rx="54" width="820" />
         <text className={styles.sceneHeading} textAnchor="middle" x="410" y="48">
@@ -547,8 +546,8 @@ function CompletionCueStaircaseAnimation() {
       >
         <title id="next-step-title">A walker completes a small routine and marks the finish</title>
         <desc id="next-step-desc">
-          A gentle figure climbs a short staircase toward a softly marked completion step, showing
-          how a visible ending can close one routine loop.
+          A figure climbs a short staircase toward a marked completion step, showing how a visible
+          ending can close one routine loop.
         </desc>
         <rect className={styles.canvasPaper} height="470" rx="54" width="880" />
         <text className={styles.sceneHeading} textAnchor="middle" x="440" y="48">
@@ -644,10 +643,10 @@ function GrowthOverWeeksAnimation() {
         role="img"
         viewBox="0 0 820 448"
       >
-        <title id="growth-weeks-title">Small weekly steps rise into gradual, gentle progress</title>
+        <title id="growth-weeks-title">Repeated weekly actions create gradual progress</title>
         <desc id="growth-weeks-desc">
-          A soft curve climbs across four weeks while gentle points settle onto it one after
-          another, showing progress building slowly over time rather than in a single day.
+          A curve climbs across four weeks while points settle onto it one after another, showing
+          progress building slowly over time rather than in a single day.
         </desc>
         <rect className={styles.canvasWarm} height="448" rx="54" width="820" />
         <text className={styles.sceneHeading} textAnchor="middle" x="410" y="46">
@@ -714,13 +713,12 @@ function GrowthOverWeeksAnimation() {
           ))}
         </g>
         <text className={styles.motionCaption} textAnchor="middle" x="410" y="424">
-          SMALL, REPEATED WEEKS QUIETLY ADD UP
+          REPEATED WEEKS ADD UP
         </text>
       </svg>
       <figcaption className={styles.figureCaption}>
-        <strong>Improvement is gradual.</strong> Managing diabetes is more like learning an
-        instrument than cramming for an exam, some weeks feel easier than others, and the quiet,
-        repeated ones are what add up.
+        <strong>Improvement is gradual.</strong> A routine becomes easier through repetition, and
+        some weeks will be more consistent than others.
       </figcaption>
     </figure>
   );
@@ -817,7 +815,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
   function stageRequirement() {
     return [
       "Choose how routines feel right now.",
-      "Open at least four everyday decisions a routine can quiet.",
+      "Open at least four everyday decisions a routine can settle.",
       "Choose which neighbor’s start is more likely to last.",
       "Build at least two habit stacks from an anchor and a new habit.",
       "Set up at least three easy-choice supports.",
@@ -836,7 +834,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         "Make the easy choice the near one",
         "Add a finish cue",
         "Choose your one small start",
-        "Keep showing up gently",
+        "Test the routine for a week",
         "Review the routine recipe",
       ][stage] ?? "Continue"
     );
@@ -877,7 +875,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
           <div className="space-y-10">
             <div className="grid gap-8 lg:grid-cols-[1fr_17rem] lg:items-end">
               <LessonHeading label="Day 10 · Building routines that make diabetes easier">
-                Let the routine remember, so you don’t have to.
+                Use routines to reduce repeated decisions.
               </LessonHeading>
               <div className="border-l-2 border-accent-warm pl-6">
                 <p className="editorial-number text-accent-warm">10</p>
@@ -908,9 +906,8 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
             </div>
             {openingFeeling ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 text-lg leading-8">
-                However today feels, here is the gentle promise of this lesson: managing diabetes is
-                not hundreds of separate decisions a day. It is a few small routines, repeated
-                kindly.
+                Routines can group several repeated decisions into actions tied to a time, place or
+                existing habit.
               </p>
             ) : null}
           </div>
@@ -923,8 +920,8 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
             </LessonHeading>
             <DecisionLanternAnimation />
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Open the everyday questions that quietly drain the day. Notice how each one can be
-              answered in advance by a small routine, so it stops being a question at all.
+              Open the everyday questions that use attention. Each can be answered in advance with a
+              specific routine.
             </p>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               {dailyDecisions.map((decision) => {
@@ -1143,8 +1140,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
             </div>
             {supportsPlaced.size >= 3 ? (
               <p className="animate-slide-up border-l-2 border-success bg-info p-5 leading-7">
-                Lovely. None of these require willpower at the moment of choice, that is exactly the
-                point. Tiny changes to your environment quietly support you every day.
+                These changes make the intended action easier to see and start when the time comes.
               </p>
             ) : null}
           </div>
@@ -1153,7 +1149,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-9">
             <LessonHeading label="Close the loop">
-              Give a completed routine a clear, kind ending.
+              Give a completed routine a clear ending.
             </LessonHeading>
             <CompletionCueStaircaseAnimation />
             <div className="border-y border-border py-8">
@@ -1189,7 +1185,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-9">
             <LessonHeading label="Choose one small start">
-              Lasting change usually begins with a single habit, practiced gently.
+              Start with one habit you can repeat this week.
             </LessonHeading>
             <div className="grid gap-8 md:grid-cols-2">
               <div className="space-y-3">
@@ -1217,7 +1213,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
               <div className={cn("animate-slide-up", styles.experimentTicket)}>
                 <Sparkles aria-hidden="true" />
                 <div>
-                  <p className="editorial-eyebrow text-success">This week’s gentle experiment</p>
+                  <p className="editorial-eyebrow text-success">This week’s routine</p>
                   <p>
                     {starterRoutines.find(([id]) => id === starterRoutine)?.[1]}, remembered by{" "}
                     {visibleReminders.find(([id]) => id === reminder)?.[1].toLowerCase()}. Visible
@@ -1308,7 +1304,7 @@ export function DayTenExperience({ lesson: experience }: { lesson: LessonPlayerV
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
                   Your habits are starting to carry themselves. Tomorrow, how those same small
-                  choices quietly protect your eyes, kidneys, heart, and feet, prevention as care,
+                  choices can protect your eyes, kidneys, heart, and feet through preventive care,
                   never fear.
                 </p>
               </div>

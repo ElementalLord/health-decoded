@@ -48,7 +48,7 @@ const illustrationByStorySlug: Record<string, { height: number; src: string; wid
   },
   "asha-rice-on-the-table": {
     height: 1024,
-    src: "/stories/landing/asha-rice-table-illustration.webp",
+    src: "/stories/landing/asha-sunday-dinner-illustration.webp",
     width: 1536,
   },
   "nora-prescription-bag": {

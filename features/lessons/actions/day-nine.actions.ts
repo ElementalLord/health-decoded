@@ -53,7 +53,7 @@ export async function evaluateDayNineAction(input: unknown): Promise<DayNineEval
       data: {
         accurate,
         body: accurate
-          ? "Possible lows deserve attention, not alarm. Check if your care team has asked you to, follow the plan they gave you, and afterwards think gently about what may have led up to it."
+          ? "If a low is possible, check if your care team has asked you to and follow the plan they gave you. Afterward, note what may have contributed."
           : "A possible low is not something to ignore or push through with more activity. The safest first step is the plan your care team gave you, checking if instructed and responding the way they described.",
         heading: accurate ? "Attention first, plan second." : "Do not wait through a possible low.",
       },
@@ -85,7 +85,7 @@ export async function evaluateDayNineAction(input: unknown): Promise<DayNineEval
         ? "Most blood sugar changes are manageable. High and low have different signals, your care team's plan guides the response, and medical help is there whenever symptoms are severe or do not improve."
         : "Preparedness is not the same as fear, and independence is not the same as isolation. Most changes are manageable with your care team's plan, and asking for help early is part of good self-care.",
       heading: accurate
-        ? "Prepared, calm, and supported."
+        ? "Prepared with a plan and support."
         : "Let preparedness replace both panic and isolation.",
     },
     ok: true,

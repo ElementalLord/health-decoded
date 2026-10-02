@@ -178,7 +178,7 @@ export function LearningRecord({
                   </ol>
                 ) : (
                   <p className="py-3 text-sm leading-6 text-muted-foreground">
-                    Lessons for this section will appear here as the journey grows.
+                    Lessons for this section will appear here when they are available.
                   </p>
                 )}
               </div>
@@ -189,7 +189,7 @@ export function LearningRecord({
 
       {completedLessons.length === 0 ? (
         <p className="text-sm leading-6 text-muted-foreground">
-          Your lesson history will build here as you learn.
+          Completed lessons will appear here.
         </p>
       ) : null}
     </section>

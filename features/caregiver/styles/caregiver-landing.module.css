@@ -86,11 +86,8 @@
 
 .hero,
 .safetyRoute,
-.firstVisit,
 .needRouter,
-.guidedPath,
-.toolsIntroduction,
-.privacyBoundary {
+.guidedPath {
   width: min(100%, 74rem);
   margin-inline: auto;
 }
@@ -141,7 +138,6 @@
 }
 
 .heroActions,
-.firstVisitActions,
 .interactionActions {
   display: flex;
   flex-wrap: wrap;
@@ -408,23 +404,8 @@
   text-underline-offset: 0.35rem;
 }
 
-.firstVisit {
-  max-width: 58rem;
-  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.25rem, 5vw, 4.5rem);
-}
-
-.firstVisit h2 {
-  max-width: 15ch;
-  font-size: clamp(2.4rem, 4.5vw, 3.75rem);
-}
-
-.firstVisit > p:not(.sectionNumber) {
-  max-width: 42rem;
-}
-
 .needRouter,
-.guidedPath,
-.toolsIntroduction {
+.guidedPath {
   padding: clamp(3rem, 5vw, 4.75rem) clamp(1.25rem, 5vw, 4.5rem);
   border-block-start: 1px solid var(--caregiver-rule);
 }
@@ -689,55 +670,6 @@
   margin-block-start: 0.5rem;
 }
 
-.toolList {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  max-width: 64rem;
-  margin: clamp(2.5rem, 5vw, 4rem) 0 0 auto;
-  border-block-start: 1px solid var(--caregiver-rule);
-}
-
-.toolItem {
-  min-width: 0;
-  padding: 1.6rem 1.5rem 1.8rem 0;
-  border-block-end: 1px solid var(--caregiver-rule);
-}
-
-.toolItem:nth-child(odd) {
-  border-inline-end: 1px solid var(--caregiver-rule);
-}
-
-.toolItem:nth-child(even) {
-  padding-inline-start: 1.5rem;
-}
-
-.toolItem p {
-  max-width: 31rem;
-  margin-block-end: 0;
-}
-
-.toolsIntroduction > .unavailableAction {
-  max-width: 64rem;
-  margin: 1.5rem 0 0 auto;
-  color: var(--caregiver-body);
-}
-
-.privacyBoundary {
-  max-width: 64rem;
-  margin-block: clamp(2rem, 5vw, 5rem);
-  padding: clamp(1.5rem, 4vw, 3rem) 0;
-  border-block: 1px solid var(--caregiver-rule);
-  background: transparent;
-}
-
-.privacyBoundary h2 {
-  max-width: 14ch;
-}
-
-.privacyBoundary > p:last-child {
-  max-width: 48rem;
-}
-
 .returningState {
   max-width: 64rem;
   padding: 3rem;
@@ -992,10 +924,8 @@
 @media (max-width: 40rem) {
   .hero,
   .safetyRoute,
-  .firstVisit,
   .needRouter,
-  .guidedPath,
-  .toolsIntroduction {
+  .guidedPath {
     padding-inline: 1rem;
   }
 
@@ -1004,7 +934,6 @@
   }
 
   .heroActions,
-  .firstVisitActions,
   .interactionActions {
     align-items: stretch;
     flex-direction: column;
@@ -1069,23 +998,6 @@
 
   .moduleSequence li {
     width: min(78vw, 17.5rem);
-  }
-
-  .toolList {
-    grid-template-columns: minmax(0, 1fr);
-    margin-inline-start: 0;
-  }
-
-  .toolItem,
-  .toolItem:nth-child(even) {
-    padding: 1.4rem 0;
-    border-inline-end: 0;
-  }
-
-  .privacyBoundary {
-    width: auto;
-    margin-inline: 1rem;
-    padding: 2rem 1.25rem;
   }
 
   .urgentContent {

@@ -22,7 +22,7 @@ import styles from "@/features/achievements/styles/milestones.module.css";
 
 const AUTO_DISMISS_MS = 6500;
 const EXIT_MS = 220;
-const SYNC_INTERVAL_MS = 4000;
+const SYNC_INTERVAL_MS = 30_000;
 const PARTICLES = 7;
 
 export function MilestoneNotificationHost({ userId }: { userId: string }) {
@@ -89,24 +89,30 @@ export function MilestoneNotificationHost({ userId }: { userId: string }) {
   }, [sync]);
 
   useEffect(() => {
+    function canSynchronizeInBackground() {
+      return navigator.onLine && document.visibilityState === "visible";
+    }
+    function synchronizeInBackground() {
+      if (canSynchronizeInBackground()) void synchronize();
+    }
     function handleSyncRequest(event: Event) {
       const detail = (event as CustomEvent<MilestoneSyncDetail>).detail;
       if (detail?.milestoneIds?.length) enqueueMilestones(detail.milestoneIds);
-      synchronize();
+      synchronizeInBackground();
     }
     function handleVisibility() {
-      if (document.visibilityState === "visible") synchronize();
+      synchronizeInBackground();
     }
-    void synchronize();
+    synchronizeInBackground();
     window.addEventListener(MILESTONE_SYNC_REQUESTED_EVENT, handleSyncRequest);
-    window.addEventListener("online", synchronize);
-    window.addEventListener("focus", synchronize);
+    window.addEventListener("online", synchronizeInBackground);
+    window.addEventListener("focus", synchronizeInBackground);
     document.addEventListener("visibilitychange", handleVisibility);
-    const interval = window.setInterval(() => void synchronize(), SYNC_INTERVAL_MS);
+    const interval = window.setInterval(synchronizeInBackground, SYNC_INTERVAL_MS);
     return () => {
       window.removeEventListener(MILESTONE_SYNC_REQUESTED_EVENT, handleSyncRequest);
-      window.removeEventListener("online", synchronize);
-      window.removeEventListener("focus", synchronize);
+      window.removeEventListener("online", synchronizeInBackground);
+      window.removeEventListener("focus", synchronizeInBackground);
       document.removeEventListener("visibilitychange", handleVisibility);
       window.clearInterval(interval);
     };

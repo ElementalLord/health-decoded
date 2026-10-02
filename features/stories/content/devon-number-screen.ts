@@ -6,7 +6,7 @@ export const devonNumberScreenStory: InteractiveStory = {
   title: "After Dinner",
   characterName: "Devon",
   disclosure:
-    "Devon is a placeholder name. This is an original illustrative scenario based on common reactions to an unexpected glucose result. It does not describe one specific individual or provide personal instructions for responding to a glucose result.",
+    "Devon is a fictional character. Follow your own care plan for unexpected glucose results.",
   topic: "A worrying reading",
   themes: [
     "glucose anxiety",
@@ -44,7 +44,7 @@ export const devonNumberScreenStory: InteractiveStory = {
     "An editorial illustration of a man sitting at a kitchen table at night while looking at a glucose meter with an unreadable display.",
   introduction: "An unexpected glucose result leaves Devon worried that he did something wrong.",
   whyItMatters:
-    "A result can deserve attention without becoming a grade on effort or a reason to improvise treatment.",
+    "A result may need attention. Use it with symptoms, timing and the person’s existing care plan.",
   scenes: [
     {
       id: "the-number",

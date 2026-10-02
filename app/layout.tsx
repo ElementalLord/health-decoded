@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     default: "Health Decoded",
     template: "%s · Health Decoded",
   },
-  description: "Calm, compassionate education for life after a Type 2 diabetes diagnosis.",
+  description: "Practical Type 2 diabetes education for everyday decisions.",
 };
 
 export const viewport: Viewport = {

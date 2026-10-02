@@ -136,7 +136,7 @@ export default async function JourneyPage({
           <div className="divide-y divide-border border-y border-border">
             <AiTutorActionRow
               compact
-              description="Get calm, plain-language educational answers."
+              description="Get plain-language answers about Type 2 diabetes."
               title="Ask your AI guide"
             />
             <ActionRow

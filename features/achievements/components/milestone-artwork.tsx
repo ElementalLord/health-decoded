@@ -27,6 +27,7 @@ export function MilestoneArtwork({
         ) : (
           <Image
             alt=""
+            aria-hidden="true"
             height={detail ? 320 : 160}
             sizes={
               detail

@@ -289,7 +289,7 @@ test("AI Tutor keeps the compact question-first hierarchy and safety boundary", 
     "utf8",
   );
   assert.match(chat, /General diabetes education only/);
-  assert.match(chat, /Safety details/);
+  assert.match(chat, /Scope and safety/);
   assert.match(chat, /Private to this visit/);
   assert.doesNotMatch(chat, /Connected to today&apos;s lesson|Continue learning|relatedContent/);
   assert.match(chat, /AiResponseContent/);

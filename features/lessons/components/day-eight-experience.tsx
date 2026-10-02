@@ -1292,9 +1292,9 @@ export function DayEightExperience({ lesson: experience }: { lesson: LessonPlaye
                   Recognizing high and low glucose
                 </h2>
                 <p className="mt-2 leading-7 text-muted-foreground">
-                  You can read patterns now, not just single numbers. Tomorrow, the question
-                  everyone worries about: when a high or low actually needs action, so fear gives
-                  way to a calm, clear plan.
+                  You can now interpret a reading in context and look for patterns. Tomorrow covers
+                  when high or low glucose requires action and how to follow a specific response
+                  plan.
                 </p>
               </div>
               <div>

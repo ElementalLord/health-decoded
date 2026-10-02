@@ -728,10 +728,7 @@ export function NoraStoryExperience() {
               <RotateCcw aria-hidden="true" size={16} /> Read again
             </button>
           </div>
-          <p className={styles.disclosure}>
-            Nora is a placeholder name. This is an illustrative scenario, not one person&apos;s
-            medical history or personal medication advice.
-          </p>
+          <p className={styles.disclosure}>Nora is a fictional character.</p>
         </article>
       ) : (
         <article className={styles.reader} ref={articleRef}>

@@ -148,7 +148,7 @@ function correctedToken(token: string) {
 export function normalizeAiQuery(message: string) {
   return message
     .normalize("NFKC")
-    .toLocaleLowerCase()
+    .toLowerCase()
     .replace(/([a-z])\1{2,}/g, "$1$1")
     .replace(/[a-z][a-z'-]*/g, correctedToken)
     .replace(/\s+/g, " ")

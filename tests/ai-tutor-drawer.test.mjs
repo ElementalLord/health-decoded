@@ -35,7 +35,7 @@ test("Ask is a detached tool instead of a protected navigation destination", () 
   assert.match(shell, /: <AppHeader \/>/);
   assert.match(trigger, /<Dialog\.Trigger/);
   assert.match(trigger, /src="\/ai\/your-companion\.png"/);
-  assert.match(trigger, />\s*Your companion\s*<\/span>/);
+  assert.match(trigger, />\s*Ask Health Decoded\s*<\/span>/);
   assert.match(dialogHandle, /Dialog\.createHandle<void>\(\)/);
 });
 
@@ -105,7 +105,7 @@ test("the drawer chat owns its scrolling while keeping shared AI behavior", () =
   assert.match(chat, /pendingScrollMessageIdRef\.current = userMessage\.id/);
   assert.doesNotMatch(chat, /conversationEndRef|conversation\.scrollHeight/);
   assert.match(chat, /Private to this session\. Not saved\./);
-  assert.match(chat, /Educational guidance only · Safety & limits/);
+  assert.match(chat, /Scope and safety/);
   assert.match(chat, /isDrawer \? "Try asking" : "A place to begin"/);
   assert.match(chat, /Stop response/);
   assert.match(chat, /Regenerate/);
@@ -137,7 +137,7 @@ test("each cited source has an accessible client-only report preview", () => {
 });
 
 test("mobile navigation stays single-row while every route remains reachable", () => {
-  assert.match(bottomNavigation, /navigationGroups\(routes\)/);
+  assert.match(bottomNavigation, /groupApplicationRoutes\(routes\)/);
   assert.match(bottomNavigation, /<Dialog\.Trigger/);
   assert.match(bottomNavigation, />More<\/span>/);
   assert.match(bottomNavigation, /secondary\.map/);

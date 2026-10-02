@@ -61,7 +61,7 @@ export const suggestedSearchDocuments = [
     id: "TOOL-MILESTONES",
     type: "tool",
     title: "Milestones",
-    description: "View meaningful learning and preparation steps.",
+    description: "View completed lessons and preparation steps.",
     route: "/milestones",
     status: "available",
   },

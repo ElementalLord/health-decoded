@@ -38,8 +38,8 @@ export function CaregiverArticle({ article }: { article: CaregiverArticleViewMod
   return (
     <article className="mx-auto max-w-3xl space-y-8 py-6 sm:py-10">
       <PageHeader
-        description="Support can be practical, kind, and led by the person living with diabetes."
-        eyebrow="Caregiver companion"
+        description="Practical guidance for supporting someone while respecting their choices."
+        eyebrow="Caregiver guidance"
         title={article.title}
       />
 

@@ -56,7 +56,7 @@ type FoodFear = (typeof foodFears)[number][0];
 
 const fearResponses: Record<FoodFear, string> = {
   rules:
-    "Today is not a rulebook. It is a way to see what food does, what balance can add, and where flexibility still belongs.",
+    "Today explains how food affects glucose and how meal balance changes the overall picture.",
   favorites:
     "Your memories, culture, and celebrations do not disappear after diagnosis. We will practice adding context without removing joy.",
   carbs:
@@ -525,7 +525,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
       "Build a plate",
       "See what balance adds",
       "Pour the drinks",
-      "Keep favorite foods in the story",
+      "Keep favorite foods in the meal",
       "Take the plate method out to eat",
       "Open the myth cupboard",
       "Look beyond one meal",
@@ -552,8 +552,8 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               </div>
             </div>
             <LessonStoryImage
-              alt="Family and friends of several generations laugh while cooking rice, beans, vegetables, and flatbread together"
-              caption="A diabetes-supportive meal does not require abandoning the foods, people, and traditions that make a table feel like home."
+              alt="Family and friends of several generations laugh while cooking rice, black beans, tomato salad, and roasted chicken together"
+              caption="A diabetes-supportive meal can include familiar foods, shared dishes and cultural traditions."
               emphasis="Culture belongs in the plan."
               priority
               src="/lessons/day-04/food-and-culture.jpg"
@@ -843,8 +843,9 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
               Carbohydrates live in more places than dessert.
             </DayFourHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
-              Tap every food that contains meaningful carbohydrate. Some may play more than one
-              nutritional role; beans, for example, provide carbohydrate, fiber, and protein.
+              Tap every food that contains a substantial amount of carbohydrate. Some may play more
+              than one nutritional role; beans, for example, provide carbohydrate, fiber, and
+              protein.
             </p>
             <div className="grid grid-cols-2 gap-3 rounded-[1rem] border border-border bg-[#ece2d5] p-4 sm:grid-cols-5 sm:p-7">
               {pantryFoods.map((food, index) => (
@@ -886,7 +887,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 )}
               >
                 {pantryResolved
-                  ? "Here is the complete shelf so you can keep learning: bread, rice, fruit, milk, beans, potatoes, corn, and oats contain meaningful carbohydrate. Chicken and olive oil primarily play other nutrient roles."
+                  ? "Bread, rice, fruit, milk, beans, potatoes, corn and oats contain carbohydrate. Chicken and olive oil primarily play other nutrient roles."
                   : pantryAccurate
                     ? "You found the full shelf: bread, rice, fruit, milk, beans, potatoes, corn, and oats all contain carbohydrate. Chicken and olive oil primarily play other nutrient roles."
                     : "One more check is available. Look for grains, fruit, milk, beans, and starchy vegetables, not only foods that taste sweet."}
@@ -1162,7 +1163,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
         const Icon = scenario.icon;
         return (
           <div className="space-y-9">
-            <DayFourHeading label="Favorite foods stay in the story">
+            <DayFourHeading label="Favorite foods can stay on the menu">
               Practice a “yes, and” instead of a ban.
             </DayFourHeading>
             <LessonStoryImage
@@ -1538,7 +1539,7 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                 <p aria-live="polite" className="mt-5 bg-info p-5 leading-7">
                   {reflection.includes("professional") || reflection.includes("culture")
                     ? "That is a thoughtful next step. A registered dietitian nutritionist or diabetes education specialist can help shape this framework around your health needs, culture, budget, medicines, and preferences."
-                    : "That is enough for today. Confidence can begin with one meal you understand, not a lifetime mapped out in advance."}
+                    : "You have a framework for planning one balanced meal. You can use it again with different foods."}
                 </p>
               ) : null}
             </div>
@@ -1551,9 +1552,9 @@ export function DayFourExperience({ lesson: experience }: { lesson: LessonPlayer
                       How movement helps the body
                     </h2>
                     <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
-                      You have made peace with the plate. Tomorrow, movement, not as punishment or
-                      penance, but as a tool your working muscles already know how to use to move
-                      glucose.
+                      You have completed the meal lesson. Tomorrow covers movement without treating
+                      it as punishment or penance, but as a tool your working muscles already know
+                      how to use to move glucose.
                     </p>
                   </div>
                 </div>

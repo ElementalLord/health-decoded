@@ -6,7 +6,7 @@ export const noraPrescriptionBagStory: InteractiveStory = {
   title: "The Prescription Bag",
   characterName: "Nora",
   disclosure:
-    "Nora is a placeholder name. This is an original illustrative scenario based on common questions people report when starting medication for Type 2 diabetes. It does not describe one specific individual or provide personal medication advice.",
+    "Nora is a fictional character. Medication decisions require personal instructions from a prescriber or pharmacist.",
   topic: "Starting medication",
   themes: [
     "medication stigma",
@@ -287,7 +287,7 @@ export const noraPrescriptionBagStory: InteractiveStory = {
     "Medication became one part of her plan rather than a judgment about her character.",
   ],
   takeaway:
-    "Medication can be part of care without being a judgment about effort. Prescription questions deserve answers from a qualified healthcare professional.",
+    "Medication is one part of diabetes care. A prescriber or pharmacist can answer questions about a specific prescription.",
   privateReflectionPrompt: "What question would help you understand a new prescription?",
   completionHeading: "Finished",
   completionMessage:

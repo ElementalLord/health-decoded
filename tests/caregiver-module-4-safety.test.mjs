@@ -20,5 +20,5 @@ test("Module 4 presents urgent direction without an interrupting alert", () => {
 test("Module 4 keeps readings and treatment outside the application's authority", () => {
   assert.match(experience, /does not interpret personal readings/);
   assert.match(experience, /Do not create treatment from this module/);
-  assert.match(experience, /cannot diagnose symptoms,\s+interpret a personal reading/);
+  assert.match(experience, /Omar and Celeste are fictional characters/);
 });

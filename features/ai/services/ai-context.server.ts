@@ -26,13 +26,13 @@ type ContextResult =
   | { readonly ok: false };
 
 function terms(message: string) {
-  return message.toLocaleLowerCase().match(/[a-z0-9][a-z0-9'-]*/g) ?? [];
+  return message.toLowerCase().match(/[a-z0-9][a-z0-9'-]*/g) ?? [];
 }
 
 function glossaryFor(message: string) {
   const questionTerms = terms(message);
   return dayTwoGlossary.filter((entry) =>
-    questionTerms.some((term) => entry.term.toLocaleLowerCase().includes(term)),
+    questionTerms.some((term) => entry.term.toLowerCase().includes(term)),
   );
 }
 

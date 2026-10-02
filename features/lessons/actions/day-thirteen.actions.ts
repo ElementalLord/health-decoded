@@ -84,7 +84,7 @@ export async function evaluateDayThirteenAction(
       data: {
         accurate,
         body: accurate
-          ? "Yes. Asking first protects the person's independence and makes room for the kind of help they actually want. Support joins the plan; it does not seize the steering wheel."
+          ? "Yes. Asking first protects the person’s independence and identifies the kind of help they want."
           : "Watching, correcting, or deciding for someone can turn concern into surveillance. A more supportive first move is to ask what would help, listen to the answer, and respect a no.",
         heading: accurate ? "Support begins with permission." : "Concern still needs consent.",
       },
@@ -102,7 +102,7 @@ export async function evaluateDayThirteenAction(
           : "You do not owe a full medical defense, and repeated commentary does not become helpful because someone means well. A short, respectful limit can protect both your peace and the relationship.",
         heading: accurate
           ? "Clear is kind to both people."
-          : "A shorter boundary can carry more calm.",
+          : "A shorter boundary is easier to understand and repeat.",
       },
       ok: true,
     };

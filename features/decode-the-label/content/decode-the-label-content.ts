@@ -229,7 +229,7 @@ export const decodeLabelQuestions = [
     correctFeedback:
       "Exactly. Labels provide context for a choice. They do not make the choice for every person or every situation.",
     incorrectFeedback:
-      "The labels show meaningful differences, but no single line can decide what fits every person or situation.",
+      "The labels show relevant differences, but no single line decides what fits every person or situation.",
   },
 ] as const satisfies readonly DecodeLabelQuestion[];
 

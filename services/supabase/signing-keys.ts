@@ -14,14 +14,20 @@ import type { JWK } from "@supabase/supabase-js";
  */
 
 const JWKS_TTL_MS = 10 * 60 * 1000;
+const JWKS_REQUEST_TIMEOUT_MS = 2_500;
 
-let cachedKeys: JWK[] | null = null;
-let cachedAt = 0;
-let inFlight: Promise<JWK[] | null> | null = null;
+type SigningKeyCacheEntry = {
+  cachedAt: number;
+  inFlight: Promise<JWK[] | null> | null;
+  keys: JWK[] | null;
+};
+
+const signingKeyCache = new Map<string, SigningKeyCacheEntry>();
 
 async function fetchSigningKeys(projectUrl: string, publishableKey: string) {
   const response = await fetch(`${projectUrl}/auth/v1/.well-known/jwks.json`, {
     headers: { apikey: publishableKey },
+    signal: AbortSignal.timeout(JWKS_REQUEST_TIMEOUT_MS),
   });
   if (!response.ok) return null;
 
@@ -45,18 +51,26 @@ export async function getCachedSigningKeys(
   projectUrl: string,
   publishableKey: string,
 ): Promise<{ keys: JWK[] } | undefined> {
-  if (cachedKeys && Date.now() - cachedAt < JWKS_TTL_MS) return { keys: cachedKeys };
+  const cacheKey = `${projectUrl}\u0000${publishableKey}`;
+  const entry = signingKeyCache.get(cacheKey) ?? {
+    cachedAt: 0,
+    inFlight: null,
+    keys: null,
+  };
+  signingKeyCache.set(cacheKey, entry);
 
-  inFlight ??= fetchSigningKeys(projectUrl, publishableKey)
+  if (entry.keys && Date.now() - entry.cachedAt < JWKS_TTL_MS) return { keys: entry.keys };
+
+  entry.inFlight ??= fetchSigningKeys(projectUrl, publishableKey)
     .catch(() => null)
     .finally(() => {
-      inFlight = null;
+      entry.inFlight = null;
     });
 
-  const keys = await inFlight;
-  if (!keys) return cachedKeys ? { keys: cachedKeys } : undefined;
+  const keys = await entry.inFlight;
+  if (!keys) return entry.keys ? { keys: entry.keys } : undefined;
 
-  cachedKeys = keys;
-  cachedAt = Date.now();
+  entry.keys = keys;
+  entry.cachedAt = Date.now();
   return { keys };
 }

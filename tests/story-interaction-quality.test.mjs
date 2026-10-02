@@ -297,7 +297,7 @@ test("routes, covers, narratives, reflection, and final quizzes remain intact", 
   assert.equal(noraPrescriptionBagStory.slug, "nora-prescription-bag");
   assert.equal(devonNumberScreenStory.slug, "devon-number-screen");
   assert.equal(marcusParkingLotStory.imagePath, "/stories/marcus-parking-lot-cover.webp");
-  assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-rice-on-the-table-cover.webp");
+  assert.equal(ashaRiceOnTheTableStory.imagePath, "/stories/asha-sunday-dinner-cover.webp");
   assert.equal(noraPrescriptionBagStory.imagePath, "/stories/nora-prescription-bag-cover.webp");
   assert.equal(devonNumberScreenStory.imagePath, "/stories/devon-number-screen-cover.webp");
   assert.equal(marcusParkingLotStory.scenes.length, 6);

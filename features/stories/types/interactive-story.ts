@@ -26,9 +26,6 @@ export type StoryInteractionType =
   | "communication-builder"
   | "pattern-comparison";
 
-export type FoodComponent =
-  "rice" | "dal" | "vegetables" | "protein" | "flatbread" | "yogurt" | "dessert" | "water";
-
 export type StoryInteractionPurpose =
   | "interpret"
   | "predict"

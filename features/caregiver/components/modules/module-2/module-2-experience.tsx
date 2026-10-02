@@ -1390,10 +1390,7 @@ export function Module2Experience() {
               Back to caregiver modules
             </Link>
           </div>
-          <p className={styles.disclosure}>
-            Leah and Andre are illustrative characters. This module supports communication and
-            boundary skills; it does not replace medical, legal, or emergency guidance.
-          </p>
+          <p className={styles.disclosure}>Leah and Andre are fictional characters.</p>
         </article>
       ) : (
         <article className={styles.reader} ref={articleRef}>

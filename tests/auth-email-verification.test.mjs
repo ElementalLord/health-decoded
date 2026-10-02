@@ -26,7 +26,7 @@ test("sign in displays verified-email guidance", async () => {
 
   assert.match(loginPage, /emailVerified === "1"/);
   assert.match(loginPage, /Your email is verified/);
-  assert.match(loginPage, /Sign in below to start your learning journey\./);
+  assert.match(loginPage, /Sign in below to start your first lesson\./);
   assert.match(loginPage, /role="status"/);
 });
 

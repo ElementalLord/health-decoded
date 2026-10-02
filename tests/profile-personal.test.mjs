@@ -25,7 +25,7 @@ const completionSchema = readFileSync(
 test("profile stays distinct from Journey and Progress", () => {
   assert.doesNotMatch(page, /getProgressData/);
   assert.doesNotMatch(component, /Confidence XP|lessons done|current phase|90-day path/i);
-  assert.match(component, /Your account, preferences, and learning progress live here/);
+  assert.match(component, /Manage your account and learning preferences/);
   assert.match(component, /Personalize your learning experience/);
 });
 

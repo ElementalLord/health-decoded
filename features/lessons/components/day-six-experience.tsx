@@ -83,7 +83,7 @@ const daySeams = [
   { id: "call", label: "A call finishes", note: "A natural change of posture." },
   { id: "lunch", label: "Lunch ends", note: "An optional fuel-use window." },
   { id: "television", label: "A show pauses", note: "A break already exists." },
-  { id: "kitchen", label: "The kitchen closes", note: "A calm evening cue." },
+  { id: "kitchen", label: "The kitchen closes", note: "An evening cue." },
 ] as const;
 
 type DaySeamId = (typeof daySeams)[number]["id"];
@@ -150,8 +150,8 @@ const movementContexts = [
   },
   {
     id: "quiet",
-    label: "I need something calm",
-    options: ["A comfortable walk", "Gentle mobility", "A quiet garden task"],
+    label: "I need something low-key",
+    options: ["A comfortable walk", "Light mobility", "A garden task"],
   },
 ] as const;
 
@@ -165,7 +165,7 @@ const disruptions = [
     label: "The weather changed",
   },
   {
-    backups: ["Use a two-minute version", "Choose seated movement", "Move at a gentler pace"],
+    backups: ["Use a two-minute version", "Choose seated movement", "Move at a slower pace"],
     icon: Wind,
     id: "energy",
     label: "My energy changed",
@@ -193,7 +193,7 @@ const habitClosings = [
   "note whether the setting worked",
   "stop at the planned time",
 ] as const;
-const planScales = ["10 comfortable minutes", "5 comfortable minutes", "2 gentle minutes"] as const;
+const planScales = ["10 comfortable minutes", "5 comfortable minutes", "2 light minutes"] as const;
 
 const movementMoments = [
   {
@@ -1081,7 +1081,7 @@ export function DaySixExperience({ lesson: experience }: { lesson: LessonPlayerV
         return (
           <div className="space-y-9">
             <DaySixHeading label="One optional fuel window">
-              Put the post-meal story in order.
+              Put the post-meal sequence in order.
             </DaySixHeading>
             <p className="max-w-3xl text-lg leading-8 text-foreground/80">
               Tap the four moments in the order that makes biological sense. This is a teaching

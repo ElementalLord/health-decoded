@@ -1371,11 +1371,7 @@ export function Module4Experience() {
               Back to caregiver modules
             </Link>
           </div>
-          <p className={styles.disclosure}>
-            Omar and Celeste are illustrative characters. This module cannot diagnose symptoms,
-            interpret a personal reading, choose a service for an individual situation, or replace a
-            clinician-created plan or qualified human help.
-          </p>
+          <p className={styles.disclosure}>Omar and Celeste are fictional characters.</p>
         </article>
       ) : (
         <article className={styles.reader} ref={articleRef}>

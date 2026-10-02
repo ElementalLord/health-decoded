@@ -297,7 +297,7 @@ export async function evaluateDayFourAction(input: unknown): Promise<DayFourEval
         ? "Carbohydrate foods affect blood glucose, but they can remain part of meals. Fiber, balance, portions, patterns, preferences, and a person’s care plan all add context."
         : "Diabetes nutrition is not a ban list or a competition for one correct diet. The useful skill is building informed, repeatable meals that fit a person’s life and care plan.",
       heading: accurate
-        ? "That is food confidence in plain language."
+        ? "That explanation is accurate and practical."
         : "Bring flexibility back to the explanation.",
       whyOthers: [
         "Carbohydrates do not need to disappear.",

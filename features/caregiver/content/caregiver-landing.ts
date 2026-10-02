@@ -183,7 +183,7 @@ export const caregiverLandingContent = Object.freeze({
   },
   guidedPath: {
     sectionTitle: "A guided path, when you want one",
-    introduction: "Start anywhere and move at your own pace.",
+    introduction: "Choose the topic that matches your situation.",
     interactionTitle: "Choose how to begin",
     prompt: "What would be most useful right now?",
     submit: "Use this path",

@@ -53,7 +53,7 @@ export async function evaluateDayTenAction(input: unknown): Promise<DayTenEvalua
       data: {
         accurate,
         body: accurate
-          ? "A habit small enough to repeat on a tired Tuesday is strong enough to last. It becomes an anchor you can gently build on, no overhaul required."
+          ? "A small habit is easier to repeat on a tiring day. Use it as the starting point and adjust after you test it."
           : "Changing everything overnight feels productive, but it usually exhausts the person doing it, and waiting for motivation hands your health to your busiest day. One small, repeatable habit outlasts both.",
         heading: accurate
           ? "Small enough to repeat is strong enough to last."

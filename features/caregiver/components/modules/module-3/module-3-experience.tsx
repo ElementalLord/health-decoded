@@ -1231,10 +1231,7 @@ export function Module3Experience() {
               Back to caregiver modules
             </Link>
           </div>
-          <p className={styles.disclosure}>
-            Nia and Cam are illustrative characters. This module supports everyday communication and
-            practical support; it does not replace individualized medical guidance.
-          </p>
+          <p className={styles.disclosure}>Nia and Cam are fictional characters.</p>
         </article>
       ) : (
         <article className={styles.reader} ref={articleRef}>

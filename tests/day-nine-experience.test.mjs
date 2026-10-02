@@ -18,10 +18,7 @@ const unlockMigration = readFileSync(
 test("Day 9 uses one custom nine-chapter experience", () => {
   assert.match(player, /if \(lesson\.dayNumber === 9\) return <DayNineExperience/);
   assert.match(experience, /const stageCount = 9/);
-  assert.match(
-    experience,
-    /Knowing what to do is more powerful than being afraid of what might happen/,
-  );
+  assert.match(experience, /identify common signs and choose the appropriate response/);
 });
 
 test("Day 9 includes distinct purposeful looping visual explanations", () => {
@@ -42,11 +39,11 @@ test("Day 9 visual metaphors keep their sequence and labels legible", () => {
   assert.match(experience, /YOUR BODY LIKES BALANCE/);
   assert.match(experience, /HIGH OFTEN BUILDS SLOWLY/);
   assert.match(experience, /LOWS OFTEN ANNOUNCE THEMSELVES QUICKLY/);
-  assert.match(experience, /A CALM PATH BEATS A PANICKED GUESS/);
+  assert.match(experience, /USE THE PLAN BEFORE GUESSING/);
   assert.match(experience, /A SIGNAL ASKS FOR ATTENTION, NOT PANIC/);
   assert.match(experience, /PAUSE · BREATHE · FOLLOW YOUR PLAN/);
-  assert.match(experience, /MOST MOMENTS USE THE CALM PATH · A FEW USE THE FAST LANE/);
-  assert.match(experience, /Here is the use:/);
+  assert.match(experience, /MOST MOMENTS USE THE STANDARD PATH · A FEW NEED URGENT HELP/);
+  assert.match(experience, /Use the response path:/);
 });
 
 test("Day 9 distinguishes high from low signals and keeps sorting kind", () => {
@@ -55,7 +52,7 @@ test("Day 9 distinguishes high from low signals and keeps sorting kind", () => {
   assert.match(experience, /OFTEN WITH HIGH · USUALLY GRADUAL/);
   assert.match(experience, /OFTEN WITH LOW · USUALLY QUICK/);
   assert.match(experience, /common-pattern practice, not a diagnosis/);
-  assert.match(experience, /Gently: this one more often travels with/);
+  assert.match(experience, /This symptom occurs more often with/);
 });
 
 test("Day 9 teaches preparedness without prescribing treatment", () => {

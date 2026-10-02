@@ -21,8 +21,8 @@ const unlockMigration = readFileSync(
 test("Day 13 uses one custom eleven-chapter experience", () => {
   assert.match(player, /if \(lesson\.dayNumber === 13\) return <DayThirteenExperience/);
   assert.match(experience, /const stageCount = 11/);
-  assert.match(experience, /The right support makes more room for you/);
-  assert.match(experience, /Care can be shared without giving yourself away/);
+  assert.match(experience, /Ask for support while keeping your choices and privacy/);
+  assert.match(experience, /You completed the support and boundaries lesson/);
 });
 
 test("Day 13 uses four purposeful human loops whose motion teaches a relationship skill", () => {
@@ -104,7 +104,7 @@ test("Day 13 gates every practice chapter while keeping private writing optional
   assert.doesNotMatch(experience, /SupportArrives|Call for backup|Backup has landed/);
   assert.match(experience, /canNavigateToLessonStage/);
   assert.match(experience, /disabled=\{isPending \|\| stageLocked\}/);
-  assert.match(experience, /Private\s+writing\s+and reflection remain optional/);
+  assert.match(experience, /Private writing and reflection remain\s+optional/);
   assert.doesNotMatch(experience, /supportClassifications|mapChoices|openedMyths/);
 });
 

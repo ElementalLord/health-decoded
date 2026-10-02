@@ -6,14 +6,10 @@ import { usePathname } from "next/navigation";
 import { DesktopLayout } from "@/components/layout/desktop-layout";
 import type { ProfileSettings } from "@/features/profile/types/profile-settings";
 import { SearchCommand } from "@/features/universal-search/components/search-command";
-import { applicationRoutes, type ApplicationRoute } from "@/lib/routes";
+import { applicationRoutes, isApplicationRouteActive, type ApplicationRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 import styles from "./app-header.module.css";
-
-function isActiveRoute(pathname: string, route: ApplicationRoute) {
-  return route.href === "/" ? pathname === route.href : pathname.startsWith(route.href);
-}
 
 function getInitials(displayName?: string) {
   const parts = displayName?.trim().split(/\s+/).filter(Boolean) ?? [];
@@ -62,7 +58,7 @@ function AppHeader({
               <nav aria-label="Primary navigation">
                 <ul className="flex items-center gap-[clamp(1rem,1.65vw,1.5rem)]">
                   {routes.map((route) => {
-                    const active = isActiveRoute(pathname, route);
+                    const active = isApplicationRouteActive(pathname, route);
 
                     return (
                       <li key={route.href}>

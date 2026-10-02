@@ -38,7 +38,7 @@ export function StoryOpening({ onBegin, story }: StoryOpeningProps) {
         <dl className={styles.openingMetadata}>
           <div>
             <dt>Character</dt>
-            <dd>{story.characterName} · placeholder name</dd>
+            <dd>{story.characterName}</dd>
           </div>
           <div>
             <dt>
@@ -54,7 +54,7 @@ export function StoryOpening({ onBegin, story }: StoryOpeningProps) {
         </dl>
         {story.contentWarning ? (
           <p className={styles.openingContextNote}>
-            <strong>Quiet context note</strong>
+            <strong>Content note</strong>
             {story.contentWarning}
           </p>
         ) : null}

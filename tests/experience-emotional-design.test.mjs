@@ -59,7 +59,7 @@ test("gives the AI guide direct answers and user control", () => {
   assert.match(aiSource, /Start fresh\?/);
   assert.match(aiSource, /messages in this private session will be cleared/);
   assert.match(aiSource, /aria-busy=\{isStreaming\}/);
-  assert.match(aiDrawerSource, /Your Companion/);
+  assert.match(aiDrawerSource, /Ask Health Decoded/);
   assert.match(aiDrawerSource, /Ask about what you&apos;re learning/);
   assert.match(aiSource, /Private to this visit/);
   assert.match(aiSource, /General diabetes education only/);

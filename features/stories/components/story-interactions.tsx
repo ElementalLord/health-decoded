@@ -180,14 +180,14 @@ const familyDialogueChoices = [
 ] as const;
 
 const mealComponents = [
-  { id: "grain", label: "Grain or starchy food" },
-  { id: "beans", label: "Beans or legumes" },
-  { id: "vegetables", label: "Vegetables" },
-  { id: "protein", label: "Protein food" },
-  { id: "bread", label: "Bread or another side" },
-  { id: "dairy", label: "Dairy or alternative" },
+  { id: "mashed-potatoes", label: "Mashed potatoes" },
+  { id: "green-beans", label: "Green beans" },
+  { id: "roast-chicken", label: "Roast chicken" },
+  { id: "corn", label: "Roasted corn" },
+  { id: "dinner-roll", label: "Dinner roll" },
+  { id: "side-salad", label: "Side salad" },
   { id: "water", label: "Water" },
-  { id: "dessert", label: "Dessert" },
+  { id: "apple-crisp", label: "Apple crisp" },
 ] as const;
 
 const supportChoices = [
@@ -843,23 +843,26 @@ function FamilySupportDialogue({
 
 function mealFeedback(selected: string[], portions: Record<string, string>): string {
   const hasOnlyProteinAndVegetables =
-    selected.length > 0 && selected.every((food) => food === "protein" || food === "vegetables");
+    selected.length > 0 &&
+    selected.every((food) => ["roast-chicken", "green-beans", "side-salad"].includes(food));
 
   if (
-    selected.includes("grain") &&
-    selected.includes("bread") &&
-    portions.grain === "large" &&
-    portions.bread === "large"
+    selected.includes("mashed-potatoes") &&
+    selected.includes("dinner-roll") &&
+    portions["mashed-potatoes"] === "large" &&
+    portions["dinner-roll"] === "large"
   ) {
     return "This meal contains several substantial carbohydrate sources. Asha might consider the amounts, what leaves her satisfied, and guidance from her healthcare team. The foods themselves do not need to be treated as forbidden.";
   }
-  if (["grain", "beans", "vegetables", "protein"].every((food) => selected.includes(food))) {
+  if (
+    ["mashed-potatoes", "green-beans", "roast-chicken"].every((food) => selected.includes(food))
+  ) {
     return "Familiar: yes. Filling: this includes several meal roles. Feasible: the ingredients already belong to Asha’s family routine.";
   }
   if (hasOnlyProteinAndVegetables) {
     return "This may be one possible meal, but diabetes care does not require removing every carbohydrate-containing food.";
   }
-  if (selected.includes("dessert")) {
+  if (selected.includes("apple-crisp")) {
     return "Dessert does not erase the rest of the meal. The amount, frequency, and overall pattern matter more than labeling one choice as failure.";
   }
   if (selected.length === 0) {
@@ -880,7 +883,7 @@ function FamiliarMealBuilder({
   const selected = Array.isArray(interactionStates[scene.id])
     ? (interactionStates[scene.id] as string[])
     : [];
-  const adjustable = ["grain", "bread", "vegetables", "protein"];
+  const adjustable = ["mashed-potatoes", "dinner-roll", "green-beans", "roast-chicken"];
   const portions = Object.fromEntries(
     adjustable.map((food) => {
       const value = interactionStates[`${scene.id}:portion:${food}`];
@@ -1058,9 +1061,9 @@ function SharedMealSupportSelector({
       <div className={styles.sharedTableIllustration} aria-hidden="true">
         <span data-person="family" />
         <div>
-          <span data-dish="vegetables" />
-          <span data-dish="grain" />
-          <span data-dish="protein" />
+          <span data-dish="green-beans" />
+          <span data-dish="mashed-potatoes" />
+          <span data-dish="roast-chicken" />
         </div>
         <span data-person="asha" />
       </div>
@@ -1967,7 +1970,7 @@ function MeasurementContext({
   return (
     <div className={styles.devonProcess}>
       <div className={styles.interactionHeader}>
-        <span>Calm measurement check</span>
+        <span>Measurement check</span>
         <h3>{scene.interaction.prompt}</h3>
         <p>{scene.interaction.instructions}</p>
       </div>

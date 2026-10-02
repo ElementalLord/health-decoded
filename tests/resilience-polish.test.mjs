@@ -328,10 +328,15 @@ test("sensitive text is excluded from AI error telemetry", () => {
   );
 });
 
-test("resource browser-storage failure preserves in-memory state without false persistence", () => {
+test("resource browser-storage failure preserves in-memory state without false persistence", async () => {
+  const safeStorage = await read("lib/storage/safe-local-storage.ts");
   assert.match(sources.resources, /persistenceAvailable/);
   assert.match(sources.resources, /will last only until this page closes/);
-  assert.match(sources.resources, /return false/);
+  assert.match(sources.resources, /readLocalStorage/);
+  assert.match(sources.resources, /safeSetLocalStorage/);
+  assert.match(sources.resources, /safeRemoveLocalStorage/);
+  assert.doesNotMatch(sources.resources, /window\.localStorage/);
+  assert.match(safeStorage, /return false/);
 });
 
 test("lesson and story browser-storage failure cannot interrupt the active experience", async () => {
