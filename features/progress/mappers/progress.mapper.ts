@@ -75,6 +75,17 @@ export function mapProgress({
       };
     }
 
+    if (progress?.status === "in_progress") {
+      return {
+        dayNumber: assignment.day_number,
+        estimatedMinutes: assignment.lessons.estimated_minutes,
+        lessonTitle: assignment.lessons.title,
+        subtitle: assignment.lessons.subtitle,
+        state: "available",
+        xpAwarded: 0,
+      };
+    }
+
     return {
       dayNumber: assignment.day_number,
       estimatedMinutes: assignment.lessons.estimated_minutes,

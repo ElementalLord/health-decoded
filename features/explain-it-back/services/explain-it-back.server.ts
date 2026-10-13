@@ -63,9 +63,7 @@ export async function evaluateExplanation(input: {
     if (safety.refusalType === "prompt_injection" || safety.refusalType === "hidden_prompt") {
       const classification = parseAndEnforceClassification(
         {
-          verdict: "try_again",
           coveredConceptIds: [],
-          missingEssentialConceptIds: challenge.essentialConcepts.map(({ id }) => id),
           contradictionIds: [],
           offTopic: true,
           personalMedicalContent: false,

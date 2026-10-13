@@ -1,4 +1,12 @@
-import { ArrowRight, CheckCircle2, ChevronDown, Circle, LockKeyhole, MapPin } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  ChevronDown,
+  Circle,
+  LockKeyhole,
+  MapPin,
+  Unlock,
+} from "lucide-react";
 import Link from "next/link";
 
 import type {
@@ -10,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { formatDateSafely } from "@/lib/dates/format-date";
 
 const stateDetails: Record<ProgressMilestoneState, { icon: typeof Circle; label: string }> = {
+  available: { icon: Unlock, label: "Unlocked" },
   completed: { icon: CheckCircle2, label: "Complete" },
   current: { icon: MapPin, label: "Current lesson" },
   locked: { icon: LockKeyhole, label: "Coming up" },
@@ -39,6 +48,7 @@ function MilestoneEntry({
   const details = stateDetails[milestone.state];
   const Icon = details.icon;
   const isCompleted = milestone.state.startsWith("completed");
+  const canOpen = isCompleted || milestone.state === "current" || milestone.state === "available";
   const content = (
     <>
       <span
@@ -81,9 +91,9 @@ function MilestoneEntry({
 
   return (
     <li>
-      {isCompleted ? (
+      {canOpen ? (
         <Link
-          aria-label={`Review day ${milestone.dayNumber}: ${milestone.lessonTitle}`}
+          aria-label={`${isCompleted ? "Review" : milestone.state === "current" ? "Continue" : "Open"} day ${milestone.dayNumber}: ${milestone.lessonTitle}`}
           className="group flex h-full min-h-24 items-start gap-3 rounded-[4px] border border-border bg-card p-4 transition-[border-color,box-shadow] duration-[var(--duration-fast)] hover:border-accent-warm/45 hover:shadow-[4px_4px_0_rgb(68_47_37/0.06)]"
           href={`/lessons/${milestone.dayNumber}`}
         >

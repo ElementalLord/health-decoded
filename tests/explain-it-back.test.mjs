@@ -58,9 +58,7 @@ test("every challenge supplies passing, almost, and failing evaluator fixtures",
     const essentialIds = challenge.essentialConcepts.map(({ id }) => id);
     const passing = parseAndEnforceClassification(
       {
-        verdict: "got_it",
         coveredConceptIds: essentialIds,
-        missingEssentialConceptIds: [],
         contradictionIds: [],
         offTopic: false,
         personalMedicalContent: false,
@@ -69,9 +67,7 @@ test("every challenge supplies passing, almost, and failing evaluator fixtures",
     );
     const almost = parseAndEnforceClassification(
       {
-        verdict: "almost_there",
         coveredConceptIds: essentialIds.slice(0, -1),
-        missingEssentialConceptIds: essentialIds.slice(-1),
         contradictionIds: [],
         offTopic: false,
         personalMedicalContent: false,
@@ -80,9 +76,7 @@ test("every challenge supplies passing, almost, and failing evaluator fixtures",
     );
     const failing = parseAndEnforceClassification(
       {
-        verdict: "try_again",
         coveredConceptIds: essentialIds,
-        missingEssentialConceptIds: [],
         contradictionIds: [challenge.misconceptions[0].id],
         offTopic: false,
         personalMedicalContent: false,
@@ -109,18 +103,16 @@ test("every challenge supplies passing, almost, and failing evaluator fixtures",
   }
 });
 
-test("the structured model contract rejects unknown fields and invalid verdicts", () => {
+test("the structured model contract rejects unknown fields and lets the app derive verdicts", () => {
   const base = {
-    verdict: "got_it",
     coveredConceptIds: [],
-    missingEssentialConceptIds: [],
     contradictionIds: [],
     offTopic: false,
     personalMedicalContent: false,
   };
   assert.equal(explainModelClassificationSchema.safeParse(base).success, true);
   assert.equal(
-    explainModelClassificationSchema.safeParse({ ...base, verdict: "correct" }).success,
+    explainModelClassificationSchema.safeParse({ ...base, verdict: "got_it" }).success,
     false,
   );
   assert.equal(

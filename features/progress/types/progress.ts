@@ -1,4 +1,4 @@
-export type ProgressMilestoneState = "completed" | "current" | "locked";
+export type ProgressMilestoneState = "available" | "completed" | "current" | "locked";
 
 export type ProgressMilestone = {
   dayNumber: number;

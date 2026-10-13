@@ -985,6 +985,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      enable_bob_test_access: {
+        Args: never;
+        Returns: boolean;
+      };
       acknowledge_milestone_announcements: {
         Args: { p_milestone_ids: string[] };
         Returns: undefined;

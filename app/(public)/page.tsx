@@ -2,6 +2,7 @@ import {
   CompanionIllustration,
   SteadyingHandIllustration,
 } from "@/components/illustrations/editorial-illustrations";
+import { TestUserAccess } from "@/features/auth/components/test-user-access";
 import { GlucoseInsulinAnimation } from "@/features/marketing/components/glucose-insulin-animation";
 
 const phases = [
@@ -55,6 +56,9 @@ export default function HomePage() {
               Learn how Type 2 works, practice everyday skills, and find useful answers when you
               need them. Start with the topic that matters to you.
             </p>
+            <div className="mt-8 max-w-[32rem]">
+              <TestUserAccess next="/journey" />
+            </div>
           </div>
 
           <figure className="mx-auto w-full max-w-[36rem] animate-fade-in [animation-delay:160ms] lg:translate-y-8">

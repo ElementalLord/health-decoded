@@ -71,6 +71,7 @@ sql_paths = [
   "./seed/content/06_patient_stories.sql",
   "./seed/content/07_caregiver_content.sql",
   "./seed/content/08_activity_answer_keys.sql",
+  "./seed/content/09_bob_test_user.sql",
 ]
 
 [db.network_restrictions]

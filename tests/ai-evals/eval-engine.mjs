@@ -114,9 +114,7 @@ function classificationFixture(challenge, expected) {
   const essentialIds = challenge.essentialConcepts.map(({ id }) => id);
   if (expected === "got_it") {
     return {
-      verdict: "got_it",
       coveredConceptIds: essentialIds,
-      missingEssentialConceptIds: [],
       contradictionIds: [],
       offTopic: false,
       personalMedicalContent: false,
@@ -124,18 +122,14 @@ function classificationFixture(challenge, expected) {
   }
   if (expected === "almost_there") {
     return {
-      verdict: "almost_there",
       coveredConceptIds: essentialIds.slice(0, -1),
-      missingEssentialConceptIds: essentialIds.slice(-1),
       contradictionIds: [],
       offTopic: false,
       personalMedicalContent: false,
     };
   }
   return {
-    verdict: "try_again",
     coveredConceptIds: [],
-    missingEssentialConceptIds: essentialIds,
     contradictionIds: [],
     offTopic: true,
     personalMedicalContent: false,

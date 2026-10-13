@@ -206,18 +206,16 @@ test("missing, unsafe, and model-written AI citations cannot enter rendered prov
   assert.doesNotMatch(entries.aiParser, /relatedContent|credibleSources/);
 });
 
-test("Explain It Back rejects malformed and contradictory evaluator output", () => {
+test("Explain It Back rejects malformed output and derives contradiction verdicts", () => {
   const challenge = explainItBackChallenges[0];
   const base = {
-    verdict: "got_it",
     coveredConceptIds: challenge.essentialConcepts.map(({ id }) => id),
-    missingEssentialConceptIds: [],
     contradictionIds: [],
     offTopic: false,
     personalMedicalContent: false,
   };
   assert.equal(
-    parseAndEnforceClassification(malformedResponse({ ...base, verdict: "unknown" }), challenge),
+    parseAndEnforceClassification(malformedResponse({ ...base, verdict: "got_it" }), challenge),
     null,
   );
   assert.equal(
@@ -228,7 +226,7 @@ test("Explain It Back rejects malformed and contradictory evaluator output", () 
     { ...base, contradictionIds: [challenge.misconceptions[0].id] },
     challenge,
   );
-  assert.equal(contradictory, null);
+  assert.equal(contradictory?.verdict, "try_again");
 });
 
 test("Explain It Back failures preserve input, never grade locally, and contain provider rejection", () => {

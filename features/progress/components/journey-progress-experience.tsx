@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check, ChevronDown } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Unlock } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -170,6 +170,7 @@ function LessonRow({
 }) {
   const completed = milestone.state === "completed";
   const current = milestone.state === "current";
+  const available = milestone.state === "available";
   const content = (
     <>
       <span
@@ -180,12 +181,15 @@ function LessonRow({
           <Check aria-hidden="true" />
         ) : current ? (
           <ArrowRight aria-hidden="true" />
+        ) : available ? (
+          <Unlock aria-hidden="true" />
         ) : null}
       </span>
       <span className={styles.lessonCopy}>
         <span className={styles.lessonMeta}>
           Day {milestone.dayNumber}
           {current ? " · Next lesson" : ""}
+          {available ? " · Unlocked" : ""}
         </span>
         <span className={cn(styles.lessonTitle, milestone.state === "locked" && styles.quiet)}>
           {milestone.lessonTitle ?? "Future lesson"}
@@ -196,15 +200,17 @@ function LessonRow({
           </span>
         ) : null}
       </span>
-      {(completed || current) && <ArrowRight aria-hidden="true" className={styles.rowArrow} />}
+      {(completed || current || available) && (
+        <ArrowRight aria-hidden="true" className={styles.rowArrow} />
+      )}
     </>
   );
 
   return (
     <li className={styles.lessonItem}>
-      {completed || current ? (
+      {completed || current || available ? (
         <Link
-          aria-label={`${completed ? "Review" : "Continue"} day ${milestone.dayNumber}: ${milestone.lessonTitle}`}
+          aria-label={`${completed ? "Review" : current ? "Continue" : "Open"} day ${milestone.dayNumber}: ${milestone.lessonTitle}`}
           className={styles.lessonLink}
           href={`/lessons/${milestone.dayNumber}`}
         >

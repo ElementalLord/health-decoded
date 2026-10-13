@@ -78,13 +78,11 @@ test("Tutor search grounding accepts only safe output with structured direct cit
   );
 });
 
-test("Explain It Back rejects duplicates and every contradictory structured field", () => {
+test("Explain It Back rejects duplicate, unknown, and internally contradictory evidence", () => {
   const challenge = explainItBackChallenges[0];
   const ids = challenge.essentialConcepts.map(({ id }) => id);
   const valid = {
-    verdict: "got_it",
     coveredConceptIds: ids,
-    missingEssentialConceptIds: [],
     contradictionIds: [],
     offTopic: false,
     personalMedicalContent: false,
@@ -95,10 +93,9 @@ test("Explain It Back rejects duplicates and every contradictory structured fiel
     null,
   );
   assert.equal(
-    parseAndEnforceClassification({ ...valid, missingEssentialConceptIds: [ids[0]] }, challenge),
+    parseAndEnforceClassification({ ...valid, coveredConceptIds: ["unknown"] }, challenge),
     null,
   );
-  assert.equal(parseAndEnforceClassification({ ...valid, verdict: "try_again" }, challenge), null);
   assert.equal(parseAndEnforceClassification({ ...valid, offTopic: true }, challenge), null);
 });
 

@@ -39,15 +39,6 @@ export function PublicHeader() {
           <nav aria-label="Get started" className="flex items-center gap-2">
             <Link
               className={cn(
-                buttonVariants({ fullWidth: false, variant: "secondary" }),
-                "min-h-11 px-3 py-2.5 sm:min-w-24 sm:px-5",
-              )}
-              href="/demo"
-            >
-              Demo
-            </Link>
-            <Link
-              className={cn(
                 buttonVariants({ fullWidth: false }),
                 "min-h-11 px-3 py-2.5 sm:min-w-28 sm:px-5",
               )}

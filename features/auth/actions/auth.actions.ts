@@ -129,6 +129,33 @@ export async function loginAction(_: AuthFormState, formData: FormData): Promise
   redirect(getSafeRedirectPath(formData.get("next")?.toString()));
 }
 
+export async function testUserLoginAction(
+  _: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const database = await getServerDatabaseClient();
+  const { error } = await database.auth.signInWithPassword({
+    email: "bob@testing.healthdecoded.local",
+    password: "Bob-Testing-Access-2026!",
+  });
+
+  if (error) {
+    logAuthError("auth.test_user_login_failed", error);
+    return failure("Challenge access is not available right now. Please try again shortly.");
+  }
+
+  const access = await database.rpc("enable_bob_test_access");
+  if (access.error || access.data !== true) {
+    logger.error("auth.test_user_access_failed", {
+      error_code: access.error?.code ?? "invalid_result",
+    });
+    await database.auth.signOut({ scope: "local" });
+    return failure("Challenge access could not be completed. Please try again shortly.");
+  }
+
+  redirect(getSafeRedirectPath(formData.get("next")?.toString()));
+}
+
 export async function forgotPasswordAction(
   _: AuthFormState,
   formData: FormData,

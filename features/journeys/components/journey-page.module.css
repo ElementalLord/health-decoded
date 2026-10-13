@@ -2,7 +2,14 @@
   --journey-gutter: clamp(1.25rem, 4vw, 3.5rem);
   --journey-shell-space: var(--shell-top-inset, clamp(1.5rem, 4vw, 3rem));
 
-  background-color: #fbf8f2;
+  background-color: #f9f0e3;
+  /* Enlarge the blank middle of the artwork to carry paper texture behind text. */
+  background-image:
+    linear-gradient(rgb(249 240 227 / 0.5), rgb(249 240 227 / 0.5)),
+    url("/journey/journey-cream-paper-background-v5.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
   isolation: isolate;
   margin-block-start: calc(0rem - var(--journey-shell-space));
   margin-block-end: calc(0rem - var(--shell-bottom-inset, 0rem));
@@ -16,14 +23,28 @@
 }
 
 .journeyPage::before {
-  background-image: url("/journey/journey-whimsical-background-layout-safe-v6.webp");
+  --journey-art-gutter: max(
+    var(--journey-gutter),
+    calc((100vw - 87.5rem) / 2 + var(--journey-gutter))
+  );
+
+  /* Keep generated drawings strictly outside the content column at every width. */
+  background-image:
+    linear-gradient(rgb(249 240 227 / 0.5), rgb(249 240 227 / 0.5)),
+    url("/journey/journey-cream-paper-background-v5.webp");
   background-position: center top;
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: 100% 100%;
   content: "";
-  filter: saturate(0.5) contrast(0.86) brightness(1.12);
   inset: 0;
-  opacity: 0.36;
+  mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    transparent var(--journey-art-gutter),
+    transparent calc(100% - var(--journey-art-gutter)),
+    #000 100%
+  );
+  opacity: 0.6;
   pointer-events: none;
   position: absolute;
   z-index: 0;
@@ -37,19 +58,12 @@
   z-index: 1;
 }
 
-@media (max-width: 70rem) {
-  .journeyPage::before {
-    opacity: 0.3;
-  }
-}
-
 @media (max-width: 48rem) {
   .journeyPage {
     --journey-gutter: clamp(1rem, 5vw, 1.5rem);
   }
 
   .journeyPage::before {
-    background-size: auto max(100%, 96rem);
-    opacity: 0.22;
+    opacity: 0.25;
   }
 }

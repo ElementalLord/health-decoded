@@ -87,7 +87,7 @@ function Sources({ card, onOpen }: { card: MythCheckCard; onOpen: () => void }) 
   );
 }
 
-export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
+export function DiabetesMythCheck() {
   const [phase, setPhase] = useState<Phase>("start");
   const [round, setRound] = useState<readonly MythCheckCard[]>([]);
   const [index, setIndex] = useState(0);
@@ -142,15 +142,15 @@ export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
   function startMode(mode: Exclude<MythCheckMode, "replay">) {
     stopWheel();
     setIsReplay(false);
-    const cards = createMythCheckRound(mythCheckCards, mode, demo ? () => 0 : Math.random);
-    begin(demo ? cards.slice(0, 3) : cards);
+    const cards = createMythCheckRound(mythCheckCards, mode, Math.random);
+    begin(cards);
   }
 
   function spinWheel() {
     const wheel = wheelRef.current;
     if (!wheel || isSpinning) return;
 
-    const modeIndex = demo ? 2 : Math.floor(Math.random() * mythCheckModeDetails.length);
+    const modeIndex = Math.floor(Math.random() * mythCheckModeDetails.length);
     const mode = mythCheckModeDetails[modeIndex];
     if (!mode) return;
 
@@ -161,7 +161,7 @@ export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
     const alignment = (desiredRotation - normalizedRotation + 360) % 360;
     const targetRotation = currentRotation + (reducedMotion ? alignment : 360 * 5 + alignment);
     const animationOptions: KeyframeAnimationOptions = {
-      duration: reducedMotion ? 1 : demo ? 1_650 : 4_400,
+      duration: reducedMotion ? 1 : 4_400,
       easing: "cubic-bezier(0.12, 0.74, 0.16, 1)",
       fill: "forwards",
     };
@@ -222,11 +222,9 @@ export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
 
   function next() {
     if (index === round.length - 1) {
-      if (!demo) {
-        void recognizeMilestone({
-          event: isReplay ? "myth_replay_completed" : "myth_round_completed",
-        });
-      }
+      void recognizeMilestone({
+        event: isReplay ? "myth_replay_completed" : "myth_round_completed",
+      });
       setPhase("summary");
       return;
     }
@@ -244,19 +242,18 @@ export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
     if (reviewedSourceClaims.has(cardId)) return;
     const next = new Set(reviewedSourceClaims).add(cardId);
     setReviewedSourceClaims(next);
-    if (!demo && next.size === 3)
+    if (next.size === 3)
       void recognizeMilestone({ event: "myth_sources_reviewed", distinctClaimCount: 3 });
   }
 
   if (phase === "start") {
     return (
-      <main className={styles.mythCheck} data-demo={demo || undefined}>
+      <main className={styles.mythCheck}>
         <header className={styles.hero}>
           <p className="editorial-eyebrow">Evidence, in plain language</p>
           <h1>Diabetes Myth Check</h1>
           <p className={styles.supporting}>
             Test common diabetes claims and learn what the evidence actually says.
-            {demo ? " Each demo round includes three claims." : null}
           </p>
           <p className={styles.boundary}>
             This activity explains general diabetes information. It does not interpret your
@@ -374,15 +371,7 @@ export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
                     <span style={{ background: wheelColors[modeIndex] }} />
                     <span>
                       <strong>{mode.title}</strong>
-                      <small>
-                        {demo
-                          ? mode.id === "quick"
-                            ? "3 claims selected across topics."
-                            : mode.id === "all"
-                              ? "3 claims from the full library."
-                              : `3 claims. ${mode.description}`
-                          : mode.description}
-                      </small>
+                      <small>{mode.description}</small>
                     </span>
                   </button>
                 ))}
@@ -397,7 +386,7 @@ export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
   if (phase === "summary") {
     const understood = answers.filter((answer) => answer.understood).length;
     return (
-      <main className={styles.mythCheck} data-demo={demo || undefined}>
+      <main className={styles.mythCheck}>
         <section aria-labelledby="round-summary" className={styles.summary}>
           <p className="editorial-eyebrow">Round complete</p>
           <h1 id="round-summary">You reviewed {round.length} common diabetes claims.</h1>
@@ -429,9 +418,7 @@ export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
             <Button fullWidth={false} onClick={() => setPhase("start")} variant="secondary">
               Start another round
             </Button>
-            <Link href={demo ? "/demo/explore?feature=resources" : "/resources"}>
-              Return to Resources
-            </Link>
+            <Link href="/resources">Return to Resources</Link>
           </div>
         </section>
       </main>
@@ -442,7 +429,7 @@ export function DiabetesMythCheck({ demo = false }: { demo?: boolean } = {}) {
   const isCorrect = selected === current.verdict;
 
   return (
-    <main className={styles.mythCheck} data-demo={demo || undefined}>
+    <main className={styles.mythCheck}>
       <section
         aria-labelledby="current-claim"
         className={`${styles.round} ${selected ? styles.roundAnswered : ""}`}
