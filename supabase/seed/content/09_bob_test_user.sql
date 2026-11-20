@@ -1,4 +1,4 @@
--- Shared non-production account used by the Congressional App Challenge button.
+-- Shared non-production account used by the Judges and Reviewers button.
 -- The fixed credentials are intentionally public and must never be used for real user data.
 insert into auth.users (
   instance_id,

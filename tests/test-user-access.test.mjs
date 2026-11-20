@@ -4,7 +4,7 @@ import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("the homepage gives Congressional App Challenge reviewers a prominent Bob entry", async () => {
+test("the homepage gives judges and reviewers a prominent Bob entry", async () => {
   const [home, login, component] = await Promise.all([
     read("app/(public)/page.tsx"),
     read("app/(auth)/login/page.tsx"),
@@ -13,7 +13,7 @@ test("the homepage gives Congressional App Challenge reviewers a prominent Bob e
 
   assert.match(home, /<TestUserAccess next="\/journey"/);
   assert.doesNotMatch(login, /TestUserAccess/);
-  assert.match(component, /Congressional App Challenge/);
+  assert.match(component, /Judges and Reviewers/);
   assert.match(component, /Enter as Bob with every lesson, activity, and resource unlocked/);
   assert.match(component, /text-xl[\s\S]*sm:text-2xl/);
 });

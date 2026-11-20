@@ -17,8 +17,7 @@ export function TestUserAccess({ next }: { next: string }) {
       aria-labelledby="test-user-title"
       className="rounded-2xl border-2 border-accent-warm/70 bg-accent-warm/10 p-5 shadow-[0_4px_0_rgb(126_79_45/0.16)]"
     >
-      <p className="editorial-eyebrow text-center">Judges and reviewers</p>
-      <form action={formAction} className="mt-3">
+      <form action={formAction}>
         <input name="next" type="hidden" value={next} />
         <Button
           className="min-h-20 rounded-xl px-6 text-xl leading-tight sm:text-2xl"
@@ -27,7 +26,7 @@ export function TestUserAccess({ next }: { next: string }) {
           type="submit"
         >
           <Unlock aria-hidden="true" className="size-6 shrink-0" strokeWidth={2.25} />
-          {pending ? "Opening full access…" : "Congressional App Challenge"}
+          {pending ? "Opening full access…" : "Judges and Reviewers"}
         </Button>
       </form>
       <p className="mt-3 text-center text-sm leading-6 text-muted-foreground">
