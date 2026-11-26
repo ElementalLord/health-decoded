@@ -1,9 +1,26 @@
+import Link from "next/link";
+
 import {
   CompanionIllustration,
   SteadyingHandIllustration,
 } from "@/components/illustrations/editorial-illustrations";
 import { TestUserAccess } from "@/features/auth/components/test-user-access";
 import { GlucoseInsulinAnimation } from "@/features/marketing/components/glucose-insulin-animation";
+import { LandingGlossaryLookup } from "@/features/marketing/components/landing-glossary-lookup";
+import { LandingLabelCheck } from "@/features/marketing/components/landing-label-check";
+import { LandingMythCheck } from "@/features/marketing/components/landing-myth-check";
+import { LandingStoryPreview } from "@/features/marketing/components/landing-story-preview";
+import { StartingPointPicker } from "@/features/marketing/components/starting-point-picker";
+import {
+  getLandingMythCards,
+  getMarcusChoice,
+  landingGlossary,
+  landingGlossarySuggestions,
+  landingLabelQuestions,
+  landingLabels,
+  landingStories,
+  totalMythCardCount,
+} from "@/features/marketing/content/landing-interactive-content";
 
 const phases = [
   ["01", "Understanding", "Get familiar with the basics, one idea at a time.", "Days 1–30"],
@@ -70,6 +87,12 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="scroll-mt-24 bg-[#f1ece4]/55" id="start">
+        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-16 md:px-10 md:py-24">
+          <StartingPointPicker />
+        </div>
+      </section>
+
       <section
         className="home-scroll-fade px-5 py-20 text-center sm:py-24"
         aria-labelledby="first-ninety-days"
@@ -116,6 +139,22 @@ export default function HomePage() {
         <GlucoseInsulinAnimation />
       </section>
 
+      <section className="bg-[#f1ece4]/55" id="myth-check">
+        <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-10 px-5 py-16 md:px-10 md:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-16">
+          <div>
+            <p className="editorial-eyebrow">Try it here</p>
+            <h2 className="mt-4 font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
+              Test what you&apos;ve heard.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-[#6b5b52]">
+              After a diagnosis, everyone has advice. Five common claims, each checked against
+              sources like the American Diabetes Association and the CDC.
+            </p>
+          </div>
+          <LandingMythCheck cards={getLandingMythCards()} totalCount={totalMythCardCount} />
+        </div>
+      </section>
+
       <section className="bg-[#f1ece4]/55" id="ask">
         <div className="home-scroll-fade mx-auto max-w-[1120px] px-5 py-16 md:px-10 md:py-20">
           <div>
@@ -135,27 +174,60 @@ export default function HomePage() {
       </section>
 
       <section id="stories">
-        <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-10 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-16">
-          <figure>
-            <SteadyingHandIllustration />
-            <figcaption className="mt-3 text-center">
-              <span className="block text-xs font-bold uppercase tracking-[0.24em] text-[#8d7b70]">
-                Everyday situations
-              </span>
-              <span className="mt-2 block font-serif-display text-xl text-[#6f6058] sm:text-2xl">
-                Practice decisions before they happen.
-              </span>
-            </figcaption>
-          </figure>
+        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-16 md:px-10 md:py-24">
+          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <p className="editorial-eyebrow">Interactive stories</p>
+              <h2 className="mt-4 max-w-3xl font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
+                Practice the hard moments before they happen.
+              </h2>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-[#6b5b52]">
+                Short stories about everyday routines, choices, and conversations around Type 2. You
+                decide what happens next. Try one moment from Marcus&apos;s story below.
+              </p>
+            </div>
+            <div className="hidden w-48 lg:block">
+              <SteadyingHandIllustration />
+            </div>
+          </div>
+          <div className="mt-10">
+            <LandingStoryPreview choice={getMarcusChoice()} stories={landingStories} />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f1ece4]/55" id="labels">
+        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-16 md:px-10 md:py-24">
+          <p className="editorial-eyebrow">Decode the Label</p>
+          <h2 className="mt-4 max-w-3xl font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
+            Two yogurts. Which one would you pick?
+          </h2>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-[#6b5b52]">
+            Nutrition labels are easier once you know where to look. Answer three quick questions
+            using the labels below.
+          </p>
+          <div className="mt-10">
+            <LandingLabelCheck labels={landingLabels} questions={landingLabelQuestions} />
+          </div>
+        </div>
+      </section>
+
+      <section id="glossary">
+        <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-10 px-5 py-16 md:px-10 md:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-16">
           <div>
-            <h2 className="font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
-              See how it looks in real life.
+            <p className="editorial-eyebrow">Medical glossary</p>
+            <h2 className="mt-4 font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
+              Heard a word you didn&apos;t know?
             </h2>
-            <p className="mt-5 text-lg leading-8 text-[#827168]">
-              Explore short stories about everyday routines, choices, and conversations around Type
-              2.
+            <p className="mt-5 text-lg leading-8 text-[#6b5b52]">
+              Doctors move fast. Type a word from your visit summary and get a plain definition,
+              plus what it often gets confused with.
             </p>
           </div>
+          <LandingGlossaryLookup
+            entries={landingGlossary}
+            suggestions={landingGlossarySuggestions}
+          />
         </div>
       </section>
 
@@ -235,7 +307,21 @@ export default function HomePage() {
         <h2 className="font-serif-display text-5xl font-normal sm:text-7xl">
           Choose where to start.
         </h2>
-        <p className="mt-4 text-lg text-[#827168]">Your progress is saved as you work.</p>
+        <p className="mt-4 text-lg text-[#6b5b52]">Your progress is saved as you work.</p>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <Link
+            className="inline-flex min-h-12 items-center rounded-[12px] bg-[#382c26] px-6 font-semibold text-[#fffaf3] shadow-[0_3px_0_#211814] transition hover:-translate-y-px hover:bg-[#4b3931]"
+            href="#start"
+          >
+            Find my starting point
+          </Link>
+          <Link
+            className="inline-flex min-h-12 items-center font-semibold text-[#382c26] underline decoration-[#c97860]/50 decoration-2 underline-offset-[6px]"
+            href="/login"
+          >
+            Log in
+          </Link>
+        </div>
       </section>
     </>
   );
