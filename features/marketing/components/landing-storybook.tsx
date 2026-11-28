@@ -30,23 +30,26 @@ export function LandingStorybook({ pages }: { pages: readonly StorybookPage[] })
     const state = leaves.map(() => ({ turn: 0 }));
 
     const render = () => {
+      let moving = 0;
+      let movingTurn = 0;
       state.forEach(({ turn }, index) => {
         const leaf = leaves[index];
         if (!leaf) return;
-        const angle = -180 * turn;
         const arc = Math.sin(Math.PI * turn);
-        // Turning paper lifts off the page and bends a little at its free edge.
-        leaf.style.transform = `rotateY(${angle}deg) translateZ(${arc * 22}px) skewY(${arc * (turn < 0.5 ? -4 : 4)}deg)`;
-        leaf.style.zIndex = String(turn > 0.5 ? 10 + index : 10 + count - index);
-        leaf.style.setProperty("--shade", String(arc * 0.38));
-        leaf.style.setProperty("--shine", String(arc * 0.55));
+        // Each leaf gets its own depth in the stack, so two pages never sit at the same depth
+        // and flicker; a turning page lifts a little higher while it moves.
+        const depth = (turn > 0.5 ? index : count - index) * 0.8 + 1 + arc * 18;
+        leaf.style.transform = `translateZ(${depth.toFixed(2)}px) rotateY(${(-180 * turn).toFixed(2)}deg)`;
+        leaf.style.setProperty("--shade", (arc * 0.45).toFixed(3));
+        if (arc > moving) {
+          moving = arc;
+          movingTurn = turn;
+        }
       });
       // The page in motion throws a soft shadow across the page beneath it.
-      const moving = state.reduce((most, { turn }) => Math.max(most, Math.sin(Math.PI * turn)), 0);
-      const movingTurn = state.find(({ turn }) => turn > 0.02 && turn < 0.98)?.turn ?? 0;
       if (castRef.current) {
-        castRef.current.style.opacity = String(moving * 0.5);
-        castRef.current.style.left = movingTurn < 0.5 ? "50%" : "0%";
+        castRef.current.style.opacity = (moving * 0.45).toFixed(3);
+        castRef.current.style.transform = movingTurn < 0.5 ? "translateX(100%)" : "none";
       }
     };
 
@@ -58,9 +61,8 @@ export function LandingStorybook({ pages }: { pages: readonly StorybookPage[] })
     render();
     const float = floatRef.current
       ? animate(floatRef.current, {
-          y: [0, -8, 0],
-          rotate: [-1.2, 0.6, -1.2],
-          duration: 6000,
+          y: [0, -6, 0],
+          duration: 7000,
           ease: "inOutSine",
           loop: true,
         })

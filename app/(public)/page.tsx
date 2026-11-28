@@ -15,7 +15,7 @@ import { LandingGlossaryLookup } from "@/features/marketing/components/landing-g
 import { LandingHeart } from "@/features/marketing/components/landing-heart";
 import { LandingJourneyCta } from "@/features/marketing/components/landing-journey-cta";
 import { LandingLabelCheck } from "@/features/marketing/components/landing-label-check";
-import { LandingLiftIllustration } from "@/features/marketing/components/landing-lift-illustration";
+import { LandingSharedLight } from "@/features/marketing/components/landing-shared-light";
 import {
   LandingMotion,
   landingRevealBootScript,
@@ -86,7 +86,7 @@ const comparisonGroups: readonly CompareGroup[] = [
   },
 ];
 
-const sectionShell = "mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10";
+const sectionShell = "mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-10 md:py-14";
 
 export default function HomePage() {
   const explainDemo = getLandingExplainDemo();
@@ -105,7 +105,7 @@ export default function HomePage() {
       <script dangerouslySetInnerHTML={{ __html: landingRevealBootScript }} />
 
       <section id="home">
-        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(1rem,3vh,2rem)] pt-[clamp(2.75rem,6vh,4.5rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(2rem,4vh,3rem)] pt-[clamp(2.75rem,6vh,4.5rem)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-center">
           <div data-reveal="up" data-reveal-stagger="">
             <h1 className="max-w-3xl font-serif-display text-[clamp(3.25rem,9.5vw,7rem)] font-normal leading-[1] tracking-[-0.045em] text-balance">
               Your Companion
@@ -124,11 +124,11 @@ export default function HomePage() {
           </div>
 
           <figure
-            className="mx-auto w-full max-w-[34rem]"
+            className="mx-auto w-full max-w-[46rem]"
             data-reveal="scale"
             data-reveal-delay="200"
           >
-            <div className={`${sketchStyles.sketchFrame} px-6 pt-6 sm:px-10 sm:pt-8`}>
+            <div className={`${sketchStyles.sketchFrame} px-4 pt-5 sm:px-8 sm:pt-7`}>
               <CompanionIllustration title="Two people sharing a hug" />
             </div>
             <figcaption className="mt-5 text-center font-serif-display text-lg italic leading-snug text-[#6b5b52] sm:text-xl">
@@ -237,7 +237,7 @@ export default function HomePage() {
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1.25fr)] lg:items-center lg:gap-14">
             <div className="mx-auto w-full max-w-[36rem]" data-reveal="scale">
-              <LandingLiftIllustration />
+              <LandingSharedLight />
             </div>
 
             <WavyRule className="self-stretch" />
@@ -380,7 +380,7 @@ export default function HomePage() {
           </div>
 
           <ul
-            className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4"
+            className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4"
             data-reveal="up"
             data-reveal-stagger=""
           >
@@ -423,7 +423,7 @@ export default function HomePage() {
           </ul>
 
           <div
-            className={`${sketchStyles.sketchFrame} mt-8 flex scroll-mt-28 flex-col items-center gap-5 p-5 text-center sm:flex-row sm:gap-7 sm:p-6 sm:text-left`}
+            className={`${sketchStyles.sketchFrame} mt-6 flex scroll-mt-28 flex-col items-center justify-center gap-5 p-5 text-center sm:flex-row sm:gap-7 sm:p-6 sm:text-left`}
             data-reveal="up"
             id="companion"
           >
@@ -436,17 +436,17 @@ export default function HomePage() {
                 src="/ai/your-companion.png"
               />
             </span>
-            <div className="flex-1">
+            <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#a85f4b]">
                 Ask Health Decoded
               </p>
               <p className="mt-1 font-serif-display text-2xl leading-snug text-[#382c26] sm:text-3xl">
                 Your AI companion for questions outside the clinic.
               </p>
+              <p className="mt-1.5 text-sm leading-6 text-[#6b5b52]">
+                Everyday language, sources when needed, and available any time of day.
+              </p>
             </div>
-            <p className="max-w-xs text-sm leading-6 text-[#6b5b52]">
-              Everyday language, sources when needed, and available any time of day.
-            </p>
           </div>
         </div>
       </section>
@@ -461,7 +461,7 @@ export default function HomePage() {
             <h2 className={sketchStyles.sectionTitle} id="stories-title">
               Interactive Stories
             </h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-[#6b5b52]">
+            <p className="mt-8 max-w-xl text-lg leading-8 text-[#6b5b52]">
               Short stories about everyday routines, choices, and conversations around Type 2. You
               decide what happens next.
             </p>
@@ -536,7 +536,7 @@ export default function HomePage() {
 
       <LatticeDivider />
 
-      <section className={`${sectionShell} pb-12 md:pb-16`} data-reveal="scale">
+      <section className={`${sectionShell} pb-14 md:pb-20`} data-reveal="scale">
         <LandingJourneyCta />
       </section>
     </LandingMotion>

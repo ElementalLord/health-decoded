@@ -6,7 +6,7 @@
   position: relative;
   height: 4.5rem;
   overflow: hidden;
-  margin-block: clamp(2.25rem, 5vw, 4rem);
+  margin-block: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .dividerLattice,
