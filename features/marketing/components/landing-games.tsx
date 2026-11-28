@@ -34,7 +34,7 @@ const games: readonly Game[] = [
       <span className="flex flex-wrap justify-center gap-2" aria-hidden="true">
         {["Myth", "Fact", "It depends"].map((label) => (
           <span
-            className="rounded-full border border-[#d9cabd] bg-[#fffdf8] px-3 py-1 text-xs font-semibold text-[#6b5b52]"
+            className="rounded-[8px] border border-[#d9cabd] bg-[#fffdf8] px-3 py-1 text-xs font-semibold text-[#6b5b52]"
             key={label}
           >
             {label}
@@ -202,7 +202,7 @@ export function LandingGames({ demos }: { demos: Record<GameId, ReactNode> }) {
                 {game.visual}
                 <span
                   className={cn(
-                    "inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-base font-semibold shadow-[0_2px_0_#211814] transition-colors duration-300",
+                    "inline-flex min-h-11 items-center gap-2 rounded-[12px] px-5 text-base font-semibold shadow-[0_2px_0_#211814] transition-colors duration-300",
                     isOpen
                       ? "bg-[#fffaf3] text-[#382c26] ring-1 ring-[#382c26]"
                       : "bg-[#382c26] text-[#fffaf3] group-hover:bg-[#4b3931]",

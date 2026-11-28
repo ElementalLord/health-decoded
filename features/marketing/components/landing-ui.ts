@@ -8,7 +8,7 @@ export const landingChoice =
   "flex min-h-12 w-full items-center rounded-[14px] border border-[#d9cabd] bg-[#fffdf8] px-4 py-3 text-left text-[15px] font-semibold leading-snug text-[#382c26] transition duration-150 hover:-translate-y-px hover:border-[#b8a493] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c97860] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f4ed] disabled:pointer-events-none aria-pressed:border-[#382c26] aria-pressed:bg-[#382c26] aria-pressed:text-[#fffaf3]";
 
 export const landingChip =
-  "inline-flex min-h-11 items-center rounded-full border border-[#d9cabd] bg-[#fffdf8] px-4 text-sm font-semibold text-[#493a32] transition hover:border-[#b8a493] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c97860] focus-visible:ring-offset-2 aria-pressed:border-[#382c26] aria-pressed:bg-[#382c26] aria-pressed:text-[#fffaf3]";
+  "inline-flex min-h-11 items-center rounded-[10px] border border-[#d9cabd] bg-[#fffdf8] px-4 text-sm font-semibold text-[#493a32] transition hover:border-[#b8a493] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c97860] focus-visible:ring-offset-2 aria-pressed:border-[#382c26] aria-pressed:bg-[#382c26] aria-pressed:text-[#fffaf3]";
 
 export const landingLink =
   "inline-flex min-h-11 items-center gap-2 font-semibold text-[#382c26] underline decoration-[#c97860]/50 decoration-2 underline-offset-[6px] hover:decoration-[#c97860]";

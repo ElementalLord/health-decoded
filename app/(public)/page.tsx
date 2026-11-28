@@ -114,7 +114,7 @@ export default function HomePage() {
               Understand how Type 2 diabetes works, practice everyday skills, and feel self-reliant
               beyond the doctor&apos;s office.
             </p>
-            <p className="mt-6 inline-flex items-center gap-2.5 rounded-full border border-[#d9cabd] bg-[#fffaf3] px-4 py-3 text-sm font-semibold leading-6 text-[#493a32]">
+            <p className="mt-6 inline-flex items-center gap-2.5 rounded-[12px] border border-[#d9cabd] bg-[#fffaf3] px-4 py-3 text-sm font-semibold leading-6 text-[#493a32]">
               <ShieldCheck aria-hidden="true" className="size-5 shrink-0 text-[#6f947a]" />
               Under review by endocrinologists and the Houston Food Bank
             </p>

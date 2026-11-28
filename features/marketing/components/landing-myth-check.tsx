@@ -59,7 +59,7 @@ export function LandingMythCheck({
                 : answer === candidate.verdict
                   ? "bg-[#6f947a]"
                   : "bg-[#c97860]";
-            return <span className={`h-2 w-6 rounded-full ${tone}`} key={candidate.id} />;
+            return <span className={`h-2 w-6 rounded-[2px] ${tone}`} key={candidate.id} />;
           })}
         </div>
       </div>
