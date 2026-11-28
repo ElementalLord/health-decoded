@@ -21,13 +21,13 @@ export function LandingHeart({ className }: { className?: string }) {
     if (prefersReducedMotion() || !heartRef.current) return;
     const beat = animate(heartRef.current, {
       scale: [
-        { to: 1.09, duration: 180, ease: "outQuad" },
-        { to: 1, duration: 200, ease: "inQuad" },
-        { to: 1.06, duration: 170, ease: "outQuad" },
-        { to: 1, duration: 450, ease: "inOutSine" },
+        { to: 1.035, duration: 420, ease: "inOutSine" },
+        { to: 1.005, duration: 380, ease: "inOutSine" },
+        { to: 1.025, duration: 380, ease: "inOutSine" },
+        { to: 1, duration: 900, ease: "inOutSine" },
       ],
       loop: true,
-      loopDelay: 900,
+      loopDelay: 1600,
     });
     return () => {
       beat.revert();
