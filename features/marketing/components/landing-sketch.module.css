@@ -1,0 +1,163 @@
+/* Hand-drawn accents for the landing page: the lattice divider, wavy rules, and pumping heart. */
+
+/* ---------- Lattice divider ---------- */
+
+.divider {
+  position: relative;
+  height: 4.5rem;
+  overflow: hidden;
+  margin-block: clamp(1rem, 3vw, 2rem);
+}
+
+.dividerLattice,
+.dividerDots {
+  position: absolute;
+  inset: 0 -96px 0 0;
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+  background-size: 96px 72px;
+}
+
+.dividerLattice {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='72' viewBox='0 0 96 72'%3E%3Cg fill='none' stroke='%23a8968a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 24 L24 48 L48 24 L72 48 L96 24'/%3E%3Cpath d='M0 48 L24 24 L48 48 L72 24 L96 48'/%3E%3Cpath d='M0 30 L18 48 M30 24 L48 42 M48 42 L66 24 M78 48 L96 30' stroke-opacity='0.45'/%3E%3C/g%3E%3C/svg%3E");
+  animation: lattice-drift 14s linear infinite;
+}
+
+.dividerDots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='72' viewBox='0 0 96 72'%3E%3Cg fill='%23f8f4ed' stroke='%23c97860' stroke-width='1.6'%3E%3Ccircle cx='12' cy='11' r='3.6'/%3E%3Ccircle cx='60' cy='9' r='3.6'/%3E%3Ccircle cx='36' cy='62' r='3.6'/%3E%3Ccircle cx='84' cy='61' r='3.6'/%3E%3C/g%3E%3C/svg%3E");
+  animation:
+    lattice-drift-reverse 22s linear infinite,
+    dots-bob 3.2s ease-in-out infinite;
+}
+
+@keyframes lattice-drift {
+  to {
+    transform: translateX(-96px);
+  }
+}
+
+@keyframes lattice-drift-reverse {
+  from {
+    transform: translateX(-96px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes dots-bob {
+  0%,
+  100% {
+    background-position-y: 50%;
+  }
+  50% {
+    background-position-y: calc(50% - 4px);
+  }
+}
+
+/* ---------- Wavy rules ---------- */
+
+.wavyRule {
+  display: none;
+  width: 1.25rem;
+  height: 100%;
+  min-height: 10rem;
+  color: #8d7b70;
+}
+
+@media (min-width: 64rem) {
+  .wavyRule {
+    display: block;
+  }
+}
+
+.wavyUnderline {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: #c97860;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+}
+
+.sectionTitle {
+  display: inline-block;
+  padding-bottom: 0.35rem;
+  border-bottom: 3px solid #382c26;
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+/* ---------- Sketch frame ---------- */
+
+.sketchFrame {
+  border: 2px solid #5a4a41;
+  border-radius: 28px 34px 30px 26px / 30px 26px 34px 28px;
+  background: #fffaf3;
+  box-shadow:
+    4px 5px 0 -1px #f8f4ed,
+    4px 5px 0 1px #b8a493;
+}
+
+/* ---------- Pumping heart ---------- */
+
+.heartWrap {
+  position: relative;
+  width: 100%;
+  max-width: 9rem;
+}
+
+.heart {
+  transform-origin: 50% 55%;
+  animation: heart-pump 1.4s ease-in-out infinite;
+}
+
+.heartRays {
+  animation: rays-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes heart-pump {
+  0%,
+  40%,
+  100% {
+    transform: scale(1);
+  }
+  12% {
+    transform: scale(1.14);
+  }
+  24% {
+    transform: scale(0.97);
+  }
+  32% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes rays-pulse {
+  0%,
+  40%,
+  100% {
+    opacity: 0.35;
+  }
+  14%,
+  30% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dividerLattice,
+  .dividerDots,
+  .heart,
+  .heartRays {
+    animation: none;
+  }
+}
+
+:global([data-reduced-motion="true"]) .dividerLattice,
+:global([data-reduced-motion="true"]) .dividerDots,
+:global([data-reduced-motion="true"]) .heart,
+:global([data-reduced-motion="true"]) .heartRays {
+  animation: none;
+}

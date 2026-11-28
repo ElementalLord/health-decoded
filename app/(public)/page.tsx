@@ -9,6 +9,12 @@ import { GlucoseInsulinAnimation } from "@/features/marketing/components/glucose
 import { LandingGlossaryLookup } from "@/features/marketing/components/landing-glossary-lookup";
 import { LandingLabelCheck } from "@/features/marketing/components/landing-label-check";
 import { LandingMythCheck } from "@/features/marketing/components/landing-myth-check";
+import {
+  LatticeDivider,
+  PumpingHeart,
+  sketchStyles,
+  WavyRule,
+} from "@/features/marketing/components/landing-sketch";
 import { LandingStoryPreview } from "@/features/marketing/components/landing-story-preview";
 import { StartingPointPicker } from "@/features/marketing/components/starting-point-picker";
 import {
@@ -59,33 +65,135 @@ export default function HomePage() {
   return (
     <>
       <section id="home">
-        <div className="mx-auto grid min-h-[calc(86svh-4.5rem)] max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] py-[clamp(2.75rem,6vh,4.5rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(1.5rem,4vh,3rem)] pt-[clamp(2.75rem,6vh,4.5rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="motion-cascade">
-            <p className="editorial-eyebrow">Type 2 diabetes education</p>
-            <h1 className="mt-5 max-w-3xl font-serif-display text-[clamp(3rem,9.5vw,6.75rem)] font-normal leading-[1.02] tracking-[-0.045em] text-balance sm:mt-6 sm:leading-none sm:tracking-[-0.05em]">
-              Understand
-              <br />
-              Type 2
-              <br />
-              <em className="font-normal">diabetes.</em>
+            <h1 className="max-w-3xl font-serif-display text-[clamp(3.25rem,9.5vw,7rem)] font-normal leading-[1] tracking-[-0.045em] text-balance">
+              Your Companion
             </h1>
-            <p className="mt-6 max-w-[38rem] text-base leading-8 text-[#827168] sm:mt-7 sm:text-xl sm:leading-8">
-              Learn how Type 2 works, practice everyday skills, and find useful answers when you
-              need them. Start with the topic that matters to you.
+            <p className="mt-6 max-w-[36rem] text-lg leading-8 text-[#6b5b52] sm:mt-8 sm:text-xl sm:leading-9">
+              Understand how Type 2 diabetes works, practice everyday skills, and feel self-reliant
+              beyond the doctor&apos;s office.
             </p>
             <div className="mt-8 max-w-[32rem]">
               <TestUserAccess next="/journey" />
             </div>
           </div>
 
-          <figure className="mx-auto w-full max-w-[36rem] animate-fade-in [animation-delay:160ms] lg:translate-y-8">
-            <CompanionIllustration />
-            <figcaption className="mt-4 text-center text-xs font-bold uppercase tracking-[0.22em] text-[#8d7b70]">
-              Built for everyday questions
+          <figure className="mx-auto w-full max-w-[34rem] animate-fade-in [animation-delay:160ms]">
+            <div className={`${sketchStyles.sketchFrame} px-6 pt-6 sm:px-10 sm:pt-8`}>
+              <CompanionIllustration title="Two people sharing a hug" />
+            </div>
+            <figcaption className="mt-5 text-center font-serif-display text-lg italic leading-snug text-[#6b5b52] sm:text-xl">
+              We care about how this feels,
+              <br />
+              not{" "}
+              <span className="underline decoration-[#c97860] decoration-2 underline-offset-4">
+                just
+              </span>{" "}
+              the numbers.
             </figcaption>
           </figure>
         </div>
       </section>
+
+      <LatticeDivider />
+
+      <section aria-labelledby="lesson-plan-title" className="scroll-mt-24" id="lesson-plan">
+        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-12 md:px-10 md:py-16">
+          <h2 className={sketchStyles.sectionTitle} id="lesson-plan-title">
+            Lesson Plan
+          </h2>
+
+          <div className="mt-10 grid gap-10 lg:grid-cols-[auto_auto_minmax(0,1fr)] lg:items-stretch lg:gap-12">
+            <p className="flex items-end justify-center gap-3 whitespace-nowrap lg:justify-start">
+              <span className="font-serif-display text-[clamp(8rem,17vw,14rem)] font-normal leading-[0.78] tracking-[-0.08em] text-[#382c26]">
+                90
+              </span>
+              <span className="pb-2 font-serif-display text-3xl text-[#6b5b52] sm:text-4xl">
+                days
+              </span>
+            </p>
+
+            <WavyRule />
+
+            <div className="grid content-center gap-8">
+              <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center">
+                <div
+                  className={`${sketchStyles.sketchFrame} flex items-center gap-4 px-6 py-5 sm:px-8`}
+                >
+                  <p className="font-serif-display text-3xl leading-none sm:text-4xl">
+                    8 <span className="text-xl sm:text-2xl">minutes</span>
+                  </p>
+                  <span
+                    aria-hidden="true"
+                    className="font-serif-display text-5xl font-light leading-none text-[#c97860]"
+                  >
+                    {"}"}
+                  </span>
+                  <p className="font-serif-display text-3xl leading-none sm:text-4xl">
+                    1 <span className="text-xl sm:text-2xl">lesson</span>
+                  </p>
+                </div>
+                <p className="text-lg leading-8 text-[#6b5b52]">
+                  Each lesson focuses on one useful idea, with plain examples and room to go at your
+                  own pace.
+                </p>
+              </div>
+
+              <p className="font-serif-display text-xl text-[#493a32] sm:text-2xl">
+                <span aria-hidden="true" className="mr-2 text-[#c97860]">
+                  *
+                </span>
+                <span className={sketchStyles.wavyUnderline}>With helpful imagery!</span>
+              </p>
+
+              <GlucoseInsulinAnimation />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <LatticeDivider />
+
+      <section aria-labelledby="caregiver-title" className="scroll-mt-24" id="caregiver">
+        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-12 md:px-10 md:py-16">
+          <h2 className={sketchStyles.sectionTitle} id="caregiver-title">
+            Caregiver
+          </h2>
+
+          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,0.75fr)_auto_minmax(0,1.6fr)_auto] lg:items-center lg:gap-12">
+            <div className="mx-auto w-full max-w-[18rem]">
+              <SteadyingHandIllustration title="One person steadying another" />
+            </div>
+
+            <WavyRule className="self-stretch" />
+
+            <div>
+              <blockquote className="font-serif-display text-3xl leading-snug text-[#382c26] sm:text-4xl">
+                &ldquo;You don&apos;t have to navigate diabetes alone.&rdquo;
+              </blockquote>
+              <div aria-hidden="true" className="my-7 grid gap-1.5">
+                <span className="h-0.5 w-full bg-[#382c26]" />
+                <span className="h-0.5 w-11/12 bg-[#382c26]/60" />
+              </div>
+              <p className="max-w-2xl text-lg leading-8 text-[#6b5b52]">
+                Whether you&apos;re a family member, partner, or caregiver, Health Decoded helps you
+                learn alongside them.
+              </p>
+              <Link
+                className="mt-6 inline-flex min-h-11 items-center gap-2 font-semibold text-[#382c26] underline decoration-[#c97860]/50 decoration-2 underline-offset-[6px] hover:decoration-[#c97860]"
+                href="/caregiver"
+              >
+                Explore the caregiver path
+              </Link>
+            </div>
+
+            <PumpingHeart className="mx-auto w-28 lg:w-36" />
+          </div>
+        </div>
+      </section>
+
+      <LatticeDivider />
 
       <section className="scroll-mt-24 bg-[#f1ece4]/55" id="start">
         <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-16 md:px-10 md:py-24">
@@ -93,53 +201,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section
-        className="home-scroll-fade px-5 py-20 text-center sm:py-24"
-        aria-labelledby="first-ninety-days"
-      >
-        <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#8d7b70]">Your first</p>
-        <p
-          className="mt-4 font-serif-display text-[clamp(8rem,24vw,18rem)] font-normal leading-[0.72] tracking-[-0.08em] text-[#382c26]"
-          id="first-ninety-days"
-        >
-          90
-        </p>
-        <p className="mt-7 font-serif-display text-2xl text-[#8b786d] sm:text-3xl">
-          days of practical learning.
-        </p>
-      </section>
-
-      <section className="home-scroll-fade bg-[#f1ece4]/55 px-5 py-16 text-center sm:py-20">
-        <h2 className="mx-auto max-w-4xl font-serif-display text-3xl font-normal leading-tight text-[#493a32] sm:text-5xl">
-          Clear explanations for the questions that come after a diagnosis.
-        </h2>
-      </section>
-
-      <section id="journey">
-        <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-10 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:gap-16">
-          <div>
-            <h2 className="font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
-              One short lesson at a time.
-            </h2>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#827168]">
-              Each lesson focuses on one useful idea, with plain examples and room to go at your own
-              pace.
-            </p>
-          </div>
-          <aside className="bg-[#f1ece4] px-8 py-10 sm:px-14 sm:py-12">
-            <p className="font-serif-display text-8xl font-light leading-none text-[#c97860]">08</p>
-            <p className="mt-5 text-xl font-semibold">minutes to read</p>
-            <p className="mt-2 text-lg text-[#827168]">Most lessons take about eight minutes.</p>
-          </aside>
-        </div>
-      </section>
-
-      <section className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-14 md:px-10 md:py-18">
-        <p className="editorial-eyebrow mb-5">Here&apos;s an example</p>
-        <GlucoseInsulinAnimation />
-      </section>
-
-      <section className="bg-[#f1ece4]/55" id="myth-check">
+      <section className="scroll-mt-24" id="games">
         <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-10 px-5 py-16 md:px-10 md:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-16">
           <div>
             <p className="editorial-eyebrow">Try it here</p>
@@ -155,7 +217,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#f1ece4]/55" id="ask">
+      <section className="scroll-mt-24 bg-[#f1ece4]/55" id="companion">
         <div className="home-scroll-fade mx-auto max-w-[1120px] px-5 py-16 md:px-10 md:py-20">
           <div>
             <h2 className="font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
@@ -173,7 +235,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="stories">
+      <section className="scroll-mt-24" id="stories">
         <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-16 md:px-10 md:py-24">
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
@@ -212,7 +274,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="glossary">
+      <section className="scroll-mt-24" id="resources">
         <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-10 px-5 py-16 md:px-10 md:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-16">
           <div>
             <p className="editorial-eyebrow">Medical glossary</p>

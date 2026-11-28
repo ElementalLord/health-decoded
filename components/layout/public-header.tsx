@@ -10,6 +10,15 @@ import { cn } from "@/lib/utils";
 
 const headerlessRoutes = new Set(["/privacy", "/terms"]);
 
+const sectionLinks = [
+  ["Lesson Plan", "/#lesson-plan"],
+  ["Caregiver", "/#caregiver"],
+  ["Games", "/#games"],
+  ["Resources", "/#resources"],
+  ["Stories", "/#stories"],
+  ["Companion", "/#companion"],
+] as const;
+
 export function PublicHeader() {
   const pathname = usePathname();
 
@@ -35,6 +44,21 @@ export function PublicHeader() {
               EDU
             </span>
           </Link>
+
+          <nav aria-label="Sections" className="hidden flex-1 justify-end lg:flex">
+            <ul className="flex items-center gap-x-[clamp(0.75rem,1.6vw,1.75rem)]">
+              {sectionLinks.map(([label, href]) => (
+                <li key={href}>
+                  <Link
+                    className="inline-flex min-h-11 items-center text-[15px] font-semibold text-[#493a32] underline decoration-[#382c26]/35 decoration-[1.5px] underline-offset-[7px] transition-colors hover:text-[#b96c55] hover:decoration-[#c97860]"
+                    href={href}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           <nav aria-label="Get started" className="flex items-center gap-2">
             <Link
