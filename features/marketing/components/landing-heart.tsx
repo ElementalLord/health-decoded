@@ -37,7 +37,7 @@ export function LandingHeart({ className }: { className?: string }) {
     // Each squiggle draws outward and then retracts, with no pause between cycles. The rays start
     // one after another around the heart (only the first cycle is offset), so the motion keeps
     // travelling around it in an endless loop.
-    const cycle = 2400;
+    const cycle = 6500;
     const drift = rays.map((ray, index) =>
       animate(createDrawable(ray), {
         draw: ["0 0", "0 1", "1 1"],
