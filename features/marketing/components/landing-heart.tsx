@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, createDrawable, stagger } from "animejs";
+import { animate } from "animejs";
 import { useEffect, useId, useRef } from "react";
 
 import { prefersReducedMotion } from "@/features/marketing/components/landing-motion";
@@ -10,12 +10,15 @@ const RAY_COUNT = 12;
 const CENTER = 160;
 const HEART =
   "M160 252 C108 214 70 182 70 138 C70 108 93 86 120 86 C138 86 152 96 160 110 C168 96 182 86 200 86 C227 86 250 108 250 138 C250 182 212 214 160 252 Z";
-// A short squiggle that starts at the origin and runs outward along +x.
-const SQUIGGLE = "M0 0 C6 -7 12 -7 18 0 S30 7 36 0 S48 -7 54 0";
+// A long, shallow wave that starts at the origin and runs outward along +x.
+const WAVE = "M0 0 C8 -3 16 -3 24 0 S40 3 48 0 S64 -3 72 0";
+// Dash pattern: the offset loops over whole multiples of it, so the flow never jumps.
+const DASH = 9;
+const GAP = 9;
 
 /**
  * A heart framing a photo of a caregiver and the person they support. It breathes slowly while
- * evenly spaced squiggles drift outward from it.
+ * light flows outward from it along evenly spaced, gently waving rays.
  */
 export function LandingHeart({ className }: { className?: string }) {
   const clipId = useId();
@@ -34,11 +37,11 @@ export function LandingHeart({ className }: { className?: string }) {
       alternate: true,
     });
 
-    const drift = animate(createDrawable(rays), {
-      draw: ["0 0", "0 1", "1 1"],
-      duration: 3600,
-      delay: stagger(300),
-      ease: "inOutSine",
+    // Dashes travel outward along every wave at a steady pace, without pausing.
+    const drift = animate(rays, {
+      strokeDashoffset: [0, -(DASH + GAP) * 2],
+      duration: 1800,
+      ease: "linear",
       loop: true,
     });
 
@@ -59,16 +62,40 @@ export function LandingHeart({ className }: { className?: string }) {
         <clipPath id={clipId}>
           <path d={HEART} />
         </clipPath>
+        {/* Rays fade in just outside the heart and fade out at their tips. */}
+        <radialGradient
+          cx={CENTER}
+          cy={CENTER + 6}
+          gradientUnits="userSpaceOnUse"
+          id={`${clipId}-fade`}
+          r="190"
+        >
+          <stop offset="0.52" stopColor="#fff" stopOpacity="0" />
+          <stop offset="0.64" stopColor="#fff" stopOpacity="1" />
+          <stop offset="0.8" stopColor="#fff" stopOpacity="0.85" />
+          <stop offset="0.98" stopColor="#fff" stopOpacity="0" />
+        </radialGradient>
+        <mask id={`${clipId}-mask`}>
+          <rect fill={`url(#${clipId}-fade)`} height="320" width="320" />
+        </mask>
       </defs>
 
-      <g fill="none" ref={raysRef} stroke="#c97860" strokeLinecap="round" strokeWidth="3.5">
+      <g
+        fill="none"
+        mask={`url(#${clipId}-mask)`}
+        ref={raysRef}
+        stroke="#c97860"
+        strokeDasharray={`${DASH} ${GAP}`}
+        strokeLinecap="round"
+        strokeWidth="2.4"
+      >
         {Array.from({ length: RAY_COUNT }, (_, index) => {
           const angle = (360 / RAY_COUNT) * index - 90;
           return (
             <path
-              d={SQUIGGLE}
+              d={WAVE}
               key={angle}
-              transform={`translate(${CENTER} ${CENTER + 6}) rotate(${angle}) translate(112 0)`}
+              transform={`translate(${CENTER} ${CENTER + 6}) rotate(${angle}) translate(98 0)`}
             />
           );
         })}

@@ -105,7 +105,7 @@ export default function HomePage() {
       <script dangerouslySetInnerHTML={{ __html: landingRevealBootScript }} />
 
       <section id="home">
-        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(2rem,4svh,3rem)] pt-[clamp(2rem,5svh,4.5rem)] lg:min-h-[min(calc(100svh-4.75rem),50rem)] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center">
+        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(2rem,4svh,3rem)] pt-[clamp(2rem,5svh,4.5rem)] lg:min-h-[min(calc(100svh-4.75rem),50rem)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
           <div data-reveal="up" data-reveal-stagger="">
             <h1 className="max-w-3xl font-serif-display text-[clamp(3.25rem,min(7.4vw,12svh),6.75rem)] font-normal leading-[1] tracking-[-0.045em] text-balance">
               Your Companion
@@ -124,13 +124,13 @@ export default function HomePage() {
           </div>
 
           <figure
-            className="mx-auto w-full max-w-[min(48rem,calc(100svh-16rem))] lg:max-w-[min(48rem,calc(100svh-18rem))]"
+            className="mx-auto w-full max-w-[min(34rem,calc(100svh-20rem))] lg:max-w-[min(34rem,calc(100svh-24rem))]"
             data-reveal="scale"
             data-reveal-delay="200"
           >
             <div className={`${sketchStyles.sketchFrame} p-4 sm:p-6`}>
               {/* Cropped to the figures so they fill the frame. */}
-              <CompanionIllustration title="Two people sharing a hug" viewBox="86 30 398 382" />
+              <CompanionIllustration title="Two people sharing a hug" viewBox="70 18 430 404" />
             </div>
             <figcaption className="mt-5 text-center font-serif-display text-lg italic leading-snug text-[#6b5b52] sm:text-xl">
               We care about how this feels,
