@@ -1,3 +1,4 @@
+import { type2DiabetesResources } from "@/content/resources/type-2-diabetes-resources";
 import {
   decodeLabelQuestions,
   fruitYogurtLabel,
@@ -166,3 +167,92 @@ export function getLandingExplainDemo(): LandingExplainDemo | null {
     })),
   };
 }
+
+export type LandingConfusedPair = {
+  readonly term: string;
+  readonly confusedWith: string;
+  readonly explanation: string;
+};
+
+/** A few "not the same as" notes so visitors see what the glossary adds beyond a definition. */
+export function getLandingConfusedPairs(limit = 3): LandingConfusedPair[] {
+  const preferred = ["A1C", "Hypoglycemia", "Insulin resistance", "Carbohydrate", "Blood glucose"];
+  const withNotes = medicalGlossary.filter((entry) => entry.commonlyConfusedWith);
+  const ordered = [
+    ...preferred.flatMap((term) =>
+      withNotes.filter((entry) => entry.term.toLowerCase() === term.toLowerCase()),
+    ),
+    ...withNotes,
+  ];
+  // Skip repeats, including the same pair seen from the other side (A1C vs. glucose and back).
+  const seen = new Set<string>();
+  return ordered
+    .filter((entry) => {
+      const key = [entry.term, entry.commonlyConfusedWith!.term]
+        .map((term) => term.toLowerCase().replace(/ reading$/, ""))
+        .sort()
+        .join("|");
+      if (seen.has(entry.id) || seen.has(key)) return false;
+      seen.add(entry.id);
+      seen.add(key);
+      return true;
+    })
+    .slice(0, limit)
+    .map((entry) => ({
+      term: entry.term,
+      confusedWith: entry.commonlyConfusedWith!.term,
+      explanation: entry.commonlyConfusedWith!.explanation,
+    }));
+}
+
+export type LandingResource = {
+  readonly id: string;
+  readonly title: string;
+  readonly description: string;
+  readonly source: string;
+  readonly minutes: number;
+  readonly url: string;
+  readonly image: string;
+  readonly imageAlt: string;
+};
+
+// The same reviewed CDC and NIDDK guides and artwork the Resources page uses.
+const landingResourceVisuals = {
+  "type-2-diabetes-basics": {
+    image: "/resources/type-2-diabetes-basics-watercolor.jpg",
+    imageAlt: "An overhead watercolor still life of everyday Type 2 diabetes care essentials",
+  },
+  "understanding-a1c": {
+    image: "/resources/a1c-explained-watercolor.jpg",
+    imageAlt: "A symbolic watercolor of an A1C blood sample connected across three months",
+  },
+  "diabetes-meal-planning": {
+    image: "/resources/american-balanced-plate-watercolor.jpg",
+    imageAlt:
+      "An overhead watercolor of grilled chicken, sweet potatoes, green vegetables, and salad",
+  },
+  "diabetes-and-mental-health": {
+    image: "/resources/mental-health-watercolor.jpg",
+    imageAlt: "A reflective watercolor of a person journaling by a rainy window with a cat",
+  },
+} as const;
+
+export const landingResources: readonly LandingResource[] = Object.entries(
+  landingResourceVisuals,
+).flatMap(([id, visual]) => {
+  const resource = type2DiabetesResources.find((candidate) => candidate.id === id);
+  if (!resource) return [];
+  return [
+    {
+      id,
+      title: resource.title,
+      description: resource.description,
+      source: resource.organization.startsWith("Centers") ? "CDC" : "NIDDK",
+      minutes: resource.reading_minutes,
+      url: resource.url,
+      ...visual,
+    },
+  ];
+});
+
+export const totalResourceCount = type2DiabetesResources.length;

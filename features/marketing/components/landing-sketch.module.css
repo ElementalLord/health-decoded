@@ -6,7 +6,7 @@
   position: relative;
   height: 4.5rem;
   overflow: hidden;
-  margin-block: 0.25rem;
+  margin-block: clamp(2.25rem, 5vw, 4rem);
 }
 
 .dividerLattice,
@@ -100,64 +100,14 @@
     4px 5px 0 1px #b8a493;
 }
 
-/* ---------- Pumping heart ---------- */
-
-.heartWrap {
-  position: relative;
-  width: 100%;
-  max-width: 9rem;
-}
-
-.heart {
-  transform-origin: 50% 55%;
-  animation: heart-pump 1.4s ease-in-out infinite;
-}
-
-.heartRays {
-  animation: rays-pulse 1.4s ease-in-out infinite;
-}
-
-@keyframes heart-pump {
-  0%,
-  40%,
-  100% {
-    transform: scale(1);
-  }
-  12% {
-    transform: scale(1.14);
-  }
-  24% {
-    transform: scale(0.97);
-  }
-  32% {
-    transform: scale(1.08);
-  }
-}
-
-@keyframes rays-pulse {
-  0%,
-  40%,
-  100% {
-    opacity: 0.35;
-  }
-  14%,
-  30% {
-    opacity: 1;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .dividerLattice,
-  .dividerDots,
-  .heart,
-  .heartRays {
+  .dividerDots {
     animation: none;
   }
 }
 
 :global([data-reduced-motion="true"]) .dividerLattice,
-:global([data-reduced-motion="true"]) .dividerDots,
-:global([data-reduced-motion="true"]) .heart,
-:global([data-reduced-motion="true"]) .heartRays {
+:global([data-reduced-motion="true"]) .dividerDots {
   animation: none;
 }

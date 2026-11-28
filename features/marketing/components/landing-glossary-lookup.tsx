@@ -1,14 +1,12 @@
 "use client";
 
 import { Search } from "lucide-react";
-import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 
 import { searchGlossary } from "@/features/glossary/lib/search-glossary";
 import type { MedicalGlossaryEntry } from "@/features/glossary/types/medical-glossary";
 import {
   landingChip,
-  landingLink,
   landingMuted,
   landingPanel,
 } from "@/features/marketing/components/landing-ui";
@@ -16,12 +14,14 @@ import {
 export function LandingGlossaryLookup({
   entries,
   suggestions,
+  initialQuery = "",
 }: {
   entries: readonly MedicalGlossaryEntry[];
   suggestions: readonly string[];
+  initialQuery?: string;
 }) {
   const inputId = useId();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const trimmed = query.trim();
   const results = useMemo(
     () => (trimmed ? searchGlossary(entries, trimmed).slice(0, 3) : []),
@@ -29,7 +29,7 @@ export function LandingGlossaryLookup({
   );
 
   return (
-    <div className={landingPanel}>
+    <div className={`${landingPanel} h-full`}>
       <label className="font-serif-display text-2xl text-[#382c26]" htmlFor={inputId}>
         Look up a word from your visit
       </label>
@@ -102,9 +102,6 @@ export function LandingGlossaryLookup({
           </ul>
         )}
       </div>
-      <Link className={`${landingLink} mt-4`} href="/login?next=%2Fglossary">
-        Open the full glossary
-      </Link>
     </div>
   );
 }

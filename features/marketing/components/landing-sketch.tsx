@@ -34,33 +34,3 @@ export function WavyRule({ className }: { className?: string }) {
     </svg>
   );
 }
-
-/** A heart that beats, with little rays that pulse alongside it. */
-export function PumpingHeart({ className }: { className?: string }) {
-  return (
-    <div className={cn(styles.heartWrap, className)}>
-      <svg aria-hidden="true" className="h-auto w-full" viewBox="0 0 160 170">
-        <g
-          className={styles.heartRays}
-          fill="none"
-          stroke="#c97860"
-          strokeLinecap="round"
-          strokeWidth="4"
-        >
-          <path d="M50 14 L56 32" />
-          <path d="M80 6 L80 26" />
-          <path d="M110 14 L104 32" />
-          <path d="M132 150 C138 146 140 140 134 136 C128 132 130 126 138 124" />
-        </g>
-        <path
-          className={styles.heart}
-          d="M80 150 C40 120 16 98 16 70 C16 50 31 38 48 38 C62 38 73 46 80 58 C87 46 98 38 112 38 C129 38 144 50 144 70 C144 98 120 120 80 150 Z"
-          fill="#e8b4a2"
-          stroke="#a85f4b"
-          strokeLinejoin="round"
-          strokeWidth="4"
-        />
-      </svg>
-    </div>
-  );
-}

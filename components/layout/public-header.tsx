@@ -17,6 +17,7 @@ const sectionLinks = [
   ["Resources", "/#resources"],
   ["Stories", "/#stories"],
   ["Companion", "/#companion"],
+  ["Comparison", "/#compare"],
 ] as const;
 
 export function PublicHeader() {
@@ -46,7 +47,7 @@ export function PublicHeader() {
           </Link>
 
           <nav aria-label="Sections" className="hidden flex-1 justify-end lg:flex">
-            <ul className="flex items-center gap-x-[clamp(0.75rem,1.6vw,1.75rem)]">
+            <ul className="flex items-center gap-x-[clamp(0.7rem,1.4vw,1.6rem)]">
               {sectionLinks.map(([label, href]) => (
                 <li key={href}>
                   <Link
@@ -60,7 +61,10 @@ export function PublicHeader() {
             </ul>
           </nav>
 
-          <nav aria-label="Get started" className="flex items-center gap-2">
+          <nav
+            aria-label="Get started"
+            className="flex items-center gap-2 lg:ml-[clamp(1.5rem,3vw,3rem)]"
+          >
             <Link
               className={cn(
                 buttonVariants({ fullWidth: false }),

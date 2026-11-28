@@ -1,7 +1,6 @@
 "use client";
 
 import { Check, CircleAlert, RotateCcw, X } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 import type {
@@ -10,7 +9,6 @@ import type {
 } from "@/features/marketing/content/landing-interactive-content";
 import {
   landingChoice,
-  landingLink,
   landingMuted,
   landingPanel,
 } from "@/features/marketing/components/landing-ui";
@@ -103,9 +101,6 @@ export function LandingExplainBack({ demo }: { demo: LandingExplainDemo }) {
             >
               <RotateCcw aria-hidden="true" className="mr-2 size-4" /> Try another
             </button>
-            <Link className={landingLink} href="/login?next=%2Fexplain-it-back">
-              Write your own answer
-            </Link>
           </div>
         </div>
       ) : null}

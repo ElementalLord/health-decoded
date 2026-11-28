@@ -1,8 +1,10 @@
 "use client";
 
+import { animate, stagger } from "animejs";
 import { ArrowDown } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
+import { prefersReducedMotion } from "@/features/marketing/components/landing-motion";
 import { sketchStyles } from "@/features/marketing/components/landing-sketch";
 import { cn } from "@/lib/utils";
 
@@ -98,11 +100,84 @@ const games: readonly Game[] = [
 
 export function LandingGames({ demos }: { demos: Record<GameId, ReactNode> }) {
   const [openId, setOpenId] = useState<GameId | null>(null);
-  const openGame = games.find((game) => game.id === openId);
+  // The demo that is rendered; it lags behind `openId` while the panel closes.
+  const [shownId, setShownId] = useState<GameId | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<Partial<Record<GameId, HTMLButtonElement | null>>>({});
+
+  // Close (or swap) smoothly: collapse the panel first, then change what it shows.
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (openId === shownId || !panel) return;
+    if (shownId === null || prefersReducedMotion()) {
+      setShownId(openId);
+      return;
+    }
+    const collapse = animate(panel, {
+      height: [panel.offsetHeight, 0],
+      opacity: [1, 0],
+      duration: openId ? 320 : 480,
+      ease: "inOutQuad",
+      onComplete: () => setShownId(openId),
+    });
+    return () => {
+      collapse.pause();
+    };
+  }, [openId, shownId]);
+
+  // Open: grow the panel to fit, then bring the demo's pieces in one after another.
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    const content = contentRef.current;
+    if (!panel) return;
+    if (!shownId || !content) {
+      panel.style.height = "0px";
+      return;
+    }
+    if (prefersReducedMotion()) {
+      panel.style.height = "auto";
+      panel.style.opacity = "1";
+      return;
+    }
+    const target = content.offsetHeight;
+    animate(panel, {
+      height: [0, target],
+      opacity: [0, 1],
+      duration: 700,
+      ease: "outExpo",
+      onComplete: () => {
+        panel.style.height = "auto";
+      },
+    });
+    animate(content.querySelectorAll(":scope > * > *"), {
+      opacity: [0, 1],
+      y: [28, 0],
+      duration: 800,
+      delay: stagger(90, { start: 120 }),
+      ease: "outExpo",
+    });
+    const top = panel.getBoundingClientRect().top;
+    if (top > window.innerHeight * 0.75) {
+      window.scrollBy({ top: top - window.innerHeight * 0.3, behavior: "smooth" });
+    }
+  }, [shownId]);
+
+  const choose = (id: GameId) => {
+    const card = cardRefs.current[id];
+    if (card && !prefersReducedMotion()) {
+      animate(card, { scale: [1, 0.96, 1], duration: 420, ease: "outBack" });
+    }
+    setOpenId((current) => (current === id ? null : id));
+  };
 
   return (
     <div>
-      <ul className="grid gap-10 md:grid-cols-[1fr_1.25fr_1fr] md:gap-8">
+      <ul
+        className="grid gap-10 md:grid-cols-[1fr_1.25fr_1fr] md:gap-8"
+        data-reveal="up"
+        data-reveal-stagger=""
+      >
         {games.map((game) => {
           const isOpen = game.id === openId;
           return (
@@ -112,10 +187,13 @@ export function LandingGames({ demos }: { demos: Record<GameId, ReactNode> }) {
                 aria-expanded={isOpen}
                 className={cn(
                   sketchStyles.sketchFrame,
-                  "group flex min-h-60 flex-col md:min-h-[19rem] items-center justify-center gap-5 px-5 py-8 text-center transition duration-200 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c97860] focus-visible:ring-offset-4",
+                  "group flex min-h-60 flex-col items-center justify-center gap-5 px-5 py-8 text-center transition-[background-color,translate] duration-300 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c97860] focus-visible:ring-offset-4 md:min-h-[19rem]",
                   isOpen && "bg-[#f4ede4]",
                 )}
-                onClick={() => setOpenId(isOpen ? null : game.id)}
+                onClick={() => choose(game.id)}
+                ref={(element) => {
+                  cardRefs.current[game.id] = element;
+                }}
                 type="button"
               >
                 <span className="font-serif-display text-3xl leading-tight text-[#382c26] sm:text-4xl">
@@ -126,7 +204,10 @@ export function LandingGames({ demos }: { demos: Record<GameId, ReactNode> }) {
                   {isOpen ? "Close demo" : "Try it"}
                   <ArrowDown
                     aria-hidden="true"
-                    className={cn("size-4 transition-transform", isOpen && "rotate-180")}
+                    className={cn(
+                      "size-4 transition-transform duration-500",
+                      isOpen && "rotate-180",
+                    )}
                   />
                 </span>
               </button>
@@ -139,10 +220,15 @@ export function LandingGames({ demos }: { demos: Record<GameId, ReactNode> }) {
         })}
       </ul>
 
-      <div className="scroll-mt-28" id="landing-game-panel">
-        {openGame ? (
-          <div className="animate-fade-in mt-10" key={openGame.id}>
-            {demos[openGame.id]}
+      <div
+        className="scroll-mt-28 overflow-hidden"
+        id="landing-game-panel"
+        ref={panelRef}
+        style={{ height: 0 }}
+      >
+        {shownId ? (
+          <div className="pt-10" ref={contentRef}>
+            {demos[shownId]}
           </div>
         ) : null}
       </div>

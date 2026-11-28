@@ -1,13 +1,11 @@
 "use client";
 
 import { Check, RotateCcw, X } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 import type { LandingMythCard } from "@/features/marketing/content/landing-interactive-content";
 import {
   landingChoice,
-  landingLink,
   landingMuted,
   landingPanel,
   landingPrimaryButton,
@@ -152,9 +150,6 @@ export function LandingMythCheck({
               >
                 <RotateCcw aria-hidden="true" className="size-4" /> Try again
               </button>
-              <Link className={landingLink} href="/login?next=%2Fmyth-check">
-                Play the full Myth Check
-              </Link>
             </div>
           </div>
         )}

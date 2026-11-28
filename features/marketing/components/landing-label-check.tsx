@@ -1,7 +1,6 @@
 "use client";
 
 import { Check, X } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 import { NutritionFacts } from "@/features/decode-the-label/components/nutrition-facts";
@@ -11,7 +10,6 @@ import type {
 } from "@/features/decode-the-label/types/decode-the-label";
 import {
   landingChoice,
-  landingLink,
   landingMuted,
   landingPanel,
   landingPrimaryButton,
@@ -89,9 +87,6 @@ export function LandingLabelCheck({
                       >
                         Start over
                       </button>
-                      <Link className={landingLink} href="/login?next=%2Fdecode-the-label">
-                        Try all 12 label questions
-                      </Link>
                     </div>
                   ) : (
                     <button
