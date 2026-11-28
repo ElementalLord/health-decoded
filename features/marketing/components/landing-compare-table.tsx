@@ -13,6 +13,34 @@ export type CompareGroup = {
   readonly rows: readonly (readonly [string, Support, Support, Support])[];
 };
 
+/**
+ * A hand-drawn loop around a box of the given size: slightly wobbly, tilted a touch, and carried a
+ * little past its starting point so the end overlaps the beginning, like a pen circling a word.
+ */
+function roughOval(width: number, height: number) {
+  const cx = width / 2;
+  const cy = height / 2;
+  const rx = width / 2 - 3;
+  const ry = height / 2 - 2;
+  const tilt = (-3 * Math.PI) / 180;
+  const start = -2.55;
+  const sweep = Math.PI * 2 * 1.12;
+  const steps = 96;
+  const points: string[] = [];
+  for (let step = 0; step <= steps; step += 1) {
+    const t = step / steps;
+    const angle = start + sweep * t;
+    // Small wobble, and a gentle outward drift so the tail passes just outside the start.
+    const scale = 1 + 0.025 * Math.sin(3 * angle + 0.7) - 0.06 * (1 - t) + 0.07 * t;
+    const x = Math.cos(angle) * rx * scale;
+    const y = Math.sin(angle) * ry * scale;
+    const px = cx + x * Math.cos(tilt) - y * Math.sin(tilt);
+    const py = cy + x * Math.sin(tilt) + y * Math.cos(tilt);
+    points.push(`${step === 0 ? "M" : "L"}${px.toFixed(2)} ${py.toFixed(2)}`);
+  }
+  return points.join("");
+}
+
 const supportLabel: Record<Support, string> = { yes: "Yes", partly: "Partly", no: "No" };
 
 function Mark({ value }: { value: Support }) {
@@ -43,18 +71,39 @@ export function LandingCompareTable({
   groups: readonly CompareGroup[];
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const loopRef = useRef<HTMLSpanElement>(null);
+  const loopRef = useRef<SVGSVGElement>(null);
+  const loopPathRef = useRef<SVGPathElement>(null);
+
+  // Draw the loop at the heading's real pixel size, so the stroke is never stretched. Redrawn
+  // whenever that size changes.
+  useEffect(() => {
+    const svg = loopRef.current;
+    const path = loopPathRef.current;
+    if (!svg || !path) return;
+    const draw = () => {
+      const { width, height } = svg.getBoundingClientRect();
+      if (width === 0 || height === 0) return;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      path.setAttribute("d", roughOval(width, height));
+    };
+    draw();
+    const observer = new ResizeObserver(draw);
+    observer.observe(svg);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
-    const loop = loopRef.current;
+    const loop = loopPathRef.current;
     if (!root || !loop || prefersReducedMotion()) return;
     const rows = Array.from(root.querySelectorAll<HTMLElement>("tbody tr"));
     const marks = Array.from(root.querySelectorAll<HTMLElement>("[data-mark]"));
-    // The loop is a CSS ellipse border revealed by a conic mask, so it stays one crisp line.
-    const sweep = { degrees: 0 };
+    // The loop is drawn on in one stroke, start to finish.
+    const sweep = { drawn: 0 };
     const drawLoop = () => {
-      loop.style.setProperty("--sweep", `${sweep.degrees}deg`);
+      const length = loop.getTotalLength();
+      loop.style.strokeDasharray = `${length} ${length}`;
+      loop.style.strokeDashoffset = String(length * (1 - sweep.drawn));
     };
     let timeline: Timeline | null = null;
 
@@ -66,7 +115,7 @@ export function LandingCompareTable({
       marks.forEach((mark) => {
         mark.style.transform = "scale(0)";
       });
-      sweep.degrees = 0;
+      sweep.drawn = 0;
       drawLoop();
     };
 
@@ -91,11 +140,7 @@ export function LandingCompareTable({
           },
           200,
         );
-      timeline.add(
-        sweep,
-        { degrees: 360, duration: 1100, ease: "inOutQuad", onUpdate: drawLoop },
-        500,
-      );
+      timeline.add(sweep, { drawn: 1, duration: 1100, ease: "inOutQuad", onUpdate: drawLoop }, 500);
     };
 
     hide();
@@ -135,17 +180,20 @@ export function LandingCompareTable({
             {columns.map((column, index) => (
               <th className="relative px-1 py-6 text-center sm:px-3" key={column} scope="col">
                 {index === 0 ? (
-                  <span
+                  <svg
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-[4%] inset-y-[18%] -rotate-3 rounded-[50%] border-[2.5px] border-[#c97860]"
+                    className="pointer-events-none absolute inset-x-[3%] inset-y-[14%] h-[72%] w-[94%] overflow-visible"
                     ref={loopRef}
-                    style={{
-                      WebkitMaskImage:
-                        "conic-gradient(from 200deg, #000 var(--sweep, 360deg), transparent 0)",
-                      maskImage:
-                        "conic-gradient(from 200deg, #000 var(--sweep, 360deg), transparent 0)",
-                    }}
-                  />
+                  >
+                    <path
+                      fill="none"
+                      ref={loopPathRef}
+                      stroke="#c97860"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2.5"
+                    />
+                  </svg>
                 ) : null}
                 <span
                   className={`relative font-serif-display text-base font-normal leading-tight sm:text-2xl ${index === 0 ? "text-[#382c26]" : "text-[#6b5b52]"}`}
