@@ -4,6 +4,8 @@ import {
   plainYogurtLabel,
 } from "@/features/decode-the-label/content/decode-the-label-content";
 import type { DecodeLabelQuestion } from "@/features/decode-the-label/types/decode-the-label";
+import { explainItBackChallenges } from "@/features/explain-it-back/content/explain-it-back-content";
+import { buildExplainFeedback } from "@/features/explain-it-back/services/explain-it-back-evaluator";
 import { medicalGlossary } from "@/features/glossary/content/medical-glossary";
 import { mythCheckCards } from "@/features/mythbusters/content/myth-check-cards";
 import { mythCheckSourceById } from "@/features/mythbusters/content/myth-check-sources";
@@ -100,28 +102,67 @@ export const landingStories: readonly LandingStory[] = [
   timeLabel: story.estimatedTimeLabel ?? `About ${story.estimatedMinutes} minutes`,
 }));
 
-export type LandingStoryChoice = {
-  readonly setup: readonly string[];
-  readonly prompt: string;
-  readonly options: readonly { id: string; label: string; feedback: string }[];
-  readonly learningPoint: string;
-  readonly after: readonly string[];
+export type LandingExplainSample = {
+  readonly id: "got_it" | "almost_there" | "try_again";
+  readonly answer: string;
+  readonly label: string;
+  readonly covered: readonly string[];
+  readonly missing?: string;
+  readonly correction?: string;
 };
 
-export function getMarcusChoice(): LandingStoryChoice | null {
-  const scene = marcusParkingLotStory.scenes.find((candidate) => candidate.id === "then-come-home");
-  if (!scene || !("interaction" in scene) || !scene.interaction) return null;
-  const options = scene.interaction.options.flatMap((option) =>
-    "feedback" in option && typeof option.feedback === "string"
-      ? [{ id: option.id, label: option.label, feedback: option.feedback }]
-      : [],
-  );
-  if (options.length === 0) return null;
+export type LandingExplainDemo = {
+  readonly title: string;
+  readonly prompt: string;
+  readonly samples: readonly LandingExplainSample[];
+};
+
+/**
+ * The real Explain It Back activity sends a visitor's own words to the AI evaluator, which needs an
+ * account. The landing demo instead walks through the challenge's three reviewed sample answers and
+ * shows the same feedback the evaluator builds for each of them.
+ */
+export function getLandingExplainDemo(): LandingExplainDemo | null {
+  const challenge = explainItBackChallenges.find((candidate) => candidate.id === "blood-glucose");
+  if (!challenge) return null;
+  const [firstConcept] = challenge.essentialConcepts;
+  const [firstMisconception] = challenge.misconceptions;
+  if (!firstConcept || !firstMisconception) return null;
+
+  const essentialIds = challenge.essentialConcepts.map(({ id }) => id);
+  const classify = (
+    verdict: LandingExplainSample["id"],
+    covered: readonly string[],
+    contradictions: readonly string[],
+  ) =>
+    buildExplainFeedback(
+      {
+        verdict,
+        coveredConceptIds: covered,
+        missingEssentialConceptIds: essentialIds.filter((id) => !covered.includes(id)),
+        contradictionIds: contradictions,
+        offTopic: false,
+        personalMedicalContent: false,
+      },
+      challenge,
+    );
+
+  const samples: [LandingExplainSample["id"], string, ReturnType<typeof classify>][] = [
+    ["got_it", challenge.passingExample, classify("got_it", essentialIds, [])],
+    ["almost_there", challenge.almostExample, classify("almost_there", [firstConcept.id], [])],
+    ["try_again", challenge.failingExample, classify("try_again", [], [firstMisconception.id])],
+  ];
+
   return {
-    setup: scene.paragraphs,
-    prompt: scene.interaction.prompt,
-    options,
-    learningPoint: scene.interaction.learningPoint,
-    after: "paragraphsAfterInteraction" in scene ? (scene.paragraphsAfterInteraction ?? []) : [],
+    title: challenge.title,
+    prompt: challenge.prompt,
+    samples: samples.map(([id, answer, feedback]) => ({
+      id,
+      answer,
+      label: feedback.label,
+      covered: feedback.covered,
+      ...(feedback.missing ? { missing: feedback.missing } : {}),
+      ...(feedback.correction ? { correction: feedback.correction } : {}),
+    })),
   };
 }
