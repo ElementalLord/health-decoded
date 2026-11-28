@@ -126,11 +126,14 @@ export default function HomePage() {
           <figure
             className="mx-auto w-full max-w-[min(34rem,calc(100svh-20rem))] lg:max-w-[min(34rem,calc(100svh-24rem))]"
             data-reveal="scale"
-            data-reveal-delay="200"
           >
             <div className={`${sketchStyles.sketchFrame} p-4 sm:p-6`}>
               {/* Cropped to the figures so they fill the frame. */}
-              <CompanionIllustration title="Two people sharing a hug" viewBox="70 18 430 404" />
+              <CompanionIllustration
+                flowing
+                title="Two people sharing a hug"
+                viewBox="70 18 430 404"
+              />
             </div>
             <figcaption className="mt-5 text-center font-serif-display text-lg italic leading-snug text-[#6b5b52] sm:text-xl">
               We care about how this feels,

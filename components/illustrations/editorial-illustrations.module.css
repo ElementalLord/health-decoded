@@ -217,7 +217,51 @@
   }
 }
 
+/* The flowing variant moves back and forth without resting, and the negative delay starts it
+   mid-motion, so it is already moving when the page appears. */
+.flowing .companionLeft {
+  animation: lean-in-left-flow 4.2s ease-in-out -2.1s infinite alternate;
+}
+
+.flowing .companionRight {
+  animation: lean-in-right-flow 4.2s ease-in-out -2.1s infinite alternate;
+}
+
+.flowing .embraceArm {
+  animation: close-embrace-flow 4.2s ease-in-out -2.1s infinite alternate;
+}
+
+@keyframes lean-in-left-flow {
+  from {
+    transform: rotate(0deg) translateX(0);
+  }
+  to {
+    transform: rotate(1.25deg) translateX(3px);
+  }
+}
+
+@keyframes lean-in-right-flow {
+  from {
+    transform: rotate(0deg) translateX(0);
+  }
+  to {
+    transform: rotate(-1.5deg) translateX(-4px);
+  }
+}
+
+@keyframes close-embrace-flow {
+  from {
+    transform: rotate(-5deg) translate(-6px, 2px);
+  }
+  to {
+    transform: rotate(0deg) translate(0, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .flowing .companionLeft,
+  .flowing .companionRight,
+  .flowing .embraceArm,
   .companionLeft,
   .companionRight,
   .embraceArm,
@@ -235,6 +279,9 @@
   }
 }
 
+:global([data-reduced-motion="true"]) .flowing .companionLeft,
+:global([data-reduced-motion="true"]) .flowing .companionRight,
+:global([data-reduced-motion="true"]) .flowing .embraceArm,
 :global([data-reduced-motion="true"]) .companionLeft,
 :global([data-reduced-motion="true"]) .companionRight,
 :global([data-reduced-motion="true"]) .embraceArm,

@@ -8,13 +8,17 @@ type IllustrationProps = SVGProps<SVGSVGElement> & { title?: string };
 
 function CompanionIllustration({
   className,
+  flowing = false,
   title = "Two people standing together",
   ...props
-}: IllustrationProps) {
+}: IllustrationProps & {
+  /** Move continuously from the first frame, with no slow start or resting pause. */
+  flowing?: boolean;
+}) {
   return (
     <svg
       aria-label={title}
-      className={cn("h-auto w-full", className)}
+      className={cn("h-auto w-full", flowing && styles.flowing, className)}
       role="img"
       viewBox="0 0 560 430"
       {...props}
