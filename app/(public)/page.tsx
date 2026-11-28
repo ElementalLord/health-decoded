@@ -1,9 +1,14 @@
-import { ArrowUpRight, Check, Minus, ShieldCheck, X } from "lucide-react";
+import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 
 import { CompanionIllustration } from "@/components/illustrations/editorial-illustrations";
 import { TestUserAccess } from "@/features/auth/components/test-user-access";
 import { GlucoseInsulinAnimation } from "@/features/marketing/components/glucose-insulin-animation";
+import {
+  LandingCompareTable,
+  type CompareGroup,
+} from "@/features/marketing/components/landing-compare-table";
+import { LandingCountUp } from "@/features/marketing/components/landing-count-up";
 import { LandingExplainBack } from "@/features/marketing/components/landing-explain-back";
 import { LandingGames } from "@/features/marketing/components/landing-games";
 import { LandingGlossaryLookup } from "@/features/marketing/components/landing-glossary-lookup";
@@ -50,19 +55,10 @@ const caregiverModules = [
   "The Caregiver Matters Too",
 ] as const;
 
-type Support = "yes" | "partly" | "no";
-
-const comparisonColumns = [
-  { name: "Health Decoded", note: "Learning companion" },
-  { name: "mySugr", note: "Diabetes logbook app" },
-  { name: "Omada", note: "Employer-sponsored program" },
-] as const;
+const comparisonColumns = ["Health Decoded", "mySugr", "Omada"] as const;
 
 // Based on each product's public descriptions. Review before sharing: features change over time.
-const comparisonGroups: readonly {
-  readonly label: string;
-  readonly rows: readonly (readonly [string, Support, Support, Support])[];
-}[] = [
+const comparisonGroups: readonly CompareGroup[] = [
   {
     label: "How it feels",
     rows: [
@@ -89,35 +85,6 @@ const comparisonGroups: readonly {
     ],
   },
 ];
-
-const supportLabel: Record<Support, string> = { yes: "Yes", partly: "Partly", no: "No" };
-
-function SupportMark({ value, highlight }: { value: Support; highlight?: boolean }) {
-  if (value === "yes") {
-    return (
-      <span
-        className={`mx-auto grid size-8 place-items-center rounded-full ${highlight ? "bg-[#6f947a] text-white" : "bg-[#e3ece4] text-[#4f7a5c]"}`}
-      >
-        <Check aria-hidden="true" className="size-4.5" strokeWidth={3} />
-        <span className="sr-only">{supportLabel[value]}</span>
-      </span>
-    );
-  }
-  if (value === "partly") {
-    return (
-      <span className="mx-auto grid size-8 place-items-center rounded-full bg-[#f3e6cf] text-[#a8782c]">
-        <Minus aria-hidden="true" className="size-4.5" strokeWidth={3} />
-        <span className="sr-only">{supportLabel[value]}</span>
-      </span>
-    );
-  }
-  return (
-    <span className="mx-auto grid size-8 place-items-center rounded-full bg-[#efe7de] text-[#a08f83]">
-      <X aria-hidden="true" className="size-4" strokeWidth={2.5} />
-      <span className="sr-only">{supportLabel[value]}</span>
-    </span>
-  );
-}
 
 const sectionShell = "mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10";
 
@@ -189,7 +156,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-8">
               <p className="flex items-end gap-3 whitespace-nowrap" data-reveal="scale">
                 <span className="font-serif-display text-[clamp(7rem,13vw,11rem)] font-normal leading-[0.78] tracking-[-0.08em] text-[#382c26]">
-                  90
+                  <LandingCountUp value={90} />
                 </span>
                 <span className="pb-1 font-serif-display text-3xl text-[#6b5b52] sm:text-4xl">
                   days
@@ -226,7 +193,8 @@ export default function HomePage() {
                   className={`${sketchStyles.sketchFrame} flex items-center gap-4 px-6 py-4 sm:px-8`}
                 >
                   <p className="font-serif-display text-3xl leading-none sm:text-4xl">
-                    8 <span className="text-xl sm:text-2xl">minutes</span>
+                    <LandingCountUp duration={1200} value={8} />{" "}
+                    <span className="text-xl sm:text-2xl">minutes</span>
                   </p>
                   <span
                     aria-hidden="true"
@@ -396,94 +364,89 @@ export default function HomePage() {
 
       <section aria-labelledby="resources-title" className="scroll-mt-24" id="resources">
         <div className={sectionShell}>
-          <h2 className={sketchStyles.sectionTitle} data-reveal="left" id="resources-title">
-            Resources and Tools
-          </h2>
+          <div
+            className="grid gap-5 lg:grid-cols-[auto_1fr] lg:items-end lg:gap-14"
+            data-reveal="up"
+            data-reveal-stagger=""
+          >
+            <h2 className={sketchStyles.sectionTitle} id="resources-title">
+              Resources and Tools
+            </h2>
+            <p className="max-w-3xl text-lg leading-8 text-[#6b5b52]">
+              Explore practical guides, helpful tools, and trusted educational materials to make
+              diabetes management easier: {totalResourceCount} reviewed guides from the CDC and
+              NIDDK.
+            </p>
+          </div>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_auto_minmax(0,1fr)] lg:items-stretch lg:gap-14">
-            <ul className="grid gap-5 sm:grid-cols-2" data-reveal="up" data-reveal-stagger="">
-              {landingResources.map((resource) => (
-                <li key={resource.id}>
-                  <a
-                    className={`${sketchStyles.sketchFrame} group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1`}
-                    href={resource.url}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <span className="relative block aspect-[16/10] overflow-hidden">
-                      <Image
-                        alt={resource.imageAlt}
-                        className="object-cover transition duration-700 group-hover:scale-105"
-                        fill
-                        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw"
-                        src={resource.image}
-                      />
+          <ul
+            className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4"
+            data-reveal="up"
+            data-reveal-stagger=""
+          >
+            {landingResources.map((resource) => (
+              <li key={resource.id}>
+                <a
+                  className={`${sketchStyles.sketchFrame} group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1`}
+                  href={resource.url}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span className="relative block aspect-[16/9] overflow-hidden">
+                    <Image
+                      alt={resource.imageAlt}
+                      className="object-cover transition duration-700 group-hover:scale-105"
+                      fill
+                      sizes="(min-width: 1280px) 22vw, (min-width: 640px) 45vw, 92vw"
+                      src={resource.image}
+                    />
+                  </span>
+                  <span className="flex flex-1 flex-col px-5 pb-5 pt-4">
+                    <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#a85f4b]">
+                      {resource.source} · {resource.minutes} min read
                     </span>
-                    <span className="flex flex-1 flex-col p-5">
-                      <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#a85f4b]">
-                        {resource.source} · {resource.minutes} min read
-                      </span>
-                      <span className="mt-1.5 font-serif-display text-xl leading-tight text-[#382c26]">
-                        {resource.title}
-                      </span>
-                      <span className="mt-2 flex-1 text-sm leading-6 text-[#6b5b52]">
-                        {resource.description}
-                      </span>
-                      <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#382c26] underline decoration-[#c97860]/50 decoration-2 underline-offset-4 group-hover:decoration-[#c97860]">
-                        Read on {resource.source}.gov
-                        <ArrowUpRight aria-hidden="true" className="size-4" />
-                        <span className="sr-only">(opens in a new tab)</span>
-                      </span>
+                    <span className="mt-1.5 font-serif-display text-xl leading-tight text-[#382c26]">
+                      {resource.title}
                     </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+                    <span className="mt-2 line-clamp-2 text-sm leading-6 text-[#6b5b52]">
+                      {resource.description}
+                    </span>
+                    <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-semibold text-[#382c26] underline decoration-[#c97860]/50 decoration-2 underline-offset-4 group-hover:decoration-[#c97860]">
+                      Read on {resource.source}.gov
+                      <ArrowUpRight aria-hidden="true" className="size-4" />
+                      <span className="sr-only">(opens in a new tab)</span>
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
 
-            <WavyRule />
-
-            <div
-              className="flex flex-col justify-center gap-10"
-              data-reveal="right"
-              data-reveal-stagger=""
-            >
-              <div>
-                <p className="font-serif-display text-2xl leading-snug text-[#382c26] sm:text-3xl">
-                  Explore practical guides, helpful tools, and trusted educational materials to make
-                  diabetes management easier.
-                </p>
-                <p className="mt-4 text-base leading-7 text-[#6b5b52]">
-                  {totalResourceCount} reviewed guides from the CDC and NIDDK, sorted by where you
-                  are: just diagnosed, food and daily living, staying safe, and long-term health.
-                </p>
-              </div>
-
-              <div
-                className={`${sketchStyles.sketchFrame} flex scroll-mt-28 items-center gap-5 p-5 sm:gap-7 sm:p-7`}
-                id="companion"
-              >
-                <span className="relative size-24 shrink-0 overflow-hidden rounded-full bg-[#eee2d3] ring-2 ring-[#d5c3b2] sm:size-28">
-                  <Image
-                    alt="The Health Decoded AI companion"
-                    className="object-contain object-bottom"
-                    fill
-                    sizes="112px"
-                    src="/ai/your-companion.png"
-                  />
-                </span>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#a85f4b]">
-                    Ask Health Decoded
-                  </p>
-                  <p className="mt-1.5 font-serif-display text-2xl leading-snug text-[#382c26] sm:text-3xl">
-                    Your AI companion for questions outside the clinic.
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-[#6b5b52]">
-                    Everyday language, sources when needed, any time of day.
-                  </p>
-                </div>
-              </div>
+          <div
+            className={`${sketchStyles.sketchFrame} mt-8 flex scroll-mt-28 flex-col items-center gap-5 p-5 text-center sm:flex-row sm:gap-7 sm:p-6 sm:text-left`}
+            data-reveal="up"
+            id="companion"
+          >
+            <span className="relative size-20 shrink-0 overflow-hidden rounded-full bg-[#eee2d3] ring-2 ring-[#d5c3b2] sm:size-24">
+              <Image
+                alt="The Health Decoded AI companion"
+                className="object-contain object-bottom"
+                fill
+                sizes="96px"
+                src="/ai/your-companion.png"
+              />
+            </span>
+            <div className="flex-1">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#a85f4b]">
+                Ask Health Decoded
+              </p>
+              <p className="mt-1 font-serif-display text-2xl leading-snug text-[#382c26] sm:text-3xl">
+                Your AI companion for questions outside the clinic.
+              </p>
             </div>
+            <p className="max-w-xs text-sm leading-6 text-[#6b5b52]">
+              Everyday language, sources when needed, and available any time of day.
+            </p>
           </div>
         </div>
       </section>
@@ -561,75 +524,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div
-            className="mt-10 overflow-hidden rounded-[24px] border-2 border-[#5a4a41] bg-[#fffaf3] shadow-[5px_6px_0_-1px_#f8f4ed,5px_6px_0_1px_#b8a493]"
-            data-reveal="up"
-          >
-            <table className="w-full table-fixed border-collapse text-left">
-              <colgroup>
-                <col className="w-[40%] sm:w-[46%]" />
-                <col />
-                <col />
-                <col />
-              </colgroup>
-              <thead>
-                <tr className="border-b-2 border-[#5a4a41]">
-                  <th
-                    className="px-3 py-5 align-bottom text-xs font-bold uppercase tracking-[0.18em] text-[#8d7b70] sm:px-6"
-                    scope="col"
-                  >
-                    What matters
-                  </th>
-                  {comparisonColumns.map((column, index) => (
-                    <th
-                      className={`px-1 py-5 text-center align-bottom sm:px-3 ${index === 0 ? "bg-[#382c26] text-[#fffaf3]" : "text-[#382c26]"}`}
-                      key={column.name}
-                      scope="col"
-                    >
-                      <span className="block font-serif-display text-base font-normal leading-tight sm:text-2xl">
-                        {column.name}
-                      </span>
-                      <span
-                        className={`mt-1 hidden text-xs font-semibold sm:block ${index === 0 ? "text-[#e5d8cb]" : "text-[#8d7b70]"}`}
-                      >
-                        {column.note}
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              {comparisonGroups.map((group) => (
-                <tbody key={group.label}>
-                  <tr className="bg-[#f1ece4]">
-                    <th
-                      className="px-3 py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-[#a85f4b] sm:px-6"
-                      colSpan={4}
-                      scope="colgroup"
-                    >
-                      {group.label}
-                    </th>
-                  </tr>
-                  {group.rows.map(([feature, ...values]) => (
-                    <tr className="border-t border-[#e2d6ca]" key={feature}>
-                      <th
-                        className="px-3 py-3.5 text-[13px] font-semibold leading-5 text-[#382c26] sm:px-6 sm:text-base"
-                        scope="row"
-                      >
-                        {feature}
-                      </th>
-                      {values.map((value, index) => (
-                        <td
-                          className={`px-1 py-3.5 text-center ${index === 0 ? "bg-[#382c26]/[0.06]" : ""}`}
-                          key={comparisonColumns[index]!.name}
-                        >
-                          <SupportMark highlight={index === 0} value={value} />
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              ))}
-            </table>
+          <div className="mt-10" data-reveal="up">
+            <LandingCompareTable columns={comparisonColumns} groups={comparisonGroups} />
           </div>
           <p className="mt-4 text-sm leading-6 text-[#8d7b70]">
             Comparison based on each product&apos;s public description. mySugr and Omada are

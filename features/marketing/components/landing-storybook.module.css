@@ -5,12 +5,81 @@
   perspective: 2200px;
 }
 
+.floater {
+  width: min(100%, 36rem);
+  transform-style: preserve-3d;
+}
+
 .book {
   position: relative;
-  width: min(100%, 34rem);
+  width: 100%;
   aspect-ratio: 2 / 1.32;
-  transform: rotateX(16deg);
+  transform: rotateX(18deg);
   transform-style: preserve-3d;
+}
+
+/* Paper edges: stacked pages peeking out below each side. */
+.stackLeft,
+.stackRight {
+  position: absolute;
+  top: 1.2%;
+  bottom: -2.4%;
+  width: 50%;
+  background: repeating-linear-gradient(180deg, #f3ebdf 0 1px, #d9ccbb 1px 2px);
+  transform: translateZ(-3px);
+}
+
+.stackLeft {
+  left: -0.8%;
+  border-radius: 8px 0 0 8px;
+}
+
+.stackRight {
+  right: -0.8%;
+  border-radius: 0 8px 8px 0;
+}
+
+.ribbon {
+  position: absolute;
+  z-index: 8;
+  top: 40%;
+  left: 70%;
+  width: 2.6%;
+  height: 70%;
+  background: linear-gradient(90deg, #8f3f33, #b5584a 55%, #8f3f33);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 94%, 0 100%);
+  filter: drop-shadow(1px 2px 1px rgb(56 44 38 / 0.3));
+  /* Tucked between the pages, so only the tail hangs out below the book. */
+  transform: translateZ(-1px);
+}
+
+.gutter {
+  position: absolute;
+  z-index: 35;
+  top: 0;
+  bottom: 0;
+  left: 46%;
+  width: 8%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(56 44 38 / 0.16) 42%,
+    rgb(56 44 38 / 0.28) 50%,
+    rgb(56 44 38 / 0.16) 58%,
+    transparent
+  );
+}
+
+.cast {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgb(56 44 38 / 0.35), transparent 70%);
 }
 
 .cover {
@@ -18,11 +87,16 @@
   inset: -4% -3%;
   border-radius: 14px;
   background:
-    linear-gradient(90deg, transparent 49.2%, rgb(0 0 0 / 0.35) 50%, transparent 50.8%),
+    linear-gradient(90deg, transparent 48.6%, rgb(0 0 0 / 0.4) 50%, transparent 51.4%),
+    radial-gradient(circle at 20% 15%, rgb(255 255 255 / 0.12), transparent 40%),
+    repeating-radial-gradient(circle at 30% 40%, rgb(0 0 0 / 0.04) 0 1px, transparent 1px 3px),
     linear-gradient(160deg, #8a4d3c, #6d3b2e);
+  outline: 1.5px dashed rgb(255 230 210 / 0.35);
+  outline-offset: -9px;
   box-shadow:
-    0 30px 50px -18px rgb(56 44 38 / 0.55),
-    0 8px 0 #4f2b21;
+    0 40px 60px -22px rgb(56 44 38 / 0.6),
+    0 10px 0 #4f2b21,
+    0 12px 0 #3e211a;
   transform: translateZ(-6px);
 }
 
@@ -62,6 +136,7 @@
 
 .leaf {
   --shade: 0;
+  --shine: 0;
   position: absolute;
   top: 0;
   right: 0;
@@ -82,7 +157,9 @@
   inset: 0;
   content: "";
   pointer-events: none;
-  background: linear-gradient(90deg, rgb(56 44 38 / var(--shade)), transparent 70%);
+  background:
+    linear-gradient(90deg, rgb(56 44 38 / var(--shade)), transparent 70%),
+    linear-gradient(270deg, rgb(255 255 255 / calc(var(--shine, 0) * 0.6)), transparent 30%);
 }
 
 .front {
@@ -166,4 +243,16 @@
   color: #a08f83;
   font-size: 0.6rem;
   translate: -50% 0;
+}
+
+/* Paper grain on every page. */
+.page::before,
+.face::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 30% 20%, rgb(255 255 255 / 0.6), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .2 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, stagger } from "animejs";
+import { animate, stagger, type JSAnimation } from "animejs";
 import { useEffect, useRef, type ReactNode } from "react";
 
 export function prefersReducedMotion() {
@@ -41,41 +41,48 @@ const fromState: Record<RevealKind, { x?: number; y?: number; scale?: number }> 
   scale: { scale: 0.92, y: 16 },
 };
 
+const running = new WeakMap<HTMLElement, JSAnimation>();
+
+function revealTargets(element: HTMLElement): HTMLElement[] {
+  return element.hasAttribute("data-reveal-stagger")
+    ? Array.from(element.children).filter(
+        (child): child is HTMLElement => child instanceof HTMLElement,
+      )
+    : [element];
+}
+
 function revealElement(element: HTMLElement) {
   const kind = (element.dataset.reveal as RevealKind) || "up";
   const from = fromState[kind] ?? fromState.up;
   const delay = Number(element.dataset.revealDelay ?? 0);
-  const children = element.hasAttribute("data-reveal-stagger")
-    ? Array.from(element.children).filter(
-        (child): child is HTMLElement => child instanceof HTMLElement,
-      )
-    : [];
+  const targets = revealTargets(element);
+  if (targets.length === 0) return;
 
-  element.style.visibility = "visible";
-
-  if (children.length > 0) {
-    element.style.opacity = "1";
-    animate(children, {
+  running.get(element)?.pause();
+  running.set(
+    element,
+    animate(targets, {
       opacity: { from: 0, to: 1 },
       ...(from.x !== undefined ? { x: { from: from.x, to: 0 } } : {}),
       ...(from.y !== undefined ? { y: { from: from.y, to: 0 } } : {}),
       ...(from.scale !== undefined ? { scale: { from: from.scale, to: 1 } } : {}),
-      duration: 900,
-      delay: stagger(110, { start: delay }),
+      duration: targets.length > 1 ? 900 : 1000,
+      delay: targets.length > 1 ? stagger(110, { start: delay }) : delay,
       ease: "outExpo",
-    });
-    return;
-  }
+    }),
+  );
+  element.dispatchEvent(new CustomEvent("landing:reveal"));
+}
 
-  animate(element, {
-    opacity: { from: 0, to: 1 },
-    ...(from.x !== undefined ? { x: { from: from.x, to: 0 } } : {}),
-    ...(from.y !== undefined ? { y: { from: from.y, to: 0 } } : {}),
-    ...(from.scale !== undefined ? { scale: { from: from.scale, to: 1 } } : {}),
-    duration: 1000,
-    delay,
-    ease: "outExpo",
-  });
+/** Puts an element back in its hidden starting state so it can reveal again. */
+function resetElement(element: HTMLElement) {
+  running.get(element)?.pause();
+  running.delete(element);
+  for (const target of revealTargets(element)) {
+    target.style.opacity = "0";
+    target.style.transform = "";
+  }
+  element.dispatchEvent(new CustomEvent("landing:reset"));
 }
 
 /** Reveals every `[data-reveal]` element inside it with anime.js as it scrolls into view. */
@@ -94,12 +101,23 @@ export function LandingMotion({ children }: { children: ReactNode }) {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          observer.unobserve(entry.target);
-          revealElement(entry.target as HTMLElement);
+          const element = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (!element.dataset.revealed) {
+              element.dataset.revealed = "true";
+              revealElement(element);
+            }
+            continue;
+          }
+          // Leaving through the bottom of the screen (scrolling back up): reset it, so it
+          // animates in again on the way back down. Elements that scroll off the top stay put.
+          if (element.dataset.revealed && entry.boundingClientRect.top > 0) {
+            delete element.dataset.revealed;
+            resetElement(element);
+          }
         }
       },
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.12 },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0 },
     );
 
     root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {

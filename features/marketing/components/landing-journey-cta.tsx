@@ -1,202 +1,295 @@
 "use client";
 
-import { animate, createTimeline } from "animejs";
+import { animate, createTimeline, type JSAnimation, type Timeline } from "animejs";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 import { prefersReducedMotion } from "@/features/marketing/components/landing-motion";
+import { sketchStyles } from "@/features/marketing/components/landing-sketch";
 
-type Mote = { x: number; y: number; r: number; speed: number; phase: number; hue: string };
+const INK = "#5a4a41";
+const CLAY = "#c97860";
+const SAGE = "#6f947a";
 
-const PALETTE = ["#c97860", "#e2a98f", "#6f947a", "#a9c2ad", "#d9b26f"];
+// Labels sit on whichever side of the path is clear at that point.
+const milestones = [
+  { at: 0, day: "Day 1", label: "Start here", above: true },
+  { at: 0.34, day: "Day 30", label: "Understanding", above: false },
+  { at: 0.67, day: "Day 60", label: "Adjusting", above: true },
+  { at: 1, day: "Day 90", label: "Living", above: true },
+] as const;
+
+/** A seeded random so the pencil wobble is the same on every draw. */
+function seeded(seed: number) {
+  let value = seed;
+  return () => {
+    value = (value * 16807) % 2147483647;
+    return (value - 1) / 2147483646;
+  };
+}
+
+type Point = { x: number; y: number };
 
 /**
- * A canvas of drifting light that bends toward the pointer, behind a single, inviting Begin button.
- * The motes trace gentle paths toward a winding road, a quiet picture of a journey starting.
+ * A pencil-drawn map of the 90 days, painted on a canvas: the path sketches itself across the
+ * card, each milestone circle is drawn in as the line reaches it, and a small marker then walks
+ * the route, leaving a trail of dots like the dividers on the rest of the page.
  */
-export function LandingJourneyCta() {
+function JourneyMap() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const buttonRef = useRef<HTMLAnchorElement>(null);
-  const arrowRef = useRef<SVGSVGElement>(null);
-  const glowRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
-    const reduced = prefersReducedMotion();
 
+    const reduced = prefersReducedMotion();
+    const serifElement = document.querySelector(".font-serif-display");
+    const serif = serifElement ? getComputedStyle(serifElement).fontFamily : "Georgia, serif";
+    const sans = getComputedStyle(document.body).fontFamily || "system-ui, sans-serif";
+    const state = { draw: reduced ? 1 : 0, walk: 0 };
+    const rings = milestones.map(() => ({ value: reduced ? 1 : 0 }));
     let width = 0;
     let height = 0;
-    let frame = 0;
-    let visible = true;
-    const pointer = { x: -9999, y: -9999 };
-    let motes: Mote[] = [];
+    let points: Point[] = [];
+    let timeline: Timeline | null = null;
+    let walker: JSAnimation | null = null;
 
-    const resize = () => {
+    const pointAt = (t: number): Point => {
+      const index = Math.min(points.length - 1, Math.max(0, Math.round(t * (points.length - 1))));
+      return points[index] ?? { x: 0, y: 0 };
+    };
+
+    const layout = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
       width = canvas.clientWidth;
       height = canvas.clientHeight;
-      canvas.width = width * ratio;
-      canvas.height = height * ratio;
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      const count = Math.round(Math.min(110, (width * height) / 9000));
-      motes = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: 1.5 + Math.random() * 3.5,
-        speed: 0.15 + Math.random() * 0.45,
-        phase: Math.random() * Math.PI * 2,
-        hue: PALETTE[Math.floor(Math.random() * PALETTE.length)]!,
-      }));
+      const random = seeded(7);
+      points = Array.from({ length: 220 }, (_, step) => {
+        const t = step / 219;
+        const inset = width < 480 ? 0.16 : 0.1;
+        const x = width * (inset + t * (1 - inset * 2));
+        const y =
+          height * (0.72 - t * 0.38) +
+          Math.sin(t * Math.PI * 2.4) * height * 0.13 +
+          (random() - 0.5) * 1.6;
+        return { x, y };
+      });
     };
 
-    const drawRoad = (time: number) => {
-      // A soft winding path that runs from the bottom-left corner to the button.
-      context.save();
+    const sketchLine = (upTo: number, offset: number, alpha: number) => {
+      const last = Math.floor(upTo * (points.length - 1));
+      if (last < 1) return;
+      context.beginPath();
+      for (let index = 0; index <= last; index += 1) {
+        const point = points[index]!;
+        const wobble = Math.sin(index * 0.9 + offset) * 0.9;
+        if (index === 0) context.moveTo(point.x, point.y + wobble);
+        else context.lineTo(point.x, point.y + wobble);
+      }
+      context.strokeStyle = INK;
+      context.globalAlpha = alpha;
+      context.lineWidth = 2;
       context.lineCap = "round";
-      for (let lane = 0; lane < 3; lane += 1) {
-        context.beginPath();
-        for (let step = 0; step <= 60; step += 1) {
-          const t = step / 60;
-          const x = width * (0.02 + t * 0.96);
-          const wave = Math.sin(t * Math.PI * 2.2 + time * 0.0004 + lane * 0.6) * height * 0.12;
-          const y = height * (0.92 - t * 0.5) + wave + lane * 14;
-          if (step === 0) context.moveTo(x, y);
-          else context.lineTo(x, y);
-        }
-        context.strokeStyle = `rgba(201, 120, 96, ${0.14 - lane * 0.035})`;
-        context.lineWidth = 26 - lane * 8;
-        context.stroke();
-      }
-      context.restore();
-    };
-
-    const draw = (time: number) => {
-      context.clearRect(0, 0, width, height);
-      drawRoad(time);
-      for (const mote of motes) {
-        if (!reduced) {
-          mote.x += mote.speed;
-          mote.y += Math.sin(time * 0.001 + mote.phase) * 0.25 - mote.speed * 0.25;
-          const dx = pointer.x - mote.x;
-          const dy = pointer.y - mote.y;
-          const distance = Math.hypot(dx, dy);
-          if (distance < 160) {
-            mote.x += (dx / distance) * 0.9;
-            mote.y += (dy / distance) * 0.9;
-          }
-          if (mote.x > width + 10) mote.x = -10;
-          if (mote.y < -10) mote.y = height + 10;
-          if (mote.y > height + 10) mote.y = -10;
-        }
-        const twinkle = 0.55 + Math.sin(time * 0.002 + mote.phase) * 0.35;
-        context.beginPath();
-        context.globalAlpha = twinkle;
-        context.fillStyle = mote.hue;
-        context.arc(mote.x, mote.y, mote.r, 0, Math.PI * 2);
-        context.fill();
-      }
+      context.lineJoin = "round";
+      context.stroke();
       context.globalAlpha = 1;
     };
 
-    const loop = (time: number) => {
-      if (visible) draw(time);
-      frame = requestAnimationFrame(loop);
+    const render = () => {
+      context.clearRect(0, 0, width, height);
+
+      // Two slightly different passes give the line a hand-drawn, pencil feel.
+      sketchLine(state.draw, 0, 0.85);
+      sketchLine(state.draw, 2.3, 0.3);
+
+      // Dots along the path behind the walker, like the dividers elsewhere on the page.
+      if (state.walk > 0) {
+        for (let dot = 0; dot < 40; dot += 1) {
+          const t = dot / 40;
+          if (t > state.walk) break;
+          const point = pointAt(t);
+          const side = dot % 2 === 0 ? -12 : 12;
+          context.beginPath();
+          context.arc(point.x, point.y + side, 2.6, 0, Math.PI * 2);
+          context.strokeStyle = CLAY;
+          context.globalAlpha = 0.25 + 0.6 * (1 - (state.walk - t));
+          context.lineWidth = 1.4;
+          context.stroke();
+        }
+        context.globalAlpha = 1;
+      }
+
+      milestones.forEach((milestone, index) => {
+        const ring = rings[index]?.value ?? 0;
+        if (ring <= 0) return;
+        const point = pointAt(milestone.at);
+        const radius = index === milestones.length - 1 ? 15 : 11;
+        context.beginPath();
+        context.arc(point.x, point.y, radius, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * ring);
+        context.strokeStyle = index === milestones.length - 1 ? SAGE : CLAY;
+        context.lineWidth = 2.6;
+        context.stroke();
+        if (ring >= 1) {
+          context.beginPath();
+          context.arc(point.x, point.y, radius - 5, 0, Math.PI * 2);
+          context.fillStyle = index === milestones.length - 1 ? SAGE : CLAY;
+          context.globalAlpha = 0.85;
+          context.fill();
+          context.globalAlpha = 1;
+        }
+        context.globalAlpha = Math.min(1, ring * 1.4);
+        const above = milestone.above;
+        context.textAlign = "center";
+        context.fillStyle = "#a85f4b";
+        context.font = `700 ${width < 480 ? 10 : 11}px ${sans}`;
+        context.fillText(milestone.day.toUpperCase(), point.x, point.y + (above ? -44 : 34));
+        context.fillStyle = "#382c26";
+        context.font = `400 ${width < 480 ? 14 : 17}px ${serif}`;
+        context.fillText(milestone.label, point.x, point.y + (above ? -26 : 54));
+        context.globalAlpha = 1;
+      });
+
+      if (state.walk > 0 && state.walk < 1) {
+        const point = pointAt(state.walk);
+        context.beginPath();
+        context.arc(point.x, point.y, 7, 0, Math.PI * 2);
+        context.fillStyle = "#382c26";
+        context.fill();
+        context.beginPath();
+        context.arc(point.x, point.y, 12, 0, Math.PI * 2);
+        context.strokeStyle = "rgba(56, 44, 38, 0.25)";
+        context.lineWidth = 2;
+        context.stroke();
+      }
     };
 
-    resize();
-    if (reduced) draw(0);
-    else frame = requestAnimationFrame(loop);
+    const play = () => {
+      timeline?.pause();
+      walker?.pause();
+      state.draw = 0;
+      state.walk = 0;
+      rings.forEach((ring) => {
+        ring.value = 0;
+      });
+      timeline = createTimeline({ onUpdate: render, onComplete: startWalking }).add(
+        state,
+        { draw: 1, duration: 2400, ease: "inOutSine" },
+        0,
+      );
+      milestones.forEach((milestone, index) => {
+        timeline!.add(
+          rings[index]!,
+          { value: 1, duration: 600, ease: "outCubic" },
+          Math.max(0, milestone.at * 2400 - 150),
+        );
+      });
+    };
 
-    const onPointer = (event: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      pointer.x = event.clientX - rect.left;
-      pointer.y = event.clientY - rect.top;
+    const startWalking = () => {
+      walker = animate(state, {
+        walk: [0, 1],
+        duration: 6000,
+        ease: "inOutSine",
+        loop: true,
+        loopDelay: 1400,
+        onUpdate: render,
+      });
     };
-    const onLeave = () => {
-      pointer.x = -9999;
-      pointer.y = -9999;
-    };
-    const observer = new IntersectionObserver(([entry]) => {
-      visible = Boolean(entry?.isIntersecting);
-    });
+
+    layout();
+    render();
+
+    let shown = false;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry || reduced) return;
+        if (entry.isIntersecting && !shown) {
+          shown = true;
+          play();
+        } else if (!entry.isIntersecting && shown) {
+          shown = false;
+          timeline?.pause();
+          walker?.pause();
+          if (entry.boundingClientRect.top > 0) {
+            state.draw = 0;
+            state.walk = 0;
+            rings.forEach((ring) => {
+              ring.value = 0;
+            });
+            render();
+          }
+        }
+      },
+      { rootMargin: "0px 0px -15% 0px" },
+    );
     observer.observe(canvas);
-    window.addEventListener("resize", resize);
-    canvas.parentElement?.addEventListener("pointermove", onPointer);
-    canvas.parentElement?.addEventListener("pointerleave", onLeave);
 
+    const onResize = () => {
+      layout();
+      render();
+    };
+    window.addEventListener("resize", onResize);
     return () => {
-      cancelAnimationFrame(frame);
       observer.disconnect();
-      window.removeEventListener("resize", resize);
-      canvas.parentElement?.removeEventListener("pointermove", onPointer);
-      canvas.parentElement?.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("resize", onResize);
+      timeline?.pause();
+      walker?.pause();
     };
   }, []);
 
+  return (
+    <canvas
+      aria-label="A hand-drawn path from Day 1 to Day 90, through Understanding, Adjusting, and Living"
+      className="h-full min-h-64 w-full"
+      ref={canvasRef}
+      role="img"
+    />
+  );
+}
+
+export function LandingJourneyCta() {
+  const arrowRef = useRef<SVGSVGElement>(null);
+
   useEffect(() => {
-    if (prefersReducedMotion() || !arrowRef.current || !glowRef.current) return;
-    const nudge = createTimeline({ loop: true })
-      .add(arrowRef.current, { x: [0, 7, 0], duration: 1100, ease: "inOutSine" }, 0)
-      .add(
-        glowRef.current,
-        { opacity: [0.35, 0.75, 0.35], scale: [1, 1.08, 1], duration: 2200, ease: "inOutSine" },
-        0,
-      );
+    if (prefersReducedMotion() || !arrowRef.current) return;
+    const nudge = animate(arrowRef.current, {
+      x: [0, 5, 0],
+      duration: 1400,
+      ease: "inOutSine",
+      loop: true,
+      loopDelay: 1200,
+    });
     return () => {
       nudge.revert();
     };
   }, []);
 
-  const press = (scale: number) => {
-    if (!buttonRef.current || prefersReducedMotion()) return;
-    animate(buttonRef.current, { scale, duration: 450, ease: "outElastic(1, .6)" });
-  };
-
   return (
-    <div className="relative isolate overflow-hidden rounded-[32px] border border-[#e2d6ca] bg-[radial-gradient(circle_at_70%_40%,#fffaf3_0%,#f6ece0_55%,#efe2d3_100%)]">
-      <canvas aria-hidden="true" className="absolute inset-0 -z-10 size-full" ref={canvasRef} />
-      <div className="grid gap-10 px-6 py-16 sm:px-12 sm:py-20 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:px-16 lg:py-24">
-        <div className="text-center lg:text-left">
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#a85f4b]">
-            Your first step
-          </p>
-          <h2 className="mt-4 font-serif-display text-5xl font-normal leading-[1.02] text-[#382c26] sm:text-7xl">
-            Start your journey today.
-          </h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-[#6b5b52] lg:mx-0">
-            Eight minutes a day, at your own pace, with people who care how this feels. Your
-            progress is saved as you go.
-          </p>
-        </div>
-
-        <div className="relative mx-auto grid place-items-center">
-          <span
-            aria-hidden="true"
-            className="absolute size-56 rounded-full bg-[radial-gradient(circle,rgb(201_120_96/0.45),transparent_68%)] blur-md sm:size-72"
-            ref={glowRef}
-          />
-          <Link
-            className="group relative inline-flex min-h-20 items-center gap-4 overflow-hidden rounded-full bg-[linear-gradient(135deg,#c97860,#a85f4b)] py-4 pl-10 pr-4 font-serif-display text-4xl text-[#fffaf3] shadow-[0_18px_40px_-12px_rgb(168_95_75/0.75),inset_0_1px_0_rgb(255_255_255/0.35)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#382c26]/40 sm:min-h-24 sm:pl-12 sm:text-5xl"
-            href="/login"
-            onBlur={() => press(1)}
-            onFocus={() => press(1.04)}
-            onPointerEnter={() => press(1.06)}
-            onPointerLeave={() => press(1)}
-            ref={buttonRef}
-          >
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/25 transition-[left] duration-700 ease-out group-hover:left-[120%]"
-            />
-            Begin
-            <span className="grid size-12 place-items-center rounded-full bg-[#fffaf3] text-[#a85f4b] sm:size-16">
-              <ArrowRight aria-hidden="true" className="size-6 sm:size-8" ref={arrowRef} />
-            </span>
-          </Link>
-        </div>
+    <div
+      className={`${sketchStyles.sketchFrame} grid gap-8 overflow-hidden px-6 py-10 sm:px-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center lg:gap-10 lg:px-14`}
+    >
+      <div className="text-center lg:text-left">
+        <h2 className="font-serif-display text-4xl font-normal leading-tight text-[#382c26] sm:text-6xl">
+          Start your <span className={sketchStyles.wavyUnderline}>journey</span> today
+        </h2>
+        <p className="mx-auto mt-5 max-w-lg text-lg leading-8 text-[#6b5b52] lg:mx-0">
+          Eight minutes a day, at your own pace. Your progress is saved as you go.
+        </p>
+        <Link
+          className="group mt-8 inline-flex min-h-14 items-center gap-3 rounded-[14px] bg-[#382c26] px-8 text-lg font-semibold text-[#fffaf3] shadow-[0_3px_0_#211814] transition hover:-translate-y-px hover:bg-[#4b3931] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c97860] focus-visible:ring-offset-2 active:translate-y-px active:shadow-[0_1px_0_#211814]"
+          href="/login"
+        >
+          Begin
+          <ArrowRight aria-hidden="true" className="size-5" ref={arrowRef} />
+        </Link>
+      </div>
+      <div className="h-72 sm:h-80">
+        <JourneyMap />
       </div>
     </div>
   );

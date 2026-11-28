@@ -5,60 +5,139 @@ import { useEffect, useRef } from "react";
 
 import { prefersReducedMotion } from "@/features/marketing/components/landing-motion";
 
-// Geometry of the person being helped up, from seated (t = 0) to standing (t = 1).
-const GROUND = 418;
-const BODY_HEIGHT = 238; // standing torso + legs, from shoulders to the ground
-const SEATED_SCALE = 0.56;
+/*
+ * A sit-to-stand drawn with simple joints, so the person being helped keeps the same size and
+ * actually stands: their hips lift off the chair, their knees straighten and their back comes
+ * upright, while the helper leans in, takes their hands and straightens with them.
+ */
+
+type Point = { x: number; y: number };
+
+const GROUND = 412;
+const THIGH = 80;
+const SHIN = 84;
+const TORSO = 118;
+const NECK = 50;
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const easeOut = (t: number) => 1 - (1 - t) * (1 - t);
+const easeIn = (t: number) => t * t;
 
-function pose(t: number) {
-  const scale = lerp(SEATED_SCALE, 1, t);
-  const bodyTop = GROUND - BODY_HEIGHT * scale;
-  const lean = lerp(14, 0, t); // degrees, leaning forward while seated
-  const helperLean = lerp(9, 0, t); // the helper bends toward them while lifting
-  const hands = { x: lerp(318, 316, t), y: lerp(318, 236, t) };
-  return { scale, bodyTop, lean, helperLean, hands };
+/** The knee for a hip and ankle, bending forward (toward the helper on the left). */
+function knee(hip: Point, ankle: Point, thigh: number, shin: number): Point {
+  const dx = ankle.x - hip.x;
+  const dy = ankle.y - hip.y;
+  const distance = Math.min(Math.hypot(dx, dy), thigh + shin - 0.01);
+  const along = (thigh * thigh - shin * shin + distance * distance) / (2 * distance);
+  const height = Math.sqrt(Math.max(0, thigh * thigh - along * along));
+  const ux = dx / distance;
+  const uy = dy / distance;
+  const base = { x: hip.x + ux * along, y: hip.y + uy * along };
+  // Two possible knees; pick the one further left.
+  const a = { x: base.x - uy * height, y: base.y + ux * height };
+  const b = { x: base.x + uy * height, y: base.y - ux * height };
+  return a.x < b.x ? a : b;
 }
 
+function along(from: Point, angleDeg: number, length: number): Point {
+  const angle = (angleDeg * Math.PI) / 180;
+  return { x: from.x - Math.sin(angle) * length, y: from.y - Math.cos(angle) * length };
+}
+
+function pose(t: number) {
+  // The person being helped.
+  // Feet stay planted under the knee while seated (thigh level, shin upright).
+  const ankle = { x: 372, y: GROUND - 6 };
+  const hip = {
+    x: lerp(452, 374, easeOut(Math.min(1, t * 1.25))),
+    y: lerp(322, GROUND - 6 - THIGH - SHIN + 2, easeIn(Math.max(0, (t - 0.12) / 0.88))),
+  };
+  const lean = lerp(10, 0, t) + 22 * Math.sin(Math.PI * Math.min(1, t * 1.1)) * (1 - t * 0.6);
+  const kneePoint = knee(hip, ankle, THIGH, SHIN);
+  const shoulder = along(hip, lean, TORSO);
+  const head = along(shoulder, lean * 0.7, NECK);
+
+  // The helper, leaning in at the start and straightening as they lift.
+  const helperLean = lerp(-24, -3, easeOut(t));
+  const helperHip = { x: lerp(196, 190, t), y: lerp(262, 252, t) };
+  const helperKnees = lerp(14, 0, t);
+  const helperShoulder = along(helperHip, helperLean, TORSO + 4);
+  const helperHead = along(helperShoulder, helperLean * 0.6, NECK + 2);
+
+  const hands = {
+    x: lerp(318, 292, easeOut(t)),
+    y: lerp(318, 236, t),
+  };
+
+  return {
+    ankle,
+    hip,
+    kneePoint,
+    shoulder,
+    head,
+    helperHip,
+    helperKnees,
+    helperShoulder,
+    helperHead,
+    hands,
+  };
+}
+
+const line = (a: Point, b: Point) => `M${a.x} ${a.y}L${b.x} ${b.y}`;
+const arm = (shoulder: Point, hands: Point, sag: number) =>
+  `M${shoulder.x} ${shoulder.y}Q${(shoulder.x + hands.x) / 2} ${Math.max(shoulder.y, hands.y) + sag} ${hands.x} ${hands.y}`;
+
 export function LandingLiftIllustration() {
-  const risingRef = useRef<SVGGElement>(null);
-  const risingBodyRef = useRef<SVGPathElement>(null);
-  const risingHeadRef = useRef<SVGGElement>(null);
-  const helperRef = useRef<SVGGElement>(null);
-  const helperArmRef = useRef<SVGPathElement>(null);
-  const risingArmRef = useRef<SVGPathElement>(null);
-  const handsRef = useRef<SVGCircleElement>(null);
-  const sparkRef = useRef<SVGGElement>(null);
+  const refs = {
+    thigh: useRef<SVGPathElement>(null),
+    shin: useRef<SVGPathElement>(null),
+    torso: useRef<SVGPathElement>(null),
+    head: useRef<SVGGElement>(null),
+    risingArm: useRef<SVGPathElement>(null),
+    helperLegs: useRef<SVGPathElement>(null),
+    helperTorso: useRef<SVGPathElement>(null),
+    helperHead: useRef<SVGGElement>(null),
+    helperArm: useRef<SVGPathElement>(null),
+    hands: useRef<SVGCircleElement>(null),
+    spark: useRef<SVGGElement>(null),
+  };
 
   useEffect(() => {
     const render = (t: number) => {
       const p = pose(t);
-      risingBodyRef.current?.setAttribute(
-        "transform",
-        `translate(0 ${GROUND}) scale(1 ${p.scale}) translate(0 ${-GROUND})`,
-      );
-      risingHeadRef.current?.setAttribute(
-        "transform",
-        `translate(0 ${p.bodyTop - (GROUND - BODY_HEIGHT)})`,
-      );
-      risingRef.current?.setAttribute("transform", `rotate(${-p.lean} 392 ${GROUND})`);
-      helperRef.current?.setAttribute("transform", `rotate(${p.helperLean} 188 ${GROUND})`);
+      refs.thigh.current?.setAttribute("d", line(p.hip, p.kneePoint));
+      refs.shin.current?.setAttribute("d", line(p.kneePoint, p.ankle));
+      refs.torso.current?.setAttribute("d", line(p.hip, p.shoulder));
+      refs.head.current?.setAttribute("transform", `translate(${p.head.x} ${p.head.y})`);
+      refs.risingArm.current?.setAttribute("d", arm(p.shoulder, p.hands, 18));
 
-      // Helper's shoulder follows their lean; arms meet at the clasped hands.
-      const helperShoulder = { x: 238 + p.helperLean * 3.2, y: 214 + p.helperLean * 0.8 };
-      const risingShoulder = { x: 352 + p.lean * 2.2, y: p.bodyTop + 30 + p.lean * 1.2 };
-      helperArmRef.current?.setAttribute(
+      const leftFoot = { x: 168, y: GROUND - 6 };
+      const rightFoot = { x: 214, y: GROUND - 6 };
+      const kneeBend = p.helperKnees;
+      const leftKnee = {
+        x: (leftFoot.x + p.helperHip.x) / 2 + kneeBend,
+        y: (leftFoot.y + p.helperHip.y) / 2,
+      };
+      const rightKnee = {
+        x: (rightFoot.x + p.helperHip.x) / 2 + kneeBend,
+        y: (rightFoot.y + p.helperHip.y) / 2,
+      };
+      refs.helperLegs.current?.setAttribute(
         "d",
-        `M${helperShoulder.x} ${helperShoulder.y} Q${(helperShoulder.x + p.hands.x) / 2 + 6} ${Math.max(helperShoulder.y, p.hands.y) + 26} ${p.hands.x} ${p.hands.y}`,
+        `M${p.helperHip.x - 12} ${p.helperHip.y}L${leftKnee.x - 6} ${leftKnee.y}L${leftFoot.x} ${leftFoot.y}M${p.helperHip.x + 12} ${p.helperHip.y}L${rightKnee.x + 6} ${rightKnee.y}L${rightFoot.x} ${rightFoot.y}`,
       );
-      risingArmRef.current?.setAttribute(
-        "d",
-        `M${risingShoulder.x} ${risingShoulder.y} Q${(risingShoulder.x + p.hands.x) / 2} ${Math.max(risingShoulder.y, p.hands.y) + 22} ${p.hands.x} ${p.hands.y}`,
+      refs.helperTorso.current?.setAttribute("d", line(p.helperHip, p.helperShoulder));
+      refs.helperHead.current?.setAttribute(
+        "transform",
+        `translate(${p.helperHead.x} ${p.helperHead.y})`,
       );
-      handsRef.current?.setAttribute("cx", String(p.hands.x));
-      handsRef.current?.setAttribute("cy", String(p.hands.y));
-      if (sparkRef.current) sparkRef.current.style.opacity = String(Math.max(0, (t - 0.82) / 0.18));
+      refs.helperArm.current?.setAttribute("d", arm(p.helperShoulder, p.hands, 20));
+      refs.hands.current?.setAttribute("cx", String(p.hands.x));
+      refs.hands.current?.setAttribute("cy", String(p.hands.y));
+      if (refs.spark.current) {
+        refs.spark.current.style.opacity = String(Math.max(0, (t - 0.85) / 0.15));
+        refs.spark.current.setAttribute("transform", `translate(${p.hands.x} ${p.hands.y - 40})`);
+      }
     };
 
     if (prefersReducedMotion()) {
@@ -69,14 +148,16 @@ export function LandingLiftIllustration() {
     const state = { t: 0 };
     render(0);
     const timeline = createTimeline({ loop: true, onUpdate: () => render(state.t) })
-      .add(state, { t: 1, duration: 2200, ease: "inOutCubic" }, 700)
-      .add(state, { t: 1, duration: 2000 })
-      .add(state, { t: 0, duration: 1900, ease: "inOutSine" })
-      .add(state, { t: 0, duration: 600 });
+      .add(state, { t: 0, duration: 900 })
+      .add(state, { t: 1, duration: 2600, ease: "inOutSine" })
+      .add(state, { t: 1, duration: 2200 })
+      .add(state, { t: 0, duration: 2200, ease: "inOutSine" });
 
     return () => {
       timeline.revert();
     };
+    // The refs object is stable for the component's lifetime.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -84,83 +165,96 @@ export function LandingLiftIllustration() {
       aria-label="One person helping another stand up from a chair"
       className="h-auto w-full"
       role="img"
-      viewBox="0 0 560 460"
+      viewBox="40 20 500 430"
     >
-      <ellipse cx="290" cy={GROUND + 4} fill="#e8e0d5" rx="230" ry="20" />
+      <ellipse cx="300" cy={GROUND + 4} fill="#e8e0d5" rx="220" ry="18" />
 
-      {/* Chair behind the person being helped */}
+      {/* Chair */}
       <g fill="#d9c6b2">
-        <rect height="150" rx="16" width="22" x="452" y="250" />
-        <rect height="26" rx="10" width="150" x="324" y="318" />
-        <rect height="78" rx="6" width="14" x="332" y="340" />
-        <rect height="78" rx="6" width="14" x="452" y="340" />
+        <rect height="170" rx="12" width="20" x="496" y="230" />
+        <rect height="22" rx="10" width="100" x="418" y="330" />
+        <rect height="64" rx="6" width="12" x="426" y="346" />
+        <rect height="64" rx="6" width="12" x="500" y="346" />
       </g>
 
-      <g ref={helperRef}>
-        <circle cx="188" cy="118" fill="#d8bda2" r="48" />
+      {/* Helper */}
+      <path
+        fill="none"
+        ref={refs.helperLegs}
+        stroke="#7a4a3c"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="28"
+      />
+      <path
+        fill="none"
+        ref={refs.helperTorso}
+        stroke="#b96c55"
+        strokeLinecap="round"
+        strokeWidth="78"
+      />
+      <g ref={refs.helperHead}>
+        <circle fill="#d8bda2" r="44" />
         <path
-          d="M145 106c6-41 29-62 63-53 18 5 31 20 36 42-17-11-29-16-48-15-17 1-32 9-51 26Z"
+          d="M-42-10c6-36 28-54 58-46 16 4 27 17 32 36-15-9-26-13-42-12-15 1-29 8-48 22Z"
           fill="#5a4034"
         />
         <path
-          d="M172 128c8 7 19 7 27 0"
+          d="M-12 12c8 7 18 7 26 0"
           fill="none"
           stroke="#755344"
           strokeLinecap="round"
           strokeWidth="5"
         />
-        <path d="M134 202c0-22 18-40 40-40h34c22 0 40 18 40 40l12 216H122l12-216Z" fill="#b96c55" />
       </g>
 
-      <g ref={risingRef}>
+      {/* Person being helped */}
+      <path fill="none" ref={refs.shin} stroke="#55705e" strokeLinecap="round" strokeWidth="28" />
+      <path fill="none" ref={refs.thigh} stroke="#55705e" strokeLinecap="round" strokeWidth="30" />
+      <path fill="none" ref={refs.torso} stroke="#6f947a" strokeLinecap="round" strokeWidth="70" />
+      <g ref={refs.head}>
+        <circle fill="#c7b098" r="40" />
         <path
-          d={`M348 ${GROUND - BODY_HEIGHT + 22}c0-12 10-22 22-22h44c12 0 22 10 22 22l8 ${BODY_HEIGHT - 22}H340l8-${BODY_HEIGHT - 22}Z`}
-          fill="#6f947a"
-          ref={risingBodyRef}
+          d="M-38-6c4-34 26-52 54-45 16 4 27 17 32 36-15-8-26-11-40-10-16 1-29 7-46 19Z"
+          fill="#9d8874"
         />
-        <g ref={risingHeadRef}>
-          <circle cx="392" cy={GROUND - BODY_HEIGHT - 42} fill="#c7b098" r="42" />
-          <path
-            d={`M352 ${GROUND - BODY_HEIGHT - 48}c4-36 27-55 57-48 17 4 29 18 34 38-16-8-28-11-42-10-17 1-31 8-49 20Z`}
-            fill="#9d8874"
-          />
-          <path
-            d={`M378 ${GROUND - BODY_HEIGHT - 30}c8 7 18 7 26 0`}
-            fill="none"
-            stroke="#755344"
-            strokeLinecap="round"
-            strokeWidth="5"
-          />
-        </g>
+        <path
+          d="M-14 12c8 7 18 7 26 0"
+          fill="none"
+          stroke="#755344"
+          strokeLinecap="round"
+          strokeWidth="5"
+        />
       </g>
 
+      {/* Arms meet at the clasped hands */}
       <path
         fill="none"
-        ref={helperArmRef}
-        stroke="#b96c55"
-        strokeLinecap="round"
-        strokeWidth="24"
-      />
-      <path
-        fill="none"
-        ref={risingArmRef}
+        ref={refs.risingArm}
         stroke="#6f947a"
         strokeLinecap="round"
         strokeWidth="22"
       />
-      <circle fill="#d1b59a" r="17" ref={handsRef} />
+      <path
+        fill="none"
+        ref={refs.helperArm}
+        stroke="#b96c55"
+        strokeLinecap="round"
+        strokeWidth="24"
+      />
+      <circle fill="#d1b59a" r="16" ref={refs.hands} />
 
       <g
         fill="none"
-        ref={sparkRef}
+        ref={refs.spark}
         stroke="#c97860"
         strokeLinecap="round"
         strokeWidth="4"
         style={{ opacity: 0 }}
       >
-        <path d="M296 196l-8-16" />
-        <path d="M318 190v-18" />
-        <path d="M340 196l8-16" />
+        <path d="M-22 4l-8-14" />
+        <path d="M0 0v-18" />
+        <path d="M22 4l8-14" />
       </g>
     </svg>
   );

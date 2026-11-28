@@ -200,7 +200,14 @@ export function LandingGames({ demos }: { demos: Record<GameId, ReactNode> }) {
                   {game.title}
                 </span>
                 {game.visual}
-                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#a85f4b]">
+                <span
+                  className={cn(
+                    "inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-base font-semibold shadow-[0_2px_0_#211814] transition-colors duration-300",
+                    isOpen
+                      ? "bg-[#fffaf3] text-[#382c26] ring-1 ring-[#382c26]"
+                      : "bg-[#382c26] text-[#fffaf3] group-hover:bg-[#4b3931]",
+                  )}
+                >
                   {isOpen ? "Close demo" : "Try it"}
                   <ArrowDown
                     aria-hidden="true"
