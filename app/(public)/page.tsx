@@ -29,6 +29,20 @@ import {
   totalMythCardCount,
 } from "@/features/marketing/content/landing-interactive-content";
 
+const phases = [
+  ["01", "Understanding", "Get familiar with the basics, one idea at a time.", "Days 1–30"],
+  ["02", "Adjusting", "Try small changes that work with your routines.", "Days 31–60"],
+  ["03", "Living", "Use what you have learned in day-to-day care.", "Days 61–90"],
+] as const;
+
+const caregiverModules = [
+  "What They May Be Feeling",
+  "Support Without Taking Over",
+  "Everyday Support That Actually Helps",
+  "When Something Feels Wrong",
+  "The Caregiver Matters Too",
+] as const;
+
 const exampleResources = [
   {
     icon: Sprout,
@@ -67,12 +81,11 @@ const comparisonRows: readonly (readonly [string, boolean, boolean, boolean])[] 
 
 export default function HomePage() {
   const explainDemo = getLandingExplainDemo();
-  const stories = landingStories.slice(0, 2);
 
   return (
     <>
       <section id="home">
-        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(1.5rem,4vh,3rem)] pt-[clamp(2.75rem,6vh,4.5rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(1rem,3vh,2rem)] pt-[clamp(2.75rem,6vh,4.5rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="motion-cascade">
             <h1 className="max-w-3xl font-serif-display text-[clamp(3.25rem,9.5vw,7rem)] font-normal leading-[1] tracking-[-0.045em] text-balance">
               Your Companion
@@ -106,27 +119,50 @@ export default function HomePage() {
       <LatticeDivider />
 
       <section aria-labelledby="lesson-plan-title" className="scroll-mt-24" id="lesson-plan">
-        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-12 md:px-10 md:py-16">
+        <div className="home-scroll-fade mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10">
           <h2 className={sketchStyles.sectionTitle} id="lesson-plan-title">
             Lesson Plan
           </h2>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[auto_auto_minmax(0,1fr)] lg:items-stretch lg:gap-12">
-            <p className="flex items-end justify-center gap-3 whitespace-nowrap lg:justify-start">
-              <span className="font-serif-display text-[clamp(8rem,17vw,14rem)] font-normal leading-[0.78] tracking-[-0.08em] text-[#382c26]">
-                90
-              </span>
-              <span className="pb-2 font-serif-display text-3xl text-[#6b5b52] sm:text-4xl">
-                days
-              </span>
-            </p>
+          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_auto_minmax(0,1.6fr)] lg:gap-10">
+            <div className="flex flex-col gap-6">
+              <p className="flex items-end gap-3 whitespace-nowrap">
+                <span className="font-serif-display text-[clamp(7rem,13vw,11rem)] font-normal leading-[0.78] tracking-[-0.08em] text-[#382c26]">
+                  90
+                </span>
+                <span className="pb-1 font-serif-display text-3xl text-[#6b5b52] sm:text-4xl">
+                  days
+                </span>
+              </p>
+              <ol className="grid flex-1 gap-3">
+                {phases.map(([number, title, body, days]) => (
+                  <li
+                    className={`${sketchStyles.sketchFrame} grid grid-cols-[2.5rem_1fr] gap-x-3 px-5 py-4`}
+                    key={number}
+                  >
+                    <span className="font-serif-display text-3xl font-light leading-none text-[#c97860]">
+                      {number}
+                    </span>
+                    <span>
+                      <span className="flex flex-wrap items-baseline justify-between gap-x-3">
+                        <span className="font-serif-display text-xl text-[#382c26]">{title}</span>
+                        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8d7b70]">
+                          {days}
+                        </span>
+                      </span>
+                      <span className="mt-1 block text-sm leading-6 text-[#6b5b52]">{body}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
 
             <WavyRule />
 
-            <div className="grid content-center gap-8">
-              <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center">
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-center">
                 <div
-                  className={`${sketchStyles.sketchFrame} flex items-center gap-4 px-6 py-5 sm:px-8`}
+                  className={`${sketchStyles.sketchFrame} flex items-center gap-4 px-6 py-4 sm:px-8`}
                 >
                   <p className="font-serif-display text-3xl leading-none sm:text-4xl">
                     8 <span className="text-xl sm:text-2xl">minutes</span>
@@ -143,18 +179,19 @@ export default function HomePage() {
                 </div>
                 <p className="text-lg leading-8 text-[#6b5b52]">
                   Each lesson focuses on one useful idea, with plain examples and room to go at your
-                  own pace.
+                  own pace.{" "}
+                  <span className="font-serif-display text-[#493a32]">
+                    <span aria-hidden="true" className="text-[#c97860]">
+                      *{" "}
+                    </span>
+                    <span className={sketchStyles.wavyUnderline}>With helpful imagery!</span>
+                  </span>
                 </p>
               </div>
 
-              <p className="font-serif-display text-xl text-[#493a32] sm:text-2xl">
-                <span aria-hidden="true" className="mr-2 text-[#c97860]">
-                  *
-                </span>
-                <span className={sketchStyles.wavyUnderline}>With helpful imagery!</span>
-              </p>
-
-              <GlucoseInsulinAnimation />
+              <div className="flex-1 [&>section]:h-full">
+                <GlucoseInsulinAnimation />
+              </div>
             </div>
           </div>
         </div>
@@ -163,39 +200,55 @@ export default function HomePage() {
       <LatticeDivider />
 
       <section aria-labelledby="caregiver-title" className="scroll-mt-24" id="caregiver">
-        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-12 md:px-10 md:py-16">
+        <div className="home-scroll-fade mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10">
           <h2 className={sketchStyles.sectionTitle} id="caregiver-title">
             Caregiver
           </h2>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,0.75fr)_auto_minmax(0,1.6fr)_auto] lg:items-center lg:gap-12">
-            <div className="mx-auto w-full max-w-[18rem]">
+          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_auto_minmax(0,1.6fr)] lg:items-center lg:gap-10">
+            <div className="mx-auto w-full max-w-[24rem]">
               <SteadyingHandIllustration title="One person steadying another" />
             </div>
 
             <WavyRule className="self-stretch" />
 
             <div>
-              <blockquote className="font-serif-display text-3xl leading-snug text-[#382c26] sm:text-4xl">
-                &ldquo;You don&apos;t have to navigate diabetes alone.&rdquo;
-              </blockquote>
-              <div aria-hidden="true" className="my-7 grid gap-1.5">
+              <div className="flex items-start gap-5">
+                <blockquote className="flex-1 font-serif-display text-3xl leading-snug text-[#382c26] sm:text-4xl">
+                  &ldquo;You don&apos;t have to navigate diabetes alone.&rdquo;
+                </blockquote>
+                <PumpingHeart className="w-16 shrink-0 sm:w-24" />
+              </div>
+              <div aria-hidden="true" className="my-6 grid gap-1.5">
                 <span className="h-0.5 w-full bg-[#382c26]" />
                 <span className="h-0.5 w-11/12 bg-[#382c26]/60" />
               </div>
-              <p className="max-w-2xl text-lg leading-8 text-[#6b5b52]">
+              <p className="text-lg leading-8 text-[#6b5b52]">
                 Whether you&apos;re a family member, partner, or caregiver, Health Decoded helps you
                 learn alongside them.
               </p>
-              <Link
-                className="mt-6 inline-flex min-h-11 items-center gap-2 font-semibold text-[#382c26] underline decoration-[#c97860]/50 decoration-2 underline-offset-[6px] hover:decoration-[#c97860]"
-                href="/caregiver"
-              >
-                Explore the caregiver path
-              </Link>
+              <ol className="mt-6 grid gap-2.5 sm:grid-cols-2">
+                {caregiverModules.map((title, index) => (
+                  <li
+                    className="flex items-baseline gap-3 rounded-[14px] bg-[#f1ece4] px-4 py-3 text-[15px] font-semibold leading-snug text-[#493a32]"
+                    key={title}
+                  >
+                    <span className="font-serif-display text-lg font-normal text-[#c97860]">
+                      {index + 1}
+                    </span>
+                    {title}
+                  </li>
+                ))}
+                <li className="flex">
+                  <Link
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[14px] bg-[#382c26] px-4 py-3 text-[15px] font-semibold text-[#fffaf3] transition hover:bg-[#4b3931]"
+                    href="/caregiver"
+                  >
+                    Explore the caregiver path <ArrowRight aria-hidden="true" className="size-4" />
+                  </Link>
+                </li>
+              </ol>
             </div>
-
-            <PumpingHeart className="mx-auto w-28 lg:w-36" />
           </div>
         </div>
       </section>
@@ -203,13 +256,13 @@ export default function HomePage() {
       <LatticeDivider />
 
       <section aria-labelledby="games-title" className="scroll-mt-24" id="games">
-        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-12 md:px-10 md:py-16">
+        <div className="home-scroll-fade mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10">
           <div className="text-center">
             <h2 className={sketchStyles.sectionTitle} id="games-title">
               Games
             </h2>
           </div>
-          <div className="mt-12">
+          <div className="mt-8">
             <LandingGames
               demos={{
                 myth: (
@@ -237,7 +290,7 @@ export default function HomePage() {
       <LatticeDivider />
 
       <section aria-labelledby="glossary-title" className="scroll-mt-24" id="glossary">
-        <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-10 px-5 py-12 md:px-10 md:py-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-16">
+        <div className="home-scroll-fade mx-auto grid max-w-[1440px] gap-10 px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-16">
           <div>
             <h2 className={sketchStyles.sectionTitle} id="glossary-title">
               Medical Glossary
@@ -260,7 +313,7 @@ export default function HomePage() {
       <LatticeDivider />
 
       <section aria-labelledby="resources-title" className="scroll-mt-24" id="resources">
-        <div className="home-scroll-fade mx-auto max-w-[1260px] px-5 py-12 md:px-10 md:py-16">
+        <div className="home-scroll-fade mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10">
           <h2 className={sketchStyles.sectionTitle} id="resources-title">
             Resources and Tools
           </h2>
@@ -320,45 +373,39 @@ export default function HomePage() {
       <LatticeDivider />
 
       <section aria-labelledby="stories-title" className="scroll-mt-24" id="stories">
-        <div className="home-scroll-fade mx-auto grid max-w-[1260px] gap-10 px-5 py-12 md:px-10 md:py-16 lg:grid-cols-[minmax(0,0.9fr)_auto_minmax(0,1.3fr)] lg:items-center lg:gap-12">
-          <div>
+        <div className="home-scroll-fade mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10">
+          <div className="grid gap-5 lg:grid-cols-[auto_1fr] lg:items-end lg:gap-12">
             <h2 className={sketchStyles.sectionTitle} id="stories-title">
               Interactive Stories
             </h2>
-            <p className="mt-8 text-lg leading-8 text-[#6b5b52]">
+            <p className="max-w-2xl text-lg leading-8 text-[#6b5b52]">
               Short stories about everyday routines, choices, and conversations around Type 2. You
               decide what happens next.
             </p>
           </div>
 
-          <WavyRule className="self-stretch" />
-
-          <ul className="grid gap-6">
-            {stories.map((story) => (
+          <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {landingStories.map((story) => (
               <li key={story.slug}>
                 <Link
-                  className="group grid grid-cols-[6.5rem_1fr] items-center gap-5 sm:grid-cols-[9rem_1fr]"
+                  className={`${sketchStyles.sketchFrame} group flex h-full flex-col overflow-hidden transition duration-200 hover:-translate-y-1`}
                   href={`/login?next=${encodeURIComponent(`/stories/${story.slug}`)}`}
                 >
-                  <span
-                    className={`${sketchStyles.sketchFrame} block aspect-square overflow-hidden transition duration-200 group-hover:-translate-y-1`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      alt={story.imageAlt}
-                      className="size-full object-cover"
-                      loading="lazy"
-                      src={story.imagePath}
-                    />
-                  </span>
-                  <span>
-                    <span className="block text-xs font-bold uppercase tracking-[0.18em] text-[#a85f4b]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    alt={story.imageAlt}
+                    className="aspect-[4/3] w-full object-cover"
+                    loading="lazy"
+                    src={story.imagePath}
+                  />
+                  <span className="flex flex-1 flex-col p-5">
+                    <span className="text-xs font-bold uppercase tracking-[0.18em] text-[#a85f4b]">
                       {story.name} · {story.timeLabel}
                     </span>
-                    <span className="mt-1 block font-serif-display text-2xl leading-tight text-[#382c26] group-hover:underline group-hover:decoration-[#c97860] group-hover:underline-offset-4">
+                    <span className="mt-1.5 font-serif-display text-2xl leading-tight text-[#382c26] group-hover:underline group-hover:decoration-[#c97860] group-hover:underline-offset-4">
                       {story.title}
                     </span>
-                    <span className="mt-2 line-clamp-3 block text-sm leading-6 text-[#6b5b52]">
+                    <span className="mt-2 text-sm leading-6 text-[#6b5b52]">
                       {story.introduction}
                     </span>
                   </span>
@@ -372,10 +419,7 @@ export default function HomePage() {
       <LatticeDivider />
 
       <section aria-labelledby="compare-title" className="scroll-mt-24" id="compare">
-        <div className="home-scroll-fade mx-auto max-w-[1100px] px-4 py-12 md:px-10 md:py-16">
-          <h2 className="sr-only" id="compare-title">
-            How Health Decoded compares
-          </h2>
+        <div className="home-scroll-fade mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3.5rem)] py-8 md:py-10">
           <table className="w-full table-fixed border-separate border-spacing-x-1.5 border-spacing-y-0 sm:border-spacing-x-6">
             <colgroup>
               <col className="w-[34%] sm:w-[31%]" />
@@ -385,7 +429,17 @@ export default function HomePage() {
             </colgroup>
             <thead>
               <tr>
-                <td />
+                <td className="pb-6 pr-2 align-bottom">
+                  <h2
+                    className="font-serif-display text-2xl leading-tight text-[#382c26] sm:text-5xl"
+                    id="compare-title"
+                  >
+                    How we compare
+                  </h2>
+                  <p className="mt-2 hidden text-base leading-7 text-[#6b5b52] sm:block">
+                    Everything in one place, instead of spread across apps and websites.
+                  </p>
+                </td>
                 {comparisonColumns.map((column, index) => (
                   <th className="pb-6 align-bottom" key={column} scope="col">
                     <span
@@ -431,16 +485,23 @@ export default function HomePage() {
 
       <LatticeDivider />
 
-      <section className="home-scroll-fade px-5 pb-24 pt-14 text-center sm:pb-28 sm:pt-20">
-        <h2 className="font-serif-display text-5xl font-normal sm:text-7xl">
-          <span className={sketchStyles.wavyUnderline}>Start Your Journey Today</span>
-        </h2>
-        <Link
-          className={`${sketchStyles.sketchFrame} mt-12 inline-flex min-h-16 items-center gap-3 px-10 font-serif-display text-3xl text-[#382c26] transition duration-200 hover:-translate-y-1 hover:bg-[#f4ede4] sm:min-h-20 sm:px-14 sm:text-4xl`}
-          href="/login"
-        >
-          Begin <ArrowRight aria-hidden="true" className="size-7 sm:size-8" />
-        </Link>
+      <section className="home-scroll-fade px-[clamp(1.25rem,4vw,3.5rem)] pb-4 pt-6">
+        <div className="mx-auto flex max-w-[1330px] flex-col items-center gap-8 rounded-[28px] bg-[#382c26] px-6 py-14 text-center text-[#fffaf3] sm:py-16 lg:flex-row lg:justify-between lg:px-16 lg:text-left">
+          <div>
+            <h2 className="font-serif-display text-4xl font-normal leading-tight sm:text-6xl">
+              Start Your Journey Today
+            </h2>
+            <p className="mt-3 text-lg text-[#e5d8cb]">
+              Lessons, games, and stories in one place. Your progress is saved as you go.
+            </p>
+          </div>
+          <Link
+            className="inline-flex min-h-16 shrink-0 items-center gap-3 rounded-[18px] bg-[#fffaf3] px-10 font-serif-display text-3xl text-[#382c26] shadow-[0_4px_0_#c97860] transition duration-200 hover:-translate-y-1 sm:px-12 sm:text-4xl"
+            href="/login"
+          >
+            Begin <ArrowRight aria-hidden="true" className="size-7 sm:size-8" />
+          </Link>
+        </div>
       </section>
     </>
   );
