@@ -105,9 +105,9 @@ export default function HomePage() {
       <script dangerouslySetInnerHTML={{ __html: landingRevealBootScript }} />
 
       <section id="home">
-        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(2rem,4vh,3rem)] pt-[clamp(2.75rem,6vh,4.5rem)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-center">
+        <div className="mx-auto grid max-w-[1440px] gap-[clamp(2rem,5vw,4rem)] px-[clamp(1.25rem,4vw,3.5rem)] pb-[clamp(2rem,4svh,3rem)] pt-[clamp(2rem,5svh,4.5rem)] lg:min-h-[min(calc(100svh-4.75rem),50rem)] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center">
           <div data-reveal="up" data-reveal-stagger="">
-            <h1 className="max-w-3xl font-serif-display text-[clamp(3.25rem,9.5vw,7rem)] font-normal leading-[1] tracking-[-0.045em] text-balance">
+            <h1 className="max-w-3xl font-serif-display text-[clamp(3.25rem,min(7.4vw,12svh),6.75rem)] font-normal leading-[1] tracking-[-0.045em] text-balance">
               Your Companion
             </h1>
             <p className="mt-6 max-w-[36rem] text-lg leading-8 text-[#6b5b52] sm:mt-8 sm:text-xl sm:leading-9">
@@ -124,12 +124,13 @@ export default function HomePage() {
           </div>
 
           <figure
-            className="mx-auto w-full max-w-[46rem]"
+            className="mx-auto w-full max-w-[min(48rem,calc(100svh-16rem))] lg:max-w-[min(48rem,calc(100svh-18rem))]"
             data-reveal="scale"
             data-reveal-delay="200"
           >
-            <div className={`${sketchStyles.sketchFrame} px-4 pt-5 sm:px-8 sm:pt-7`}>
-              <CompanionIllustration title="Two people sharing a hug" />
+            <div className={`${sketchStyles.sketchFrame} p-4 sm:p-6`}>
+              {/* Cropped to the figures so they fill the frame. */}
+              <CompanionIllustration title="Two people sharing a hug" viewBox="86 30 398 382" />
             </div>
             <figcaption className="mt-5 text-center font-serif-display text-lg italic leading-snug text-[#6b5b52] sm:text-xl">
               We care about how this feels,
@@ -188,9 +189,9 @@ export default function HomePage() {
             <WavyRule />
 
             <div className="flex flex-col gap-8" data-reveal="right" data-reveal-stagger="">
-              <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center">
+              <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-center lg:grid-cols-1 xl:grid-cols-[auto_1fr]">
                 <div
-                  className={`${sketchStyles.sketchFrame} flex items-center gap-4 px-6 py-4 sm:px-8`}
+                  className={`${sketchStyles.sketchFrame} flex w-fit items-center gap-4 px-6 py-4 sm:px-8`}
                 >
                   <p className="font-serif-display text-3xl leading-none sm:text-4xl">
                     <LandingCountUp duration={1200} value={8} />{" "}
@@ -235,12 +236,12 @@ export default function HomePage() {
             Caregiver
           </h2>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1.25fr)] lg:items-center lg:gap-14">
+          <div className="mt-10 grid gap-10 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1.25fr)] xl:items-center xl:gap-14">
             <div className="mx-auto w-full max-w-[36rem]" data-reveal="scale">
               <LandingSharedLight />
             </div>
 
-            <WavyRule className="self-stretch" />
+            <WavyRule className="self-stretch max-xl:!hidden" />
 
             <div data-reveal="right" data-reveal-stagger="">
               <blockquote className="text-balance text-center font-serif-display text-[clamp(1.9rem,3.2vw,2.75rem)] leading-snug text-[#382c26]">
@@ -475,7 +476,7 @@ export default function HomePage() {
           <ul className="grid gap-8" data-reveal="right" data-reveal-stagger="">
             {featuredStories.map((story) => (
               <li
-                className="grid grid-cols-[7rem_1fr] items-start gap-5 sm:grid-cols-[11rem_1fr]"
+                className="grid grid-cols-[7rem_1fr] items-start gap-5 sm:grid-cols-[11rem_1fr] lg:grid-cols-[8rem_1fr] xl:grid-cols-[11rem_1fr]"
                 key={story.slug}
               >
                 <span

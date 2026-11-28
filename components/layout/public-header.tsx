@@ -16,7 +16,6 @@ const sectionLinks = [
   ["Games", "/#games"],
   ["Resources", "/#resources"],
   ["Stories", "/#stories"],
-  ["Companion", "/#companion"],
   ["Comparison", "/#compare"],
 ] as const;
 

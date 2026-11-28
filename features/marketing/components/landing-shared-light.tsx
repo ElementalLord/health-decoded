@@ -148,7 +148,7 @@ export function LandingSharedLight() {
           <ellipse
             cx={stone.x}
             cy={stone.y}
-            key={stone.x}
+            key={stone.y}
             rx={stone.rx}
             ry={stone.ry}
             style={{ transformBox: "fill-box", transformOrigin: "center" }}

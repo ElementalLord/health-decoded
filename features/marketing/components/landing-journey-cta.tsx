@@ -11,6 +11,7 @@ import { sketchStyles } from "@/features/marketing/components/landing-sketch";
 const INK = "#5a4a41";
 const CLAY = "#c97860";
 const SUN = "#f2c98c";
+const PAPER = "#fffaf3";
 const STEPS = 7;
 
 /**
@@ -74,45 +75,53 @@ function SunriseCanvas() {
       context.globalAlpha = 1;
     };
 
+    /** The hill line: gentle rises on each side and a soft dip where the path meets it. */
+    const hill = (x: number) => {
+      const u = x / width;
+      const horizon = height * 0.6;
+      return (
+        horizon -
+        height *
+          (0.07 * Math.sin(u * Math.PI * 1.15 + 0.15) + 0.025 * Math.sin(u * Math.PI * 3.4 + 1)) +
+        height * 0.05 * Math.exp(-((u - 0.5) ** 2) / 0.006)
+      );
+    };
+
+    const hillPoints = (): [number, number][] =>
+      Array.from({ length: 41 }, (_, index) => {
+        const x = (width * index) / 40;
+        return [x, hill(x)];
+      });
+
     const render = () => {
       context.clearRect(0, 0, width, height);
-      const horizon = height * 0.62;
-      const sunX = width * 0.5;
-      const sunRadius = Math.min(width, height) * 0.16;
-      const sunY = horizon + sunRadius * 1.1 - state.sun * sunRadius * 1.6;
+      const apex = { x: width * 0.5, y: hill(width * 0.5) };
+      const sunRadius = Math.min(width * 0.09, height * 0.2);
+      const sunY = apex.y + sunRadius * 1.15 - state.sun * sunRadius * 1.75;
 
-      // Soft morning light behind everything.
+      // One soft wash of morning light, fading out in every direction.
       if (state.sun > 0) {
-        const light = context.createRadialGradient(
-          sunX,
-          sunY,
-          sunRadius * 0.5,
-          sunX,
-          sunY,
-          width * 0.55,
-        );
-        light.addColorStop(0, `rgba(246, 205, 150, ${0.45 * state.sun + state.glow * 0.08})`);
-        light.addColorStop(1, "rgba(246, 205, 150, 0)");
+        const light = context.createRadialGradient(apex.x, sunY, 0, apex.x, sunY, width * 0.6);
+        const strength = 0.5 * state.sun + state.glow * 0.06;
+        light.addColorStop(0, `rgba(246, 203, 148, ${strength})`);
+        light.addColorStop(0.45, `rgba(246, 203, 148, ${strength * 0.35})`);
+        light.addColorStop(1, "rgba(246, 203, 148, 0)");
         context.fillStyle = light;
-        context.fillRect(0, 0, width, horizon);
+        context.fillRect(0, 0, width, height);
       }
 
-      // Rays, drawn outward from the sun, above the horizon only.
-      context.save();
-      context.beginPath();
-      context.rect(0, 0, width, horizon);
-      context.clip();
+      // Rays and sun sit behind the hills; the land drawn next covers whatever is below.
       if (state.rays > 0) {
         for (let index = 0; index < 11; index += 1) {
           const angle = Math.PI + (Math.PI * (index + 0.5)) / 11;
           const inner = sunRadius * 1.35;
-          const outer = inner + sunRadius * (0.55 + (index % 2) * 0.35) * state.rays;
+          const outer = inner + sunRadius * (0.5 + (index % 2) * 0.32) * state.rays;
           context.beginPath();
-          context.moveTo(sunX + Math.cos(angle) * inner, sunY + Math.sin(angle) * inner);
-          context.lineTo(sunX + Math.cos(angle) * outer, sunY + Math.sin(angle) * outer);
+          context.moveTo(apex.x + Math.cos(angle) * inner, sunY + Math.sin(angle) * inner);
+          context.lineTo(apex.x + Math.cos(angle) * outer, sunY + Math.sin(angle) * outer);
           context.strokeStyle = CLAY;
-          context.globalAlpha = 0.75;
-          context.lineWidth = 2.4;
+          context.globalAlpha = 0.7;
+          context.lineWidth = 2.2;
           context.lineCap = "round";
           context.stroke();
         }
@@ -120,55 +129,67 @@ function SunriseCanvas() {
       }
       if (state.sun > 0) {
         context.beginPath();
-        context.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+        context.arc(apex.x, sunY, sunRadius, 0, Math.PI * 2);
         context.fillStyle = SUN;
         context.fill();
         context.strokeStyle = CLAY;
-        context.lineWidth = 2.2;
+        context.lineWidth = 2;
         context.stroke();
       }
-      context.restore();
 
-      // Horizon hills and the path, sketched in.
-      pencil(
-        [
-          [width * 0.02, horizon],
-          [width * 0.22, horizon - height * 0.07],
-          [width * 0.4, horizon - height * 0.01],
-          [width * 0.6, horizon - height * 0.02],
-          [width * 0.8, horizon - height * 0.09],
-          [width * 0.98, horizon],
-        ],
-        state.sketch,
-      );
-      pencil(
-        [
-          [width * 0.36, height],
-          [width * 0.46, horizon + height * 0.16],
-          [width * 0.49, horizon + 2],
-        ],
-        state.sketch * 1.15 - 0.15,
-        1.8,
-      );
-      pencil(
-        [
-          [width * 0.64, height],
-          [width * 0.54, horizon + height * 0.16],
-          [width * 0.51, horizon + 2],
-        ],
-        state.sketch * 1.15 - 0.15,
-        1.8,
-      );
+      // The land, in the card's own paper colour so the scene runs into the text below.
+      const points = hillPoints();
+      context.beginPath();
+      context.moveTo(0, height);
+      points.forEach(([x, y]) => context.lineTo(x, y));
+      context.lineTo(width, height);
+      context.closePath();
+      const land = context.createLinearGradient(0, apex.y, 0, height);
+      land.addColorStop(0, "#fbf1e4");
+      land.addColorStop(1, PAPER);
+      context.fillStyle = land;
+      context.fill();
+
+      // The path, widening toward us and meeting the hills exactly at the dip.
+      const pathReveal = Math.max(0, state.sketch * 1.2 - 0.2);
+      if (pathReveal > 0) {
+        const left = width * 0.5 - Math.min(width * 0.16, 190);
+        const right = width * 0.5 + Math.min(width * 0.16, 190);
+        context.beginPath();
+        context.moveTo(left, height);
+        context.quadraticCurveTo(width * 0.47, apex.y + (height - apex.y) * 0.35, apex.x, apex.y);
+        context.quadraticCurveTo(width * 0.53, apex.y + (height - apex.y) * 0.35, right, height);
+        context.closePath();
+        const pathFill = context.createLinearGradient(0, apex.y, 0, height);
+        pathFill.addColorStop(0, `rgba(240, 214, 180, ${0.2 * pathReveal})`);
+        pathFill.addColorStop(1, `rgba(240, 214, 180, ${0.75 * pathReveal})`);
+        context.fillStyle = pathFill;
+        context.fill();
+        const edge = (side: 1 | -1): [number, number][] =>
+          Array.from({ length: 17 }, (_, index) => {
+            const t = index / 16;
+            const startX = width * 0.5 + side * Math.min(width * 0.16, 190);
+            const controlX = width * (0.5 + side * 0.03);
+            const controlY = apex.y + (height - apex.y) * 0.35;
+            const x = (1 - t) ** 2 * startX + 2 * (1 - t) * t * controlX + t * t * apex.x;
+            const y = (1 - t) ** 2 * height + 2 * (1 - t) * t * controlY + t * t * apex.y;
+            return [x, y];
+          });
+        pencil(edge(-1), pathReveal, 1.8);
+        pencil(edge(1), pathReveal, 1.8);
+      }
+
+      pencil(points, state.sketch);
 
       // Footsteps climbing the path, the nearest first.
       for (let step = 0; step < STEPS; step += 1) {
         const appear = Math.min(1, Math.max(0, state.steps - step));
         if (appear <= 0) break;
         const t = step / STEPS;
-        const y = height - 12 - t * (height - horizon - 22);
-        const scale = 1 - t * 0.7;
+        const y = height - 14 - t * (height - apex.y - 30);
+        const scale = 1 - t * 0.72;
         const side = step % 2 === 0 ? -1 : 1;
-        const x = width * 0.5 + side * 9 * scale;
+        const x = width * 0.5 + side * 10 * scale;
         context.beginPath();
         context.ellipse(x, y, 4.5 * scale, 8 * scale, side * 0.15, 0, Math.PI * 2);
         context.fillStyle = CLAY;
@@ -244,7 +265,7 @@ function SunriseCanvas() {
   return (
     <canvas
       aria-label="A pencil sketch of the sun rising over a path, with footsteps leading up it"
-      className="block h-56 w-full sm:h-64"
+      className="block h-56 w-full sm:h-64 lg:h-72"
       ref={canvasRef}
       role="img"
     />
@@ -271,7 +292,7 @@ export function LandingJourneyCta() {
   return (
     <div className={`${sketchStyles.sketchFrame} overflow-hidden`}>
       <SunriseCanvas />
-      <div className="grid gap-8 border-t border-dashed border-[#d9cabd] px-6 py-8 sm:px-10 md:grid-cols-[1fr_auto] md:items-center md:gap-12 lg:px-14 lg:py-10">
+      <div className="grid gap-8 px-6 pb-8 pt-2 sm:px-10 md:grid-cols-[1fr_auto] md:items-center md:gap-12 lg:px-14 lg:py-10">
         <div>
           <h2 className="font-serif-display text-4xl font-normal leading-tight text-[#382c26] sm:text-5xl">
             Start your journey today

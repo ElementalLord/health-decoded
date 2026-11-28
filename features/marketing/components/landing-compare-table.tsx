@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, createDrawable, createTimeline, stagger, type Timeline } from "animejs";
+import { createTimeline, stagger, type Timeline } from "animejs";
 import { Fragment, useEffect, useRef } from "react";
 
 import { prefersReducedMotion } from "@/features/marketing/components/landing-motion";
@@ -43,7 +43,7 @@ export function LandingCompareTable({
   groups: readonly CompareGroup[];
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const loopRef = useRef<SVGPathElement>(null);
+  const loopRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -51,7 +51,11 @@ export function LandingCompareTable({
     if (!root || !loop || prefersReducedMotion()) return;
     const rows = Array.from(root.querySelectorAll<HTMLElement>("tbody tr"));
     const marks = Array.from(root.querySelectorAll<HTMLElement>("[data-mark]"));
-    const [drawable] = createDrawable(loop);
+    // The loop is a CSS ellipse border revealed by a conic mask, so it stays one crisp line.
+    const sweep = { degrees: 0 };
+    const drawLoop = () => {
+      loop.style.setProperty("--sweep", `${sweep.degrees}deg`);
+    };
     let timeline: Timeline | null = null;
 
     const hide = () => {
@@ -62,7 +66,8 @@ export function LandingCompareTable({
       marks.forEach((mark) => {
         mark.style.transform = "scale(0)";
       });
-      if (drawable) animate(drawable, { draw: "0 0", duration: 0 });
+      sweep.degrees = 0;
+      drawLoop();
     };
 
     const play = () => {
@@ -86,9 +91,11 @@ export function LandingCompareTable({
           },
           200,
         );
-      if (drawable) {
-        timeline.add(drawable, { draw: ["0 0", "0 1"], duration: 1100, ease: "inOutQuad" }, 500);
-      }
+      timeline.add(
+        sweep,
+        { degrees: 360, duration: 1100, ease: "inOutQuad", onUpdate: drawLoop },
+        500,
+      );
     };
 
     hide();
@@ -128,22 +135,17 @@ export function LandingCompareTable({
             {columns.map((column, index) => (
               <th className="relative px-1 py-6 text-center sm:px-3" key={column} scope="col">
                 {index === 0 ? (
-                  <svg
+                  <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-1 inset-y-2 h-[calc(100%-1rem)] w-[calc(100%-0.5rem)] overflow-visible"
-                    preserveAspectRatio="none"
-                    viewBox="0 0 200 80"
-                  >
-                    <path
-                      d="M30 14 C80 2 150 4 184 22 C204 36 190 66 140 74 C88 82 22 76 10 52 C0 32 30 12 70 9"
-                      fill="none"
-                      ref={loopRef}
-                      stroke="#c97860"
-                      strokeLinecap="round"
-                      strokeWidth="2.5"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </svg>
+                    className="pointer-events-none absolute inset-x-[4%] inset-y-[18%] -rotate-3 rounded-[50%] border-[2.5px] border-[#c97860]"
+                    ref={loopRef}
+                    style={{
+                      WebkitMaskImage:
+                        "conic-gradient(from 200deg, #000 var(--sweep, 360deg), transparent 0)",
+                      maskImage:
+                        "conic-gradient(from 200deg, #000 var(--sweep, 360deg), transparent 0)",
+                    }}
+                  />
                 ) : null}
                 <span
                   className={`relative font-serif-display text-base font-normal leading-tight sm:text-2xl ${index === 0 ? "text-[#382c26]" : "text-[#6b5b52]"}`}
