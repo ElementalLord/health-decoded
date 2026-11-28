@@ -12,7 +12,8 @@ if [ "${VERCEL_ENV:-}" = "production" ]; then
   exit 1
 fi
 
-msg="${VERCEL_GIT_COMMIT_MESSAGE:-}"
+# Only the subject line counts, so a body that merely mentions a marker doesn't skip.
+msg="$(printf '%s\n' "${VERCEL_GIT_COMMIT_MESSAGE:-}" | head -n 1)"
 if printf '%s' "$msg" | grep -Eiq '^wip([:( ]|$)|\[(wip|skip preview|skip vercel)\]'; then
   echo "Preview skipped: commit is marked WIP / skip preview."
   exit 0
